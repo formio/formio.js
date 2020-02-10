@@ -542,6 +542,11 @@ export function checkCondition(component, row, data, form, instance) {
  * @returns {mixed}
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
+  // If trigger is empty, don&apos;t fire it
+  if (!trigger[trigger.type]) {
+    return false;
+  }
+
   switch (trigger.type) {
     case &apos;simple&apos;:
       return checkSimpleConditional(component, trigger.simple, row, data);

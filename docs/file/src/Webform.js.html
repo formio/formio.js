@@ -1367,7 +1367,8 @@ export default class Webform extends NestedDataComponent {
           err.messages.forEach(({ message }) =&gt; createListItem(`${err.component.label}. ${message}`));
         }
         else if (err) {
-          createListItem(err);
+          const message = _.isObject(err) ? err.message || &apos;&apos; : err;
+          createListItem(message);
         }
       }
     });
@@ -1379,11 +1380,8 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (triggerEvent &amp;&amp; this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
-      this.refs.errorRef[0].focus();
-    }
-    else {
       const withKeys = Array.from(this.refs.errorRef).filter(ref =&gt; !!ref.dataset.componentKey);
-      withKeys.length &amp;&amp; this.focusOnComponent(withKeys[0].dataset.componentKey);
+      withKeys.length ? this.focusOnComponent(withKeys[0].dataset.componentKey) :  this.refs.errorRef[0].focus();
     }
 
     return errors;
@@ -1561,7 +1559,7 @@ export default class Webform extends NestedDataComponent {
           return reject();
         }
 
-        this.getAllComponents().forEach((comp) =&gt; {
+        this.everyComponent((comp) =&gt; {
           const { persistent } = comp.component;
           if (persistent === &apos;client-only&apos;) {
             _.unset(submission.data, comp.path);

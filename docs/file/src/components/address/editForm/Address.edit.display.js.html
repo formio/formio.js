@@ -244,6 +244,14 @@
     ignore: true,
   },
   {
+    weight: 20,
+    type: &apos;checkbox&apos;,
+    input: true,
+    key: &apos;enableManualMode&apos;,
+    label: &apos;Enable Manual Mode&apos;,
+    tooltip: &apos;Should Manual Mode be enabled for that component or not.&apos;,
+  },
+  {
     weight: 30,
     type: &apos;textfield&apos;,
     input: true,
@@ -254,6 +262,7 @@
     validate: {
       required: true,
     },
+    customConditional: ({ data }) =&gt; Boolean(data.enableManualMode),
   },
   {
     weight: 40,
@@ -261,7 +270,7 @@
     input: true,
     key: &apos;disableClearIcon&apos;,
     label: &apos;Disable Clear Icon&apos;,
-    tooltip: &apos;Clear Icon allows easily clear component\&apos;s value&apos;,
+    tooltip: &apos;Clear Icon allows easily clear component\&apos;s value.&apos;,
   },
 ];
 </code></pre>

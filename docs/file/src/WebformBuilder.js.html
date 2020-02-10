@@ -543,27 +543,32 @@ export default class WebformBuilder extends Component {
       query.params.tags = [&apos;builder&apos;];
     }
     const formio = new Formio(Formio.projectUrl);
-    if (!formio.noProject) {
+    const isResourcesDisabled = this.options.builder &amp;&amp; this.options.builder.resource === false;
+
+    if (!formio.noProject &amp;&amp; !isResourcesDisabled) {
+      const resourceOptions = this.options.builder &amp;&amp; this.options.builder.resource;
       formio.loadForms(query)
         .then((resources) =&gt; {
           if (resources.length) {
             this.builder.resource = {
-              title: &apos;Existing Resource Fields&apos;,
+              title: resourceOptions ? resourceOptions.title : &apos;Existing Resource Fields&apos;,
               key: &apos;resource&apos;,
-              weight: 50,
+              weight: resourceOptions ? resourceOptions.weight : 50,
               subgroups: [],
               components: [],
               componentOrder: []
             };
             this.groups.resource = {
-              title: &apos;Existing Resource Fields&apos;,
+              title: resourceOptions ? resourceOptions.title : &apos;Existing Resource Fields&apos;,
               key: &apos;resource&apos;,
-              weight: 50,
+              weight: resourceOptions ? resourceOptions.weight :  50,
               subgroups: [],
               components: [],
               componentOrder: []
             };
-            this.groupOrder.push(&apos;resource&apos;);
+            if (!this.groupOrder.includes(&apos;resource&apos;)) {
+              this.groupOrder.push(&apos;resource&apos;);
+            }
             this.addExistingResourceFields(resources);
           }
         });
@@ -908,7 +913,7 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
-    else {
+    if (group.slice(0, group.indexOf(&apos;-&apos;)) === &apos;resource&apos;) {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
@@ -1026,7 +1031,8 @@ export default class WebformBuilder extends Component {
         index = 0;
       }
     }
-    else if (parent &amp;&amp; parent.addChildComponent) {
+
+    if (parent &amp;&amp; parent.addChildComponent) {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 

@@ -826,6 +826,54 @@ export default class Component extends Element {
     return this._path;
   }
 
+  get labelPosition() {
+    return this.component.labelPosition;
+  }
+
+  get labelWidth() {
+    return this.component.labelWidth || 30;
+  }
+
+  get labelMargin() {
+    return this.component.labelMargin || 3;
+  }
+
+  get isAdvancedLabel() {
+    return [
+      &apos;left-left&apos;,
+      &apos;left-right&apos;,
+      &apos;right-left&apos;,
+      &apos;right-right&apos;
+    ].includes(this.labelPosition);
+  }
+
+  get labelPositions() {
+    return this.labelPosition.split(&apos;-&apos;);
+  }
+
+  rightDirection(direction) {
+    return direction === &apos;right&apos;;
+  }
+
+  getLabelInfo() {
+    const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isRightAlign = this.rightDirection(this.labelPositions[1]);
+    const labelStyles = `
+      flex: ${this.labelWidth};
+      ${isRightPosition ? &apos;margin-left&apos; : &apos;margin-right&apos;}:${this.labelMargin}%;
+    `;
+    const contentStyles = `
+      flex: ${100 - this.labelWidth - this.labelMargin};
+    `;
+
+    return {
+      isRightPosition,
+      isRightAlign,
+      labelStyles,
+      contentStyles
+    };
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -2379,13 +2427,8 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.component.multiple
-        ? this.dataValue.length
-          ? [this.defaultValue]
-          : []
-        : this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue, {
+      if (this.defaultValue) {
+        this.setValue(this.defaultValue, {
           noUpdateEvent: true
         });
       }

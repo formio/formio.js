@@ -351,7 +351,6 @@ export default class ButtonComponent extends Field {
     let onError = null;
     if (this.component.action === &apos;submit&apos;) {
       this.on(&apos;submitButton&apos;, () =&gt; {
-        this.loading = true;
         this.disabled = true;
       }, true);
       this.on(&apos;submitDone&apos;, () =&gt; {
@@ -394,7 +393,6 @@ export default class ButtonComponent extends Field {
 
     if (this.component.action === &apos;url&apos;) {
       this.on(&apos;requestButton&apos;, () =&gt; {
-        this.loading = true;
         this.disabled = true;
       }, true);
       this.on(&apos;requestDone&apos;, () =&gt; {
@@ -477,9 +475,11 @@ export default class ButtonComponent extends Field {
       case &apos;submit&apos;:
         event.preventDefault();
         event.stopPropagation();
+        this.loading = true;
         this.emit(&apos;submitButton&apos;, {
           state: this.component.state || &apos;submitted&apos;,
-          component: this.component
+          component: this.component,
+          instance: this
         });
         break;
       case &apos;event&apos;:
@@ -514,7 +514,11 @@ export default class ButtonComponent extends Field {
         break;
       }
       case &apos;url&apos;:
-        this.emit(&apos;requestButton&apos;);
+        this.loading = true;
+        this.emit(&apos;requestButton&apos;, {
+          component: this.component,
+          instance: this
+        });
         this.emit(&apos;requestUrl&apos;, {
           url: this.interpolate(this.component.url),
           headers: this.component.headers

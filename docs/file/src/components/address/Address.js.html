@@ -254,6 +254,7 @@ export const AddressComponentMode = {
 };
 
 const RemoveValueIconHiddenClass = &apos;address-autocomplete-remove-value-icon--hidden&apos;;
+const ChildConditional = &apos;show = _.get(instance, \&apos;parent.manualMode\&apos;, false);&apos;;
 
 export default class AddressComponent extends ContainerComponent {
   static schema(...extend) {
@@ -261,54 +262,61 @@ export default class AddressComponent extends ContainerComponent {
       type: &apos;address&apos;,
       label: &apos;Address&apos;,
       key: &apos;address&apos;,
-      switchToManualModeLabel: &quot;Can&apos;t find address? Switch to manual mode.&quot;,
+      switchToManualModeLabel: &apos;Can\&apos;t find address? Switch to manual mode.&apos;,
       provider: &apos;&apos;,
       providerOptions: {},
       manualModeViewString: &apos;&apos;,
       hideLabel: false,
       disableClearIcon: false,
+      enableManualMode: false,
       components: [
         {
-          label: &apos;Street&apos;,
-          tableView: true,
-          key: &apos;street&apos;,
+          label: &apos;Address 1&apos;,
+          tableView: false,
+          key: &apos;address1&apos;,
           type: &apos;textfield&apos;,
           input: true,
+          customConditional: ChildConditional,
+        },
+        {
+          label: &apos;Address 2&apos;,
+          tableView: false,
+          key: &apos;address2&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+          customConditional: ChildConditional,
         },
         {
           label: &apos;City&apos;,
-          tableView: true,
+          tableView: false,
           key: &apos;city&apos;,
           type: &apos;textfield&apos;,
           input: true,
-        },
-        {
-          label: &apos;County&apos;,
-          tableView: true,
-          key: &apos;county&apos;,
-          type: &apos;textfield&apos;,
-          input: true,
+          customConditional: ChildConditional,
         },
         {
           label: &apos;State&apos;,
-          tableView: true,
+          tableView: false,
           key: &apos;state&apos;,
           type: &apos;textfield&apos;,
           input: true,
-        },
-        {
-          label: &apos;Zip Code&apos;,
-          tableView: true,
-          key: &apos;zip&apos;,
-          type: &apos;textfield&apos;,
-          input: true,
+          customConditional: ChildConditional,
         },
         {
           label: &apos;Country&apos;,
-          tableView: true,
+          tableView: false,
           key: &apos;country&apos;,
           type: &apos;textfield&apos;,
           input: true,
+          customConditional: ChildConditional,
+        },
+        {
+          label: &apos;Zip Code&apos;,
+          tableView: false,
+          key: &apos;zip&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+          customConditional: ChildConditional,
         },
       ],
     }, ...extend);
@@ -337,15 +345,44 @@ export default class AddressComponent extends ContainerComponent {
 
   init() {
     this.components = this.components || [];
-    NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
+    if (this.builderMode || this.manualModeEnabled) {
+      NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
+    }
     Field.prototype.init.call(this);
 
-    if (!this.builderMode &amp;&amp; this.component.provider) {
-      const {
-        provider,
-        providerOptions,
-      } = this.component;
-      this.provider = this.initializeProvider(provider, providerOptions);
+    if (!this.builderMode) {
+      if (this.component.provider) {
+        const {
+          provider,
+          providerOptions,
+        } = this.component;
+        this.provider = this.initializeProvider(provider, providerOptions);
+      }
+      else if (this.component.map) {
+        // Fallback to legacy version where Google Maps was the only provider.
+        this.component.provider = GoogleAddressProvider.name;
+        this.component.providerOptions = this.component.providerOptions || {};
+
+        const {
+          map,
+          provider,
+          providerOptions,
+        } = this.component;
+
+        const {
+          key,
+          region,
+        } = map;
+
+        if (key) {
+          providerOptions.apiKey = key;
+        }
+        if (region) {
+          providerOptions.region = region;
+        }
+
+        this.provider = this.initializeProvider(provider, providerOptions);
+      }
     }
   }
 
@@ -355,18 +392,26 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get emptyValue() {
-    return {
-      mode: AddressComponentMode.Autocomplete,
-      address: {},
-    };
+    return this.manualModeEnabled
+      ? {
+        mode: AddressComponentMode.Autocomplete,
+        address: {},
+      }
+      : {};
   }
 
   get mode() {
-    return this.dataValue ? this.dataValue.mode : this.dataValue;
+    return this.manualModeEnabled
+      ? this.dataValue
+        ? this.dataValue.mode
+        : this.dataValue
+      : AddressComponentMode.Autocomplete;
   }
 
   set mode(value) {
-    this.dataValue.mode = value;
+    if (this.manualModeEnabled) {
+      this.dataValue.mode = value;
+    }
   }
 
   get autocompleteMode() {
@@ -375,6 +420,10 @@ export default class AddressComponent extends ContainerComponent {
 
   get manualMode() {
     return this.mode === AddressComponentMode.Manual;
+  }
+
+  get manualModeEnabled() {
+    return Boolean(this.component.enableManualMode);
   }
 
   restoreComponentsContext() {
@@ -387,11 +436,16 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get address() {
-    return this.dataValue ? this.dataValue.address : this.dataValue;
+    return (this.manualModeEnabled &amp;&amp; this.dataValue) ? this.dataValue.address : this.dataValue;
   }
 
   set address(value) {
-    this.dataValue.address = value;
+    if (this.manualModeEnabled) {
+      this.dataValue.address = value;
+    }
+    else {
+      this.dataValue = value;
+    }
   }
 
   get defaultSchema() {
@@ -399,11 +453,11 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   isValueInLegacyFormat(value) {
-    return !this.provider &amp;&amp; value &amp;&amp; !value.mode;
+    return value &amp;&amp; !value.mode;
   }
 
   normalizeValue(value) {
-    return this.isValueInLegacyFormat(value)
+    return (this.manualModeEnabled &amp;&amp; this.isValueInLegacyFormat(value))
       ? {
         mode: AddressComponentMode.Autocomplete,
         address: value,
@@ -413,30 +467,6 @@ export default class AddressComponent extends ContainerComponent {
 
   setValue(value, flags) {
     const changed = Field.prototype.setValue.call(this, value, flags);
-
-    if (this.isValueInLegacyFormat(value)) {
-      // Fallback to legacy version where Google Maps was the only provider.
-      const {
-        map,
-        providerOptions = {},
-      } = this.component;
-
-      if (map) {
-        const {
-          key,
-          region,
-        } = map;
-
-        if (key) {
-          providerOptions.apiKey = key;
-        }
-        if (region) {
-          providerOptions.region = region;
-        }
-      }
-
-      this.provider = this.initializeProvider(GoogleAddressProvider.name, providerOptions);
-    }
 
     if (this.manualMode) {
       this.restoreComponentsContext();
@@ -502,12 +532,12 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get templateName() {
-    return this.builderMode ? super.templateName : &apos;address&apos;;
+    return &apos;address&apos;;
   }
 
   render() {
     return super.render(this.renderTemplate(this.templateName, {
-      children: this.renderComponents(),
+      children: (this.builderMode || this.manualModeEnabled) ? this.renderComponents() : &apos;&apos;,
       nestedKey: this.nestedKey,
       inputAttributes: this.searchInputAttributes,
       ref: {
@@ -534,73 +564,73 @@ export default class AddressComponent extends ContainerComponent {
         } = this.component;
         this.provider = this.initializeProvider(provider, providerOptions);
       }
+    }
 
-      this.loadRefs(element, {
-        [AddressComponent.modeSwitcherRef]: &apos;single&apos;,
-        [AddressComponent.removeValueIconRef]: &apos;single&apos;,
-        [AddressComponent.searchInputRef]: &apos;single&apos;,
-      });
+    this.loadRefs(element, {
+      [AddressComponent.modeSwitcherRef]: &apos;single&apos;,
+      [AddressComponent.removeValueIconRef]: &apos;single&apos;,
+      [AddressComponent.searchInputRef]: &apos;single&apos;,
+    });
 
-      if (this.searchInput &amp;&amp; this.provider) {
-        autocompleter({
-          input: this.searchInput,
-          debounceWaitMs: 300,
-          fetch: (text, update) =&gt; {
-            const query = text;
-            this.provider.search(query).then(update);
-          },
-          render: (address) =&gt; {
-            const div = this.ce(&apos;div&apos;);
-            div.textContent = this.getDisplayValue(address);
-            return div;
-          },
-          onSelect: (address) =&gt; {
-            this.updateValue({
-              ...this.dataValue,
-              address,
-            }, {
-              modified: true,
-            });
+    if (!this.builderMode &amp;&amp; this.searchInput &amp;&amp; this.provider) {
+      autocompleter({
+        input: this.searchInput,
+        debounceWaitMs: 300,
+        fetch: (text, update) =&gt; {
+          const query = text;
+          this.provider.search(query).then(update);
+        },
+        render: (address) =&gt; {
+          const div = this.ce(&apos;div&apos;);
+          div.textContent = this.getDisplayValue(address);
+          return div;
+        },
+        onSelect: (address) =&gt; {
+          this.address = address;
+          this.triggerChange({
+            modified: true,
+          });
 
-            if (this.searchInput) {
-              this.searchInput.value = this.getDisplayValue();
-            }
-            this.updateRemoveIcon();
-          },
-        });
-
-        this.addEventListener(this.searchInput, &apos;blur&apos;, () =&gt; {
-          if (!this.searchInput) {
-            return;
-          }
-
-          if (this.searchInput.value) {
+          if (this.searchInput) {
             this.searchInput.value = this.getDisplayValue();
           }
-        });
+          this.updateRemoveIcon();
+        },
+      });
 
-        this.addEventListener(this.searchInput, &apos;keyup&apos;, () =&gt; {
-          if (!this.searchInput) {
-            return;
-          }
+      this.addEventListener(this.searchInput, &apos;blur&apos;, () =&gt; {
+        if (!this.searchInput) {
+          return;
+        }
 
-          if (!this.searchInput.value) {
-            this.clearAddress();
-          }
-        });
-      }
+        if (this.searchInput.value) {
+          this.searchInput.value = this.getDisplayValue();
+        }
+      });
 
-      if (this.modeSwitcher) {
-        this.addEventListener(this.modeSwitcher, &apos;change&apos;, () =&gt; {
-          if (!this.modeSwitcher) {
-            return;
-          }
+      this.addEventListener(this.searchInput, &apos;keyup&apos;, () =&gt; {
+        if (!this.searchInput) {
+          return;
+        }
 
-          this.dataValue = this.emptyValue;
-          this.mode = this.modeSwitcher.checked
-            ? AddressComponentMode.Manual
-            : AddressComponentMode.Autocomplete;
+        if (!this.searchInput.value) {
+          this.clearAddress();
+        }
+      });
+    }
 
+    if (this.modeSwitcher) {
+      this.addEventListener(this.modeSwitcher, &apos;change&apos;, () =&gt; {
+        if (!this.modeSwitcher) {
+          return;
+        }
+
+        this.dataValue = this.emptyValue;
+        this.mode = this.modeSwitcher.checked
+          ? AddressComponentMode.Manual
+          : AddressComponentMode.Autocomplete;
+
+        if (!this.builderMode) {
           if (this.manualMode) {
             this.restoreComponentsContext();
           }
@@ -608,28 +638,33 @@ export default class AddressComponent extends ContainerComponent {
           this.triggerChange({
             modified: true,
           });
-          this.redraw();
-        });
-      }
+        }
 
-      if (this.removeValueIcon) {
-        this.updateRemoveIcon();
+        this.redraw();
+      });
+    }
 
-        const removeValueHandler = () =&gt; {
-          this.clearAddress();
-          this.focus();
-        };
+    if (!this.builderMode &amp;&amp; this.removeValueIcon) {
+      this.updateRemoveIcon();
 
-        this.addEventListener(this.removeValueIcon, &apos;click&apos;, removeValueHandler);
-        this.addEventListener(this.removeValueIcon, &apos;keydown&apos;, ({ key }) =&gt; {
-          if (key === &apos;Enter&apos;) {
-            removeValueHandler();
-          }
-        });
-      }
+      const removeValueHandler = () =&gt; {
+        this.clearAddress();
+        this.focus();
+      };
+
+      this.addEventListener(this.removeValueIcon, &apos;click&apos;, removeValueHandler);
+      this.addEventListener(this.removeValueIcon, &apos;keydown&apos;, ({ key }) =&gt; {
+        if (key === &apos;Enter&apos;) {
+          removeValueHandler();
+        }
+      });
     }
 
     return result;
+  }
+
+  addChildComponent(component) {
+    component.customConditional = ChildConditional;
   }
 
   redraw() {
@@ -684,13 +719,26 @@ export default class AddressComponent extends ContainerComponent {
       return &apos;&apos;;
     }
 
-    const { address } = value;
+    const normalizedValue = this.normalizeValue(value);
 
-    if (this.provider &amp;&amp; !this.manualMode) {
+    const {
+      address,
+      mode,
+    } = (
+      this.manualModeEnabled
+        ? normalizedValue
+        : {
+          address: normalizedValue,
+          mode: AddressComponentMode.Autocomplete,
+        }
+    );
+    const valueInManualMode = (mode === AddressComponentMode.Manual);
+
+    if (this.provider &amp;&amp; !valueInManualMode) {
       return this.getDisplayValue(address);
     }
 
-    if (this.manualMode) {
+    if (valueInManualMode) {
       if (this.component.manualModeViewString) {
         return this.interpolate(this.component.manualModeViewString, {
           address,
@@ -700,8 +748,10 @@ export default class AddressComponent extends ContainerComponent {
       }
 
       return this.getComponents()
-        .filter((component) =&gt; !component.isEmpty())
-        .map((component) =&gt; component.getValueAsString(component.dataValue))
+        .filter((component) =&gt; component.hasValue(address))
+        .map((component) =&gt; [component, _.get(address, component.key)])
+        .filter(([component, componentValue]) =&gt; !component.isEmpty(componentValue))
+        .map(([component, componentValue]) =&gt; component.getValueAsString(componentValue))
         .join(&apos;, &apos;);
     }
 
