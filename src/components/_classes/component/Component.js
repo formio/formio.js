@@ -1162,27 +1162,29 @@ export default class Component extends Element {
    * @param value
    * @return {*}
    */
-  getWidgetValueAsString(value) {
-    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+  getWidgetValueAsString(value, widgets) {
+    if ((!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) && !widgets) {
       return value;
     }
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        if (this.refs.input[index] && this.refs.input[index].widget) {
-          values.push(this.refs.input[index].widget.getValueAsString(val));
+        const widget = widgets[index] || (this.refs.input[index] && this.refs.input[index].widget);
+        if (widget) {
+          values.push(widget.getValueAsString(val));
         }
       });
       return values;
     }
-    return this.refs.input[0].widget.getValueAsString(value);
+    const widget = widgets || this.refs.input[0].widget;
+    return widget.getValueAsString(value);
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, widgets) {
     if (!value) {
       return '';
     }
-    value = this.getWidgetValueAsString(value);
+    value = this.getWidgetValueAsString(value, widgets);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1195,11 +1197,11 @@ export default class Component extends Element {
     return value.toString();
   }
 
-  getView(value) {
+  getView(value, widgets) {
     if (this.component.protected) {
       return '--- PROTECTED ---';
     }
-    return this.getValueAsString(value);
+    return this.getValueAsString(value, widgets);
   }
 
   updateItems(...args) {
