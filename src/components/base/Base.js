@@ -871,7 +871,7 @@ export default class BaseComponent extends Component {
     }
 
     // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
+    return _.cloneDeep(defaultValue);
   }
 
   /**
