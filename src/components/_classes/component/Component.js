@@ -157,7 +157,9 @@ export default class Component extends Element {
         /**
          * If this component should implement a strict date validation if the Calendar widget is implemented.
          */
-        strictDateValidation: false
+        strictDateValidation: false,
+        multiple: false,
+        unique: false
       },
 
       /**
