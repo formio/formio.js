@@ -806,7 +806,8 @@ export default class SelectComponent extends Field {
         let body;
 
         if (url.startsWith(&apos;/&apos;)) {
-          const baseUrl = Formio.getProjectUrl() || Formio.getBaseUrl();
+          // if URL starts with &apos;/project&apos;, we should use base URL to avoid issues with URL formed like &lt;base_url&gt;/&lt;project_name&gt;/project/&lt;project_id&gt;/...
+          const baseUrl = url.startsWith(&apos;/project&apos;) ? Formio.getBaseUrl() : Formio.getProjectUrl() || Formio.getBaseUrl();
           url = baseUrl + url;
         }
 
