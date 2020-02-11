@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Select URL not working correctly with `/project/...` URLs
+
 ## 4.9.0-beta.3
 ### Fixed
  - Added check for empty triggers to skip it
