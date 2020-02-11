@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.9
+### Fixed
+ - Problem where default values could mutate the component defaultValue setting.
+
 ## 3.29.8
 ### Fixed
  - Error appearing for `isUploadEnabled` Textareas for images with missing `alt` attribute
