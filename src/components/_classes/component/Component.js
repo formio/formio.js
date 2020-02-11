@@ -2514,7 +2514,8 @@ export default class Component extends Element {
   }
 
   isEmpty(value = this.dataValue) {
-    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
+    const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], this.emptyValue) : false;
+    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue) || isEmptyArray;
   }
 
   isEqual(valueA, valueB = this.dataValue) {
