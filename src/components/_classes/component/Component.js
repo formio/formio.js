@@ -2188,7 +2188,8 @@ export default class Component extends Element {
     }
     else {
       if (this.defaultValue) {
-        this.setValue(this.defaultValue, {
+        const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
+        this.setValue(defaultValue, {
           noUpdateEvent: true
         });
       }
