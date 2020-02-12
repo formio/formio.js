@@ -5,7 +5,6 @@ import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import { fastCloneDeep, Evaluator } from '../../utils/utils';
 import templates from './templates';
-import Widgets from '../../widgets';
 
 export default class EditGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -272,9 +271,10 @@ export default class EditGridComponent extends NestedArrayComponent {
           flattenedComponents,
           getView: (component, data) => {
             const instance = flattenedComponents[component.key];
-            const Widget = instance && instance.component.widget ? Widgets[instance.component.widget.type] : null;
-            const widget = Widget ? new Widget(instance.component.widget, instance.component) : null;
-            return instance ? instance.getView(data, widget) : '';
+            return instance ? instance.getView(data) : '';
+            // const Widget = instance && instance.component.widget ? Widgets[instance.component.widget.type] : null;
+            // const widget = Widget ? new Widget(instance.component.widget, instance.component) : null;
+            // return instance ? instance.getView(data, widget) : '';
           },
         },
       );

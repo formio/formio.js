@@ -74,7 +74,7 @@ export class Component extends Element {
   createViewOnlyElement(): HTMLElement;
   readonly defaultViewOnlyValue: '-';
   getValueAsString(value: any): string;
-  getView(value: any, widgets?: any): string;
+  getView(value: any): string;
   updateItems(...args: any[]): void;
   createModal(): HTMLElement;
   readonly className: string;

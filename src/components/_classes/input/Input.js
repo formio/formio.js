@@ -199,8 +199,8 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value, widgets) {
-    return super.getValueAsString(this.getWidgetValueAsString(value, widgets));
+  getValueAsString(value) {
+    return super.getValueAsString(this.getWidgetValueAsString(value));
   }
 
   attachElement(element, index) {

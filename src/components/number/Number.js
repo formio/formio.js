@@ -179,11 +179,11 @@ export default class NumberComponent extends Input {
     return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
   }
 
-  getValueAsString(value, widgets) {
+  getValueAsString(value) {
     if (!value && value !== 0) {
       return '';
     }
-    value = this.getWidgetValueAsString(value, widgets);
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.map(this.getMaskedValue).join(', ');
     }

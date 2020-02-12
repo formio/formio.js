@@ -11,6 +11,7 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
+import Widgets from '../../../widgets';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.7/ace.js';
@@ -1162,29 +1163,34 @@ export default class Component extends Element {
    * @param value
    * @return {*}
    */
-  getWidgetValueAsString(value, widgets) {
-    if ((!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) && !widgets) {
+  getWidgetValueAsString(value) {
+    const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
+    const widgetFromComponent = this.component.widget && Widgets[this.component.widget.type] ?
+    new Widgets[this.component.widget.type](this.component.widget, this.component) : null;
+
+    if (!value || noInputWidget && !widgetFromComponent) {
       return value;
     }
+
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        const widget = widgets[index] || (this.refs.input[index] && this.refs.input[index].widget);
-        if (widget) {
-          values.push(widget.getValueAsString(val));
-        }
+        const inputRefWidget = this.refs.input && this.refs.input[index] && this.refs.input[index].widget;
+        const widget = inputRefWidget || widgetFromComponent;
+        widget && values.push(widget.getValueAsString(val));
       });
       return values;
     }
-    const widget = widgets || this.refs.input[0].widget;
+
+    const widget = !noInputWidget ? this.refs.input[0].widget : widgetFromComponent;
     return widget.getValueAsString(value);
   }
 
-  getValueAsString(value, widgets) {
+  getValueAsString(value) {
     if (!value) {
       return '';
     }
-    value = this.getWidgetValueAsString(value, widgets);
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1197,11 +1203,11 @@ export default class Component extends Element {
     return value.toString();
   }
 
-  getView(value, widgets) {
+  getView(value) {
     if (this.component.protected) {
       return '--- PROTECTED ---';
     }
-    return this.getValueAsString(value, widgets);
+    return this.getValueAsString(value);
   }
 
   updateItems(...args) {
