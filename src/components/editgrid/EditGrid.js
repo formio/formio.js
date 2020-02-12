@@ -272,9 +272,6 @@ export default class EditGridComponent extends NestedArrayComponent {
           getView: (component, data) => {
             const instance = flattenedComponents[component.key];
             return instance ? instance.getView(data) : '';
-            // const Widget = instance && instance.component.widget ? Widgets[instance.component.widget.type] : null;
-            // const widget = Widget ? new Widget(instance.component.widget, instance.component) : null;
-            // return instance ? instance.getView(data, widget) : '';
           },
         },
       );
