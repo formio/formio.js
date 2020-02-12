@@ -10506,6 +10506,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/signature/signature.js~signaturecomponent#shouldshowcanvas",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-shouldShowCanvas",
+    "src/components/signature/Signature.js~SignatureComponent#shouldShowCanvas",
+    "member"
+  ],
+  [
     "src/components/signature/signature.js~signaturecomponent#showcanvas",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-showCanvas",
     "src/components/signature/Signature.js~SignatureComponent#showCanvas",
