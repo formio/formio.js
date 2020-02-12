@@ -16,7 +16,7 @@ export default class Element {
      * @type {{}}
      */
     this.options = Object.assign({
-      language: 'sp',
+      language: 'en',
       highlightErrors: true,
       componentErrorClass: 'formio-error-wrapper',
       componentWarningClass: 'formio-warning-wrapper',
