@@ -502,7 +502,7 @@ export default class WebformBuilder extends Component {
 
     // If the current component is the namespace, we don't need to find it again.
     if (namespaceKey === component.key) {
-      return component.components;
+      return [...component.components, component];
     }
 
     // Get the namespace component so we have the original object.
