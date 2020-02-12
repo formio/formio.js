@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-beta.4
+### Fixed
+ - Select URL not working correctly with `/project/...` URLs
+ - Fixed restoreValue to make multiple components delete the last value if the user want do so
+ - Fixed required error occurs for multiple components when the component is pristine
+ - Fixed issue where Logic would make a Text Field loses focus on each character input
+
 ## 4.9.0-beta.3
 ### Fixed
  - Added check for empty triggers to skip it

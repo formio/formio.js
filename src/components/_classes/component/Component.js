@@ -157,7 +157,9 @@ export default class Component extends Element {
         /**
          * If this component should implement a strict date validation if the Calendar widget is implemented.
          */
-        strictDateValidation: false
+        strictDateValidation: false,
+        multiple: false,
+        unique: false
       },
 
       /**
@@ -2188,7 +2190,8 @@ export default class Component extends Element {
     }
     else {
       if (this.defaultValue) {
-        this.setValue(this.defaultValue, {
+        const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
+        this.setValue(defaultValue, {
           noUpdateEvent: true
         });
       }
@@ -2513,7 +2516,8 @@ export default class Component extends Element {
   }
 
   isEmpty(value = this.dataValue) {
-    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
+    const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], this.emptyValue) : false;
+    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue) || isEmptyArray;
   }
 
   isEqual(valueA, valueB = this.dataValue) {
