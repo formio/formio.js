@@ -11,6 +11,7 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
+import Widgets from '../../../widgets';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.7/ace.js';
@@ -1165,19 +1166,26 @@ export default class Component extends Element {
    * @return {*}
    */
   getWidgetValueAsString(value) {
-    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+    const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
+    const widgetFromComponent = this.component.widget && Widgets[this.component.widget.type] ?
+    new Widgets[this.component.widget.type](this.component.widget, this.component) : null;
+
+    if (!value || noInputWidget && !widgetFromComponent) {
       return value;
     }
+
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        if (this.refs.input[index] && this.refs.input[index].widget) {
-          values.push(this.refs.input[index].widget.getValueAsString(val));
-        }
+        const inputRefWidget = this.refs.input && this.refs.input[index] && this.refs.input[index].widget;
+        const widget = inputRefWidget || widgetFromComponent;
+        widget && values.push(widget.getValueAsString(val));
       });
       return values;
     }
-    return this.refs.input[0].widget.getValueAsString(value);
+
+    const widget = !noInputWidget ? this.refs.input[0].widget : widgetFromComponent;
+    return widget.getValueAsString(value);
   }
 
   getValueAsString(value) {
