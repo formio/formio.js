@@ -1165,19 +1165,25 @@ export default class Component extends Element {
    * @return {*}
    */
   getWidgetValueAsString(value) {
-    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+    const componentWidget = this.widget;
+
+    const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
+    if (!value || (noInputWidget && !componentWidget)) {
       return value;
     }
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        if (this.refs.input[index] && this.refs.input[index].widget) {
-          values.push(this.refs.input[index].widget.getValueAsString(val));
+        const widget = !noInputWidget && this.refs.input[index] && this.refs.input[index].widget || componentWidget;
+        if (widget) {
+          values.push(widget.getValueAsString(val));
         }
       });
       return values;
     }
-    return this.refs.input[0].widget.getValueAsString(value);
+
+    const widget = !noInputWidget && this.refs.input[0].widget || componentWidget;
+    return widget.getValueAsString(value);
   }
 
   getValueAsString(value) {
