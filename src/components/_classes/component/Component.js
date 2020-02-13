@@ -11,6 +11,7 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
+import Widgets from '../../../widgets';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.7/ace.js';
@@ -1165,19 +1166,27 @@ export default class Component extends Element {
    * @return {*}
    */
   getWidgetValueAsString(value) {
-    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+    let componentWidget;
+    if (this.parent && this.parent.component.type === 'editgrid' && this.component.widget && Widgets[this.component.widget.type]) {
+      componentWidget = new Widgets[this.component.widget.type](this.component.widget, this.component);
+    }
+
+    const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
+    if (!value || (noInputWidget && !componentWidget)) {
       return value;
     }
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        if (this.refs.input[index] && this.refs.input[index].widget) {
-          values.push(this.refs.input[index].widget.getValueAsString(val));
+        const widget = !noInputWidget && this.refs.input[index] && this.refs.input[index].widget || componentWidget;
+        if (widget) {
+          values.push(widget.getValueAsString(val));
         }
       });
       return values;
     }
-    return this.refs.input[0].widget.getValueAsString(value);
+    const widget = !noInputWidget && this.refs.input[0].widget || componentWidget;
+    return widget.getValueAsString(value);
   }
 
   getValueAsString(value) {
