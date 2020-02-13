@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Input from '../_classes/input/Input';
 import FormioUtils from '../../utils';
+import Widgets from '../../widgets';
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -119,6 +120,11 @@ export default class DateTimeComponent extends Input {
       input.widget.settings.submissionTimezone = this.submissionTimezone;
     }
     return input;
+  }
+
+  get widget() {
+    const widget = this.component.widget ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    return widget;
   }
 
   get defaultSchema() {
