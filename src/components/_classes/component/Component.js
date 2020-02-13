@@ -1602,6 +1602,21 @@ export default class Component extends Element {
     return false;
   }
 
+  isFirefox() {
+    const userAgent = window.navigator.userAgent;
+
+    const firefox = userAgent.indexOf('Firefox');
+    const seamonkey = userAgent.indexOf('Seamonkey');
+
+    if (firefox > 0 && seamonkey === -1) {
+      // returns version number
+      return parseInt(userAgent.substring(firefox + 8, userAgent.indexOf('.', firefox)), 10);
+    }
+
+    // other browser
+    return false;
+  }
+
   applyActions(newComponent, actions, result, row, data) {
     data = data || this.rootValue;
     row = row || this.data;
