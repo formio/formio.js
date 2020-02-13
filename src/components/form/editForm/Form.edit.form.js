@@ -22,7 +22,7 @@ export default [
     label: 'Form Revision',
     placeholder: 'Current',
     tooltip: 'You can lock the nested form to a specific revision by entering the revision number here.',
-    key: 'revisions',
+    key: 'revision',
     weight: 11,
   },
   {

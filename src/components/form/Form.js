@@ -84,8 +84,8 @@ export default class FormComponent extends Component {
     }
 
     // Add revision version if set.
-    if (this.component.revisions || this.component.revisions === 0) {
-      this.formSrc += `/v/${this.component.revisions}`;
+    if (this.component.revision || this.component.revision === 0) {
+      this.formSrc += `/v/${this.component.revision}`;
     }
   }
 
