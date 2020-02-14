@@ -1246,11 +1246,6 @@ export default class Webform extends NestedDataComponent {
     super.onChange(flags, true);
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
-
-    if (modified && this.pristine) {
-      this.setPristine(false);
-    }
-
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
@@ -1259,6 +1254,10 @@ export default class Webform extends NestedDataComponent {
     // See if we need to save the draft of the form.
     if (modified && this.options.saveDraft) {
       this.triggerSaveDraft();
+    }
+
+    if (modified && this.pristine) {
+      this.pristine = false;
     }
 
     if (!flags || !flags.noEmit) {
