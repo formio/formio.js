@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - `wizardPageSelected` event
+
 ## 4.9.0-beta.4
 ### Fixed
  - Select URL not working correctly with `/project/...` URLs
