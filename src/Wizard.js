@@ -558,12 +558,13 @@ export default class Wizard extends Webform {
     // If the pages change, need to redraw the header.
     const currentPanels = this.pages.map(page => page.component.key);
     const panels = this.establishPages().map(panel => panel.key);
+    const currentNextPage = this.currentNextPage;
     if (!_.isEqual(panels, currentPanels)) {
       this.redrawHeader();
     }
 
     // If the next page changes, then make sure to redraw navigation.
-    if (this.currentNextPage !== this.getNextPage()) {
+    if (currentNextPage !== this.getNextPage()) {
       this.redrawNavigation();
     }
   }
