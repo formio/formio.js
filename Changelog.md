@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.1
+### Fixed
+ - Prevent keys duplicating when components with the same types which are their own namespaces nested inside each other
+ - Fixed presence of selected value in options when search result is empty in lazy-load select with search query name
+ - HTML view of DateTime components within an EditGrid.
+ - Documentation around select component search fields using regex.
+ - Wizard changing next page doesn't update buttons. See https://github.com/formio/formio.js/pull/2423
+ - Default value of selects are displaying IDs rather than the label
+ - Prevent creating submission for child form when it is hidden
+ - Trigger check conditions for added rows
+ - Fix clearOnHide while updating submission
+
+### Changed
+ - Using fetch to get PDF form so that it can be modified to include headers, etc.
+
 ## 4.9.0-beta.4
 ### Fixed
  - Select URL not working correctly with `/project/...` URLs
