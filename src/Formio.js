@@ -205,6 +205,7 @@ export default class Formio {
         }
       }
     }
+    //test comment
 
     // Set the app url if it is not set.
     if (!Formio.projectUrlSet) {
