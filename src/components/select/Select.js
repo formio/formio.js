@@ -990,7 +990,7 @@ export default class SelectComponent extends Field {
       return found || defaultAdded;
     }, false);
 
-    if (notFoundValuesToAdd.length) {
+    if (notFoundValuesToAdd.length && (!this.component.searchField && !this.searchServerCount)) {
       if (this.choices) {
         this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
@@ -1139,18 +1139,11 @@ export default class SelectComponent extends Field {
     }
 
     // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
-    if (
-      this.component.searchField &&
-      this.component.lazyLoad &&
-      !this.lazyLoadInit &&
-      !this.active &&
-      !this.selectOptions.length &&
-      hasValue &&
-      this.visible
-    ) {
+    if (this.isInitApiCallNeeded(hasValue)) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(_.get(value.data || value, this.component.searchField, value), true);
+      const searchProperty = this.component.searchField || this.component.valueProperty;
+      this.triggerUpdate(_.get(value.data || value, searchProperty, value), true);
       return changed;
     }
 
@@ -1160,13 +1153,24 @@ export default class SelectComponent extends Field {
     return changed;
   }
 
+  isInitApiCallNeeded(hasValue) {
+    return this.component.lazyLoad &&
+    !this.lazyLoadInit &&
+    !this.active &&
+    !this.selectOptions.length &&
+    hasValue &&
+    this.visible && ( this.component.searchField || this.component.valueProperty);
+  }
+
   setChoicesValue(value, hasPreviousValue) {
     const hasValue = Array.isArray(value) ? value.length : value;
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-        this.choices.removeActiveItems();
+        if (!this.component.searchField && !this.searchServerCount) {
+          this.choices.removeActiveItems();
+        }
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {

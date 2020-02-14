@@ -272,7 +272,7 @@ Formio.createForm(document.getElementById('url-select'), {
           },
           limit: 10,
           valueProperty: 'data.name',
-          searchField: 'data.name',
+          searchField: 'data.name__regex',
           lazyLoad: true,
           template: '<span>{% raw %}{{ item.data.name }}{% endraw %}</span>'
         }
@@ -367,7 +367,7 @@ Formio.createForm(document.getElementById('lazy-load'), {
         url: 'https://examples.form.io/customer/submission'
       },
       valueProperty: 'data.email',
-      searchField: 'data.email',
+      searchField: 'data.email__regex',
       lazyLoad: true,
       template: '<span>{% raw %}{{ item.data.firstName }} {{ item.data.lastName }}{% endraw %}</span>'
     }

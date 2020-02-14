@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.9.0-rc.1
+### Added
+ - `wizardPageSelected` event
+
 ### Fixed
  - Prevent keys duplicating when components with the same types which are their own namespaces nested inside each other
  - Fixed presence of selected value in options when search result is empty in lazy-load select with search query name
