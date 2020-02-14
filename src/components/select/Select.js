@@ -990,7 +990,7 @@ export default class SelectComponent extends Field {
       return found || defaultAdded;
     }, false);
 
-    if (notFoundValuesToAdd.length) {
+    if (notFoundValuesToAdd.length && (!this.component.searchField && !this.searchServerCount)) {
       if (this.choices) {
         this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
@@ -1166,7 +1166,9 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-        this.choices.removeActiveItems();
+        if (!this.component.searchField && !this.searchServerCount) {
+          this.choices.removeActiveItems();
+        }
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
