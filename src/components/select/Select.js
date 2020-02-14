@@ -1139,18 +1139,11 @@ export default class SelectComponent extends Field {
     }
 
     // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
-    if (
-      this.component.searchField &&
-      this.component.lazyLoad &&
-      !this.lazyLoadInit &&
-      !this.active &&
-      !this.selectOptions.length &&
-      hasValue &&
-      this.visible
-    ) {
+    if (this.isInitApiCallNeeded(hasValue)) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(_.get(value.data || value, this.component.searchField, value), true);
+      const searchProperty = this.component.searchField || this.component.valueProperty;
+      this.triggerUpdate(_.get(value.data || value, searchProperty, value), true);
       return changed;
     }
 
@@ -1158,6 +1151,15 @@ export default class SelectComponent extends Field {
     this.addValueOptions();
     this.setChoicesValue(value, hasPreviousValue);
     return changed;
+  }
+
+  isInitApiCallNeeded(hasValue) {
+    return this.component.lazyLoad &&
+    !this.lazyLoadInit &&
+    !this.active &&
+    !this.selectOptions.length &&
+    hasValue &&
+    this.visible && ( this.component.searchField || this.component.valueProperty);
   }
 
   setChoicesValue(value, hasPreviousValue) {
