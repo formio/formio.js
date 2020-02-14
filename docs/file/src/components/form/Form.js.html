@@ -623,7 +623,7 @@ export default class FormComponent extends Component {
    * @return {*|boolean}
    */
   get shouldSubmit() {
-    return this.subFormReady &amp;&amp; (!this.component.hasOwnProperty(&apos;reference&apos;) || this.component.reference);
+    return this.subFormReady &amp;&amp; (!this.component.hasOwnProperty(&apos;reference&apos;) || this.component.reference) &amp;&amp; !this.isHidden;
   }
 
   /**
