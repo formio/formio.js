@@ -1229,7 +1229,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (modified && this.pristine) {
-      this.pristine = false;
+      this.setPristine(false);
     }
 
     if (!flags || !flags.noEmit) {

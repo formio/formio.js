@@ -1763,7 +1763,7 @@ export default class Component extends Element {
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
-      this.pristine = false;
+      this.setPristine(false);
       this.addClass(this.getElement(), 'formio-modified');
     }
 
