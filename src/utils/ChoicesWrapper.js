@@ -22,6 +22,22 @@ class ChoicesWrapper extends Choices {
     this.shouldOpenDropDown = true;
   }
 
+  /**
+   * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.
+   *
+   * https://github.com/jshjohnson/Choices/pull/788
+   *
+   * @return {boolean|*}
+   * @private
+   */
+  _generatePlaceholderValue() {
+    if (this._isSelectElement && this.passedElement.placeholderOption) {
+      const { placeholderOption } = this.passedElement;
+      return placeholderOption ? placeholderOption.text : false;
+    }
+    return super._generatePlaceholderValue();
+  }
+
   _handleButtonAction(activeItems, element) {
     if (!this._isSelectOneElement) {
       return super._handleButtonAction(activeItems, element);
