@@ -498,7 +498,7 @@ export default class Element {
       instance: this,
       self: this,
       config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
-    }, additional);
+    }, additional, _.get(this.root, 'options.evalContext', {}));
   }
 
   /**
