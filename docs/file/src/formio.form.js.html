@@ -257,6 +257,9 @@ const registerPlugin = (plugin) =&gt; {
   for (const key of Object.keys(plugin)) {
     const current = plugin.framework || Templates.framework || &apos;bootstrap&apos;;
     switch (key) {
+      case &apos;options&apos;:
+        Formio.options = plugin.options;
+        break;
       case &apos;templates&apos;:
         for (const framework of Object.keys(plugin.templates)) {
           Templates.extendTemplate(framework, plugin.templates[framework]);

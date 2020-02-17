@@ -2952,6 +2952,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webform.js~webform#options",
+    "class/src/Webform.js~Webform.html#instance-member-options",
+    "src/Webform.js~Webform#options",
+    "member"
+  ],
+  [
     "src/webform.js~webform#ready",
     "class/src/Webform.js~Webform.html#instance-get-ready",
     "src/Webform.js~Webform#ready",
@@ -14716,6 +14722,12 @@ window.esdocSearchIndex = [
     "file/src/utils/ChoicesWrapper.js.html",
     "src/utils/ChoicesWrapper.js",
     "file"
+  ],
+  [
+    "src/utils/choiceswrapper.js~choiceswrapper#_generateplaceholdervalue",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_generatePlaceholderValue",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_generatePlaceholderValue",
+    "method"
   ],
   [
     "src/utils/choiceswrapper.js~choiceswrapper#_handlebuttonaction",

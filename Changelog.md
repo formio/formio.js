@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.1
+### Changed
+ - Upgrade Choices.js to 9.0.1 and implemented duck punch to resolve 
+
+### Added
+ - Support for form modules.
+ 
+### Fixed
+ - Added validation after wizard page was changed
+
 ## 4.9.0-beta.5
 ### Added
  - `wizardPageSelected` event

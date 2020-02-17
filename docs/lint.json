@@ -4,31 +4,31 @@
     "filePath": "src/Form.js",
     "lines": [
       {
-        "lineNumber": 219,
+        "lineNumber": 223,
         "line": "  /**"
       },
       {
-        "lineNumber": 220,
+        "lineNumber": 224,
         "line": "   * Sanitize an html string."
       },
       {
-        "lineNumber": 221,
+        "lineNumber": 225,
         "line": "   *"
       },
       {
-        "lineNumber": 222,
+        "lineNumber": 226,
         "line": "   * @param string"
       },
       {
-        "lineNumber": 223,
+        "lineNumber": 227,
         "line": "   * @returns {*}"
       },
       {
-        "lineNumber": 224,
+        "lineNumber": 228,
         "line": "   */"
       },
       {
-        "lineNumber": 225,
+        "lineNumber": 229,
         "line": "  sanitize(dirty) {"
       }
     ],
@@ -44,27 +44,27 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 749,
+        "lineNumber": 773,
         "line": "  /**"
       },
       {
-        "lineNumber": 750,
+        "lineNumber": 774,
         "line": "   * Restores a draft submission based on the user who is authenticated."
       },
       {
-        "lineNumber": 751,
+        "lineNumber": 775,
         "line": "   *"
       },
       {
-        "lineNumber": 752,
+        "lineNumber": 776,
         "line": "   * @param {userId} - The user id where we need to restore the draft from."
       },
       {
-        "lineNumber": 753,
+        "lineNumber": 777,
         "line": "   */"
       },
       {
-        "lineNumber": 754,
+        "lineNumber": 778,
         "line": "  restoreDraft(userId) {"
       }
     ],
@@ -80,31 +80,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1059,
+        "lineNumber": 1083,
         "line": "  /**"
       },
       {
-        "lineNumber": 1060,
+        "lineNumber": 1084,
         "line": "   * Show the errors of this form within the alert dialog."
       },
       {
-        "lineNumber": 1061,
+        "lineNumber": 1085,
         "line": "   *"
       },
       {
-        "lineNumber": 1062,
+        "lineNumber": 1086,
         "line": "   * @param {Object} error - An optional additional error to display along with the component errors."
       },
       {
-        "lineNumber": 1063,
+        "lineNumber": 1087,
         "line": "   * @returns {*}"
       },
       {
-        "lineNumber": 1064,
+        "lineNumber": 1088,
         "line": "   */"
       },
       {
-        "lineNumber": 1065,
+        "lineNumber": 1089,
         "line": "  showErrors(error, triggerEvent) {"
       }
     ],
@@ -121,31 +121,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1203,
+        "lineNumber": 1227,
         "line": "  /**"
       },
       {
-        "lineNumber": 1204,
+        "lineNumber": 1228,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 1205,
+        "lineNumber": 1229,
         "line": "   *"
       },
       {
-        "lineNumber": 1206,
+        "lineNumber": 1230,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 1207,
+        "lineNumber": 1231,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1208,
+        "lineNumber": 1232,
         "line": "   */"
       },
       {
-        "lineNumber": 1209,
+        "lineNumber": 1233,
         "line": "  onChange(flags, changed, modified) {"
       }
     ],
@@ -164,87 +164,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1388,
+        "lineNumber": 1412,
         "line": "  /**"
       },
       {
-        "lineNumber": 1389,
+        "lineNumber": 1413,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1390,
+        "lineNumber": 1414,
         "line": "   *"
       },
       {
-        "lineNumber": 1391,
+        "lineNumber": 1415,
         "line": "   * @example"
       },
       {
-        "lineNumber": 1392,
+        "lineNumber": 1416,
         "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
-        "lineNumber": 1393,
+        "lineNumber": 1417,
         "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
-        "lineNumber": 1394,
+        "lineNumber": 1418,
         "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
-        "lineNumber": 1395,
+        "lineNumber": 1419,
         "line": "   * form.submission = {data: {"
       },
       {
-        "lineNumber": 1396,
+        "lineNumber": 1420,
         "line": "   *   firstName: 'Joe',"
       },
       {
-        "lineNumber": 1397,
+        "lineNumber": 1421,
         "line": "   *   lastName: 'Smith',"
       },
       {
-        "lineNumber": 1398,
+        "lineNumber": 1422,
         "line": "   *   email: 'joe@example.com'"
       },
       {
-        "lineNumber": 1399,
+        "lineNumber": 1423,
         "line": "   * }};"
       },
       {
-        "lineNumber": 1400,
+        "lineNumber": 1424,
         "line": "   * form.submit().then((submission) => {"
       },
       {
-        "lineNumber": 1401,
+        "lineNumber": 1425,
         "line": "   *   console.log(submission);"
       },
       {
-        "lineNumber": 1402,
+        "lineNumber": 1426,
         "line": "   * });"
       },
       {
-        "lineNumber": 1403,
+        "lineNumber": 1427,
         "line": "   *"
       },
       {
-        "lineNumber": 1404,
+        "lineNumber": 1428,
         "line": "   * @param {boolean} before - If this submission occured from the before handlers."
       },
       {
-        "lineNumber": 1405,
+        "lineNumber": 1429,
         "line": "   *"
       },
       {
-        "lineNumber": 1406,
+        "lineNumber": 1430,
         "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
-        "lineNumber": 1407,
+        "lineNumber": 1431,
         "line": "   */"
       },
       {
-        "lineNumber": 1408,
+        "lineNumber": 1432,
         "line": "  submit(before, options) {"
       }
     ],

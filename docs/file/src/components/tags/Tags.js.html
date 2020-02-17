@@ -241,6 +241,23 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Input from &apos;../_classes/input/Input&apos;;
 import Choices from &apos;choices.js/public/assets/scripts/choices.js&apos;;
 
+/**
+ * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.
+ *
+ * https://github.com/jshjohnson/Choices/pull/788
+ *
+ * @type {Choices._generatePlaceholderValue}
+ * @private
+ */
+const _generatePlaceholderValue = Choices.prototype._generatePlaceholderValue;
+Choices.prototype._generatePlaceholderValue = function() {
+  if (this._isSelectElement &amp;&amp; this.passedElement.placeholderOption) {
+    const { placeholderOption } = this.passedElement;
+    return placeholderOption ? placeholderOption.text : false;
+  }
+  return _generatePlaceholderValue.call(this);
+};
+
 export default class TagsComponent extends Input {
   static schema(...extend) {
     return Input.schema({
