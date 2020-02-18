@@ -12048,12 +12048,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/textarea/textarea.js~textareacomponent#checkaceplaceholder",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-checkAcePlaceholder",
-    "src/components/textarea/TextArea.js~TextAreaComponent#checkAcePlaceholder",
-    "method"
-  ],
-  [
     "src/components/textarea/textarea.js~textareacomponent#defaultschema",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-defaultSchema",
     "src/components/textarea/TextArea.js~TextAreaComponent#defaultSchema",

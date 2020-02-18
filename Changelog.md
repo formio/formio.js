@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-beta.7
+### Fixed
+ - Coliding placeholders in the ACE editor.
+ - Fixed updating revision property on component change
+ 
+### Added
+ - The nested data components to the Components index.
+
 ## 4.9.0-beta.6
 ### Changed
  - Upgrade Choices.js to 9.0.1 to resolve IE11 issues.
