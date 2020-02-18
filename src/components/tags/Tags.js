@@ -1,23 +1,6 @@
 import Input from '../_classes/input/Input';
 import Choices from 'choices.js/public/assets/scripts/choices.js';
 
-/**
- * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.
- *
- * https://github.com/jshjohnson/Choices/pull/788
- *
- * @type {Choices._generatePlaceholderValue}
- * @private
- */
-const _generatePlaceholderValue = Choices.prototype._generatePlaceholderValue;
-Choices.prototype._generatePlaceholderValue = function() {
-  if (this._isSelectElement && this.passedElement.placeholderOption) {
-    const { placeholderOption } = this.passedElement;
-    return placeholderOption ? placeholderOption.text : false;
-  }
-  return _generatePlaceholderValue.call(this);
-};
-
 export default class TagsComponent extends Input {
   static schema(...extend) {
     return Input.schema({

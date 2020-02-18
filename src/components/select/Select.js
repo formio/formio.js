@@ -768,7 +768,7 @@ export default class SelectComponent extends Field {
           threshold: _.get(this, 'component.searchThreshold', 0.3),
         }
       ),
-      itemComparer: _.isEqual,
+      valueComparer: _.isEqual,
       resetScrollPosition: false,
       ...customOptions,
     };
