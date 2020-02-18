@@ -13,7 +13,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.7/ace.js';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.8/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
