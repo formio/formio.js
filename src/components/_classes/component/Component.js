@@ -1810,7 +1810,7 @@ export default class Component extends Element {
   get wysiwygDefault() {
     return {
       theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
+      placeholder: this.component.editor === 'ace' ? '' : this.t(this.component.placeholder),
       modules: {
         toolbar: [
           [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
