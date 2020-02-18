@@ -14724,12 +14724,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/utils/choiceswrapper.js~choiceswrapper#_generateplaceholdervalue",
-    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_generatePlaceholderValue",
-    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_generatePlaceholderValue",
-    "method"
-  ],
-  [
     "src/utils/choiceswrapper.js~choiceswrapper#_handlebuttonaction",
     "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_handleButtonAction",
     "src/utils/ChoicesWrapper.js~ChoicesWrapper#_handleButtonAction",
