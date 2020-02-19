@@ -1,0 +1,15 @@
+<div class="formio-tagpad-container clearfix">
+  <div ref="canvasContainer" class="formio-tagpad-image-container" style="{ position: relative, z-index: 1 }">
+      <div ref="canvas" class="formio-tagpad-canvas" style="{ position: absolute, z-index: 2 }"></div>
+      <div ref="background" class="formio-tagpad-background">
+        {% if (!ctx.component.image && !ctx.component.imageUrl) { %}
+            Background image is not specified. Tagpad doesn\'t work without background image
+        {% } %}
+      </div>
+  </div>
+  <div ref="formContainer" class="formio-tagpad-form-container">
+      <div ref="form" class="formio-tagpad-form">
+        {{ctx.tagpadForm}}
+      </div>
+  </div>
+</div>
