@@ -217,7 +217,9 @@ export default class Wizard extends Webform {
         this.addEventListener(link, 'click', (event) => {
           this.emit('wizardNavigationClicked', this.pages[index]);
           event.preventDefault();
-          this.setPage(index);
+          return this.setPage(index).then(() => {
+            this.emit('wizardPageSelected', this.pages[index], index);
+          });
         });
       });
     }
@@ -305,7 +307,10 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw();
-      return NativePromise.resolve();
+      return NativePromise.resolve().then(() => {
+        this.checkValidity(this.submission.data, false, this.submission.data, true);
+        this.checkData(this.submission.data);
+      });
     }
     else if (this.wizard.full || !this.pages.length) {
       this.redraw();
@@ -558,12 +563,13 @@ export default class Wizard extends Webform {
     // If the pages change, need to redraw the header.
     const currentPanels = this.pages.map(page => page.component.key);
     const panels = this.establishPages().map(panel => panel.key);
+    const currentNextPage = this.currentNextPage;
     if (!_.isEqual(panels, currentPanels)) {
       this.redrawHeader();
     }
 
     // If the next page changes, then make sure to redraw navigation.
-    if (this.currentNextPage !== this.getNextPage()) {
+    if (currentNextPage !== this.getNextPage()) {
       this.redrawNavigation();
     }
   }

@@ -4,6 +4,54 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-beta.7
+### Fixed
+ - Coliding placeholders in the ACE editor.
+ - Fixed updating revision property on component change
+ - Moved some modal styles from form builder into form.
+ - File component to be more screenreader compatible.
+ 
+### Added
+ - The nested data components to the Components index.
+ 
+### Changed
+ - Upgraded autocompleter@6.0.2, i18next@19.2.0, sinon@9.0.0
+
+## 4.9.0-beta.6
+### Changed
+ - Upgrade Choices.js to 9.0.1 to resolve IE11 issues.
+
+### Added
+ - Support for form modules.
+ 
+### Fixed
+ - Added validation after wizard page was changed
+
+## 4.9.0-beta.5
+### Added
+ - `wizardPageSelected` event
+
+### Fixed
+ - Prevent keys duplicating when components with the same types which are their own namespaces nested inside each other
+ - Fixed presence of selected value in options when search result is empty in lazy-load select with search query name
+ - HTML view of DateTime components within an EditGrid.
+ - Documentation around select component search fields using regex.
+ - Wizard changing next page doesn't update buttons. See https://github.com/formio/formio.js/pull/2423
+ - Default value of selects are displaying IDs rather than the label
+ - Prevent creating submission for child form when it is hidden
+ - Trigger check conditions for added rows
+ - Fix clearOnHide while updating submission
+
+### Changed
+ - Using fetch to get PDF form so that it can be modified to include headers, etc.
+
+## 4.9.0-beta.4
+### Fixed
+ - Select URL not working correctly with `/project/...` URLs
+ - Fixed restoreValue to make multiple components delete the last value if the user want do so
+ - Fixed required error occurs for multiple components when the component is pristine
+ - Fixed issue where Logic would make a Text Field loses focus on each character input
+
 ## 4.9.0-beta.3
 ### Fixed
  - Added check for empty triggers to skip it

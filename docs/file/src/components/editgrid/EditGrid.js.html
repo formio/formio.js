@@ -511,7 +511,16 @@ export default class EditGridComponent extends NestedArrayComponent {
           flattenedComponents,
           getView: (component, data) =&gt; {
             const instance = flattenedComponents[component.key];
-            return instance ? instance.getView(data) : &apos;&apos;;
+            let view = instance ? instance.getView(data) : &apos;&apos;;
+            if (instance &amp;&amp; instance.widget &amp;&amp; view !== &apos;--- PROTECTED ---&apos; ) {
+              if (_.isArray(view)) {
+                view = view.map((value) =&gt; instance.widget.getValueAsString(value));
+              }
+              else {
+                view = instance.widget.getValueAsString(view);
+              }
+            }
+            return view;
           },
         },
       );

@@ -639,6 +639,30 @@ export default class Webform extends NestedDataComponent {
       this.options.components = form.settings.components;
     }
 
+    // See if they pass a module, and evaluate it if so.
+    if (form && form.module) {
+      let formModule = null;
+      if (typeof form.module === 'string') {
+        try {
+          formModule = this.evaluate(`return ${form.module}`);
+        }
+        catch (err) {
+          console.warn(err);
+        }
+      }
+      else {
+        formModule = form.module;
+      }
+      if (formModule) {
+        Formio.use(formModule);
+
+        // Since we got here after instantiation, we need to manually apply form options.
+        if (formModule.options && formModule.options.form) {
+          this.options = Object.assign(this.options, formModule.options.form);
+        }
+      }
+    }
+
     this.initialized = false;
     const rebuild = this.rebuild() || NativePromise.resolve();
     return rebuild.then(() => {
@@ -1269,6 +1293,11 @@ export default class Webform extends NestedDataComponent {
     super.onChange(flags, true);
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
+
+    if (modified && this.pristine) {
+      this.setPristine(false);
+    }
+
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
@@ -1277,10 +1306,6 @@ export default class Webform extends NestedDataComponent {
     // See if we need to save the draft of the form.
     if (modified && this.options.saveDraft) {
       this.triggerSaveDraft();
-    }
-
-    if (modified && this.pristine) {
-      this.pristine = false;
     }
 
     if (!flags || !flags.noEmit) {

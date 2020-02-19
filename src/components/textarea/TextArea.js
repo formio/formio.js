@@ -136,15 +136,9 @@ export default class TextAreaComponent extends TextFieldComponent {
           settings.mode = this.component.as;
           this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
             this.editors[index] = ace;
-            ace.on('change', () => this.checkAcePlaceholder(ace));
             let dataValue = this.dataValue;
             dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
             ace.setValue(this.setConvertedValue(dataValue, index));
-            if (this.component.placeholder) {
-              setTimeout(() => {
-                this.checkAcePlaceholder(ace);
-              }, 100);
-            }
             editorReady(ace);
             return ace;
           }).catch(err => console.warn(err));
@@ -228,22 +222,6 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
 
     return element;
-  }
-
-  checkAcePlaceholder(ace) {
-    const shouldShow = !ace.session.getValue().length;
-    let node = ace.renderer.emptyMessageNode;
-    if (!shouldShow && node) {
-      ace.renderer.scroller.removeChild(ace.renderer.emptyMessageNode);
-      ace.renderer.emptyMessageNode = null;
-    }
-    else if (shouldShow && !node) {
-      node = ace.renderer.emptyMessageNode = this.ce('div');
-      node.textContent = this.t(this.component.placeholder);
-      node.className = 'ace_invisible ace_emptyMessage';
-      node.style.padding = '0 9px';
-      ace.renderer.scroller.appendChild(node);
-    }
   }
 
   attach(element) {

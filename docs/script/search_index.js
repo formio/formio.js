@@ -2340,6 +2340,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/pdf.js~pdf#_iframesrc",
+    "class/src/PDF.js~PDF.html#instance-member-_iframeSrc",
+    "src/PDF.js~PDF#_iframeSrc",
+    "member"
+  ],
+  [
     "src/pdf.js~pdf#attach",
     "class/src/PDF.js~PDF.html#instance-method-attach",
     "src/PDF.js~PDF#attach",
@@ -2370,15 +2376,27 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/pdf.js~pdf#getsrc",
-    "class/src/PDF.js~PDF.html#instance-method-getSrc",
-    "src/PDF.js~PDF#getSrc",
+    "src/pdf.js~pdf#fetchpdf",
+    "class/src/PDF.js~PDF.html#instance-method-fetchPdf",
+    "src/PDF.js~PDF#fetchPdf",
+    "method"
+  ],
+  [
+    "src/pdf.js~pdf#getpdf",
+    "class/src/PDF.js~PDF.html#instance-method-getPdf",
+    "src/PDF.js~PDF#getPdf",
     "method"
   ],
   [
     "src/pdf.js~pdf#getsubmission",
     "class/src/PDF.js~PDF.html#instance-method-getSubmission",
     "src/PDF.js~PDF#getSubmission",
+    "method"
+  ],
+  [
+    "src/pdf.js~pdf#handlepdfsrc",
+    "class/src/PDF.js~PDF.html#instance-method-handlePdfSrc",
+    "src/PDF.js~PDF#handlePdfSrc",
     "method"
   ],
   [
@@ -2403,6 +2421,18 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#iframereadyresolve",
     "class/src/PDF.js~PDF.html#instance-member-iframeReadyResolve",
     "src/PDF.js~PDF#iframeReadyResolve",
+    "member"
+  ],
+  [
+    "src/pdf.js~pdf#iframesrc",
+    "class/src/PDF.js~PDF.html#instance-get-iframeSrc",
+    "src/PDF.js~PDF#iframeSrc",
+    "member"
+  ],
+  [
+    "src/pdf.js~pdf#iframesrc",
+    "class/src/PDF.js~PDF.html#instance-set-iframeSrc",
+    "src/PDF.js~PDF#iframeSrc",
     "member"
   ],
   [
@@ -2922,9 +2952,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/webform.js~webform#pristine",
-    "class/src/Webform.js~Webform.html#instance-member-pristine",
-    "src/Webform.js~Webform#pristine",
+    "src/webform.js~webform#options",
+    "class/src/Webform.js~Webform.html#instance-member-options",
+    "src/Webform.js~Webform#options",
     "member"
   ],
   [
@@ -8106,6 +8136,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#widget",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-widget",
+    "src/components/datetime/DateTime.js~DateTimeComponent#widget",
+    "member"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent.builderinfo",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-builderInfo",
     "src/components/datetime/DateTime.js~DateTimeComponent.builderInfo",
@@ -10854,6 +10890,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#isinitapicallneeded",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-isInitApiCallNeeded",
+    "src/components/select/Select.js~SelectComponent#isInitApiCallNeeded",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#isscrollloading",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-isScrollLoading",
     "src/components/select/Select.js~SelectComponent#isScrollLoading",
@@ -12004,12 +12046,6 @@ window.esdocSearchIndex = [
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-autoModified",
     "src/components/textarea/TextArea.js~TextAreaComponent#autoModified",
     "member"
-  ],
-  [
-    "src/components/textarea/textarea.js~textareacomponent#checkaceplaceholder",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-checkAcePlaceholder",
-    "src/components/textarea/TextArea.js~TextAreaComponent#checkAcePlaceholder",
-    "method"
   ],
   [
     "src/components/textarea/textarea.js~textareacomponent#defaultschema",
