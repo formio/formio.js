@@ -8,9 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Coliding placeholders in the ACE editor.
  - Fixed updating revision property on component change
+ - Moved some modal styles from form builder into form.
+ - File component to be more screenreader compatible.
  
 ### Added
  - The nested data components to the Components index.
+ 
+### Changed
+ - Upgraded autocompleter@6.0.2, i18next@19.2.0, sinon@9.0.0
 
 ## 4.9.0-beta.6
 ### Changed
