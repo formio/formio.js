@@ -776,6 +776,9 @@ export default class SelectComponent extends Field {
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
+    if (this.choices) {
+      this.choices.destroy();
+    }
     this.choices = new Choices(input, choicesOptions);
 
     this.addEventListener(input, 'hideDropdown', () => {
@@ -1272,7 +1275,6 @@ export default class SelectComponent extends Field {
   detach() {
     super.detach();
     if (this.choices) {
-      this.choices.destroyed = true;
       this.choices.destroy();
       this.choices = null;
     }
