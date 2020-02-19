@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-beta.8
+### Fixed
+ - Crashes in the choices.js library due to not destroying it properly when creating new instances.
+ - Fixed file types select in file component
+
 ## 4.9.0-beta.7
 ### Fixed
  - Coliding placeholders in the ACE editor.
