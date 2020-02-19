@@ -26,14 +26,17 @@
             {% } %}
           </div>
           <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
-          {% if (ctx.self.hasTypes) { %}
+          {% if (ctx.self.hasTypes && !ctx.disabled) { %}
             <div class="col-md-2">
-              <select class="file-type">
+              <select class="file-type" ref="fileType">
                 {% ctx.component.fileTypes.map(function(type) { %}
-                  <option class="test" value="{{ type.value }}" {% if (type.value === file.fileType) { %}selected="selected"{% } %}>{{ type.label }}</option>
+                  <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ type.label }}</option>
                 {% }); %}
               </select>
             </div>
+          {% } %}
+          {% if (ctx.self.hasTypes && ctx.disabled) { %}
+          <div class="col-md-2">{{file.fileType}}</div>
           {% } %}
         </div>
       </li>
