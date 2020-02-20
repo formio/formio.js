@@ -292,6 +292,9 @@ export default class Formio {
     this.projectsUrl = &apos;&apos;;
     this.projectUrl = &apos;&apos;;
     this.projectId = &apos;&apos;;
+    this.roleUrl = &apos;&apos;;
+    this.rolesUrl = &apos;&apos;;
+    this.roleId = &apos;&apos;;
     this.formUrl = &apos;&apos;;
     this.formsUrl = &apos;&apos;;
     this.formId = &apos;&apos;;
@@ -420,8 +423,11 @@ export default class Formio {
       this.projectsUrl = this.projectsUrl || `${this.base}/project`;
     }
 
+    // Configure Role urls and role ids.
+    registerItems([&apos;role&apos;], this.projectUrl);
+
     // Configure Form urls and form ids.
-    if ((path.search(/(^|\/)(form)($|\/)/) !== -1)) {
+    if (/(^|\/)(form)($|\/)/.test(path)) {
       registerItems([&apos;form&apos;, [&apos;submission&apos;, &apos;action&apos;, &apos;v&apos;]], this.projectUrl);
     }
     else {
@@ -524,6 +530,22 @@ export default class Formio {
       query = `?${Formio.serialize(query.params)}`;
     }
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, &apos;GET&apos;, null, opts);
+  }
+
+  loadRole(opts) {
+    return this.load(&apos;role&apos;, null, opts);
+  }
+
+  saveRole(data, opts) {
+    return this.save(&apos;role&apos;, data, opts);
+  }
+
+  deleteRole(opts) {
+    return this.delete(&apos;role&apos;, opts);
+  }
+
+  loadRoles(opts) {
+    return this.index(&apos;roles&apos;, null, opts);
   }
 
   loadForm(query, opts) {
@@ -1415,6 +1437,11 @@ export default class Formio {
   static accessInfo(formio) {
     const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
     return Formio.makeRequest(formio, &apos;accessInfo&apos;, `${projectUrl}/access`);
+  }
+
+  static projectRoles(formio) {
+    const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+    return Formio.makeRequest(formio, &apos;projectRoles&apos;, `${projectUrl}/role`);
   }
 
   static currentUser(formio, options) {
