@@ -105,6 +105,14 @@ export default [
   {
     type: 'checkbox',
     input: true,
+    weight: 1100,
+    key: 'calculateServer',
+    label: 'Calculate Value on server',
+    tooltip: 'Checking this will run the calculation on the server. This is useful if you wish to override the values submitted with the calculations performed on the server.'
+  },
+  {
+    type: 'checkbox',
+    input: true,
     weight: 1200,
     key: 'allowCalculateOverride',
     label: 'Allow Manual Override of Calculated Value',

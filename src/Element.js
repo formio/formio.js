@@ -497,6 +497,9 @@ export default class Element {
       moment,
       instance: this,
       self: this,
+      token: Formio.getToken({
+        decode: true
+      }),
       config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
     }, additional, _.get(this.root, 'options.evalContext', {}));
   }
