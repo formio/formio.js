@@ -107,9 +107,9 @@ export default class TagpadComponent extends NestedComponent {
   }
 
   addBackground() {
-    if (this.refs.image) {
+    if (this.refs.image && this.refs.image.complete) {
+      this.setBackgroundImage();
       return;
-      // this.setBackgroundImage(this.component.image);
     }
     else if (this.component.imageUrl) {
       Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true, headers: {} })
@@ -124,6 +124,26 @@ export default class TagpadComponent extends NestedComponent {
     }
   }
 
+  mapDimensionsFromAttributes(svg) {
+    return [
+        { attribute: 'x', defaultValue: 0 },
+        { attribute: 'y', defaultValue: 0 },
+        { attribute: 'width', defaultValue: 640 },
+        { attribute: 'height', defaultValue: 480 }
+      ].map(dimension => {
+        return parseFloat(svg.getAttribute(dimension.attribute)) || dimension.defaultValue;
+      });
+  }
+
+  setDimensions(viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight) {
+    this.dimensions = {
+      width: viewBoxWidth,
+      height: viewBoxHeight,
+      minX: viewBoxMinX,
+      minY: viewBoxMinY
+    };
+  }
+
   setSvgImage(svgMarkup) {
     const xmlDoc = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml');
     let backgroundSvg = xmlDoc.getElementsByTagName('svg');
@@ -134,28 +154,14 @@ export default class TagpadComponent extends NestedComponent {
     backgroundSvg = backgroundSvg[0];
     //read initial dimensions from viewBox
     const initialViewBox = backgroundSvg.getAttribute('viewBox');
-    let viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight;
+
     if (initialViewBox) {
-      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = initialViewBox.split(' ').map(parseFloat);
+      this.setDimensions(...initialViewBox.split(' ').map(parseFloat));
     }
     else {
-      //if viewBox is not defined, use 'x', 'y', 'width' and 'height' SVG attributes (or 0, 0, 640, 480 relatively if any is not defined)
-      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = [
-        { attribute: 'x', defaultValue: 0 },
-        { attribute: 'y', defaultValue: 0 },
-        { attribute: 'width', defaultValue: 640 },
-        { attribute: 'height', defaultValue: 480 }
-      ].map(dimension => {
-        return parseFloat(backgroundSvg.getAttribute(dimension.attribute)) || dimension.defaultValue;
-      });
+      this.setDimensions(...this.mapDimensionsFromAttributes(backgroundSvg));
     }
-    //set initial dimensions to width and height from viewBox of background svg
-    this.dimensions = {
-      width: viewBoxWidth,
-      height: viewBoxHeight,
-      minX: viewBoxMinX,
-      minY: viewBoxMinY
-    };
+
     //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
     backgroundSvg.removeAttribute('width');
     backgroundSvg.removeAttribute('height');
@@ -176,24 +182,17 @@ export default class TagpadComponent extends NestedComponent {
   }
 
   setBackgroundImage(image) {
-    if (image.startsWith('<?xml')) {
+    if (image && image.startsWith('<?xml')) {
       this.imageType = 'svg';
       this.setSvgImage(image);
     }
     else {
       this.imageType = 'image';
-      const img = this.ce('img', { src: this.component.imageUrl, width: '100%' });
-      this.refs.background.appendChild(img);
-      const viewBoxWidth = this.refs.background.offsetWidth;
-      const viewBoxHeight = this.refs.background.offsetHeight;
+      const viewBoxWidth = this.refs.image.width;
+        const viewBoxHeight = this.refs.image.height;
 
-      this.canvasSvg.setAttribute('viewBox', `0 0 ${this.refs.background.offsetWidth} ${this.refs.background.offsetHeight}`);
-      this.dimensions = {
-        width: viewBoxWidth,
-        height: viewBoxHeight,
-        minX: 0,
-        minY: 0
-      };
+        this.canvasSvg.setAttribute('viewBox', `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
+        this.setDimensions( 0, 0, viewBoxWidth, viewBoxHeight);
     }
 
     this.stretchDrawingArea();
@@ -332,23 +331,36 @@ export default class TagpadComponent extends NestedComponent {
   }
 
   attach(element) {
-    this.loadRefs(element, { canvas: 'single', background: 'single', form: 'single', canvasImage: 'single' });
+    this.loadRefs(element, { canvas: 'single', background: 'single', form: 'single', canvasImage: 'single', image: 'single' });
     const superAttach = super.attach(element);
 
     if (this.refs.background && this.hasBackgroundImage) {
-      this.addBackground();
-      this.two = new Two({
-        type: Two.Types.svg,
-        width: '100%',
-        height: '100%'
-      }).appendTo(this.refs.canvas);
-      this.canvasSvg = this.two.renderer.domElement;
-      this.canvasSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
-      this.attachDrawEvents();
+      this.createDrawingArea();
+
+      if (this.refs.image) {
+        this.refs.image.addEventListener('load', e => {
+          this.setDimensions(0, 0, e.target.width, e.target.height);
+          this.stretchDrawingArea();
+        });
+      }
     }
 
     return superAttach;
+  }
+
+  createDrawingArea() {
+    this.two = new Two({
+      type: Two.Types.svg,
+      width: '100%',
+      height: '100%'
+    }).appendTo(this.refs.canvas);
+
+    this.canvasSvg = this.two.renderer.domElement;
+    this.canvasSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+    this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
+    this.attachDrawEvents();
+    this.addBackground();
   }
 
   stretchDrawingArea() {

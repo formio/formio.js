@@ -4,6 +4,9 @@
         {% if (!ctx.component.image && !ctx.component.imageUrl) { %}
             Background image is not specified. Tagpad doesn\'t work without background image
         {% } %}
+        {% if (ctx.component.imageUrl && !(ctx.component.imageType === 'svg')) { %}
+            <img src={{ctx.component.imageUrl}} ref="image" alt="" width="100%"/>
+        {% } %}
       </div>
       <div ref="canvas" class="formio-tagpad-canvas"></div>
   </div>
