@@ -1201,7 +1201,7 @@ export default class Formio {
 
   static projectRoles(formio) {
     const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
-    return Formio.makeRequest(formio, 'roles', `${projectUrl}/role`);
+    return Formio.makeRequest(formio, 'projectRoles', `${projectUrl}/role`);
   }
 
   static currentUser(formio, options) {
