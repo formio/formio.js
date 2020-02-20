@@ -1,4 +1,7 @@
 /* global $ */
+/**
+ * @module FormioUtils
+ */
 
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
@@ -40,6 +43,7 @@ export { jsonLogic, moment };
 /**
  * Evaluate a method.
  *
+ * @memberof FormioUtils
  * @param func
  * @param args
  * @return {*}
@@ -108,6 +112,12 @@ export function evaluate(func, args, ret, tokenize) {
   return returnVal;
 }
 
+/**
+ * Returns a random component ID.
+ *
+ * @memberof FormioUtils
+ * @return {string}
+ */
 export function getRandomComponentId() {
   return `e${Math.random().toString(36).substring(7)}`;
 }
@@ -115,6 +125,7 @@ export function getRandomComponentId() {
 /**
  * Get a property value of an element.
  *
+ * @memberof FormioUtils
  * @param style
  * @param prop
  * @return {number}
@@ -128,6 +139,7 @@ export function getPropertyValue(style, prop) {
 /**
  * Get an elements bounding rectagle.
  *
+ * @memberof FormioUtils
  * @param element
  * @return {{x: string, y: string, width: string, height: string}}
  */
@@ -144,6 +156,7 @@ export function getElementRect(element) {
 /**
  * Determines the boolean value of a setting.
  *
+ * @memberof FormioUtils
  * @param value
  * @return {boolean}
  */
@@ -161,6 +174,8 @@ export function boolValue(value) {
 
 /**
  * Check to see if an ID is a mongoID.
+ *
+ * @memberof FormioUtils
  * @param text
  * @return {Array|{index: number, input: string}|Boolean|*}
  */
@@ -171,6 +186,7 @@ export function isMongoId(text) {
 /**
  * Checks the calculated value for a provided component and data.
  *
+ * @memberof FormioUtils
  * @param {Object} component
  *   The component to check for the calculated value.
  * @param {Object} submission
@@ -194,6 +210,7 @@ export function checkCalculated(component, submission, rowData) {
 /**
  * Check if a simple conditional evaluates to true.
  *
+ * @memberof FormioUtils
  * @param condition
  * @param condition
  * @param row
@@ -231,6 +248,7 @@ export function checkSimpleConditional(component, condition, row, data) {
 /**
  * Check custom javascript conditional.
  *
+ * @memberof FormioUtils
  * @param component
  * @param custom
  * @param row
@@ -268,6 +286,7 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
 /**
  * Checks the conditions for a provided component and data.
  *
+ * @memberof FormioUtils
  * @param component
  *   The component to check for the condition.
  * @param row
@@ -295,6 +314,7 @@ export function checkCondition(component, row, data, form, instance) {
 /**
  * Test a trigger on a component.
  *
+ * @memberof FormioUtils
  * @param component
  * @param action
  * @param data
@@ -359,6 +379,8 @@ export function setActionProperty(component, action, result, row, data, instance
 
 /**
  * Make a filename guaranteed to be unique.
+ *
+ * @memberof FormioUtils
  * @param name
  * @param template
  * @param evalContext
@@ -386,6 +408,12 @@ export function uniqueName(name, template, evalContext) {
   return uniqueName;
 }
 
+/**
+ * Generates a GUID.
+ *
+ * @memberof FormioUtils
+ * @return {string}
+ */
 export function guid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = Math.random()*16|0;
@@ -399,6 +427,7 @@ export function guid() {
 /**
  * Return a translated date setting.
  *
+ * @memberof FormioUtils
  * @param date
  * @return {(null|Date)}
  */
@@ -455,6 +484,7 @@ export function isValidDate(date) {
 /**
  * Get the current timezone string.
  *
+ * @memberof FormioUtils
  * @return {string}
  */
 export function currentTimezone() {
@@ -468,6 +498,7 @@ export function currentTimezone() {
 /**
  * Get an offset date provided a date object and timezone object.
  *
+ * @memberof FormioUtils
  * @param date
  * @param timezone
  * @return {Date}
@@ -489,6 +520,7 @@ export function offsetDate(date, timezone) {
 /**
  * Returns if the zones are loaded.
  *
+ * @memberof FormioUtils
  * @return {boolean}
  */
 export function zonesLoaded() {
@@ -498,6 +530,7 @@ export function zonesLoaded() {
 /**
  * Returns if we should load the zones.
  *
+ * @memberof FormioUtils
  * @param timezone
  * @return {boolean}
  */
@@ -511,6 +544,7 @@ export function shouldLoadZones(timezone) {
 /**
  * Externally load the timezone data.
  *
+ * @memberof FormioUtils
  * @return {Promise<any> | *}
  */
 export function loadZones(timezone) {
@@ -540,6 +574,7 @@ export function loadZones(timezone) {
 /**
  * Get the moment date object for translating dates with timezones.
  *
+ * @memberof FormioUtils
  * @param value
  * @param format
  * @param timezone
@@ -559,6 +594,7 @@ export function momentDate(value, format, timezone) {
 /**
  * Format a date provided a value, format, and timezone object.
  *
+ * @memberof FormioUtils
  * @param value
  * @param format
  * @param timezone
@@ -599,6 +635,7 @@ export function formatDate(value, format, timezone) {
 /**
  * Pass a format function to format within a timezone.
  *
+ * @memberof FormioUtils
  * @param formatFn
  * @param date
  * @param format
@@ -638,6 +675,8 @@ export function getLocaleDateFormatInfo(locale) {
 
 /**
  * Convert the format from the angular-datepicker module to flatpickr format.
+ *
+ * @memberof FormioUtils
  * @param format
  * @return {string}
  */
@@ -675,6 +714,8 @@ export function convertFormatToFlatpickr(format) {
 
 /**
  * Convert the format from the angular-datepicker module to moment format.
+ *
+ * @memberof FormioUtils
  * @param format
  * @return {string}
  */
@@ -708,6 +749,8 @@ export function convertFormatToMask(format) {
 
 /**
  * Returns an input mask that is compatible with the input mask library.
+ *
+ * @memberof FormioUtils
  * @param {string} mask - The Form.io input mask.
  * @returns {Array} - The input mask for the mask library.
  */
@@ -826,6 +869,7 @@ export function getCurrencyAffixes({
 /**
  * Fetch the field data provided a component.
  *
+ * @memberof FormioUtils
  * @param data
  * @param component
  * @return {*}
@@ -876,6 +920,7 @@ export function fieldData(data, component) {
 /**
  * Delays function execution with possibility to execute function synchronously or cancel it.
  *
+ * @memberof FormioUtils
  * @param fn Function to delay
  * @param delay Delay time
  * @return {*}
@@ -901,6 +946,7 @@ export function delay(fn, delay = 0, ...args) {
 /**
  * Iterate the given key to make it unique.
  *
+ * @memberof FormioUtils
  * @param {String} key
  *   Modify the component key to be unique.
  *
@@ -920,6 +966,7 @@ export function iterateKey(key) {
 /**
  * Determines a unique key within a map provided the base key.
  *
+ * @memberof FormioUtils
  * @param map
  * @param base
  * @return {*}
@@ -935,6 +982,7 @@ export function uniqueKey(map, base) {
 /**
  * Determines the major version number of bootstrap.
  *
+ * @memberof FormioUtils
  * @return {number}
  */
 export function bootstrapVersion(options) {
@@ -950,8 +998,9 @@ export function bootstrapVersion(options) {
 /**
  * Retrun provided argument.
  * If argument is a function, returns the result of a function call.
- * @param {*} e;
  *
+ * @memberof FormioUtils
+ * @param {*} e;
  * @return {*}
  */
 export function unfold(e) {
@@ -964,8 +1013,9 @@ export function unfold(e) {
 
 /**
  * Map values through unfold and return first non-nil value.
- * @param {Array<T>} collection;
  *
+ * @memberof FormioUtils
+ * @param {Array<T>} collection;
  * @return {T}
  */
 export const firstNonNil = _.flow([
@@ -976,6 +1026,8 @@ export const firstNonNil = _.flow([
 /*
  * Create enclosed state.
  * Returns functions to getting and cycling between states.
+ *
+ * @memberof FormioUtils
  * @param {*} a - initial state.
  * @param {*} b - next state.
  * @return {Functions[]} -- [get, toggle];
@@ -1040,6 +1092,7 @@ export function getContextComponents(context) {
 /**
  * Sanitize an html string.
  *
+ * @memberof FormioUtils
  * @param string
  * @returns {*}
  */
@@ -1076,6 +1129,8 @@ export function sanitize(string, options) {
 
 /**
  * Fast cloneDeep for JSON objects only.
+ *
+ * @memberof FormioUtils
  */
 export function fastCloneDeep(obj) {
   return obj ? JSON.parse(JSON.stringify(obj)) : obj;

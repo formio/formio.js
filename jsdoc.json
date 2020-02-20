@@ -1,0 +1,30 @@
+{
+    "plugins": ["plugins/markdown"],
+    "recurseDepth": 10,
+    "source": {
+        "include": [
+          "README.md",
+          "src/Formio.js",
+          "src/Form.js"
+        ],
+        "includePattern": ".js$",
+        "excludePattern": "(node_modules/|docs)"
+    },
+    "sourceType": "module",
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "referenceTitle": "Form.io SDK",
+        "disableSort": false,
+        "collapse": false,
+        "cleverLinks": false,
+        "monospaceLinks": false
+    },
+    "opts": {
+        "template": "node_modules/jsdoc-template",
+        "destination": "./docs/",
+        "recurse": true
+    }
+}

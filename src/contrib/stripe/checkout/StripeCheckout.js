@@ -3,6 +3,9 @@ import _ from 'lodash';
 import ButtonComponent from '../../../components/button/Button';
 import Formio from '../../../Formio';
 
+/**
+ * Provides a stripe checkout experience.
+ */
 export default class StripeCheckoutComponent extends ButtonComponent {
   constructor(component, options, data) {
     super(component, options, data);

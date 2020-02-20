@@ -33,7 +33,7 @@ function buildResponse(message, result) {
  *
  * @param {moment} value
  *   The value to check.
- * @param {[String]} format
+ * @param {String} format
  *   A moment formats.
  * @param {Date} maxDate
  *   The max date.
@@ -74,7 +74,7 @@ export function lessOrGreater(value, format, maxDate, minDate) {
  *
  * @param {String} value
  *   The value to check.
- * @param {[String]} format
+ * @param {String} format
  *   A moment formats.
  * @param {Date} maxDate
  *   The max date.

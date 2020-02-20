@@ -17,8 +17,9 @@ const ACE_URL = 'https://cdn.form.io/ace/1.4.8/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
- * This is the Component class
- which all elements within the FormioForm derive from.
+ * This is the Component class which all elements within the FormioForm derive from.
+ *
+ * @constructor
  */
 export default class Component extends Element {
   static schema(...sources) {

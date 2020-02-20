@@ -5,10 +5,19 @@ import templates from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
 
-export default class Form extends Element {
+/**
+ * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
+ *
+ * #### Example
+ * ```js
+ * import Form from 'formiojs/Form';
+ * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
+ * form.build();
+ * ```
+ */
+class Form extends Element {
   /**
-   * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
-   *
+   * @constructor
    * @param {Object} element - The DOM element you wish to render this form within.
    * @param {Object | string} form - Either a Form JSON schema or the URL of a hosted form via. form.io.
    * @param {Object} options - The options to create a new form instance.
@@ -309,3 +318,4 @@ Formio.createForm = (...args) => {
 };
 
 Formio.Form = Form;
+export default Form;

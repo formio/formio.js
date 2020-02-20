@@ -1,4 +1,96 @@
-/* globals OktaAuth */
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      Formio.js - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      Form.io SDK
+    </h3>
+
+    
+
+    <h3>Classes</h3><ul><li id="Form-nav"><a href="Form.html">Form</a><ul class='methods'><li data-type="method" id="Form-build-nav"><a href="Form.html#build">build</a></li><li data-type="method" id="Form-create-nav"><a href="Form.html#create">create</a></li><li data-type="method" id="Form-sanitize-nav"><a href="Form.html#sanitize">sanitize</a></li><li data-type="method" id="Form-setDisplay-nav"><a href="Form.html#setDisplay">setDisplay</a></li></ul></li><li id="Formio-nav"><a href="Formio.html">Formio</a><ul class='methods'><li data-type="method" id="Formio-createForm-nav"><a href="Formio.html#.createForm">createForm</a></li><li data-type="method" id="Formio-loadProjects-nav"><a href="Formio.html#.loadProjects">loadProjects</a></li><li data-type="method" id="Formio-makeRequest-nav"><a href="Formio.html#.makeRequest">makeRequest</a></li><li data-type="method" id="Formio-request-nav"><a href="Formio.html#.request">request</a></li><li data-type="method" id="Formio-accessInfo-nav"><a href="Formio.html#accessInfo">accessInfo</a></li><li data-type="method" id="Formio-actionInfo-nav"><a href="Formio.html#actionInfo">actionInfo</a></li><li data-type="method" id="Formio-availableActions-nav"><a href="Formio.html#availableActions">availableActions</a></li><li data-type="method" id="Formio-canSubmit-nav"><a href="Formio.html#canSubmit">canSubmit</a></li><li data-type="method" id="Formio-currentUser-nav"><a href="Formio.html#currentUser">currentUser</a></li><li data-type="method" id="Formio-delete-nav"><a href="Formio.html#delete">delete</a></li><li data-type="method" id="Formio-deleteAction-nav"><a href="Formio.html#deleteAction">deleteAction</a></li><li data-type="method" id="Formio-deleteForm-nav"><a href="Formio.html#deleteForm">deleteForm</a></li><li data-type="method" id="Formio-deleteProject-nav"><a href="Formio.html#deleteProject">deleteProject</a></li><li data-type="method" id="Formio-deleteSubmission-nav"><a href="Formio.html#deleteSubmission">deleteSubmission</a></li><li data-type="method" id="Formio-getDownloadUrl-nav"><a href="Formio.html#getDownloadUrl">getDownloadUrl</a></li><li data-type="method" id="Formio-getFormId-nav"><a href="Formio.html#getFormId">getFormId</a></li><li data-type="method" id="Formio-getProjectId-nav"><a href="Formio.html#getProjectId">getProjectId</a></li><li data-type="method" id="Formio-getTempToken-nav"><a href="Formio.html#getTempToken">getTempToken</a></li><li data-type="method" id="Formio-getToken-nav"><a href="Formio.html#getToken">getToken</a></li><li data-type="method" id="Formio-index-nav"><a href="Formio.html#index">index</a></li><li data-type="method" id="Formio-isObjectId-nav"><a href="Formio.html#isObjectId">isObjectId</a></li><li data-type="method" id="Formio-load-nav"><a href="Formio.html#load">load</a></li><li data-type="method" id="Formio-loadAction-nav"><a href="Formio.html#loadAction">loadAction</a></li><li data-type="method" id="Formio-loadActions-nav"><a href="Formio.html#loadActions">loadActions</a></li><li data-type="method" id="Formio-loadForm-nav"><a href="Formio.html#loadForm">loadForm</a></li><li data-type="method" id="Formio-loadForms-nav"><a href="Formio.html#loadForms">loadForms</a></li><li data-type="method" id="Formio-loadProject-nav"><a href="Formio.html#loadProject">loadProject</a></li><li data-type="method" id="Formio-loadSubmission-nav"><a href="Formio.html#loadSubmission">loadSubmission</a></li><li data-type="method" id="Formio-loadSubmissions-nav"><a href="Formio.html#loadSubmissions">loadSubmissions</a></li><li data-type="method" id="Formio-makeRequest-nav"><a href="Formio.html#makeRequest">makeRequest</a></li><li data-type="method" id="Formio-save-nav"><a href="Formio.html#save">save</a></li><li data-type="method" id="Formio-saveAction-nav"><a href="Formio.html#saveAction">saveAction</a></li><li data-type="method" id="Formio-saveForm-nav"><a href="Formio.html#saveForm">saveForm</a></li><li data-type="method" id="Formio-saveProject-nav"><a href="Formio.html#saveProject">saveProject</a></li><li data-type="method" id="Formio-saveSubmission-nav"><a href="Formio.html#saveSubmission">saveSubmission</a></li><li data-type="method" id="Formio-setToken-nav"><a href="Formio.html#setToken">setToken</a></li><li data-type="method" id="Formio-uploadFile-nav"><a href="Formio.html#uploadFile">uploadFile</a></li><li data-type="method" id="Formio-userPermissions-nav"><a href="Formio.html#userPermissions">userPermissions</a></li></ul></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        Formio.js
+      </h1>
+    
+
+    
+      
+
+<section>
+  <article>
+    <pre class="prettyprint source linenums"><code>/* globals OktaAuth */
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
@@ -20,7 +112,7 @@ const { fetch, Headers } = fetchPonyfill({
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
-const isObject = (val) => val && typeof val === 'object';
+const isObject = (val) => val &amp;&amp; typeof val === 'object';
 
 function cloneResponse(response) {
   const copy = _cloneDeep(response);
@@ -113,13 +205,13 @@ class Formio {
 
     // The baseURL is the same as the projectUrl, and does not contain "/project/MONGO_ID" in
     // its domain. This is almost certainly against the Open Source server.
-    if (project && this.base === project && !isProjectUrl) {
+    if (project &amp;&amp; this.base === project &amp;&amp; !isProjectUrl) {
       this.noProject = true;
       this.projectUrl = this.base;
     }
 
     // Normalize to an absolute path.
-    if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {
+    if ((path.indexOf('http') !== 0) &amp;&amp; (path.indexOf('//') !== 0)) {
       path = this.base + path;
     }
 
@@ -175,7 +267,7 @@ class Formio {
       }
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
-        if (hostparts.length > 3 && path.split('/').length > 1) {
+        if (hostparts.length > 3 &amp;&amp; path.split('/').length > 1) {
           const pathParts = path.split('/');
           pathParts.shift(); // Throw away the first /.
           this.projectId = pathParts.shift();
@@ -185,7 +277,7 @@ class Formio {
       }
       else {
         // Get project id from subdomain.
-        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.includes('localhost'))) {
+        if (hostparts.length > 2 &amp;&amp; (hostparts[2].split('.').length > 2 || hostName.includes('localhost'))) {
           this.projectUrl = hostName;
           this.projectId = hostparts[2].split('.')[0];
         }
@@ -200,7 +292,7 @@ class Formio {
     else {
       const subRegEx = new RegExp('/(submission|action|v)($|/.*)');
       const subs = path.match(subRegEx);
-      this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';
+      this.pathType = (subs &amp;&amp; (subs.length > 1)) ? subs[1] : '';
       path = path.replace(subRegEx, '');
       path = path.replace(/\/$/, '');
       this.formsUrl = `${this.projectUrl}/form`;
@@ -211,7 +303,7 @@ class Formio {
         if (items.hasOwnProperty(i)) {
           const item = items[i];
           this[`${item}sUrl`] = `${this.projectUrl + path}/${item}`;
-          if ((this.pathType === item) && (subs.length > 2) && subs[2]) {
+          if ((this.pathType === item) &amp;&amp; (subs.length > 2) &amp;&amp; subs[2]) {
             this[`${item}Id`] = subs[2].replace(/^\/+|\/+$/g, '');
             this[`${item}Url`] = this.projectUrl + path + subs[0];
           }
@@ -231,7 +323,7 @@ class Formio {
    *
    * @param {string} type - The type of resource to delete. "submission", "form", etc.
    * @param {object} options - The options passed to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   delete(type, opts) {
     const _id = `${type}Id`;
@@ -250,12 +342,12 @@ class Formio {
    * @param {object} query - A query object to pass to the request.
    * @param {object} query.params - A map (key-value pairs) of URL query parameters to add to the url.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   index(type, query, opts) {
     const _url = `${type}Url`;
     query = query || '';
-    if (query && isObject(query)) {
+    if (query &amp;&amp; isObject(query)) {
       query = `?${Formio.serialize(query.params)}`;
     }
     return this.makeRequest(type, this[_url] + query, 'get', null, opts);
@@ -268,14 +360,14 @@ class Formio {
    * @param {string} type - The type of resource to fetch the index of. "submission", "form", etc.
    * @param {object} data - The resource data object.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<object>}
+   * @return {Promise&lt;object>}
    */
   save(type, data, opts) {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     const method = (this[_id] || data._id) ? 'put' : 'post';
     let reqUrl = this[_id] ? this[_url] : this[`${type}sUrl`];
-    if (!this[_id] && data._id && (method === 'put') && !reqUrl.includes(data._id)) {
+    if (!this[_id] &amp;&amp; data._id &amp;&amp; (method === 'put') &amp;&amp; !reqUrl.includes(data._id)) {
       reqUrl += `/${data._id}`;
     }
     Formio.cache = {};
@@ -289,16 +381,16 @@ class Formio {
    * @param {object} query - A query object to pass to the request.
    * @param {object} query.params - A map (key-value pairs) of URL query parameters to add to the url.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<object>}
+   * @return {Promise&lt;object>}
    */
   load(type, query, opts) {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
-    if (query && isObject(query)) {
+    if (query &amp;&amp; isObject(query)) {
       query = Formio.serialize(query.params);
     }
     if (query) {
-      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
+      query = this.query ? (`${this.query}&amp;${query}`) : (`?${query}`);
     }
     else {
       query = this.query;
@@ -322,7 +414,7 @@ class Formio {
    * @param {boolean} options.noToken - If set to true, this will not include the Form.io x-jwt-token along with the request.
    * @param {string} options.namespace - The Form.io namespace to prepend to all LocalStorage variables such as formioToken.
    * @param {boolean} options.getHeaders - Set this if you wish to include the response headers with the return of this method.
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   makeRequest(...args) {
     return Formio.makeRequest(this, ...args);
@@ -341,7 +433,7 @@ class Formio {
    *
    * @param {object} query - Query parameters to pass to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Object>}
+   * @return {Promise&lt;Object>}
    */
   loadProject(query, opts) {
     return this.load('project', query, opts);
@@ -374,7 +466,7 @@ class Formio {
    *
    * @param {object} data - The project JSON to create or update.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Object>}
+   * @return {Promise&lt;Object>}
    */
   saveProject(data, opts) {
     return this.save('project', data, opts);
@@ -390,7 +482,7 @@ class Formio {
    * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Object>}
+   * @return {Promise&lt;Object>}
    */
   deleteProject(opts) {
     return this.delete('project', opts);
@@ -430,7 +522,7 @@ class Formio {
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<object>}
+   * @return {Promise&lt;object>}
    */
   loadForm(query, opts) {
     return this.load('form', query, opts)
@@ -440,15 +532,15 @@ class Formio {
           return currentForm;
         }
         // If a submission already exists but form is marked to load current version of form.
-        if (currentForm.revisions === 'current' && this.submissionId) {
+        if (currentForm.revisions === 'current' &amp;&amp; this.submissionId) {
           return currentForm;
         }
         // If they specified a revision form, load the revised form components.
-        if (query && isObject(query)) {
+        if (query &amp;&amp; isObject(query)) {
           query = Formio.serialize(query.params);
         }
         if (query) {
-          query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
+          query = this.query ? (`${this.query}&amp;${query}`) : (`?${query}`);
         }
         else {
           query = this.query;
@@ -504,7 +596,7 @@ class Formio {
    *
    * @param {object} data - The Form JSON to create or update.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Object>}
+   * @return {Promise&lt;Object>}
    */
   saveForm(data, opts) {
     return this.save('form', data, opts);
@@ -522,7 +614,7 @@ class Formio {
    * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   deleteForm(opts) {
     return this.delete('form', opts);
@@ -541,7 +633,7 @@ class Formio {
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   loadForms(query, opts) {
     return this.index('forms', query, opts);
@@ -560,7 +652,7 @@ class Formio {
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<object>}
+   * @return {Promise&lt;object>}
    */
   loadSubmission(query, opts) {
     return this.load('submission', query, opts)
@@ -601,7 +693,7 @@ class Formio {
    *
    * @param {object} data - The submission JSON object.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Object>}
+   * @return {Promise&lt;Object>}
    */
   saveSubmission(data, opts) {
     if (!isNaN(parseInt(this.vId))) {
@@ -614,7 +706,7 @@ class Formio {
    * Deletes a submission.
    *
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   deleteSubmission(opts) {
     return this.delete('submission', opts);
@@ -639,7 +731,7 @@ class Formio {
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   loadSubmissions(query, opts) {
     return this.index('submissions', query, opts);
@@ -658,7 +750,7 @@ class Formio {
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Object>}
+   * @return {Promise&lt;Object>}
    */
   loadAction(query, opts) {
     return this.load('action', query, opts);
@@ -702,7 +794,7 @@ class Formio {
    *
    * @param {object} data - The action JSON
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Object>}
+   * @return {Promise&lt;Object>}
    */
   saveAction(data, opts) {
     return this.save('action', data, opts);
@@ -720,7 +812,7 @@ class Formio {
    * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   deleteAction(opts) {
     return this.delete('action', opts);
@@ -739,7 +831,7 @@ class Formio {
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   loadActions(query, opts) {
     return this.index('actions', query, opts);
@@ -748,7 +840,7 @@ class Formio {
   /**
    * Returns a list of available actions
    *
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   availableActions() {
     return this.makeRequest('availableActions', `${this.formUrl}/actions`);
@@ -766,7 +858,7 @@ class Formio {
    * ```
    *
    * @param {string} name - The name of the action you would like to get information for. i.e. "save", "webhook", etc.
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   actionInfo(name) {
     return this.makeRequest('actionInfo', `${this.formUrl}/actions/${name}`);
@@ -794,7 +886,7 @@ class Formio {
    * };
    * ```
    *
-   * @return {Promise<string>}
+   * @return {Promise&lt;string>}
    */
   getProjectId() {
     if (!this.projectId) {
@@ -821,7 +913,7 @@ class Formio {
    * });
    * ```
    *
-   * @return {Promise<string>}
+   * @return {Promise&lt;string>}
    */
   getFormId() {
     if (!this.formId) {
@@ -841,7 +933,7 @@ class Formio {
    * Instance method for {@link Formio.currentUser}
    *
    * @param {object} options - Options to pass to {@link Formio.request}
-   * @return {Promise<object>}
+   * @return {Promise&lt;object>}
    */
   currentUser(options) {
     return Formio.currentUser(this, options);
@@ -849,7 +941,7 @@ class Formio {
 
   /**
    * Instance method for {@link Formio.accessInfo}
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   accessInfo() {
     return Formio.accessInfo(this);
@@ -913,7 +1005,7 @@ class Formio {
    * ```
    *
    * @param {object} [form] - The form JSON to fetch a download url for.
-   * @return {Promise<string>} - The download url.
+   * @return {Promise&lt;string>} - The download url.
    */
   getDownloadUrl(form) {
     if (!this.submissionId) {
@@ -949,14 +1041,14 @@ class Formio {
   /**
    * Upload a file to the Form.io platform.
    *
-   * @param {string} storage - The storage type for this file. i.e. "url", "s3", "dropbox", etc.
-   * @param {File} file - The file object to upload.
-   * @param {string} fileName - The filename to give to the file once it is uploaded.
-   * @param {string} dir - The directory name to place the file.
-   * @param {function} progressCallback - Called when the progress of the file updates.
-   * @param {string} url - Used for IndexDB uploads (offline file uploads) to provide the url of the upload destination.
-   * @param {object} options - Options used to pass to each upload provider for upload configurations.
-   * @param {string} fileKey - Custom file key to pass to custom upload providers.
+   * @param {string} storage - 
+   * @param file
+   * @param fileName
+   * @param dir
+   * @param progressCallback
+   * @param url
+   * @param options
+   * @param fileKey
    * @return {*}
    */
   uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey) {
@@ -972,7 +1064,7 @@ class Formio {
       .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
-            if (storage && isNil(result)) {
+            if (storage &amp;&amp; isNil(result)) {
               const Provider = Providers.getProvider('storage', storage);
               if (Provider) {
                 const provider = new Provider(this);
@@ -999,7 +1091,7 @@ class Formio {
       .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
-            if (file.storage && isNil(result)) {
+            if (file.storage &amp;&amp; isNil(result)) {
               const Provider = Providers.getProvider('storage', file.storage);
               if (Provider) {
                 const provider = new Provider(this);
@@ -1054,11 +1146,11 @@ class Formio {
       for (const roleName in access.roles) {
         if (access.roles.hasOwnProperty(roleName)) {
           const role = access.roles[roleName];
-          if (role.default && (user._id === false)) {
+          if (role.default &amp;&amp; (user._id === false)) {
             // User is anonymous. Add the anonymous role.
             user.roles.push(role._id);
           }
-          else if (role.admin && user.roles.indexOf(role._id) !== -1) {
+          else if (role.admin &amp;&amp; user.roles.indexOf(role._id) !== -1) {
             perms.create = true;
             perms.read = true;
             perms.delete = true;
@@ -1067,8 +1159,8 @@ class Formio {
           }
         }
       }
-      if (form && form.submissionAccess) {
-        for (let i = 0; i < form.submissionAccess.length; i++) {
+      if (form &amp;&amp; form.submissionAccess) {
+        for (let i = 0; i &lt; form.submissionAccess.length; i++) {
           const permission = form.submissionAccess[i];
           const [perm, scope] = permission.type.split('_');
           if (['create', 'read', 'update', 'delete'].includes(perm)) {
@@ -1082,13 +1174,13 @@ class Formio {
       if (submission) {
         // we would anyway need to loop through components for create permission, so we'll do that for all of them
         eachComponent(form.components, (component, path) => {
-          if (component && component.defaultPermission) {
+          if (component &amp;&amp; component.defaultPermission) {
             const value = _get(submission.data, path);
             // make it work for single-select Group and multi-select Group
             const groups = Array.isArray(value) ? value : [value];
             groups.forEach(group => {
               if (
-                group && group._id && // group id is present
+                group &amp;&amp; group._id &amp;&amp; // group id is present
                 user.roles.indexOf(group._id) > -1 // user has group id in his roles
               ) {
                 if (component.defaultPermission === 'read') {
@@ -1125,7 +1217,7 @@ class Formio {
   canSubmit() {
     return this.userPermissions().then((perms) => {
       // If there is user and they cannot create, then check anonymous user permissions.
-      if (!perms.create && Formio.getUser()) {
+      if (!perms.create &amp;&amp; Formio.getUser()) {
         return this.userPermissions(null).then((anonPerms) => {
           if (anonPerms.create) {
             Formio.setUser(null);
@@ -1145,9 +1237,9 @@ class Formio {
   }
 
   static getUrlParts(url, formio) {
-    const base = (formio && formio.base) ? formio.base : Formio.baseUrl;
+    const base = (formio &amp;&amp; formio.base) ? formio.base : Formio.baseUrl;
     let regex = '^(http[s]?:\\/\\/)';
-    if (base && url.indexOf(base) === 0) {
+    if (base &amp;&amp; url.indexOf(base) === 0) {
       regex += `(${base.replace(/^http[s]?:\/\//, '')})`;
     }
     else {
@@ -1167,7 +1259,7 @@ class Formio {
         str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);
       }
     }
-    return str.join('&');
+    return str.join('&amp;');
   }
 
   static getRequestArgs(formio, type, url, method, data, opts) {
@@ -1222,7 +1314,7 @@ class Formio {
    * @param {boolean} options.noToken - If set to true, this will not include the Form.io x-jwt-token along with the request.
    * @param {string} options.namespace - The Form.io namespace to prepend to all LocalStorage variables such as formioToken.
    * @param {boolean} options.getHeaders - Set this if you wish to include the response headers with the return of this method.
-   * @return {Promise<Response>}
+   * @return {Promise&lt;Response>}
    */
   static makeRequest(formio, type, url, method, data, opts) {
     if (!formio) {
@@ -1273,7 +1365,7 @@ class Formio {
    * @param {boolean} options.noToken - If set to true, this will not include the Form.io x-jwt-token along with the request.
    * @param {string} options.namespace - The Form.io namespace to prepend to all LocalStorage variables such as formioToken.
    * @param {boolean} options.getHeaders - Set this if you wish to include the response headers with the return of this method.
-   * @return {Promise<Response>|*}
+   * @return {Promise&lt;Response>|*}
    */
   static request(url, method = 'GET', data = {}, header = {}, opts = {}) {
     if (!url) {
@@ -1291,7 +1383,7 @@ class Formio {
     const cacheKey = btoa(url);
 
     // Get the cached promise to save multiple loads.
-    if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
+    if (!opts.ignoreCache &amp;&amp; method === 'GET' &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
       return NativePromise.resolve(cloneResponse(Formio.cache[cacheKey]));
     }
 
@@ -1301,7 +1393,7 @@ class Formio {
       'Content-type': 'application/json'
     });
     const token = Formio.getToken(opts);
-    if (token && !opts.noToken) {
+    if (token &amp;&amp; !opts.noToken) {
       headers.append('x-jwt-token', token);
     }
 
@@ -1358,11 +1450,11 @@ class Formio {
         // case where we do not send an x-jwt-token and get one in return for any GET request.
         let tokenIntroduced = false;
         if (
-          (method === 'GET') &&
-          !requestToken &&
-          token &&
-          !opts.external &&
-          !url.includes('token=') &&
+          (method === 'GET') &amp;&amp;
+          !requestToken &amp;&amp;
+          token &amp;&amp;
+          !opts.external &amp;&amp;
+          !url.includes('token=') &amp;&amp;
           !url.includes('x-jwt-token=')
         ) {
           console.warn('Token was introduced in request.');
@@ -1370,10 +1462,10 @@ class Formio {
         }
 
         if (
-          response.status >= 200 &&
-          response.status < 300 &&
-          token &&
-          token !== '' &&
+          response.status >= 200 &amp;&amp;
+          response.status &lt; 300 &amp;&amp;
+          token &amp;&amp;
+          token !== '' &amp;&amp;
           !tokenIntroduced
         ) {
           Formio.setToken(token, opts);
@@ -1389,7 +1481,7 @@ class Formio {
         return getResult.then((result) => {
           // Add some content-range metadata to the result here
           let range = response.headers.get('content-range');
-          if (range && isObject(result)) {
+          if (range &amp;&amp; isObject(result)) {
             range = range.split('/');
             if (range[0] !== '*') {
               const skipLimit = range[0].split('-');
@@ -1473,7 +1565,7 @@ class Formio {
       Formio.tokens = {};
     }
 
-    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] === token) {
+    if (Formio.tokens[tokenName] &amp;&amp; Formio.tokens[tokenName] === token) {
       return;
     }
 
@@ -1618,7 +1710,7 @@ class Formio {
   static deregisterPlugin(plugin) {
     const beforeLength = Formio.plugins.length;
     Formio.plugins = Formio.plugins.filter((p) => {
-      if (p !== plugin && p.__name !== plugin) {
+      if (p !== plugin &amp;&amp; p.__name !== plugin) {
         return true;
       }
 
@@ -1696,7 +1788,7 @@ class Formio {
     }
 
     const token = Formio.getToken(options);
-    if ((!options || !options.external) && !token) {
+    if ((!options || !options.external) &amp;&amp; !token) {
       return Formio.pluginAlter('wrapStaticRequestPromise', NativePromise.resolve(null), {
         url: authUrl,
         method: 'GET',
@@ -1727,19 +1819,19 @@ class Formio {
 
     Formio._pageQuery = {};
     Formio._pageQuery.paths = [];
-    const hashes = location.hash.substr(1).replace(/\?/g, '&').split('&');
+    const hashes = location.hash.substr(1).replace(/\?/g, '&amp;').split('&amp;');
     let parts = [];
-    location.search.substr(1).split('&').forEach(function(item) {
+    location.search.substr(1).split('&amp;').forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        Formio._pageQuery[parts[0]] = parts[1] &amp;&amp; decodeURIComponent(parts[1]);
       }
     });
 
     hashes.forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        Formio._pageQuery[parts[0]] = parts[1] &amp;&amp; decodeURIComponent(parts[1]);
       }
       else if (item.indexOf('/') === 0) {
         Formio._pageQuery.paths = item.substr(1).split('/');
@@ -1847,7 +1939,7 @@ class Formio {
 
       const callbackName = `${name}Callback`;
 
-      if (!polling && !window[callbackName]) {
+      if (!polling &amp;&amp; !window[callbackName]) {
         window[callbackName] = () => Formio.libraries[name].resolve();
       }
 
@@ -1918,7 +2010,7 @@ class Formio {
 
   static libraryReady(name) {
     if (
-      Formio.libraries.hasOwnProperty(name) &&
+      Formio.libraries.hasOwnProperty(name) &amp;&amp;
       Formio.libraries[name].ready
     ) {
       return Formio.libraries[name].ready;
@@ -1946,8 +2038,30 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-if (typeof global === 'object' && !global.Formio) {
+if (typeof global === 'object' &amp;&amp; !global.Formio) {
   global.Formio = Formio;
 }
 
 export default Formio;
+</code></pre>
+  </article>
+</section>
+
+    
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+
+</body>
+</html>

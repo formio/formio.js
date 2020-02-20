@@ -15,9 +15,9 @@ import { compare, applyPatch } from 'fast-json-patch';
 /**
  * Determine if a component is a layout component or not.
  *
+ * @memberof FormioUtils
  * @param {Object} component
  *   The component to check.
- *
  * @returns {Boolean}
  *   Whether or not the component is a layout component.
  */
@@ -32,6 +32,7 @@ export function isLayoutComponent(component) {
 /**
  * Iterate through each component within a form.
  *
+ * @memberof FormioUtils
  * @param {Object} components
  *   The components to iterate.
  * @param {Function} fn
@@ -115,6 +116,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
 /**
  * Matches if a component matches the query.
  *
+ * @memberof FormioUtils
  * @param component
  * @param query
  * @return {boolean}
@@ -138,6 +140,7 @@ export function matchComponent(component, query) {
 /**
  * Get a component by its key
  *
+ * @memberof FormioUtils
  * @param {Object} components
  *   The components to iterate.
  * @param {String|Object} key
@@ -160,6 +163,7 @@ export function getComponent(components, key, includeAll) {
 /**
  * Finds a component provided a query of properties of that component.
  *
+ * @memberof FormioUtils
  * @param components
  * @param query
  * @return {*}
@@ -177,6 +181,7 @@ export function searchComponents(components, query) {
 /**
  * Deprecated version of findComponents. Renamed to searchComponents.
  *
+ * @memberof FormioUtils
  * @param components
  * @param query
  * @returns {*}
@@ -189,6 +194,7 @@ export function findComponents(components, query) {
 /**
  * This function will find a component in a form and return the component AND THE PATH to the component in the form.
  *
+ * @memberof FormioUtils
  * @param components
  * @param key
  * @param fn
@@ -246,6 +252,7 @@ export function findComponent(components, key, path, fn) {
 /**
  * Remove a component by path.
  *
+ * @memberof FormioUtils
  * @param components
  * @param path
  */
@@ -365,6 +372,7 @@ export function applyFormChanges(form, changes) {
 /**
  * Flatten the form components for data manipulation.
  *
+ * @memberof FormioUtils
  * @param {Object} components
  *   The components to iterate.
  * @param {Boolean} includeAll
@@ -384,8 +392,8 @@ export function flattenComponents(components, includeAll) {
 /**
  * Returns if this component has a conditional statement.
  *
+ * @memberof FormioUtils
  * @param component - The component JSON schema.
- *
  * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
  */
 export function hasCondition(component) {
@@ -399,6 +407,7 @@ export function hasCondition(component) {
 /**
  * Extension of standard #parseFloat(value) function, that also clears input string.
  *
+ * @memberof FormioUtils
  * @param {any} value
  *   The value to parse.
  *
@@ -414,9 +423,9 @@ export function parseFloatExt(value) {
 /**
  * Formats provided value in way how Currency component uses it.
  *
+ * @memberof FormioUtils
  * @param {any} value
  *   The value to format.
- *
  * @returns {String}
  *   Value formatted for Currency component.
  */
@@ -443,6 +452,7 @@ export function formatAsCurrency(value) {
 /**
  * Escapes RegEx characters in provided String value.
  *
+ * @memberof FormioUtils
  * @param {String} value
  *   String for escaping RegEx characters.
  * @returns {string}
@@ -455,6 +465,7 @@ export function escapeRegExCharacters(value) {
 /**
  * Get the value for a component key, in the given submission.
  *
+ * @memberof FormioUtils
  * @param {Object} submission
  *   A submission object to search.
  * @param {String} key
@@ -489,6 +500,8 @@ export function getValue(submission, key) {
 
 /**
  * Iterate over all components in a form and get string values for translation.
+ *
+ * @memberof FormioUtils
  * @param form
  */
 export function getStrings(form) {
