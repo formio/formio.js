@@ -70,7 +70,9 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   formatValue(value) {
-    return super.formatValue(this.stripPrefixSuffix(value));
+    const decimalLimit = _.get(this.component, 'decimalLimit', 2);
+
+    return value ? (+value).toFixed(decimalLimit) : value;
   }
 
   stripPrefixSuffix(value) {
