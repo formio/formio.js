@@ -481,16 +481,18 @@ export default class DayComponent extends Field {
       return null;
     }
 
-    //add trailing zeros
-    day = day.toString().padStart(2, 0);
-    month = month.toString().padStart(2, 0);
-    year = year.toString().padStart(4, 0);
+    // add trailing zeros if the data is showed
+    day = this.showDay ? day.toString().padStart(2, 0) : '';
+    month = this.showMonth ? month.toString().padStart(2, 0) : '';
+    year = this.showYear ? year.toString().padStart(4, 0) : '';
+
     if (this.component.dayFirst) {
-      result = `${day}/${month}/${year}`;
+      result = `${day}${this.showDay && this.showMonth || this.showDay && this.showYear ? '/' : ''}${month}${this.showMonth && this.showYear ? '/' : ''}${year}`;
     }
     else {
-      result = `${month}/${day}/${year}`;
+      result = `${month}${this.showDay && this.showMonth || this.showMonth && this.showYear ? '/' : ''}${day}${this.showDay && this.showYear ? '/' : ''}${year}`;
     }
+
     return result;
   }
 
