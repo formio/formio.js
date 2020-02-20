@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Reverted issues with PDF builder and local iframe sources.
  - Fixed display of submitted data in day component when some fields are hidden
- - Fixed currency trailing zeros issue in currancy component
  
 ### Added
  - Added Role API methods
