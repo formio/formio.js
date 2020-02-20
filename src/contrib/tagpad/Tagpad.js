@@ -2,11 +2,16 @@ import _ from 'lodash';
 import Two from 'two.js';
 import NativePromise from 'native-promise-only';
 import Formio from '../../Formio';
-import NestedArrayComponent from '../../components/_classes/nestedarray/NestedArrayComponent';
+import NestedComponent from '../../components/_classes/nested/NestedComponent';
 
-export default class TagpadComponent extends NestedArrayComponent {
+export default class TagpadComponent extends NestedComponent {
+  selectedDot;
+  dots;
+  canvasSvg;
+  two;
+
   static schema(...extend) {
-    return NestedArrayComponent.schema({
+    return NestedComponent.schema({
       type: 'tagpad',
       label: 'Tagpad',
       key: 'tagpad',
@@ -56,7 +61,7 @@ export default class TagpadComponent extends NestedArrayComponent {
 
   get dataValue() {
     const dataValue = super.dataValue;
-    if (!dataValue || !Array.isArray(dataValue)) {
+    if (!dataValue || !_.isArray(dataValue)) {
       return this.emptyValue;
     }
     return dataValue;
@@ -70,7 +75,7 @@ export default class TagpadComponent extends NestedArrayComponent {
     const value = super.defaultValue;
     let defaultValue;
 
-    if (Array.isArray(value)) {
+    if (_.isArray(value)) {
       defaultValue = value;
     }
     else if (value && (typeof value === 'object')) {
@@ -89,19 +94,27 @@ export default class TagpadComponent extends NestedArrayComponent {
 
   init() {
     this.components = this.components || [];
-    this.createDots(true);
+    this.createDots();
+  }
+
+  redraw() {
+    super.redraw();
+        this.on('initialized', () => {
+      this.stretchDrawingArea();
+    });
+    // For case when component is built after form is initialized (for ex. when it's on inactive tab of Tabs component), so this.on('initialized', ...) won't be fired:
+    this.redrawDots();
   }
 
   addBackground() {
-    if (this.component.image) {
-      this.setBackgroundImage(this.component.image);
-      this.backgroundReady.resolve();
+    if (this.refs.image) {
+      return;
+      // this.setBackgroundImage(this.component.image);
     }
     else if (this.component.imageUrl) {
       Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true, headers: {} })
       .then(image => {
         this.setBackgroundImage(image);
-        this.backgroundReady.resolve();
       })
       .catch(() => {
         //TODO check that component works in this case anyway
@@ -111,17 +124,80 @@ export default class TagpadComponent extends NestedArrayComponent {
     }
   }
 
+  setSvgImage(svgMarkup) {
+    const xmlDoc = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml');
+    let backgroundSvg = xmlDoc.getElementsByTagName('svg');
+    if (!backgroundSvg || !backgroundSvg[0]) {
+      console.warn(`Tagpad '${this.component.key}': Background SVG doesn't contain <svg> tag on it`);
+      return;
+    }
+    backgroundSvg = backgroundSvg[0];
+    //read initial dimensions from viewBox
+    const initialViewBox = backgroundSvg.getAttribute('viewBox');
+    let viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight;
+    if (initialViewBox) {
+      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = initialViewBox.split(' ').map(parseFloat);
+    }
+    else {
+      //if viewBox is not defined, use 'x', 'y', 'width' and 'height' SVG attributes (or 0, 0, 640, 480 relatively if any is not defined)
+      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = [
+        { attribute: 'x', defaultValue: 0 },
+        { attribute: 'y', defaultValue: 0 },
+        { attribute: 'width', defaultValue: 640 },
+        { attribute: 'height', defaultValue: 480 }
+      ].map(dimension => {
+        return parseFloat(backgroundSvg.getAttribute(dimension.attribute)) || dimension.defaultValue;
+      });
+    }
+    //set initial dimensions to width and height from viewBox of background svg
+    this.dimensions = {
+      width: viewBoxWidth,
+      height: viewBoxHeight,
+      minX: viewBoxMinX,
+      minY: viewBoxMinY
+    };
+    //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
+    backgroundSvg.removeAttribute('width');
+    backgroundSvg.removeAttribute('height');
+    const viewBox = this.dimensions;
+    //set background image viewBox
+    backgroundSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    //set canvas image viewBox (necessary for canvas SVG to stretch properly without losing correct aspect ration)
+    this.canvasSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+
+    svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
+    //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
+    svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
+
+    this.refs.background.innerHTML = svgMarkup;
+
+    //set dimensions for Two.js instance
+    this.setEditorSize(this.dimensions.width, this.dimensions.height);
+  }
+
   setBackgroundImage(image) {
     if (image.startsWith('<?xml')) {
       this.imageType = 'svg';
+      this.setSvgImage(image);
     }
     else {
       this.imageType = 'image';
-      const img = this.ce('img', { src: this.component.imageUrl });
+      const img = this.ce('img', { src: this.component.imageUrl, width: '100%' });
       this.refs.background.appendChild(img);
+      const viewBoxWidth = this.refs.background.offsetWidth;
+      const viewBoxHeight = this.refs.background.offsetHeight;
+
+      this.canvasSvg.setAttribute('viewBox', `0 0 ${this.refs.background.offsetWidth} ${this.refs.background.offsetHeight}`);
+      this.dimensions = {
+        width: viewBoxWidth,
+        height: viewBoxHeight,
+        minX: 0,
+        minY: 0
+      };
     }
 
-    this.refs.background.addEventListener('click', () => console.log('clicked!'));
+    this.stretchDrawingArea();
+    this.backgroundReady.resolve();
   }
 
   attachDrawEvents() {
@@ -159,17 +235,57 @@ export default class TagpadComponent extends NestedArrayComponent {
     return components;
   }
 
-  createDots(init) {
+  redrawDots() {
+    this.dots = [];
+    //clear canvas
+    this.two.clear();
+    this.two.render();
+    //draw dots
+    this.createDots();
+  }
+
+  createDots() {
     const dotsValues = this.dataValue;
+    dotsValues.forEach((dot, index) => {
+      if (!this.dots[index]) {
+        this.dots[index] = { index, dot, shape: this.drawDot(dot, index) };
+      }
+    });
+
+    this.dots.splice(dotsValues.length);
   }
 
   getActualCoordinate(coordinate) {
-    if (this.imageType === 'svg') {
-      //recalculate coordinate taking into account changed size of drawing area
-      coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier) + this.dimensions.minX;
-      coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier) + this.dimensions.minY;
-    }
+    // recalculate coordinate taking into account changed size of drawing area
+    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier) + this.dimensions.minX;
+    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier) + this.dimensions.minY;
     return coordinate;
+  }
+
+  selectDot(index) {
+    if (!index) {
+      // TODO clear form, components
+    }
+
+    const dot = this.dots[index];
+    if (!dot) {
+      // TODO clear form, components
+    }
+
+    // Clear previous selection
+    if (this.selectedDot && this.dots[this.selectedDot.index]) {
+      this.dots[this.selectedDot.index].shape.circle.dashes = [0];
+    }
+    dot.shape.circle.dashes = [1];
+    this.two.update();
+    this.selectedDot = this.dots[index];
+    //TODO render form
+  }
+
+  dotClicked(e, dot, index) {
+    //prevent drawing another dot near clicked dot
+    e.stopPropagation();
+    this.selectDot(index);
   }
 
   addDot(coordinate) {
@@ -178,17 +294,15 @@ export default class TagpadComponent extends NestedArrayComponent {
       data: {}
     };
     const newDotIndex = this.dataValue.length;
-    const shape = {};
-    this.drawDot(dot, newDotIndex);
+    const shape = this.drawDot(dot, newDotIndex);
     this.dots.push({
       index: newDotIndex,
       dot,
       shape
     });
     this.dataValue.push(dot);
-    this.tagpadForm = this.createFormComponents();
     this.redraw();
-    // this.selectDot(newDotIndex);
+    this.selectDot(newDotIndex);
     this.triggerChange();
   }
 
@@ -213,10 +327,8 @@ export default class TagpadComponent extends NestedArrayComponent {
     return 'tagpad';
   }
 
-  render(element) {
-    return super.render(this.renderTemplate(this.templateName, {
-      tagpadForm: this.tagpadForm && this.tagpadForm.map(component => component.render())
-    }));
+  render() {
+    return super.render(this.renderTemplate(this.templateName, { }));
   }
 
   attach(element) {
@@ -224,15 +336,36 @@ export default class TagpadComponent extends NestedArrayComponent {
     const superAttach = super.attach(element);
 
     if (this.refs.background && this.hasBackgroundImage) {
+      this.addBackground();
       this.two = new Two({
-        type: Two.Types.svg
+        type: Two.Types.svg,
+        width: '100%',
+        height: '100%'
       }).appendTo(this.refs.canvas);
       this.canvasSvg = this.two.renderer.domElement;
-      this.addBackground();
+      this.canvasSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
       this.attachDrawEvents();
     }
 
     return superAttach;
+  }
+
+  stretchDrawingArea() {
+    const width = this.refs.background.offsetWidth;
+    const height = this.refs.background.offsetHeight;
+    //don't stretch if background dimensions are unknown yet
+    if (width && height) {
+      //will need dimensions multiplier for coordinates calculation
+      this.dimensionsMultiplier = width / this.dimensions.width;
+      this.setEditorSize(width, height);
+    }
+  }
+
+  setEditorSize(width, height) {
+    this.two.width = width;
+    this.two.height = height;
+    this.two.update();
   }
 
   get hasBackgroundImage() {
@@ -241,10 +374,6 @@ export default class TagpadComponent extends NestedArrayComponent {
 
   focus() {
     return this.refs.canvas && this.refs.canvas.focus();
-  }
-
-  setValue(value) {
-    this.dataValue = value;
   }
 
   getValueAsString() { } //TODO: Think about how data should be displayed as string

@@ -45,6 +45,7 @@ import signature from './signature';
 import survey from './survey';
 import tab from './tab';
 import table from './table';
+import tagpad from './tagpad';
 import tree from './tree';
 import treePartials from './tree/partials';
 import webform from './webform';
@@ -114,6 +115,7 @@ export default {
   survey,
   tab,
   table,
+  tagpad,
   tree,
   ...treePartials,
   webform,

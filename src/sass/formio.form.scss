@@ -1173,3 +1173,59 @@ div[data-oembed-url] {
     text-align: right;
   }
 }
+
+.formio-tagpad-image-container {
+  float: left;
+  width: 50%;
+  z-index: 1;
+  position: relative;
+  border: 1px dashed #999;
+  border-radius: 3px;
+}
+
+.formio-tagpad-form-container {
+  width: 50%;
+  float: left;
+}
+
+.formio-tagpad-canvas {
+  cursor: crosshair;
+  position: absolute;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  top: 0;
+}
+
+.formio-disabled-input .formio-tagpad-canvas {
+  cursor: not-allowed;
+}
+
+.formio-disabled-input .formio-tagpad-image-container {
+  background-color: #eee;
+}
+
+.formio-tagpad-background svg {
+  width: 100%;
+}
+
+.formio-tagpad-form {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+
+.formio-tagpad-dot,
+.formio-tagpad-dot-index {
+  cursor: pointer;
+}
+
+.formio-tagpad-save-button,
+.formio-tagpad-remove-button {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.formio-tagpad-form-title {
+  font-size: 1.7em;
+}
