@@ -581,7 +581,7 @@ export default class FileComponent extends Field {
     return file.size - 0.1 <= this.translateScalars(val);
   }
 
-  upload(files) {
+  upload(files, fileUploadCallback) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
       files = Array.prototype.slice.call(files, 0, 1);
@@ -663,8 +663,12 @@ export default class FileComponent extends Field {
               fileUpload.message = response;
               delete fileUpload.progress;
               this.redraw();
+            })
+            .then(() => {
+              fileUploadCallback && fileUploadCallback.call(this);
             });
         }
+        fileUploadCallback && fileUploadCallback.call(this);
       });
     }
   }
