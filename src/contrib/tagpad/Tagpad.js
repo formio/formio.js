@@ -3,11 +3,15 @@ import Two from 'two.js';
 import NativePromise from 'native-promise-only';
 import Formio from '../../Formio';
 import NestedComponent from '../../components/_classes/nested/NestedComponent';
+import Component from '../../components/_classes/component/Component';
 
 export default class TagpadComponent extends NestedComponent {
   selectedDot;
   dots;
   canvasSvg;
+  formComponents;
+  dimensions;
+  dimensionsMultiplier
   two;
 
   static schema(...extend) {
@@ -30,7 +34,7 @@ export default class TagpadComponent extends NestedComponent {
     return {
       title: 'Tagpad',
       group: 'advanced',
-      icon: 'fa fa-tag',
+      icon: 'tag',
       weight: 115,
       documentation: '', //TODO: add documentation link
       schema: TagpadComponent.schema()
@@ -58,6 +62,7 @@ export default class TagpadComponent extends NestedComponent {
   get renderContext() {
     return {
       selectedDot: this.selectedDot,
+      hasDots: this.dots && this.dots.length,
       buttons: this.buttons
     };
   }
@@ -72,7 +77,7 @@ export default class TagpadComponent extends NestedComponent {
 
   get buttons() {
     const buttons = {};
-    [{ name: 'remove',    method: 'removeDot' }].forEach(button => {
+    [{ name: 'removeDot',    method: 'removeSelectedDot' }].forEach(button => {
       if (this.hasButton(button.name)) {
         buttons[button.name] = button;
       }
@@ -82,14 +87,26 @@ export default class TagpadComponent extends NestedComponent {
 
   hasButton(buttonName) {
     switch (buttonName) {
-      case 'remove':
+      case 'removeDot':
         return !this.options.readOnly;
       default:
         return false;
     }
   }
 
-  attachButtons() { }
+  attachButtons() {
+    _.each(this.buttons, (button) => {
+      const buttonElement = this.refs[`${button.name}`];
+      buttonElement && this.addEventListener(buttonElement, 'click', (event) => {
+        event.preventDefault();
+        buttonElement.setAttribute('disabled', 'disabled');
+        this.setLoading(buttonElement, true);
+        typeof this[button.method] === 'function' && this[button.method]();
+        buttonElement.removeAttribute('disabled');
+        this.setLoading(buttonElement, false);
+      });
+    });
+  }
 
   get dataReady() {
     return this.backgroundReady.promise;
@@ -405,6 +422,7 @@ export default class TagpadComponent extends NestedComponent {
       }
     }
 
+    this.attachButtons();
     return super.attach(element);
   }
 
@@ -443,8 +461,70 @@ export default class TagpadComponent extends NestedComponent {
     return this.component.image || this.component.imageUrl;
   }
 
+  removeSelectedDot() {
+    if (!this.selectedDot || !this.dataValue[this.selectedDot.index]) {
+      return;
+    }
+    this.dataValue.splice(this.selectedDot.index, 1);
+    this.selectDot(0);
+    this.redrawDots();
+    this.triggerChange();
+  }
+
   focus() {
     return this.refs.canvas && this.refs.canvas.focus();
+  }
+
+  // checkData(data, flags, row) {
+  //   data = data || this.rootValue;
+  //   row = row || this.data;
+  //   Component.prototype.checkData.call(this, data, flags, row);
+  //   return this.checkValidity(data, false, this.dataValue);
+  // }
+
+  // checkValidity(data, dirty, row) {
+  //   if (!this.checkCondition(null, data)) {
+  //     this.setCustomValidity('');
+  //     return true;
+  //   }
+  //   let isTagpadValid = true;
+  //   //check validity of each dot
+  //   this.dots.forEach((dot) => {
+  //     const isDotValid = this.checkDotValidity(data, dirty, dot);
+  //     isTagpadValid = isTagpadValid && isDotValid;
+  //   });
+
+  //   //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation
+  //   if (this.selectedDot) {
+  //     this.checkDotValidity(data, dirty, this.dots[this.selectedDot.index]);
+  //   }
+  //   if (isTagpadValid) {
+  //     this.setCustomValidity('');
+  //   }
+  //   else {
+  //     this.setCustomValidity(this.t('There are some invalid dots'), dirty);
+  //   }
+  //   return isTagpadValid;
+  // }
+
+  checkDotValidity(data, dirty, dot) {
+    if (!this.formComponents) {
+      return true;
+    }
+    const isDotValid = this.formComponents.reduce((valid, component) => {
+      component.dataValue = dot.dot.data[component.key];
+      return valid && component.checkValidity(data, dirty);
+    }, true);
+    this.setDotValidity(dot, isDotValid);
+    return isDotValid;
+  }
+
+  setDotValidity(dot, isValid) {
+    const color = isValid ? this.component.dotStrokeColor : '#ff0000';
+    //change style of dot based on its validity
+    dot.shape.circle.stroke = color;
+    dot.shape.text.styles.color = color;
+    this.two.update();
   }
 
   getValueAsString() { } //TODO: Think about how data should be displayed as string

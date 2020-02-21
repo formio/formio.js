@@ -15,12 +15,12 @@
         {% if (ctx.selectedDot) { %}
           <p class="formio-tagpad-form-title">Dot: {{ctx.selectedDot.index + 1}}</p>
           <div  ref="form">{{ctx.components}}</div>          
-          {% if (ctx.buttons.remove) { %}
-            <button class="btn btn-sm btn-danger formio-tagpad-remove-button" ref="removeDotButton">
-              <i class={{ctx.iconClass('trash')}}></i>
+          {% if (ctx.buttons.removeDot) { %}
+            <button class="btn btn-sm btn-danger formio-tagpad-remove-button" ref="removeDot">
+              <i class="fa fa-trash"></i>
             </button>
           {% } %}
-        {% } else { %}
+        {% } else if (ctx.hasDots) { %}
           <p class="formio-tagpad-form-title">No dot selected</p>
         {% } %}
       </div>
