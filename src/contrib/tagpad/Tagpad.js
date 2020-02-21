@@ -22,7 +22,7 @@ export default class TagpadComponent extends NestedComponent {
       dotStrokeColor: '#333',
       dotFillColor: '#ccc',
       components: [],
-      imageType: '',
+      imageType: 'image',
     }, ...extend);
   }
 
@@ -54,6 +54,42 @@ export default class TagpadComponent extends NestedComponent {
     this.backgroundReady.promise = backgroundReadyPromise;
     this.dimensionsMultiplier = 1;
   }
+
+  get renderContext() {
+    return {
+      selectedDot: this.selectedDot,
+      buttons: this.buttons
+    };
+  }
+
+  render() {
+    const ctx = this.renderContext;
+    return super.renderTemplate(this.templateName, {
+      ...ctx,
+      components: this.renderComponents([...this.getFormComponents()])
+    });
+  }
+
+  get buttons() {
+    const buttons = {};
+    [{ name: 'remove',    method: 'removeDot' }].forEach(button => {
+      if (this.hasButton(button.name)) {
+        buttons[button.name] = button;
+      }
+    });
+    return buttons;
+  }
+
+  hasButton(buttonName) {
+    switch (buttonName) {
+      case 'remove':
+        return !this.options.readOnly;
+      default:
+        return false;
+    }
+  }
+
+  attachButtons() { }
 
   get dataReady() {
     return this.backgroundReady.promise;
@@ -230,9 +266,24 @@ export default class TagpadComponent extends NestedComponent {
     this.two.update();
   }
 
-  createFormComponents() {
-    const components = this.component.components.map(component => this.createComponent(component));
-    return components;
+  getFormComponents() {
+    const formComponents = [];
+    if (!this.selectedDot || !this.dots[this.selectedDot.index]) {
+      return [];
+    }
+    this.component.components.forEach(component => {
+      const options = _.clone(this.options);
+      options.name += `[${this.selectedDot.index}]`;
+      const dotData = this.dots[this.selectedDot.index].dot.data;
+      const componentInstance = this.createComponent(component, options, dotData);
+      if (componentInstance.path && component.key) {
+        componentInstance.path = componentInstance.path.replace(new RegExp(`\\.${component.key}$`), `[${this.selectedDot.index}].${component.key}`);
+      }
+
+      formComponents.push(componentInstance);
+    });
+    this.formComponents = formComponents;
+    return formComponents;
   }
 
   redrawDots() {
@@ -272,13 +323,9 @@ export default class TagpadComponent extends NestedComponent {
       // TODO clear form, components
     }
 
-    // Clear previous selection
-    if (this.selectedDot && this.dots[this.selectedDot.index]) {
-      this.dots[this.selectedDot.index].shape.circle.dashes = [0];
-    }
-    dot.shape.circle.dashes = [1];
     this.two.update();
     this.selectedDot = this.dots[index];
+    this.redraw();
     //TODO render form
   }
 
@@ -301,7 +348,6 @@ export default class TagpadComponent extends NestedComponent {
       shape
     });
     this.dataValue.push(dot);
-    this.redraw();
     this.selectDot(newDotIndex);
     this.triggerChange();
   }
@@ -312,6 +358,9 @@ export default class TagpadComponent extends NestedComponent {
     circle.stroke = this.component.dotStrokeColor;
     circle.linewidth = this.component.dotStrokeSize;
     circle.className += ' formio-tagpad-dot';
+    if (this.selectedDot && this.selectedDot.index === index) {
+      circle.dashes = [1];
+    }
     //draw index
     const text = new Two.Text(index + 1, dot.coordinate.x, dot.coordinate.y);
     text.className += ' formio-tagpad-dot-index';
@@ -327,13 +376,19 @@ export default class TagpadComponent extends NestedComponent {
     return 'tagpad';
   }
 
-  render() {
-    return super.render(this.renderTemplate(this.templateName, { }));
-  }
-
   attach(element) {
-    this.loadRefs(element, { canvas: 'single', background: 'single', form: 'single', canvasImage: 'single', image: 'single' });
-    const superAttach = super.attach(element);
+    this.loadRefs(element, {
+      canvas: 'single',
+      background: 'single',
+      form: 'single',
+      canvasImage: 'single',
+      image: 'single',
+      removeDot: 'single'
+    });
+
+    if (this.formComponents) {
+      this.attachComponents(this.refs.form, this.formComponents);
+    }
 
     if (this.refs.background && this.hasBackgroundImage) {
       this.createDrawingArea();
@@ -350,7 +405,7 @@ export default class TagpadComponent extends NestedComponent {
       }
     }
 
-    return superAttach;
+    return super.attach(element);
   }
 
   createDrawingArea() {

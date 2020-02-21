@@ -11,8 +11,18 @@
       <div ref="canvas" class="formio-tagpad-canvas"></div>
   </div>
   <div ref="formContainer" class="formio-tagpad-form-container">
-      <div ref="form" class="formio-tagpad-form">
-        {{ctx.tagpadForm}}
+      <div class="formio-tagpad-form">
+        {% if (ctx.selectedDot) { %}
+          <p class="formio-tagpad-form-title">Dot: {{ctx.selectedDot.index + 1}}</p>
+          <div  ref="form">{{ctx.components}}</div>          
+          {% if (ctx.buttons.remove) { %}
+            <button class="btn btn-sm btn-danger formio-tagpad-remove-button" ref="removeDotButton">
+              <i class={{ctx.iconClass('trash')}}></i>
+            </button>
+          {% } %}
+        {% } else { %}
+          <p class="formio-tagpad-form-title">No dot selected</p>
+        {% } %}
       </div>
   </div>
 </div>
