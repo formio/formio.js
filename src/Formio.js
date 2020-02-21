@@ -65,6 +65,9 @@ class Formio {
     this.projectsUrl = '';
     this.projectUrl = '';
     this.projectId = '';
+    this.roleUrl = '';
+    this.rolesUrl = '';
+    this.roleId = '';
     this.formUrl = '';
     this.formsUrl = '';
     this.formId = '';
@@ -193,8 +196,11 @@ class Formio {
       this.projectsUrl = this.projectsUrl || `${this.base}/project`;
     }
 
+    // Configure Role urls and role ids.
+    registerItems(['role'], this.projectUrl);
+
     // Configure Form urls and form ids.
-    if ((path.search(/(^|\/)(form)($|\/)/) !== -1)) {
+    if (/(^|\/)(form)($|\/)/.test(path)) {
       registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     }
     else {
@@ -415,6 +421,85 @@ class Formio {
       query = `?${Formio.serialize(query.params)}`;
     }
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);
+  }
+
+  /**
+   * Loads a role within a project.
+   *
+   * #### Example
+   * ```js
+   * const formio = new Formio('https://examples.form.io/role/234234234234');
+   * formio.loadRole().then((role) => {
+   *   console.log(role);
+   * });
+   * ```
+   *
+   * @param {object} options - Options to pass to {@link Formio.request}
+   * @return {Promise<Object>}
+   */
+  loadRole(opts) {
+    return this.load('role', null, opts);
+  }
+
+  /**
+   * Create a new or Update an existing role within a project.
+   *
+   * #### Create new Role example
+   * ```js
+   * const formio = new Formio('https://examples.form.io');
+   * formio.saveRole({
+   *   title: 'Employee',
+   *   description: 'A person who belongs to a company.'
+   * }).then((role) => {
+   *   console.log(role);
+   * });
+   * ```
+   *
+   * #### Update existing role example
+   * ```js
+   * const formio = new Formio('https://examples.form.io/role/234234234234234');
+   * formio.loadRole().then((role) => {
+   *   role.title = 'Manager';
+   *   formio.saveRole(role).then(() => {
+   *     console.log('DONE');
+   *   });
+   * });
+   * ```
+   *
+   * @param {object} role - The Role JSON to create or update.
+   * @param {object} options - Options to pass to {@link Formio.request}
+   * @return {Promise<Object>}
+   */
+  saveRole(data, opts) {
+    return this.save('role', data, opts);
+  }
+
+  /**
+   * Deletes a role within a project.
+   *
+   * @param {object} options - Options to pass to {@link Formio.request}
+   * @return {Promise<Response>}
+   */
+  deleteRole(opts) {
+    return this.delete('role', opts);
+  }
+
+  /**
+   * Load all roles within a project.
+   *
+   * #### Example
+   * ```js
+   * const formio = new Formio('https://examples.form.io');
+   * formio.loadRoles().then((roles) => {
+   *   console.log(roles);
+   * });
+   * ```
+   *
+   * @param {object} options - Options to pass to {@link Formio.request}
+   * @return {Promise<Response>}
+   */
+  loadRoles(opts) {
+    return this.index('roles', null, opts);
   }
 
   /**
@@ -1465,6 +1550,15 @@ class Formio {
     return Formio.tokens.formioToken = token || '';
   }
 
+  /**
+   * Sets the JWT in storage to be used within an application.
+   *
+   * @param {string} token - The JWT token to set.
+   * @param {object} options - Options as follows
+   * @param {string} options.namespace - The namespace to save the token within. i.e. "formio"
+   * @param {Formio} options.formio - The Formio instance.
+   * @return {Promise<object>|void}
+   */
   static setToken(token = '', opts) {
     token = token || '';
     opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
@@ -1501,6 +1595,13 @@ class Formio {
     return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null
   }
 
+  /**
+   * Returns the token set within the application for the user.
+   *
+   * @param {object} options - The options as follows.
+   * @param {string} namespace - The namespace of the token you wish to fetch.
+   * @return {*}
+   */
   static getToken(options) {
     options = (typeof options === 'string') ? { namespace: options } : options || {};
     var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
@@ -1521,6 +1622,13 @@ class Formio {
     }
   }
 
+  /**
+   * Sets the current user within the application cache.
+   *
+   * @param {object} user - JSON object of the user you wish to set.
+   * @param {object} options - Options as follows
+   * @param {string} options.namespace - The namespace of the tokens
+   */
   static setUser(user, opts = {}) {
     var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
@@ -1552,6 +1660,13 @@ class Formio {
     Formio.events.emit('formio.user', user);
   }
 
+  /**
+   * Returns the user JSON.
+   *
+   * @param {object} options - Options as follows
+   * @param {string} namespace - The namespace of the tokens stored within this application.
+   * @return {object} - The user object.
+   */
   static getUser(options) {
     options = options || {};
     var userName = `${options.namespace || Formio.namespace || 'formio'}User`;
@@ -1563,6 +1678,30 @@ class Formio {
     }
   }
 
+  /**
+   * Sets the BaseURL for the application. Every application developed using the JavaScript SDK must set both the
+   * {@link Formio.setBaseUrl} and {@link Formio.setProjectUrl} methods. These two functions ensure that every URL
+   * passed into the constructor of this class can determine the "project" context for which the application is running.
+   *
+   * Any Open Source server applications will set both the {@link Formio.setBaseUrl} and {@link Formio.setProjectUrl}
+   * values will be the same value.
+   *
+   * #### Example
+   * ```js
+   * Formio.setBaseUrl('https://yourwebsite.com/forms');
+   * Formio.setProjectUrl('https://yourwebsite.com/forms/project');
+   *
+   * // Now the Formio constructor will know what is the "project" and what is the form alias name. Without setBaseUrl
+   * // and setProjectUrl, this would throw an error.
+   *
+   * const formio = new Formio('https://yourwebsite.com/forms/project/user');
+   * formio.loadForm().then((form) => {
+   *   console.log(form);
+   * });
+   * ```
+   *
+   * @param {string} url - The URL of the Base API url.
+   */
   static setBaseUrl(url) {
     Formio.baseUrl = url;
     if (!Formio.projectUrlSet) {
@@ -1570,15 +1709,22 @@ class Formio {
     }
   }
 
+  /**
+   * Returns the current base url described at {@link Formio.setBaseUrl}
+   *
+   * @return {string} - The base url of the application.
+   */
   static getBaseUrl() {
     return Formio.baseUrl;
   }
 
   static setApiUrl(url) {
+    console.warn('Formio.setApiUrl is deprecated. Use Formio.setBaseUrl instead.');
     return Formio.setBaseUrl(url);
   }
 
   static getApiUrl() {
+    console.warn('Formio.getApiUrl is deprecated. Use Formio.getBaseUrl instead.');
     return Formio.getBaseUrl();
   }
 
@@ -1588,11 +1734,23 @@ class Formio {
     Formio.projectUrlSet = true;
   }
 
+  /**
+   * Sets the Project Url for the application. This is an important method that needs to be set for all applications. It
+   * is documented @ {@link Formio.setBaseUrl}.
+   *
+   * @param {string} url - The project api url.
+   */
   static setProjectUrl(url) {
     Formio.projectUrl = url;
     Formio.projectUrlSet = true;
   }
 
+  /**
+   * The Auth URL can be set to customize the authentication requests made from an application. By default, this is
+   * just the same value as {@link Formio.projectUrl}
+   *
+   * @param {string} url - The authentication url
+   */
   static setAuthUrl(url) {
     Formio.authUrl = url;
   }
@@ -1602,10 +1760,38 @@ class Formio {
     return Formio.projectUrl;
   }
 
+  /**
+   * Returns the Project url described at {@link Formio.setProjectUrl}
+   *
+   * @return {string|string} - The Project Url.
+   */
   static getProjectUrl() {
     return Formio.projectUrl;
   }
 
+  /**
+   * Clears the runtime internal API cache. By default, the Formio class will cache all API requests in memory so that
+   * any subsequent requests using GET method will return the cached results as long as the API URl is the same as what
+   * was cached previously. This cache can be cleared using this method as follows.
+   *
+   * ```js
+   * Formio.clearCache();
+   * ```
+   *
+   * Or, if you just wish to clear a single request, then the {@link Formio.request#options.ignoreCache} option can be
+   * provided when making an API request as follows.
+   *
+   * ```js
+   * Formio.loadForm({}, {
+   *   ignoreCache: true
+   * }).then((form) => {
+   *   console.log(form);
+   * });
+   * ```
+   *
+   * Both of the following will ensure that a new request is made to the API server and that the results will not be
+   * from the cached result.
+   */
   static clearCache() {
     Formio.cache = {};
   }
@@ -1678,6 +1864,11 @@ class Formio {
   static accessInfo(formio) {
     const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
     return Formio.makeRequest(formio, 'accessInfo', `${projectUrl}/access`);
+  }
+
+  static projectRoles(formio) {
+    const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+    return Formio.makeRequest(formio, 'projectRoles', `${projectUrl}/role`);
   }
 
   static currentUser(formio, options) {
