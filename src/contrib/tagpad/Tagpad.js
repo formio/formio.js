@@ -107,9 +107,13 @@ export default class TagpadComponent extends NestedComponent {
   }
 
   addBackground() {
-    if (this.refs.image && this.refs.image.complete) {
-      this.setBackgroundImage();
+    if (this.refs.image && this.refs.image.complete && !this.imageWasLoaded) {
+      this.imageWasLoaded = true;
+      this.originalImage = this.refs.image;
       return;
+    }
+    else if (this.refs.image && this.refs.image.complete && this.imageWasLoaded) {
+      this.setBackgroundImage();
     }
     else if (this.component.imageUrl) {
       Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true, headers: {} })
@@ -176,9 +180,6 @@ export default class TagpadComponent extends NestedComponent {
     svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
 
     this.refs.background.innerHTML = svgMarkup;
-
-    //set dimensions for Two.js instance
-    this.setEditorSize(this.dimensions.width, this.dimensions.height);
   }
 
   setBackgroundImage(image) {
@@ -188,11 +189,11 @@ export default class TagpadComponent extends NestedComponent {
     }
     else {
       this.imageType = 'image';
-      const viewBoxWidth = this.refs.image.width;
-        const viewBoxHeight = this.refs.image.height;
+      const viewBoxWidth = this.originalImage.width;
+      const viewBoxHeight = this.originalImage.height;
 
-        this.canvasSvg.setAttribute('viewBox', `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
-        this.setDimensions( 0, 0, viewBoxWidth, viewBoxHeight);
+      this.canvasSvg.setAttribute('viewBox', `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
+      this.setDimensions( 0, 0, viewBoxWidth, viewBoxHeight);
     }
 
     this.stretchDrawingArea();
@@ -337,11 +338,15 @@ export default class TagpadComponent extends NestedComponent {
     if (this.refs.background && this.hasBackgroundImage) {
       this.createDrawingArea();
 
-      if (this.refs.image) {
+      if (this.refs.image && !this.imageWasLoaded) {
         this.refs.image.addEventListener('load', e => {
-          this.setDimensions(0, 0, e.target.width, e.target.height);
-          this.stretchDrawingArea();
+          this.originalImage = { width: e.target.width, height: e.target.height };
+          this.imageWasLoaded = true;
+          this.addBackground();
         });
+      }
+      else {
+        this.addBackground();
       }
     }
 
@@ -360,7 +365,6 @@ export default class TagpadComponent extends NestedComponent {
 
     this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
     this.attachDrawEvents();
-    this.addBackground();
   }
 
   stretchDrawingArea() {
