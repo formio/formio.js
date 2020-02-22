@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      Home - Documentation
+      Plugins.js - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -49,14 +51,14 @@
 
   <div class="top-nav-wrapper">
     <ul>
-      <li  class="active" >
+      <li >
         <a href="index.html">
           
-          
-            <svg fill="#0095dd" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
               <path d="M0 0h24v24H0z" fill="none"/>
             </svg>
+          
           
         </a>
       </li>
@@ -78,177 +80,113 @@
 
   <div id="main">
     
+      <h1 class="page-title">
+        Plugins.js
+      </h1>
+    
 
     
       
 
+<section>
+  <article>
+    <pre class="prettyprint source linenums"><code>/**
+ * @module Plugins
+ */
+import NativePromise from "native-promise-only";
 
+export function noop() {}
+export function identity(value) {
+  return value;
+}
 
-    
+let plugins = [];
+export function getPlugins() {
+  return plugins;
+}
 
-      
-
-
-  <section class="readme">
-    <article>
-      <h1>JavaScript powered forms and SDK for Form.io</h1>
-<p>This library is a plain JavaScript form renderer and SDK for Form.io. This allows you to render the JSON schema forms produced by Form.io and render those within your application using plain JavaScript, as well as provides an interface SDK to communicate to the Form.io API's. The benefits of this library include.</p>
-<ul>
-<li>Plain JavaScript implementation using ES6 and Modern practices (no jQuery, Angular, React, or any other framework dependency)</li>
-<li>Renders a JSON schema as a webform and hooks up that form to the Form.io API's</li>
-<li>Complete Form Builder which creates the JSON schema used to render the forms.</li>
-<li>Nested components, layouts, Date/Time, Select, Input Masks, and many more included features</li>
-<li>Full JavaScript API SDK library on top of Form.io</li>
-</ul>
-<h2>Examples and Demonstration</h2>
-<p>To find out more about this library as well as see a demonstration of what you can do with this library, go to the Examples and Demo site @ <a href="https://formio.github.io/formio.js">https://formio.github.io/formio.js</a></p>
-<h2>Installation</h2>
-<p>To install this SDK into your project, you can use the following command within your terminal.</p>
-<pre class="prettyprint source"><code>npm install --save formiojs
-</code></pre>
-<h2>Form Building</h2>
-<p>This library has a very powerful JSON form builder, and can be used like the following.</p>
-<pre class="prettyprint source lang-html"><code>&lt;html>
-  &lt;head>
-    &lt;link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    &lt;link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
-    &lt;script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'>&lt;/script>
-    &lt;script type='text/javascript'>
-      window.onload = function() {
-        Formio.builder(document.getElementById('builder'), {}, {});
-      };
-    &lt;/script>
-  &lt;/head>
-  &lt;body>
-    &lt;div id='builder'>&lt;/div>
-  &lt;/body>
-&lt;/html>
-</code></pre>
-<p>This will create a robust Form builder embedded right within your own application. See <a href="https://formio.github.io/formio.js/app/builder">Our Demo Page</a> for an example.</p>
-<h2>Form Rendering</h2>
-<p>The following is a simple example on how to render a form within your HTML application.</p>
-<pre class="prettyprint source lang-html"><code>&lt;html>
-  &lt;head>
-    &lt;link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    &lt;link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
-    &lt;script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'>&lt;/script>
-    &lt;script type='text/javascript'>
-      window.onload = function() {
-        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
-      };
-    &lt;/script>
-  &lt;/head>
-  &lt;body>
-    &lt;div id='formio'>&lt;/div>
-  &lt;/body>
-&lt;/html>
-</code></pre>
-<p>This will render the following form within your application.</p>
-<p><img src="https://monosnap.com/file/iOZ1yB0wPntJLWQwyhdt7ucToLHEfF.png" alt="Alt text"></p>
-<p>You can also render JSON directly instead of referencing the embed URL from Form.io.</p>
-<pre class="prettyprint source lang-js"><code>Formio.createForm(document.getElementById('formio'), {
-  components: [
-    {
-      type: 'textfield',
-      key: 'firstName',
-      label: 'First Name',
-      placeholder: 'Enter your first name.',
-      input: true
-    },
-    {
-      type: 'textfield',
-      key: 'lastName',
-      label: 'Last Name',
-      placeholder: 'Enter your last name',
-      input: true
-    },
-    {
-      type: 'button',
-      action: 'submit',
-      label: 'Submit',
-      theme: 'primary'
+/**
+ * @memberof Plugins
+ */
+export function deregisterPlugin(Formio, plugin) {
+  const beforeLength = plugins.length;
+  plugins = plugins.filter((p) => {
+    if (p !== plugin &amp;&amp; p.__name !== plugin) {
+      return true;
     }
-  ]
-});
-</code></pre>
-<p>This will render the JSON schema of the form within your application.</p>
-<h2>JSFiddle</h2>
-<p>A great way to play around with this renderer is to use JSFiddle, which serves as a good sandbox environment. Here is an example that you can fork and make your own!</p>
-<p>http://jsfiddle.net/travistidwell/v38du9y1/</p>
-<h2>Wizard Rendering</h2>
-<p>This library can also be used to render a form wizard within your application using the same method as rendering a form.
-The determiniation on whether it should render as a wizard or not is based on the <strong>display</strong> property of the form schema
-being set to <code>wizard</code>.</p>
-<pre class="prettyprint source lang-html"><code>&lt;html>
-  &lt;head>
-    &lt;link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    &lt;link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
-    &lt;script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'>&lt;/script>
-    &lt;script type='text/javascript'>
-      window.onload = function() {
-        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard');
-      };
-    &lt;/script>
-  &lt;/head>
-  &lt;body>
-    &lt;div id='formio'>&lt;/div>
-  &lt;/body>
-&lt;/html>
-</code></pre>
-<h2>Form Embedding</h2>
-<p>You can also use this library as a JavaScript embedding of the form using a single line of code. For example, to embed the https://examples.form.io/example form within your application you can simply use the following embed code.</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://unpkg.com/formiojs@latest/dist/formio.embed.min.js?src=https://examples.form.io/example&quot;>&lt;/script>
-</code></pre>
-<p>For an example of how this looks and works, check out the following <a href="http://codepen.io/travist/pen/ggQOBa">Form.io Form Embedding CodePen</a></p>
-<h2>Full Form Renderer Documentation</h2>
-<p>For a more complete documentation of how to utilize this library within your application go to the <a href="https://github.com/formio/formio.js/wiki/Form-Renderer">Form Renderer</a> documentation within the <a href="https://github.com/formio/formio.js/wiki">Wiki</a></p>
-<h1>JavaScript SDK</h1>
-<p>In addition to having a Form Renderer within this application, you can also use this library as a JavaScript SDK in your application. For example, to load a Form, and then submit that form you could do the following within your JavaScript.</p>
-<pre class="prettyprint source lang-html"><code>&lt;html>
-  &lt;head>
-    &lt;script src='https://unpkg.com/formiojs@latest/dist/formio.min.js'>&lt;/script>
-    &lt;script type='text/javascript'>
-      var formio = new Formio('https://examples.form.io/example');
-      formio.loadForm().then(function(form) {
-      
-        // Log the form schema.
-        console.log(form);
-        
-        formio.saveSubmission({data: {
-          firstName: 'Joe',
-          lastName: 'Smith',
-          email: 'joe@example.com'
-        }}).then(function(submission) {
-        
-          // Log the full submission object.
-          console.log(submission);
-        });
-      });
-    &lt;/script>
-  &lt;/head>
-&lt;/html>
-</code></pre>
-<p>You can also use this within an ES6 application as follows.</p>
-<pre class="prettyprint source lang-js"><code>import Formio from 'formiojs';
-let formio = new Formio('https://examples.form.io/example');
-formio.loadForm((form) => {
-  console.log(form);
-  formio.saveSubmission({data: {
-    firstName: 'Joe',
-    lastName: 'Smith',
-    email: 'joe@example.com'
-  }}).then((submission) => {
-    console.log(submission);
-  });
-});
-</code></pre>
-<h2>JavaScript SDK Documentation.</h2>
-<p>For more complete documentation over the JavaScript SDK, please take a look at the <a href="https://github.com/formio/formio.js/wiki/JavaScript-API">JavaScript SDK</a> within the <a href="https://github.com/formio/formio.js/wiki">wiki</a>.</p>
-<h2>Full Developer API Documentation</h2>
-<p>To view the full SDK Documentation, go to <a href="https://formio.github.io/formio.js/docs/">Developer SDK Documentation</a></p>
-    </article>
-  </section>
 
+    (p.deregister || noop).call(plugin, Formio);
+    return false;
+  });
+  return beforeLength !== plugins.length;
+}
+
+/**
+ * Registers a plugin with Formio.js. An optional name parameter can be provided to be used with {@link Formio.getPlugin}.
+ *
+ * @memberof Plugins
+ */
+export function registerPlugin(Formio, plugin, name) {
+  plugins.push(plugin);
+  plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+  plugin.__name = name;
+  (plugin.init || noop).call(plugin, Formio);
+}
+
+/**
+ * @memberof Plugins
+ */
+export function getPlugin(name) {
+  for (const plugin of plugins) {
+    if (plugin.__name === name) {
+      return plugin;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * @memberof Plugins
+ */
+export function pluginWait(pluginFn, ...args) {
+  return NativePromise.all(plugins.map((plugin) =>
+    (plugin[pluginFn] || noop).call(plugin, ...args)));
+}
+
+/**
+ * @memberof Plugins
+ */
+export function pluginGet(pluginFn, ...args) {
+  const callPlugin = (index) => {
+    const plugin = plugins[index];
+
+    if (!plugin) {
+      return NativePromise.resolve(null);
+    }
+
+    return NativePromise.resolve((plugin[pluginFn] || noop).call(plugin, ...args))
+      .then((result) => {
+        if (!isNil(result)) {
+          return result;
+        }
+
+        return callPlugin(index + 1);
+      });
+  };
+  return callPlugin(0);
+}
+
+/**
+ * @memberof Plugins
+ */
+export function pluginAlter(pluginFn, value, ...args) {
+  return plugins.reduce((value, plugin) =>
+    (plugin[pluginFn] || identity)(value, ...args), value);
+}
+</code></pre>
+  </article>
+</section>
 
     
 
