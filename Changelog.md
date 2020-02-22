@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.2
+### Fixed
+ - The parsing of noeval tokens.
+
+### Added
+ - Checkbox to execute calculated values on the server.
+ - JWT Token (decoded) to evaluate contexts.
+
 ## 4.9.0-rc.1
 ### Fixed
  - Reverted issues with PDF builder and local iframe sources.
