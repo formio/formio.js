@@ -1023,21 +1023,20 @@ export default class Formio {
 
   static getToken(options) {
     options = (typeof options === 'string') ? { namespace: options } : options || {};
-    var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
-    if (options.decode) {
-      tokenName += 'Decoded';
-    }
+    const tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
+    const decodedTokenName = options.decode ? `${tokenName}Decoded` : tokenName;
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
 
-    if (Formio.tokens[tokenName]) {
-      return Formio.tokens[tokenName];
+    if (Formio.tokens[decodedTokenName]) {
+      return Formio.tokens[decodedTokenName];
     }
     try {
       Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
       if (options.decode) {
-        Formio.tokens[tokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
+        Formio.tokens[decodedTokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
+        return Formio.tokens[decodedTokenName];
       }
       return Formio.tokens[tokenName];
     }
