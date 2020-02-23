@@ -1362,7 +1362,7 @@ class Formio {
    * @param {boolean} options.getHeaders - Set this if you wish to include the response headers with the return of this method.
    * @return {Promise<Response>|*}
    */
-  static request(url, method = 'GET', data = {}, header = {}, opts = {}) {
+  static request(url, method = 'GET', data = {}, header = new Headers(), opts = {}) {
     if (!url) {
       return NativePromise.reject('No url provided');
     }
