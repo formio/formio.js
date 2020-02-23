@@ -12,7 +12,6 @@ import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
-import * as Plugins from './Plugins';
 import jwtDecode from 'jwt-decode';
 import './polyfills';
 
