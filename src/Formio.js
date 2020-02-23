@@ -13,6 +13,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
 import * as Plugins from './Plugins';
+import jwtDecode from 'jwt-decode';
 import './polyfills';
 
 const { fetch, Headers } = fetchPonyfill({
@@ -1605,16 +1606,21 @@ class Formio {
    */
   static getToken(options) {
     options = (typeof options === 'string') ? { namespace: options } : options || {};
-    var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
+    const tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
+    const decodedTokenName = options.decode ? `${tokenName}Decoded` : tokenName;
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
 
-    if (Formio.tokens[tokenName]) {
-      return Formio.tokens[tokenName];
+    if (Formio.tokens[decodedTokenName]) {
+      return Formio.tokens[decodedTokenName];
     }
     try {
       Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
+      if (options.decode) {
+        Formio.tokens[decodedTokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
+        return Formio.tokens[decodedTokenName];
+      }
       return Formio.tokens[tokenName];
     }
     catch (e) {

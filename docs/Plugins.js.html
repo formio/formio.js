@@ -93,7 +93,8 @@
     <pre class="prettyprint source linenums"><code>/**
  * @module Plugins
  */
-import NativePromise from "native-promise-only";
+import NativePromise from 'native-promise-only';
+import { isNil } from 'lodash';
 
 export function noop() {}
 export function identity(value) {

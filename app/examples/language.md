@@ -4,7 +4,7 @@ layout: vtabs
 section: examples
 weight: 301
 ---
-With Form.io, you can provide multiple langauges for the forms that are rendered within your application. This
+With Form.io, you can provide multiple languages for the forms that are rendered within your application. This
 is done like the following.
 
 ```html
