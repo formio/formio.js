@@ -1601,7 +1601,8 @@ class Formio {
    * Returns the token set within the application for the user.
    *
    * @param {object} options - The options as follows.
-   * @param {string} namespace - The namespace of the token you wish to fetch.
+   * @param {string} options.namespace - The namespace of the token you wish to fetch.
+   * @param {boolean} options.decode - If you would like the token returned as decoded JSON.
    * @return {*}
    */
   static getToken(options) {
@@ -1803,32 +1804,69 @@ class Formio {
     Formio.cache = {};
   }
 
-  static get plugins() {
-    return Plugins.getPlugins();
+  static noop() {}
+  static identity(value) {
+    return value;
   }
 
   static deregisterPlugin(plugin) {
-    return Plugins.deregisterPlugin(Formio, plugin);
+    const beforeLength = Formio.plugins.length;
+    Formio.plugins = Formio.plugins.filter((p) => {
+      if (p !== plugin && p.__name !== plugin) {
+        return true;
+      }
+
+      (p.deregister || Formio.noop).call(plugin, Formio);
+      return false;
+    });
+    return beforeLength !== Formio.plugins.length;
   }
 
   static registerPlugin(plugin, name) {
-    return Plugins.registerPlugin(Formio, plugin, name);
+    Formio.plugins.push(plugin);
+    Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    plugin.__name = name;
+    (plugin.init || Formio.noop).call(plugin, Formio);
   }
 
   static getPlugin(name) {
-    return Plugins.getPlugin(name);
+    for (const plugin of Formio.plugins) {
+      if (plugin.__name === name) {
+        return plugin;
+      }
+    }
+
+    return null;
   }
 
   static pluginWait(pluginFn, ...args) {
-    return Plugins.pluginWait(pluginFn, ...args);
+    return NativePromise.all(Formio.plugins.map((plugin) =>
+      (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));
   }
 
   static pluginGet(pluginFn, ...args) {
-    return Plugins.pluginGet(pluginFn, ...args);
+    const callPlugin = (index) => {
+      const plugin = Formio.plugins[index];
+
+      if (!plugin) {
+        return NativePromise.resolve(null);
+      }
+
+      return NativePromise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
+        .then((result) => {
+          if (!isNil(result)) {
+            return result;
+          }
+
+          return callPlugin(index + 1);
+        });
+    };
+    return callPlugin(0);
   }
 
   static pluginAlter(pluginFn, value, ...args) {
-    return Plugins.pluginAlter(pluginFn, value, ...args);
+    return Formio.plugins.reduce((value, plugin) =>
+      (plugin[pluginFn] || Formio.identity)(value, ...args), value);
   }
 
   static accessInfo(formio) {
@@ -2098,6 +2136,7 @@ Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.authUrl = '';
 Formio.projectUrlSet = false;
+Formio.plugins = [];
 Formio.cache = {};
 Formio.Providers = Providers;
 Formio.version = '---VERSION---';
