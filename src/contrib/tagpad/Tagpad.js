@@ -4,6 +4,7 @@ import NativePromise from 'native-promise-only';
 import Formio from '../../Formio';
 import NestedComponent from '../../components/_classes/nested/NestedComponent';
 import Component from '../../components/_classes/component/Component';
+import { throws } from 'power-assert';
 
 export default class TagpadComponent extends NestedComponent {
   selectedDot;
@@ -317,6 +318,7 @@ export default class TagpadComponent extends NestedComponent {
     dotsValues.forEach((dot, index) => {
       if (!this.dots[index]) {
         this.dots[index] = { index, dot, shape: this.drawDot(dot, index) };
+        this.checkDotValidity(dotsValues, false, this.dots[index]);
       }
     });
 
@@ -331,19 +333,15 @@ export default class TagpadComponent extends NestedComponent {
   }
 
   selectDot(index) {
-    if (!index) {
-      // TODO clear form, components
+    if (!_.isNumber(index)) {
+      this.selectedDot = null;
+      this.redraw();
+      return;
     }
 
     const dot = this.dots[index];
-    if (!dot) {
-      // TODO clear form, components
-    }
-
-    this.two.update();
-    this.selectedDot = this.dots[index];
+    this.selectedDot = dot;
     this.redraw();
-    //TODO render form
   }
 
   dotClicked(e, dot, index) {
@@ -365,28 +363,43 @@ export default class TagpadComponent extends NestedComponent {
       shape
     });
     this.dataValue.push(dot);
+    this.checkDotValidity(this.dataValue, false, this.dots[newDotIndex]);
     this.selectDot(newDotIndex);
     this.triggerChange();
   }
 
   drawDot(dot, index) {
-    const circle = this.two.makeCircle(dot.coordinate.x, dot.coordinate.y, this.component.dotSize);
+    const { x, y } = dot.coordinate;
+
+    const circle = this.drawDotCircle(x, y, this.component.dotSize, index);
+    const text = this.drawDotLabel(x, y, index + 1);
+
+    this.two.add(text);
+    this.two.update();
+
+    circle._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));
+    text._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));
+    return { circle, text };
+  }
+
+  drawDotCircle(x, y, size, index) {
+    const circle = this.two.makeCircle(x, y, size);
     circle.fill = this.component.dotFillColor;
-    circle.stroke = this.component.dotStrokeColor;
+    circle.stroke =  this.component.dotStrokeColor;
     circle.linewidth = this.component.dotStrokeSize;
     circle.className += ' formio-tagpad-dot';
     if (this.selectedDot && this.selectedDot.index === index) {
       circle.dashes = [1];
     }
-    //draw index
-    const text = new Two.Text(index + 1, dot.coordinate.x, dot.coordinate.y);
+
+    return circle;
+  }
+
+  drawDotLabel(x, y, label) {
+    const text = new Two.Text(label, x, y);
     text.className += ' formio-tagpad-dot-index';
-    text.styles = { color: this.component.dotStrokeColor };
-    this.two.add(text);
-    this.two.update();
-    circle._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));
-    text._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));
-    return { circle, text };
+    text.styles = { color:  this.component.dotStrokeColor };
+    return text;
   }
 
   get templateName() {
@@ -466,8 +479,8 @@ export default class TagpadComponent extends NestedComponent {
       return;
     }
     this.dataValue.splice(this.selectedDot.index, 1);
-    this.selectDot(0);
     this.redrawDots();
+    this.selectDot(0);
     this.triggerChange();
   }
 
@@ -475,44 +488,34 @@ export default class TagpadComponent extends NestedComponent {
     return this.refs.canvas && this.refs.canvas.focus();
   }
 
-  // checkData(data, flags, row) {
-  //   data = data || this.rootValue;
-  //   row = row || this.data;
-  //   Component.prototype.checkData.call(this, data, flags, row);
-  //   return this.checkValidity(data, false, this.dataValue);
-  // }
+  checkData(data, flags, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    Component.prototype.checkData.call(this, data, flags, row);
+    return this.checkDots(data, flags, this.dataValue);
+    // return this.checkValidity(data, false, this.dataValue);
+  }
 
-  // checkValidity(data, dirty, row) {
-  //   if (!this.checkCondition(null, data)) {
-  //     this.setCustomValidity('');
-  //     return true;
-  //   }
-  //   let isTagpadValid = true;
-  //   //check validity of each dot
-  //   this.dots.forEach((dot) => {
-  //     const isDotValid = this.checkDotValidity(data, dirty, dot);
-  //     isTagpadValid = isTagpadValid && isDotValid;
-  //   });
+  checkDots(data, flags, row) {
+    let isTagpadValid = true;
+    //check validity of each dot
+    this.dots.forEach((dot) => {
+      const isDotValid = this.checkDotValidity(data, flags, dot);
+      isTagpadValid = isTagpadValid && isDotValid;
+    });
 
-  //   //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation
-  //   if (this.selectedDot) {
-  //     this.checkDotValidity(data, dirty, this.dots[this.selectedDot.index]);
-  //   }
-  //   if (isTagpadValid) {
-  //     this.setCustomValidity('');
-  //   }
-  //   else {
-  //     this.setCustomValidity(this.t('There are some invalid dots'), dirty);
-  //   }
-  //   return isTagpadValid;
-  // }
+    //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation
+    if (this.selectedDot) {
+      this.checkDotValidity(data, false, this.dots[this.selectedDot.index]);
+    }
+    return isTagpadValid;
+  }
 
   checkDotValidity(data, dirty, dot) {
     if (!this.formComponents) {
       return true;
     }
     const isDotValid = this.formComponents.reduce((valid, component) => {
-      component.dataValue = dot.dot.data[component.key];
       return valid && component.checkValidity(data, dirty);
     }, true);
     this.setDotValidity(dot, isDotValid);
