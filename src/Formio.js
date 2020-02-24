@@ -12,6 +12,7 @@ import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
+import Contrib from './contrib';
 import './polyfills';
 
 const { fetch, Headers } = fetchPonyfill({
@@ -1442,6 +1443,7 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
+Formio.contrib = Contrib;
 
 if (typeof global === 'object' && !global.Formio) {
   global.Formio = Formio;
