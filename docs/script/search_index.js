@@ -1818,6 +1818,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio#deleterole",
+    "class/src/Formio.js~Formio.html#instance-method-deleteRole",
+    "src/Formio.js~Formio#deleteRole",
+    "method"
+  ],
+  [
     "src/formio.js~formio#deletesubmission",
     "class/src/Formio.js~Formio.html#instance-method-deleteSubmission",
     "src/Formio.js~Formio#deleteSubmission",
@@ -1932,6 +1938,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio#loadrole",
+    "class/src/Formio.js~Formio.html#instance-method-loadRole",
+    "src/Formio.js~Formio#loadRole",
+    "method"
+  ],
+  [
+    "src/formio.js~formio#loadroles",
+    "class/src/Formio.js~Formio.html#instance-method-loadRoles",
+    "src/Formio.js~Formio#loadRoles",
+    "method"
+  ],
+  [
     "src/formio.js~formio#loadsubmission",
     "class/src/Formio.js~Formio.html#instance-method-loadSubmission",
     "src/Formio.js~Formio#loadSubmission",
@@ -1998,6 +2016,24 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.js~formio#roleid",
+    "class/src/Formio.js~Formio.html#instance-member-roleId",
+    "src/Formio.js~Formio#roleId",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#roleurl",
+    "class/src/Formio.js~Formio.html#instance-member-roleUrl",
+    "src/Formio.js~Formio#roleUrl",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#rolesurl",
+    "class/src/Formio.js~Formio.html#instance-member-rolesUrl",
+    "src/Formio.js~Formio#rolesUrl",
+    "member"
+  ],
+  [
     "src/formio.js~formio#save",
     "class/src/Formio.js~Formio.html#instance-method-save",
     "src/Formio.js~Formio#save",
@@ -2019,6 +2055,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio#saveproject",
     "class/src/Formio.js~Formio.html#instance-method-saveProject",
     "src/Formio.js~Formio#saveProject",
+    "method"
+  ],
+  [
+    "src/formio.js~formio#saverole",
+    "class/src/Formio.js~Formio.html#instance-method-saveRole",
+    "src/Formio.js~Formio#saveRole",
     "method"
   ],
   [
@@ -2238,6 +2280,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio.projectroles",
+    "class/src/Formio.js~Formio.html#static-method-projectRoles",
+    "src/Formio.js~Formio.projectRoles",
+    "method"
+  ],
+  [
     "src/formio.js~formio.registerplugin",
     "class/src/Formio.js~Formio.html#static-method-registerPlugin",
     "src/Formio.js~Formio.registerPlugin",
@@ -2340,12 +2388,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/pdf.js~pdf#_iframesrc",
-    "class/src/PDF.js~PDF.html#instance-member-_iframeSrc",
-    "src/PDF.js~PDF#_iframeSrc",
-    "member"
-  ],
-  [
     "src/pdf.js~pdf#attach",
     "class/src/PDF.js~PDF.html#instance-method-attach",
     "src/PDF.js~PDF#attach",
@@ -2376,27 +2418,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/pdf.js~pdf#fetchpdf",
-    "class/src/PDF.js~PDF.html#instance-method-fetchPdf",
-    "src/PDF.js~PDF#fetchPdf",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#getpdf",
-    "class/src/PDF.js~PDF.html#instance-method-getPdf",
-    "src/PDF.js~PDF#getPdf",
+    "src/pdf.js~pdf#getsrc",
+    "class/src/PDF.js~PDF.html#instance-method-getSrc",
+    "src/PDF.js~PDF#getSrc",
     "method"
   ],
   [
     "src/pdf.js~pdf#getsubmission",
     "class/src/PDF.js~PDF.html#instance-method-getSubmission",
     "src/PDF.js~PDF#getSubmission",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#handlepdfsrc",
-    "class/src/PDF.js~PDF.html#instance-method-handlePdfSrc",
-    "src/PDF.js~PDF#handlePdfSrc",
     "method"
   ],
   [
@@ -2421,18 +2451,6 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#iframereadyresolve",
     "class/src/PDF.js~PDF.html#instance-member-iframeReadyResolve",
     "src/PDF.js~PDF#iframeReadyResolve",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#iframesrc",
-    "class/src/PDF.js~PDF.html#instance-get-iframeSrc",
-    "src/PDF.js~PDF#iframeSrc",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#iframesrc",
-    "class/src/PDF.js~PDF.html#instance-set-iframeSrc",
-    "src/PDF.js~PDF#iframeSrc",
     "member"
   ],
   [

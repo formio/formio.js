@@ -12,6 +12,7 @@ import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
+import jwtDecode from 'jwt-decode';
 import './polyfills';
 
 const { fetch, Headers } = fetchPonyfill({
@@ -52,6 +53,9 @@ export default class Formio {
     this.projectsUrl = '';
     this.projectUrl = '';
     this.projectId = '';
+    this.roleUrl = '';
+    this.rolesUrl = '';
+    this.roleId = '';
     this.formUrl = '';
     this.formsUrl = '';
     this.formId = '';
@@ -180,8 +184,11 @@ export default class Formio {
       this.projectsUrl = this.projectsUrl || `${this.base}/project`;
     }
 
+    // Configure Role urls and role ids.
+    registerItems(['role'], this.projectUrl);
+
     // Configure Form urls and form ids.
-    if ((path.search(/(^|\/)(form)($|\/)/) !== -1)) {
+    if (/(^|\/)(form)($|\/)/.test(path)) {
       registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     }
     else {
@@ -284,6 +291,22 @@ export default class Formio {
       query = `?${Formio.serialize(query.params)}`;
     }
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);
+  }
+
+  loadRole(opts) {
+    return this.load('role', null, opts);
+  }
+
+  saveRole(data, opts) {
+    return this.save('role', data, opts);
+  }
+
+  deleteRole(opts) {
+    return this.delete('role', opts);
+  }
+
+  loadRoles(opts) {
+    return this.index('roles', null, opts);
   }
 
   loadForm(query, opts) {
@@ -1000,16 +1023,21 @@ export default class Formio {
 
   static getToken(options) {
     options = (typeof options === 'string') ? { namespace: options } : options || {};
-    var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
+    const tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
+    const decodedTokenName = options.decode ? `${tokenName}Decoded` : tokenName;
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
 
-    if (Formio.tokens[tokenName]) {
-      return Formio.tokens[tokenName];
+    if (Formio.tokens[decodedTokenName]) {
+      return Formio.tokens[decodedTokenName];
     }
     try {
       Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
+      if (options.decode) {
+        Formio.tokens[decodedTokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
+        return Formio.tokens[decodedTokenName];
+      }
       return Formio.tokens[tokenName];
     }
     catch (e) {
@@ -1175,6 +1203,11 @@ export default class Formio {
   static accessInfo(formio) {
     const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
     return Formio.makeRequest(formio, 'accessInfo', `${projectUrl}/access`);
+  }
+
+  static projectRoles(formio) {
+    const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+    return Formio.makeRequest(formio, 'projectRoles', `${projectUrl}/role`);
   }
 
   static currentUser(formio, options) {
