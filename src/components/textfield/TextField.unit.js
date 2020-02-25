@@ -41,7 +41,7 @@ describe('TextField Component', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { minLength: 2 }
     })).then((component) => {
-      return Harness.testInvalid(component, 't', 'firstName', 'First Name must be longer than 1 characters.').then(() => component);
+      return Harness.testInvalid(component, 't', 'firstName', 'First Name must contain 2 or more characters.').then(() => component);
     }).then((component) => {
       return Harness.testValid(component, 'te').then(() => component);
     });
@@ -51,7 +51,7 @@ describe('TextField Component', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { maxLength: 5 }
     })).then(component => {
-      return Harness.testInvalid(component, 'testte', 'firstName', 'First Name must be shorter than 6 characters.').then(() => component);
+      return Harness.testInvalid(component, 'testte', 'firstName', 'First Name must contain 5 or less characters.').then(() => component);
     }).then((component) => {
       return Harness.testValid(component, 'te').then(() => component);
     });
