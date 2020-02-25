@@ -360,7 +360,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('minLength'), {
             field: component.errorLabel,
-            length: (setting - 1),
+            length: setting,
             data: component.data
           });
         },
@@ -377,7 +377,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('maxLength'), {
             field: component.errorLabel,
-            length: (setting + 1),
+            length: setting,
             data: component.data
           });
         },
