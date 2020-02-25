@@ -1,7 +1,6 @@
 import Field from './../../components/_classes/field/Field';
 import NativePromise from 'native-promise-only';
 import getModes from './Sketchpad.modes';
-import getStyles from './Sketchpad.styles';
 import toolbarButtons from './Sketchpad.toolbar.buttons';
 import Formio from '../../Formio';
 import Two from 'two.js';
@@ -14,6 +13,8 @@ export default class Sketchpad extends Field {
   modes;
   dimensionsMultiplier;
   zoomInfo;
+  layers;
+  deleted;
 
   static schema(...extend) {
     return Field.schema({
@@ -49,8 +50,7 @@ export default class Sketchpad extends Field {
     });
     this.backgroundReady.promise = backgroundReadyPromise;
 
-    this.modes = getModes.call(this);
-    this.styles = getStyles.call(this, this.attachFunctions);
+    this.modes = getModes.call(this, Two);
 
     this.state = {
       mode: Object.keys(this.modes)[0],
@@ -66,6 +66,9 @@ export default class Sketchpad extends Field {
       multiplier: 1.5,
       totalMultiplier: 1
     };
+
+    this.deleted = [];
+    this.layers = [];
   }
 
   render() {
@@ -141,6 +144,38 @@ export default class Sketchpad extends Field {
     return !this.component.width || !this.component.height;
   }
 
+  get attachFunctions() {
+    const setColor = (element, color, onChange) => {
+      const picker = new Picker(element);
+        element.style.color = color;
+        picker.setColor(color, true);
+        picker.onChange = (newColor) => {
+          element.style.color = newColor.rgbaString;
+          onChange(newColor.rgbaString);
+        };
+        return element;
+    };
+
+    const attachInput = (key, value, onChange) => {
+      const inputRef = this.refs[key];
+      if (inputRef) {
+        inputRef.addEventListener('change', e => onChange(e.target.value));
+        inputRef.value = value;
+      }
+    };
+
+    return {
+      stroke: (element) => setColor(element, this.state.stroke, (color) => this.state.stroke = color),
+      fill: (element) => setColor(element, this.state.fill, (color) => this.state.fill = color),
+      width: (element) => attachInput('width-input', this.state.linewidth, (lineWidth) => this.state.linewidth = lineWidth),
+      circle: (element) => attachInput('circle-input', this.state.circleSize, (circleSize) => this.state.circleSize = circleSize)
+    };
+  }
+
+  get buttonGroups() {
+    return Object.entries(toolbarButtons).map(([gruop, buttons]) => buttons);
+  }
+
   createDrawingArea() {
     this.two = new Two({ type: Two.Types.svg }).appendTo(this.refs.canvas);
     this.canvasSvg = this.two.renderer.domElement;
@@ -156,6 +191,7 @@ export default class Sketchpad extends Field {
   }
 
   addBackground() {
+    this.backgroundReady.promise.then(() => this.backgroundReady.isReady = true);
     if (this.refs.image && this.refs.image.complete && !this.imageWasLoaded) {
       this.imageWasLoaded = true;
       this.originalImage = this.refs.image;
@@ -350,49 +386,47 @@ export default class Sketchpad extends Field {
   }
 
   attachToolbar() {
-   toolbarButtons.modes.forEach(mode => {
+    this.attachModesButtons();
+    this.attachStylesButtons();
+    this.attachActionsButtons();
+  }
+
+  attachModesButtons() {
+    toolbarButtons.modes.forEach(mode => {
       const buttonRef = this.refs[mode.key];
+
       if (buttonRef && this.modes[mode.key]) {
         const modeConfig = this.modes[mode.key];
         buttonRef.addEventListener('click', e => this.setState(modeConfig.state));
-
-        if (this.attachFunctions[mode.key]) {
-          this.attachFunctions[mode.key](buttonRef);
-        }
+        this.callAttachFunction(buttonRef, mode.key);
       }
     });
   }
 
-  get attachFunctions() {
-    const setColor = (element, color) => {
-      const picker = new Picker(element);
-        element.style.color = color;
-        picker.setColor(color, true);
-        picker.onChange = (color) => {
-          color = color.rgbaString;
-          element.style.color = color.rgbaString;
-        };
-        return element;
-    };
+  attachStylesButtons() {
+    toolbarButtons.styles.forEach(style => {
+      const buttonRef = this.refs[style.key];
 
-    const attachInput = (key, value, onChange) => {
-      const inputRef = this.refs[key];
-      if (inputRef) {
-        inputRef.addEventListener('change', onChange);
-        inputRef.value = value;
+      if (buttonRef) {
+        this.callAttachFunction(buttonRef, style.key);
       }
-    };
-
-    return {
-      stroke: (element) => setColor(element, this.state.stroke),
-      fill: (element) => setColor(element, this.state.fill),
-      lineWidth: (element) => attachInput('lineWidth-input', (e) => this.state.linewidth = e.target.value),
-      circle: (element) => attachInput('radius-input', (e) => this.state.linewidth = e.target.value)
-    };
+    });
   }
 
-  get buttonGroups() {
-    return Object.entries(toolbarButtons).map(([gruop, buttons]) => buttons);
+  attachActionsButtons() {
+    toolbarButtons.actions.forEach(action => {
+      const buttonRef = this.refs[action.key];
+
+      if (buttonRef) {
+        buttonRef.addEventListener('click', () => this[action.key]());
+      }
+    });
+  }
+
+  callAttachFunction(element, key) {
+    if (this.attachFunctions[key]) {
+      this.attachFunctions[key](element);
+    }
   }
 
   setState(state) {
@@ -462,5 +496,102 @@ export default class Sketchpad extends Field {
     this.two.width = width;
     this.two.height = height;
     this.two.update();
+
+    //TODO change canvasSvg size and backgroundSize
+  }
+
+  clear() {
+    this.two.clear();
+  }
+
+  clearAll() {
+    this.layers = [];
+    this.dataValue = [];
+    this.clear();
+    this.two.update();
+  }
+
+  draw(value) {
+    this.clear();
+    this.layers = value.map(item => this.modes[item.mode].draw(item));
+    this.two.update();
+  }
+
+  undo() {
+    const value = this.dataValue.slice();
+    if (!value.length) {
+      return;
+    }
+    this.deleted.push(value.pop());
+    this.dataValue = value;
+    this.triggerChange();
+    this.draw(value);
+  }
+
+  redo() {
+     if (!this.deleted.length) {
+      return;
+    }
+    const value = this.dataValue.slice();
+    value.push(this.deleted.pop());
+    this.dataValue = value;
+    this.triggerChange();
+    this.draw(value);
+  }
+
+  setValue(value) {
+    if (!this.backgroundReady.isReady || !this.two) {
+      return;
+    }
+    this.draw(value);
+  }
+
+  //TODO use it for modalEdit preview template
+  getSvg() {
+    //clone view SVG element from editor
+    const svgElement = this.canvasSvg.cloneNode(true);
+    //make view SVG responsive: remove height and width attribute, add viewBox attribute
+    svgElement.removeAttribute('height');
+    svgElement.removeAttribute('width');
+    svgElement.style.cursor = 'pointer';
+    //set viewBox to default to reset zoom
+    const viewBox = this.zoomInfo.viewBox.default;
+    svgElement.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    return svgElement;
+  }
+
+  normalizeSvgOffset() {
+    /* eslint-disable max-len */
+    //don't let offset go out of SVG on the left and on the top
+    //canvas
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX < this.zoomInfo.viewBox.default.minX ? this.zoomInfo.viewBox.default.minX : this.zoomInfo.viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY < this.zoomInfo.viewBox.default.minY ? this.zoomInfo.viewBox.default.minY : this.zoomInfo.viewBox.current.minY;
+    //don't let offset go out of SVG on the right and on the bottom
+    //canvas
+    const canvasMaxOffsetX = this.zoomInfo.viewBox.default.width - this.zoomInfo.viewBox.current.width + this.zoomInfo.viewBox.default.minX;
+    const canvasMaxOffsetY = this.zoomInfo.viewBox.default.height - this.zoomInfo.viewBox.current.height + this.zoomInfo.viewBox.default.minY;
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX > (canvasMaxOffsetX) ? canvasMaxOffsetX : this.zoomInfo.viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY > (canvasMaxOffsetY) ? canvasMaxOffsetY : this.zoomInfo.viewBox.current.minY;
+    /* eslint-enable max-len */
+  }
+
+  updateSvgViewBox() {
+    //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
+    const viewBox = this.zoomInfo.viewBox.current;
+    this.canvasSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    // this.refs.background.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`); //TODO set view box for background
+  }
+
+  dragImage(offset) {
+    //calculate new offsets for SVG
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX - offset.x;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY - offset.y;
+    this.normalizeSvgOffset();
+    this.updateSvgViewBox();
+  }
+
+  setTotalMultiplier(multiplier) {
+    this.zoomInfo.totalMultiplier = multiplier;
+    // this.refs.totalMultiplier.innerHTML = this.t(Math.round(multiplier * 100) / 100);
   }
 }
