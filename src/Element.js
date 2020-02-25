@@ -441,7 +441,7 @@ export default class Element {
     // Allow templates to intercept.
     const classes = element.getAttribute('class');
     if (!classes?.includes(className)) {
-      element.setAttribute('class', `${classes} ${className}`);
+      element.setAttribute('class', `${classes || ''} ${className}`);
     }
 
     return this;

@@ -42,6 +42,7 @@ import resourceAdd from './resourceAdd';
 import select from './select';
 import selectOption from './selectOption';
 import signature from './signature';
+import sketchpad from './sketchpad';
 import survey from './survey';
 import tab from './tab';
 import table from './table';
@@ -111,6 +112,7 @@ export default {
   select,
   selectOption,
   signature,
+  sketchpad,
   survey,
   tab,
   table,

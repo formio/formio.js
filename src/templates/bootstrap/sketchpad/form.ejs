@@ -1,0 +1,32 @@
+<div class="formio-sketchpad-edit-dialog-body">
+  <div class="formio-sketchpad-edit-dialog-header">
+    <div class="btn-toolbar formio-sketchpad-toolbar" role="toolbar">
+      {% ctx.buttonGroups.forEach(group => { %}
+        <div class="btn-group formio-sketchpad-toolbar-group" role="group">
+          {% group.forEach(button => { %}
+            <div class="btn formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-{{button.key}}" ref="{{button.key}}" title="{{button.title}}">
+              <i class="{{button.icon}}"></i>
+              {% if (button.input) { %}
+                <input type="{{button.input.type}}" class="formio-sketchpad-toolbar-input {{button.input.class}}" ref="{{button.key}}-input"/>
+              {% } %}
+            </div>
+          {% }) %}
+        </div>
+      {% }) %}
+    </div>
+  </div>
+  <div class="formio-edit-sketchpad-container">
+    <div class="formio-edit-sketchpad-canvas" ref="canvas"></div>
+  </div>
+  <div class="formio-edit-sketchpad-background" ref="background">
+    {% if (!ctx.component.image && !ctx.component.imageUrl) { %}
+        Background image is not specified. Sketchpad doesn\'t work without background image
+    {% } %}
+    {% if (ctx.component.imageUrl && !(ctx.component.imageType === 'svg')) { %}
+      <img src={{ctx.component.imageUrl}} ref="image" alt="" width="100%"/>
+    {% } %}
+  </div>
+  <div class="formio-sketchpad-edit-dialog-footer">
+    <div class="formio-sketchpad-meta-info"><span><span>{{ctx.zoomInfo.totalMultiplier}}</span>x</span>
+  </div>
+</div></div>
