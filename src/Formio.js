@@ -1351,6 +1351,9 @@ export default class Formio {
             });
             resolve(false);
           }
+        })
+        .catch(error => {
+          reject(error);
         });
     });
   }
