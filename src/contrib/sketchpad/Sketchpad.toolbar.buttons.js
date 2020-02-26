@@ -17,6 +17,9 @@ export default {
       input: {
         type: 'number',
         class: 'formio-sketchpad-radius-input',
+        attributes: {
+          min: 0
+        }
       }
     },
     {
@@ -58,7 +61,11 @@ export default {
       icon: 'fa fa-minus',
       input: {
         type: 'number',
-        class: 'formio-sketchpad-linewidth-input'
+        class: 'formio-sketchpad-linewidth-input',
+        attributes: {
+          min: 0,
+          max: 250
+        }
       }
     }
   ],

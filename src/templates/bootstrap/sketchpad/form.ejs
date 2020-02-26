@@ -1,5 +1,5 @@
-<div class="formio-sketchpad-edit-dialog-body">
-  <div class="formio-sketchpad-edit-dialog-header">
+<div class="formio-sketchpad-body">
+  <div class="formio-sketchpad-header">
     <div class="btn-toolbar formio-sketchpad-toolbar" role="toolbar">
       {% ctx.buttonGroups.forEach(group => { %}
         <div class="btn-group formio-sketchpad-toolbar-group" role="group">
@@ -7,7 +7,8 @@
             <div class="btn formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-{{button.key}}" ref="{{button.key}}" title="{{button.title}}">
               <i class="{{button.icon}}"></i>
               {% if (button.input) { %}
-                <input type="{{button.input.type}}" class="formio-sketchpad-toolbar-input {{button.input.class}}" ref="{{button.key}}-input"/>
+                <input type="{{button.input.type}}" class="formio-sketchpad-toolbar-input {{button.input.class}}" ref="{{button.key}}-input"
+                {{button.input.attributes && Object.entries(button.input.attributes).map(([attr, value]) => `${attr}='${value}'`).join(' ')}}/>
               {% } %}
             </div>
           {% }) %}
@@ -15,8 +16,8 @@
       {% }) %}
     </div>
   </div>
-  <div class="formio-edit-sketchpad-container">
-    <div class="formio-edit-sketchpad-background" ref="background">
+  <div class="formio-sketchpad-container" ref="drawingContainer">
+    <div class="formio-sketchpad-background" ref="background">
       {% if (!ctx.component.image && !ctx.component.imageUrl) { %}
           Background image is not specified. Sketchpad doesn\'t work without background image
       {% } %}
@@ -24,9 +25,9 @@
         <img src={{ctx.component.imageUrl}} ref="image" alt="" width="100%"/>
       {% } %}
     </div>
-    <div class="formio-edit-sketchpad-canvas" ref="canvas"></div>
+    <div class="formio-sketchpad-canvas" ref="canvas"></div>
   </div>
-  <div class="formio-sketchpad-edit-dialog-footer">
-    <div class="formio-sketchpad-meta-info"><span><span>{{ctx.zoomInfo.totalMultiplier}}</span>x</span>
+  <div class="formio-sketchpad-footer">
+    <div class="formio-sketchpad-meta-info"><span><span ref="totalMultiplier">{{ctx.zoomInfo.totalMultiplier}}</span>x</span>
   </div>
 </div></div>

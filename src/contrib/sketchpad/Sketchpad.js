@@ -8,6 +8,22 @@ import Picker from 'vanilla-picker';
 import _ from 'lodash';
 
 export default class Sketchpad extends Field {
+  static get defaultFill() {
+    return '#ccc';
+  }
+
+  static get defaultStroke() {
+    return '#333';
+  }
+
+  static get defaultLineWidth() {
+    return 1;
+  }
+
+  static get defaultCircleSize() {
+    return 10;
+  }
+
   useBackgroundDimensions;
   state;
   modes;
@@ -25,10 +41,10 @@ export default class Sketchpad extends Field {
       modalEdit: false,
       imageType: 'image',
       defaultZoom: 100,
-      defaultStroke: '#333',
-      defaultFill: '#ccc',
-      defaultLineWidth: 1,
-      defaultCircleSize: 10
+      defaultStroke: Sketchpad.defaultStroke,
+      defaultFill: Sketchpad.defaultFill,
+      defaultLineWidth: Sketchpad.defaultLineWidth,
+      defaultCircleSize: Sketchpad.defaultCircleSize
     }, ...extend);
   }
 
@@ -54,10 +70,10 @@ export default class Sketchpad extends Field {
 
     this.state = {
       mode: Object.keys(this.modes)[0],
-      stroke: this.component.defaultStroke,
-      fill: this.component.defaultFill,
-      linewidth: this.component.defaultLineWidth,
-      circleSize: this.component.defaultCircleSize
+      stroke: this.component.defaultStroke || Sketchpad.defaultStroke,
+      fill: this.component.defaultFill || Sketchpad.defaultFill,
+      linewidth: this.component.defaultLineWidth || Sketchpad.defaultLineWidth,
+      circleSize: this.component.defaultCircleSize || Sketchpad.defaultCircleSize
     };
 
     this.dimensionsMultiplier = 1;
@@ -83,6 +99,8 @@ export default class Sketchpad extends Field {
     this.loadRefs(element, {
       canvas: 'single',
       background: 'single',
+      drawingContainer: 'single',
+      totalMultiplier: 'single',
       ...this.buttonsRefs
     });
 
@@ -119,10 +137,8 @@ export default class Sketchpad extends Field {
 
   get renderContext() {
     return {
-      zoomInfo: this.zoomInfo || {
-        viewBox: {},
-        multiplier: 1.5,
-        totalMultiplier: 1
+      zoomInfo: {
+        totalMultiplier: this.zoomInfo ? Math.round(this.zoomInfo.totalMultiplier * 100) / 100 : 1
       },
       buttonGroups: this.buttonGroups
     };
@@ -167,13 +183,13 @@ export default class Sketchpad extends Field {
     return {
       stroke: (element) => setColor(element, this.state.stroke, (color) => this.state.stroke = color),
       fill: (element) => setColor(element, this.state.fill, (color) => this.state.fill = color),
-      width: (element) => attachInput('width-input', this.state.linewidth, (lineWidth) => this.state.linewidth = lineWidth),
-      circle: (element) => attachInput('circle-input', this.state.circleSize, (circleSize) => this.state.circleSize = circleSize)
+      width: () => attachInput('width-input', this.state.linewidth, (lineWidth) => this.state.linewidth = lineWidth),
+      circle: () => attachInput('circle-input', this.state.circleSize, (circleSize) => this.state.circleSize = circleSize)
     };
   }
 
   get buttonGroups() {
-    return Object.entries(toolbarButtons).map(([gruop, buttons]) => buttons);
+    return Object.entries(toolbarButtons).map(([, buttons]) => buttons);
   }
 
   createDrawingArea() {
@@ -185,8 +201,8 @@ export default class Sketchpad extends Field {
 
   getActualCoordinate(coordinate) {
     // recalculate coordinate taking into account changed size of drawing area
-    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier) + this.dimensions.minX;
-    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier) + this.dimensions.minY;
+    coordinate.x = Math.round(coordinate.x / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier  + this.zoomInfo.viewBox.current.minX);
+    coordinate.y = Math.round(coordinate.y / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier  + this.zoomInfo.viewBox.current.minY);
     return coordinate;
   }
 
@@ -389,6 +405,7 @@ export default class Sketchpad extends Field {
     this.attachModesButtons();
     this.attachStylesButtons();
     this.attachActionsButtons();
+    this.setActiveButton(this.state.mode);
   }
 
   attachModesButtons() {
@@ -457,7 +474,7 @@ export default class Sketchpad extends Field {
       this.setDimensions( 0, 0, viewBoxWidth, viewBoxHeight);
     }
 
-    this.stretchDrawingArea();
+    this.setEditorSize(this.dimensions.width, this.dimensions.height);
     this.backgroundReady.resolve();
   }
 
@@ -482,12 +499,15 @@ export default class Sketchpad extends Field {
   }
 
   stretchDrawingArea() {
-    const width = this.refs.background.offsetWidth;
-    const height = this.refs.background.offsetHeight;
+    const width =  this.dimensions.width;
+    const height = this.dimensions.height;
     //don't stretch if background dimensions are unknown yet
     if (width && height) {
-      //will need dimensions multiplier for coordinates calculation
+      const defaultWidth = this.zoomInfo.viewBox.default.width;
+      const defaultHeight = this.zoomInfo.viewBox.default.height;
       this.dimensionsMultiplier = width / this.dimensions.width;
+      this.dimensions.width = Math.round(defaultWidth * this.dimensionsMultiplier);
+      this.dimensions.height = Math.round(defaultHeight * this.dimensionsMultiplier);
       this.setEditorSize(width, height);
     }
   }
@@ -496,8 +516,8 @@ export default class Sketchpad extends Field {
     this.two.width = width;
     this.two.height = height;
     this.two.update();
-
-    //TODO change canvasSvg size and backgroundSize
+    this.refs.background.firstChild.style.width = width;
+    this.refs.canvas.firstChild.style.width = width;
   }
 
   clear() {
@@ -579,7 +599,7 @@ export default class Sketchpad extends Field {
     //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
     const viewBox = this.zoomInfo.viewBox.current;
     this.canvasSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
-    // this.refs.background.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`); //TODO set view box for background
+    this.refs.background.firstChild.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`); //TODO set view box for background
   }
 
   dragImage(offset) {
@@ -592,6 +612,44 @@ export default class Sketchpad extends Field {
 
   setTotalMultiplier(multiplier) {
     this.zoomInfo.totalMultiplier = multiplier;
-    // this.refs.totalMultiplier.innerHTML = this.t(Math.round(multiplier * 100) / 100);
+    this.redraw();
+    this.refs.totalMultiplier.innerHTML = this.t(Math.round(multiplier * 100) / 100);
+  }
+
+  zoom(coordinate, multiplier) {
+    this.setTotalMultiplier(this.zoomInfo.totalMultiplier * multiplier);
+    //calculate new viewBox width for canvas
+    this.zoomInfo.viewBox.current.width =
+      Math.round(this.zoomInfo.viewBox.default.width / this.zoomInfo.totalMultiplier);
+    this.zoomInfo.viewBox.current.height =
+      Math.round(this.zoomInfo.viewBox.default.height / this.zoomInfo.totalMultiplier);
+    if (
+      this.zoomInfo.viewBox.current.width > this.zoomInfo.viewBox.default.width &&
+      this.zoomInfo.viewBox.current.height > this.zoomInfo.viewBox.default.height
+    ) {
+      //if should get less than initial size, change editor size instead of viewBox size
+      this.setEditorSize(
+        this.dimensions.width * this.zoomInfo.totalMultiplier,
+        this.dimensions.height * this.zoomInfo.totalMultiplier
+      );
+      //restore default viewBox values for canvas and background
+      this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
+    }
+    else {
+      //if should get more than initial size, change viewBox size
+      //restore editor size if needed
+      if (this.two.width !== this.dimensions.width || this.two.height !== this.dimensions.height) {
+        this.setEditorSize(this.dimensions.width, this.dimensions.height);
+      }
+      //calculate SVG offset so that coordinate would be center of zoomed image
+      this.zoomInfo.viewBox.current.minX = coordinate.x - this.zoomInfo.viewBox.current.width / 2;
+      this.zoomInfo.viewBox.current.minY = coordinate.y - this.zoomInfo.viewBox.current.height / 2;
+      this.normalizeSvgOffset();
+    }
+    this.updateSvgViewBox();
+  }
+
+  resetZoom() {
+    this.zoom({ x: 0, y: 0 }, (this.component.defaultZoom / 100) / this.zoomInfo.totalMultiplier);
   }
 }
