@@ -665,10 +665,12 @@ export default class FileComponent extends Field {
               this.redraw();
             })
             .then(() => {
-              fileUploadCallback && fileUploadCallback.call(this);
+              fileUploadCallback && fileUploadCallback.call(this, fileUpload);
             });
         }
-        fileUploadCallback && fileUploadCallback.call(this);
+        else {
+          fileUploadCallback && fileUploadCallback.call(this, fileUpload);
+        }
       });
     }
   }
