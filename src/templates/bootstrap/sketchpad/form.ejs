@@ -22,7 +22,7 @@
           Background image is not specified. Sketchpad doesn\'t work without background image
       {% } %}
       {% if (ctx.component.imageUrl && !(ctx.component.imageType === 'svg')) { %}
-        <img src={{ctx.component.imageUrl}} ref="image" alt="" width="100%"/>
+        <img ref="backgroundImage" alt="" width="100%"/>
       {% } %}
     </div>
     <div class="formio-sketchpad-canvas" ref="canvas"></div>

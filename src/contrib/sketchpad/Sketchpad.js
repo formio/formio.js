@@ -38,7 +38,7 @@ export default class Sketchpad extends Field {
       label: 'Sketchpad',
       key: 'sketchpad',
       input: true,
-      modalEdit: false,
+      modalEdit: true,
       imageType: 'image',
       defaultZoom: 100,
       defaultStroke: Sketchpad.defaultStroke,
@@ -96,11 +96,14 @@ export default class Sketchpad extends Field {
   init() {}
 
   attach(element) {
+    const superAttach = super.attach(element);
     this.loadRefs(element, {
       canvas: 'single',
       background: 'single',
       drawingContainer: 'single',
       totalMultiplier: 'single',
+      previewContainer: 'single',
+      image: 'single',
       ...this.buttonsRefs
     });
 
@@ -109,10 +112,9 @@ export default class Sketchpad extends Field {
       this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
       this.attachDrawEvents();
 
-      if (this.refs.image && !this.imageWasLoaded) {
+      if (this.refs.image) {
         this.refs.image.addEventListener('load', e => {
           this.originalImage = { width: e.target.width, height: e.target.height };
-          this.imageWasLoaded = true;
           this.addBackground();
         });
       }
@@ -122,6 +124,12 @@ export default class Sketchpad extends Field {
 
       this.attachToolbar();
     }
+
+    if (this.componentModal) {
+      this.handleModalViewUpdate();
+    }
+
+    return superAttach;
   }
 
   get buttonsRefs() {
@@ -192,6 +200,23 @@ export default class Sketchpad extends Field {
     return Object.entries(toolbarButtons).map(([, buttons]) => buttons);
   }
 
+  handleModalViewUpdate() {
+    this.on('modalViewUpdated', () => {
+      this.loadRefs(this.refs.openModalWrapper, {
+        previewContainer: 'single',
+        previewBackground: 'single'
+      });
+
+      const setPreviewSvg = () => {
+        if (this.refs.previewContainer) {
+          this.refs.previewContainer.appendChild(this.getSvg());
+        }
+      };
+      this.refs.previewBackground.onload = () => setPreviewSvg();
+      this.refs.previewBackground.setAttribute('src', this.component.imageUrl);
+    });
+  }
+
   createDrawingArea() {
     this.two = new Two({ type: Two.Types.svg }).appendTo(this.refs.canvas);
     this.canvasSvg = this.two.renderer.domElement;
@@ -208,12 +233,7 @@ export default class Sketchpad extends Field {
 
   addBackground() {
     this.backgroundReady.promise.then(() => this.backgroundReady.isReady = true);
-    if (this.refs.image && this.refs.image.complete && !this.imageWasLoaded) {
-      this.imageWasLoaded = true;
-      this.originalImage = this.refs.image;
-      return;
-    }
-    else if (this.refs.image && this.refs.image.complete && this.imageWasLoaded) {
+    if (this.refs.image && this.refs.image.complete) {
       this.setBackgroundImage();
     }
     else if (this.component.imageUrl) {
@@ -222,56 +242,62 @@ export default class Sketchpad extends Field {
         this.setBackgroundImage(image);
       })
       .catch(() => {
-        //TODO check that component works in this case anyway
         this.refs.background.innerHTML = this.t('Background image failed to load. Tagpad doesn\'t work without background image');
         this.backgroundReady.resolve();
       });
     }
   }
 
-  setSvgImage(svgMarkup) {
+  parseSvg(svgMarkup) {
     const xmlDoc = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml');
-    let backgroundSvg = xmlDoc.getElementsByTagName('svg');
+    const backgroundSvg = xmlDoc.getElementsByTagName('svg');
     if (!backgroundSvg || !backgroundSvg[0]) {
+      return null;
+    }
+    return backgroundSvg[0];
+  }
+
+  prepareSvg(svg) {
+    //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
+    svg.removeAttribute('width');
+    svg.removeAttribute('height');
+    svg.setAttribute('ref', 'backgroundImage');
+  }
+
+  setSvgImage(svgMarkup) {
+    const backgroundSvg = this.parseSvg(svgMarkup);
+    if (!backgroundSvg) {
       console.warn(`Sketchpad '${this.component.key}': Background SVG doesn't contain <svg> tag on it`);
       return;
     }
-    backgroundSvg = backgroundSvg[0];
+
     //read initial dimensions from viewBox
     const initialViewBox = backgroundSvg.getAttribute('viewBox');
-
-    if (initialViewBox) {
-      this.setDimensions(...initialViewBox.split(' ').map(parseFloat));
-    }
-    else {
-      this.setDimensions(...this.mapDimensionsFromAttributes(backgroundSvg));
-    }
-
-    //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
-    backgroundSvg.removeAttribute('width');
-    backgroundSvg.removeAttribute('height');
+    const dimensions = initialViewBox ? initialViewBox.split(' ').map(parseFloat)
+                                      : this.mapDimensionsFromAttributes(backgroundSvg);
+    this.setDimensions(...dimensions);
+    this.prepareSvg(backgroundSvg);
 
     const viewBox = this.dimensions;
-    //set initial zoom info for SVG
-    this.zoomInfo.viewBox.default = {
-      width: viewBox.width,
-      height: viewBox.height,
-      minX: viewBox.minX,
-      minY: viewBox.minY
-    };
-    //set current zoom to default
-    this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
-
-    //set background image viewBox
-    backgroundSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
-    //set canvas image viewBox (necessary for canvas SVG to stretch properly without losing correct aspect ration)
-    this.canvasSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    this.assignZoomInfo(viewBox);
+    this.setViewBoxAttribute(backgroundSvg, viewBox);
 
     svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
     //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
     svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
 
     this.refs.background.innerHTML = svgMarkup;
+  }
+
+  assignZoomInfo(viewBox) {
+    this.zoomInfo.viewBox.default = {
+      width: viewBox.width,
+      height: viewBox.height,
+      minX: viewBox.minX,
+      minY: viewBox.minY
+    };
+
+    this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
   }
 
   attachDrawEvents() {
@@ -449,7 +475,6 @@ export default class Sketchpad extends Field {
   setState(state) {
     Object.assign(this.state, state);
     this.setActiveButton(this.state.mode);
-    //change cursor
     this.canvasSvg.style.cursor = _.get(this.modes[this.state.mode], 'cursor.hover', 'default');
   }
 
@@ -467,15 +492,39 @@ export default class Sketchpad extends Field {
     }
     else {
       this.imageType = 'image';
-      const viewBoxWidth = this.originalImage.width;
-      const viewBoxHeight = this.originalImage.height;
-
-      this.canvasSvg.setAttribute('viewBox', `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
+      const viewBoxWidth = this.refs.image.width;
+      const viewBoxHeight = this.refs.image.height;
       this.setDimensions( 0, 0, viewBoxWidth, viewBoxHeight);
+      this.assignZoomInfo(this.dimensions);
     }
 
+    this.loadRefs(this.refs.background, {
+      backgroundImage: 'single'
+    });
+
+    //set canvas image viewBox (necessary for canvas SVG to stretch properly without losing correct aspect ration)
+    this.setViewBoxAttribute(this.canvasSvg, this.dimensions);
     this.setEditorSize(this.dimensions.width, this.dimensions.height);
     this.backgroundReady.resolve();
+  }
+
+  setOpenModalElement() {
+    const template = `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to draw on the image</button>
+      ${this.component.imageUrl ? `<img src=${this.component.imageUrl} width="100%"/>` : ''}
+    `;
+    this.componentModal.setOpenModalElement(template);
+  }
+
+  getModalPreviewTemplate() {
+    const template = `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to draw on the image</button>
+      <div class='formio-sketchpad-modal-preview-container' ref='previewContainer'>
+        <img class='formio-sketchpad-modal-preview-background' ref='previewBackground' width="100%"/>
+      </div>`;
+      return template;
   }
 
   mapDimensionsFromAttributes(svg) {
@@ -516,8 +565,8 @@ export default class Sketchpad extends Field {
     this.two.width = width;
     this.two.height = height;
     this.two.update();
-    this.refs.background.firstChild.style.width = width;
-    this.refs.canvas.firstChild.style.width = width;
+    this.refs.backgroundImage.style.width = width;
+    this.canvasSvg.style.width = width;
   }
 
   clear() {
@@ -566,40 +615,43 @@ export default class Sketchpad extends Field {
     this.draw(value);
   }
 
-  //TODO use it for modalEdit preview template
   getSvg() {
     //clone view SVG element from editor
     const svgElement = this.canvasSvg.cloneNode(true);
-    //make view SVG responsive: remove height and width attribute, add viewBox attribute
-    svgElement.removeAttribute('height');
-    svgElement.removeAttribute('width');
-    svgElement.style.cursor = 'pointer';
+
+    this.addClass(svgElement, 'formio-sketchpad-preview-svg');
+    svgElement.removeAttribute('style');
     //set viewBox to default to reset zoom
-    const viewBox = this.zoomInfo.viewBox.default;
-    svgElement.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    const defaultViewBox = this.zoomInfo.viewBox.default;
+    this.setViewBoxAttribute(svgElement, defaultViewBox);
     return svgElement;
   }
 
   normalizeSvgOffset() {
-    /* eslint-disable max-len */
+    const viewBox = this.zoomInfo.viewBox;
     //don't let offset go out of SVG on the left and on the top
-    //canvas
-    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX < this.zoomInfo.viewBox.default.minX ? this.zoomInfo.viewBox.default.minX : this.zoomInfo.viewBox.current.minX;
-    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY < this.zoomInfo.viewBox.default.minY ? this.zoomInfo.viewBox.default.minY : this.zoomInfo.viewBox.current.minY;
+    this.zoomInfo.viewBox.current.minX = viewBox.current.minX < viewBox.default.minX ? viewBox.default.minX : viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = viewBox.current.minY < viewBox.default.minY ? viewBox.default.minY : viewBox.current.minY;
+
     //don't let offset go out of SVG on the right and on the bottom
-    //canvas
-    const canvasMaxOffsetX = this.zoomInfo.viewBox.default.width - this.zoomInfo.viewBox.current.width + this.zoomInfo.viewBox.default.minX;
-    const canvasMaxOffsetY = this.zoomInfo.viewBox.default.height - this.zoomInfo.viewBox.current.height + this.zoomInfo.viewBox.default.minY;
-    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX > (canvasMaxOffsetX) ? canvasMaxOffsetX : this.zoomInfo.viewBox.current.minX;
-    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY > (canvasMaxOffsetY) ? canvasMaxOffsetY : this.zoomInfo.viewBox.current.minY;
-    /* eslint-enable max-len */
+    const canvasMaxOffsetX = viewBox.default.width - viewBox.current.width + viewBox.default.minX;
+    const canvasMaxOffsetY = viewBox.default.height - viewBox.current.height + viewBox.default.minY;
+    this.zoomInfo.viewBox.current.minX = viewBox.current.minX > (canvasMaxOffsetX) ? canvasMaxOffsetX : viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = viewBox.current.minY > (canvasMaxOffsetY) ? canvasMaxOffsetY : viewBox.current.minY;
+  }
+
+  setViewBoxAttribute(element, viewBox) {
+    element.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
   }
 
   updateSvgViewBox() {
     //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
     const viewBox = this.zoomInfo.viewBox.current;
-    this.canvasSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
-    this.refs.background.firstChild.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`); //TODO set view box for background
+    this.setViewBoxAttribute(this.canvasSvg, viewBox);
+    if (this.imageType !== 'svg') {
+      return;
+    }
+    this.setViewBoxAttribute( this.refs.backgroundImage, viewBox);
   }
 
   dragImage(offset) {
@@ -612,8 +664,11 @@ export default class Sketchpad extends Field {
 
   setTotalMultiplier(multiplier) {
     this.zoomInfo.totalMultiplier = multiplier;
-    this.redraw();
     this.refs.totalMultiplier.innerHTML = this.t(Math.round(multiplier * 100) / 100);
+  }
+
+  redraw() {
+    super.redraw();
   }
 
   zoom(coordinate, multiplier) {

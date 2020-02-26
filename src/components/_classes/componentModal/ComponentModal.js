@@ -79,6 +79,7 @@ export default class ComponentModal {
       : this.component.getModalPreviewTemplate();
     this.component.setContent(this.refs.openModalWrapper, template);
     this.setOpenEventListener();
+    this.component.emit('modalViewUpdated');
   }
 
   closeModal() {
