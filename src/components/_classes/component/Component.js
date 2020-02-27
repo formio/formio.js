@@ -2559,6 +2559,31 @@ export default class Component extends Element {
     this.removeClass(this.element, 'has-message');
   }
 
+  /**
+   * Compare received with previous errors.
+   *
+   * @param newErrorMessages {object} - New error messages received after validation.
+   *
+   * @return boolean - If new errors appeared or not.
+   */
+
+  checkReceivedErrors(newErrorMessages) {
+    let hasNewErrors = !this.error;
+
+    if (!hasNewErrors && newErrorMessages.length && this.error.messages.length) {
+      if (newErrorMessages.length !== this.error.messages.length || !newErrorMessages[0].context) {
+        hasNewErrors = true;
+      }
+      else {
+        hasNewErrors = newErrorMessages.some(({ context: { validator: newValidator } }) => {
+          return this.error.messages.every(({ context: { validator: prevValidator } }) => newValidator !== prevValidator);
+        });
+      }
+    }
+
+    return hasNewErrors;
+  }
+
   setCustomValidity(messages, dirty, external) {
     if (typeof messages === 'string' && messages) {
       messages = {
@@ -2577,8 +2602,9 @@ export default class Component extends Element {
     }
 
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    const hasNewErrors = this.checkReceivedErrors(messages);
 
-    if (messages.length) {
+    if (messages.length && hasNewErrors) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
@@ -2594,7 +2620,7 @@ export default class Component extends Element {
         this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
       }
     }
-    else if (this.error && this.error.external === !!external) {
+    else if (this.error && this.error.external === !!external && !hasErrors) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
