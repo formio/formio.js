@@ -2577,9 +2577,9 @@ export default class Component extends Element {
           this.error.messages.every(({ context: { validator: prevValidator } }) => newValidator !== prevValidator)
         );
       }
+    }
 
     return hasNewErrors;
-    }
   }
 
   setCustomValidity(messages, dirty, external) {
