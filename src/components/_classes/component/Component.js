@@ -2563,10 +2563,8 @@ export default class Component extends Element {
    * Compare received with previous errors.
    *
    * @param newErrorMessages {object} - New error messages received after validation.
-   *
    * @return boolean - If new errors appeared or not.
    */
-
   checkReceivedErrors(newErrorMessages) {
     let hasNewErrors = !this.error;
 
@@ -2575,13 +2573,13 @@ export default class Component extends Element {
         hasNewErrors = true;
       }
       else {
-        hasNewErrors = newErrorMessages.some(({ context: { validator: newValidator } }) => {
-          return this.error.messages.every(({ context: { validator: prevValidator } }) => newValidator !== prevValidator);
-        });
+        hasNewErrors = newErrorMessages.some(({ context: { validator: newValidator } }) =>
+          this.error.messages.every(({ context: { validator: prevValidator } }) => newValidator !== prevValidator)
+        );
       }
-    }
 
     return hasNewErrors;
+    }
   }
 
   setCustomValidity(messages, dirty, external) {
