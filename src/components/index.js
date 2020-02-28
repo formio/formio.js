@@ -33,6 +33,7 @@ import ResourceComponent from './resource/Resource';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
 import SelectComponent from './select/Select';
 import SignatureComponent from './signature/Signature';
+import SketchpadComponent from './sketchpad/Sketchpad';
 import SurveyComponent from './survey/Survey';
 import TableComponent from './table/Table';
 import TabsComponent from './tabs/Tabs';
@@ -82,6 +83,7 @@ export default {
   select: SelectComponent,
   selectboxes: SelectBoxesComponent,
   signature: SignatureComponent,
+  sketchpad: SketchpadComponent,
   survey: SurveyComponent,
   table: TableComponent,
   tabs: TabsComponent,

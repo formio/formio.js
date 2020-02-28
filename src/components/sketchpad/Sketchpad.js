@@ -100,6 +100,7 @@ export default class Sketchpad extends Field {
     this.loadRefs(element, {
       canvas: 'single',
       background: 'single',
+      backgroundImage: 'single',
       drawingContainer: 'single',
       totalMultiplier: 'single',
       previewContainer: 'single',
@@ -109,14 +110,14 @@ export default class Sketchpad extends Field {
 
     if (this.refs.canvas) {
       this.createDrawingArea();
-      this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
       this.attachDrawEvents();
+      this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
 
-      if (this.refs.image) {
-        this.refs.image.addEventListener('load', e => {
-          this.originalImage = { width: e.target.width, height: e.target.height };
+      if (this.refs.backgroundImage) {
+        this.refs.backgroundImage.addEventListener('load', e => {
           this.addBackground();
         });
+        this.refs.backgroundImage.setAttribute('src', this.component.imageUrl);
       }
       else {
         this.addBackground();
@@ -202,7 +203,7 @@ export default class Sketchpad extends Field {
 
   handleModalViewUpdate() {
     this.on('modalViewUpdated', () => {
-      this.loadRefs(this.refs.openModalWrapper, {
+      this.loadRefs(this.componentModal.openModalWrapper, {
         previewContainer: 'single',
         previewBackground: 'single'
       });
@@ -233,7 +234,7 @@ export default class Sketchpad extends Field {
 
   addBackground() {
     this.backgroundReady.promise.then(() => this.backgroundReady.isReady = true);
-    if (this.refs.image && this.refs.image.complete) {
+    if (this.refs.backgroundImage && this.refs.backgroundImage.complete) {
       this.setBackgroundImage();
     }
     else if (this.component.imageUrl) {
@@ -492,8 +493,8 @@ export default class Sketchpad extends Field {
     }
     else {
       this.imageType = 'image';
-      const viewBoxWidth = this.refs.image.width;
-      const viewBoxHeight = this.refs.image.height;
+      const viewBoxWidth = this.refs.backgroundImage.width;
+      const viewBoxHeight = this.refs.backgroundImage.height;
       this.setDimensions( 0, 0, viewBoxWidth, viewBoxHeight);
       this.assignZoomInfo(this.dimensions);
     }
