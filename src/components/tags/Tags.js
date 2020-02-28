@@ -1,5 +1,5 @@
 import Input from '../_classes/input/Input';
-import Choices from 'choices.js/public/assets/scripts/choices.js';
+import Choices from 'choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -54,6 +54,9 @@ export default class TagsComponent extends Input {
       return;
     }
     element.setAttribute('dir', this.i18next.dir());
+    if (this.choices) {
+      this.choices.destroy();
+    }
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
@@ -78,7 +81,6 @@ export default class TagsComponent extends Input {
   detach() {
     super.detach();
     if (this.choices) {
-      this.choices.destroyed = true;
       this.choices.destroy();
       this.choices = null;
     }

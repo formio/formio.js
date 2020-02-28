@@ -459,9 +459,14 @@ export default class FileComponent extends Field {
     }
 
     this.refs.fileType.forEach((fileType, index) => {
+      this.dataValue[index].fileType = this.component.fileTypes[0].label;
+
       this.addEventListener(fileType, 'change', (event) => {
         event.preventDefault();
-        this.dataValue[index].fileType = this.value;
+
+        const fileType = this.component.fileTypes.find((typeObj) => typeObj.value === event.target.value);
+
+        this.dataValue[index].fileType = fileType.label;
       });
     });
 

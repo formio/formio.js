@@ -13,7 +13,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.7/ace.js';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.8/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
@@ -1165,19 +1165,23 @@ export default class Component extends Element {
    * @return {*}
    */
   getWidgetValueAsString(value) {
-    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+    const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
+    if (!value || noInputWidget) {
       return value;
     }
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        if (this.refs.input[index] && this.refs.input[index].widget) {
-          values.push(this.refs.input[index].widget.getValueAsString(val));
+        const widget = this.refs.input[index] && this.refs.input[index].widge;
+        if (widget) {
+          values.push(widget.getValueAsString(val));
         }
       });
       return values;
     }
-    return this.refs.input[0].widget.getValueAsString(value);
+
+    const widget = this.refs.input[0].widget;
+    return widget.getValueAsString(value);
   }
 
   getValueAsString(value) {

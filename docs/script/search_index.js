@@ -1818,6 +1818,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio#deleterole",
+    "class/src/Formio.js~Formio.html#instance-method-deleteRole",
+    "src/Formio.js~Formio#deleteRole",
+    "method"
+  ],
+  [
     "src/formio.js~formio#deletesubmission",
     "class/src/Formio.js~Formio.html#instance-method-deleteSubmission",
     "src/Formio.js~Formio#deleteSubmission",
@@ -1932,6 +1938,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio#loadrole",
+    "class/src/Formio.js~Formio.html#instance-method-loadRole",
+    "src/Formio.js~Formio#loadRole",
+    "method"
+  ],
+  [
+    "src/formio.js~formio#loadroles",
+    "class/src/Formio.js~Formio.html#instance-method-loadRoles",
+    "src/Formio.js~Formio#loadRoles",
+    "method"
+  ],
+  [
     "src/formio.js~formio#loadsubmission",
     "class/src/Formio.js~Formio.html#instance-method-loadSubmission",
     "src/Formio.js~Formio#loadSubmission",
@@ -1998,6 +2016,24 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.js~formio#roleid",
+    "class/src/Formio.js~Formio.html#instance-member-roleId",
+    "src/Formio.js~Formio#roleId",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#roleurl",
+    "class/src/Formio.js~Formio.html#instance-member-roleUrl",
+    "src/Formio.js~Formio#roleUrl",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#rolesurl",
+    "class/src/Formio.js~Formio.html#instance-member-rolesUrl",
+    "src/Formio.js~Formio#rolesUrl",
+    "member"
+  ],
+  [
     "src/formio.js~formio#save",
     "class/src/Formio.js~Formio.html#instance-method-save",
     "src/Formio.js~Formio#save",
@@ -2019,6 +2055,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio#saveproject",
     "class/src/Formio.js~Formio.html#instance-method-saveProject",
     "src/Formio.js~Formio#saveProject",
+    "method"
+  ],
+  [
+    "src/formio.js~formio#saverole",
+    "class/src/Formio.js~Formio.html#instance-method-saveRole",
+    "src/Formio.js~Formio#saveRole",
     "method"
   ],
   [
@@ -2235,6 +2277,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio.pluginwait",
     "class/src/Formio.js~Formio.html#static-method-pluginWait",
     "src/Formio.js~Formio.pluginWait",
+    "method"
+  ],
+  [
+    "src/formio.js~formio.projectroles",
+    "class/src/Formio.js~Formio.html#static-method-projectRoles",
+    "src/Formio.js~Formio.projectRoles",
     "method"
   ],
   [
@@ -2922,9 +2970,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/webform.js~webform#pristine",
-    "class/src/Webform.js~Webform.html#instance-member-pristine",
-    "src/Webform.js~Webform#pristine",
+    "src/webform.js~webform#options",
+    "class/src/Webform.js~Webform.html#instance-member-options",
+    "src/Webform.js~Webform#options",
     "member"
   ],
   [
@@ -8106,6 +8154,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#widget",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-widget",
+    "src/components/datetime/DateTime.js~DateTimeComponent#widget",
+    "member"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent.builderinfo",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-builderInfo",
     "src/components/datetime/DateTime.js~DateTimeComponent.builderInfo",
@@ -10854,6 +10908,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#isinitapicallneeded",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-isInitApiCallNeeded",
+    "src/components/select/Select.js~SelectComponent#isInitApiCallNeeded",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#isscrollloading",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-isScrollLoading",
     "src/components/select/Select.js~SelectComponent#isScrollLoading",
@@ -12004,12 +12064,6 @@ window.esdocSearchIndex = [
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-autoModified",
     "src/components/textarea/TextArea.js~TextAreaComponent#autoModified",
     "member"
-  ],
-  [
-    "src/components/textarea/textarea.js~textareacomponent#checkaceplaceholder",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-checkAcePlaceholder",
-    "src/components/textarea/TextArea.js~TextAreaComponent#checkAcePlaceholder",
-    "method"
   ],
   [
     "src/components/textarea/textarea.js~textareacomponent#defaultschema",

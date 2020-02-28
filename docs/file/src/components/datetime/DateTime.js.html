@@ -242,6 +242,7 @@
 import moment from &apos;moment&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
 import FormioUtils from &apos;../../utils&apos;;
+import Widgets from &apos;../../widgets&apos;;
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -359,6 +360,11 @@ export default class DateTimeComponent extends Input {
       input.widget.settings.submissionTimezone = this.submissionTimezone;
     }
     return input;
+  }
+
+  get widget() {
+    const widget = this.component.widget ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    return widget;
   }
 
   get defaultSchema() {

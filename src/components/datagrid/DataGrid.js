@@ -346,6 +346,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
+    this.checkConditions();
     this.redraw();
   }
 
@@ -473,7 +474,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     let show = false;
 
     if (!this.rows || !this.rows.length) {
-      return { rebuld: false, show: false };
+      return { rebuild: false, show: false };
     }
 
     if (this.builderMode) {

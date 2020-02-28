@@ -340,8 +340,17 @@ export default [
   ),
   EditFormUtils.javaScriptValue(&apos;Calculated Value&apos;, &apos;calculateValue&apos;, &apos;calculateValue&apos;, 1100,
     &apos;&lt;p&gt;&lt;h4&gt;Example:&lt;/h4&gt;&lt;pre&gt;value = data.a + data.b + data.c;&lt;/pre&gt;&lt;/p&gt;&apos;,
-    &apos;&lt;p&gt;&lt;h4&gt;Example:&lt;/h4&gt;&lt;pre&gt;{&quot;+&quot;: [{&quot;var&quot;: &quot;data.a&quot;}, {&quot;var&quot;: &quot;data.b&quot;}, {&quot;var&quot;: &quot;data.c&quot;}]}&lt;/pre&gt;&lt;p&gt;&lt;a target=&quot;_blank&quot; href=&quot;http://formio.github.io/formio.js/app/examples/calculated.html&quot;&gt;Click here for an example&lt;/a&gt;&lt;/p&gt;&apos;
+    &apos;&lt;p&gt;&lt;h4&gt;Example:&lt;/h4&gt;&lt;pre&gt;{&quot;+&quot;: [{&quot;var&quot;: &quot;data.a&quot;}, {&quot;var&quot;: &quot;data.b&quot;}, {&quot;var&quot;: &quot;data.c&quot;}]}&lt;/pre&gt;&lt;p&gt;&lt;a target=&quot;_blank&quot; href=&quot;http://formio.github.io/formio.js/app/examples/calculated.html&quot;&gt;Click here for an example&lt;/a&gt;&lt;/p&gt;&apos;,
+&apos;&lt;tr&gt;&lt;th&gt;token&lt;/th&gt;&lt;td&gt;The decoded JWT token for the authenticated user.&lt;/td&gt;&lt;/tr&gt;&apos;
   ),
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    weight: 1100,
+    key: &apos;calculateServer&apos;,
+    label: &apos;Calculate Value on server&apos;,
+    tooltip: &apos;Checking this will run the calculation on the server. This is useful if you wish to override the values submitted with the calculations performed on the server.&apos;
+  },
   {
     type: &apos;checkbox&apos;,
     input: true,

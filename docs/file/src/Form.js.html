@@ -263,7 +263,11 @@ export default class Form extends Element {
    * form.build();
    */
   constructor(...args) {
-    super(args[0] instanceof HTMLElement ? args[2] : args[1]);
+    let options = args[0] instanceof HTMLElement ? args[2] : args[1];
+    if (Formio.options &amp;&amp; Formio.options.form) {
+      options = Object.assign(options, Formio.options.form);
+    }
+    super(options);
     this.ready = new NativePromise((resolve, reject) =&gt; {
       this.readyResolve = resolve;
       this.readyReject = reject;

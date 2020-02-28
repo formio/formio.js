@@ -135,6 +135,6 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getValueAsString(value) {
-    return value ? moment(value, this.component.dataFormat).format(this.component.format) : value;
+    return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
   }
 }

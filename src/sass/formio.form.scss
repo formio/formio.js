@@ -1173,3 +1173,11 @@ div[data-oembed-url] {
     text-align: right;
   }
 }
+
+.formio-component-modal-wrapper {
+  margin-bottom: 10px;
+
+  .component-rendering-hidden {
+    visibility: hidden;
+  }
+}

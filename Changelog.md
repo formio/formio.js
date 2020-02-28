@@ -4,6 +4,71 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.2
+### Fixed
+ - The parsing of noeval tokens.
+
+### Added
+ - Checkbox to execute calculated values on the server.
+ - JWT Token (decoded) to evaluate contexts.
+
+## 4.9.0-rc.1
+### Fixed
+ - Reverted issues with PDF builder and local iframe sources.
+ - Fixed display of submitted data in day component when some fields are hidden
+ 
+### Added
+ - Added Role API methods
+ 
+### Changed
+ - Upgrade i18next@19.3.1, file-loader@5.1.0
+
+## 4.9.0-beta.8
+### Fixed
+ - Crashes in the choices.js library due to not destroying it properly when creating new instances.
+ - Fixed file types select in file component
+
+## 4.9.0-beta.7
+### Fixed
+ - Coliding placeholders in the ACE editor.
+ - Fixed updating revision property on component change
+ - Moved some modal styles from form builder into form.
+ - File component to be more screenreader compatible.
+ 
+### Added
+ - The nested data components to the Components index.
+ 
+### Changed
+ - Upgraded autocompleter@6.0.2, i18next@19.2.0, sinon@9.0.0
+
+## 4.9.0-beta.6
+### Changed
+ - Upgrade Choices.js to 9.0.1 to resolve IE11 issues.
+
+### Added
+ - Support for form modules.
+ 
+### Fixed
+ - Added validation after wizard page was changed
+
+## 4.9.0-beta.5
+### Added
+ - `wizardPageSelected` event
+
+### Fixed
+ - Prevent keys duplicating when components with the same types which are their own namespaces nested inside each other
+ - Fixed presence of selected value in options when search result is empty in lazy-load select with search query name
+ - HTML view of DateTime components within an EditGrid.
+ - Documentation around select component search fields using regex.
+ - Wizard changing next page doesn't update buttons. See https://github.com/formio/formio.js/pull/2423
+ - Default value of selects are displaying IDs rather than the label
+ - Prevent creating submission for child form when it is hidden
+ - Trigger check conditions for added rows
+ - Fix clearOnHide while updating submission
+
+### Changed
+ - Using fetch to get PDF form so that it can be modified to include headers, etc.
+
 ## 4.9.0-beta.4
 ### Fixed
  - Select URL not working correctly with `/project/...` URLs
