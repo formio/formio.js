@@ -1214,6 +1214,7 @@ div[data-oembed-url] {
 
 .formio-sketchpad-toolbar {
   margin: 0 auto 3px auto;
+  display: flex;
   justify-content: center;
   position: relative;
   z-index: 3;
@@ -1253,13 +1254,13 @@ div[data-oembed-url] {
 
 .formio-sketchpad-svg,
 .formio-sketchpad-canvas,
-.formio-sketchpad-preview-svg {
+.formio-sketchpad-modal-preview-drawing {
   width: 100%;
   height: 100%;
 }
 
 .formio-sketchpad-canvas,
-.formio-sketchpad-modal-preview-container .formio-sketchpad-svg{
+.formio-sketchpad-modal-preview-container .formio-sketchpad-modal-preview-drawing{
   position: absolute;
   z-index: 2;
   text-align: center;

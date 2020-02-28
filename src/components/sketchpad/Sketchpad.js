@@ -95,8 +95,7 @@ export default class Sketchpad extends Field {
 
   init() {}
 
-  attach(element) {
-    const superAttach = super.attach(element);
+  loadComponentRefs(element) {
     this.loadRefs(element, {
       canvas: 'single',
       background: 'single',
@@ -104,16 +103,21 @@ export default class Sketchpad extends Field {
       drawingContainer: 'single',
       totalMultiplier: 'single',
       previewContainer: 'single',
-      image: 'single',
+      previewBackground: 'single',
       ...this.buttonsRefs
     });
+  }
+
+  attach(element) {
+    const superAttach = super.attach(element);
+    this.loadComponentRefs(element);
 
     if (this.refs.canvas) {
       this.createDrawingArea();
-      this.attachDrawEvents();
       this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
+      this.attachDrawEvents();
 
-      if (this.refs.backgroundImage) {
+      if (this.imageType === 'image' && this.refs.backgroundImage) {
         this.refs.backgroundImage.addEventListener('load', e => {
           this.addBackground();
         });
@@ -124,10 +128,6 @@ export default class Sketchpad extends Field {
       }
 
       this.attachToolbar();
-    }
-
-    if (this.componentModal) {
-      this.handleModalViewUpdate();
     }
 
     return superAttach;
@@ -201,23 +201,6 @@ export default class Sketchpad extends Field {
     return Object.entries(toolbarButtons).map(([, buttons]) => buttons);
   }
 
-  handleModalViewUpdate() {
-    this.on('modalViewUpdated', () => {
-      this.loadRefs(this.componentModal.openModalWrapper, {
-        previewContainer: 'single',
-        previewBackground: 'single'
-      });
-
-      const setPreviewSvg = () => {
-        if (this.refs.previewContainer) {
-          this.refs.previewContainer.appendChild(this.getSvg());
-        }
-      };
-      this.refs.previewBackground.onload = () => setPreviewSvg();
-      this.refs.previewBackground.setAttribute('src', this.component.imageUrl);
-    });
-  }
-
   createDrawingArea() {
     this.two = new Two({ type: Two.Types.svg }).appendTo(this.refs.canvas);
     this.canvasSvg = this.two.renderer.domElement;
@@ -286,7 +269,7 @@ export default class Sketchpad extends Field {
     svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
     //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
     svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
-
+    this.loadComponentRefs(this.element);
     this.refs.background.innerHTML = svgMarkup;
   }
 
@@ -519,11 +502,15 @@ export default class Sketchpad extends Field {
   }
 
   getModalPreviewTemplate() {
+    const svgElement = this.getSvg();
+    const svg = new XMLSerializer().serializeToString(svgElement);
+    const encoded = window.btoa(svg);
     const template = `
       <label class="control-label">${this.component.label}</label><br>
       <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to draw on the image</button>
       <div class='formio-sketchpad-modal-preview-container' ref='previewContainer'>
-        <img class='formio-sketchpad-modal-preview-background' ref='previewBackground' width="100%"/>
+        <img class='formio-sketchpad-modal-preview-background' ref='previewBackground' src=${this.component.imageUrl} width="100%"/>
+        <img class='formio-sketchpad-modal-preview-drawing' src='data:image/svg+xml;base64,${encoded}' width="100%"/>
       </div>`;
       return template;
   }
@@ -549,8 +536,11 @@ export default class Sketchpad extends Field {
   }
 
   stretchDrawingArea() {
-    const width =  this.dimensions.width;
-    const height = this.dimensions.height;
+    const width =  this.two.width;
+    const height = this.two.height;
+    if (width === this.editorSize.width && height === this.editorSize.height) {
+      return;
+    }
     //don't stretch if background dimensions are unknown yet
     if (width && height) {
       const defaultWidth = this.zoomInfo.viewBox.default.width;
@@ -558,16 +548,19 @@ export default class Sketchpad extends Field {
       this.dimensionsMultiplier = width / this.dimensions.width;
       this.dimensions.width = Math.round(defaultWidth * this.dimensionsMultiplier);
       this.dimensions.height = Math.round(defaultHeight * this.dimensionsMultiplier);
-      this.setEditorSize(width, height);
+      this.setEditorSize(this.dimensions.width * this.zoomInfo.totalMultiplier, this.dimensions.height * this.zoomInfo.totalMultiplier);
     }
   }
 
   setEditorSize(width, height) {
+    this.editorSize = ({ width, height });
     this.two.width = width;
     this.two.height = height;
     this.two.update();
     this.refs.backgroundImage.style.width = width;
+    this.refs.backgroundImage.style.height = height;
     this.canvasSvg.style.width = width;
+    this.canvasSvg.style.height = height;
   }
 
   clear() {
@@ -613,6 +606,7 @@ export default class Sketchpad extends Field {
     if (!this.backgroundReady.isReady || !this.two) {
       return;
     }
+    this.dataValue = value;
     this.draw(value);
   }
 
