@@ -3,7 +3,6 @@ import StripeCheckoutComponent from './stripe/checkout/StripeCheckout';
 import LocationComponent from './location/Location';
 import EditTableComponent from './edittable/EditTable';
 import ModalEdit from './modaledit/ModalEdit';
-import Tagpad from './tagpad/Tagpad';
 
 const Contrib = {
   stripe: {
@@ -12,8 +11,7 @@ const Contrib = {
   },
   location: LocationComponent,
   edittable: EditTableComponent,
-  modaledit: ModalEdit,
-  tagpad: Tagpad
+  modaledit: ModalEdit
 };
 
 export default Contrib;

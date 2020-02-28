@@ -2,11 +2,10 @@ import _ from 'lodash';
 import Two from 'two.js';
 import NativePromise from 'native-promise-only';
 import Formio from '../../Formio';
-import NestedComponent from '../../components/_classes/nested/NestedComponent';
+import NestedArrayComponent from '../../components/_classes/nestedarray/NestedArrayComponent';
 import Component from '../../components/_classes/component/Component';
-import { throws } from 'power-assert';
 
-export default class TagpadComponent extends NestedComponent {
+export default class TagpadComponent extends NestedArrayComponent {
   selectedDot;
   dots;
   canvasSvg;
@@ -16,7 +15,7 @@ export default class TagpadComponent extends NestedComponent {
   two;
 
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedArrayComponent.schema({
       type: 'tagpad',
       label: 'Tagpad',
       key: 'tagpad',
@@ -52,6 +51,7 @@ export default class TagpadComponent extends NestedComponent {
 
   constructor(...args) {
     super(...args);
+    this.type = 'tagpad';
     this.dots = [];
     const backgroundReadyPromise = new NativePromise((resolve, reject) => {
       this.backgroundReady = { resolve, reject };
@@ -68,13 +68,17 @@ export default class TagpadComponent extends NestedComponent {
     };
   }
 
-  render() {
-    const ctx = this.renderContext;
-    return super.renderTemplate(this.templateName, {
-      ...ctx,
-      components: this.renderComponents([...this.getFormComponents()])
-    });
-  }
+  // render(children) {
+  //   if (this.builderMode) {
+  //     return super.render();
+  //   }
+  //   const ctx = this.renderContext;
+  //   return super
+  //   // return super.render(children || this.renderTemplate(this.templateName, {
+  //   //   ...ctx,
+  //   //   components: this.renderComponents([...this.getFormComponents()])
+  //   // }));
+  // }
 
   get buttons() {
     const buttons = {};
@@ -113,47 +117,51 @@ export default class TagpadComponent extends NestedComponent {
     return this.backgroundReady.promise;
   }
 
-  get dataValue() {
-    const dataValue = super.dataValue;
-    if (!dataValue || !_.isArray(dataValue)) {
-      return this.emptyValue;
-    }
-    return dataValue;
-  }
+  // get dataValue() {
+  //   const dataValue = super.dataValue;
+  //   if (!dataValue || !_.isArray(dataValue)) {
+  //     return this.emptyValue;
+  //   }
+  //   return dataValue;
+  // }
 
-  set dataValue(value) {
-    super.dataValue = value;
-  }
+  // set dataValue(value) {
+  //   super.dataValue = value;
+  // }
 
-  get defaultValue() {
-    const value = super.defaultValue;
-    let defaultValue;
+  // get defaultValue() {
+  //   const value = super.defaultValue;
+  //   let defaultValue;
 
-    if (_.isArray(value)) {
-      defaultValue = value;
-    }
-    else if (value && (typeof value === 'object')) {
-      defaultValue = [value];
-    }
-    else {
-      defaultValue = this.emptyValue;
-    }
+  //   if (_.isArray(value)) {
+  //     defaultValue = value;
+  //   }
+  //   else if (value && (typeof value === 'object')) {
+  //     defaultValue = [value];
+  //   }
+  //   else {
+  //     defaultValue = this.emptyValue;
+  //   }
 
-    for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {
-      defaultValue.push({});
-    }
+  //   for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {
+  //     defaultValue.push({});
+  //   }
 
-    return defaultValue;
-  }
+  //   return defaultValue;
+  // }
 
   init() {
     this.components = this.components || [];
     this.createDots();
+    return super.init();
   }
 
   redraw() {
+    if (this.builderMode) {
+      return super.redraw();
+    }
     super.redraw();
-        this.on('initialized', () => {
+    this.on('initialized', () => {
       this.stretchDrawingArea();
     });
     // For case when component is built after form is initialized (for ex. when it's on inactive tab of Tabs component), so this.on('initialized', ...) won't be fired:
@@ -314,6 +322,10 @@ export default class TagpadComponent extends NestedComponent {
   }
 
   createDots() {
+    if (!this.dataValue || !this.dataValue.length) {
+      return;
+    }
+
     const dotsValues = this.dataValue;
     dotsValues.forEach((dot, index) => {
       if (!this.dots[index]) {
@@ -407,6 +419,9 @@ export default class TagpadComponent extends NestedComponent {
   }
 
   attach(element) {
+    if (this.builderMode) {
+      return super.attach(element);
+    }
     this.loadRefs(element, {
       canvas: 'single',
       background: 'single',
