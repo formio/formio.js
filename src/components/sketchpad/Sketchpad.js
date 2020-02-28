@@ -111,13 +111,15 @@ export default class Sketchpad extends Field {
   attach(element) {
     const superAttach = super.attach(element);
     this.loadComponentRefs(element);
-
     if (this.refs.canvas) {
       this.createDrawingArea();
       this.addEventListener(window, 'resize', _.debounce(() => this.stretchDrawingArea(), 100));
-      this.attachDrawEvents();
 
-      if (this.imageType === 'image' && this.refs.backgroundImage) {
+      if (!this.disabled && !this.shouldDisabled && !this.readOnly) {
+        this.attachDrawEvents();
+      }
+
+      if (this.component.imageType === 'image' && this.refs.backgroundImage) {
         this.refs.backgroundImage.addEventListener('load', e => {
           this.addBackground();
         });
@@ -149,7 +151,8 @@ export default class Sketchpad extends Field {
       zoomInfo: {
         totalMultiplier: this.zoomInfo ? Math.round(this.zoomInfo.totalMultiplier * 100) / 100 : 1
       },
-      buttonGroups: this.buttonGroups
+      buttonGroups: this.buttonGroups,
+      disabled: super.disabled
     };
   }
 
@@ -201,6 +204,12 @@ export default class Sketchpad extends Field {
     return Object.entries(toolbarButtons).map(([, buttons]) => buttons);
   }
 
+  onDisabled() {
+    if (this.disabled || this.shouldDisabled) {
+      console.log('disabled');
+    }
+  }
+
   createDrawingArea() {
     this.two = new Two({ type: Two.Types.svg }).appendTo(this.refs.canvas);
     this.canvasSvg = this.two.renderer.domElement;
@@ -220,7 +229,7 @@ export default class Sketchpad extends Field {
     if (this.refs.backgroundImage && this.refs.backgroundImage.complete) {
       this.setBackgroundImage();
     }
-    else if (this.component.imageUrl) {
+    else if (this.component.imageUrl && this.component.imageType === 'svg') {
       Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true, headers: {} })
       .then(image => {
         this.setBackgroundImage(image);
@@ -471,11 +480,9 @@ export default class Sketchpad extends Field {
 
   setBackgroundImage(image) {
     if (image && image.startsWith('<?xml')) {
-      this.imageType = 'svg';
       this.setSvgImage(image);
     }
     else {
-      this.imageType = 'image';
       const viewBoxWidth = this.refs.backgroundImage.width;
       const viewBoxHeight = this.refs.backgroundImage.height;
       this.setDimensions( 0, 0, viewBoxWidth, viewBoxHeight);
@@ -548,7 +555,7 @@ export default class Sketchpad extends Field {
       this.dimensionsMultiplier = width / this.dimensions.width;
       this.dimensions.width = Math.round(defaultWidth * this.dimensionsMultiplier);
       this.dimensions.height = Math.round(defaultHeight * this.dimensionsMultiplier);
-      this.setEditorSize(this.dimensions.width * this.zoomInfo.totalMultiplier, this.dimensions.height * this.zoomInfo.totalMultiplier);
+      this.setEditorSize(this.dimensions.width, this.dimensions.height); // TODO need to use alo current zoom info
     }
   }
 
@@ -557,8 +564,8 @@ export default class Sketchpad extends Field {
     this.two.width = width;
     this.two.height = height;
     this.two.update();
-    this.refs.backgroundImage.style.width = width;
-    this.refs.backgroundImage.style.height = height;
+    this.refs.backgroundImage.setAttribute('width', width);
+    this.refs.backgroundImage.setAttribute('height', height);
     this.canvasSvg.style.width = width;
     this.canvasSvg.style.height = height;
   }
@@ -576,6 +583,9 @@ export default class Sketchpad extends Field {
 
   draw(value) {
     this.clear();
+    if (!value || !value.length) {
+      return;
+    }
     this.layers = value.map(item => this.modes[item.mode].draw(item));
     this.two.update();
   }
