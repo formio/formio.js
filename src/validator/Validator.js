@@ -394,7 +394,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('maxWords'), {
             field: component.errorLabel,
-            length: (setting + 1),
+            length: setting,
             data: component.data
           });
         },
@@ -411,7 +411,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('minWords'), {
             field: component.errorLabel,
-            length: (setting - 1),
+            length: setting,
             data: component.data
           });
         },

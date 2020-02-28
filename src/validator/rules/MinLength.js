@@ -1,7 +1,7 @@
 const Rule = require('./Rule');
 
 module.exports = class MinLength extends Rule {
-  defaultMessage =  '{{field}} must contain {{length}} or more characters.';
+  defaultMessage = '{{field}} must be no more than {{- settings.length}} characters.';
 
   check(value) {
     const minLength = parseInt(this.settings.length, 10);

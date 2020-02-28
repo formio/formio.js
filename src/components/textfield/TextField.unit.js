@@ -37,11 +37,31 @@ describe('TextField Component', () => {
     });
   });
 
+  it('Should provide minWords validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { minWords: 2 }
+    })).then((component) => {
+      return Harness.testInvalid(component, 'test', 'firstName', 'First Name must have at least 2 words.').then(() => component);
+    }).then((component) => {
+      return Harness.testValid(component, 'te st').then(() => component);
+    });
+  });
+
+  it('Should provide maxWords validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { maxWords: 2 }
+    })).then((component) => {
+      return Harness.testInvalid(component, 'test test test', 'firstName', 'First Name must have no more than 2 words.').then(() => component);
+    }).then((component) => {
+      return Harness.testValid(component, 'te st').then(() => component);
+    });
+  });
+
   it('Should provide minLength validation', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { minLength: 2 }
     })).then((component) => {
-      return Harness.testInvalid(component, 't', 'firstName', 'First Name must contain 2 or more characters.').then(() => component);
+      return Harness.testInvalid(component, 't', 'firstName', 'First Name must be at least 2 characters.').then(() => component);
     }).then((component) => {
       return Harness.testValid(component, 'te').then(() => component);
     });
@@ -51,7 +71,7 @@ describe('TextField Component', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { maxLength: 5 }
     })).then(component => {
-      return Harness.testInvalid(component, 'testte', 'firstName', 'First Name must contain 5 or less characters.').then(() => component);
+      return Harness.testInvalid(component, 'testte', 'firstName', 'First Name must be no more than 5 characters.').then(() => component);
     }).then((component) => {
       return Harness.testValid(component, 'te').then(() => component);
     });

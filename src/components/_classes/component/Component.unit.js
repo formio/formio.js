@@ -47,7 +47,7 @@ describe('Component', () => {
       bad: {
         value: 't',
         field: 'firstName',
-        error: 'First Name must contain 2 or more characters.'
+        error: 'First Name must be at least 2 characters.'
       },
       good: {
         value: 'te'
@@ -62,10 +62,40 @@ describe('Component', () => {
       bad: {
         value: 'testte',
         field: 'firstName',
-        error: 'First Name must contain 5 or less characters.'
+        error: 'First Name must be no more than 5 characters.'
       },
       good: {
         value: 'te'
+      }
+    }, done));
+  });
+
+  it('Should provide maxWords validation', (done) => {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { maxWords: 2 }
+    })).then((component) => Harness.testComponent(component, {
+      bad: {
+        value: 'test test test',
+        field: 'firstName',
+        error: 'First Name must have no more than 2 words.'
+      },
+      good: {
+        value: 'te st'
+      }
+    }, done));
+  });
+
+  it('Should provide minWords validation', (done) => {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { minWords: 2 }
+    })).then((component) => Harness.testComponent(component, {
+      bad: {
+        value: 'test',
+        field: 'firstName',
+        error: 'First Name must have at least 2 words.'
+      },
+      good: {
+        value: 'te st'
       }
     }, done));
   });
