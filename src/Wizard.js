@@ -217,7 +217,7 @@ export default class Wizard extends Webform {
         this.addEventListener(link, 'click', (event) => {
           this.emit('wizardNavigationClicked', this.pages[index]);
           event.preventDefault();
-          return this.setPage(index).then(() => {
+          return this.goToPage(index).then(() => {
             this.emit('wizardPageSelected', this.pages[index], index);
           });
         });
@@ -307,16 +307,21 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw();
-      return NativePromise.resolve().then(() => {
-        this.checkValidity(this.submission.data, false, this.submission.data, true);
-        this.checkData(this.submission.data);
-      });
+      return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
       this.redraw();
       return NativePromise.resolve();
     }
     return NativePromise.reject('Page not found');
+  }
+
+  goToPage(index) {
+    return this.setPage(index).then(() => {
+      if (!this.options.readOnly) {
+        this.checkValidity(this.submission.data, true, this.submission.data, true);
+      }
+    });
   }
 
   pageFieldLogic(page) {
