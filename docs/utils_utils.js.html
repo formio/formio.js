@@ -1,0 +1,1467 @@
+<!-- start:source.tmpl.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+		<title>utils/utils.js</title>
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="css/prism.min.css">
+		<link type="text/css" rel="stylesheet" href="css/template.min.css">
+			<link type="text/css" rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+		<script type="text/javascript">
+			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"Form.io JavaScript SDK","systemSummary":"JavaScript Powered forms with form builder.","systemLogo":"","systemColor":"","navMembers":[{"kind":"tutorial","title":"Documentation","summary":"How to get started with the Form.io Renderer and Builder.","memberof":"documentation"},{"kind":"tutorial","title":"Examples","summary":"A list of all examples.","memberof":"examples"},{"kind":"class","title":"API","summary":"All documented classes."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."}],"footer":"","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":false,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":false,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, weight, longname, version, since","search":true,"favicon":null,"stylesheets":["https://cdn.form.io/formiojs/formio.full.min.css"],"scripts":["https://cdn.form.io/formiojs/formio.full.min.js"],"monospaceLinks":false,"cleverLinks":false};
+			window.DOCLET_TOC_ENABLED = false;
+			window.DOCLET_AFILTER_ENABLED = false;
+		</script>
+</head>
+<body>
+	<!-- start:navbar.hbs -->
+	<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+	  <div class="container">
+	    <a class="navbar-brand" href="index.html">
+	      Form.io JavaScript SDK
+	    </a>
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="navbar-collapse collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav mr-auto">
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Documentation<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="documentation.html">Documentation</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-howitworks.html">How it works</a>
+	                    <a class="dropdown-item" href="tutorial-about.html">About this Library</a>
+	                    <a class="dropdown-item" href="tutorial-installation.html">Installation</a>
+	                    <a class="dropdown-item" href="tutorial-renderer.html">Form Renderer</a>
+	                    <a class="dropdown-item" href="tutorial-builder.html">Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-utils.html">Form Utilities</a>
+	                    <a class="dropdown-item" href="tutorial-api.html">JavaScript API</a>
+	                    <a class="dropdown-item" href="tutorial-frameworks.html">Frameworks (Angular, React, Vue, etc)</a>
+	                    <a class="dropdown-item" href="tutorial-modules.html">Modules</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Examples<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="examples.html">Examples</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-hosted.html">Hosted Forms</a>
+	                    <a class="dropdown-item" href="tutorial-simple.html">Simple Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-jsfiddle.html">JSFiddle Example</a>
+	                    <a class="dropdown-item" href="tutorial-submissions.html">Submission Hosting</a>
+	                    <a class="dropdown-item" href="tutorial-htmlview.html">Submission View</a>
+	                    <a class="dropdown-item" href="tutorial-customendpoint.html">Submission Custom Endpoint</a>
+	                    <a class="dropdown-item" href="tutorial-thankyou.html">Thank You Page</a>
+	                    <a class="dropdown-item" href="tutorial-externalload.html">External Data Load</a>
+	                    <a class="dropdown-item" href="tutorial-pdf.html">PDF Forms</a>
+	                    <a class="dropdown-item" href="tutorial-customcomponent.html">Custom Components</a>
+	                    <a class="dropdown-item" href="tutorial-conditionalwizard.html">Conditional Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-custombuilder.html">Custom Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-customwizard.html">Custom Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-json.html">JSON Powered Forms</a>
+	                    <a class="dropdown-item" href="tutorial-wizard.html">Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-wysiwyg.html">WYSIWYG Editor</a>
+	                    <a class="dropdown-item" href="tutorial-embed.html">JavaScript Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-fieldLogic.html">Field Logic</a>
+	                    <a class="dropdown-item" href="tutorial-savedraft.html">Save as Draft</a>
+	                    <a class="dropdown-item" href="tutorial-multiframework.html">Multiple Framework Support</a>
+	                    <a class="dropdown-item" href="tutorial-conditions.html">Conditional Forms</a>
+	                    <a class="dropdown-item" href="tutorial-select.html">Select Dropdowns</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid.html">Data Grid Input</a>
+	                    <a class="dropdown-item" href="tutorial-editgrid.html">Edit Grid</a>
+	                    <a class="dropdown-item" href="tutorial-noeval.html">No Eval</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid2.html">Data Grid Panels</a>
+	                    <a class="dropdown-item" href="tutorial-external.html">External Sources & Conditional Selects</a>
+	                    <a class="dropdown-item" href="tutorial-contrib.html">Community Contributions</a>
+	                    <a class="dropdown-item" href="tutorial-calculated.html">Calculated Values</a>
+	                    <a class="dropdown-item" href="tutorial-language.html">Multi-Language Forms</a>
+	                    <a class="dropdown-item" href="tutorial-kitchen.html">Kitchen Sink</a>
+	                    <a class="dropdown-item" href="tutorial-recaptcha.html">reCAPTCHA component</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">API<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="list_class.html">API</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a href="Form.html" class="dropdown-item">Form</a>
+	                    <a href="Formio.html" class="dropdown-item">Formio</a>
+	                    <a href="FormioUtils.html" class="dropdown-item">FormioUtils</a>
+	                </div>
+	              </li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	<!-- end:navbar.hbs -->
+		<div class="page-header">
+			<div class="container">
+				<h1><span class="name">utils/utils.js</span></h1>
+			</div>
+		</div>
+	<div class="container content">
+		<div class="row">
+			<div class="col-md-12 main-content">
+		<section class="source-section">
+			<article></article>
+			<pre class="prettyprint source language-javascript line-numbers"><code class="language-javascript">/* global $ */
+/**
+ * @class FormioUtils
+ * @summary A series of utility methods used to interface with forms and components within the Form.io renderer and builder.
+ */
+
+import _ from 'lodash';
+import fetchPonyfill from 'fetch-ponyfill';
+import jsonLogic from 'json-logic-js';
+import moment from 'moment-timezone/moment-timezone';
+import jtz from 'jstimezonedetect';
+import { lodashOperators } from './jsonlogic/operators';
+import NativePromise from 'native-promise-only';
+import dompurify from 'dompurify';
+import { getValue } from './formUtils';
+import Evaluator from './Evaluator';
+const interpolate = Evaluator.interpolate;
+const { fetch } = fetchPonyfill({
+  Promise: NativePromise
+});
+
+export * from './formUtils';
+
+// Configure JsonLogic
+lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
+
+// Retrieve Any Date
+jsonLogic.add_operation('getDate', (date) => {
+  return moment(date).toISOString();
+});
+
+// Set Relative Minimum Date
+jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
+  return moment().subtract(relativeMinDate, 'days').toISOString();
+});
+
+// Set Relative Maximum Date
+jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
+  return moment().add(relativeMaxDate, 'days').toISOString();
+});
+
+export { jsonLogic, moment };
+
+/**
+ * Evaluate a method.
+ *
+ * @name evaluate
+ * @function
+ * @memberof FormioUtils
+ * @param {string|Function|object} func - The function to evaluate. If this is a string, then it will evaluate it as "eval", if it is a function, it will evaluate it directly. If the variable is a JSON object, then it will evaluate it as JSON Logic using the JSON Logic library.
+ * @param {object} args - The evaluation context of variables that will be added to the evaluation.
+ * @param {string} return - The variable name that should be returned by the evaluation.
+ * @param {boolean} tokenize - If the function should be tokenized.
+ * @return {*} - The result of the execution.
+ */
+export function evaluate(func, args, ret, tokenize) {
+  let returnVal = null;
+  const component = args.component ? args.component : { key: 'unknown' };
+  if (!args.form &amp;&amp; args.instance) {
+    args.form = _.get(args.instance, 'root._form', {});
+  }
+
+  const componentKey = component.key;
+
+  if (typeof func === 'string') {
+    if (ret) {
+      func += `;return ${ret}`;
+    }
+
+    if (tokenize) {
+      // Replace all {{ }} references with actual data.
+      func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
+        if ($2.indexOf('data.') === 0) {
+          return _.get(args.data, $2.replace('data.', ''));
+        }
+        else if ($2.indexOf('row.') === 0) {
+          return _.get(args.row, $2.replace('row.', ''));
+        }
+
+        // Support legacy...
+        return _.get(args.data, $2);
+      });
+    }
+
+    try {
+      func = Evaluator.evaluator(func, args);
+      args = _.values(args);
+    }
+    catch (err) {
+      console.warn(`An error occured within the custom function for ${componentKey}`, err);
+      returnVal = null;
+      func = false;
+    }
+  }
+
+  if (typeof func === 'function') {
+    try {
+      returnVal = Evaluator.evaluate(func, args);
+    }
+    catch (err) {
+      returnVal = null;
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
+    }
+  }
+  else if (typeof func === 'object') {
+    try {
+      returnVal = jsonLogic.apply(func, args);
+    }
+    catch (err) {
+      returnVal = null;
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
+    }
+  }
+  else if (func) {
+    console.warn(`Unknown function type for ${componentKey}`);
+  }
+  return returnVal;
+}
+
+/**
+ * Returns a random component ID.
+ *
+ * @name getRandomComponentId
+ * @function
+ * @memberof FormioUtils
+ * @return {string} - A random component id.
+ */
+export function getRandomComponentId() {
+  return `e${Math.random().toString(36).substring(7)}`;
+}
+
+/**
+ * Get a property value of an element.
+ *
+ * @name getPropertyValue
+ * @function
+ * @memberof FormioUtils
+ * @param style
+ * @param prop
+ * @return {number}
+ */
+export function getPropertyValue(style, prop) {
+  let value = style.getPropertyValue(prop);
+  value = value ? value.replace(/[^0-9.]/g, '') : '0';
+  return parseFloat(value);
+}
+
+/**
+ * Get an elements bounding rectagle.
+ *
+ * @name getElementRect
+ * @function
+ * @memberof FormioUtils
+ * @param element
+ * @return {{x: string, y: string, width: string, height: string}}
+ */
+export function getElementRect(element) {
+  const style = window.getComputedStyle(element, null);
+  return {
+    x: getPropertyValue(style, 'left'),
+    y: getPropertyValue(style, 'top'),
+    width: getPropertyValue(style, 'width'),
+    height: getPropertyValue(style, 'height')
+  };
+}
+
+/**
+ * Determines the boolean value of a setting.
+ *
+ * @name boolValue
+ * @function
+ * @memberof FormioUtils
+ * @param value
+ * @return {boolean}
+ */
+export function boolValue(value) {
+  if (_.isBoolean(value)) {
+    return value;
+  }
+  else if (_.isString(value)) {
+    return (value.toLowerCase() === 'true');
+  }
+  else {
+    return !!value;
+  }
+}
+
+/**
+ * Check to see if an ID is a mongoID.
+ *
+ * @name isMongoId
+ * @function
+ * @memberof FormioUtils
+ * @param text
+ * @return {Array|{index: number, input: string}|Boolean|*}
+ */
+export function isMongoId(text) {
+  return text.toString().match(/^[0-9a-fA-F]{24}$/);
+}
+
+/**
+ * Checks the calculated value for a provided component and data.
+ *
+ * @name checkCalculated
+ * @function
+ * @memberof FormioUtils
+ * @param {Object} component
+ *   The component to check for the calculated value.
+ * @param {Object} submission
+ *   A submission object.
+ * @param data
+ *   The full submission data.
+ */
+export function checkCalculated(component, submission, rowData) {
+  // Process calculated value stuff if present.
+  if (component.calculateValue) {
+    _.set(rowData, component.key, evaluate(component.calculateValue, {
+      value: undefined,
+      data: submission ? submission.data : rowData,
+      row: rowData,
+      util: this,
+      component
+    }, 'value'));
+  }
+}
+
+/**
+ * Check if a simple conditional evaluates to true.
+ *
+ * @name checkSimpleConditional
+ * @function
+ * @memberof FormioUtils
+ * @param condition
+ * @param condition
+ * @param row
+ * @param data
+ * @returns {boolean}
+ */
+export function checkSimpleConditional(component, condition, row, data) {
+  let value = null;
+  if (row) {
+    value = getValue({ data: row }, condition.when);
+  }
+  if (data &amp;&amp; _.isNil(value)) {
+    value = getValue({ data }, condition.when);
+  }
+  // FOR-400 - Fix issue where falsey values were being evaluated as show=true
+  if (_.isNil(value)) {
+    value = '';
+  }
+
+  const eq = String(condition.eq);
+  const show = String(condition.show);
+
+  // Special check for selectboxes component.
+  if (_.isObject(value) &amp;&amp; _.has(value, condition.eq)) {
+    return String(value[condition.eq]) === show;
+  }
+  // FOR-179 - Check for multiple values.
+  if (Array.isArray(value) &amp;&amp; value.map(String).includes(eq)) {
+    return show === 'true';
+  }
+
+  return (String(value) === eq) === (show === 'true');
+}
+
+/**
+ * Check custom javascript conditional.
+ *
+ * @name checkCustomConditional
+ * @function
+ * @memberof FormioUtils
+ * @param component
+ * @param custom
+ * @param row
+ * @param data
+ * @returns {*}
+ */
+export function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
+  if (typeof custom === 'string') {
+    custom = `var ${variable} = true; ${custom}; return ${variable};`;
+  }
+  const value = (instance &amp;&amp; instance.evaluate) ?
+    instance.evaluate(custom) :
+    evaluate(custom, { row, data, form });
+  if (value === null) {
+    return onError;
+  }
+  return value;
+}
+
+/**
+ * @name checkJsonConditional
+ * @function
+ * @memberof FormioUtils
+ * @param component
+ * @param json
+ * @param row
+ * @param data
+ * @param form
+ * @param onError
+ * @return {*}
+ */
+export function checkJsonConditional(component, json, row, data, form, onError) {
+  try {
+    return jsonLogic.apply(json, {
+      data,
+      row,
+      form,
+      _,
+    });
+  }
+  catch (err) {
+    console.warn(`An error occurred in jsonLogic advanced condition for ${component.key}`, err);
+    return onError;
+  }
+}
+
+/**
+ * Checks the conditions for a provided component and data.
+ *
+ * @name checkCondition
+ * @function
+ * @memberof FormioUtils
+ * @param component
+ *   The component to check for the condition.
+ * @param row
+ *   The data within a row
+ * @param data
+ *   The full submission data.
+ *
+ * @returns {boolean}
+ */
+export function checkCondition(component, row, data, form, instance) {
+  if (component.customConditional) {
+    return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
+  }
+  else if (component.conditional &amp;&amp; component.conditional.when) {
+    return checkSimpleConditional(component, component.conditional, row, data);
+  }
+  else if (component.conditional &amp;&amp; component.conditional.json) {
+    return checkJsonConditional(component, component.conditional.json, row, data, form, true);
+  }
+
+  // Default to show.
+  return true;
+}
+
+/**
+ * Test a trigger on a component.
+ *
+ * @mame checkTrigger
+ * @function
+ * @memberof FormioUtils
+ * @param component
+ * @param action
+ * @param data
+ * @param row
+ * @returns {mixed}
+ */
+export function checkTrigger(component, trigger, row, data, form, instance) {
+  // If trigger is empty, don't fire it
+  if (!trigger[trigger.type]) {
+    return false;
+  }
+
+  switch (trigger.type) {
+    case 'simple':
+      return checkSimpleConditional(component, trigger.simple, row, data);
+    case 'javascript':
+      return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
+    case 'json':
+      return checkJsonConditional(component, trigger.json, row, data, form, false);
+  }
+  // If none of the types matched, don't fire the trigger.
+  return false;
+}
+
+/**
+ * @name setActionProperty
+ * @function
+ * @memberof FormioUtils
+ * @param component
+ * @param action
+ * @param result
+ * @param row
+ * @param data
+ * @param instance
+ * @return {*}
+ */
+export function setActionProperty(component, action, result, row, data, instance) {
+  const property = action.property.value;
+
+  switch (action.property.type) {
+    case 'boolean': {
+      const currentValue = _.get(component, property, false).toString();
+      const newValue = action.state.toString();
+
+      if (currentValue !== newValue) {
+        _.set(component, property, newValue === 'true');
+      }
+
+      break;
+    }
+    case 'string': {
+      const evalData = {
+        data,
+        row,
+        component,
+        result,
+      };
+      const textValue = action.property.component ? action[action.property.component] : action.text;
+      const currentValue = _.get(component, property, '');
+      const newValue = (instance &amp;&amp; instance.interpolate)
+        ? instance.interpolate(textValue, evalData)
+        : Evaluator.interpolate(textValue, evalData);
+
+      if (newValue !== currentValue) {
+        _.set(component, property, newValue);
+      }
+
+      break;
+    }
+  }
+
+  return component;
+}
+
+/**
+ * Make a filename guaranteed to be unique.
+ *
+ * @name uniqueName
+ * @function
+ * @memberof FormioUtils
+ * @param name
+ * @param template
+ * @param evalContext
+ * @returns {string}
+ */
+export function uniqueName(name, template, evalContext) {
+  template = template || '{{fileName}}-{{guid}}';
+  //include guid in template anyway, to prevent overwriting issue if filename matches existing file
+  if (!template.includes('{{guid}}')) {
+    template = `${template}-{{guid}}`;
+  }
+  const parts = name.split('.');
+  let fileName = parts.slice(0, parts.length - 1).join('.');
+  const extension = parts.length > 1
+    ? `.${_.last(parts)}`
+    : '';
+  //allow only 100 characters from original name to avoid issues with filename length restrictions
+  fileName = fileName.substr(0, 100);
+  evalContext = Object.assign(evalContext || {}, {
+    fileName,
+    guid: guid()
+  });
+  //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
+  const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
+  return uniqueName;
+}
+
+/**
+ * Generates a GUID.
+ *
+ * @name guid
+ * @function
+ * @memberof FormioUtils
+ * @return {string}
+ */
+export function guid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random()*16|0;
+    const v = c === 'x'
+      ? r
+      : (r&amp;0x3|0x8);
+    return v.toString(16);
+  });
+}
+
+/**
+ * Return a translated date setting.
+ *
+ * @name getDateSetting
+ * @function
+ * @memberof FormioUtils
+ * @param date
+ * @return {(null|Date)}
+ */
+export function getDateSetting(date) {
+  if (_.isNil(date) || _.isNaN(date) || date === '') {
+    return null;
+  }
+
+  if (date instanceof Date) {
+    return date;
+  }
+  else if (typeof date.toDate === 'function') {
+    return date.isValid() ? date.toDate() : null;
+  }
+
+  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  if (dateSetting &amp;&amp; dateSetting.isValid()) {
+    return dateSetting.toDate();
+  }
+
+  dateSetting = null;
+  try {
+    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
+    if (typeof value === 'string') {
+      dateSetting = moment(value);
+    }
+    else if (typeof value.toDate === 'function') {
+      dateSetting = moment(value.toDate().toUTCString());
+    }
+    else if (value instanceof Date) {
+      dateSetting = moment(value);
+    }
+  }
+  catch (e) {
+    return null;
+  }
+
+  if (!dateSetting) {
+    return null;
+  }
+
+  // Ensure this is a date.
+  if (!dateSetting.isValid()) {
+    return null;
+  }
+
+  return dateSetting.toDate();
+}
+
+/**
+ * @name isValidDate
+ * @function
+ * @memberof FormioUtils
+ * @param date
+ * @return {boolean|boolean}
+ */
+export function isValidDate(date) {
+  return _.isDate(date) &amp;&amp; !_.isNaN(date.getDate());
+}
+
+/**
+ * Get the current timezone string.
+ *
+ * @name currentTimezone
+ * @function
+ * @memberof FormioUtils
+ * @return {string}
+ */
+export function currentTimezone() {
+  if (moment.currentTimezone) {
+    return moment.currentTimezone;
+  }
+  moment.currentTimezone = jtz.determine().name();
+  return moment.currentTimezone;
+}
+
+/**
+ * Get an offset date provided a date object and timezone object.
+ *
+ * @name offsetDate
+ * @function
+ * @memberof FormioUtils
+ * @param date
+ * @param timezone
+ * @return {Date}
+ */
+export function offsetDate(date, timezone) {
+  if (timezone === 'UTC') {
+    return {
+      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+      abbr: 'UTC'
+    };
+  }
+  const dateMoment = moment(date).tz(timezone);
+  return {
+    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
+    abbr: dateMoment.format('z')
+  };
+}
+
+/**
+ * Returns if the zones are loaded.
+ *
+ * @name zonesLoaded
+ * @function
+ * @memberof FormioUtils
+ * @return {boolean}
+ */
+export function zonesLoaded() {
+  return moment.zonesLoaded;
+}
+
+/**
+ * Returns if we should load the zones.
+ *
+ * @name shouldLoadZones
+ * @function
+ * @memberof FormioUtils
+ * @param timezone
+ * @return {boolean}
+ */
+export function shouldLoadZones(timezone) {
+  if (timezone === currentTimezone() || timezone === 'UTC') {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Externally load the timezone data.
+ *
+ * @name loadZones
+ * @function
+ * @memberof FormioUtils
+ * @return {Promise&lt;any> | *}
+ */
+export function loadZones(timezone) {
+  if (timezone &amp;&amp; !shouldLoadZones(timezone)) {
+    // Return non-resolving promise.
+    return new NativePromise(_.noop);
+  }
+
+  if (moment.zonesPromise) {
+    return moment.zonesPromise;
+  }
+  return moment.zonesPromise = fetch(
+    'https://cdn.form.io/moment-timezone/data/packed/latest.json',
+  ).then(resp => resp.json().then(zones => {
+    moment.tz.load(zones);
+    moment.zonesLoaded = true;
+
+    // Trigger a global event that the timezones have finished loading.
+    if (document &amp;&amp; document.createEvent &amp;&amp; document.body &amp;&amp; document.body.dispatchEvent) {
+      var event = document.createEvent('Event');
+      event.initEvent('zonesLoaded', true, true);
+      document.body.dispatchEvent(event);
+    }
+  }));
+}
+
+/**
+ * Get the moment date object for translating dates with timezones.
+ *
+ * @name momentDate
+ * @function
+ * @memberof FormioUtils
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {*}
+ */
+export function momentDate(value, format, timezone) {
+  const momentDate = moment(value);
+  if (timezone === 'UTC') {
+    timezone = 'Etc/UTC';
+  }
+  if ((timezone !== currentTimezone() || (format &amp;&amp; format.match(/\s(z$|z\s)/))) &amp;&amp; moment.zonesLoaded) {
+    return momentDate.tz(timezone);
+  }
+  return momentDate;
+}
+
+/**
+ * Format a date provided a value, format, and timezone object.
+ *
+ * @name formatDate
+ * @function
+ * @memberof FormioUtils
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatDate(value, format, timezone) {
+  const momentDate = moment(value);
+  if (timezone === currentTimezone()) {
+    // See if our format contains a "z" timezone character.
+    if (format.match(/\s(z$|z\s)/)) {
+      loadZones();
+      if (moment.zonesLoaded) {
+        return momentDate.tz(timezone).format(convertFormatToMoment(format));
+      }
+      else {
+        return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
+      }
+    }
+
+    // Return the standard format.
+    return momentDate.format(convertFormatToMoment(format));
+  }
+  if (timezone === 'UTC') {
+    const offset = offsetDate(momentDate.toDate(), 'UTC');
+    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+  }
+
+  // Load the zones since we need timezone information.
+  loadZones();
+  if (moment.zonesLoaded) {
+    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  }
+  else {
+    return momentDate.format(convertFormatToMoment(format));
+  }
+}
+
+/**
+ * Pass a format function to format within a timezone.
+ *
+ * @name formatOffset
+ * @function
+ * @memberof FormioUtils
+ * @param formatFn
+ * @param date
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatOffset(formatFn, date, format, timezone) {
+  if (timezone === currentTimezone()) {
+    return formatFn(date, format);
+  }
+  if (timezone === 'UTC') {
+    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
+  }
+
+  // Load the zones since we need timezone information.
+  loadZones();
+  if (moment.zonesLoaded) {
+    const offset = offsetDate(date, timezone);
+    return `${formatFn(offset.date, format)} ${offset.abbr}`;
+  }
+  else {
+    return formatFn(date, format);
+  }
+}
+
+export function getLocaleDateFormatInfo(locale) {
+  const formatInfo = {};
+
+  const day = 21;
+  const exampleDate = new Date(2017, 11, day);
+  const localDateString = exampleDate.toLocaleDateString(locale);
+
+  formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+  return formatInfo;
+}
+
+/**
+ * Convert the format from the angular-datepicker module to flatpickr format.
+ *
+ * @name convertFormatToFlatpickr
+ * @function
+ * @memberof FormioUtils
+ * @param format
+ * @return {string}
+ */
+export function convertFormatToFlatpickr(format) {
+  return format
+  // Remove the Z timezone offset, not supported by flatpickr.
+    .replace(/Z/g, '')
+
+    // Year conversion.
+    .replace(/y/g, 'Y')
+    .replace('YYYY', 'Y')
+    .replace('YY', 'y')
+
+    // Month conversion.
+    .replace('MMMM', 'F')
+    .replace(/M/g, 'n')
+    .replace('nnn', 'M')
+    .replace('nn', 'm')
+
+    // Day in month.
+    .replace(/d/g, 'j')
+    .replace(/jj/g, 'd')
+
+    // Day in week.
+    .replace('EEEE', 'l')
+    .replace('EEE', 'D')
+
+    // Hours, minutes, seconds
+    .replace('HH', 'H')
+    .replace('hh', 'G')
+    .replace('mm', 'i')
+    .replace('ss', 'S')
+    .replace(/a/g, 'K');
+}
+
+/**
+ * Convert the format from the angular-datepicker module to moment format.
+ *
+ * @name convertFormatToMoment
+ * @function
+ * @memberof FormioUtils
+ * @param format
+ * @return {string}
+ */
+export function convertFormatToMoment(format) {
+  return format
+  // Year conversion.
+    .replace(/y/g, 'Y')
+    // Day in month.
+    .replace(/d/g, 'D')
+    // Day in week.
+    .replace(/E/g, 'd')
+    // AM/PM marker
+    .replace(/a/g, 'A')
+    // Unix Timestamp
+    .replace(/U/g, 'X');
+}
+
+/**
+ * @name convertFormatToMask
+ * @function
+ * @param format
+ * @return {*}
+ */
+export function convertFormatToMask(format) {
+  return format
+  // Long month replacement.
+    .replace(/M{4}/g, 'MM')
+    // Initial short month conversion.
+    .replace(/M{3}/g, '***')
+    // Short month conversion if input as text.
+    .replace(/e/g, 'Q')
+    // Year conversion.
+    .replace(/[ydhmsHMG]/g, '9')
+    // AM/PM conversion.
+    .replace(/a/g, 'AA');
+}
+
+/**
+ * Returns an input mask that is compatible with the input mask library.
+ *
+ * @name getInputMask
+ * @function
+ * @memberof FormioUtils
+ * @param {string} mask - The Form.io input mask.
+ * @returns {Array} - The input mask for the mask library.
+ */
+export function getInputMask(mask) {
+  if (mask instanceof Array) {
+    return mask;
+  }
+  const maskArray = [];
+  maskArray.numeric = true;
+  for (let i = 0; i &lt; mask.length; i++) {
+    switch (mask[i]) {
+      case '9':
+        maskArray.push(/\d/);
+        break;
+      case 'A':
+        maskArray.numeric = false;
+        maskArray.push(/[a-zA-Z]/);
+        break;
+      case 'a':
+        maskArray.numeric = false;
+        maskArray.push(/[a-z]/);
+        break;
+      case '*':
+        maskArray.numeric = false;
+        maskArray.push(/[a-zA-Z0-9]/);
+        break;
+      default:
+        maskArray.numeric = false;
+        maskArray.push(mask[i]);
+        break;
+    }
+  }
+  return maskArray;
+}
+
+/**
+ * @name matchInputMask
+ * @function
+ * @param value
+ * @param inputMask
+ * @return {boolean}
+ */
+export function matchInputMask(value, inputMask) {
+  if (!inputMask) {
+    return true;
+  }
+
+  // If value is longer than mask, it isn't valid.
+  if (value.length > inputMask.length) {
+    return false;
+  }
+
+  for (let i = 0; i &lt; inputMask.length; i++) {
+    const char = value[i];
+    const charPart = inputMask[i];
+
+    if (!(_.isRegExp(charPart) &amp;&amp; charPart.test(char) || charPart === char)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * @name getNumberSeparators
+ * @function
+ * @param lang
+ * @return {{decimalSeparator: string, delimiter: string}}
+ */
+export function getNumberSeparators(lang = 'en') {
+  const formattedNumberString = (12345.6789).toLocaleString(lang);
+  const delimeters = formattedNumberString.match(/..(.)...(.)../);
+  if (!delimeters) {
+    return {
+      delimiter: ',',
+      decimalSeparator: '.'
+    };
+  }
+  return {
+    delimiter: (delimeters.length > 1) ? delimeters[1] : ',',
+    decimalSeparator: (delimeters.length > 2) ? delimeters[2] : '.',
+  };
+}
+
+/**
+ * @name getNumberDecimalLimit
+ * @function
+ * @param component
+ * @param defaultLimit
+ * @return {*|number}
+ */
+export function getNumberDecimalLimit(component, defaultLimit) {
+  if (_.has(component, 'decimalLimit')) {
+    return _.get(component, 'decimalLimit');
+  }
+  // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+  let decimalLimit = defaultLimit || 20;
+  const step = _.get(component, 'validate.step', 'any');
+
+  if (step !== 'any') {
+    const parts = step.toString().split('.');
+    if (parts.length > 1) {
+      decimalLimit = parts[1].length;
+    }
+  }
+
+  return decimalLimit;
+}
+
+/**
+ * @name getCurrencyAffixes
+ * @function
+ * @param currency
+ * @param decimalLimit
+ * @param decimalSeparator
+ * @param lang
+ * @return {{prefix: string | string, suffix: string | string}}
+ */
+export function getCurrencyAffixes({
+   currency = 'USD',
+   decimalLimit,
+   decimalSeparator,
+   lang,
+ }) {
+  // Get the prefix and suffix from the localized string.
+  let regex = '(.*)?100';
+  if (decimalLimit) {
+    regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}`;
+  }
+  regex += '(.*)?';
+  const parts = (100).toLocaleString(lang, {
+    style: 'currency',
+    currency,
+    useGrouping: true,
+    maximumFractionDigits: decimalLimit,
+    minimumFractionDigits: decimalLimit
+  }).replace('.', decimalSeparator).match(new RegExp(regex));
+  return {
+    prefix: parts[1] || '',
+    suffix: parts[2] || ''
+  };
+}
+
+/**
+ * Fetch the field data provided a component.
+ *
+ * @name fieldData
+ * @function
+ * @memberof FormioUtils
+ * @param data
+ * @param component
+ * @return {*}
+ */
+export function fieldData(data, component) {
+  if (!data) {
+    return '';
+  }
+  if (!component || !component.key) {
+    return data;
+  }
+  if (component.key.includes('.')) {
+    let value = data;
+    const parts = component.key.split('.');
+    let key = '';
+    for (let i = 0; i &lt; parts.length; i++) {
+      key = parts[i];
+
+      // Handle nested resources
+      if (value.hasOwnProperty('_id')) {
+        value = value.data;
+      }
+
+      // Return if the key is not found on the value.
+      if (!value.hasOwnProperty(key)) {
+        return;
+      }
+
+      // Convert old single field data in submissions to multiple
+      if (key === parts[parts.length - 1] &amp;&amp; component.multiple &amp;&amp; !Array.isArray(value[key])) {
+        value[key] = [value[key]];
+      }
+
+      // Set the value of this key.
+      value = value[key];
+    }
+    return value;
+  }
+  else {
+    // Convert old single field data in submissions to multiple
+    if (component.multiple &amp;&amp; !Array.isArray(data[component.key])) {
+      data[component.key] = [data[component.key]];
+    }
+    return data[component.key];
+  }
+}
+
+/**
+ * Delays function execution with possibility to execute function synchronously or cancel it.
+ *
+ * @name delay
+ * @function
+ * @memberof FormioUtils
+ * @param fn Function to delay
+ * @param delay Delay time
+ * @return {*}
+ */
+export function delay(fn, delay = 0, ...args) {
+  const timer = setTimeout(fn, delay, ...args);
+
+  function cancel() {
+    clearTimeout(timer);
+  }
+
+  function earlyCall() {
+    cancel();
+    return fn(...args);
+  }
+
+  earlyCall.timer = timer;
+  earlyCall.cancel = cancel;
+
+  return earlyCall;
+}
+
+/**
+ * Iterate the given key to make it unique.
+ *
+ * @name iterateKey
+ * @function
+ * @memberof FormioUtils
+ * @param {String} key
+ *   Modify the component key to be unique.
+ *
+ * @returns {String}
+ *   The new component key.
+ */
+export function iterateKey(key) {
+  if (!key.match(/(\d+)$/)) {
+    return `${key}1`;
+  }
+
+  return key.replace(/(\d+)$/, function(suffix) {
+    return Number(suffix) + 1;
+  });
+}
+
+/**
+ * Determines a unique key within a map provided the base key.
+ *
+ * @name uniqueKey
+ * @function
+ * @memberof FormioUtils
+ * @param map
+ * @param base
+ * @return {*}
+ */
+export function uniqueKey(map, base) {
+  let newKey = base;
+  while (map.hasOwnProperty(newKey)) {
+    newKey = iterateKey(newKey);
+  }
+  return newKey;
+}
+
+/**
+ * Determines the major version number of bootstrap.
+ *
+ * @name bootstrapVersion
+ * @function
+ * @memberof FormioUtils
+ * @return {number}
+ */
+export function bootstrapVersion(options) {
+  if (options.bootstrap) {
+    return options.bootstrap;
+  }
+  if ((typeof $ === 'function') &amp;&amp; (typeof $().collapse === 'function')) {
+    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  }
+  return 0;
+}
+
+/**
+ * Retrun provided argument.
+ * If argument is a function, returns the result of a function call.
+ *
+ * @name unfold
+ * @function
+ * @memberof FormioUtils
+ * @param {*} e;
+ * @return {*}
+ */
+export function unfold(e) {
+  if (typeof e === 'function') {
+    return e();
+  }
+
+  return e;
+}
+
+/**
+ * Map values through unfold and return first non-nil value.
+ *
+ * @name firstNonNil
+ * @function
+ * @memberof FormioUtils
+ * @param {Array&lt;T>} collection;
+ * @return {T}
+ */
+export const firstNonNil = _.flow([
+  _.partialRight(_.map, unfold),
+  _.partialRight(_.find, v => !_.isUndefined(v))
+]);
+
+/*
+ * Create enclosed state.
+ * Returns functions to getting and cycling between states.
+ *
+ * @name withSwitch
+ * @function
+ * @memberof FormioUtils
+ * @param {*} a - initial state.
+ * @param {*} b - next state.
+ * @return {Functions[]} -- [get, toggle];
+ */
+export function withSwitch(a, b) {
+  let state = a;
+  let next = b;
+
+  function get() {
+    return state;
+  }
+
+  function toggle() {
+    const prev = state;
+    state = next;
+    next = prev;
+  }
+
+  return [get, toggle];
+}
+
+/**
+ * @name observeOverload
+ * @function
+ * @param callback
+ * @param options
+ * @return {function}
+ */
+export function observeOverload(callback, options = {}) {
+  const { limit = 50, delay = 500 } = options;
+  let callCount = 0;
+  let timeoutID = 0;
+
+  const reset = () => callCount = 0;
+
+  return () => {
+    if (timeoutID !== 0) {
+      clearTimeout(timeoutID);
+      timeoutID = 0;
+    }
+
+    timeoutID = setTimeout(reset, delay);
+
+    callCount += 1;
+
+    if (callCount >= limit) {
+      clearTimeout(timeoutID);
+      reset();
+      return callback();
+    }
+  };
+}
+
+/**
+ * @name getContextComponents
+ * @function
+ * @param context
+ * @return {array}
+ */
+export function getContextComponents(context) {
+  const values = [];
+
+  context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
+    if (component.key !== context.data.key) {
+      values.push({
+        label: `${component.label || component.key} (${path})`,
+        value: component.key,
+      });
+    }
+  });
+
+  return values;
+}
+
+/**
+ * Sanitize an html string.
+ *
+ * @name sanitize
+ * @function
+ * @memberof FormioUtils
+ * @param string
+ * @returns {*}
+ */
+export function sanitize(string, options) {
+  // Dompurify configuration
+  const sanitizeOptions = {
+    ADD_ATTR: ['ref', 'target'],
+    USE_PROFILES: { html: true }
+  };
+  // Add attrs
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.addAttr) &amp;&amp; options.sanitizeConfig.addAttr.length > 0) {
+    options.sanitizeConfig.addAttr.forEach((attr) => {
+      sanitizeOptions.ADD_ATTR.push(attr);
+    });
+  }
+  // Add tags
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.addTags) &amp;&amp; options.sanitizeConfig.addTags.length > 0) {
+    sanitizeOptions.ADD_TAGS = options.sanitizeConfig.addTags;
+  }
+  // Allow tags
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.allowedTags) &amp;&amp; options.sanitizeConfig.allowedTags.length > 0) {
+    sanitizeOptions.ALLOWED_TAGS = options.sanitizeConfig.allowedTags;
+  }
+  // Allow attributes
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.allowedAttrs) &amp;&amp; options.sanitizeConfig.allowedAttrs.length > 0) {
+    sanitizeOptions.ALLOWED_ATTR = options.sanitizeConfig.allowedAttrs;
+  }
+  // Allowd URI Regex
+  if (options.sanitizeConfig &amp;&amp; options.sanitizeConfig.allowedUriRegex) {
+    sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
+  }
+  return dompurify.sanitize(string, sanitizeOptions);
+}
+
+/**
+ * Fast cloneDeep for JSON objects only.
+ *
+ * @name fastCloneDeep
+ * @function
+ * @memberof FormioUtils
+ */
+export function fastCloneDeep(obj) {
+  return obj ? JSON.parse(JSON.stringify(obj)) : obj;
+}
+
+export { Evaluator, interpolate };
+
+/**
+ * @name isInputComponent
+ * @function
+ * @param componentJson
+ * @return {boolean|*}
+ */
+export function isInputComponent(componentJson) {
+  if (componentJson.input === false || componentJson.input === true) {
+    return componentJson.input;
+  }
+  switch (componentJson.type) {
+    case 'htmlelement':
+    case 'content':
+    case 'columns':
+    case 'fieldset':
+    case 'panel':
+    case 'table':
+    case 'tabs':
+    case 'well':
+    case 'button':
+      return false;
+    default:
+      return true;
+  }
+}
+</code></pre>
+		</section>
+			</div>
+		</div>
+	</div>
+	<footer>
+				<div class="copyright">FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on 1st Mar 2020 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+	</footer>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/clipboard.min.js"></script>
+	<script src="js/prism.min.js"></script>
+	<script src="js/template.min.js"></script>
+		<!-- start:lunr-search-modal.hbs -->
+		<div class="modal fade" id="lunr-search-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Search results</h4>
+					</div>
+					<div class="modal-body" id="lunr-search-body">
+					</div>
+					<div class="modal-footer" id="lunr-search-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- end:lunr-search-modal.hbs -->		<script src="js/lunr.min.js"></script>
+		<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+	
+</body>
+</html>
+<!-- end:source.tmpl.hbs -->

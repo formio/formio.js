@@ -1,0 +1,279 @@
+<!-- start:readme.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+		<title>Calculated Values</title>
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="css/prism.min.css">
+		<link type="text/css" rel="stylesheet" href="css/template.min.css">
+			<link type="text/css" rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+		<script type="text/javascript">
+			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"Form.io JavaScript SDK","systemSummary":"JavaScript Powered forms with form builder.","systemLogo":"","systemColor":"","navMembers":[{"kind":"tutorial","title":"Documentation","summary":"How to get started with the Form.io Renderer and Builder.","memberof":"documentation"},{"kind":"tutorial","title":"Examples","summary":"A list of all examples.","memberof":"examples"},{"kind":"class","title":"API","summary":"All documented classes."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."}],"footer":"","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":false,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":false,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, weight, longname, version, since","search":true,"favicon":null,"stylesheets":["https://cdn.form.io/formiojs/formio.full.min.css"],"scripts":["https://cdn.form.io/formiojs/formio.full.min.js"],"monospaceLinks":false,"cleverLinks":false};
+			window.DOCLET_TOC_ENABLED = true;
+			window.DOCLET_AFILTER_ENABLED = false;
+		</script>
+</head>
+<body>
+	<!-- start:navbar.hbs -->
+	<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+	  <div class="container">
+	    <a class="navbar-brand" href="index.html">
+	      Form.io JavaScript SDK
+	    </a>
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="navbar-collapse collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav mr-auto">
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Documentation<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="documentation.html">Documentation</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-howitworks.html">How it works</a>
+	                    <a class="dropdown-item" href="tutorial-about.html">About this Library</a>
+	                    <a class="dropdown-item" href="tutorial-installation.html">Installation</a>
+	                    <a class="dropdown-item" href="tutorial-renderer.html">Form Renderer</a>
+	                    <a class="dropdown-item" href="tutorial-builder.html">Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-utils.html">Form Utilities</a>
+	                    <a class="dropdown-item" href="tutorial-api.html">JavaScript API</a>
+	                    <a class="dropdown-item" href="tutorial-frameworks.html">Frameworks (Angular, React, Vue, etc)</a>
+	                    <a class="dropdown-item" href="tutorial-modules.html">Modules</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Examples<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="examples.html">Examples</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-hosted.html">Hosted Forms</a>
+	                    <a class="dropdown-item" href="tutorial-simple.html">Simple Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-jsfiddle.html">JSFiddle Example</a>
+	                    <a class="dropdown-item" href="tutorial-submissions.html">Submission Hosting</a>
+	                    <a class="dropdown-item" href="tutorial-htmlview.html">Submission View</a>
+	                    <a class="dropdown-item" href="tutorial-customendpoint.html">Submission Custom Endpoint</a>
+	                    <a class="dropdown-item" href="tutorial-thankyou.html">Thank You Page</a>
+	                    <a class="dropdown-item" href="tutorial-externalload.html">External Data Load</a>
+	                    <a class="dropdown-item" href="tutorial-pdf.html">PDF Forms</a>
+	                    <a class="dropdown-item" href="tutorial-customcomponent.html">Custom Components</a>
+	                    <a class="dropdown-item" href="tutorial-conditionalwizard.html">Conditional Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-custombuilder.html">Custom Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-customwizard.html">Custom Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-json.html">JSON Powered Forms</a>
+	                    <a class="dropdown-item" href="tutorial-wizard.html">Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-wysiwyg.html">WYSIWYG Editor</a>
+	                    <a class="dropdown-item" href="tutorial-embed.html">JavaScript Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-fieldLogic.html">Field Logic</a>
+	                    <a class="dropdown-item" href="tutorial-savedraft.html">Save as Draft</a>
+	                    <a class="dropdown-item" href="tutorial-multiframework.html">Multiple Framework Support</a>
+	                    <a class="dropdown-item" href="tutorial-conditions.html">Conditional Forms</a>
+	                    <a class="dropdown-item" href="tutorial-select.html">Select Dropdowns</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid.html">Data Grid Input</a>
+	                    <a class="dropdown-item" href="tutorial-editgrid.html">Edit Grid</a>
+	                    <a class="dropdown-item" href="tutorial-noeval.html">No Eval</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid2.html">Data Grid Panels</a>
+	                    <a class="dropdown-item" href="tutorial-external.html">External Sources & Conditional Selects</a>
+	                    <a class="dropdown-item" href="tutorial-contrib.html">Community Contributions</a>
+	                    <a class="dropdown-item" href="tutorial-calculated.html">Calculated Values</a>
+	                    <a class="dropdown-item" href="tutorial-language.html">Multi-Language Forms</a>
+	                    <a class="dropdown-item" href="tutorial-kitchen.html">Kitchen Sink</a>
+	                    <a class="dropdown-item" href="tutorial-recaptcha.html">reCAPTCHA component</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">API<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="list_class.html">API</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a href="Form.html" class="dropdown-item">Form</a>
+	                    <a href="Formio.html" class="dropdown-item">Formio</a>
+	                    <a href="FormioUtils.html" class="dropdown-item">FormioUtils</a>
+	                </div>
+	              </li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	<!-- end:navbar.hbs -->
+		<div class="page-header">
+			<div class="container">
+				<h1><span class="title">Calculated Values</span></h1>
+			</div>
+		</div>
+	<div class="container-fluid content">
+		<div class="row">
+			<div class="col-md-9 main-content">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item "><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item "><a href="tutorial-examples_.html">Examples</a></li>
+                <li class="breadcrumb-item active">Calculated Values</li>
+              </ol>
+            </nav>
+		<section class="tutorial-section">
+			<article><p>You can use <a href="http://jsonlogic.com">JSON Logic</a> to create complex calculated values based on the values of other fields.</p>
+<div class="row">
+  <div class="col col-sm-7">
+<pre>
+Formio.createForm(document.getElementById('formio'), {
+  components: [
+    {
+      type: 'number',
+      label: 'A',
+      key: 'a',
+      input: true,
+      inputType: 'text',
+      multiple: true,
+      prefix: '+',
+      validate: {
+        min: 2,
+        max: 100,
+        step: 1
+      }
+    },
+    {
+      type: 'htmlelement',
+      tag: 'p',
+      className: 'text-center',
+      content: '&mdash;&mdash;&mdash;&mdash; X &mdash;&mdash;&mdash;&mdash;'
+    },
+    {
+      type: 'number',
+      label: 'B',
+      key: 'b',
+      input: true,
+      inputType: 'text',
+      multiple: true,
+      prefix: '+',
+      validate: {
+        min: 2,
+        max: 100,
+        step: 1
+      }
+    },
+    {
+      type: 'textfield',
+      label: 'Total',
+      key: 'total',
+      input: true,
+      inputType: 'text',
+      disabled: true,
+      calculateValue: {
+        "*": [
+          {"_sum": {var: 'data.a'}},
+          {"_sum": {var: 'data.b'}}
+        ]
+      }
+    }
+  ]
+});
+</pre>
+  </div>
+  <div class="col col-sm-5">
+  <h3>Result</h3>
+  <div class="card card-body bg-light">
+  <div id="formio"></div>
+  <script type="text/javascript">
+window.onload = function() {
+  Formio.createForm(document.getElementById('formio'), {
+    components: [
+      {
+        type: 'number',
+        label: 'A',
+        key: 'a',
+        input: true,
+        inputType: 'text',
+        multiple: true,
+        prefix: '+',
+        validate: {
+          min: 2,
+          max: 100,
+          step: 1
+        }
+      },
+      {
+        type: 'htmlelement',
+        tag: 'p',
+        className: 'text-center',
+        content: '&mdash;&mdash;&mdash;&mdash; X &mdash;&mdash;&mdash;&mdash;'
+      },
+      {
+        type: 'number',
+        label: 'B',
+        key: 'b',
+        input: true,
+        inputType: 'text',
+        multiple: true,
+        prefix: '+',
+        validate: {
+          min: 2,
+          max: 100,
+          step: 1
+        }
+      },
+      {
+        type: 'textfield',
+        label: 'Total',
+        key: 'total',
+        input: true,
+        inputType: 'text',
+        disabled: true,
+        calculateValue: {
+          "*": [
+            {"_sum": {var: 'data.a'}},
+            {"_sum": {var: 'data.b'}}
+          ]
+        }
+      }
+    ]
+  });
+};
+  </script>
+  </div>
+  </div>
+</div></article>
+		</section>
+			</div>
+				<div class="col-md-3 side-content">
+					<nav class="toc hidden-print hidden-sm hidden-xs"></nav>
+				</div>
+		</div>
+	</div>
+	<footer>
+				<div class="copyright">FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on 1st Mar 2020 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+	</footer>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/clipboard.min.js"></script>
+	<script src="js/prism.min.js"></script>
+	<script src="js/template.min.js"></script>
+		<!-- start:lunr-search-modal.hbs -->
+		<div class="modal fade" id="lunr-search-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Search results</h4>
+					</div>
+					<div class="modal-body" id="lunr-search-body">
+					</div>
+					<div class="modal-footer" id="lunr-search-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- end:lunr-search-modal.hbs -->		<script src="js/lunr.min.js"></script>
+		<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+	
+</body>
+</html>
+<!-- end:readme.hbs -->

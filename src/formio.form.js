@@ -58,11 +58,19 @@ const registerPlugin = (plugin) => {
     }
   }
 };
+
 /**
+ * Called to "use" a module within Form.io. For detailed documentation on Modules, see the {@tutorial modules}
+ *
  * Allows passing in plugins as multiple arguments or an array of plugins.
  *
  * Formio.plugins(plugin1, plugin2, etc);
  * Formio.plugins([plugin1, plugin2, etc]);
+ *
+ * @memberof Formio
+ * @tutorial modules
+ *
+ * @param {Object} plugin - A plugin to add to the Form.io renderer / builder.
  */
 Formio.use = (...plugins) => {
   plugins.forEach((plugin) => {

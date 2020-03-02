@@ -36,15 +36,17 @@ function cloneResponse(response) {
 }
 
 /**
- * The Formio interface class. This is a minimalistic API library that allows you to work with the Form.io API's within JavaScript.
+ * @summary The Formio interface class. This is a minimalistic API library that allows you to work with the Form.io API's within JavaScript.
  *
- * #### Example
- * ```js
- * const formio = new Formio('https://examples.form.io/example');
- * formio.loadForm().then((form) => {
- *   console.log(form);
- * });
- * ```
+ * For more information about uses for this class, see the {@tutorial api} documentation.
+ *
+ * @example
+ *  const formio = new Formio('https://examples.form.io/example');
+ *  formio.loadForm().then((form) => {
+ *    console.log(form);
+ *  });
+ *
+ * @tutorial api
  */
 class Formio {
   /* eslint-disable max-statements */
@@ -269,7 +271,7 @@ class Formio {
   }
 
   /**
-   * Save a document record using "upsert". If the document does not exist, it will be created, if the _id is provided,
+   * @summary Save a document record using "upsert". If the document does not exist, it will be created, if the _id is provided,
    * it will be updated.
    *
    * @param {string} type - The type of resource to fetch the index of. "submission", "form", etc.
@@ -290,7 +292,7 @@ class Formio {
   }
 
   /**
-   * Load (GET) a document record.
+   * @summary Load (GET) a document record.
    *
    * @param {string} type - The type of resource to fetch the index of. "submission", "form", etc.
    * @param {object} query - A query object to pass to the request.
@@ -317,7 +319,7 @@ class Formio {
   }
 
   /**
-   * Call {@link Formio.makeRequest} for this Formio instance.
+   * @summary Call {@link Formio.makeRequest} for this Formio instance.
    *
    * @param {string} type - The request resource type. "submission", "form", etc.
    * @param {string} url - The URL to request.
@@ -336,15 +338,13 @@ class Formio {
   }
 
   /**
-   * Loads a project.
+   * @summary Loads a project.
    *
-   * #### Example
-   * ```js
-   * const formio = new Formio('https://examples.form.io');
-   * formio.loadProject().then((project) => {
-   *   console.log(project);
-   * });
-   * ```
+   * @example
+   *  const formio = new Formio('https://examples.form.io');
+   *  formio.loadProject().then((project) => {
+   *    console.log(project);
+   *  });
    *
    * @param {object} query - Query parameters to pass to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -355,29 +355,24 @@ class Formio {
   }
 
   /**
-   * Saves or Updates a project.
+   * @summary Saves or Updates a project.
    *
-   * #### Create a new project
-   * ```js
-   * const formio = new Formio();
-   * formio.saveProject({
-   *   title: 'My Project',
-   *   path: 'myproject',
-   *   name: 'myproject'
-   * });
-   * ```
+   * @example <caption>Create a new project</caption>
+   *  const formio = new Formio();
+   *  formio.saveProject({
+   *    title: 'My Project',
+   *    path: 'myproject',
+   *    name: 'myproject'
+   *  });
    *
-   * #### Update an existing project
-   * ```js
-   * // Update a project
-   * const formio = new Formio('https://examples.form.io');
-   * formio.loadProject().then((project) => {
-   *   project.title = 'Title changed';
-   *   formio.saveProject(project).then(() => {
-   *     console.log('Done saving project!');
-   *   });
-   * });
-   * ```
+   * @example <caption>Update an existing project</caption>
+   *    const formio = new Formio('https://examples.form.io');
+   *    formio.loadProject().then((project) => {
+   *       project.title = 'Title changed';
+   *       formio.saveProject(project).then(() => {
+   *          console.log('Done saving project!');
+   *       });
+   *    });
    *
    * @param {object} data - The project JSON to create or update.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -388,13 +383,11 @@ class Formio {
   }
 
   /**
-   * Deletes a project
+   * @summary Deletes a project
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io');
    * formio.deleteProject();
-   * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Object>}
@@ -404,13 +397,12 @@ class Formio {
   }
 
   /**
-   * Loads a list of all projects.
+   * @summary Loads a list of all projects.
    *
-   * ```js
+   * @example
    * Formio.loadProjects().then((projects) => {
    *   console.log(projects);
    * });
-   * ```
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -425,15 +417,13 @@ class Formio {
   }
 
   /**
-   * Loads a role within a project.
+   * @summary Loads a role within a project.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/role/234234234234');
    * formio.loadRole().then((role) => {
    *   console.log(role);
    * });
-   * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Object>}
@@ -443,10 +433,9 @@ class Formio {
   }
 
   /**
-   * Create a new or Update an existing role within a project.
+   * @summary Create a new or Update an existing role within a project.
    *
-   * #### Create new Role example
-   * ```js
+   * @example <caption>Create new Role example</caption>
    * const formio = new Formio('https://examples.form.io');
    * formio.saveRole({
    *   title: 'Employee',
@@ -454,10 +443,8 @@ class Formio {
    * }).then((role) => {
    *   console.log(role);
    * });
-   * ```
    *
-   * #### Update existing role example
-   * ```js
+   * @example <caption>Update existing role example</caption>
    * const formio = new Formio('https://examples.form.io/role/234234234234234');
    * formio.loadRole().then((role) => {
    *   role.title = 'Manager';
@@ -465,7 +452,6 @@ class Formio {
    *     console.log('DONE');
    *   });
    * });
-   * ```
    *
    * @param {object} role - The Role JSON to create or update.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -476,7 +462,7 @@ class Formio {
   }
 
   /**
-   * Deletes a role within a project.
+   * @summary Deletes a role within a project.
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Response>}
@@ -486,15 +472,13 @@ class Formio {
   }
 
   /**
-   * Load all roles within a project.
+   * @summary Load all roles within a project.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io');
    * formio.loadRoles().then((roles) => {
    *   console.log(roles);
    * });
-   * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Response>}
@@ -504,15 +488,13 @@ class Formio {
   }
 
   /**
-   * Loads a form.
+   * @summary Loads a form.
    *
-   * #### Example
-   * ```
+   * @example
    * const formio = new Formio('https://examples.form.io/example');
    * formio.loadForm().then((form) => {
    *   console.log(form);
    * });
-   * ```
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -552,10 +534,9 @@ class Formio {
   }
 
   /**
-   * Create or Update a specific form.
+   * @summary Create or Update a specific form.
    *
-   * #### Create form example
-   * ```js
+   * @example <caption>Create form example</caption>
    * const formio = new Formio('https://examples.form.io');
    * formio.saveForm({
    *   title: 'Employee',
@@ -575,10 +556,8 @@ class Formio {
    *     }
    *   ]
    * });
-   * ```
    *
-   * #### Update a form example
-   * ```js
+   * @example <caption>Update a form example</caption>
    * const formio = new Formio('https://examples.form.io/example');
    * formio.loadForm().then((form) => {
    *   form.title = 'Changed Title';
@@ -586,7 +565,6 @@ class Formio {
    *     console.log('DONE!!!');
    *   });
    * });
-   * ```
    *
    * @param {object} data - The Form JSON to create or update.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -597,15 +575,13 @@ class Formio {
   }
 
   /**
-   * Deletes a form.
+   * @summary Deletes a form.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example');
    * formio.deleteForm().then(() => {
    *   console.log('Deleted!');
    * });
-   * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Response>}
@@ -615,15 +591,13 @@ class Formio {
   }
 
   /**
-   * Loads all forms within a project.
+   * @summary Loads all forms within a project.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io');
    * formio.loadForms().then((forms) => {
    *   console.log(forms);
    * });
-   * ```
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -634,15 +608,13 @@ class Formio {
   }
 
   /**
-   * Loads a specific submissionn.
+   * @summary Loads a specific submissionn.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example/submission/23423423423423423');
    * formio.loadSubmission().then((submission) => {
    *   console.log(submission);
    * });
-   * ```
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -658,10 +630,9 @@ class Formio {
   }
 
   /**
-   * Creates a new or Updates an existing submission.
+   * @summary Creates a new or Updates an existing submission.
    *
-   * #### Create a new submission
-   * ```js
+   * @example <caption>Create a new submission</caption>
    * const formio = new Formio('https://examples.form.io/example');
    * formio.saveSubmission({
    *   data: {
@@ -672,10 +643,8 @@ class Formio {
    *   // This will now be the complete submission object saved on the server.
    *   console.log(submission);
    * });
-   * ```
    *
-   * #### Update an existing submission
-   *```js
+   * @example <caption>Update an existing submission</caption>
    * const formio = new Formio('https://examples.form.io/example/submission/23423423423423423');
    * formio.loadSubmission().then((submission) => {
    *   submission.data.lastName = 'Thompson';
@@ -683,7 +652,6 @@ class Formio {
    *     console.log('DONE');
    *   });
    * });
-   * ```
    *
    * @param {object} data - The submission JSON object.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -697,7 +665,7 @@ class Formio {
   }
 
   /**
-   * Deletes a submission.
+   * @summary Deletes a submission.
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Response>}
@@ -707,10 +675,9 @@ class Formio {
   }
 
   /**
-   * Loads all submissions within a form.
+   * @summary Loads all submissions within a form.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example');
    * formio.loadSubmissions({
    *   params: {
@@ -721,7 +688,6 @@ class Formio {
    *   // Should print out 25 submissions where the last name contains "smith".
    *   console.log(submissions);
    * });
-   * ```
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -732,15 +698,13 @@ class Formio {
   }
 
   /**
-   * Loads a form action.
+   * @summary Loads a form action.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example/action/234234234234');
    * formio.loadAction().then((action) => {
    *   console.log(action);
    * });
-   * ```
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -751,10 +715,9 @@ class Formio {
   }
 
   /**
-   * Create a new or update an existing action.
+   * @summary Create a new or update an existing action.
    *
-   * #### Create a new action for a form.
-   * ```js
+   * @example <caption>Create a new action for a form.</caption>
    * const formio = new Formio('https://examples.form.io/example');
    * formio.saveAction({
    *   data: {
@@ -773,10 +736,8 @@ class Formio {
    * }).then((action) => {
    *   console.log(action);
    * });
-   * ```
    *
-   * #### Update an action
-   * ```js
+   * @example <caption>Update an action</caption>
    * const formio = new Formio('https://examples.form.io/example/action/234234234234');
    * formio.loadAction().then((action) => {
    *   action.title = 'Updated title';
@@ -784,7 +745,6 @@ class Formio {
    *     console.log('Done!');
    *   });
    * });
-   * ```
    *
    * @param {object} data - The action JSON
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -795,15 +755,13 @@ class Formio {
   }
 
   /**
-   * Delete an action
+   * @summary Delete an action
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example/action/234234234234');
    * formio.deleteAction().then(() => {
    *   console.log('Action was deleted.');
    * });
-   * ```
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Response>}
@@ -813,15 +771,13 @@ class Formio {
   }
 
   /**
-   * Loads all actions within a form.
+   * @summary Loads all actions within a form.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example');
    * formio.loadActions().then((actions) => {
    *   console.log(actions);
    * });
-   * ```
    *
    * @param {object} query - Query parameters similar to {@link Formio#load}.
    * @param {object} options - Options to pass to {@link Formio.request}
@@ -832,7 +788,7 @@ class Formio {
   }
 
   /**
-   * Returns a list of available actions
+   * @summary Returns a list of available actions
    *
    * @return {Promise<Response>}
    */
@@ -841,15 +797,13 @@ class Formio {
   }
 
   /**
-   * Returns the action information for a specific action, such as "save".
+   * @summary Returns the action information for a specific action, such as "save".
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example/actions/save');
    * formio.actionInfo().then((info) => {
    *   console.log(info);
    * });
-   * ```
    *
    * @param {string} name - The name of the action you would like to get information for. i.e. "save", "webhook", etc.
    * @return {Promise<Response>}
@@ -859,7 +813,7 @@ class Formio {
   }
 
   /**
-   * Determine if a string ID is a valid MongoID.
+   * @summary Determine if a string ID is a valid MongoID.
    *
    * @param {string} id - The id that should be tested if it is avalid id.
    * @return {boolean} - true if it is a valid MongoId, false otherwise.
@@ -870,15 +824,13 @@ class Formio {
   }
 
   /**
-   * Get the project ID of project.
+   * @summary Get the project ID of project.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io');
    * formio.getProjectId().then((projectId) => {
    *   console.log(projectId);
    * };
-   * ```
    *
    * @return {Promise<string>}
    */
@@ -897,15 +849,13 @@ class Formio {
   }
 
   /**
-   * Get the ID of a form.
+   * @summary Get the ID of a form.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example');
    * formio.getFormId().then((formId) => {
    *   console.log(formId);
    * });
-   * ```
    *
    * @return {Promise<string>}
    */
@@ -924,7 +874,7 @@ class Formio {
   }
 
   /**
-   * Instance method for {@link Formio.currentUser}
+   * @summary Instance method for {@link Formio.currentUser}
    *
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<object>}
@@ -934,7 +884,7 @@ class Formio {
   }
 
   /**
-   * Instance method for {@link Formio.accessInfo}
+   * @summary Instance method for {@link Formio.accessInfo}
    * @return {Promise<Response>}
    */
   accessInfo() {
@@ -942,7 +892,7 @@ class Formio {
   }
 
   /**
-   * Returns the JWT token for this instance.
+   * @summary Returns the JWT token for this instance.
    *
    * @param {object} options - The following options are provided.
    * @param {string} options.namespace - The localStorage namespace to use when retrieving tokens from storage.
@@ -953,7 +903,7 @@ class Formio {
   }
 
   /**
-   * Sets the JWT token for this instance.
+   * @summary Sets the JWT token for this instance.
    *
    * @param {string} token - The JWT token to set.
    * @param {object} options - The following options are provided.
@@ -965,7 +915,7 @@ class Formio {
   }
 
   /**
-   * Returns a temporary authentication token for single purpose token generation.
+   * @summary Returns a temporary authentication token for single purpose token generation.
    *
    * @param {number|string} expire - The amount of seconds to wait before this temp token expires.
    * @param {string} allowed - The allowed path string inn the format GET:/path
@@ -987,16 +937,14 @@ class Formio {
   }
 
   /**
-   * Get a PDF download url for a submission, which will generate a new PDF of the submission. This method will first
+   * @summary Get a PDF download url for a submission, which will generate a new PDF of the submission. This method will first
    * fetch a temporary download token, and then append this to the download url for this form.
    *
-   * #### Example
-   * ```js
+   * @example
    * const formio = new Formio('https://examples.form.io/example/submission/324234234234234');
    * formio.getDownloadUrl().then((url) => {
    *   console.log(url);
    * });
-   * ```
    *
    * @param {object} [form] - The form JSON to fetch a download url for.
    * @return {Promise<string>} - The download url.
@@ -1033,7 +981,7 @@ class Formio {
   }
 
   /**
-   * Upload a file to the Form.io platform.
+   * @summary Upload a file to the Form.io platform.
    *
    * @param {string} storage - The storage type for this file. i.e. "url", "s3", "dropbox", etc.
    * @param {File} file - The file object to upload.
@@ -1075,6 +1023,12 @@ class Formio {
     return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
+  /**
+   * @summary Download a file.
+   * @param file
+   * @param options
+   * @return {*}
+   */
   downloadFile(file, options) {
     const requestArgs = {
       method: 'download',
@@ -1103,7 +1057,7 @@ class Formio {
   }
 
   /**
-   * Returns the user permissions to a form and submission.
+   * @summary Returns the user permissions to a form and submission.
    *
    * @param user - The user or current user if undefined. For anonymous, use "null"
    * @param form - The form or current form if undefined. For no form check, use "null"
@@ -1205,7 +1159,7 @@ class Formio {
   }
 
   /**
-   * Determine if the current user can submit a form.
+   * @summary Determine if the current user can submit a form.
    * @return {*}
    */
   canSubmit() {
@@ -1294,7 +1248,7 @@ class Formio {
   }
 
   /**
-   * Make an API request and wrap that request with the Form.io Request plugin system.  This is very similar to the
+   * @summary Make an API request and wrap that request with the Form.io Request plugin system.  This is very similar to the
    * {Formio.request} method with a difference being that it will pass the request through the Form.io request plugin.
    *
    * @param {Formio} formio - An instance of the Formio class.
@@ -1340,14 +1294,12 @@ class Formio {
   }
 
   /**
-   * Execute an API request to any external system. This is a wrapper around the Web fetch method.
+   * @summary Execute an API request to any external system. This is a wrapper around the Web fetch method.
    *
-   * ### Example
-   * ```js
+   * @example
    * Formio.request('https://examples.form.io').then((form) => {
    *   console.log(form);
    * });
-   * ```
    *
    * @param {string} url - The URL to request.
    * @param {string} method - The request method. GET, PUT, POST, DELETE, or PATCH
@@ -1552,7 +1504,7 @@ class Formio {
   }
 
   /**
-   * Sets the JWT in storage to be used within an application.
+   * @summary Sets the JWT in storage to be used within an application.
    *
    * @param {string} token - The JWT token to set.
    * @param {object} options - Options as follows
@@ -1597,7 +1549,7 @@ class Formio {
   }
 
   /**
-   * Returns the token set within the application for the user.
+   * @summary Returns the token set within the application for the user.
    *
    * @param {object} options - The options as follows.
    * @param {string} options.namespace - The namespace of the token you wish to fetch.
@@ -1630,7 +1582,7 @@ class Formio {
   }
 
   /**
-   * Sets the current user within the application cache.
+   * @summary Sets the current user within the application cache.
    *
    * @param {object} user - JSON object of the user you wish to set.
    * @param {object} options - Options as follows
@@ -1668,7 +1620,7 @@ class Formio {
   }
 
   /**
-   * Returns the user JSON.
+   * @summary Returns the user JSON.
    *
    * @param {object} options - Options as follows
    * @param {string} namespace - The namespace of the tokens stored within this application.
@@ -1686,15 +1638,16 @@ class Formio {
   }
 
   /**
-   * Sets the BaseURL for the application. Every application developed using the JavaScript SDK must set both the
-   * {@link Formio.setBaseUrl} and {@link Formio.setProjectUrl} methods. These two functions ensure that every URL
-   * passed into the constructor of this class can determine the "project" context for which the application is running.
+   * @summary Sets the BaseURL for the application.
+   *
+   * @description Every application developed using the JavaScript SDK must set both the {@link Formio.setBaseUrl} and
+   * {@link Formio.setProjectUrl} methods. These two functions ensure that every URL passed into the constructor of this
+   * class can determine the "project" context for which the application is running.
    *
    * Any Open Source server applications will set both the {@link Formio.setBaseUrl} and {@link Formio.setProjectUrl}
    * values will be the same value.
    *
-   * #### Example
-   * ```js
+   * @example
    * Formio.setBaseUrl('https://yourwebsite.com/forms');
    * Formio.setProjectUrl('https://yourwebsite.com/forms/project');
    *
@@ -1705,7 +1658,6 @@ class Formio {
    * formio.loadForm().then((form) => {
    *   console.log(form);
    * });
-   * ```
    *
    * @param {string} url - The URL of the Base API url.
    */
@@ -1717,7 +1669,7 @@ class Formio {
   }
 
   /**
-   * Returns the current base url described at {@link Formio.setBaseUrl}
+   * @summary Returns the current base url described at {@link Formio.setBaseUrl}
    *
    * @return {string} - The base url of the application.
    */
@@ -1742,7 +1694,7 @@ class Formio {
   }
 
   /**
-   * Sets the Project Url for the application. This is an important method that needs to be set for all applications. It
+   * @summary Sets the Project Url for the application. This is an important method that needs to be set for all applications. It
    * is documented @ {@link Formio.setBaseUrl}.
    *
    * @param {string} url - The project api url.
@@ -1753,7 +1705,7 @@ class Formio {
   }
 
   /**
-   * The Auth URL can be set to customize the authentication requests made from an application. By default, this is
+   * @summary The Auth URL can be set to customize the authentication requests made from an application. By default, this is
    * just the same value as {@link Formio.projectUrl}
    *
    * @param {string} url - The authentication url
@@ -1768,7 +1720,7 @@ class Formio {
   }
 
   /**
-   * Returns the Project url described at {@link Formio.setProjectUrl}
+   * @summary Returns the Project url described at {@link Formio.setProjectUrl}
    *
    * @return {string|string} - The Project Url.
    */
@@ -1777,9 +1729,11 @@ class Formio {
   }
 
   /**
-   * Clears the runtime internal API cache. By default, the Formio class will cache all API requests in memory so that
-   * any subsequent requests using GET method will return the cached results as long as the API URl is the same as what
-   * was cached previously. This cache can be cleared using this method as follows.
+   * @summary Clears the runtime internal API cache.
+   *
+   * @description By default, the Formio class will cache all API requests in memory so that any subsequent requests
+   * using GET method will return the cached results as long as the API URl is the same as what was cached previously.
+   * This cache can be cleared using this method as follows.
    *
    * ```js
    * Formio.clearCache();
@@ -1868,16 +1822,40 @@ class Formio {
       (plugin[pluginFn] || Formio.identity)(value, ...args), value);
   }
 
+  /**
+   * @summary Return the access information about a Project, such as the Role ID's for that project, and if the server is
+   * configured to do so, the Form and Resource access configurations that the authenticated user has access to.
+   *
+   * @description This is useful for an application to determine the UI for a specific user to identify which forms they have
+   * access to submit or read.
+   *
+   * @param {Formio} formio - The Formio instance.
+   * @return {Promise<Response>}
+   */
   static accessInfo(formio) {
     const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
     return Formio.makeRequest(formio, 'accessInfo', `${projectUrl}/access`);
   }
 
+  /**
+   * @summary Returns an array of roles for the project, which includes the ID's and names of those roles.
+   *
+   * @param {Formio} formio - The Formio instance.
+   * @return {Promise<Response>}
+   */
   static projectRoles(formio) {
     const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
     return Formio.makeRequest(formio, 'projectRoles', `${projectUrl}/role`);
   }
 
+  /**
+   * @summary Return the currentUser object. This will fetch the user from the server and respond with the Submission JSON
+   * of that user object.
+   *
+   * @param {Formio} formio - The Formio instance
+   * @param {object} options - The options passed to {@link Formio.getUser}
+   * @return {Promise<R>|*}
+   */
   static currentUser(formio, options) {
     let authUrl = Formio.authUrl;
     if (!authUrl) {
@@ -1908,6 +1886,14 @@ class Formio {
       });
   }
 
+  /**
+   * @summary Performs a logout of the Form.io application. This will reset all cache, as well as make a request to the logout
+   * endpoint of the Form.io api platform.
+   *
+   * @param {Formio} formio - A Formio instance.
+   * @param {object} options - Options passed to both {@link Formio.setToken} as well as {@link Formio.setUser}
+   * @return {Promise<Response>}
+   */
   static logout(formio, options) {
     options = options || {};
     options.formio = formio;
@@ -1918,6 +1904,24 @@ class Formio {
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
   }
 
+  /**
+   * @summary Returns the query passed to a page in JSON object format.
+   *
+   * @description For example, lets say you visit your application using
+   * the url as follows.
+   *
+   *   https://yourapplication.com/?token=23423423423&username=Joe
+   *
+   * The following code will provide your application with the following.
+   *
+   * ```js
+   * const query Formio.pageQuery();
+   * console.log(query.token); // Will print 23423423423
+   * console.log(query.username); // Will print Joe
+   * ```
+   *
+   * @return {{}} - A JSON object representation of the query that was passed to the URL of an application.
+   */
   static pageQuery() {
     if (Formio._pageQuery) {
       return Formio._pageQuery;
@@ -1946,6 +1950,14 @@ class Formio {
     return Formio._pageQuery;
   }
 
+  /**
+   * @summary Much like {@link Formio.currentUser}, but instead automatically injects the Bearer tokens into the headers to
+   * perform a Token swap of the OAuth token which will then return the JWT token for that user.
+   *
+   * @param {Formio} formio - The Formio instance
+   * @param {string} token - An OAuth Bearer token to use for a token swap between the OAuth provider and Form.io
+   * @return {Promise<R>|*}
+   */
   static oAuthCurrentUser(formio, token) {
     return Formio.currentUser(formio, {
       external: true,
@@ -1955,6 +1967,45 @@ class Formio {
     });
   }
 
+  /**
+   * @summary Perform a SAML initialization.
+   *
+   * @description Typically, you would use the {@link Formio.ssoInit} method to perform this function
+   * since this method is an alias for the following.
+   *
+   * ```
+   * Formio.samlInit();
+   * Formio.ssoInit('saml');  // This is the exact same thing as calling Formio.samlInit
+   * ```
+   *
+   * This method will return false if the process is just starting. The code below is a typical block of code that is
+   * used to automatically trigger the SAML authentication process within your application using a Button component.
+   *
+   * ```js
+   * if (Formio.pageQuery().saml) {
+   *   const sso = Formio.samlInit();
+   *   if (sso) {
+   *     sso.then((user) => {
+   *       // The SSO user is now loaded!
+   *       console.log(user);
+   *     });
+   *   }
+   * }
+   * ```
+   *
+   * You can then place the following code withiin the "Custom" action of a Button component on your form.
+   *
+   * ```js
+   * Formio.samlInit();
+   * ```
+   *
+   * Now when you click on this button, it will start the handshake process with SAML, and once it returns, will pass
+   * a "saml" query parameter back to your application which will execute the code to load the current user from SAML.
+   *
+   * @param {object} options - Options to pass to the SAML initialization process.
+   * @param {string} options.relay - The URL that will be used as the authentication "relay" that occurs during a SAML handshake process.
+   * @return {boolean|Promise<Object>|void}
+   */
   static samlInit(options) {
     options = options || {};
     const query = Formio.pageQuery();
@@ -1981,6 +2032,29 @@ class Formio {
     return false;
   }
 
+  /**
+   * @summary Perform an Okta Authentication process using the {@link https://developer.okta.com/code/javascript/okta_auth_sdk|Okta SDK}.
+   *
+   * @description This method does require that you first include the Okta JavaScript SDK within your application as follows.
+   *
+   * First you need to include the Okta Authentication script.
+   *
+   * ```html
+   * <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-auth-js/2.0.1/okta-auth-js.min.js" type="text/javascript"></script>
+   * ```
+   *
+   * Then you can call this method as follows.
+   *
+   * ```js
+   * Formio.oktaInit();
+   * ```
+   *
+   * @param {object} options - Options that are passed directly to the {@link https://github.com/okta/okta-auth-js#configuration-reference|Okta SDK constructor}
+   * @param {constructor} options.OktaAuth - If the OktaAuth constructor is not provided global to the application, it can be provided to this method using this property.
+   * @param {Formio} options.formio - The Formio instance.
+   * @param {Array<string>} options.scopes - Scopes that are passed to the {@link https://github.com/okta/okta-auth-js#tokengetwithredirectoptions|getWithRedirect} method from the Okta SDK.
+   * @return {Promise<Object>}
+   */
   static oktaInit(options) {
     options = options || {};
     if (typeof OktaAuth !== undefined) {
@@ -2023,6 +2097,13 @@ class Formio {
     });
   }
 
+  /**
+   * @summary A common static method to trigger any SSO processes. This method is really just an alias for other static methods.
+   *
+   * @param {('saml'|'okta')} type - The type of SSO to trigger. 'saml' is an alias for {@link Formio.samlInit}, and 'okta' is an alias for {@link Formio.oktaInit}.
+   * @param {object} options - Options to pass to the specific sso methods
+   * @return {*|Promise<Object>|boolean|void}
+   */
   static ssoInit(type, options) {
     switch (type) {
       case 'saml':
@@ -2035,6 +2116,25 @@ class Formio {
     }
   }
 
+  /**
+   * @summary Lazy load a remote library dependency.
+   *
+   * @description This is useful for components that wish to lazy load a required library
+   * by adding that library to the <scripts> section of the HTML webpage, and then provide a promise that will resolve
+   * when the library becomes available for use.
+   *
+   * @example <caption>Load Google Maps API.</caption>
+   * Formio.requireLibrary('googleMaps', 'google.maps.Map', 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap', true).then(() => {
+   *   // Once the promise resolves, the following can now be used within your application.
+   *   const map = new google.maps.Map(document.getElementById("map"), {...});
+   * });
+   *
+   * @param {string} name - The internal name to give to the library you are loading. This is useful for caching the library for later use.
+   * @param {string} property - The name of the global property that will be added to the global namespace once the library has been loaded. This is used to check to see if the property exists before resolving the promise that the library is ready for use.
+   * @param {string} src - The URL of the library to lazy load.
+   * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global callback called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
+   * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
+   */
   static requireLibrary(name, property, src, polling) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
@@ -2114,6 +2214,22 @@ class Formio {
     return Formio.libraries[name].ready;
   }
 
+  /**
+   * @summary Determines if a lazy loaded library is ready to be used.
+   *
+   * @description Example: Let's assume that the example provided at {@link Formio.requireLibrary} was used elsewhere in your application.
+   * You could now use the following within a separate place that will also resolve once the library is ready to be used.
+   *
+   * ```js
+   * Formio.libraryReady('googleMaps').then(() => {
+   *   // Once the promise resolves, the following can now be used within your application.
+   *   const map = new google.maps.Map(document.getElementById("map"), {...});
+   * });
+   * ```
+   *
+   * @param {string} name - The name of the library to check.
+   * @return {Promise<object>} - A promise that will resolve when the library is ready to be used.
+   */
   static libraryReady(name) {
     if (
       Formio.libraries.hasOwnProperty(name) &&

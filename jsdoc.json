@@ -6,7 +6,9 @@
           "README.md",
           "src/Formio.js",
           "src/Form.js",
-          "src/Plugins.js"
+          "src/formio.form.js",
+          "src/utils/utils.js",
+          "src/utils/formUtils.js"
         ],
         "includePattern": ".js$",
         "excludePattern": "(node_modules/|docs)"
@@ -17,14 +19,21 @@
         "dictionaries": ["jsdoc","closure"]
     },
     "templates": {
-        "referenceTitle": "Form.io SDK",
-        "disableSort": false,
-        "collapse": false,
-        "cleverLinks": false,
-        "monospaceLinks": false
+        "systemName": "Form.io JavaScript SDK",
+        "systemSummary": "JavaScript Powered forms with form builder.",
+        "navMembers": [
+          {"kind": "tutorial", "title": "Documentation", "summary": "How to get started with the Form.io Renderer and Builder.", "memberof":  "documentation"},
+          {"kind": "tutorial", "title": "Examples", "summary": "A list of all examples.", "memberof":  "examples"},
+          {"kind": "class", "title": "API", "summary": "All documented classes."},
+          {"kind": "module", "title": "Modules", "summary": "All documented modules."},
+          {"kind": "namespace", "title": "Namespaces", "summary": "All documented namespaces."}
+        ],
+        "stylesheets": ["https://cdn.form.io/formiojs/formio.full.min.css"],
+        "scripts": ["https://cdn.form.io/formiojs/formio.full.min.js"]
     },
     "opts": {
-        "template": "node_modules/jsdoc-template",
+        "template": "node_modules/foodoc/template",
+        "tutorials": "tutorials",
         "destination": "./docs/",
         "recurse": true
     }

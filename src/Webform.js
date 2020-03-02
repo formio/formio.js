@@ -44,7 +44,7 @@ function getOptions(options) {
  */
 export default class Webform extends NestedDataComponent {
   /**
-   * Creates a new Form instance.
+   * Creates a new Webform instance.
    *
    * @param {Object} options - The options to create a new form instance.
    * @param {boolean} options.saveDraft - Set this if you would like to enable the save draft feature.

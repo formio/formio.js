@@ -1,0 +1,403 @@
+<!-- start:readme.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+		<title>JavaScript API</title>
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="css/prism.min.css">
+		<link type="text/css" rel="stylesheet" href="css/template.min.css">
+			<link type="text/css" rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+		<script type="text/javascript">
+			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"Form.io JavaScript SDK","systemSummary":"JavaScript Powered forms with form builder.","systemLogo":"","systemColor":"","navMembers":[{"kind":"tutorial","title":"Documentation","summary":"How to get started with the Form.io Renderer and Builder.","memberof":"documentation"},{"kind":"tutorial","title":"Examples","summary":"A list of all examples.","memberof":"examples"},{"kind":"class","title":"API","summary":"All documented classes."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."}],"footer":"","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":false,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":false,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, weight, longname, version, since","search":true,"favicon":null,"stylesheets":["https://cdn.form.io/formiojs/formio.full.min.css"],"scripts":["https://cdn.form.io/formiojs/formio.full.min.js"],"monospaceLinks":false,"cleverLinks":false};
+			window.DOCLET_TOC_ENABLED = true;
+			window.DOCLET_AFILTER_ENABLED = false;
+		</script>
+</head>
+<body>
+	<!-- start:navbar.hbs -->
+	<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+	  <div class="container">
+	    <a class="navbar-brand" href="index.html">
+	      Form.io JavaScript SDK
+	    </a>
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="navbar-collapse collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav mr-auto">
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Documentation<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="documentation.html">Documentation</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-howitworks.html">How it works</a>
+	                    <a class="dropdown-item" href="tutorial-about.html">About this Library</a>
+	                    <a class="dropdown-item" href="tutorial-installation.html">Installation</a>
+	                    <a class="dropdown-item" href="tutorial-renderer.html">Form Renderer</a>
+	                    <a class="dropdown-item" href="tutorial-builder.html">Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-utils.html">Form Utilities</a>
+	                    <a class="dropdown-item" href="tutorial-api.html">JavaScript API</a>
+	                    <a class="dropdown-item" href="tutorial-frameworks.html">Frameworks (Angular, React, Vue, etc)</a>
+	                    <a class="dropdown-item" href="tutorial-modules.html">Modules</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Examples<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="examples.html">Examples</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-hosted.html">Hosted Forms</a>
+	                    <a class="dropdown-item" href="tutorial-simple.html">Simple Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-jsfiddle.html">JSFiddle Example</a>
+	                    <a class="dropdown-item" href="tutorial-submissions.html">Submission Hosting</a>
+	                    <a class="dropdown-item" href="tutorial-htmlview.html">Submission View</a>
+	                    <a class="dropdown-item" href="tutorial-customendpoint.html">Submission Custom Endpoint</a>
+	                    <a class="dropdown-item" href="tutorial-thankyou.html">Thank You Page</a>
+	                    <a class="dropdown-item" href="tutorial-externalload.html">External Data Load</a>
+	                    <a class="dropdown-item" href="tutorial-pdf.html">PDF Forms</a>
+	                    <a class="dropdown-item" href="tutorial-customcomponent.html">Custom Components</a>
+	                    <a class="dropdown-item" href="tutorial-conditionalwizard.html">Conditional Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-custombuilder.html">Custom Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-customwizard.html">Custom Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-json.html">JSON Powered Forms</a>
+	                    <a class="dropdown-item" href="tutorial-wizard.html">Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-wysiwyg.html">WYSIWYG Editor</a>
+	                    <a class="dropdown-item" href="tutorial-embed.html">JavaScript Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-fieldLogic.html">Field Logic</a>
+	                    <a class="dropdown-item" href="tutorial-savedraft.html">Save as Draft</a>
+	                    <a class="dropdown-item" href="tutorial-multiframework.html">Multiple Framework Support</a>
+	                    <a class="dropdown-item" href="tutorial-conditions.html">Conditional Forms</a>
+	                    <a class="dropdown-item" href="tutorial-select.html">Select Dropdowns</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid.html">Data Grid Input</a>
+	                    <a class="dropdown-item" href="tutorial-editgrid.html">Edit Grid</a>
+	                    <a class="dropdown-item" href="tutorial-noeval.html">No Eval</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid2.html">Data Grid Panels</a>
+	                    <a class="dropdown-item" href="tutorial-external.html">External Sources & Conditional Selects</a>
+	                    <a class="dropdown-item" href="tutorial-contrib.html">Community Contributions</a>
+	                    <a class="dropdown-item" href="tutorial-calculated.html">Calculated Values</a>
+	                    <a class="dropdown-item" href="tutorial-language.html">Multi-Language Forms</a>
+	                    <a class="dropdown-item" href="tutorial-kitchen.html">Kitchen Sink</a>
+	                    <a class="dropdown-item" href="tutorial-recaptcha.html">reCAPTCHA component</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">API<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="list_class.html">API</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a href="Form.html" class="dropdown-item">Form</a>
+	                    <a href="Formio.html" class="dropdown-item">Formio</a>
+	                    <a href="FormioUtils.html" class="dropdown-item">FormioUtils</a>
+	                </div>
+	              </li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	<!-- end:navbar.hbs -->
+		<div class="page-header">
+			<div class="container">
+				<h1><span class="title">JavaScript API</span></h1>
+				<div class="summary"><p>This section will teach you how to use the JavaScript API within your application.</p></div>			</div>
+		</div>
+	<div class="container-fluid content">
+		<div class="row">
+			<div class="col-md-9 main-content">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item "><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item "><a href="tutorial-documentation_.html">Documentation</a></li>
+                <li class="breadcrumb-item active">JavaScript API</li>
+              </ol>
+            </nav>
+		<section class="tutorial-section">
+			<article><h1>JavaScript API</h1>
+<p>The JavaScript API is a minimalistic API library that allows you to work with the Form.io API's within JavaScript.</p>
+<h2>Usage</h2>
+<p>Creating an instance of Formio is simple, and takes only a path (URL String). The path can be different, depending on
+the desired output. The Formio instance can also access higher level operations, depending on how granular of a path
+you start with.</p>
+<pre class="prettyprint source lang-javascript"><code>var formio = new Formio(&lt;endpoint>, [options]);
+</code></pre>
+<p>Where <em><strong>endpoint</strong></em> is any valid API endpoint within Form.io. These URL's can provide a number of different methods depending on the granularity of the endpoint. This allows you to use the same interface but have access to different methods depending on how granular the endpoint url is.</p>
+<p>The <em><strong>options</strong></em> parameter is fully documented in the <a href="Formio.html">Formio</a> SDK documentation.</p>
+<p><strong>Important Note</strong>: For any applications that wish to utilize this library, it is important to establish both the Project Url and the Base URL as follows.</p>
+<pre class="prettyprint source lang-javascript"><code>// This is the typical configuration for Hosted projects on Form.io
+Formio.setBaseUrl('https://api.form.io');
+Formio.setProjectUrl('https://humanresources.form.io');
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>// This is the typical configuration for Deployed projects within your own environment. Here we will assume that the deployed container is hosted @ https://forms.yourdomain.com
+Formio.setBaseUrl('https://forms.yourdomain.com');
+Formio.setProjectUrl('https://forms.yourdomain.com/yourproject');
+</code></pre>
+<p>Here is an overview of all the methods available in the JavaScript API.</p>
+<h2>Static Methods</h2>
+<p>Here are all of the static methods provided by the Formio JavaScript API</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="Formio.html#.createForm">Formio.createForm</a></td>
+<td>Embed a form within your application.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.use">Formio.use</a></td>
+<td>Used to add some <a href="tutorial-modules.html">Modules</a> to the renderer.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.setUser">Formio.setUser</a></td>
+<td>Sets the current user object.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.getUser">Formio.getUser</a></td>
+<td>Gets the stored user object.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.currentUser">Formio.currentUser</a></td>
+<td>Returns the current user object for the authenticated user.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.logout">Formio.logout</a></td>
+<td>Logout of the current user.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.setToken">Formio.setToken</a></td>
+<td>Sets the current JWT token for this user.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.getToken">Formio.getToken</a></td>
+<td>Retrieves either the JWT token or the decoded token value of the currently logged in user.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.request">Formio.request</a></td>
+<td>Performs an API request to either Form.io to any other REST endpoint.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.pageQuery">Formio.pageQuery</a></td>
+<td>Find all paramters that have been passed to an application via url parameters.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.ssoInit">Formio.ssoInit</a></td>
+<td>Perform an SSO initialization</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.requireLibrary">Formio.requireLibrary</a></td>
+<td>Provides a way to lazy load external libraries</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.libraryReady">Formio.libraryReady</a></td>
+<td>Determine if an external library has finished loading.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.clearCache">Formio.clearCache</a></td>
+<td>Clear the in-memory cache for all requests.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.setBaseUrl">Formio.setBaseUrl</a></td>
+<td>Set the Base URL for your application.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.getBaseUrl">Formio.getBaseUrl</a></td>
+<td>Return the Base URL for the application.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.setProjectUrl">Formio.setProjectUrl</a></td>
+<td>Set the project url for your application.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#.getProjectUrl">Formio.getProjectUrl</a></td>
+<td>Return the Project URL for the application.</td>
+</tr>
+</tbody>
+</table>
+<h2>Project API</h2>
+<p>The project context is the top-most level of the Form.io API's. This context provides project level information for anything within your project. To declare the Formio object at this context, you simply need to provide the URL for your project like so.</p>
+<pre class="prettyprint source lang-js"><code>var formio = new Formio('https://myproject.form.io');
+</code></pre>
+<h3>Project Methods</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="Formio.html#loadProject">Formio#loadProject</a></td>
+<td>Loads the Project JSON</td>
+</tr>
+<tr>
+<td><a href="Formio.html#saveProject">Formio#saveProject</a></td>
+<td>Creates or Save the Project JSON</td>
+</tr>
+<tr>
+<td><a href="Formio.html#deleteProject">Formio#deleteProject</a></td>
+<td>Deletes a project</td>
+</tr>
+<tr>
+<td><a href="Formio.html#loadForms">Formio#loadForms</a></td>
+<td>Loads all forms within a project.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#saveForm">Formio#saveForm</a></td>
+<td>Creates a new Form within this project.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#loadRoles">Formio#loadRoles</a></td>
+<td>Loads all roles within a project.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#getProjectId">Formio#getProjectId</a></td>
+<td>If the project URL was provided via alias, then this will load and return the _id of a project.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#accessInfo">Formio#accessInfo</a></td>
+<td>Loads the access information for the project.</td>
+</tr>
+</tbody>
+</table>
+<h2>Forms API</h2>
+<p>The Forms API is provided to the Formio class by passing along the endpoint of the form you wish to reference.</p>
+<pre class="prettyprint source lang-js"><code>var formio = new Formio('https://myproject.form.io/myform');
+</code></pre>
+<p>In addition to ALL Project API's being available, the following API methods are available for this context.</p>
+<ul>
+<li>All Project API's are available</li>
+</ul>
+<h3>Form Methods</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="Formio.html#loadForm">Formio#loadForm</a></td>
+<td>Loads the Form JSON</td>
+</tr>
+<tr>
+<td><a href="Formio.html#saveForm">Formio#saveForm</a></td>
+<td>Updates the Form JSON. It can also be used to Create a new form as described in the Project methods table.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#deleteForm">Formio#deleteForm</a></td>
+<td>Deletes a form</td>
+</tr>
+<tr>
+<td><a href="Formio.html#loadSubmissions">Formio#loadSubmissions</a></td>
+<td>Loads all submissions within a form.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#saveSubmission">Formio#saveSubmission</a></td>
+<td>Creates a new submission within this form.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#loadActions">Formio#loadActions</a></td>
+<td>Loads all actions attached to a form.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#canSubmit">Formio#canSubmit</a></td>
+<td>Determines if the currently logged in user can submit the form.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#availableActions">Formio#availableActions</a></td>
+<td>Lists all of the available actions for this form.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#userPermissions">Formio#userPermissions</a></td>
+<td>Determines the users permissions at the form context.</td>
+</tr>
+</tbody>
+</table>
+<h3>Submissions API</h3>
+<p>The Submissions API are provided by passing along a single submission endpoint to the Formio constructor.</p>
+<pre class="prettyprint source lang-js"><code>var formio = new Formio('https://myproject.form.io/myform/submission/234234234234');
+</code></pre>
+<ul>
+<li>All Project API's are available</li>
+<li>All Form API's are available</li>
+</ul>
+<h3>Submission Methods</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="Formio.html#loadSubmission">Formio#loadSubmission</a></td>
+<td>Loads the Submission JSON</td>
+</tr>
+<tr>
+<td><a href="Formio.html#saveSubmission">Formio#saveSubmission</a></td>
+<td>Updates the Submission JSON. It can also be used to Create a new submission as described in the Form methods table.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#deleteSubmission">Formio#deleteSubmission</a></td>
+<td>Deletes a form</td>
+</tr>
+<tr>
+<td><a href="Formio.html#getDownloadUrl">Formio#getDownloadUrl</a></td>
+<td>Retrieves the PDF download url of this submission.</td>
+</tr>
+<tr>
+<td><a href="Formio.html#userPermissions">Formio#userPermissions</a></td>
+<td>Determines the users permissions at the submission context.</td>
+</tr>
+</tbody>
+</table></article>
+		</section>
+			</div>
+				<div class="col-md-3 side-content">
+					<nav class="toc hidden-print hidden-sm hidden-xs"></nav>
+				</div>
+		</div>
+	</div>
+	<footer>
+				<div class="copyright">FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on 1st Mar 2020 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+	</footer>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/clipboard.min.js"></script>
+	<script src="js/prism.min.js"></script>
+	<script src="js/template.min.js"></script>
+		<!-- start:lunr-search-modal.hbs -->
+		<div class="modal fade" id="lunr-search-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Search results</h4>
+					</div>
+					<div class="modal-body" id="lunr-search-body">
+					</div>
+					<div class="modal-footer" id="lunr-search-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- end:lunr-search-modal.hbs -->		<script src="js/lunr.min.js"></script>
+		<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+	
+</body>
+</html>
+<!-- end:readme.hbs -->

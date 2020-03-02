@@ -1,0 +1,3750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+		<title>FormioUtils</title>
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css">
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="css/prism.min.css">
+		<link type="text/css" rel="stylesheet" href="css/template.min.css">
+			<link type="text/css" rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+		<script type="text/javascript">
+			window.TEMPLATE_OPTIONS = {"includeDate":true,"dateFormat":"Do MMM YYYY","systemName":"Form.io JavaScript SDK","systemSummary":"JavaScript Powered forms with form builder.","systemLogo":"","systemColor":"","navMembers":[{"kind":"tutorial","title":"Documentation","summary":"How to get started with the Form.io Renderer and Builder.","memberof":"documentation"},{"kind":"tutorial","title":"Examples","summary":"A list of all examples.","memberof":"examples"},{"kind":"class","title":"API","summary":"All documented classes."},{"kind":"module","title":"Modules","summary":"All documented modules."},{"kind":"namespace","title":"Namespaces","summary":"All documented namespaces."}],"footer":"","copyright":"FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.","linenums":true,"collapseSymbols":true,"inverseNav":false,"inlineNav":false,"outputSourceFiles":true,"sourceRootPath":null,"disablePackagePath":true,"outputSourcePath":false,"showTableOfContents":true,"showAccessFilter":true,"analytics":null,"methodHeadingReturns":true,"sort":"linenum, weight, longname, version, since","search":true,"favicon":null,"stylesheets":["https://cdn.form.io/formiojs/formio.full.min.css"],"scripts":["https://cdn.form.io/formiojs/formio.full.min.js"],"monospaceLinks":false,"cleverLinks":false};
+			window.DOCLET_TOC_ENABLED = true;
+			window.DOCLET_AFILTER_ENABLED = false;
+		</script>
+</head>
+<body>
+	<!-- start:navbar.hbs -->
+	<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+	  <div class="container">
+	    <a class="navbar-brand" href="index.html">
+	      Form.io JavaScript SDK
+	    </a>
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="navbar-collapse collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav mr-auto">
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Documentation<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="documentation.html">Documentation</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-howitworks.html">How it works</a>
+	                    <a class="dropdown-item" href="tutorial-about.html">About this Library</a>
+	                    <a class="dropdown-item" href="tutorial-installation.html">Installation</a>
+	                    <a class="dropdown-item" href="tutorial-renderer.html">Form Renderer</a>
+	                    <a class="dropdown-item" href="tutorial-builder.html">Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-utils.html">Form Utilities</a>
+	                    <a class="dropdown-item" href="tutorial-api.html">JavaScript API</a>
+	                    <a class="dropdown-item" href="tutorial-frameworks.html">Frameworks (Angular, React, Vue, etc)</a>
+	                    <a class="dropdown-item" href="tutorial-modules.html">Modules</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Examples<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="examples.html">Examples</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a class="dropdown-item" href="tutorial-hosted.html">Hosted Forms</a>
+	                    <a class="dropdown-item" href="tutorial-simple.html">Simple Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-jsfiddle.html">JSFiddle Example</a>
+	                    <a class="dropdown-item" href="tutorial-submissions.html">Submission Hosting</a>
+	                    <a class="dropdown-item" href="tutorial-htmlview.html">Submission View</a>
+	                    <a class="dropdown-item" href="tutorial-customendpoint.html">Submission Custom Endpoint</a>
+	                    <a class="dropdown-item" href="tutorial-thankyou.html">Thank You Page</a>
+	                    <a class="dropdown-item" href="tutorial-externalload.html">External Data Load</a>
+	                    <a class="dropdown-item" href="tutorial-pdf.html">PDF Forms</a>
+	                    <a class="dropdown-item" href="tutorial-customcomponent.html">Custom Components</a>
+	                    <a class="dropdown-item" href="tutorial-conditionalwizard.html">Conditional Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-custombuilder.html">Custom Form Builder</a>
+	                    <a class="dropdown-item" href="tutorial-customwizard.html">Custom Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-json.html">JSON Powered Forms</a>
+	                    <a class="dropdown-item" href="tutorial-wizard.html">Wizards</a>
+	                    <a class="dropdown-item" href="tutorial-wysiwyg.html">WYSIWYG Editor</a>
+	                    <a class="dropdown-item" href="tutorial-embed.html">JavaScript Embedding</a>
+	                    <a class="dropdown-item" href="tutorial-fieldLogic.html">Field Logic</a>
+	                    <a class="dropdown-item" href="tutorial-savedraft.html">Save as Draft</a>
+	                    <a class="dropdown-item" href="tutorial-multiframework.html">Multiple Framework Support</a>
+	                    <a class="dropdown-item" href="tutorial-conditions.html">Conditional Forms</a>
+	                    <a class="dropdown-item" href="tutorial-select.html">Select Dropdowns</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid.html">Data Grid Input</a>
+	                    <a class="dropdown-item" href="tutorial-editgrid.html">Edit Grid</a>
+	                    <a class="dropdown-item" href="tutorial-noeval.html">No Eval</a>
+	                    <a class="dropdown-item" href="tutorial-datagrid2.html">Data Grid Panels</a>
+	                    <a class="dropdown-item" href="tutorial-external.html">External Sources & Conditional Selects</a>
+	                    <a class="dropdown-item" href="tutorial-contrib.html">Community Contributions</a>
+	                    <a class="dropdown-item" href="tutorial-calculated.html">Calculated Values</a>
+	                    <a class="dropdown-item" href="tutorial-language.html">Multi-Language Forms</a>
+	                    <a class="dropdown-item" href="tutorial-kitchen.html">Kitchen Sink</a>
+	                    <a class="dropdown-item" href="tutorial-recaptcha.html">reCAPTCHA component</a>
+	                </div>
+	              </li>
+	              <li class="nav-item dropdown">
+	                <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">API<b class="caret"></b></a>
+	                <div class="dropdown-menu">
+	                  <a class="dropdown-item" href="list_class.html">API</a>
+	                  <div class="dropdown-divider"></div>
+	                    <a href="Form.html" class="dropdown-item">Form</a>
+	                    <a href="Formio.html" class="dropdown-item">Formio</a>
+	                    <a href="FormioUtils.html" class="dropdown-item">FormioUtils</a>
+	                </div>
+	              </li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	<!-- end:navbar.hbs -->
+		<div class="page-header">
+			<div class="container">
+				<h1><span class="name">FormioUtils</span></h1>
+				<div class="summary"><p>A series of utility methods used to interface with forms and components within the Form.io renderer and builder.</p></div>			</div>
+		</div>
+	<div class="container content">
+		<div class="row">
+			<div class="col-md-9 main-content">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item "><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item "><a href="list_class.html">API</a></li>
+                <li class="breadcrumb-item active">FormioUtils</li>
+              </ol>
+            </nav>
+					<section>
+							<dl class="symbol primary">
+								<dt class="symbol-title class collapsible-symbol expanded">
+			<h2 class="class"><span class="signature-new">new&nbsp;</span><span class="name">FormioUtils</span><span class="signature-params">()</span><span class="signature-type"></span></h2>
+		<div class="summary"><p>A series of utility methods used to interface with forms and components within the Form.io renderer and builder.</p></div></dt>
+<dd class="symbol-details class  collapsible-symbol expanded" style="max-height: 9999px;">
+	<div class="symbol-details-inner">
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-2">line 2</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+							</dl>
+							<article class="secondary">
+									<h3>Methods</h3>
+									<dl class="symbol">
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".isLayoutComponent" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">isLayoutComponent</span><span class="signature-params">( <span class="signature-param">component</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Determine if a component is a layout component or not.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>The component to check.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>Whether or not the component is a layout component.</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-15">line 15</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".eachComponent" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">eachComponent</span><span class="signature-params">( <span class="signature-param">components</span>, <span class="signature-param">fn</span>, <span class="signature-param">includeAll</span>, <span class="signature-param">path</span>, <span class="signature-param">parent</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate through each component within a form.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>components</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>The components to iterate.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>fn</code></td>
+							<td><span class="param-type">function</span></td>
+							<td class="last">
+									<p>The iteration function to invoke for each component.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>includeAll</code></td>
+							<td><span class="param-type">Boolean</span></td>
+							<td class="last">
+									<p>Whether or not to include layout components.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>path</code></td>
+							<td><span class="param-type">String</span></td>
+							<td class="last">
+									<p>The current data path of the element. Example: data.user.firstName</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>parent</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>The parent object.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-34">line 34</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".evaluate" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">evaluate</span><span class="signature-params">( <span class="signature-param">func</span>, <span class="signature-param">args</span>, <span class="signature-param">return</span>, <span class="signature-param">tokenize</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Evaluate a method.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>func</code></td>
+							<td><span class="param-type">string</span> | <span class="param-type">function</span> | <span class="param-type">object</span></td>
+							<td class="last">
+									<p>The function to evaluate. If this is a string, then it will evaluate it as &quot;eval&quot;, if it is a function, it will evaluate it directly. If the variable is a JSON object, then it will evaluate it as JSON Logic using the JSON Logic library.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>args</code></td>
+							<td><span class="param-type">object</span></td>
+							<td class="last">
+									<p>The evaluation context of variables that will be added to the evaluation.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>return</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p>The variable name that should be returned by the evaluation.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>tokenize</code></td>
+							<td><span class="param-type">boolean</span></td>
+							<td class="last">
+									<p>If the function should be tokenized.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><ul>
+			<li>The result of the execution.</li>
+			</ul></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-44">line 44</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getRandomComponentId" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getRandomComponentId</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Returns a random component ID.</p></div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><ul>
+			<li>A random component id.</li>
+			</ul></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-120">line 120</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".matchComponent" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">matchComponent</span><span class="signature-params">( <span class="signature-param">component</span>, <span class="signature-param">query</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Matches if a component matches the query.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>query</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-120">line 120</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getPropertyValue" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getPropertyValue</span><span class="signature-params">( <span class="signature-param">style</span>, <span class="signature-param">prop</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{number}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get a property value of an element.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>style</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>prop</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">number</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-132">line 132</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getComponent" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getComponent</span><span class="signature-params">( <span class="signature-param">components</span>, <span class="signature-param">key</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Object}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get a component by its key</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>components</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>The components to iterate.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>key</code></td>
+							<td><span class="param-type">String</span> | <span class="param-type">Object</span></td>
+							<td class="last">
+									<p>The key of the component to get, or a query of the component to search.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Object</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>The component that matches the given key, or undefined if not found.</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-146">line 146</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getElementRect" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getElementRect</span><span class="signature-params">( <span class="signature-param">element</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Object}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get an elements bounding rectagle.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>element</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Object</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-148">line 148</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".boolValue" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">boolValue</span><span class="signature-params">( <span class="signature-param">value</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Determines the boolean value of a setting.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>value</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-167">line 167</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".searchComponents" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">searchComponents</span><span class="signature-params">( <span class="signature-param">components</span>, <span class="signature-param">query</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Finds a component provided a query of properties of that component.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>components</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>query</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-171">line 171</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".isMongoId" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">isMongoId</span><span class="signature-params">( <span class="signature-param">text</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array|Object|Boolean|*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Check to see if an ID is a mongoID.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>text</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array</span> | <span class="param-type">Object</span> | <span class="param-type">Boolean</span> | <span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-188">line 188</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".findComponents" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">findComponents</span><span class="signature-params">( <span class="signature-param">components</span>, <span class="signature-param">query</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Deprecated version of findComponents. Renamed to searchComponents.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>components</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>query</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-191">line 191</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".checkCalculated" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">checkCalculated</span><span class="signature-params">( <span class="signature-param">component</span>, <span class="signature-param">submission</span>, <span class="signature-param">data</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Checks the calculated value for a provided component and data.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>The component to check for the calculated value.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>submission</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>A submission object.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+									<p>The full submission data.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-201">line 201</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".findComponent" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">findComponent</span><span class="signature-params">( <span class="signature-param">components</span>, <span class="signature-param">key</span>, <span class="signature-param">fn</span>, <span class="signature-param">path</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>This function will find a component in a form and return the component AND THE PATH to the component in the form.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>components</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>key</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>fn</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>path</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-206">line 206</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".checkSimpleConditional" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">checkSimpleConditional</span><span class="signature-params">( <span class="signature-param">condition</span>, <span class="signature-param">condition</span>, <span class="signature-param">row</span>, <span class="signature-param">data</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Check if a simple conditional evaluates to true.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>condition</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>condition</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>row</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-227">line 227</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".removeComponent" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">removeComponent</span><span class="signature-params">( <span class="signature-param">components</span>, <span class="signature-param">path</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Remove a component by path.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>components</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>path</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-266">line 266</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".checkCustomConditional" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">checkCustomConditional</span><span class="signature-params">( <span class="signature-param">component</span>, <span class="signature-param">custom</span>, <span class="signature-param">row</span>, <span class="signature-param">data</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Check custom javascript conditional.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>custom</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>row</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-267">line 267</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".checkJsonConditional" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">checkJsonConditional</span><span class="signature-params">( <span class="signature-param">component</span>, <span class="signature-param">json</span>, <span class="signature-param">row</span>, <span class="signature-param">data</span>, <span class="signature-param">form</span>, <span class="signature-param">onError</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>json</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>row</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>form</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>onError</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-292">line 292</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".checkCondition" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">checkCondition</span><span class="signature-params">( <span class="signature-param">component</span>, <span class="signature-param">row</span>, <span class="signature-param">data</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Checks the conditions for a provided component and data.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+									<p>The component to check for the condition.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>row</code></td>
+							<td></td>
+							<td class="last">
+									<p>The data within a row</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+									<p>The full submission data.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-319">line 319</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".exports.checkTrigger" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">exports.checkTrigger</span><span class="signature-params">( <span class="signature-param">component</span>, <span class="signature-param">action</span>, <span class="signature-param">data</span>, <span class="signature-param">row</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{mixed}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Test a trigger on a component.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>action</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>row</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">mixed</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-361">line 361</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".setActionProperty" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">setActionProperty</span><span class="signature-params">( <span class="signature-param">component</span>, <span class="signature-param">action</span>, <span class="signature-param">result</span>, <span class="signature-param">row</span>, <span class="signature-param">data</span>, <span class="signature-param">instance</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>action</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>result</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>row</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>instance</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-379">line 379</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".flattenComponents" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">flattenComponents</span><span class="signature-params">( <span class="signature-param">components</span>, <span class="signature-param">includeAll</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Object}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Flatten the form components for data manipulation.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>components</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>The components to iterate.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>includeAll</code></td>
+							<td><span class="param-type">Boolean</span></td>
+							<td class="last">
+									<p>Whether or not to include layout components.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Object</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>The flattened components map.</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-402">line 402</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".hasCondition" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">hasCondition</span><span class="signature-params">( <span class="signature-param">component</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Returns if this component has a conditional statement.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+									<p>The component JSON schema.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><ul>
+			<li>TRUE - This component has a conditional, FALSE - No conditional provided.</li>
+			</ul></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-424">line 424</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".uniqueName" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">uniqueName</span><span class="signature-params">( <span class="signature-param">name</span>, <span class="signature-param">template</span>, <span class="signature-param">evalContext</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Make a filename guaranteed to be unique.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>name</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>template</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>evalContext</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-429">line 429</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".parseFloatExt" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">parseFloatExt</span><span class="signature-params">( <span class="signature-param">value</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Number}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Extension of standard #parseFloat(value) function, that also clears input string.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>value</code></td>
+							<td><span class="param-type">any</span></td>
+							<td class="last">
+									<p>The value to parse.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Number</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>Parsed value.</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-441">line 441</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".formatAsCurrency" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">formatAsCurrency</span><span class="signature-params">( <span class="signature-param">value</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{String}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Formats provided value in way how Currency component uses it.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>value</code></td>
+							<td><span class="param-type">any</span></td>
+							<td class="last">
+									<p>The value to format.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">String</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>Value formatted for Currency component.</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-459">line 459</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".guid" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">guid</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Generates a GUID.</p></div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-462">line 462</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getDateSetting" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getDateSetting</span><span class="signature-params">( <span class="signature-param">date</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{null|Date}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Return a translated date setting.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>date</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">null</span> | <span class="param-type">Date</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-480">line 480</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".escapeRegExCharacters" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">escapeRegExCharacters</span><span class="signature-params">( <span class="signature-param">value</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Escapes RegEx characters in provided String value.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>value</code></td>
+							<td><span class="param-type">String</span></td>
+							<td class="last">
+									<p>String for escaping RegEx characters.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>String with escaped RegEx characters.</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-490">line 490</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getValue" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getValue</span><span class="signature-params">( <span class="signature-param">submission</span>, <span class="signature-param">key</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the value for a component key, in the given submission.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>submission</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>A submission object to search.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>key</code></td>
+							<td><span class="param-type">String</span></td>
+							<td class="last">
+									<p>A for components API key to search for.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-505">line 505</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".isValidDate" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">isValidDate</span><span class="signature-params">( <span class="signature-param">date</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean|boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>date</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span> | <span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-535">line 535</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getStrings" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getStrings</span><span class="signature-params">( <span class="signature-param">form</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate over all components in a form and get string values for translation.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>form</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_formUtils.js.html">utils/formUtils.js</a>, <a href="utils_formUtils.js.html#line-543">line 543</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".currentTimezone" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">currentTimezone</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the current timezone string.</p></div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-546">line 546</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".offsetDate" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">offsetDate</span><span class="signature-params">( <span class="signature-param">date</span>, <span class="signature-param">timezone</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Date}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get an offset date provided a date object and timezone object.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>date</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>timezone</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Date</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-562">line 562</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".zonesLoaded" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">zonesLoaded</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Returns if the zones are loaded.</p></div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-586">line 586</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".shouldLoadZones" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">shouldLoadZones</span><span class="signature-params">( <span class="signature-param">timezone</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Returns if we should load the zones.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>timezone</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-598">line 598</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".loadZones" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">loadZones</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{Promise.&lt;any>|*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Externally load the timezone data.</p></div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Promise.&lt;any></span> | <span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-614">line 614</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".momentDate" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">momentDate</span><span class="signature-params">( <span class="signature-param">value</span>, <span class="signature-param">format</span>, <span class="signature-param">timezone</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the moment date object for translating dates with timezones.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>value</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>format</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>timezone</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-646">line 646</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".formatDate" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">formatDate</span><span class="signature-params">( <span class="signature-param">value</span>, <span class="signature-param">format</span>, <span class="signature-param">timezone</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Format a date provided a value, format, and timezone object.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>value</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>format</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>timezone</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-668">line 668</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".formatOffset" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">formatOffset</span><span class="signature-params">( <span class="signature-param">formatFn</span>, <span class="signature-param">date</span>, <span class="signature-param">format</span>, <span class="signature-param">timezone</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Pass a format function to format within a timezone.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>formatFn</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>date</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>format</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>timezone</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-711">line 711</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".convertFormatToFlatpickr" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">convertFormatToFlatpickr</span><span class="signature-params">( <span class="signature-param">format</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Convert the format from the angular-datepicker module to flatpickr format.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>format</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-754">line 754</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".convertFormatToMoment" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">convertFormatToMoment</span><span class="signature-params">( <span class="signature-param">format</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Convert the format from the angular-datepicker module to moment format.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>format</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-795">line 795</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".getInputMask" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">getInputMask</span><span class="signature-params">( <span class="signature-param">mask</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Returns an input mask that is compatible with the input mask library.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>mask</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p>The Form.io input mask.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><ul>
+			<li>The input mask for the mask library.</li>
+			</ul></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-838">line 838</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".fieldData" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">fieldData</span><span class="signature-params">( <span class="signature-param">data</span>, <span class="signature-param">component</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Fetch the field data provided a component.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>data</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>component</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-988">line 988</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".delay" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">delay</span><span class="signature-params">( <span class="signature-param">fn</span>, <span class="signature-param">delay</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Delays function execution with possibility to execute function synchronously or cancel it.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>fn</code></td>
+							<td></td>
+							<td class="last">
+									<p>Function to delay</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>delay</code></td>
+							<td></td>
+							<td class="last">
+									<p>Delay time</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1041">line 1041</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".iterateKey" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">iterateKey</span><span class="signature-params">( <span class="signature-param">key</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{String}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate the given key to make it unique.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>key</code></td>
+							<td><span class="param-type">String</span></td>
+							<td class="last">
+									<p>Modify the component key to be unique.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">String</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>The new component key.</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1069">line 1069</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".uniqueKey" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">uniqueKey</span><span class="signature-params">( <span class="signature-param">map</span>, <span class="signature-param">base</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Determines a unique key within a map provided the base key.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>map</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+						<tr>
+								<td><code>base</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1091">line 1091</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".bootstrapVersion" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">bootstrapVersion</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{number}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Determines the major version number of bootstrap.</p></div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">number</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1109">line 1109</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".unfold" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">unfold</span><span class="signature-params">( <span class="signature-param">e;</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Retrun provided argument.
+			If argument is a function, returns the result of a function call.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>e;</code></td>
+							<td><span class="param-type">*</span></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1127">line 1127</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".firstNonNil" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">firstNonNil</span><span class="signature-params">( <span class="signature-param">collection;</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{T}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Map values through unfold and return first non-nil value.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>collection;</code></td>
+							<td><span class="param-type">Array.&lt;T></span></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">T</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1145">line 1145</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".sanitize" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">sanitize</span><span class="signature-params">( <span class="signature-param">string</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{*}</span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Sanitize an html string.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>string</code></td>
+							<td></td>
+							<td class="last">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">*</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1240">line 1240</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public collapsible-symbol">
+			<h4 id=".fastCloneDeep" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">fastCloneDeep</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public  collapsible-symbol">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Fast cloneDeep for JSON objects only.</p></div>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="utils_utils.js.html">utils/utils.js</a>, <a href="utils_utils.js.html#line-1280">line 1280</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+									</dl>
+							</article>
+					</section>
+			</div>
+				<div class="col-md-3 side-content">
+					<nav class="toc hidden-print hidden-sm hidden-xs"></nav>
+				</div>
+		</div>
+	</div>
+	<footer>
+				<div class="copyright">FooDoc Copyright © 2016 The contributors to the JSDoc3 and FooDoc projects.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on 1st Mar 2020 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+	</footer>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/clipboard.min.js"></script>
+	<script src="js/prism.min.js"></script>
+	<script src="js/template.min.js"></script>
+		<!-- start:lunr-search-modal.hbs -->
+		<div class="modal fade" id="lunr-search-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Search results</h4>
+					</div>
+					<div class="modal-body" id="lunr-search-body">
+					</div>
+					<div class="modal-footer" id="lunr-search-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- end:lunr-search-modal.hbs -->		<script src="js/lunr.min.js"></script>
+		<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+	
+</body>
+</html>
