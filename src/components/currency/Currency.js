@@ -44,8 +44,8 @@ export default class CurrencyComponent extends NumberComponent {
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language
     });
-    this.prefix = this.options.prefix || affixes.prefix;
-    this.suffix = this.options.suffix || affixes.suffix;
+    this.prefix = this.options.prefix || this.component.prefix || affixes.prefix;
+    this.suffix = this.options.suffix || this.component.suffix || affixes.suffix;
     return createNumberMask({
       prefix: this.prefix,
       suffix: this.suffix,
