@@ -952,7 +952,7 @@ Not found
    - init: Initialize the render component.
    - render: Renders the component as a string.
    - attach: Looks up references in the template, and then binds events and attaches component logic to the template.
- - Component class replaces the BaseCompoennt class.
+ - Component class replaces the BaseComponent class.
  - Added more OOP heirarchy to components including.
    - Field
    - Input
