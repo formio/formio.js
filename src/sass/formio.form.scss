@@ -1179,5 +1179,89 @@ div[data-oembed-url] {
 
   .component-rendering-hidden {
     visibility: hidden;
+    display: none;
   }
+}
+
+.formio-sketchpad-toolbar-input  {
+  height: 24px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+  width: 40px;
+  margin-left: 5px;
+}
+
+.formio-sketchpad-toolbar-button {
+  overflow: visible;
+
+  &:hover {
+    background: #e6e6e6;
+  }
+
+  &.active, &:active {
+    outline: 0;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+  }
+}
+
+.formio-sketchpad-toolbar-group {
+  background: #f2f2f2;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin-right: 3px;
+}
+
+.formio-sketchpad-toolbar {
+  margin: 0 auto 3px auto;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+}
+
+.formio-sketchpad-svg,
+.formio-sketchpad-background svg{
+  border: 1px dashed #999;
+}
+
+.formio-sketchpad-background svg {
+  background: #ffffff;
+}
+
+.formio-sketchpad-body {
+  text-align: left;
+  max-width: 100%;
+}
+
+.formio-sketchpad-meta-info {
+  text-align: right;
+}
+
+.formio-sketchpad-container,
+.formio-sketchpad-modal-preview-container {
+  position: relative;
+  z-index: 1;
+  overflow: auto;
+}
+
+.formio-sketchpad-background,
+.formio-sketchpad-modal-preview-background {
+  text-align: center;
+  width: 100%;
+}
+
+.formio-sketchpad-canvas,
+.formio-sketchpad-modal-preview-drawing {
+  width: 100%;
+  height: 100%;
+}
+
+.formio-sketchpad-canvas,
+.formio-sketchpad-modal-preview-container .formio-sketchpad-modal-preview-drawing{
+  position: absolute;
+  z-index: 2;
+  text-align: center;
+  top: 0;
+  left: 0;
 }
