@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-		<title>Community Contributions</title>
+		<title>form</title>
 		<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -104,7 +104,7 @@
 	<!-- end:navbar.hbs -->
 		<div class="page-header">
 			<div class="container">
-				<h1><span class="title">Community Contributions</span></h1>
+				<h1><span class="title">form</span></h1>
 			</div>
 		</div>
 	<div class="container-fluid content">
@@ -113,12 +113,154 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item "><a href="tutorial-examples_.html">Examples</a></li>
-                <li class="breadcrumb-item active">Community Contributions</li>
+                <li class="breadcrumb-item active">form</li>
               </ol>
             </nav>
 		<section class="tutorial-section">
-			<article><p>TO-DO: Add contribution modules.</p></article>
+			<article><p>All forms rendered within the Form.io platform are done through the use of a JSON Schema. This schema is used to tell the renderer how to render the form, but also provides a way for the API to automatically be generated to support the form. This documentation provides detailed specification over the structure of the Form JSON Schema, in addition to all components that can be rendered within a Form.</p>
+<h2>Form JSON</h2>
+<p>Every form defined within Form.io starts with the Form Definition. This describes the properties of the form itself, such as the display type of the form, the type of form, title, path, etc. For example, the following schema describes a form wizard called <strong>Registration</strong>.</p>
+<pre class="prettyprint source lang-json"><code>{
+  &quot;title&quot;: &quot;Registration&quot;,
+  &quot;name&quot;: &quot;registration&quot;,
+  &quot;path&quot;: &quot;register&quot;,
+  &quot;type&quot;: &quot;form&quot;,
+  &quot;display&quot;: &quot;wizard&quot;,
+  &quot;components&quot;: [...]
+}
+</code></pre>
+<p>There are many more properties that can be defined, which are defined as follows.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+<th>Value</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>The title of the form.</td>
+<td>any <code>string</code></td>
+<td><code>Registration</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td>The API name of the form. Must be a camel-cased identifier used as a human readable identifier.</td>
+<td>any <code>string</code></td>
+<td><code>registration</code></td>
+</tr>
+<tr>
+<td>path</td>
+<td>The URL path of the form. This is relative to the base URL of the Project API, and it can contain nested paths such as &quot;user/login&quot;.</td>
+<td>any <code>string</code></td>
+<td>For the following form @ https://examples.form.io/user/login, the base URL of this project is &quot;https://examples.form.io&quot; and the <strong>path</strong> is <code>user/login</code></td>
+</tr>
+<tr>
+<td>type</td>
+<td>This is the type of form that is defined. Currently, there are just two types, <code>resource</code> and <code>form</code>. Resources are special kinds of forms that serve as data structures that can be pulled into other forms through the resource component</td>
+<td><code>form</code> or <code>resource</code></td>
+<td><code>form</code></td>
+</tr>
+<tr>
+<td>display</td>
+<td>The display configuration for this form, where each display interprets the JSON schema differently. For example, the <code>wizard</code> display turns any root <code>Panel</code> component into a separate page within a wizard workflow.</td>
+<td><code>form</code>, <code>wizard</code>, <code>pdf</code></td>
+<td><code>form</code></td>
+</tr>
+<tr>
+<td>components</td>
+<td>An array of form components where each component is defined through a separate Schema definition described in the Components Schema section.</td>
+<td>Array of JSON components</td>
+<td>See <a href="https://github.com/formio/formio.js/wiki/Components-JSON-Schema">Components JSON section</a></td>
+</tr>
+<tr>
+<td>_id</td>
+<td>The unique identifier for this form object</td>
+<td>uuid <code>string</code></td>
+<td><code>59514e15ef644f006d512dc1</code></td>
+</tr>
+<tr>
+<td>modified</td>
+<td>The modified date where this form schema was modified</td>
+<td>ISO-8601 Date String</td>
+<td><code>2017-06-29T19:24:08.891Z</code></td>
+</tr>
+<tr>
+<td>created</td>
+<td>The created date when this form was created</td>
+<td>ISO-8601 Date String</td>
+<td><code>2017-06-29T19:24:08.891Z</code></td>
+</tr>
+<tr>
+<td>action</td>
+<td>A custom URL to send the <code>POST</code> and <code>PUT</code> submission data to.</td>
+<td>URL <code>string</code></td>
+<td><code>https://yourdomain.com/submission/api</code></td>
+</tr>
+<tr>
+<td>tags</td>
+<td>An array of free-form tags that are assigned to this form. This is useful for categorization of the forms.</td>
+<td>Array of any <code>string</code></td>
+<td><code>[&quot;standard&quot;, &quot;user&quot;]</code></td>
+</tr>
+<tr>
+<td>machineName</td>
+<td>A project unique identifier for this form, which allows for seamless migration into other projects and deployments into other environments.</td>
+<td><code>string</code> in the format <code>[project id]:[form name]</code></td>
+<td><code>jawjclewrjglla:benefitsEnrollment</code></td>
+</tr>
+<tr>
+<td>project</td>
+<td>For forms hosted on https://form.io, this is the Project ID which contains this form.</td>
+<td>Project ID</td>
+<td><code>59514e10ef644f006d512db9</code></td>
+</tr>
+<tr>
+<td>owner</td>
+<td>The user who was authenticated (using the <code>x-jwt-token</code> header), that created this form.</td>
+<td>Submission ID of the authenticated user</td>
+<td><code>59514e10ef644f006d512db9</code></td>
+</tr>
+<tr>
+<td>access</td>
+<td>An array of role-permission mappings that assign roles to certain permissions to <strong>form</strong> schema.</td>
+<td>Array of Role-Permission Schema</td>
+<td>See <a href="https://github.com/formio/formio.js/wiki/Form-JSON-Schema#role-permission-schema">Role-Permission Schema</a></td>
+</tr>
+<tr>
+<td>submissionAccess</td>
+<td>An array of role-permission mappings that assign roles to certain permissions to <strong>submissions</strong> of this form.</td>
+<td>Array of Role-Permission Schema</td>
+<td>See <a href="https://github.com/formio/formio.js/wiki/Form-JSON-Schema#role-permission-schema">Role-Permission Schema</a></td>
+</tr>
+</tbody>
+</table>
+<h3>Role-Permission Schema</h3>
+<p>The schema that determines who has access to certain actions within the Form.io platform uses the Role-Permission schema as defined as follows.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>The type of permission the roles have been assigned.</td>
+<td><code>create_own</code>, <code>create_all</code>, <code>read_own</code>, <code>read_all</code>, <code>edit_own</code>, <code>edit_all</code>, <code>delete_own</code>, <code>delete_all</code></td>
+</tr>
+<tr>
+<td>roles</td>
+<td>An array of Role IDs that are assigned to this role-permission type.</td>
+<td>An array of Role ID's</td>
+</tr>
+</tbody>
+</table></article>
 		</section>
 			</div>
 				<div class="col-md-3 side-content">
