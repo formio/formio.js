@@ -217,7 +217,7 @@ export default class Wizard extends Webform {
         this.addEventListener(link, 'click', (event) => {
           this.emit('wizardNavigationClicked', this.pages[index]);
           event.preventDefault();
-          return this.goToPage(index).then(() => {
+          return this.setPage(index, true).then(() => {
             this.emit('wizardPageSelected', this.pages[index], index);
           });
         });
@@ -293,7 +293,7 @@ export default class Wizard extends Webform {
     this.establishPages();
   }
 
-  setPage(num) {
+  setPage(num, shouldValidate) {
     if (num === this.page) {
       return NativePromise.resolve();
     }
@@ -307,6 +307,9 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw();
+      if (shouldValidate && !this.options.readOnly) {
+        this.checkValidity(this.submission.data, true, this.submission.data, true);
+      }
       return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
@@ -314,14 +317,6 @@ export default class Wizard extends Webform {
       return NativePromise.resolve();
     }
     return NativePromise.reject('Page not found');
-  }
-
-  goToPage(index) {
-    return this.setPage(index).then(() => {
-      if (!this.options.readOnly) {
-        this.checkValidity(this.submission.data, true, this.submission.data, true);
-      }
-    });
   }
 
   pageFieldLogic(page) {
@@ -427,7 +422,7 @@ export default class Wizard extends Webform {
 
   prevPage() {
     return this.beforePage().then(() => {
-      return this.setPage(this.getPreviousPage()).then(() => {
+      return this.setPage(this.getPreviousPage(), true).then(() => {
         this.emit('prevPage', { page: this.page, submission: this.submission });
       });
     });
