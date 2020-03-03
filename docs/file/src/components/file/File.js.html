@@ -246,7 +246,7 @@ import Formio from &apos;../../Formio&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 
 let Camera;
-const webViewCamera = navigator.camera || Camera;
+let webViewCamera = navigator.camera || Camera;
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -297,7 +297,7 @@ export default class FileComponent extends Field {
 
   init() {
     super.init();
-
+    webViewCamera = navigator.camera || Camera;
     const fileReaderSupported = (typeof FileReader !== &apos;undefined&apos;);
     const formDataSupported = Boolean(window.FormData);
     const progressSupported = window.XMLHttpRequest ? (&apos;upload&apos; in new XMLHttpRequest) : false;
@@ -623,7 +623,9 @@ export default class FileComponent extends Field {
               });
             }
           );
-        }, null, {
+        }, (err) =&gt; {
+          console.error(err);
+        }, {
           sourceType: webViewCamera.PictureSourceType.PHOTOLIBRARY,
         });
       });
@@ -639,7 +641,9 @@ export default class FileComponent extends Field {
               });
             }
           );
-        }, null, {
+        }, (err) =&gt; {
+          console.error(err);
+        }, {
           sourceType: webViewCamera.PictureSourceType.CAMERA,
           encodingType: webViewCamera.EncodingType.PNG,
           mediaType: webViewCamera.MediaType.PICTURE,

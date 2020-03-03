@@ -288,7 +288,8 @@ export default class HTMLComponent extends Component {
 
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
-    if (!this.builderMode &amp;&amp; this.component.refreshOnChange &amp;&amp; this.element) {
+    if (!this.builderMode &amp;&amp; this.component.refreshOnChange &amp;&amp; this.element &amp;&amp;
+      this.conditionallyVisible(this.data, this.row)) {
       this.setContent(this.element, this.renderContent());
     }
   }
