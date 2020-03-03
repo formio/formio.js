@@ -929,9 +929,13 @@ export default class Webform extends NestedDataComponent {
     return this.ready;
   }
 
+  getClassName() {
+    return 'formio-form';
+  }
+
   render() {
     return super.render(this.renderTemplate('webform', {
-      classes: 'formio-form',
+      classes: this.getClassName(),
       children: this.renderComponents(),
     }), this.builderMode ? 'builder' : 'form', true);
   }

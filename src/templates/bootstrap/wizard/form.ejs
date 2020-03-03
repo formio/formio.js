@@ -1,7 +1,9 @@
-<div style="position: relative;">
-  {{ ctx.wizardHeader }}
-  <div class="wizard-page" ref="{{ctx.wizardKey}}">
-    {{ctx.components}}
+<div class="{{ctx.className}}">
+  <div style="position: relative;">
+    {{ ctx.wizardHeader }}
+    <div class="wizard-page" ref="{{ctx.wizardKey}}">
+      {{ctx.components}}
+    </div>
+    {{ ctx.wizardNav }}
   </div>
-  {{ ctx.wizardNav }}
 </div>
