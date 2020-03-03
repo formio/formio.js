@@ -70,6 +70,8 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   addZerosAndFormatValue(value) {
+   if (!value && value !== 0) return;
+
     const decimalLimit = _.get(this.component, 'decimalLimit', 2);
 
     let integerPart;
