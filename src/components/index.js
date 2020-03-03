@@ -37,7 +37,6 @@ import SurveyComponent from './survey/Survey';
 import TableComponent from './table/Table';
 import TabsComponent from './tabs/Tabs';
 import TagsComponent from './tags/Tags';
-import TagpadComponent from './tagpad/Tagpad';
 import TextAreaComponent from './textarea/TextArea';
 import TextFieldComponent from './textfield/TextField';
 import TimeComponent from './time/Time';
@@ -87,7 +86,6 @@ export default {
   table: TableComponent,
   tabs: TabsComponent,
   tags: TagsComponent,
-  tagpad: TagpadComponent,
   textarea: TextAreaComponent,
   textfield: TextFieldComponent,
   time: TimeComponent,
