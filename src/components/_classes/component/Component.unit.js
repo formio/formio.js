@@ -156,3 +156,12 @@ describe('Component', () => {
     });
   });
 });
+
+it('Should return value for HTML mode', () => {
+  return Harness.testCreate(Component, comp1).then((component) => {
+    assert.equal(component.itemValueForHTMLMode(['option 1', 'option 2', 'option 3']), 'option 1, option 2, option 3');
+    assert.equal(component.itemValueForHTMLMode(['option 1', ['option 2', 'option 3']]), 'option 1, option 2, option 3');
+    assert.equal(component.itemValueForHTMLMode(['2020-03-18T15:00:00.000Z', '2020-03-31T09:05:00.000Z']), '2020-03-18T15:00:00.000Z, 2020-03-31T09:05:00.000Z');
+    assert.equal(component.itemValueForHTMLMode('test'), 'test');
+  });
+});
