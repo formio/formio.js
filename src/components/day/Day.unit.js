@@ -5,7 +5,8 @@ import DayComponent from './Day';
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from './fixtures';
 
 describe('Day Component', () => {
@@ -156,6 +157,12 @@ describe('Day Component', () => {
       }
 
       done();
+    });
+  });
+
+  it('should normalize min-max dates on dayFirst', () => {
+    Harness.testCreate(DayComponent, comp3).then((component) => {
+      assert.equal(component.normalizeMinMaxDates(), ['04/02/2020', '09/02/2020']);
     });
   });
 });
