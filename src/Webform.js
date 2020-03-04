@@ -736,7 +736,7 @@ export default class Webform extends NestedDataComponent {
       () => {
         this.submissionSet = true;
         this.setValue(submission, flags);
-        this.triggerChange();
+        submission.data ? this.triggerChange() : this.triggerChange(flags, this.submission);
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -1243,7 +1243,7 @@ export default class Webform extends NestedDataComponent {
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
 
-    if (modified && this.pristine) {
+    if ((modified && this.pristine) || (flags.fromSubmission && !flags.noValidate)) {
       this.setPristine(false);
     }
 

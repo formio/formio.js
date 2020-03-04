@@ -1772,7 +1772,7 @@ export default class Component extends Element {
     }
 
     // If we are supposed to validate on blur, then don't trigger validation yet.
-    if (this.component.validateOn === 'blur' && !this.errors.length) {
+    if (this.component.validateOn === 'blur' && !this.errors.length && !flags.fromSubmission) {
       flags.noValidate = true;
     }
 
@@ -2512,7 +2512,7 @@ export default class Component extends Element {
     if (!this.builderMode && !this.options.preview && !this.isEmpty(this.defaultValue) && !flags.noValidate) {
       return this.checkComponentValidity(data, true, row);
     }
-    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
+    return flags.noValidate ? true : this.checkComponentValidity(data, !!flags.fromSubmission, row);
   }
 
   get validationValue() {
