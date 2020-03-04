@@ -6,7 +6,7 @@ import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
 
 let Camera;
-const webViewCamera = navigator.camera || Camera;
+let webViewCamera = navigator.camera || Camera;
 const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
 
   init() {
     super.init();
-
+    webViewCamera = navigator.camera || Camera;
     const fileReaderSupported = (typeof FileReader !== 'undefined');
     const formDataSupported = Boolean(window.FormData);
     const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false;
@@ -417,7 +417,9 @@ export default class FileComponent extends Field {
               });
             }
           );
-        }, null, {
+        }, (err) => {
+          console.error(err);
+        }, {
           sourceType: webViewCamera.PictureSourceType.PHOTOLIBRARY,
         });
       });
@@ -433,7 +435,9 @@ export default class FileComponent extends Field {
               });
             }
           );
-        }, null, {
+        }, (err) => {
+          console.error(err);
+        }, {
           sourceType: webViewCamera.PictureSourceType.CAMERA,
           encodingType: webViewCamera.EncodingType.PNG,
           mediaType: webViewCamera.MediaType.PICTURE,
