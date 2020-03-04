@@ -284,6 +284,52 @@ describe('Webform tests', () => {
     });
   });
 
+  let formWithValidation;
+it('Should check noValidate flag on setSubmission', (done) => {
+    const formElement = document.createElement('div');
+    formWithValidation = new Webform(formElement);
+    formWithValidation.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+          required: true,
+          minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }
+    ).then(() => {
+      // console.log('1: ', errors, errors.length);
+      formWithValidation.setSubmission({
+        data:{
+          number: 2,
+          textArea: ''
+          }
+        })
+        .then(()=>{
+            // console.log(formWithValidation.components[0]);
+            const errors = formElement.querySelectorAll('.is-invalid');
+            console.log(errors.length);
+            assert.equal(errors.length, 2);
+            expect(errors.length).to.equal(2);
+            done();
+          }).catch(done);
+          console.log(formWithValidation.components[0].error);
+      });
+  });
+
   describe('set/get nosubmit', () => {
     it('should set/get nosubmit flag and emit nosubmit event', () => {
       const form = new Webform(null, {});
