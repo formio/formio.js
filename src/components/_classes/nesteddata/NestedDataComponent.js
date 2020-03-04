@@ -40,7 +40,7 @@ export default class NestedDataComponent extends NestedComponent {
   }
 
   setNestedValue(component, value, flags, changed) {
-    component._data = this.componentContext(component);
+    component.data = this.componentContext(component);
     return super.setNestedValue(component, value, flags, changed);
   }
 }
