@@ -773,7 +773,7 @@ class ValidationChecker {
         return result;
       }
 
-      if (!result) {
+      if (!result && validator.message) {
         return validator.message.call(this, component, setting, index, row);
       }
 
