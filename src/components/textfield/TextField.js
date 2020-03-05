@@ -48,7 +48,7 @@ export default class TextFieldComponent extends Input {
       info.attr.type = 'password';
     }
     else {
-      info.attr.type = this.component.inputType || 'text';
+      info.attr.type = (this.component.inputType === 'password') ? 'password' : 'text';
     }
     info.changeEvent = 'input';
     return info;

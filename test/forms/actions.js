@@ -101,7 +101,7 @@ export default {
                         validate: {
                           required: true
                         },
-                        description: 'The URL the request will be made to. You can interpolate the URL with {{ data.myfield }} or {{ externalId }} variables.'
+                        description: ''
                       }
                     ],
                     width: 10,
@@ -254,7 +254,7 @@ export default {
                   {
                     key: 'content',
                     input: false,
-                    html: '<p>When making a request to an external service, you may want to save an external Id in association with this submission so you can refer to the same external resource later. To do that, enter an external ID reference name and the path to the id in the response data object. This value will then be available as {{externalId}} in the Request URL and Transform Payload fields.</p>',
+                    html: '<p>When making a request to an external service, you may want to save an external Id in association with this submission so you can refer to the same external resource later. To do that, enter an external ID reference name and the path to the id in the response data object. This value will then be available as externalId in the Request URL and Transform Payload fields.</p>',
                     type: 'content',
                     label: 'content'
                   },
