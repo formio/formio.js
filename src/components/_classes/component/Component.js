@@ -2473,11 +2473,15 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row, async = false) {
+  checkComponentValidity(data, dirty, row, async = false, changed) {
     data = data || this.rootValue;
     row = row || this.data;
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
+      return async ? NativePromise.resolve(true) : true;
+    }
+
+    if (changed && (changed !== this)) {
       return async ? NativePromise.resolve(true) : true;
     }
 
@@ -2487,10 +2491,11 @@ export default class Component extends Element {
       this.setComponentValidity(check, dirty);
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, async, components, flags) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row);
+
+    return this.checkComponentValidity(data, dirty, row, async, components, flags);
   }
 
   checkAsyncValidity(data, dirty, row) {
@@ -2510,6 +2515,8 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+    const changedItem = (flags && flags.changed) ? flags.changed.instance : null;
+
     this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
@@ -2522,7 +2529,7 @@ export default class Component extends Element {
     if (!this.builderMode && !this.options.preview && !this.isEmpty(this.defaultValue) && !flags.noValidate) {
       return this.checkComponentValidity(data, true, row);
     }
-    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
+    return flags.noValidate ? true : this.checkComponentValidity(data, false, row, false, changedItem, flags);
   }
 
   get validationValue() {

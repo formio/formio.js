@@ -340,12 +340,18 @@ export default class FormComponent extends Component {
     return NativePromise.resolve();
   }
 
-  checkComponentValidity(data, dirty, row) {
+  checkComponentValidity(data, dirty, row, async, changedItem, flags) {
+    if (flags && flags.noEmit) return false;
+
     if (this.subForm) {
-      return this.subForm.checkValidity(this.dataValue.data, dirty);
+      if (changedItem && !this.subForm.components.includes(changedItem)) {
+        return async ? NativePromise.resolve(false) : false;
+      }
+
+       return this.subForm.checkValidity(this.dataValue.data, dirty,row, async, changedItem, flags);
     }
 
-    return super.checkComponentValidity(data, dirty, row);
+    return super.checkComponentValidity(data, dirty, row, async, changedItem, flags);
   }
 
   checkComponentConditions(data, flags, row) {
@@ -493,7 +499,7 @@ export default class FormComponent extends Component {
   }
 
   get errors() {
-    let errors = this.errors;
+    let errors = super.errors;
     if (this.subForm) {
       errors = errors.concat(this.subForm.errors);
     }
