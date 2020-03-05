@@ -361,6 +361,7 @@ export default class Wizard extends Webform {
     const ctx = this.renderContext;
     return this.renderTemplate(&apos;wizard&apos;, {
       ...ctx,
+      className: super.getClassName(),
       wizardHeader: this.renderTemplate(&apos;wizardHeader&apos;, ctx),
       wizardNav: this.renderTemplate(&apos;wizardNav&apos;, ctx),
       components: this.renderComponents([

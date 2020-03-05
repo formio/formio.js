@@ -1232,6 +1232,16 @@ export default class Component extends Element {
     return data;
   }
 
+  itemValueForHTMLMode(value) {
+    if (Array.isArray(value)) {
+      const values = value.map(item => Array.isArray(item) ? this.itemValueForHTMLMode(item) : this.itemValue(item));
+
+      return values.join(', ');
+    }
+
+    return this.itemValue(value);
+  }
+
   createModal(element, attr) {
     const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));

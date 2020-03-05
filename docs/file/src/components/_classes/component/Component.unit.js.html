@@ -287,7 +287,7 @@ describe(&apos;Component&apos;, () =&gt; {
       bad: {
         value: &apos;t&apos;,
         field: &apos;firstName&apos;,
-        error: &apos;First Name must be longer than 1 characters.&apos;
+        error: &apos;First Name must have at least 2 characters.&apos;
       },
       good: {
         value: &apos;te&apos;
@@ -302,10 +302,40 @@ describe(&apos;Component&apos;, () =&gt; {
       bad: {
         value: &apos;testte&apos;,
         field: &apos;firstName&apos;,
-        error: &apos;First Name must be shorter than 6 characters.&apos;
+        error: &apos;First Name must have no more than 5 characters.&apos;
       },
       good: {
         value: &apos;te&apos;
+      }
+    }, done));
+  });
+
+  it(&apos;Should provide maxWords validation&apos;, (done) =&gt; {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { maxWords: 2 }
+    })).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;test test test&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;First Name must have no more than 2 words.&apos;
+      },
+      good: {
+        value: &apos;te st&apos;
+      }
+    }, done));
+  });
+
+  it(&apos;Should provide minWords validation&apos;, (done) =&gt; {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { minWords: 2 }
+    })).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;test&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;First Name must have at least 2 words.&apos;
+      },
+      good: {
+        value: &apos;te st&apos;
       }
     }, done));
   });
@@ -394,6 +424,15 @@ describe(&apos;Component&apos;, () =&gt; {
         }, done)
         .catch(done);
     });
+  });
+});
+
+it(&apos;Should return value for HTML mode&apos;, () =&gt; {
+  return Harness.testCreate(Component, comp1).then((component) =&gt; {
+    assert.equal(component.itemValueForHTMLMode([&apos;option 1&apos;, &apos;option 2&apos;, &apos;option 3&apos;]), &apos;option 1, option 2, option 3&apos;);
+    assert.equal(component.itemValueForHTMLMode([&apos;option 1&apos;, [&apos;option 2&apos;, &apos;option 3&apos;]]), &apos;option 1, option 2, option 3&apos;);
+    assert.equal(component.itemValueForHTMLMode([&apos;2020-03-18T15:00:00.000Z&apos;, &apos;2020-03-31T09:05:00.000Z&apos;]), &apos;2020-03-18T15:00:00.000Z, 2020-03-31T09:05:00.000Z&apos;);
+    assert.equal(component.itemValueForHTMLMode(&apos;test&apos;), &apos;test&apos;);
   });
 });
 </code></pre>
