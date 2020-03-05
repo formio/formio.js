@@ -240,9 +240,12 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/html/HTML.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import HTMLComponent from &apos;./HTML&apos;;
+import sinon from &apos;sinon&apos;;
+import assert from &apos;power-assert&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;HTML Component&apos;, () =&gt; {
@@ -258,6 +261,14 @@ describe(&apos;HTML Component&apos;, () =&gt; {
     });
 
     return Harness.testCreate(HTMLComponent, comp1);
+  });
+
+  it(&apos;setContent should not be called if it is not conditionally visible&apos;, () =&gt; {
+    return Harness.testCreate(HTMLComponent, comp2).then((component) =&gt; {
+      const emit = sinon.spy(component, &apos;setContent&apos;);
+      component.checkRefreshOn(null);
+      assert.equal(emit.callCount, 0);
+    });
   });
 });
 </code></pre>

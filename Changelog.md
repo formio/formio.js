@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.3
+### Changed
+ - Upgrade i18next@19.3.2, @babel/core@7.8.6, @babel/preset-env@7.8.6, @babel/register@7.8.6, babel-eslint@10.1.0, mocha@7.1.0, webpack@4.42.0, uuid@7.0.1, fetch-mock@9.0.0
+
+### Added
+ - Add use(plugin) method for typescript
+
+### Fixed
+ - `oktaInit` method not rejecting promise when failed to get token
+ - Camera property not in navigator when the form is render
+ - HTMLElement bug with conditions on initialization.
+
 ## 4.9.0-rc.2
 ### Fixed
  - The parsing of noeval tokens.
@@ -948,7 +960,7 @@ Not found
    - init: Initialize the render component.
    - render: Renders the component as a string.
    - attach: Looks up references in the template, and then binds events and attaches component logic to the template.
- - Component class replaces the BaseCompoennt class.
+ - Component class replaces the BaseComponent class.
  - Added more OOP heirarchy to components including.
    - Field
    - Input
