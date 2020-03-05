@@ -258,7 +258,7 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         },
         [{
           component: &apos;a&apos;,
-          message: &apos;a must be longer than 3 characters.&apos;
+          message: &apos;a must have at least 4 characters.&apos;
         }], done);
         Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
         assert.equal(wizardForm.page, 2);
@@ -266,7 +266,7 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         assert.equal(wizardForm.page, 0);
         const aInput = wizardForm.currentPage.getComponent(&apos;a&apos;);
         assert.equal(aInput.errors.length, 1);
-        assert.equal(aInput.errors[0].message, &apos;a must be longer than 3 characters.&apos;);
+        assert.equal(aInput.errors[0].message, &apos;a must have at least 4 characters.&apos;);
         done();
     })
     .catch((err) =&gt; done(err));
