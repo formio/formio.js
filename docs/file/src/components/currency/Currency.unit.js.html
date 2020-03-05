@@ -240,7 +240,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/currency/Currency.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import CurrencyComponent from &apos;./Currency&apos;;
-
+import assert from &apos;power-assert&apos;;
 import {
   comp1
 } from &apos;./fixtures&apos;;
@@ -256,6 +256,19 @@ describe(&apos;Currency Component&apos;, () =&gt; {
   it(&apos;Should build a currency component&apos;, () =&gt; {
     return Harness.testCreate(CurrencyComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
+    });
+  });
+
+  it(&apos;Should add trailing zeros&apos;, () =&gt; {
+    return Harness.testCreate(CurrencyComponent, comp1, { language: &apos;en-US&apos; }).then((component) =&gt; {
+      assert.equal(component.addZerosAndFormatValue(null),);
+      assert.equal(component.addZerosAndFormatValue(&apos;3&apos;), &apos;3.00&apos;);
+      assert.equal(component.addZerosAndFormatValue(&apos;3.1&apos;), &apos;3.10&apos;);
+      assert.equal(component.addZerosAndFormatValue(&apos;-3&apos;), &apos;-3.00&apos;);
+      assert.equal(component.addZerosAndFormatValue(&apos;$3&apos;), &apos;$3.00&apos;);
+      assert.equal(component.addZerosAndFormatValue(&apos;-$3&apos;), &apos;-$3.00&apos;);
+      assert.equal(component.addZerosAndFormatValue(&apos;$3.3&apos;), &apos;$3.30&apos;);
+      assert.equal(component.addZerosAndFormatValue(&apos;$3.33&apos;), &apos;$3.33&apos;);
     });
   });
 

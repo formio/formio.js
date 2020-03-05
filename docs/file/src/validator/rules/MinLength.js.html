@@ -241,7 +241,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const Rule = require(&apos;./Rule&apos;);
 
 module.exports = class MinLength extends Rule {
-  defaultMessage = &apos;{{field}} must be longer than {{- settings.length}} characters.&apos;;
+  defaultMessage = &apos;{{field}} must have no more than {{- settings.length}} characters.&apos;;
 
   check(value) {
     const minLength = parseInt(this.settings.length, 10);

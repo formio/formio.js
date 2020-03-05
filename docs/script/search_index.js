@@ -2856,6 +2856,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/webform.js~webform#getclassname",
+    "class/src/Webform.js~Webform.html#instance-method-getClassName",
+    "src/Webform.js~Webform#getClassName",
+    "method"
+  ],
+  [
     "src/webform.js~webform#getvalue",
     "class/src/Webform.js~Webform.html#instance-method-getValue",
     "src/Webform.js~Webform#getValue",
@@ -4764,6 +4770,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/component/component.js~component#itemvalueforhtmlmode",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-itemValueForHTMLMode",
+    "src/components/_classes/component/Component.js~Component#itemValueForHTMLMode",
+    "method"
+  ],
+  [
     "src/components/_classes/component/component.js~component#key",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-key",
     "src/components/_classes/component/Component.js~Component#key",
@@ -6318,12 +6330,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#setnestedvalue",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-setNestedValue",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#setNestedValue",
-    "method"
-  ],
-  [
     "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#updatevalue",
     "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-updateValue",
     "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#updateValue",
@@ -7368,6 +7374,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#addfocusblurevents",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-addFocusBlurEvents",
+    "src/components/currency/Currency.js~CurrencyComponent#addFocusBlurEvents",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#addzerosandformatvalue",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-addZerosAndFormatValue",
+    "src/components/currency/Currency.js~CurrencyComponent#addZerosAndFormatValue",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#constructor",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-constructor-constructor",
     "src/components/currency/Currency.js~CurrencyComponent#constructor",
@@ -7389,6 +7407,12 @@ window.esdocSearchIndex = [
     "src/components/currency/currency.js~currencycomponent#formatvalue",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-formatValue",
     "src/components/currency/Currency.js~CurrencyComponent#formatValue",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#getvalueasstring",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-getValueAsString",
+    "src/components/currency/Currency.js~CurrencyComponent#getValueAsString",
     "method"
   ],
   [
@@ -8376,6 +8400,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/day/day.js~daycomponent#normalizeminmaxdates",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-normalizeMinMaxDates",
+    "src/components/day/Day.js~DayComponent#normalizeMinMaxDates",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#normalizevalue",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-normalizeValue",
     "src/components/day/Day.js~DayComponent#normalizeValue",
@@ -8541,6 +8571,12 @@ window.esdocSearchIndex = [
     "src/components/day/fixtures/comp2.js",
     "file/src/components/day/fixtures/comp2.js.html",
     "src/components/day/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/day/fixtures/comp3.js",
+    "file/src/components/day/fixtures/comp3.js.html",
+    "src/components/day/fixtures/comp3.js",
     "file"
   ],
   [

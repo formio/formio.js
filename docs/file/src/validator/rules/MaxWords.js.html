@@ -241,7 +241,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const Rule = require(&apos;./Rule&apos;);
 
 module.exports = class MaxWords extends Rule {
-  defaultMessage = &apos;{{field}} must have less than {{- settings.length}} words.&apos;;
+  defaultMessage = &apos;{{field}} must have no more than {{- settings.length}} words.&apos;;
 
   check(value) {
     const maxWords = parseInt(this.settings.length, 10);
