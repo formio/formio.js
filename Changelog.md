@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.5
+### Fixed
+ - Fixed an issue with horizontal scroll added when using RTL interface 
+ - Fixed Wizard validation is run in readOnly mode
+ - Reverted https://github.com/formio/formio.js/commit/2b3ef7fce42410ad5e2e3a779afa401dc4209d97 to solve issues with validations firing.
+
 ## 4.9.0-rc.4
 ### Fixed
  - Problems where data would not set correctly when a layout component was inside a Container component.

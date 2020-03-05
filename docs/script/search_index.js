@@ -2982,6 +2982,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/webform.js~webform#pristine",
+    "class/src/Webform.js~Webform.html#instance-member-pristine",
+    "src/Webform.js~Webform#pristine",
+    "member"
+  ],
+  [
     "src/webform.js~webform#ready",
     "class/src/Webform.js~Webform.html#instance-get-ready",
     "src/Webform.js~Webform#ready",
@@ -3867,6 +3873,12 @@ window.esdocSearchIndex = [
     "src/wizard.spec.js",
     "file/src/Wizard.spec.js.html",
     "src/Wizard.spec.js",
+    "file"
+  ],
+  [
+    "src/wizard.unit.js",
+    "file/src/Wizard.unit.js.html",
+    "src/Wizard.unit.js",
     "file"
   ],
   [
