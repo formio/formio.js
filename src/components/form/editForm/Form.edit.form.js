@@ -14,7 +14,10 @@ export default [
     key: 'form',
     weight: 10,
     lazyLoad: false,
-    tooltip: 'The form to load within this form component.'
+    tooltip: 'The form to load within this form component.',
+    validate: {
+      required: true,
+    },
   },
   {
     type: 'textfield',
