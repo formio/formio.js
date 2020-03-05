@@ -625,6 +625,7 @@ export default class NestedComponent extends Field {
   }
 
   setNestedValue(component, value, flags, changed) {
+    component._data = this.componentContext(component);
     if (component.type === 'button') {
       return false;
     }

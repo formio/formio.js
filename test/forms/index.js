@@ -3,6 +3,7 @@ import Conditions from './conditions';
 import Calculated from './calculatedfields';
 import FieldLogic from './fieldLogic';
 import ClearOnHide from './clearOnHide';
+import Actions from './actions';
 // import ClearOnHide2 from './clearOnHide2';
 import DateFields from './datefields';
 import SubmissionSetter from './submissionSetter';
@@ -21,6 +22,7 @@ export default [
   DateFields,
   FieldLogic,
   ClearOnHide,
+  Actions,
   // ClearOnHide2,
   // NestedFormTests,
   NestedFormValidation,
