@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.4
+### Fixed
+ - Added trailing zeros in currency component.
+
 ## 4.9.0-rc.3
 ### Changed
  - Upgrade i18next@19.3.2, @babel/core@7.8.6, @babel/preset-env@7.8.6, @babel/register@7.8.6, babel-eslint@10.1.0, mocha@7.1.0, webpack@4.42.0, uuid@7.0.1, fetch-mock@9.0.0
