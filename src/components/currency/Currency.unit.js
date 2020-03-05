@@ -1,6 +1,6 @@
 import Harness from '../../../test/harness';
 import CurrencyComponent from './Currency';
-
+import assert from 'power-assert';
 import {
   comp1
 } from './fixtures';
@@ -16,6 +16,19 @@ describe('Currency Component', () => {
   it('Should build a currency component', () => {
     return Harness.testCreate(CurrencyComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
+    });
+  });
+
+  it('Should add trailing zeros', () => {
+    return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
+      assert.equal(component.addZerosAndFormatValue(null),);
+      assert.equal(component.addZerosAndFormatValue('3'), '3.00');
+      assert.equal(component.addZerosAndFormatValue('3.1'), '3.10');
+      assert.equal(component.addZerosAndFormatValue('-3'), '-3.00');
+      assert.equal(component.addZerosAndFormatValue('$3'), '$3.00');
+      assert.equal(component.addZerosAndFormatValue('-$3'), '-$3.00');
+      assert.equal(component.addZerosAndFormatValue('$3.3'), '$3.30');
+      assert.equal(component.addZerosAndFormatValue('$3.33'), '$3.33');
     });
   });
 
