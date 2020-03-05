@@ -389,7 +389,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       const component = this.createComponent(col, options, row);
-      component.parentDisabled = this.disabled;
+      component.parentDisabled = !!this.disabled;
       if (component.path && col.key) {
         component.path = component.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
       }
