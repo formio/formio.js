@@ -5,6 +5,7 @@ import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
+import { settingErrors, clearOnHide } from '../test/formtest';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
@@ -281,6 +282,64 @@ describe('Webform tests', () => {
     simpleForm.submit().then((submission) => {
       assert.deepEqual(submission.data, { name: 'noname' });
       done();
+    });
+  });
+
+  it('Should keep components valid if they are pristine', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(settingErrors).then(() => {
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      const input = form.element.querySelector('input[name="data[textField]"]');
+      for (let i = 0; i < 50; i++) {
+        input.value += i;
+        input.dispatchEvent(inputEvent);
+      }
+      this.timeout(1000);
+      setTimeout(() => {
+        assert.equal(form.errors.length, 0);
+        Harness.setInputValue(form, 'data[textField]', '');
+        setTimeout(() => {
+          assert.equal(form.errors.length, 1);
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
+  it('Should delete value of hidden component if clearOnHide is turned on', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(clearOnHide).then(() => {
+      const visibleData = {
+        data: {
+          visible: 'yes',
+          clearOnHideField: 'some text',
+          submit: false
+        },
+        metadata: {}
+      };
+
+      const hiddenData = {
+        data: {
+          visible: 'no',
+          submit: false
+        }
+      };
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      const textField = form.element.querySelector('input[name="data[clearOnHideField]"]');
+      textField.value = 'some text';
+      textField.dispatchEvent(inputEvent);
+      this.timeout(1000);
+      setTimeout(() => {
+        assert.deepEqual(form.data, visibleData.data);
+        Harness.setInputValue(form, 'data[visible]', 'no');
+
+        setTimeout(() => {
+          assert.deepEqual(form.data, hiddenData.data);
+          done();
+        }, 250);
+      }, 250);
     });
   });
 

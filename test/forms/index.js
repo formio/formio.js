@@ -4,7 +4,7 @@ import Calculated from './calculatedfields';
 import FieldLogic from './fieldLogic';
 import Actions from './actions';
 import ClearOnHide from './clearOnHide';
-import ClearOnHide3 from './clearOnHide3';
+
 // import ClearOnHide2 from './clearOnHide2';
 import DateFields from './datefields';
 import SubmissionSetter from './submissionSetter';
@@ -31,5 +31,4 @@ export default [
   // ChildMetadata,
   // WysiwygCursor
   ClearOnHide,
-  ClearOnHide3,
 ];
