@@ -2,8 +2,8 @@ import Simple from './simple';
 import Conditions from './conditions';
 import Calculated from './calculatedfields';
 import FieldLogic from './fieldLogic';
-import ClearOnHide from './clearOnHide';
 import Actions from './actions';
+import ClearOnHide from './clearOnHide';
 import EmailAction from './emailaction';
 // import ClearOnHide2 from './clearOnHide2';
 import DateFields from './datefields';
@@ -22,7 +22,6 @@ export default [
   Calculated,
   DateFields,
   FieldLogic,
-  ClearOnHide,
   Actions,
   EmailAction,
   // ClearOnHide2,
@@ -32,4 +31,5 @@ export default [
   // NestedConditionallyHidden,
   // ChildMetadata,
   // WysiwygCursor
+  ClearOnHide,
 ];
