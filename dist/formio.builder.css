@@ -303,7 +303,8 @@ td > .form-group {
   padding-left: unset;
   padding-right: 16px;
   border-left: unset;
-  border-right: 1px solid #008fa1; }
+  border-right: 1px solid #008fa1;
+  overflow: hidden; }
 
 /* end fix for choices.js deletable items in rtl */
 .formio-component-file .fileSelector {

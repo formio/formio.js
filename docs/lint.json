@@ -164,87 +164,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1416,
+        "lineNumber": 1415,
         "line": "  /**"
       },
       {
-        "lineNumber": 1417,
+        "lineNumber": 1416,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1418,
+        "lineNumber": 1417,
         "line": "   *"
       },
       {
-        "lineNumber": 1419,
+        "lineNumber": 1418,
         "line": "   * @example"
       },
       {
-        "lineNumber": 1420,
+        "lineNumber": 1419,
         "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
-        "lineNumber": 1421,
+        "lineNumber": 1420,
         "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
-        "lineNumber": 1422,
+        "lineNumber": 1421,
         "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
-        "lineNumber": 1423,
+        "lineNumber": 1422,
         "line": "   * form.submission = {data: {"
       },
       {
-        "lineNumber": 1424,
+        "lineNumber": 1423,
         "line": "   *   firstName: 'Joe',"
       },
       {
-        "lineNumber": 1425,
+        "lineNumber": 1424,
         "line": "   *   lastName: 'Smith',"
       },
       {
-        "lineNumber": 1426,
+        "lineNumber": 1425,
         "line": "   *   email: 'joe@example.com'"
       },
       {
-        "lineNumber": 1427,
+        "lineNumber": 1426,
         "line": "   * }};"
       },
       {
-        "lineNumber": 1428,
+        "lineNumber": 1427,
         "line": "   * form.submit().then((submission) => {"
       },
       {
-        "lineNumber": 1429,
+        "lineNumber": 1428,
         "line": "   *   console.log(submission);"
       },
       {
-        "lineNumber": 1430,
+        "lineNumber": 1429,
         "line": "   * });"
       },
       {
-        "lineNumber": 1431,
+        "lineNumber": 1430,
         "line": "   *"
       },
       {
-        "lineNumber": 1432,
+        "lineNumber": 1431,
         "line": "   * @param {boolean} before - If this submission occured from the before handlers."
       },
       {
-        "lineNumber": 1433,
+        "lineNumber": 1432,
         "line": "   *"
       },
       {
-        "lineNumber": 1434,
+        "lineNumber": 1433,
         "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
-        "lineNumber": 1435,
+        "lineNumber": 1434,
         "line": "   */"
       },
       {
-        "lineNumber": 1436,
+        "lineNumber": 1435,
         "line": "  submit(before, options) {"
       }
     ],
