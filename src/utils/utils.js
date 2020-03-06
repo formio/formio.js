@@ -15,9 +15,6 @@ const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
 
-import BuilderUtils from './builder';
-export { BuilderUtils };
-
 export * from './formUtils';
 
 // Configure JsonLogic
@@ -54,14 +51,12 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, 'root._form', {});
   }
 
-  const originalArgs = args;
   const componentKey = component.key;
 
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
     }
-    const params = _.keys(args);
 
     if (tokenize) {
       // Replace all {{ }} references with actual data.
@@ -79,7 +74,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = Evaluator.evaluator(func, ...params);
+      func = Evaluator.evaluator(func, args);
       args = _.values(args);
     }
     catch (err) {
@@ -91,27 +86,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      if (process) {
-        // Need to assume we're server side and limit ourselves to a sandbox VM
-        const vm = require('vm');
-        const sandbox = vm.createContext({ ...originalArgs, result: null });
-
-        // Build the arg string
-        let argStr = _.keys(originalArgs).join();
-
-        if (!Array.isArray(args)) {
-          argStr = `{${argStr}}`;
-        }
-
-        // Execute the script
-        const script = new vm.Script(`result = ${func.toString()}(${argStr});`);
-        script.runInContext(sandbox, { timeout: 250 });
-
-        returnVal = sandbox.result;
-      }
-      else {
-        returnVal = Array.isArray(args) ? func(...args) : func(args);
-      }
+      returnVal = Evaluator.evaluate(func, args);
     }
     catch (err) {
       returnVal = null;
@@ -281,7 +256,7 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
       data,
       row,
       form,
-      _
+      _,
     });
   }
   catch (err) {
@@ -307,10 +282,10 @@ export function checkCondition(component, row, data, form, instance) {
     return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
   }
   else if (component.conditional && component.conditional.when) {
-    return checkSimpleConditional(component, component.conditional, row, data, true);
+    return checkSimpleConditional(component, component.conditional, row, data);
   }
   else if (component.conditional && component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form, instance);
+    return checkJsonConditional(component, component.conditional.json, row, data, form, true);
   }
 
   // Default to show.
@@ -327,6 +302,11 @@ export function checkCondition(component, row, data, form, instance) {
  * @returns {mixed}
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
+  // If trigger is empty, don't fire it
+  if (!trigger[trigger.type]) {
+    return false;
+  }
+
   switch (trigger.type) {
     case 'simple':
       return checkSimpleConditional(component, trigger.simple, row, data);
@@ -339,30 +319,41 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result, instance) {
+export function setActionProperty(component, action, result, row, data, instance) {
+  const property = action.property.value;
+
   switch (action.property.type) {
-    case 'boolean':
-      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
-        _.set(component, action.property.value, action.state.toString() === 'true');
+    case 'boolean': {
+      const currentValue = _.get(component, property, false).toString();
+      const newValue = action.state.toString();
+
+      if (currentValue !== newValue) {
+        _.set(component, property, newValue === 'true');
       }
+
       break;
+    }
     case 'string': {
       const evalData = {
         data,
         row,
         component,
-        result
+        result,
       };
       const textValue = action.property.component ? action[action.property.component] : action.text;
-      const newValue = (instance && instance.interpolate) ?
-        instance.interpolate(textValue, evalData) :
-        Evaluator.interpolate(textValue, evalData);
-      if (newValue !== _.get(component, action.property.value, '')) {
-        _.set(component, action.property.value, newValue);
+      const currentValue = _.get(component, property, '');
+      const newValue = (instance && instance.interpolate)
+        ? instance.interpolate(textValue, evalData)
+        : Evaluator.interpolate(textValue, evalData);
+
+      if (newValue !== currentValue) {
+        _.set(component, property, newValue);
       }
+
       break;
     }
   }
+
   return component;
 }
 
@@ -696,7 +687,9 @@ export function convertFormatToMoment(format) {
     // Day in week.
     .replace(/E/g, 'd')
     // AM/PM marker
-    .replace(/a/g, 'A');
+    .replace(/a/g, 'A')
+    // Unix Timestamp
+    .replace(/U/g, 'X');
 }
 
 export function convertFormatToMask(format) {
@@ -742,6 +735,7 @@ export function getInputMask(mask) {
         maskArray.push(/[a-zA-Z0-9]/);
         break;
       default:
+        maskArray.numeric = false;
         maskArray.push(mask[i]);
         break;
     }
@@ -753,6 +747,12 @@ export function matchInputMask(value, inputMask) {
   if (!inputMask) {
     return true;
   }
+
+  // If value is longer than mask, it isn't valid.
+  if (value.length > inputMask.length) {
+    return false;
+  }
+
   for (let i = 0; i < inputMask.length; i++) {
     const char = value[i];
     const charPart = inputMask[i];
@@ -780,12 +780,12 @@ export function getNumberSeparators(lang = 'en') {
   };
 }
 
-export function getNumberDecimalLimit(component) {
+export function getNumberDecimalLimit(component, defaultLimit) {
   if (_.has(component, 'decimalLimit')) {
     return _.get(component, 'decimalLimit');
   }
   // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-  let decimalLimit = 20;
+  let decimalLimit = defaultLimit || 20;
   const step = _.get(component, 'validate.step', 'any');
 
   if (step !== 'any') {
@@ -1023,15 +1023,17 @@ export function observeOverload(callback, options = {}) {
 }
 
 export function getContextComponents(context) {
-  var values = [];
-  context.utils.eachComponent(context.instance.options.editForm.components, (component) => {
+  const values = [];
+
+  context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
     if (component.key !== context.data.key) {
       values.push({
-        label: component.label || component.key,
-        value: component.key
+        label: `${component.label || component.key} (${path})`,
+        value: component.key,
       });
     }
   });
+
   return values;
 }
 
@@ -1070,6 +1072,13 @@ export function sanitize(string, options) {
     sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
   }
   return dompurify.sanitize(string, sanitizeOptions);
+}
+
+/**
+ * Fast cloneDeep for JSON objects only.
+ */
+export function fastCloneDeep(obj) {
+  return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 }
 
 export { Evaluator, interpolate };

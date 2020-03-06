@@ -12,14 +12,16 @@ export default {
         nonarray: '{{field}} must not be an array',
         select: '{{field}} contains an invalid selection',
         pattern: '{{field}} does not match the pattern {{pattern}}',
-        minLength: '{{field}} must be longer than {{length}} characters.',
-        maxLength: '{{field}} must be shorter than {{length}} characters.',
-        minWords: '{{field}} must have more than {{length}} words.',
-        maxWords: '{{field}} must have less than {{length}} words.',
+        minLength: '{{field}} must have at least {{length}} characters.',
+        maxLength: '{{field}} must have no more than {{length}} characters.',
+        minWords: '{{field}} must have at least {{length}} words.',
+        maxWords: '{{field}} must have no more than {{length}} words.',
         min: '{{field}} cannot be less than {{min}}.',
         max: '{{field}} cannot be greater than {{max}}.',
         maxDate: '{{field}} should not contain date after {{- maxDate}}',
         minDate: '{{field}} should not contain date before {{- minDate}}',
+        maxYear: '{{field}} should not contain year greater than {{maxYear}}',
+        minYear: '{{field}} should not contain year less than {{minYear}}',
         invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
         invalid_url: '{{field}} must be a valid url.', // eslint-disable-line camelcase
         invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase

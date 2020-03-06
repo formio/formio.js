@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Input from '../_classes/input/Input';
 import { conformToMask } from 'vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
@@ -49,7 +48,7 @@ export default class TextFieldComponent extends Input {
       info.attr.type = 'password';
     }
     else {
-      info.attr.type = 'text';
+      info.attr.type = (this.component.inputType === 'password') ? 'password' : 'text';
     }
     info.changeEvent = 'input';
     return info;

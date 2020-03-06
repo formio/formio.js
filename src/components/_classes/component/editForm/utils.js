@@ -59,7 +59,7 @@ const EditFormUtils = {
       /* eslint-enable prefer-template */
     };
   },
-  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON) {
+  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON, additionalParams) {
     return {
       type: 'panel',
       title: title,
@@ -69,7 +69,7 @@ const EditFormUtils = {
       key: `${property}Panel`,
       weight: weight,
       components: [
-        this.logicVariablesTable(),
+        this.logicVariablesTable(additionalParams),
         {
           type: 'panel',
           title: 'JavaScript',

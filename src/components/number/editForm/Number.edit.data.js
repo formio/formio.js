@@ -22,5 +22,9 @@ export default [
     key: 'requireDecimal',
     label: 'Require Decimal',
     tooltip: 'Always show decimals, even if trailing zeros.'
-  }
+  },
+  {
+    key: 'case',
+    ignore: true,
+  },
 ];

@@ -32,6 +32,16 @@ export default class HiddenComponent extends Input {
     return info;
   }
 
+  /**
+   * Check if a component is eligible for multiple validation
+   *
+   * @return {boolean}
+   */
+  validateMultiple() {
+    // Since "arrays" are able to be stored in hidden components, we need to turn off multiple validation.
+    return false;
+  }
+
   labelIsHidden() {
     return true;
   }

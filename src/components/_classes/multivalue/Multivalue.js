@@ -16,10 +16,18 @@ export default class Multivalue extends Field {
   }
 
   get defaultValue() {
+    let value = super.defaultValue;
+
     if (this.component.multiple) {
-      return [super.defaultValue];
+      if (_.isArray(value)) {
+        value = !value.length ? [super.emptyValue] : value;
+      }
+      else {
+        value = [value];
+      }
     }
-    return super.defaultValue;
+
+    return value;
   }
 
   get addAnother() {
@@ -160,7 +168,7 @@ export default class Multivalue extends Field {
     });
 
     if (!this.attachMultiMask(index)) {
-      this.setInputMask(this.refs.input[index]);
+      this.setInputMask(element);
     }
   }
 

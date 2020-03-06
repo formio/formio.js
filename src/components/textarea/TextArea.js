@@ -3,7 +3,6 @@ import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
-import Formio from '../../Formio';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -35,9 +34,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   init() {
     super.init();
-    this.editorReady = new NativePromise((resolve) => {
-      this.editorReadyResolve = resolve;
-    });
+    this.editors = [];
+    this.editorsReady = [];
+    this.updateSizes = [];
 
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
@@ -56,34 +55,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     return info;
   }
 
-  setupValueElement(element) {
-    let value = this.getValue();
-    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getValueAsString(value);
-    if (this.component.wysiwyg) {
-      value = this.interpolate(value);
-    }
-    if (element) {
-      this.setContent(element, value);
-    }
-  }
-
-  acePlaceholder() {
-    if (!this.component.placeholder || !this.editor) {
-      return;
-    }
-    const shouldShow = !this.editor.session.getValue().length;
-    let node = this.editor.renderer.emptyMessageNode;
-    if (!shouldShow && node) {
-      this.editor.renderer.scroller.removeChild(this.editor.renderer.emptyMessageNode);
-      this.editor.renderer.emptyMessageNode = null;
-    }
-    else if (shouldShow && !node) {
-      node = this.editor.renderer.emptyMessageNode = this.ce('div');
-      node.textContent = this.t(this.component.placeholder);
-      node.className = 'ace_invisible ace_emptyMessage';
-      node.style.padding = '0 9px';
-      this.editor.renderer.scroller.appendChild(node);
-    }
+  validateMultiple() {
+    return !this.component.as === 'json';
   }
 
   renderElement(value, index) {
@@ -92,7 +65,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if (this.options.readOnly || this.disabled) {
       return this.renderTemplate('well', {
-        children: value,
+        children: '<div ref="input"></div>',
         nestedKey: this.key,
         value
       });
@@ -118,9 +91,16 @@ export default class TextAreaComponent extends TextFieldComponent {
    *
    * @param newValue
    */
-  updateEditorValue(newValue) {
+  updateEditorValue(index, newValue) {
     newValue = this.getConvertedValue(this.removeBlanks(newValue));
-    if ((newValue !== this.dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+    const dataValue = this.dataValue;
+    if (Array.isArray(dataValue)) {
+      const newArray = _.clone(dataValue);
+      newArray[index] = newValue;
+      newValue = newArray;
+    }
+
+    if ((!_.isEqual(newValue, dataValue)) && (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
         modified: !this.autoModified
       });
@@ -130,11 +110,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   attachElement(element, index) {
     if (this.autoExpand && (this.isPlain || this.options.readOnly || this.options.htmlView)) {
-      element.childNodes.forEach((element) => {
-        if (element.nodeName === 'TEXTAREA') {
-          this.addAutoExpanding(element);
-        }
-      });
+      if (element.nodeName === 'TEXTAREA') {
+        this.addAutoExpanding(element, index);
+      }
     }
 
     if (this.options.readOnly) {
@@ -147,85 +125,110 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
 
-    // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
-    switch (this.component.editor) {
-      case 'ace':
-        if (!settings) {
-          settings = {};
-        }
-        settings.mode = this.component.as || 'javascript';
-        this.addAce(element, settings, (newValue) => this.updateEditorValue(newValue)).then((ace) => {
-          this.editor = ace;
-          this.editor.on('input', () => this.acePlaceholder());
-          this.editor.setValue(this.setConvertedValue(this.dataValue));
-          setTimeout(() => {
-            this.acePlaceholder();
-          }, 100);
-          this.editorReadyResolve(ace);
-          return ace;
-        }).catch(err => console.warn(err));
-        break;
-      case 'quill':
-        // Normalize the configurations for quill.
-        if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
-          console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-          settings = this.wysiwygDefault;
-        }
-
-        // Add the quill editor.
-        this.addQuill(
-          element,
-          settings, () => this.updateEditorValue(this.editor.root.innerHTML)
-        ).then((quill) => {
-          this.editor = quill;
-          if (this.component.isUploadEnabled) {
-            const _this = this;
-            quill.getModule('toolbar').addHandler('image', function() {
-              //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
-              //we also need current component instance as we use some fields and methods from it as well
-              _this.imageHandler.call(_this, this);
-            } );
+    // Keep track of when this editor is ready.
+    this.editorsReady[index] = new NativePromise((editorReady) => {
+      // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
+      switch (this.component.editor) {
+        case 'ace':
+          if (!settings) {
+            settings = {};
           }
-          quill.root.spellcheck = this.component.spellcheck;
-          if (this.options.readOnly || this.component.disabled) {
-            this.editor.disable();
+          settings.mode = this.component.as;
+          this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
+            this.editors[index] = ace;
+            let dataValue = this.dataValue;
+            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            ace.setValue(this.setConvertedValue(dataValue, index));
+            editorReady(ace);
+            return ace;
+          }).catch(err => console.warn(err));
+          break;
+        case 'quill':
+          // Normalize the configurations for quill.
+          if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
+            console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+            settings = this.wysiwygDefault;
           }
 
-          this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
-          this.editorReadyResolve(this.editor);
-          return quill;
-        }).catch(err => console.warn(err));
-        break;
-      case 'ckeditor':
-        settings = settings || {};
-        settings.rows = this.component.rows;
-        this.addCKE(element, settings, (newValue) => this.updateEditorValue(newValue))
-          .then((editor) => {
-            this.editor = editor;
+          // Add the quill editor.
+          this.addQuill(
+            element,
+            settings, () => this.updateEditorValue(index, this.editors[index].root.innerHTML)
+          ).then((quill) => {
+            this.editors[index] = quill;
+            if (this.component.isUploadEnabled) {
+              const _this = this;
+              quill.getModule('toolbar').addHandler('image', function() {
+                //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
+                //we also need current component instance as we use some fields and methods from it as well
+                _this.imageHandler.call(_this, this);
+              } );
+            }
+            quill.root.spellcheck = this.component.spellcheck;
             if (this.options.readOnly || this.component.disabled) {
-              this.editor.isReadOnly = true;
+              quill.disable();
             }
-            const numRows = parseInt(this.component.rows, 10);
-            if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-              // Default height is 21px with 10px margin + a 14px top margin.
-              const editorHeight = (numRows * 31) + 14;
-              editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-            }
-            editor.data.set(this.setConvertedValue(this.dataValue));
-            this.editorReadyResolve(this.editor);
-            return editor;
+
+            let dataValue = this.dataValue;
+            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
+            editorReady(quill);
+            return quill;
+          }).catch(err => console.warn(err));
+          break;
+        case 'ckeditor':
+          settings = settings || {};
+          settings.rows = this.component.rows;
+          this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue))
+            .then((editor) => {
+              this.editors[index] = editor;
+              if (this.options.readOnly || this.component.disabled) {
+                editor.isReadOnly = true;
+              }
+              const numRows = parseInt(this.component.rows, 10);
+              if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+                // Default height is 21px with 10px margin + a 14px top margin.
+                const editorHeight = (numRows * 31) + 14;
+                editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+              }
+              let dataValue = this.dataValue;
+              dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+              editor.data.set(this.setConvertedValue(dataValue, index));
+              editorReady(editor);
+              return editor;
+            });
+          break;
+        case 'tiny':
+          if (!settings) {
+            settings = {};
+          }
+          settings.mode = this.component.as || 'javascript';
+          this.addTiny(element, settings, (newValue) => this.updateEditorValue(newValue))
+            .then((tiny) => {
+              this.editors[index] = tiny;
+              tiny.setContent(this.setConvertedValue(this.dataValue));
+              editorReady(tiny);
+              return tiny;
+            }).catch(err => console.warn(err));
+          break;
+        default:
+          super.attachElement(element, index);
+          this.addEventListener(element, this.inputInfo.changeEvent, () => {
+            this.updateValue(null, {
+              modified: true
+            }, index);
           });
-        break;
-      default:
-        super.attachElement(element, index);
-        this.addEventListener(element, this.inputInfo.changeEvent, () => {
-          this.updateValue(null, {
-            modified: true
-          }, index);
-        });
-    }
+      }
+    });
 
     return element;
+  }
+
+  attach(element) {
+    const attached = super.attach(element);
+    // Make sure we restore the value after attaching since wysiwygs and readonly texts need an additional set.
+    this.restoreValue();
+    return attached;
   }
 
   imageHandler(quillInstance) {
@@ -235,7 +238,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.setAttribute('type', 'file');
       fileInput.setAttribute('accept', 'image/*');
       fileInput.classList.add('ql-image');
-      fileInput.addEventListener('change', () => {
+      this.addEventListener(fileInput, 'change', () => {
         const files = fileInput.files;
         const range = quillInstance.quill.getSelection(true);
 
@@ -293,24 +296,19 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get htmlView() {
-    return this.options.readOnly && this.component.wysiwyg;
+    return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
   }
-  /* eslint-enable max-statements */
 
-  setWysiwygValue(value, skipSetting) {
-    if (this.htmlView) {
-      // For HTML view, just view the contents.
-      if (this.input) {
-        this.setContent(this.input, this.interpolate(value));
-      }
-    }
-    else if (this.editorReady) {
-      return this.editorReady.then((editor) => {
+  setValueAt(index, value, flags) {
+    super.setValueAt(index, value, flags);
+
+    if (this.editorsReady[index]) {
+      const setEditorsValue = (flags) => (editor) => {
         this.autoModified = true;
-        if (!skipSetting) {
+        if (!flags.skipWysiwyg) {
           switch (this.component.editor) {
             case 'ace':
-              editor.setValue(this.setConvertedValue(value));
+              editor.setValue(this.setConvertedValue(value, index));
               break;
             case 'quill':
               if (this.component.isUploadEnabled) {
@@ -320,21 +318,45 @@ export default class TextAreaComponent extends TextFieldComponent {
                   });
               }
               else {
-                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
               }
               break;
             case 'ckeditor':
-              editor.data.set(this.setConvertedValue(value));
+              editor.data.set(this.setConvertedValue(value, index));
+              break;
+            case 'tiny':
+              editor.setContent(this.setConvertedValue(value));
               break;
           }
         }
-      });
-    }
+      };
 
-    return NativePromise.resolve();
+      this.editorsReady[index].then(setEditorsValue(_.clone(flags)));
+    }
   }
 
-  setConvertedValue(value) {
+  setValue(value, flags) {
+    flags = flags || {};
+    if (this.isPlain || this.options.readOnly || this.disabled) {
+      value = Array.isArray(value) ?
+        value.map((val, index) => this.setConvertedValue(val, index)) :
+        this.setConvertedValue(value);
+      return super.setValue(value, flags);
+    }
+    flags.skipWysiwyg = _.isEqual(value, this.getValue());
+    return super.setValue(value, flags);
+  }
+
+  setReadOnlyValue(value, index) {
+    index = index || 0;
+    if (this.options.readOnly || this.disabled) {
+      if (this.refs.input && this.refs.input[index]) {
+        this.setContent(this.refs.input[index], this.interpolate(value));
+      }
+    }
+  }
+
+  setConvertedValue(value, index) {
     if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
@@ -348,6 +370,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = '';
     }
 
+    this.setReadOnlyValue(value, index);
     return value;
   }
 
@@ -396,7 +419,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }));
   }
 
-  addAutoExpanding(textarea) {
+  addAutoExpanding(textarea, index) {
     let heightOffset = null;
     let previousHeight = null;
 
@@ -471,7 +494,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     this.addEventListener(textarea, 'input', update);
     this.on('initialized', update);
-    this.updateSize = update;
+    this.updateSizes[index] = update;
     update();
   }
 
@@ -499,9 +522,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   onChange(flags, fromRoot) {
     const changed = super.onChange(flags, fromRoot);
-    if (this.updateSize) {
-      this.updateSize();
-    }
+    this.updateSizes.forEach(updateSize => updateSize());
     return changed;
   }
 
@@ -521,27 +542,6 @@ export default class TextAreaComponent extends TextFieldComponent {
     return defaultValue;
   }
 
-  setValue(value, flags) {
-    const skipSetting = _.isEqual(value, this.getValue());
-    value = value || '';
-    if (this.isPlain) {
-      value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
-      const changed = super.setValue(value, flags);
-      if (changed && (this.disabled || this.options.readOnly)) {
-        this.triggerRedraw();
-      }
-      return changed;
-    }
-
-    // Set the value when the editor is ready.
-    const newValue = (value === undefined || value === null) ? this.getValue() : value;
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
-    if (changed) {
-      this.setWysiwygValue(newValue, skipSetting, () => this.updateOnChange(flags, changed));
-    }
-    return changed;
-  }
-
   getConvertedValue(value) {
     if (this.component.as && this.component.as === 'json' && value) {
       try {
@@ -554,20 +554,17 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  destroy() {
-    if (this.editorReady) {
-      this.editorReady.then((editor) => {
-        if (editor.destroy) {
-          return editor.destroy();
-        }
-      });
-    }
-
-    if (this.updateSize) {
-      this.removeEventListener(window, 'resize', this.updateSize);
-    }
-
-    return super.destroy();
+  detach() {
+    // Destroy all editors.
+    this.editors.forEach(editor => {
+      if (editor.destroy) {
+        editor.destroy();
+      }
+    });
+    this.editors = [];
+    this.editorsReady = [];
+    this.updateSizes.forEach(updateSize => this.removeEventListener(window, 'resize', updateSize));
+    this.updateSizes = [];
   }
 
   getValue() {

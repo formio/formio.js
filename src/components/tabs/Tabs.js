@@ -9,6 +9,7 @@ export default class TabsComponent extends NestedComponent {
       input: false,
       key: 'tabs',
       persistent: false,
+      tableView: false,
       components: [
         {
           label: 'Tab 1',
@@ -86,7 +87,7 @@ export default class TabsComponent extends NestedComponent {
       tabLinkKey: this.tabLinkKey,
       currentTab: this.currentTab,
       tabComponents: this.tabs.map(tab => this.renderComponents(tab))
-    }, (this.options.flatten ? 'flat' : 'form')));
+    }, (this.options.flatten || this.options.pdf ? 'flat' : null)));
   }
 
   attach(element) {

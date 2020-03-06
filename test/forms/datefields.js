@@ -188,14 +188,14 @@ export default {
     'Test date only fields format yyyy-mm-dd'(form, done) {
       form.getComponent('dateTime', (component) => {
         const m = new Date();
-        assert.equal(component.refs.input[0].widget.calendar.altInput.value, `${m.getUTCFullYear()}-${(m.getUTCMonth() + 1).toString().padStart(2, '0')}-${m.getUTCDate().toString().padStart(2, '0')}`);
+        assert.equal(component.refs.input[0].widget.calendar.altInput.value, `${m.getFullYear()}-${(m.getMonth() + 1).toString().padStart(2, '0')}-${m.getDate().toString().padStart(2, '0')}`);
         done();
       });
     },
     'Test date only fields format dd/mm/yyyy'(form, done) {
       form.getComponent('ddMmYyyy', (component) => {
         const m = new Date();
-        assert.equal(component.refs.input[0].widget.calendar.altInput.value, `${m.getUTCDate().toString().padStart(2, '0')}/${(m.getUTCMonth() + 1).toString().padStart(2, '0')}/${m.getUTCFullYear()}`);
+        assert.equal(component.refs.input[0].widget.calendar.altInput.value, `${m.getDate().toString().padStart(2, '0')}/${(m.getMonth() + 1).toString().padStart(2, '0')}/${m.getFullYear()}`);
         done();
       });
     }

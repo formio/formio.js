@@ -100,8 +100,17 @@ export default [
   ),
   EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
-    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>'
+    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>',
+'<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>'
   ),
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 1100,
+    key: 'calculateServer',
+    label: 'Calculate Value on server',
+    tooltip: 'Checking this will run the calculation on the server. This is useful if you wish to override the values submitted with the calculations performed on the server.'
+  },
   {
     type: 'checkbox',
     input: true,

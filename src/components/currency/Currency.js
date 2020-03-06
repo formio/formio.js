@@ -69,8 +69,51 @@ export default class CurrencyComponent extends NumberComponent {
     return super.parseValue(this.stripPrefixSuffix(value));
   }
 
+  addZerosAndFormatValue(value) {
+   if (!value && value !== 0) return;
+
+    const decimalLimit = _.get(this.component, 'decimalLimit', 2);
+
+    let integerPart;
+    let decimalPart = '';
+    let decimalPartNumbers = [];
+
+    if (value.includes(this.decimalSeparator)) {
+      [integerPart, decimalPart] = value.split(this.decimalSeparator);
+      decimalPartNumbers =[...decimalPart.split('')] ;
+    }
+    else {
+      integerPart = value;
+    }
+
+    if (decimalPart.length < decimalLimit) {
+      while (decimalPartNumbers.length < decimalLimit) {
+        decimalPartNumbers.push('0');
+      }
+    }
+
+    const formattedValue = `${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}`;
+
+    return super.formatValue(formattedValue);
+  }
+
+  getValueAsString(value) {
+    const stringValue = super.getValueAsString(value);
+
+    // eslint-disable-next-line eqeqeq
+    if (value || value == '0') {
+      return this.addZerosAndFormatValue(stringValue);
+    }
+
+    return stringValue;
+  }
+
   formatValue(value) {
-    return super.formatValue(this.stripPrefixSuffix(value));
+    if (value && this.disabled) {
+      return this.addZerosAndFormatValue(value);
+    }
+
+    return super.formatValue(value);
   }
 
   stripPrefixSuffix(value) {
@@ -88,5 +131,13 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
     return value;
+  }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(this.dataValue)));
+    });
   }
 }

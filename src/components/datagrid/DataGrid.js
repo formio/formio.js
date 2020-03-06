@@ -1,12 +1,13 @@
 import _ from 'lodash';
 // Import from "dist" because it would require and "global" would not be defined in Angular apps.
 import dragula from 'dragula/dist/dragula';
-import NestedComponent from '../_classes/nested/NestedComponent';
+import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
+import { fastCloneDeep } from '../../utils/utils';
 
-export default class DataGridComponent extends NestedComponent {
+export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedArrayComponent.schema({
       label: 'Data Grid',
       key: 'dataGrid',
       type: 'datagrid',
@@ -41,10 +42,6 @@ export default class DataGridComponent extends NestedComponent {
     this.createRows(true);
     this.visibleColumns = {};
     this.checkColumns();
-  }
-
-  get allowData() {
-    return true;
   }
 
   get dataValue() {
@@ -213,10 +210,6 @@ export default class DataGridComponent extends NestedComponent {
     return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);
   }
 
-  hasChanged(newValue, oldValue) {
-    return !_.isEqual(newValue, oldValue);
-  }
-
   get canAddColumn() {
     return this.builderMode;
   }
@@ -331,7 +324,7 @@ export default class DataGridComponent extends NestedComponent {
     //should drop at next sibling position; no next sibling means drop to last position
     const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
     const movedBelow = newPosition > oldPosition;
-    const dataValue = _.cloneDeep(this.dataValue);
+    const dataValue = fastCloneDeep(this.dataValue);
     const draggedRowData = dataValue[oldPosition];
 
     //insert element at new position
@@ -345,15 +338,22 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   addRow() {
-    this.dataValue.push({});
     const index = this.rows.length;
+
+    // Handle length mismatch between rows and dataValue
+    if (this.dataValue.length === index) {
+      this.dataValue.push({});
+    }
+
     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
+    this.checkConditions();
     this.redraw();
   }
 
   removeRow(index) {
     this.splice(index);
-    this.rows.splice(index, 1);
+    const [row] = this.rows.splice(index, 1);
+    _.each(row, (component) => this.removeComponent(component));
     this.redraw();
   }
 
@@ -366,7 +366,10 @@ export default class DataGridComponent extends NestedComponent {
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) => {
-      if (!this.rows[index]) {
+      if (this.rows[index]) {
+        _.each(this.rows[index], (component) => component.data = row);
+      }
+      else {
         this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
@@ -385,9 +388,13 @@ export default class DataGridComponent extends NestedComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      components[col.key] = this.createComponent(col, options, row);
-      components[col.key].rowIndex = rowIndex;
-      components[col.key].inDataGrid = true;
+      const component = this.createComponent(col, options, row);
+      if (component.path && col.key) {
+        component.path = component.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
+      }
+      component.rowIndex = rowIndex;
+      component.inDataGrid = true;
+      components[col.key] = component;
     });
     return components;
   }
@@ -402,9 +409,14 @@ export default class DataGridComponent extends NestedComponent {
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
+
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
+    }
+
+    if (!this.checkComponentValidity(data, dirty, row)) {
+      return false;
     }
 
     return this.checkRows('checkValidity', data, dirty, this.dataValue);
@@ -462,7 +474,7 @@ export default class DataGridComponent extends NestedComponent {
     let show = false;
 
     if (!this.rows || !this.rows.length) {
-      return { rebuld: false, show: false };
+      return { rebuild: false, show: false };
     }
 
     if (this.builderMode) {
@@ -505,11 +517,6 @@ export default class DataGridComponent extends NestedComponent {
     return show;
   }
 
-  updateValue(value, flags) {
-    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return Component.prototype.updateValue.call(this, value, flags);
-  }
-
   setValue(value, flags) {
     flags = flags || {};
     if (!value) {
@@ -540,33 +547,14 @@ export default class DataGridComponent extends NestedComponent {
       if (value.length <= rowIndex) {
         return;
       }
-      _.each(row, (col, key) => {
-        if (col.type === 'components') {
-          col.data = value[rowIndex];
-          col.setValue(value[rowIndex], flags);
-        }
-        else if (value[rowIndex].hasOwnProperty(key)) {
-          col.data = value[rowIndex];
-          col.setValue(value[rowIndex][key], flags);
-        }
-        else {
-          col.data = value[rowIndex];
-          col.setValue(col.defaultValue, flags);
-        }
+      _.each(row, (col) => {
+        col.rowIndex = rowIndex;
+        this.setNestedValue(col, value[rowIndex], flags, false);
       });
     });
 
     this.updateOnChange(flags, changed);
     return changed;
-  }
-
-  /**
-   * Get the value of this component.
-   *
-   * @returns {*}
-   */
-  getValue() {
-    return this.dataValue;
   }
 
   restoreComponentsContext() {
@@ -595,6 +583,7 @@ export default class DataGridComponent extends NestedComponent {
         result = result.concat(comp);
       }
     });
+
     return result.length > 0 ? result : null;
   }
 

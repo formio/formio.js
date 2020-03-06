@@ -41,12 +41,24 @@ export default [
     data: {
       values: [
         { label: 'None', value: '' },
-        { label: 'CKEditor', value: 'ckeditor' },
         { label: 'ACE', value: 'ace' },
-        { label: 'Quill', value: 'quill' }
+        { label: 'CKEditor', value: 'ckeditor' },
+        { label: 'Quill', value: 'quill' },
+        { label: 'TinyMCE', value: 'tiny' },
       ]
     },
     weight: 415
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'tinyApiKey',
+    label: 'TinyMCE Api Key',
+    weight: 415.2,
+    placeholder: 'If you have a TinyMCE APi Key, enter it here.',
+    conditional: {
+      json: { '===': [{ var: 'data.editor' }, 'tiny'] }
+    }
   },
   {
     type: 'checkbox',
@@ -234,6 +246,10 @@ export default [
       json: {
         or: [
           { '===': [
+              { var: 'data.editor' },
+              'ace'
+            ] },
+          { '===': [
             { var: 'data.editor' },
             'ckeditor'
           ] },
@@ -243,8 +259,8 @@ export default [
           ] },
           { '===': [
             { var: 'data.editor' },
-            'ace'
-          ] }
+            'tiny'
+          ] },
         ]
       }
     },

@@ -111,7 +111,6 @@ export default class ButtonComponent extends Field {
     let onError = null;
     if (this.component.action === 'submit') {
       this.on('submitButton', () => {
-        this.loading = true;
         this.disabled = true;
       }, true);
       this.on('submitDone', () => {
@@ -122,6 +121,15 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.buttonMessageContainer, 'has-success');
         this.removeClass(this.refs.buttonMessageContainer, 'has-error');
         this.setContent(this.refs.buttonMessage, this.t('complete'));
+      }, true);
+      this.on('submitError', () => {
+        this.loading = false;
+        this.disabled = false;
+        this.removeClass(this.refs.button, 'btn-success submit-success');
+        this.addClass(this.refs.button, 'btn-danger submit-fail');
+        this.removeClass(this.refs.buttonMessageContainer, 'has-success');
+        this.addClass(this.refs.buttonMessageContainer, 'has-error');
+        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
       }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
@@ -143,11 +151,8 @@ export default class ButtonComponent extends Field {
       };
     }
 
-    this.triggerReCaptcha();
-
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
-        this.loading = true;
         this.disabled = true;
       }, true);
       this.on('requestDone', () => {
@@ -175,9 +180,7 @@ export default class ButtonComponent extends Field {
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
-    if (this.canDisable) {
-      this.disabled = this.shouldDisabled;
-    }
+    this.disabled = this.shouldDisabled;
 
     function getUrlParameter(name) {
       name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
@@ -218,7 +221,9 @@ export default class ButtonComponent extends Field {
   }
 
   onClick(event) {
-    if (this.disabled) {
+    this.triggerReCaptcha();
+    // Don't click if disabled or in builder mode.
+    if (this.disabled || this.options.attachMode === 'builder') {
       return;
     }
     this.dataValue = true;
@@ -230,9 +235,11 @@ export default class ButtonComponent extends Field {
       case 'submit':
         event.preventDefault();
         event.stopPropagation();
+        this.loading = true;
         this.emit('submitButton', {
           state: this.component.state || 'submitted',
-          component: this.component
+          component: this.component,
+          instance: this
         });
         break;
       case 'event':
@@ -267,7 +274,11 @@ export default class ButtonComponent extends Field {
         break;
       }
       case 'url':
-        this.emit('requestButton');
+        this.loading = true;
+        this.emit('requestButton', {
+          component: this.component,
+          instance: this
+        });
         this.emit('requestUrl', {
           url: this.interpolate(this.component.url),
           headers: this.component.headers

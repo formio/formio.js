@@ -14,6 +14,7 @@ const forms = require('./formtest');
 Components.setComponents(AllComponents);
 
 const dir = './test/renders';
+const componentDir = './lib/components';
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
@@ -21,8 +22,8 @@ if (!fs.existsSync(dir)) {
 const fixComponent = (instance, index = 0) => {
   instance.id = instance.key;
   index++;
-  if (instance.type === 'form') {
-    instance.everyComponent(component => fixComponent(component, index));
+  if (instance.everyComponent) {
+    instance.everyComponent((component) => fixComponent(component, index));
     // if (instance.hasOwnProperty('subForm') && instance.subForm) {
     //   instance.subForm.id = instance.key;
     // }
@@ -36,35 +37,37 @@ const renderForm = (form, options) => {
   });
 };
 
-const renderComponent = (Type, definition, options) => {
+const renderComponent = (Type, definition, options, value) => {
   const instance = new Type(definition, options);
+  if (value !== undefined) {
+    instance.dataValue = value;
+  }
   fixComponent(instance);
   return pretty(instance.render(), { ocd: true });
 };
 
-const renders = [];
+const renderAsString = (Type, definition, options, value) => {
+  const instance = new Type(definition, options);
+  return instance.getValueAsString(value);
+};
 
 Object.keys(templates).forEach(framework => {
   // Render forms
   Object.keys(forms).forEach(form => {
-    renders.push(`form-${framework}-${form}`);
     renderForm(forms[form], { template: framework }).then(html => {
       fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, html);
     }).catch(err => console.log(err));
   });
   // Object.keys(formtests).forEach(form => {
-  //   renders.push(`form-${framework}-${form}`);
   //   fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, renderForm(formtests[form].form, {}));
   // });
 
   // Render components
   Object.keys(AllComponents).forEach(component => {
     // Basic
-    renders.push(`component-${framework}-${component}`);
     fs.writeFileSync(`${dir}/component-${framework}-${component}.html`, renderComponent(AllComponents[component], {}, { template: framework }));
 
     // Required
-    renders.push(`component-${framework}-${component}-required`);
     fs.writeFileSync(`${dir}/component-${framework}-${component}-required.html`, renderComponent(AllComponents[component], {
       validate: {
         required: true
@@ -74,23 +77,34 @@ Object.keys(templates).forEach(framework => {
     }));
 
     // Multiple
-    renders.push(`component-${framework}-${component}-multiple`);
     fs.writeFileSync(`${dir}/component-${framework}-${component}-multiple.html`, renderComponent(AllComponents[component], {
       multiple: true
     }, {
       template: framework,
     }));
+
+    // Values
+    if (fs.existsSync(`${componentDir}/${component}/fixtures/values.js`)) {
+      const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
+
+      values.unshift(undefined);
+
+      values.forEach((value, index) => {
+        fs.writeFileSync(`${dir}/component-${framework}-${component}-html-value${index}.html`, renderComponent(AllComponents[component], {}, {
+          template: framework,
+          flatten: true,
+          renderMode: 'html',
+        }, value));
+
+        fs.writeFileSync(`${dir}/component-${framework}-${component}-string-value${index}.html`, renderAsString(AllComponents[component], {}, {
+          template: framework,
+          flatten: true,
+          renderMode: 'html',
+        }, value));
+      });
+    }
   });
 });
-
-// Build index.js for loading all renders.
-// const index = fs.createWriteStream(`${dir}/index.js`);
-
-// renders.forEach(key => {
-//   index.write(`exports['${key}'] = require('./${key}.html');\n`);
-// });
-//
-// index.end();
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);

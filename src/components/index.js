@@ -20,6 +20,8 @@ import Multivalue from './_classes/multivalue/Multivalue';
 import Field from './_classes/field/Field';
 import HTMLComponent from './html/HTML';
 import NestedComponent from './_classes/nested/NestedComponent';
+import NestedDataComponent from './_classes/nesteddata/NestedDataComponent';
+import NestedArrayComponent from './_classes/nestedarray/NestedArrayComponent';
 import NumberComponent from './number/Number';
 import PanelComponent from './panel/Panel';
 import PasswordComponent from './password/Password';
@@ -44,6 +46,7 @@ import WellComponent from './well/Well';
 export default {
   address: AddressComponent,
   base: Component,
+  component: Component,
   button: ButtonComponent,
   checkbox: CheckBoxComponent,
   columns: ColumnsComponent,
@@ -64,6 +67,8 @@ export default {
   hidden: HiddenComponent,
   htmlelement: HTMLComponent,
   nested: NestedComponent,
+  nesteddata: NestedDataComponent,
+  nestedarray: NestedArrayComponent,
   number: NumberComponent,
   panel: PanelComponent,
   password: PasswordComponent,

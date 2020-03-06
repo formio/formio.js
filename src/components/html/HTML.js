@@ -1,4 +1,5 @@
 import Component from '../_classes/component/Component';
+import _ from 'lodash';
 
 export default class HTMLComponent extends Component {
   static schema(...extend) {
@@ -29,7 +30,13 @@ export default class HTMLComponent extends Component {
   }
 
   get content() {
+    if (this.builderMode) {
+      return this.component.content;
+    }
+    const submission = _.get(this.root, 'submission', {});
     return this.component.content ? this.interpolate(this.component.content, {
+      metadata: submission.metadata || {},
+      submission: submission,
       data: this.rootValue,
       row: this.data
     }) : '';
@@ -39,25 +46,41 @@ export default class HTMLComponent extends Component {
     return ['br', 'img', 'hr'];
   }
 
-  render() {
-    return super.render(this.renderTemplate('html', {
+  checkRefreshOn(changed) {
+    super.checkRefreshOn(changed);
+    if (!this.builderMode && this.component.refreshOnChange && this.element &&
+      this.conditionallyVisible(this.data, this.row)) {
+      this.setContent(this.element, this.renderContent());
+    }
+  }
+
+  renderContent() {
+    const submission = _.get(this.root, 'submission', {});
+    return this.renderTemplate('html', {
       component: this.component,
       tag: this.component.tag,
-      attrs: this.component.attrs || {},
+      attrs: (this.component.attrs || []).map((attr) => {
+        return {
+          attr: attr.attr,
+          value: this.interpolate(attr.value, {
+            metadata: submission.metadata || {},
+            submission: submission,
+            data: this.rootValue,
+            row: this.data
+          })
+        };
+      }),
       content: this.content,
       singleTags: this.singleTags,
-    }));
+    });
+  }
+
+  render() {
+    return super.render(this.renderContent());
   }
 
   attach(element) {
     this.loadRefs(element, { html: 'single' });
-    if (this.component.refreshOnChange) {
-      this.on('change', () => {
-        if (this.refs.html) {
-          this.setContent(this.refs.html, this.content);
-        }
-      }, true);
-    }
     return super.attach(element);
   }
 }

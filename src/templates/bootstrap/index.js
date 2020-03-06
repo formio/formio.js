@@ -1,3 +1,4 @@
+import address from './address';
 import builder from './builder';
 import builderComponent from './builderComponent';
 import builderComponents from './builderComponents';
@@ -10,6 +11,7 @@ import button from './button';
 import checkbox from './checkbox';
 import columns from './columns';
 import component from './component';
+import componentModal from './componentModal';
 import components from './components';
 import container from './container';
 import datagrid from './datagrid';
@@ -45,7 +47,6 @@ import tab from './tab';
 import table from './table';
 import tree from './tree';
 import treePartials from './tree/partials';
-import warning from './warning';
 import webform from './webform';
 import well from './well';
 import wizard from './wizard';
@@ -67,6 +68,7 @@ export default {
   defaultIconset: 'fa',
   iconClass,
   cssClasses,
+  address,
   builder,
   builderComponent,
   builderComponents,
@@ -79,6 +81,7 @@ export default {
   checkbox,
   columns,
   component,
+  componentModal,
   components,
   container,
   datagrid,
@@ -113,7 +116,6 @@ export default {
   table,
   tree,
   ...treePartials,
-  warning,
   webform,
   well,
   wizard,

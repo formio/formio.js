@@ -20,6 +20,7 @@ export default class TimeComponent extends TextFieldComponent {
 
     this.component.inputMask = '99:99';
     this.component.inputType = this.component.inputType || 'time';
+    this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
 
   static get builderInfo() {
@@ -54,6 +55,10 @@ export default class TimeComponent extends TextFieldComponent {
     return value;
   }
 
+  get validationValue() {
+    return this.rawData;
+  }
+
   get inputInfo() {
     const info = super.inputInfo;
     info.attr.type = this.component.inputType;
@@ -64,27 +69,70 @@ export default class TimeComponent extends TextFieldComponent {
     return true;
   }
 
+  isNotCompleteInput(value) {
+    return value.includes('_');
+  }
+
+  removeValue(index) {
+    this.rawData = Array.isArray(this.rawData) ? [...this.rawData.slice(0, index), ...this.rawData.slice(index + 1)] : this.emptyValue;
+    super.removeValue(index);
+  }
+
+  resetRawData(index) {
+    if (index) {
+      this.setRawValue(this.emptyValue, index);
+    }
+    else {
+      this.rawData = [];
+    }
+  }
+
+  setRawValue(value, index) {
+    if (Array.isArray(this.rawData)) {
+      this.rawData[index] = value;
+    }
+    else {
+      this.rawData = value;
+    }
+  }
+
+  getRawValue(index) {
+    if (index && Array.isArray(this.rawData)) {
+      return this.rawData[index] || this.emptyValue;
+    }
+    else {
+      return this.rawData;
+    }
+  }
+
   getValueAt(index) {
     if (!this.refs.input.length || !this.refs.input[index]) {
       return this.emptyValue;
     }
+
     const { value } = this.refs.input[index];
+
     if (!value) {
+      this.resetRawData(index);
       return this.emptyValue;
     }
 
+    this.setRawValue(value, index);
     return this.getStringAsValue(value);
   }
 
   setValueAt(index, value) {
-    this.refs.input[index].value = value ? this.getValueAsString(value) : value;
+    if (value && !this.getRawValue(index)) {
+      this.setRawValue(this.getValueAsString(value), index);
+    }
+    this.refs.input[index].value = this.getRawValue(index);
   }
 
   getStringAsValue(view) {
-    return view ? moment(view, this.component.format).format(this.dataFormat) : view;
+    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
   }
 
   getValueAsString(value) {
-    return value ? moment(value, this.dataFormat).format(this.component.format) : value;
+    return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
   }
 }

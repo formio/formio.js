@@ -84,8 +84,8 @@ export default class FormComponent extends Component {
     }
 
     // Add revision version if set.
-    if (this.component.formRevision || this.component.formRevision === 0) {
-      this.formSrc += `/v/${this.component.formRevision}`;
+    if (this.component.revision || this.component.revision === 0) {
+      this.formSrc += `/v/${this.component.revision}`;
     }
   }
 
@@ -182,21 +182,7 @@ export default class FormComponent extends Component {
     if (!value.data || !Object.keys(value.data).length) {
       return 'No data provided';
     }
-    const columns = Object.keys(value.data).map(column => {
-      return {
-        key: column,
-        label: column,
-        hideLabel: false
-      };
-    });
-
-    return super.render(this.renderTemplate('datagrid', {
-      rows: [value.data],
-      columns: columns,
-      visibleColumns: value.data,
-      hasHeader: true,
-      numColumns: Object.keys(value.data).length,
-    }));
+    return '[Complex Data]';
   }
 
   attach(element) {
@@ -282,7 +268,10 @@ export default class FormComponent extends Component {
       }
 
       // Iterate through every component and hide the submit button.
+      // Override defaultValue with respective parts from old dataValue.
+      const oldData = this.dataValue ? this.dataValue.data : {};
       eachComponent(form.components, (component) => {
+        component.defaultValue = _.get(oldData, component.key, component.defaultValue);
         if (
           (component.type === 'button') &&
           ((component.action === 'submit') || !component.action)
@@ -394,7 +383,7 @@ export default class FormComponent extends Component {
    * @return {*|boolean}
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference);
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden;
   }
 
   /**
@@ -462,7 +451,7 @@ export default class FormComponent extends Component {
       return NativePromise.resolve(this.dataValue);
     }
     return this.submitSubForm(false)
-      .then((data) => {
+      .then(() => {
         return this.dataValue;
       })
       .then(() => super.beforeSubmit());
@@ -503,11 +492,12 @@ export default class FormComponent extends Component {
     return this.dataValue;
   }
 
-  getAllComponents() {
-    if (!this.subForm) {
-      return [];
+  get errors() {
+    let errors = this.errors;
+    if (this.subForm) {
+      errors = errors.concat(this.subForm.errors);
     }
-    return this.subForm.getAllComponents();
+    return errors;
   }
 
   updateSubFormVisibility() {
@@ -590,6 +580,6 @@ export default class FormComponent extends Component {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 }

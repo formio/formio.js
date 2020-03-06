@@ -7,8 +7,7 @@ import NumberComponent from './Number';
 import {
   comp1,
   comp2,
-  comp3,
-  comp4
+  comp3
 } from './fixtures';
 
 describe('Number Component', () => {
@@ -159,7 +158,6 @@ describe('Number Component', () => {
     comp.requireDecimal = true;
 
     return Harness.testCreate(NumberComponent, comp).then(number => {
-      const html = number.element.innerHTML;
       assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '4.20');
     });
   });

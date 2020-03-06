@@ -24,8 +24,58 @@ export default [
     data: {
       values: [
         { label: 'Top', value: 'top' },
+        { label: 'Left (Left-aligned)', value: 'left-left' },
+        { label: 'Left (Right-aligned)', value: 'left-right' },
+        { label: 'Right (Left-aligned)', value: 'right-left' },
+        { label: 'Right (Right-aligned)', value: 'right-right' },
         { label: 'Bottom', value: 'bottom' }
       ]
+    }
+  },
+  {
+    type: 'number',
+    input: true,
+    key: 'labelWidth',
+    label: 'Label Width',
+    tooltip: 'The width of label on line in percentages.',
+    clearOnHide: false,
+    weight: 30,
+    placeholder: '30',
+    suffix: '%',
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        and: [
+          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
+          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
+        ]
+      }
+    }
+  },
+  {
+    type: 'number',
+    input: true,
+    key: 'labelMargin',
+    label: 'Label Margin',
+    tooltip: 'The width of label margin on line in percentages.',
+    clearOnHide: false,
+    weight: 30,
+    placeholder: '3',
+    suffix: '%',
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        and: [
+          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
+          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
+        ]
+      }
     }
   },
   {
@@ -39,12 +89,17 @@ export default [
   },
   {
     weight: 200,
-    type: 'textfield',
+    type: 'textarea',
     input: true,
     key: 'description',
     label: 'Description',
     placeholder: 'Description for this field.',
-    tooltip: 'The description is text that will appear below the input field.'
+    tooltip: 'The description is text that will appear below the input field.',
+    editor: 'ace',
+    as: 'html',
+    wysiwyg: {
+      minLines: 3,
+    },
   },
   {
     weight: 300,
@@ -53,7 +108,12 @@ export default [
     key: 'tooltip',
     label: 'Tooltip',
     placeholder: 'To add a tooltip to this field, enter text here.',
-    tooltip: 'Adds a tooltip to the side of this field.'
+    tooltip: 'Adds a tooltip to the side of this field.',
+    editor: 'ace',
+    as: 'html',
+    wysiwyg: {
+      minLines: 3,
+    },
   },
   {
     weight: 500,
@@ -117,19 +177,19 @@ export default [
     input: true
   },
   {
-    weight: 1450,
-    type: 'checkbox',
-    label: 'Always enabled',
-    tooltip: 'Make this field always enabled, even if the form is disabled',
-    key: 'alwaysEnabled',
-    input: true
-  },
-  {
     weight: 1500,
     type: 'checkbox',
     label: 'Table View',
     tooltip: 'Shows this value within the table view of the submissions.',
     key: 'tableView',
+    input: true
+  },
+  {
+    weight: 1600,
+    type: 'checkbox',
+    label: 'Modal Edit',
+    tooltip: 'Opens up a modal to edit the value of this component.',
+    key: 'modalEdit',
     input: true
   },
 ];

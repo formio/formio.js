@@ -49,6 +49,10 @@ export default class DayComponent extends Field {
     return '00/00/0000';
   }
 
+  get valueMask() {
+    return /^\d{2}\/\d{2}\/\d{4}$/;
+  }
+
   get dayRequired() {
     return this.showDay && _.get(this.component, 'fields.day.required', false);
   }
@@ -187,9 +191,9 @@ export default class DayComponent extends Field {
     return this._years;
   }
 
-  addInputError(message, dirty, elements) {
-    super.addInputError(message, dirty, [this.refs.day, this.refs.month, this.refs.year]);
-    super.addInputError(message, dirty, elements);
+  setErrorClasses(elements, dirty, hasError) {
+    super.setErrorClasses(elements, dirty, hasError);
+    super.setErrorClasses([this.refs.day, this.refs.month, this.refs.year], dirty, hasError);
   }
 
   removeInputError(elements) {
@@ -199,7 +203,13 @@ export default class DayComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat(['day', 'maxDate', 'minDate']);
+    this.validators = this.validators.concat(['day', 'maxDate', 'minDate', 'minYear', 'maxYear']);
+
+    const minYear = this.component.fields.year.minYear;
+    const maxYear = this.component.fields.year.maxYear;
+    this.component.maxYear = maxYear;
+    this.component.minYear = minYear;
+
     const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
@@ -256,10 +266,13 @@ export default class DayComponent extends Field {
       // TODO: Need to rework this to work with day select as well.
       // Change day max input when month changes.
       this.addEventListener(this.refs.month, 'input', () => {
-        const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+        const maxDay = this.refs.year ? parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
+          : '';
         const day = this.getFieldValue('day');
-        this.refs.day.max = maxDay;
-        if (day > maxDay) {
+        if (!this.component.fields.day.hide && maxDay) {
+          this.refs.day.max = maxDay;
+        }
+        if (maxDay && day > maxDay) {
           this.refs.day.value = this.refs.day.max;
         }
         this.updateValue(null, {
@@ -312,6 +325,31 @@ export default class DayComponent extends Field {
       this.refs.month.removeAttribute('disabled');
       this.refs.day.removeAttribute('disabled');
     }
+  }
+
+  normalizeValue(value) {
+    if (!value || this.valueMask.test(value)) {
+      return value;
+    }
+    const dateParts = [];
+    const valueParts = value.split('/');
+
+    const getNextPart = (shouldTake, defaultValue) =>
+      dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+
+    if (this.dayFirst) {
+      getNextPart(this.showDay, '00');
+    }
+
+    getNextPart(this.showMonth, '00');
+
+    if (!this.dayFirst) {
+      getNextPart(this.showDay, '00');
+    }
+
+    getNextPart(this.showYear, '0000');
+
+    return dateParts.join('/');
   }
 
   /**
@@ -443,16 +481,18 @@ export default class DayComponent extends Field {
       return null;
     }
 
-    //add trailing zeros
-    day = day.toString().padStart(2, 0);
-    month = month.toString().padStart(2, 0);
-    year = year.toString().padStart(4, 0);
+    // add trailing zeros if the data is showed
+    day = this.showDay ? day.toString().padStart(2, 0) : '';
+    month = this.showMonth ? month.toString().padStart(2, 0) : '';
+    year = this.showYear ? year.toString().padStart(4, 0) : '';
+
     if (this.component.dayFirst) {
-      result = `${day}/${month}/${year}`;
+      result = `${day}${this.showDay && this.showMonth || this.showDay && this.showYear ? '/' : ''}${month}${this.showMonth && this.showYear ? '/' : ''}${year}`;
     }
     else {
-      result = `${month}/${day}/${year}`;
+      result = `${month}${this.showDay && this.showMonth || this.showMonth && this.showYear ? '/' : ''}${day}${this.showDay && this.showYear ? '/' : ''}${year}`;
     }
+
     return result;
   }
 
@@ -464,12 +504,19 @@ export default class DayComponent extends Field {
     return this.getDate();
   }
 
+  normalizeMinMaxDates() {
+   return [this.component.minDate, this.component.maxDate]
+      .map(date => date ? date.split('-').reverse().join('/') : date);
+  }
+
   /**
    * Return the raw value.
    *
    * @returns {Date}
    */
   get validationValue() {
+    [this.component.minDate, this.component.maxDate] = this.dayFirst ? this.normalizeMinMaxDates()
+      : [this.component.minDate, this.component.maxDate];
     return this.dataValue;
   }
 
@@ -503,7 +550,7 @@ export default class DayComponent extends Field {
    * @return {null}
    */
   getValueAsString(value) {
-    return this.getDate(value);
+    return this.getDate(value) || '';
   }
 
   focus() {

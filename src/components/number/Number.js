@@ -50,7 +50,8 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
-    this.decimalLimit = getNumberDecimalLimit(this.component);
+    const requireDecimal = _.get(this.component, 'requireDecimal', false);
+    this.decimalLimit = getNumberDecimalLimit(this.component, requireDecimal ? 2 : 20);
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
@@ -105,7 +106,11 @@ export default class NumberComponent extends Input {
   }
 
   setInputMask(input) {
-    input.setAttribute('pattern', '\\d*');
+    let numberPattern = '[0-9';
+    numberPattern += this.decimalSeparator || '';
+    numberPattern += this.delimiter || '';
+    numberPattern += ']*';
+    input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask
@@ -171,7 +176,7 @@ export default class NumberComponent extends Input {
   }
 
   getMaskedValue(value) {
-    return conformToMask(value.toString(), this.numberMask).conformedValue;
+    return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
   }
 
   getValueAsString(value) {
@@ -183,5 +188,13 @@ export default class NumberComponent extends Input {
       return value.map(this.getMaskedValue).join(', ');
     }
     return this.getMaskedValue(value);
+  }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(this.formatValue(this.parseValue(this.dataValue)));
+    });
   }
 }
