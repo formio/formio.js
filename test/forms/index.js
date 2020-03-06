@@ -2,8 +2,9 @@ import Simple from './simple';
 import Conditions from './conditions';
 import Calculated from './calculatedfields';
 import FieldLogic from './fieldLogic';
-import ClearOnHide from './clearOnHide';
 import Actions from './actions';
+import ClearOnHide from './clearOnHide';
+import ClearOnHide3 from './clearOnHide3';
 // import ClearOnHide2 from './clearOnHide2';
 import DateFields from './datefields';
 import SubmissionSetter from './submissionSetter';
@@ -21,7 +22,6 @@ export default [
   Calculated,
   DateFields,
   FieldLogic,
-  ClearOnHide,
   Actions,
   // ClearOnHide2,
   // NestedFormTests,
@@ -30,4 +30,6 @@ export default [
   // NestedConditionallyHidden,
   // ChildMetadata,
   // WysiwygCursor
+  ClearOnHide,
+  ClearOnHide3,
 ];

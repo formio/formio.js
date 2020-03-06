@@ -301,16 +301,18 @@ describe('Webform tests', () => {
   });
 
   each(FormTests, (formTest) => {
-    each(formTest.tests, (formTestTest, title) => {
-      it(title, () => {
-        const formElement = document.createElement('div');
-        const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-        return form.setForm(formTest.form).then(() => {
-          formTestTest(form, (error) => {
-            form.destroy();
-            if (error) {
-              throw new Error(error);
-            }
+    describe(formTest.title || '', () => {
+      each(formTest.tests, (formTestTest, title) => {
+        it(title, () => {
+          const formElement = document.createElement('div');
+          const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+          return form.setForm(formTest.form).then(() => {
+            formTestTest(form, (error) => {
+              form.destroy();
+              if (error) {
+                throw new Error(error);
+              }
+            });
           });
         });
       });
