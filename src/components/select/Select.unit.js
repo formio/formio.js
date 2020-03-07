@@ -7,10 +7,22 @@ import NativePromise from 'native-promise-only';
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from './fixtures';
+import label from '../../templates/bootstrap/label';
 
 describe('Select Component', () => {
+  it('should set multiple selected values not repeating them', () => {
+    return Harness.testCreate(SelectComponent, comp3).then((component) => {
+       [['cat'],['cat', 'dog'],['cat', 'dog','hamster']].forEach((value, prevQty)=> {
+           component.setChoicesValue(value, prevQty ? prevQty : undefined );
+           const choices = component.element.querySelector('.choices__list--multiple').children;
+      assert.equal(choices.length, value.length);
+       });
+     });
+   });
+
   it('Should build a Select component', () => {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       Harness.testElements(component, 'select', 1);

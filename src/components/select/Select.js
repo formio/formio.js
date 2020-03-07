@@ -1002,10 +1002,10 @@ export default class SelectComponent extends Field {
       }
       return found || defaultAdded;
     }, false);
-
-    if (notFoundValuesToAdd.length && (!this.component.searchField && !this.searchServerCount)) {
+// && (!this.component.searchField && !this.searchServerCount)
+    if (notFoundValuesToAdd.length ) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
+        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
       }
       else {
         notFoundValuesToAdd.map(notFoundValue => {
@@ -1181,9 +1181,10 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-        if (!this.component.searchField && !this.searchServerCount) {
-          this.choices.removeActiveItems();
-        }
+        this.choices.removeActiveItems();
+        // if (!this.component.searchField && !this.searchServerCount) {
+        //   this.choices.removeActiveItems();
+        // }
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
