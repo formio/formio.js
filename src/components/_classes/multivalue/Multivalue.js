@@ -156,13 +156,13 @@ export default class Multivalue extends Field {
       if (element.mask) {
         setTimeout(() => {
           return this.updateValue(null, {
-            modified: true
+            modified: this.hasInput
           }, index);
         }, 1);
       }
       else {
         return this.updateValue(null, {
-          modified: true
+          modified: this.hasInput
         }, index);
       }
     });
