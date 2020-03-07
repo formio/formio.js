@@ -32,14 +32,6 @@ export default class HiddenComponent extends Input {
     return info;
   }
 
-  get allowData() {
-    return true;
-  }
-
-  get hasInput() {
-    return false;
-  }
-
   /**
    * Check if a component is eligible for multiple validation
    *
