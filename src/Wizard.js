@@ -430,7 +430,12 @@ export default class Wizard extends Webform {
   }
 
   checkData(data, flags) {
-    const dirty = this.currentPage.components.some(component => !component.isEmpty());
+    let dirty = this.currentPage.components.some(component => !component.isEmpty());
+
+    if (flags && flags.fromSubmission) {
+      dirty = !flags.noValidate;
+    }
+
     return super.checkData(data, flags) && this.checkValidity(data, dirty, true);
   }
 
