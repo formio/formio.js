@@ -1247,9 +1247,6 @@ export default class Webform extends NestedDataComponent {
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
 
-    if ( (flags.fromSubmission && !flags.noValidate)) {
-      this.pristine = false;
-    }
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
