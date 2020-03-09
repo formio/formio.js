@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.7
+### Fixed
+ - Fixed problem where pristine was not set before the checkData method was called when a component was updated.
+ - Fixing issues with noValidate flag and setSubmission.
+ - Problems where the parentDisabled flag would not get updated to contain the current parent disabled state.
+ - Fixing the noeval interpolation to replace all instances within a string.
+
 ## 4.9.0-rc.6
 ### Fixed
  - Problems where forms with default values would get overridden when setting submission with empty object.
