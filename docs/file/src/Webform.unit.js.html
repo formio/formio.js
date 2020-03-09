@@ -583,6 +583,99 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
+  let formWithValidation;
+it(&apos;Should show errors on setSubmission with noValidate:FALSE&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    formWithValidation = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    formWithValidation.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+          required: true,
+          minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }
+    ).then(() =&gt; {
+      formWithValidation.setSubmission({
+        data:{
+          number: 2,
+          textArea: &apos;&apos;
+          }
+        },
+        {
+          noValidate:false
+        })
+        .then(()=&gt;{
+          setTimeout(() =&gt; {
+          const errors = formElement.querySelectorAll(&apos;.formio-error-wrapper&apos;);
+          expect(errors.length).to.equal(2);
+          expect(formWithValidation.errors.length).to.equal(2);
+          done();
+          }, 500);
+          }).catch(done);
+      });
+  });
+
+  it(&apos;Should not show errors on setSubmission with noValidate:TRUE&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    formWithValidation = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    formWithValidation.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+          required: true,
+          minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }
+    ).then(() =&gt; {
+      formWithValidation.setSubmission({
+        data:{
+          number: 2,
+          textArea: &apos;&apos;
+          }
+        },
+        {
+          noValidate:true
+        })
+        .then(()=&gt;{
+          setTimeout(() =&gt; {
+          const errors = formElement.querySelectorAll(&apos;.formio-error-wrapper&apos;);
+          expect(errors.length).to.equal(0);
+          expect(formWithValidation.errors.length).to.equal(0);
+          done();
+          }, 500);
+          }).catch(done);
+      });
+  });
+
   describe(&apos;set/get nosubmit&apos;, () =&gt; {
     it(&apos;should set/get nosubmit flag and emit nosubmit event&apos;, () =&gt; {
       const form = new Webform(null, {});
