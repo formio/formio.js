@@ -121,6 +121,7 @@ export default class Wizard extends Webform {
     const ctx = this.renderContext;
     return this.renderTemplate('wizard', {
       ...ctx,
+      className: super.getClassName(),
       wizardHeader: this.renderTemplate('wizardHeader', ctx),
       wizardNav: this.renderTemplate('wizardNav', ctx),
       components: this.renderComponents([
@@ -217,7 +218,7 @@ export default class Wizard extends Webform {
         this.addEventListener(link, 'click', (event) => {
           this.emit('wizardNavigationClicked', this.pages[index]);
           event.preventDefault();
-          return this.setPage(index).then(() => {
+          return this.setPage(index, true).then(() => {
             this.emit('wizardPageSelected', this.pages[index], index);
           });
         });
@@ -293,7 +294,7 @@ export default class Wizard extends Webform {
     this.establishPages();
   }
 
-  setPage(num) {
+  setPage(num, shouldValidate) {
     if (num === this.page) {
       return NativePromise.resolve();
     }
@@ -307,10 +308,10 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw();
-      return NativePromise.resolve().then(() => {
-        this.checkValidity(this.submission.data, false, this.submission.data, true);
-        this.checkData(this.submission.data);
-      });
+      if (shouldValidate && !this.options.readOnly) {
+        this.checkValidity(this.submission.data, true, this.submission.data, true);
+      }
+      return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
       this.redraw();
@@ -422,14 +423,19 @@ export default class Wizard extends Webform {
 
   prevPage() {
     return this.beforePage().then(() => {
-      return this.setPage(this.getPreviousPage()).then(() => {
+      return this.setPage(this.getPreviousPage(), true).then(() => {
         this.emit('prevPage', { page: this.page, submission: this.submission });
       });
     });
   }
 
   checkData(data, flags) {
-    const dirty = this.currentPage.components.some(component => !component.isEmpty());
+    let dirty = this.currentPage.components.some(component => !component.isEmpty());
+
+    if (flags && flags.fromSubmission) {
+      dirty = !flags.noValidate;
+    }
+
     return super.checkData(data, flags) && this.checkValidity(data, dirty, true);
   }
 

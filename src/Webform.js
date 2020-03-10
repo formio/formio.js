@@ -744,7 +744,7 @@ export default class Webform extends NestedDataComponent {
       () => {
         this.submissionSet = true;
         this.setValue(submission, flags);
-        this.triggerChange();
+        submission.data ? this.triggerChange() : this.triggerChange(flags, this.submission);
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -937,9 +937,13 @@ export default class Webform extends NestedDataComponent {
     return this.ready;
   }
 
+  getClassName() {
+    return 'formio-form';
+  }
+
   render() {
     return super.render(this.renderTemplate('webform', {
-      classes: 'formio-form',
+      classes: this.getClassName(),
       children: this.renderComponents(),
     }), this.builderMode ? 'builder' : 'form', true);
   }
@@ -1295,7 +1299,7 @@ export default class Webform extends NestedDataComponent {
     flags.changed = value.changed = changed;
 
     if (modified && this.pristine) {
-      this.setPristine(false);
+      this.pristine = false;
     }
 
     value.isValid = this.checkData(value.data, flags);
@@ -1303,12 +1307,13 @@ export default class Webform extends NestedDataComponent {
     if (this.submitted) {
       this.showErrors();
     }
+
     // See if we need to save the draft of the form.
     if (modified && this.options.saveDraft) {
       this.triggerSaveDraft();
     }
 
-    if (!flags || !flags.noEmit) {
+    if ((!flags || !flags.noEmit) && !flags.fromSubmission) {
       this.emit('change', value);
       isChangeEventEmitted = true;
     }

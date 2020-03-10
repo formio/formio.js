@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.6
+### Fixed
+ - Problems where forms with default values would get overridden when setting submission with empty object.
+ - Fix clear on hide does not always work
+
+## 4.9.0-rc.5
+### Fixed
+ - Fixed an issue with horizontal scroll added when using RTL interface 
+ - Fixed Wizard validation is run in readOnly mode
+ - Reverted https://github.com/formio/formio.js/commit/2b3ef7fce42410ad5e2e3a779afa401dc4209d97 to solve issues with validations firing.
+
+## 4.9.0-rc.4
+### Fixed
+ - Problems where data would not set correctly when a layout component was inside a Container component.
+ - Issues where select dropdowns would sometimes not show the correct values in EditGrid.
+ - Added trailing zeros in currency component.
+ - Validation on dayFirst for Day Component.
+ - Fixed select multivalue display in HTML renderMode
+ - Fixed validation messages to appear inside the panel on form submission
+ - Issue where a textfield with inputType set to 'password' would show as clear text.
+ 
+### Changed
+ - Upgrade uuid@7.0.2, @babel/core@7.8.7, @babel/polyfill@7.8.7, @babel/preset-env@7.8.7, @formio/bootstrap3@2.3.0, @formio/semantic@2.2.0, fetch-mock@9.1.0
+ - Improved validation message for min and max length.
+ - Required validation for select element in nested form
+ 
+### Added
+ - Added formio-form class to wizard component
+
 ## 4.9.0-rc.3
 ### Changed
  - Upgrade i18next@19.3.2, @babel/core@7.8.6, @babel/preset-env@7.8.6, @babel/register@7.8.6, babel-eslint@10.1.0, mocha@7.1.0, webpack@4.42.0, uuid@7.0.1, fetch-mock@9.0.0

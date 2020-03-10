@@ -396,13 +396,13 @@ export default class Multivalue extends Field {
       if (element.mask) {
         setTimeout(() =&gt; {
           return this.updateValue(null, {
-            modified: true
+            modified: (this.component.type !== &apos;hidden&apos;)
           }, index);
         }, 1);
       }
       else {
         return this.updateValue(null, {
-          modified: true
+          modified: (this.component.type !== &apos;hidden&apos;)
         }, index);
       }
     });

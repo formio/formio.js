@@ -245,6 +245,7 @@ import each from &apos;lodash/each&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
+import { settingErrors, clearOnHide } from &apos;../test/formtest&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
@@ -524,6 +525,64 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should keep components valid if they are pristine&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(settingErrors).then(() =&gt; {
+      const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
+      const input = form.element.querySelector(&apos;input[name=&quot;data[textField]&quot;]&apos;);
+      for (let i = 0; i &lt; 50; i++) {
+        input.value += i;
+        input.dispatchEvent(inputEvent);
+      }
+      this.timeout(1000);
+      setTimeout(() =&gt; {
+        assert.equal(form.errors.length, 0);
+        Harness.setInputValue(form, &apos;data[textField]&apos;, &apos;&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(form.errors.length, 1);
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
+  it(&apos;Should delete value of hidden component if clearOnHide is turned on&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(clearOnHide).then(() =&gt; {
+      const visibleData = {
+        data: {
+          visible: &apos;yes&apos;,
+          clearOnHideField: &apos;some text&apos;,
+          submit: false
+        },
+        metadata: {}
+      };
+
+      const hiddenData = {
+        data: {
+          visible: &apos;no&apos;,
+          submit: false
+        }
+      };
+      const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
+      const textField = form.element.querySelector(&apos;input[name=&quot;data[clearOnHideField]&quot;]&apos;);
+      textField.value = &apos;some text&apos;;
+      textField.dispatchEvent(inputEvent);
+      this.timeout(1000);
+      setTimeout(() =&gt; {
+        assert.deepEqual(form.data, visibleData.data);
+        Harness.setInputValue(form, &apos;data[visible]&apos;, &apos;no&apos;);
+
+        setTimeout(() =&gt; {
+          assert.deepEqual(form.data, hiddenData.data);
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
   describe(&apos;set/get nosubmit&apos;, () =&gt; {
     it(&apos;should set/get nosubmit flag and emit nosubmit event&apos;, () =&gt; {
       const form = new Webform(null, {});
@@ -541,16 +600,18 @@ describe(&apos;Webform tests&apos;, () =&gt; {
   });
 
   each(FormTests, (formTest) =&gt; {
-    each(formTest.tests, (formTestTest, title) =&gt; {
-      it(title, () =&gt; {
-        const formElement = document.createElement(&apos;div&apos;);
-        const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
-        return form.setForm(formTest.form).then(() =&gt; {
-          formTestTest(form, (error) =&gt; {
-            form.destroy();
-            if (error) {
-              throw new Error(error);
-            }
+    describe(formTest.title || &apos;&apos;, () =&gt; {
+      each(formTest.tests, (formTestTest, title) =&gt; {
+        it(title, () =&gt; {
+          const formElement = document.createElement(&apos;div&apos;);
+          const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+          return form.setForm(formTest.form).then(() =&gt; {
+            formTestTest(form, (error) =&gt; {
+              form.destroy();
+              if (error) {
+                throw new Error(error);
+              }
+            });
           });
         });
       });

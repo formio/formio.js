@@ -2856,6 +2856,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/webform.js~webform#getclassname",
+    "class/src/Webform.js~Webform.html#instance-method-getClassName",
+    "src/Webform.js~Webform#getClassName",
+    "method"
+  ],
+  [
     "src/webform.js~webform#getvalue",
     "class/src/Webform.js~Webform.html#instance-method-getValue",
     "src/Webform.js~Webform#getValue",
@@ -2973,6 +2979,12 @@ window.esdocSearchIndex = [
     "src/webform.js~webform#options",
     "class/src/Webform.js~Webform.html#instance-member-options",
     "src/Webform.js~Webform#options",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#pristine",
+    "class/src/Webform.js~Webform.html#instance-member-pristine",
+    "src/Webform.js~Webform#pristine",
     "member"
   ],
   [
@@ -3861,6 +3873,12 @@ window.esdocSearchIndex = [
     "src/wizard.spec.js",
     "file/src/Wizard.spec.js.html",
     "src/Wizard.spec.js",
+    "file"
+  ],
+  [
+    "src/wizard.unit.js",
+    "file/src/Wizard.unit.js.html",
+    "src/Wizard.unit.js",
     "file"
   ],
   [
@@ -4761,6 +4779,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#itemvalue",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-itemValue",
     "src/components/_classes/component/Component.js~Component#itemValue",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#itemvalueforhtmlmode",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-itemValueForHTMLMode",
+    "src/components/_classes/component/Component.js~Component#itemValueForHTMLMode",
     "method"
   ],
   [
@@ -6318,12 +6342,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#setnestedvalue",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-setNestedValue",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#setNestedValue",
-    "method"
-  ],
-  [
     "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#updatevalue",
     "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-updateValue",
     "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#updateValue",
@@ -7368,6 +7386,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#addfocusblurevents",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-addFocusBlurEvents",
+    "src/components/currency/Currency.js~CurrencyComponent#addFocusBlurEvents",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#addzerosandformatvalue",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-addZerosAndFormatValue",
+    "src/components/currency/Currency.js~CurrencyComponent#addZerosAndFormatValue",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#constructor",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-constructor-constructor",
     "src/components/currency/Currency.js~CurrencyComponent#constructor",
@@ -7389,6 +7419,12 @@ window.esdocSearchIndex = [
     "src/components/currency/currency.js~currencycomponent#formatvalue",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-formatValue",
     "src/components/currency/Currency.js~CurrencyComponent#formatValue",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#getvalueasstring",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-getValueAsString",
+    "src/components/currency/Currency.js~CurrencyComponent#getValueAsString",
     "method"
   ],
   [
@@ -8376,6 +8412,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/day/day.js~daycomponent#normalizeminmaxdates",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-normalizeMinMaxDates",
+    "src/components/day/Day.js~DayComponent#normalizeMinMaxDates",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#normalizevalue",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-normalizeValue",
     "src/components/day/Day.js~DayComponent#normalizeValue",
@@ -8541,6 +8583,12 @@ window.esdocSearchIndex = [
     "src/components/day/fixtures/comp2.js",
     "file/src/components/day/fixtures/comp2.js.html",
     "src/components/day/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/day/fixtures/comp3.js",
+    "file/src/components/day/fixtures/comp3.js.html",
+    "src/components/day/fixtures/comp3.js",
     "file"
   ],
   [

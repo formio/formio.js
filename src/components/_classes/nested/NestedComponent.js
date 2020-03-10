@@ -628,6 +628,7 @@ export default class NestedComponent extends Field {
   }
 
   setNestedValue(component, value, flags, changed) {
+    component._data = this.componentContext(component);
     if (component.type === 'button') {
       return false;
     }
@@ -637,7 +638,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags) || changed;
     }
-    else if (!this.rootPristine) {
+    else if (!this.rootPristine || component.visible) {
       flags.noValidate = true;
       return component.setValue(component.defaultValue, flags) || changed;
     }
@@ -649,7 +650,7 @@ export default class NestedComponent extends Field {
     }
     flags = flags || {};
     return this.getComponents().reduce((changed, component) => {
-      return this.setNestedValue(component, value, flags, changed);
+      return this.setNestedValue(component, value, { ...flags }, changed);
     }, false);
   }
 }

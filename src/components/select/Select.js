@@ -57,7 +57,17 @@ export default class SelectComponent extends Field {
     this.validators = this.validators.concat(['select']);
 
     // Trigger an update.
-    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
+    let updateArgs = [];
+    const triggerUpdate = _.debounce((...args) => {
+      updateArgs = [];
+      return this.updateItems.apply(this, args);
+    }, 100);
+    this.triggerUpdate = (...args) => {
+      if (args.length) {
+        updateArgs = args;
+      }
+      return triggerUpdate(...updateArgs);
+    };
 
     // Keep track of the select options.
     this.selectOptions = [];
@@ -1162,7 +1172,7 @@ export default class SelectComponent extends Field {
     !this.active &&
     !this.selectOptions.length &&
     hasValue &&
-    this.visible && ( this.component.searchField || this.component.valueProperty);
+    this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
   setChoicesValue(value, hasPreviousValue) {
