@@ -683,7 +683,7 @@ class ValidationChecker {
           let year = /\d{4}$/.exec(value);
           year = year ? year[0] : null;
 
-          if (!minYear || !year) {
+          if (!(+minYear) || !(+year)) {
             return true;
           }
 
@@ -703,7 +703,7 @@ class ValidationChecker {
           let year = /\d{4}$/.exec(value);
           year = year ? year[0] : null;
 
-          if (!maxYear || !year) {
+          if (!(+maxYear) || !(+year)) {
             return true;
           }
 
