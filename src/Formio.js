@@ -850,7 +850,7 @@ export default class Formio {
     const result = Formio.fetch(url, options)
       .then((response) => {
         // Allow plugins to respond.
-        response = Formio.pluginAlter('requestResponse', response, Formio);
+        response = Formio.pluginAlter('requestResponse', response, Formio, data);
 
         if (!response.ok) {
           if (response.status === 440) {
