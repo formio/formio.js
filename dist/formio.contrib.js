@@ -4614,7 +4614,7 @@ eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexpo
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = (ctx.value)) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/select/html.ejs.js?");
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = ( ctx.self.itemValueForHTMLMode(ctx.value) )) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/select/html.ejs.js?");
 
 /***/ }),
 
