@@ -2456,7 +2456,7 @@ export default class Component extends Element {
 
   setComponentValidity(messages, dirty) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && (dirty || !this.pristine)) {
+    if (messages.length && (dirty || !this.pristine || this.root.options.validateOnInit)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
