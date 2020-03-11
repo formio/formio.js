@@ -736,7 +736,7 @@ export default class Webform extends NestedDataComponent {
       () => {
         this.submissionSet = true;
         this.setValue(submission, flags);
-        submission.data ? this.triggerChange() : this.triggerChange(flags, this.submission);
+        this.triggerChange();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -1262,7 +1262,7 @@ export default class Webform extends NestedDataComponent {
       this.triggerSaveDraft();
     }
 
-    if ((!flags || !flags.noEmit) && !flags.fromSubmission) {
+    if (!flags || !flags.noEmit) {
       this.emit('change', value);
       isChangeEventEmitted = true;
     }
