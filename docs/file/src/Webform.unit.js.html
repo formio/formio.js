@@ -105,6 +105,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -581,6 +583,99 @@ describe(&apos;Webform tests&apos;, () =&gt; {
         }, 250);
       }, 250);
     });
+  });
+
+  let formWithValidation;
+it(&apos;Should show errors on setSubmission with noValidate:FALSE&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    formWithValidation = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    formWithValidation.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+          required: true,
+          minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }
+    ).then(() =&gt; {
+      formWithValidation.setSubmission({
+        data:{
+          number: 2,
+          textArea: &apos;&apos;
+          }
+        },
+        {
+          noValidate:false
+        })
+        .then(()=&gt;{
+          setTimeout(() =&gt; {
+          const errors = formElement.querySelectorAll(&apos;.formio-error-wrapper&apos;);
+          expect(errors.length).to.equal(2);
+          expect(formWithValidation.errors.length).to.equal(2);
+          done();
+          }, 500);
+          }).catch(done);
+      });
+  });
+
+  it(&apos;Should not show errors on setSubmission with noValidate:TRUE&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    formWithValidation = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    formWithValidation.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+          required: true,
+          minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }
+    ).then(() =&gt; {
+      formWithValidation.setSubmission({
+        data:{
+          number: 2,
+          textArea: &apos;&apos;
+          }
+        },
+        {
+          noValidate:true
+        })
+        .then(()=&gt;{
+          setTimeout(() =&gt; {
+          const errors = formElement.querySelectorAll(&apos;.formio-error-wrapper&apos;);
+          expect(errors.length).to.equal(0);
+          expect(formWithValidation.errors.length).to.equal(0);
+          done();
+          }, 500);
+          }).catch(done);
+      });
   });
 
   describe(&apos;set/get nosubmit&apos;, () =&gt; {

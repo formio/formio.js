@@ -1134,6 +1134,18 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/components/select/fixtures/comp3.js~multiselect",
+    "variable/index.html#static-variable-multiSelect",
+    "<span>multiSelect</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp3.js</span>",
+    "variable"
+  ],
+  [
+    "formiojs/src/components/select/fixtures/comp3.js~multiselectoptions",
+    "variable/index.html#static-variable-multiSelectOptions",
+    "<span>multiSelectOptions</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp3.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/utils/utils.js~observeoverload",
     "function/index.html#static-function-observeOverload",
     "<span>observeOverload</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -7884,6 +7896,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp3.js",
+    "file/src/components/datagrid/fixtures/comp3.js.html",
+    "src/components/datagrid/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/index.js",
     "file/src/components/datagrid/fixtures/index.js.html",
     "src/components/datagrid/fixtures/index.js",
@@ -11235,6 +11253,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp2.js",
     "file/src/components/select/fixtures/comp2.js.html",
     "src/components/select/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp3.js",
+    "file/src/components/select/fixtures/comp3.js.html",
+    "src/components/select/fixtures/comp3.js",
     "file"
   ],
   [

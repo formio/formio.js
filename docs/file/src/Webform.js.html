@@ -105,6 +105,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -976,7 +978,7 @@ export default class Webform extends NestedDataComponent {
       () =&gt; {
         this.submissionSet = true;
         this.setValue(submission, flags);
-        this.triggerChange();
+        submission.data ? this.triggerChange() : this.triggerChange(flags, this.submission);
         return this.submissionReadyResolve(submission);
       },
       (err) =&gt; this.submissionReadyReject(err)
@@ -1487,20 +1489,22 @@ export default class Webform extends NestedDataComponent {
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
 
+    if (modified &amp;&amp; this.pristine) {
+      this.pristine = false;
+    }
+
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
       this.showErrors();
     }
-    if (modified &amp;&amp; this.pristine) {
-      this.pristine = false;
-    }
+
     // See if we need to save the draft of the form.
     if (modified &amp;&amp; this.options.saveDraft) {
       this.triggerSaveDraft();
     }
 
-    if (!flags || !flags.noEmit) {
+    if ((!flags || !flags.noEmit) &amp;&amp; !flags.fromSubmission) {
       this.emit(&apos;change&apos;, value);
       isChangeEventEmitted = true;
     }

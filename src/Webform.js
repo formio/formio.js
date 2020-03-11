@@ -736,7 +736,7 @@ export default class Webform extends NestedDataComponent {
       () => {
         this.submissionSet = true;
         this.setValue(submission, flags);
-        this.triggerChange();
+        submission.data ? this.triggerChange() : this.triggerChange(flags, this.submission);
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -1247,20 +1247,22 @@ export default class Webform extends NestedDataComponent {
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
 
+    if (modified && this.pristine) {
+      this.pristine = false;
+    }
+
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
       this.showErrors();
     }
-    if (modified && this.pristine) {
-      this.pristine = false;
-    }
+
     // See if we need to save the draft of the form.
     if (modified && this.options.saveDraft) {
       this.triggerSaveDraft();
     }
 
-    if (!flags || !flags.noEmit) {
+    if ((!flags || !flags.noEmit) && !flags.fromSubmission) {
       this.emit('change', value);
       isChangeEventEmitted = true;
     }
