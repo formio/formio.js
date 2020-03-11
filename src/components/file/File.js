@@ -612,7 +612,9 @@ export default class FileComponent extends Field {
           if (this.component.privateDownload) {
             file.private = true;
           }
-          const { storage, url, options = {} } = this.component;
+          const { storage, options = {} } = this.component;
+          const url = this.interpolate(this.component.url);
+
           const fileKey = this.component.fileKey || 'file';
           fileService.uploadFile(storage, file, fileName, dir, (evt) => {
             fileUpload.status = 'progress';
