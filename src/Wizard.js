@@ -417,6 +417,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
+      this.currentPage.components.forEach((pageCopmonent)=> pageCopmonent.setPristine(false));
       return NativePromise.reject(this.showErrors([], true));
     }
   }
