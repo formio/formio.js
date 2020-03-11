@@ -309,6 +309,7 @@ export default class Wizard extends Webform {
       }
       this.redraw();
       if (shouldValidate && !this.options.readOnly) {
+        this.setPristine(false);
         this.checkValidity(this.submission.data, true, this.submission.data, true);
       }
       return NativePromise.resolve();

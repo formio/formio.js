@@ -2,6 +2,7 @@ import Harness from '../test/harness';
 import Wizard from './Wizard';
 import assert from 'power-assert';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
+import wizard1 from '../test/forms/wizardValidationAfterPageChanged';
 
 describe('Wizard tests', () => {
   let wizardForm = null;
@@ -53,4 +54,33 @@ describe('Wizard tests', () => {
       done();
     });
   });
+
+  it('Should leave components errors if they are after page was changed with navigation and valid value was added in one of the fields', function(done) {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizard1).then(() => {
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][1]);
+      assert.equal(wizardForm.page, 1);
+
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
+      assert.equal(wizardForm.page, 0);
+      assert.equal(wizardForm.errors.length, 2);
+
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      const inputA = formElement.querySelector('input[name="data[a]"]');
+
+      for (let i = 0; i < 5; i++) {
+        inputA.value += i;
+        inputA.dispatchEvent(inputEvent);
+      }
+
+      this.timeout(1000);
+
+      setTimeout(() => {
+        assert.equal(wizardForm.errors.length, 1);
+        done();
+      }, 500);
+  })
+  .catch((err) => done(err));
+});
 });
