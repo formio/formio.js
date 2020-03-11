@@ -8,7 +8,7 @@ module.exports = class MaxYear extends Rule {
     let year = /\d{4}$/.exec(value);
     year = year ? year[0] : null;
 
-    if (!maxYear || !year) {
+    if (!(+maxYear) || !(+year)) {
       return true;
     }
 
