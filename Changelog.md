@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.9.0-rc.7
 ### Fixed
+ - Fixed url interpolation in file upload
+ - Fixed repeated appearance of selected values in multiselect and appearance of selected values in dropdown when searching
  - Fixed problem where pristine was not set before the checkData method was called when a component was updated.
  - Fixing issues with noValidate flag and setSubmission.
  - Problems where the parentDisabled flag would not get updated to contain the current parent disabled state.
