@@ -493,7 +493,7 @@ export default class FormComponent extends Component {
   }
 
   get errors() {
-    let errors = super.errors;
+    let errors = this.errors;
     if (this.subForm) {
       errors = errors.concat(this.subForm.errors);
     }
