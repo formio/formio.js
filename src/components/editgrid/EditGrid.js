@@ -102,6 +102,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  get iteratableRows() {
+    return this.editRows;
+  }
+
   constructor(...args) {
     super(...args);
     this.type = 'editgrid';
@@ -287,21 +291,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
   }
 
-  checkData(data, flags, row) {
-    data = data || this.rootValue;
-    flags = flags || {};
-    row = row || this.data;
-    Component.prototype.checkData.call(this, data, flags, row);
-    return this.editRows.reduce(
-      (valid, editRow) => this.checkRow(data, editRow, flags, editRow.data) && valid,
-      true
-    );
-  }
-
-  checkRow(data, editRow, flags, row) {
-    return super.checkData(data, flags, row, editRow.components);
-  }
-
   everyComponent(fn, rowIndex) {
     const components = this.getComponents(rowIndex);
     _.each(components, (component, index) => {
@@ -366,7 +355,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       row: editRow
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
-    this.checkRow(null, editRow, {}, editRow.data);
+    this.checkRow('checkData', null, {}, editRow.data, editRow.components);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -550,13 +539,14 @@ export default class EditGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.onChange = (flags, changed, modified) => {
+        const editRow = this.editRows[rowIndex];
         if (this.component.inlineEdit && this.options.onChange) {
           this.options.onChange(flags, changed, modified);
         }
-        else if (this.editRows[rowIndex]) {
-          this.checkRow(null, this.editRows[rowIndex], {
-            changed
-          }, this.editRows[rowIndex].data);
+        else if (editRow) {
+          this.checkRow('checkData', null, {
+            changed,
+          }, editRow.data, editRow.components);
         }
       };
       const comp = this.createComponent(_.assign({}, column, {
@@ -677,7 +667,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
-      const editRow = this.editRows[rowIndex];
+      let editRow = this.editRows[rowIndex];
       if (editRow) {
         editRow.data = row;
         if (editRow.isOpen) {
@@ -693,12 +683,12 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
       }
       else {
-        this.editRows[rowIndex] = {
+        editRow = this.editRows[rowIndex] = {
           components: this.createRowComponents(row, rowIndex),
           isOpen: false,
           data: row,
         };
-        this.checkRow(null, this.editRows[rowIndex], {}, this.editRows[rowIndex].data);
+        this.checkRow('checkData', null, {}, editRow.data, editRow.components);
       }
     });
     this.updateOnChange(flags, changed);
