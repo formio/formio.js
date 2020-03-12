@@ -70,7 +70,10 @@ export default class PDF extends Webform {
       this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
 
       // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.submitButton, 'click', () => this.submit());
+      this.addEventListener(this.refs.submitButton, 'click', () => {
+        this.postMessage({ name: 'getErrors' });
+        return this.submit();
+      });
 
       this.addEventListener(this.refs.zoomIn, 'click', (event) => {
         event.preventDefault();
@@ -218,6 +221,21 @@ export default class PDF extends Webform {
 
   // Do not clear the iframe.
   clear() {}
+
+  showErrors(error, triggerEvent) {
+    const p = this.ce('p');
+    p.classList.add('help-block');
+    this.setContent(p, this.t('submitError'));
+    p.addEventListener('click', () => {
+      window.scrollTo(0, 0);
+    });
+    const div = this.ce('div');
+    div.classList.add('has-error');
+    this.appendTo(p, div);
+    this.appendTo(div, this.element);
+
+    super.showErrors(error, triggerEvent);
+  }
 }
 
 /**

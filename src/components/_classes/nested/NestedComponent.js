@@ -650,7 +650,7 @@ export default class NestedComponent extends Field {
     }
     flags = flags || {};
     return this.getComponents().reduce((changed, component) => {
-      return this.setNestedValue(component, value, { ...flags }, changed);
+      return this.setNestedValue(component, value, flags, changed);
     }, false);
   }
 }

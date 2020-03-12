@@ -7,10 +7,38 @@ import NativePromise from 'native-promise-only';
 
 import {
   comp1,
-  comp2
+  comp2,
+  multiSelect,
+  multiSelectOptions
 } from './fixtures';
 
 describe('Select Component', () => {
+  it('should set multiple selected values not repeating them', function(done) {
+    Harness.testCreate(SelectComponent, multiSelect).then((component) => {
+      component.setItems(multiSelectOptions, false);
+      component.setChoicesValue(['Cheers']);
+      component.setChoicesValue(['Cheers', 'Cyberdyne Systems'], 1);
+      component.setChoicesValue(['Cheers', 'Cyberdyne Systems', 'Massive Dynamic'], 2);
+      const choices = component.element.querySelector('.choices__list--multiple').children;
+      assert.equal(choices.length, 3);
+      done();
+    });
+  });
+
+  it('should not show selected values in dropdown when searching', function(done) {
+    Harness.testCreate(SelectComponent, multiSelect).then((component) => {
+      component.setItems(multiSelectOptions, false);
+      component.setChoicesValue(['Cheers']);
+      component.setChoicesValue(['Cheers', 'Cyberdyne Systems'], 1);
+      component.setItems([], true);
+      const itemsInDropdown = component.element.querySelectorAll('.choices__item--choice');
+      const choices = component.element.querySelector('.choices__list--multiple').children;
+      assert.equal(choices.length, 2);
+      assert.equal(itemsInDropdown.length, 1);
+      done();
+    });
+  });
+
   it('Should build a Select component', () => {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       Harness.testElements(component, 'select', 1);
