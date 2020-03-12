@@ -128,6 +128,17 @@ export default class TextFieldComponent extends Input {
     }
   }
 
+  setValue(value, flags) {
+    const changed = this.updateValue(value, flags);
+    const isArray = Array.isArray(value);
+
+    if (isArray && this.type === 'textfield' && this.refs.input && this.refs.input.length !== value.length) {
+      this.redraw();
+    }
+
+    return changed;
+  }
+
   /**
    * Returns the value at this index.
    *

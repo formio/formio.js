@@ -2145,9 +2145,6 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray && this.type === 'textField' && this.refs.input && this.refs.input.length !== value.length) {
-      this.redraw();
-    }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value, flags);
