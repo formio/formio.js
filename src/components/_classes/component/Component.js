@@ -2528,7 +2528,12 @@ export default class Component extends Element {
       this.isEqual(this.defaultValue, this.dataValue);
 
     // We need to set dirty if they explicitly set noValidate to false.
-    if (!isDirty && flags.hasOwnProperty('noValidate') && !flags.noValidate) {
+    if (this.options.alwaysDirty || flags.dirty) {
+      isDirty = true;
+    }
+
+    // See if they explicitely set the values with setSubmission.
+    if (flags.fromSubmission && this.hasValue(data)) {
       isDirty = true;
     }
 

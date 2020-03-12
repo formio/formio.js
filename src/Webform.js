@@ -28,6 +28,7 @@ function getOptions(options) {
     iconset: getIconSet((options && options.icons) ? options.icons : Formio.icons),
     i18next,
     saveDraft: false,
+    alwaysDirty: false,
     saveDraftThrottle: 5000
   });
   if (!options.events) {
@@ -736,7 +737,7 @@ export default class Webform extends NestedDataComponent {
       () => {
         this.submissionSet = true;
         this.setValue(submission, flags);
-        this.triggerChange();
+        this.triggerChange(flags);
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
