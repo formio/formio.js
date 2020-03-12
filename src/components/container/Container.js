@@ -1,4 +1,6 @@
 import _ from 'lodash';
+
+import Component from '../_classes/component/Component';
 import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 
 export default class ContainerComponent extends NestedDataComponent {
@@ -69,5 +71,16 @@ export default class ContainerComponent extends NestedDataComponent {
     super.setValue(value, flags);
     this.updateOnChange(flags, changed);
     return changed;
+  }
+
+  checkData(data, flags, row, components) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    components = components || this.getComponents();
+
+    return components.reduce((valid, comp) => {
+      return comp.checkData(data, flags, this.dataValue) && valid;
+    }, Component.prototype.checkData.call(this, data, flags, row));
   }
 }
