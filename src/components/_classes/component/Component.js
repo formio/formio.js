@@ -2516,13 +2516,23 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+    if (flags.noValidate) {
+      return true;
+    }
 
     // We need to perform a test to see if they provided a default value that is not valid and immediately show
     // an error if that is the case.
-    if (!this.builderMode && !this.options.preview && !this.isEmpty(this.defaultValue) && !flags.noValidate) {
-      return this.checkComponentValidity(data, true, row);
+    let isDirty = !this.builderMode &&
+      !this.options.preview &&
+      !this.isEmpty(this.defaultValue) &&
+      this.isEqual(this.defaultValue, this.dataValue);
+
+    // We need to set dirty if they explicitly set noValidate to false.
+    if (!isDirty && flags.hasOwnProperty('noValidate') && !flags.noValidate) {
+      isDirty = true;
     }
-    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
+
+    return this.checkComponentValidity(data, isDirty, row);
   }
 
   get validationValue() {
@@ -2552,7 +2562,7 @@ export default class Component extends Element {
   }
 
   clearErrorClasses() {
-    this.removeClass(this.element, 'formio-error-wrapper');
+    this.removeClass(this.element, this.options.componentErrorClass);
     this.removeClass(this.element, 'alert alert-danger');
     this.removeClass(this.element, 'has-error');
     this.removeClass(this.element, 'has-message');
@@ -2615,8 +2625,26 @@ export default class Component extends Element {
     // });
   }
 
+  /**
+   * Determines if the value of this component is hidden from the user as if it is coming from the server, but is
+   * protected.
+   *
+   * @return {boolean|*}
+   */
+  isValueHidden() {
+    if (!this.root || !this.root.hasOwnProperty('editing')) {
+      return false;
+    }
+    if (!this.root || !this.root.editing) {
+      return false;
+    }
+    return (this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
+  }
+
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Check to see if we are editing and if so, check component persistence.
+      () => this.isValueHidden(),
       // Force valid if component is hidden.
       () => !this.visible,
       // Force valid if component is conditionally hidden.
