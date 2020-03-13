@@ -51,7 +51,7 @@ jobs:
             git config user.email "formiobot@form.io"
             git config user.name "Formobot"
             git add -A && git commit -m "Build $CIRCLE_TAG"
-            git push
+            git push -u origin $CIRCLE_BRANCH
       - run:
           name: NPM
           command: |
@@ -79,3 +79,5 @@ workflows:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+.*/
+            branches:
+              ignore: /.*/
