@@ -270,6 +270,7 @@ function getOptions(options) {
     iconset: getIconSet((options &amp;&amp; options.icons) ? options.icons : Formio.icons),
     i18next,
     saveDraft: false,
+    alwaysDirty: false,
     saveDraftThrottle: 5000
   });
   if (!options.events) {
@@ -977,8 +978,8 @@ export default class Webform extends NestedDataComponent {
     return this.onSubmission = this.formReady.then(
       () =&gt; {
         this.submissionSet = true;
+        this.triggerChange(flags);
         this.setValue(submission, flags);
-        submission.data ? this.triggerChange() : this.triggerChange(flags, this.submission);
         return this.submissionReadyResolve(submission);
       },
       (err) =&gt; this.submissionReadyReject(err)
@@ -1066,6 +1067,7 @@ export default class Webform extends NestedDataComponent {
     }
     // Metadata needs to be available before setValue
     this._submission.metadata = submission.metadata || {};
+    this.editing = !!submission._id;
 
     // Set the timezone in the options if available.
     if (
@@ -1504,7 +1506,7 @@ export default class Webform extends NestedDataComponent {
       this.triggerSaveDraft();
     }
 
-    if ((!flags || !flags.noEmit) &amp;&amp; !flags.fromSubmission) {
+    if (!flags || !flags.noEmit) {
       this.emit(&apos;change&apos;, value);
       isChangeEventEmitted = true;
     }

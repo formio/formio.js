@@ -250,7 +250,7 @@ module.exports = class MinYear extends Rule {
     let year = /\d{4}$/.exec(value);
     year = year ? year[0] : null;
 
-    if (!minYear || !year) {
+    if (!(+minYear) || !(+year)) {
       return true;
     }
 
