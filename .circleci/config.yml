@@ -13,9 +13,9 @@ jobs:
       - run:
           name: Test
           command: npm run test
-      - run:
-          name: Test
-          command: npm run test:e2e
+#      - run:
+#          name: Test
+#          command: npm run test:e2e
       - store_artifacts:
           path: test-results.xml
           prefix: tests
