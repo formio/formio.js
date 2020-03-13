@@ -2,7 +2,6 @@ import Harness from '../test/harness';
 import Wizard from './Wizard';
 import assert from 'power-assert';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
-import wizardValidate from '../test/forms/wizardValidate';
 
 describe('Wizard tests', () => {
   let wizardForm = null;

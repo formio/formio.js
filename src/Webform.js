@@ -736,8 +736,8 @@ export default class Webform extends NestedDataComponent {
     return this.onSubmission = this.formReady.then(
       () => {
         this.submissionSet = true;
-        this.setValue(submission, flags);
         this.triggerChange(flags);
+        this.setValue(submission, flags);
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)

@@ -343,11 +343,66 @@ describe('Webform tests', () => {
     });
   });
 
-  let formWithValidation;
+  const formElement = document.createElement('div');
+  const checkForErrors = function(form, flags = {}, submission, numErrors, done) {
+    form.setSubmission(submission, flags).then(() => {
+      setTimeout(() => {
+        const errors = formElement.querySelectorAll('.formio-error-wrapper');
+        expect(errors.length).to.equal(numErrors);
+        expect(form.errors.length).to.equal(numErrors);
+        done();
+      }, 100);
+    }).catch(done);
+  };
+
+  it('Should not fire validations when fields are either protected or not persistent.', (done) => {
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
+      {
+        title: 'protected and persistent',
+        components: [
+          {
+            type: 'textfield',
+            label: 'A',
+            key: 'a',
+            validate: {
+              required: true
+            }
+          },
+          {
+            type: 'textfield',
+            label: 'B',
+            key: 'b',
+            protected: true,
+            validate: {
+              required: true
+            }
+          }
+        ],
+      }).then(() => {
+        checkForErrors(form, {}, {}, 0, () => {
+          checkForErrors(form, {}, {
+            data: {
+              a: 'Testing',
+              b: ''
+            }
+          }, 1, () => {
+            checkForErrors(form, {}, {
+              _id: '123123123',
+              data: {
+                a: 'Testing',
+                b: ''
+              }
+            }, 0, done);
+          });
+        });
+    });
+  });
+
   it('Should not fire validation on init.', (done) => {
-    const formElement = document.createElement('div');
-    formWithValidation = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
-    formWithValidation.setForm(
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -369,25 +424,18 @@ describe('Webform tests', () => {
           input: true
         }],
       }).then(() => {
-      formWithValidation.setSubmission({}).then(()=>{
-        setTimeout(() => {
-          const errors = formElement.querySelectorAll('.formio-error-wrapper');
-          expect(errors.length).to.equal(0);
-          expect(formWithValidation.errors.length).to.equal(0);
-          done();
-        }, 500);
-      }).catch(done);
+        checkForErrors(form, {}, {}, 0, done);
     });
   });
 
   it('Should validation on init when alwaysDirty flag is set.', (done) => {
-    const formElement = document.createElement('div');
-    formWithValidation = new Webform(formElement, {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement, {
       language: 'en',
       template: 'bootstrap3',
       alwaysDirty: true
     });
-    formWithValidation.setForm(
+    form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -409,24 +457,17 @@ describe('Webform tests', () => {
           input: true
         }],
       }).then(() => {
-      formWithValidation.setSubmission({}).then(()=>{
-        setTimeout(() => {
-          const errors = formElement.querySelectorAll('.formio-error-wrapper');
-          expect(errors.length).to.equal(2);
-          expect(formWithValidation.errors.length).to.equal(2);
-          done();
-        }, 500);
-      }).catch(done);
+      checkForErrors(form, {}, {}, 2, done);
     });
   });
 
   it('Should validation on init when dirty flag is set.', (done) => {
-    const formElement = document.createElement('div');
-    formWithValidation = new Webform(formElement, {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement, {
       language: 'en',
       template: 'bootstrap3'
     });
-    formWithValidation.setForm(
+    form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -448,23 +489,16 @@ describe('Webform tests', () => {
           input: true
         }],
       }).then(() => {
-      formWithValidation.setSubmission({}, {
+      checkForErrors(form, {
         dirty: true
-      }).then(()=>{
-        setTimeout(() => {
-          const errors = formElement.querySelectorAll('.formio-error-wrapper');
-          expect(errors.length).to.equal(2);
-          expect(formWithValidation.errors.length).to.equal(2);
-          done();
-        }, 500);
-      }).catch(done);
+      }, {}, 2, done);
     });
   });
 
   it('Should not show any errors on setSubmission when providing an empty data object', (done) => {
-    const formElement = document.createElement('div');
-    formWithValidation = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
-    formWithValidation.setForm(
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -487,21 +521,14 @@ describe('Webform tests', () => {
         }],
       }
     ).then(() => {
-      formWithValidation.setSubmission({}).then(()=>{
-        setTimeout(() => {
-          const errors = formElement.querySelectorAll('.formio-error-wrapper');
-          expect(errors.length).to.equal(0);
-          expect(formWithValidation.errors.length).to.equal(0);
-          done();
-        }, 500);
-      }).catch(done);
+      checkForErrors(form, {}, {}, 0, done);
     });
   });
 
   it('Should not show errors when providing empty data object with data set.', (done) => {
-    const formElement = document.createElement('div');
-    formWithValidation = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
-    formWithValidation.setForm(
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -524,21 +551,14 @@ describe('Webform tests', () => {
         }],
       }
     ).then(() => {
-      formWithValidation.setSubmission({ data: {} }).then(()=>{
-        setTimeout(() => {
-          const errors = formElement.querySelectorAll('.formio-error-wrapper');
-          expect(errors.length).to.equal(0);
-          expect(formWithValidation.errors.length).to.equal(0);
-          done();
-        }, 500);
-      }).catch(done);
+      checkForErrors(form, {}, { data: {} }, 0, done);
     });
   });
 
   it('Should show errors on setSubmission when providing explicit data values.', (done) => {
-    const formElement = document.createElement('div');
-    formWithValidation = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
-    formWithValidation.setForm(
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -561,26 +581,19 @@ describe('Webform tests', () => {
         }],
       }
     ).then(() => {
-      formWithValidation.setSubmission({
-          data:{
-            number: 2,
-            textArea: ''
-          }
-      }).then(()=>{
-        setTimeout(() => {
-          const errors = formElement.querySelectorAll('.formio-error-wrapper');
-          expect(errors.length).to.equal(2);
-          expect(formWithValidation.errors.length).to.equal(2);
-          done();
-        }, 500);
-      }).catch(done);
+      checkForErrors(form, {}, {
+        data:{
+          number: 2,
+          textArea: ''
+        }
+      }, 2, done);
     });
   });
 
   it('Should not show errors on setSubmission with noValidate:TRUE', (done) => {
-    const formElement = document.createElement('div');
-    formWithValidation = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
-    formWithValidation.setForm(
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -603,23 +616,14 @@ describe('Webform tests', () => {
         }],
       }
     ).then(() => {
-      formWithValidation.setSubmission({
-          data:{
-            number: 2,
-            textArea: ''
-          }
-        },
-        {
-          noValidate:true
-        })
-        .then(()=>{
-          setTimeout(() => {
-            const errors = formElement.querySelectorAll('.formio-error-wrapper');
-            expect(errors.length).to.equal(0);
-            expect(formWithValidation.errors.length).to.equal(0);
-            done();
-          }, 500);
-        }).catch(done);
+      checkForErrors(form, {
+        noValidate:true
+      }, {
+        data:{
+          number: 2,
+          textArea: ''
+        }
+      }, 0, done);
     });
   });
 

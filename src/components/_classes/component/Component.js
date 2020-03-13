@@ -340,10 +340,12 @@ export default class Component extends Element {
      * @type {function} - Call to trigger a change in this component.
      */
     let lastChanged = null;
+    let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
       if (this.root) {
         this.root.changing = false;
       }
+      triggerArgs = [];
       if (!args[1] && lastChanged) {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
@@ -364,7 +366,10 @@ export default class Component extends Element {
       if (this.root) {
         this.root.changing = true;
       }
-      return _triggerChange(...args);
+      if (args.length) {
+        triggerArgs = args;
+      }
+      return _triggerChange(...triggerArgs);
     };
 
     /**
