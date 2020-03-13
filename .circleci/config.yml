@@ -23,7 +23,8 @@ jobs:
           path: test-results.xml
           prefix: tests
   build:
-    - image: circleci/node:12-browsers
+    docker:
+      - image: circleci/node:12-browsers
     steps:
       - checkout
       - restore_cache:
