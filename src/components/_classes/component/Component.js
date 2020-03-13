@@ -2334,6 +2334,11 @@ export default class Component extends Element {
     // If this component allows overrides.
     const allowOverride = this.component.allowCalculateOverride;
 
+    // Skip this operation if this component allows modification and it is no longer pristine.
+    if (allowOverride && !this.pristine) {
+      return false;
+    }
+
     let firstPass = false;
     const dataValue = this.dataValue;
 
