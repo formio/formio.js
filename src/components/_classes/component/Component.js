@@ -340,10 +340,12 @@ export default class Component extends Element {
      * @type {function} - Call to trigger a change in this component.
      */
     let lastChanged = null;
+    let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
       if (this.root) {
         this.root.changing = false;
       }
+      triggerArgs = [];
       if (!args[1] && lastChanged) {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
@@ -364,7 +366,10 @@ export default class Component extends Element {
       if (this.root) {
         this.root.changing = true;
       }
-      return _triggerChange(...args);
+      if (args.length) {
+        triggerArgs = args;
+      }
+      return _triggerChange(...triggerArgs);
     };
 
     /**
@@ -2528,7 +2533,12 @@ export default class Component extends Element {
       this.isEqual(this.defaultValue, this.dataValue);
 
     // We need to set dirty if they explicitly set noValidate to false.
-    if (!isDirty && flags.hasOwnProperty('noValidate') && !flags.noValidate) {
+    if (this.options.alwaysDirty || flags.dirty) {
+      isDirty = true;
+    }
+
+    // See if they explicitely set the values with setSubmission.
+    if (flags.fromSubmission && this.hasValue(data)) {
       isDirty = true;
     }
 
