@@ -6,7 +6,7 @@ const layout = require('./layout.json');
 const premium = require('./premium.json');
 const settingErrors = require('./settingErrors.json');
 const clearOnHide = require('./clearOnHide.json');
-const manualOverride = require('./manualOverride.json');
+
 module.exports = {
   advanced,
   basic,
@@ -15,6 +15,5 @@ module.exports = {
   layout,
   premium,
   settingErrors,
-  clearOnHide,
-  manualOverride
+  clearOnHide
 };
