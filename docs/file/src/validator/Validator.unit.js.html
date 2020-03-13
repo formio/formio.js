@@ -887,6 +887,104 @@ describe(&apos;Validator Tests&apos;, () =&gt; {
     done();
   });
 
+  it(&apos;Fulfills maxYear validation&apos;, (done) =&gt; {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: &apos;test&apos;,
+          label: &apos;Test&apos;,
+          validator: &apos;maxYear&apos;,
+        },
+        level: &apos;error&apos;,
+        message: &apos;DEF&apos;,
+      }
+    ];
+
+    const pass = [];
+
+    const component = new Component({
+      key: &apos;test&apos;,
+      label: &apos;Test&apos;,
+      validations: [
+        {
+          rule: &apos;maxYear&apos;,
+          level: &apos;error&apos;,
+          message: &apos;DEF&apos;,
+          settings: &apos;2020&apos;
+        }
+      ]
+    });
+    component.dataValue = &apos;2030&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;2021&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;3040&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;0000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;2000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = undefined;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = null;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+
+    done();
+  });
+
+  it(&apos;Fulfills minYear validation&apos;, (done) =&gt; {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: &apos;test&apos;,
+          label: &apos;Test&apos;,
+          validator: &apos;minYear&apos;,
+        },
+        level: &apos;error&apos;,
+        message: &apos;DEF&apos;,
+      }
+    ];
+
+    const pass = [];
+
+    const component = new Component({
+      key: &apos;test&apos;,
+      label: &apos;Test&apos;,
+      validations: [
+        {
+          rule: &apos;minYear&apos;,
+          level: &apos;error&apos;,
+          message: &apos;DEF&apos;,
+          settings: &apos;2000&apos;
+        }
+      ]
+    });
+    component.dataValue = &apos;1880&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;0011&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;1990&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;0000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;2020&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;2000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = undefined;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = null;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+
+    done();
+  });
+
   it(&apos;Fulfills min validation&apos;, (done) =&gt; {
     const fail = [
       {

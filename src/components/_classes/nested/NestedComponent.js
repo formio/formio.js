@@ -493,6 +493,10 @@ export default class NestedComponent extends Field {
   }
 
   checkData(data, flags, row, components) {
+    // Do not check data for disabled components
+    if (this.shouldDisabled) {
+      return true;
+    }
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
@@ -636,7 +640,7 @@ export default class NestedComponent extends Field {
       return component.setValue(_.get(value, component.key), flags) || changed;
     }
     else if (!this.rootPristine || component.visible) {
-      flags.noValidate = true;
+      flags.noValidate = !flags.dirty;
       return component.setValue(component.defaultValue, flags) || changed;
     }
   }

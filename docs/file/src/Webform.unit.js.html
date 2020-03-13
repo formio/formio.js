@@ -585,11 +585,66 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
-  let formWithValidation;
-it(&apos;Should show errors on setSubmission with noValidate:FALSE&apos;, (done) =&gt; {
-    const formElement = document.createElement(&apos;div&apos;);
-    formWithValidation = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
-    formWithValidation.setForm(
+  const formElement = document.createElement(&apos;div&apos;);
+  const checkForErrors = function(form, flags = {}, submission, numErrors, done) {
+    form.setSubmission(submission, flags).then(() =&gt; {
+      setTimeout(() =&gt; {
+        const errors = formElement.querySelectorAll(&apos;.formio-error-wrapper&apos;);
+        expect(errors.length).to.equal(numErrors);
+        expect(form.errors.length).to.equal(numErrors);
+        done();
+      }, 100);
+    }).catch(done);
+  };
+
+  it(&apos;Should not fire validations when fields are either protected or not persistent.&apos;, (done) =&gt; {
+    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(
+      {
+        title: &apos;protected and persistent&apos;,
+        components: [
+          {
+            type: &apos;textfield&apos;,
+            label: &apos;A&apos;,
+            key: &apos;a&apos;,
+            validate: {
+              required: true
+            }
+          },
+          {
+            type: &apos;textfield&apos;,
+            label: &apos;B&apos;,
+            key: &apos;b&apos;,
+            protected: true,
+            validate: {
+              required: true
+            }
+          }
+        ],
+      }).then(() =&gt; {
+        checkForErrors(form, {}, {}, 0, () =&gt; {
+          checkForErrors(form, {}, {
+            data: {
+              a: &apos;Testing&apos;,
+              b: &apos;&apos;
+            }
+          }, 1, () =&gt; {
+            checkForErrors(form, {}, {
+              _id: &apos;123123123&apos;,
+              data: {
+                a: &apos;Testing&apos;,
+                b: &apos;&apos;
+              }
+            }, 0, done);
+          });
+        });
+    });
+  });
+
+  it(&apos;Should not fire validation on init.&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(
       { title: &apos;noValidation flag&apos;,
         components: [{
           label: &apos;Number&apos;,
@@ -603,8 +658,104 @@ it(&apos;Should show errors on setSubmission with noValidate:FALSE&apos;, (done)
         }, {
           label: &apos;Text Area&apos;,
           validate: {
-          required: true,
-          minLength: 10
+            required: true,
+            minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }).then(() =&gt; {
+        checkForErrors(form, {}, {}, 0, done);
+    });
+  });
+
+  it(&apos;Should validation on init when alwaysDirty flag is set.&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement, {
+      language: &apos;en&apos;,
+      template: &apos;bootstrap3&apos;,
+      alwaysDirty: true
+    });
+    form.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }).then(() =&gt; {
+      checkForErrors(form, {}, {}, 2, done);
+    });
+  });
+
+  it(&apos;Should validation on init when dirty flag is set.&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement, {
+      language: &apos;en&apos;,
+      template: &apos;bootstrap3&apos;
+    });
+    form.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }).then(() =&gt; {
+      checkForErrors(form, {
+        dirty: true
+      }, {}, 2, done);
+    });
+  });
+
+  it(&apos;Should not show any errors on setSubmission when providing an empty data object&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+            required: true,
+            minLength: 10
           },
           key: &apos;textArea&apos;,
           type: &apos;textarea&apos;,
@@ -612,30 +763,79 @@ it(&apos;Should show errors on setSubmission with noValidate:FALSE&apos;, (done)
         }],
       }
     ).then(() =&gt; {
-      formWithValidation.setSubmission({
+      checkForErrors(form, {}, {}, 0, done);
+    });
+  });
+
+  it(&apos;Should not show errors when providing empty data object with data set.&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }
+    ).then(() =&gt; {
+      checkForErrors(form, {}, { data: {} }, 0, done);
+    });
+  });
+
+  it(&apos;Should show errors on setSubmission when providing explicit data values.&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;Number&apos;,
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Text Area&apos;,
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: &apos;textArea&apos;,
+          type: &apos;textarea&apos;,
+          input: true
+        }],
+      }
+    ).then(() =&gt; {
+      checkForErrors(form, {}, {
         data:{
           number: 2,
           textArea: &apos;&apos;
-          }
-        },
-        {
-          noValidate:false
-        })
-        .then(()=&gt;{
-          setTimeout(() =&gt; {
-          const errors = formElement.querySelectorAll(&apos;.formio-error-wrapper&apos;);
-          expect(errors.length).to.equal(2);
-          expect(formWithValidation.errors.length).to.equal(2);
-          done();
-          }, 500);
-          }).catch(done);
-      });
+        }
+      }, 2, done);
+    });
   });
 
   it(&apos;Should not show errors on setSubmission with noValidate:TRUE&apos;, (done) =&gt; {
-    const formElement = document.createElement(&apos;div&apos;);
-    formWithValidation = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
-    formWithValidation.setForm(
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(
       { title: &apos;noValidation flag&apos;,
         components: [{
           label: &apos;Number&apos;,
@@ -649,8 +849,8 @@ it(&apos;Should show errors on setSubmission with noValidate:FALSE&apos;, (done)
         }, {
           label: &apos;Text Area&apos;,
           validate: {
-          required: true,
-          minLength: 10
+            required: true,
+            minLength: 10
           },
           key: &apos;textArea&apos;,
           type: &apos;textarea&apos;,
@@ -658,24 +858,15 @@ it(&apos;Should show errors on setSubmission with noValidate:FALSE&apos;, (done)
         }],
       }
     ).then(() =&gt; {
-      formWithValidation.setSubmission({
+      checkForErrors(form, {
+        noValidate:true
+      }, {
         data:{
           number: 2,
           textArea: &apos;&apos;
-          }
-        },
-        {
-          noValidate:true
-        })
-        .then(()=&gt;{
-          setTimeout(() =&gt; {
-          const errors = formElement.querySelectorAll(&apos;.formio-error-wrapper&apos;);
-          expect(errors.length).to.equal(0);
-          expect(formWithValidation.errors.length).to.equal(0);
-          done();
-          }, 500);
-          }).catch(done);
-      });
+        }
+      }, 0, done);
+    });
   });
 
   describe(&apos;set/get nosubmit&apos;, () =&gt; {
