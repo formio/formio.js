@@ -2,6 +2,7 @@ import Harness from '../test/harness';
 import Wizard from './Wizard';
 import assert from 'power-assert';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
+import wizard1 from '../test/forms/wizardValidationOnNextBtn';
 
 describe('Wizard tests', () => {
   let wizardForm = null;
@@ -32,6 +33,31 @@ describe('Wizard tests', () => {
             done();
           }, 100);
         }, 100);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should leave errors for invalid fields after validation on next button and entering valid data in one of the fields', function(done) {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizard1).then(() => {
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-next`]);
+      setTimeout(() => {
+        assert.equal(wizardForm.errors.length, 2);
+
+        const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+        const inputA = formElement.querySelector('input[name="data[a]"]');
+
+        for (let i = 0; i < 5; i++) {
+          inputA.value += i;
+          inputA.dispatchEvent(inputEvent);
+        }
+
+        setTimeout(() => {
+          assert.equal(wizardForm.errors.length, 1);
+          done();
+        }, 250);
+      }, 250);
     })
     .catch((err) => done(err));
   });
