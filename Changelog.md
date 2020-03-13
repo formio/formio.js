@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.9
+### Changed
+ - The PDF rendering to use a local PDF rendering system instead of iframe with external source.
+
+### Fixed
+ - Fixed $ entered to the currency component disappears after submit and shows invalid value
+
 ## 4.9.0-rc.8
 ### Fixed
  - Issues with validations.
