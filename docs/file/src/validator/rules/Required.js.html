@@ -248,7 +248,7 @@ module.exports = class Required extends Rule {
   check(value) {
     // TODO: Day, Survey overrides.
 
-    return !this.component.isEmpty(value);
+    return !this.component.isValueHidden() &amp;&amp; !this.component.isEmpty(value);
   }
 };
 </code></pre>
