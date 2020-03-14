@@ -494,7 +494,7 @@ export default class NestedComponent extends Field {
 
   checkData(data, flags, row, components) {
     // Do not check data for disabled components
-    if (this.shouldDisabled) {
+    if (this.shouldDisabled || this.builderMode) {
       return true;
     }
     data = data || this.rootValue;
