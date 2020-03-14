@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Fixed $ entered to the currency component disappears after submit and shows invalid value
+ - Fixed calculated value is not set after validation on submit if 'Allow override calculated value' is true
 
 ## 4.9.0-rc.8
 ### Fixed
