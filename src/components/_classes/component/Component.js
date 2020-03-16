@@ -2237,7 +2237,11 @@ export default class Component extends Element {
    */
   updateComponentValue(value, flags) {
     flags = flags || {};
-    let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
+    let newValue = (
+      !flags.resetValue &&
+      (value === undefined || value === null) &&
+      value !== this.emptyValue
+    ) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
