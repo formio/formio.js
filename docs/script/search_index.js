@@ -2508,6 +2508,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdf.js~pdf#showerrors",
+    "class/src/PDF.js~PDF.html#instance-method-showErrors",
+    "src/PDF.js~PDF#showErrors",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#submitform",
     "class/src/PDF.js~PDF.html#instance-method-submitForm",
     "src/PDF.js~PDF#submitForm",
@@ -2799,6 +2805,12 @@ window.esdocSearchIndex = [
     "src/webform.js~webform#draftenabled",
     "class/src/Webform.js~Webform.html#instance-member-draftEnabled",
     "src/Webform.js~Webform#draftEnabled",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#editing",
+    "class/src/Webform.js~Webform.html#instance-member-editing",
+    "src/Webform.js~Webform#editing",
     "member"
   ],
   [
@@ -3585,12 +3597,6 @@ window.esdocSearchIndex = [
     "src/wizard.js~wizard#cancel",
     "class/src/Wizard.js~Wizard.html#instance-method-cancel",
     "src/Wizard.js~Wizard#cancel",
-    "method"
-  ],
-  [
-    "src/wizard.js~wizard#checkdata",
-    "class/src/Wizard.js~Wizard.html#instance-method-checkData",
-    "src/Wizard.js~Wizard#checkData",
     "method"
   ],
   [
@@ -4785,6 +4791,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#isvalid",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-isValid",
     "src/components/_classes/component/Component.js~Component#isValid",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#isvaluehidden",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-isValueHidden",
+    "src/components/_classes/component/Component.js~Component#isValueHidden",
     "method"
   ],
   [

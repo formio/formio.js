@@ -34,7 +34,7 @@ class ValidationChecker {
           });
         },
         check(component, setting, value) {
-          if (!boolValue(setting)) {
+          if (!boolValue(setting) || component.isValueHidden()) {
             return true;
           }
 

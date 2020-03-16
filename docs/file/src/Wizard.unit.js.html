@@ -264,12 +264,16 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         }], done);
         Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
         assert.equal(wizardForm.page, 2);
-        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
-        assert.equal(wizardForm.page, 0);
-        const aInput = wizardForm.currentPage.getComponent(&apos;a&apos;);
-        assert.equal(aInput.errors.length, 1);
-        assert.equal(aInput.errors[0].message, &apos;a must have at least 4 characters.&apos;);
-        done();
+        setTimeout(() =&gt; {
+          Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
+          assert.equal(wizardForm.page, 0);
+          setTimeout(() =&gt; {
+            const aInput = wizardForm.currentPage.getComponent(&apos;a&apos;);
+            assert.equal(aInput.errors.length, 1);
+            assert.equal(aInput.errors[0].message, &apos;a must have at least 4 characters.&apos;);
+            done();
+          }, 100);
+        }, 100);
     })
     .catch((err) =&gt; done(err));
   });

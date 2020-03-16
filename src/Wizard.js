@@ -307,10 +307,11 @@ export default class Wizard extends Webform {
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
       }
-      this.redraw();
-      if (shouldValidate && !this.options.readOnly) {
-        this.checkValidity(this.submission.data, true, this.submission.data, true);
-      }
+      this.redraw().then(() => {
+        if (shouldValidate && !this.options.readOnly) {
+          this.checkValidity(this.submission.data, true, this.submission.data, true);
+        }
+      });
       return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
@@ -417,6 +418,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
+      this.currentPage.components.forEach((comp) => comp.setPristine(false));
       return NativePromise.reject(this.showErrors([], true));
     }
   }
@@ -429,17 +431,23 @@ export default class Wizard extends Webform {
     });
   }
 
-  checkData(data, flags) {
-    const dirty = this.currentPage.components.some(component => !component.isEmpty());
-    return super.checkData(data, flags) && this.checkValidity(data, dirty, true);
-  }
-
   cancel(noconfirm) {
+    const redraw = (0 === this.page);
     if (super.cancel(noconfirm)) {
-      return this.setPage(0);
+      this.setPristine(true);
+      return this.setPage(0).then(() => {
+        if (redraw) {
+          this.redraw();
+        }
+      });
     }
     else {
-      return this.setPage();
+      this.setPristine(true);
+      return this.setPage(0).then(() => {
+        if (redraw) {
+          this.redraw();
+        }
+      });
     }
   }
 
