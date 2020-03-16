@@ -11,17 +11,19 @@ export default [
     tooltip: 'Enables date input for this field.'
   },
   {
-    type: 'datetime',
+    type: 'textfield',
     input: true,
     enableTime: false,
+    inputMask: '9999-99-99',
     key: 'datePicker.minDate',
     label: 'Minimum Date',
     tooltip: 'The minimum date that can be picked. You can also use Moment.js functions. For example: \n \n moment().subtract(10, \'days\')',
     weight: 10
   },
   {
-    type: 'datetime',
+    type: 'textfield',
     input: true,
+    inputMask: '9999-99-99',
     enableTime: false,
     key: 'datePicker.maxDate',
     label: 'Maximum Date',
