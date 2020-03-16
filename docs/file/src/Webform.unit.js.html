@@ -247,11 +247,38 @@ import each from &apos;lodash/each&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
-import { settingErrors, clearOnHide } from &apos;../test/formtest&apos;;
+import { settingErrors, clearOnHide, manualOverride } from &apos;../test/formtest&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
 describe(&apos;Webform tests&apos;, () =&gt; {
+  let formWithCalculatedValue;
+
+  it(&apos;Should calculate the field value after validation errors appeared on submit&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    formWithCalculatedValue = new Webform(formElement);
+    formWithCalculatedValue.setForm(manualOverride).then(() =&gt; {
+      Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);
+      setTimeout(() =&gt; {
+        console.log(formWithCalculatedValue.errors.length);
+
+        const inputEvent = new Event(&apos;input&apos;);
+        const input1 = formWithCalculatedValue.components[0].refs.input[0];
+
+          input1.value =  55;
+          input1.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          const input2 = formElement.querySelector(&apos;input[name=&quot;data[number2]&quot;]&apos;);
+          assert.equal(input2.value, &apos;55&apos;);
+          assert.equal(input1.value, 55);
+          done();
+        }, 250);
+      }, 250);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   let simpleForm = null;
   it(&apos;Should create a simple form&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);

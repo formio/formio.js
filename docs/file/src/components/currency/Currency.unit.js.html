@@ -311,6 +311,8 @@ describe(&apos;Currency Component&apos;, () =&gt; {
       Harness.testSetInput(component, &apos;123456789.123456789&apos;, 123456789.12, &apos;$123,456,789.12&apos;);
       Harness.testSetInput(component, &apos;-123456789.123456789&apos;, -123456789.12, &apos;-$123,456,789.12&apos;);
       Harness.testSetInput(component, &apos;$0&apos;, 0, &apos;$0.00&apos;);
+      Harness.testSetInput(component, &apos;$_&apos;, 0, &apos;$0.00&apos;);
+      Harness.testSetInput(component, &apos;-$_&apos;, 0, &apos;$0.00&apos;);
       Harness.testSetInput(component, &apos;$1.00&apos;, 1, &apos;$1.00&apos;);
       Harness.testSetInput(component, &apos;-$1.00&apos;, -1, &apos;-$1.00&apos;);
       Harness.testSetInput(component, &apos;$1&apos;, 1, &apos;$1.00&apos;);

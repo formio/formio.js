@@ -5,11 +5,38 @@ import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
-import { settingErrors, clearOnHide } from '../test/formtest';
+import { settingErrors, clearOnHide, manualOverride } from '../test/formtest';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  let formWithCalculatedValue;
+
+  it('Should calculate the field value after validation errors appeared on submit', function(done) {
+    const formElement = document.createElement('div');
+    formWithCalculatedValue = new Webform(formElement);
+    formWithCalculatedValue.setForm(manualOverride).then(() => {
+      Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);
+      setTimeout(() => {
+        console.log(formWithCalculatedValue.errors.length);
+
+        const inputEvent = new Event('input');
+        const input1 = formWithCalculatedValue.components[0].refs.input[0];
+
+          input1.value =  55;
+          input1.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const input2 = formElement.querySelector('input[name="data[number2]"]');
+          assert.equal(input2.value, '55');
+          assert.equal(input1.value, 55);
+          done();
+        }, 250);
+      }, 250);
+    })
+    .catch((err) => done(err));
+  });
+
   let simpleForm = null;
   it('Should create a simple form', (done) => {
     const formElement = document.createElement('div');

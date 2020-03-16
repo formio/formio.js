@@ -69,6 +69,8 @@ describe('Currency Component', () => {
       Harness.testSetInput(component, '123456789.123456789', 123456789.12, '$123,456,789.12');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.12, '-$123,456,789.12');
       Harness.testSetInput(component, '$0', 0, '$0.00');
+      Harness.testSetInput(component, '$_', 0, '$0.00');
+      Harness.testSetInput(component, '-$_', 0, '$0.00');
       Harness.testSetInput(component, '$1.00', 1, '$1.00');
       Harness.testSetInput(component, '-$1.00', -1, '-$1.00');
       Harness.testSetInput(component, '$1', 1, '$1.00');
