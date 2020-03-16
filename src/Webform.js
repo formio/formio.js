@@ -1016,7 +1016,7 @@ export default class Webform extends NestedDataComponent {
       if (this.refs.errorRef && this.refs.errorRef.length) {
         this.refs.errorRef.forEach(el => {
           this.removeEventListener(el, 'click');
-          this.removeEventListener(el, 'keypress');
+          this.removeEventListener(el, 'keydown');
         });
 
         this.removeChild(this.alert);
@@ -1085,7 +1085,7 @@ export default class Webform extends NestedDataComponent {
           const key = e.currentTarget.dataset.componentKey;
           this.focusOnComponent(key);
         });
-        this.addEventListener(el, 'keypress', (e) => {
+        this.addEventListener(el, 'keydown', (e) => {
           if (e.keyCode === 13) {
             const key = e.currentTarget.dataset.componentKey;
             this.focusOnComponent(key);
