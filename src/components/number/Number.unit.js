@@ -162,6 +162,15 @@ describe('Number Component', () => {
     });
   });
 
+  it('Should reset number components', () => {
+    return Harness.testCreate(NumberComponent, comp2).then(number => {
+      number.setValue(200);
+      assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '200');
+      number.setValue(null);
+      assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '');
+    });
+  });
+
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
   //   const comp = _.cloneDeep(comp3);
   //
