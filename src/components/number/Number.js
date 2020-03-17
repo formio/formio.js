@@ -62,6 +62,10 @@ export default class NumberComponent extends Input {
     this.numberMask = this.createNumberMask();
   }
 
+  get emptyValue() {
+    return undefined;
+  }
+
   /**
    * Creates the number mask for normal numbers.
    *
@@ -150,7 +154,7 @@ export default class NumberComponent extends Input {
       value = String(value).replace('.', this.decimalSeparator);
     }
     else {
-      value = null;
+      value = undefined;
     }
 
     return value;

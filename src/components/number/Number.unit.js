@@ -166,7 +166,7 @@ describe('Number Component', () => {
     return Harness.testCreate(NumberComponent, comp2).then(number => {
       number.setValue(200);
       assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '200');
-      number.setValue(null);
+      number.setValue(undefined);
       assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '');
     });
   });

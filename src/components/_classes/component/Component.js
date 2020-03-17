@@ -2035,7 +2035,7 @@ export default class Component extends Element {
     ) {
       return value;
     }
-    if ((value !== null) && (value !== undefined)) {
+    if ((value !== null)) {
       value = this.hook('setDataValue', value, this.key, this._data);
     }
     if ((value === null) || (value === undefined)) {
@@ -2179,11 +2179,12 @@ export default class Component extends Element {
    */
   setValueAt(index, value, flags) {
     flags = flags || {};
-    if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
+    if (!flags.noDefault && (value === null) && !this.component.multiple) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
     if (input.mask) {
+      value = value || '';
       input.mask.textMaskInputElement.update(value);
     }
     else if (input.widget && input.widget.setValue) {
@@ -2243,7 +2244,7 @@ export default class Component extends Element {
       value !== this.emptyValue
     ) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    const changed = this.hasChanged(newValue, this.dataValue);
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
@@ -2291,14 +2292,13 @@ export default class Component extends Element {
    */
   hasChanged(newValue, oldValue) {
     if (
-      ((newValue === undefined) || (newValue === null)) &&
-      ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
+      (newValue === null) &&
+      ((oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
     }
-    // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
+    // If we do not have a value and are getting set to anything other than null, then we changed.
     if (
-      newValue !== undefined &&
       newValue !== null &&
       !this.hasValue()
     ) {
