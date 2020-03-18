@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-rc.11
+### Fixed
+ - Problems where Number components would not get reset properly.
+ - Issues where wizards would always show errors when navigating.
+
 ## 4.9.0-rc.10
 ### Fixed
  - Ensure no infinite loops are triggered in build mode by not checking data.
