@@ -2159,7 +2159,7 @@ export default class Component extends Element {
     if (!this.hasInput) {
       return changed;
     }
-    const isArray = Array.isArray(value);
+    const isArray = this.component.multiple && Array.isArray(value);
     if (isArray && this.refs.input && this.refs.input.length !== value.length) {
       this.redraw();
     }
