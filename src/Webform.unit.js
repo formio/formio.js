@@ -671,10 +671,10 @@ describe('Webform tests', () => {
   });
 
   describe('Reset values', () => {
-    it('Should reset all values correctly.', (done) => {
+    it('Should reset all values correctly.', () => {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-      form.setForm(
+      return form.setForm(
         {
           components: [
             {
@@ -758,8 +758,14 @@ describe('Webform tests', () => {
             }
           });
           form.setSubmission({ data: {} }).then(() => {
-            expect(form.submission).to.deep.equal({ data: {} });
-            done();
+            expect(form.submission).to.deep.equal({
+              data: {
+                firstName: '',
+                lastName: '',
+                favoriteThings: [],
+                submit: false
+              }
+            });
           });
         });
       });
