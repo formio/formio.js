@@ -17,13 +17,12 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
+    this.on('iframe-change', (submission) => this.setValue(submission, {
+      fromIframe: true
+    }), true);
+
     // Trigger when this form is ready.
     this.on('iframe-ready', () => this.iframeReadyResolve(), true);
-
-    this.on('iframe-change', (submission) => {
-      this.submission = _.cloneDeep(submission);
-      this.onChange();
-    });
   }
 
   render() {
