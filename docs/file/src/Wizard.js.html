@@ -460,7 +460,7 @@ export default class Wizard extends Webform {
         this.addEventListener(link, &apos;click&apos;, (event) =&gt; {
           this.emit(&apos;wizardNavigationClicked&apos;, this.pages[index]);
           event.preventDefault();
-          return this.setPage(index, true).then(() =&gt; {
+          return this.setPage(index).then(() =&gt; {
             this.emit(&apos;wizardPageSelected&apos;, this.pages[index], index);
           });
         });
@@ -536,7 +536,7 @@ export default class Wizard extends Webform {
     this.establishPages();
   }
 
-  setPage(num, shouldValidate) {
+  setPage(num) {
     if (num === this.page) {
       return NativePromise.resolve();
     }
@@ -550,8 +550,8 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw().then(() =&gt; {
-        if (shouldValidate &amp;&amp; !this.options.readOnly) {
-          this.checkValidity(this.submission.data, true, this.submission.data, true);
+        if (!this.options.readOnly) {
+          this.checkValidity(this.submission.data, false, this.submission.data, true);
         }
       });
       return NativePromise.resolve();
@@ -667,7 +667,7 @@ export default class Wizard extends Webform {
 
   prevPage() {
     return this.beforePage().then(() =&gt; {
-      return this.setPage(this.getPreviousPage(), true).then(() =&gt; {
+      return this.setPage(this.getPreviousPage()).then(() =&gt; {
         this.emit(&apos;prevPage&apos;, { page: this.page, submission: this.submission });
       });
     });

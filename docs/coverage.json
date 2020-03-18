@@ -1,6 +1,6 @@
 {
-  "coverage": "13.77%",
-  "expectCount": 2200,
+  "coverage": "13.8%",
+  "expectCount": 2195,
   "actualCount": 303,
   "files": {
     "src/EventEmitter.js": {
@@ -180,32 +180,27 @@
       ]
     },
     "src/PDF.js": {
-      "expectCount": 26,
+      "expectCount": 21,
       "actualCount": 3,
       "undocumentLines": [
+        6,
         7,
-        8,
-        10,
-        14,
-        18,
-        19,
-        22,
-        34,
-        41,
+        9,
+        12,
+        24,
+        31,
+        35,
         45,
-        55,
-        56,
-        57,
-        61,
-        132,
-        136,
-        167,
-        175,
-        203,
-        216,
-        231,
-        249,
-        251
+        46,
+        47,
+        51,
+        122,
+        149,
+        177,
+        190,
+        205,
+        223,
+        225
       ]
     },
     "src/PDFBuilder.js": {
@@ -766,7 +761,7 @@
         621,
         627,
         631,
-        648
+        649
       ]
     },
     "src/components/_classes/nested/NestedComponent.unit.js": {

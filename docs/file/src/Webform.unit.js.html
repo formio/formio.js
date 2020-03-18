@@ -912,6 +912,108 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
+  describe(&apos;Reset values&apos;, () =&gt; {
+    it(&apos;Should reset all values correctly.&apos;, () =&gt; {
+      formElement.innerHTML = &apos;&apos;;
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      return form.setForm(
+        {
+          components: [
+            {
+              type: &apos;textfield&apos;,
+              key: &apos;firstName&apos;,
+              label: &apos;First Name&apos;,
+              placeholder: &apos;Enter your first name.&apos;,
+              input: true,
+              tooltip: &apos;Enter your &lt;strong&gt;First Name&lt;/strong&gt;&apos;,
+              description: &apos;Enter your &lt;strong&gt;First Name&lt;/strong&gt;&apos;
+            },
+            {
+              type: &apos;textfield&apos;,
+              key: &apos;lastName&apos;,
+              label: &apos;Last Name&apos;,
+              placeholder: &apos;Enter your last name&apos;,
+              input: true,
+              tooltip: &apos;Enter your &lt;strong&gt;Last Name&lt;/strong&gt;&apos;,
+              description: &apos;Enter your &lt;strong&gt;Last Name&lt;/strong&gt;&apos;
+            },
+            {
+              type: &apos;select&apos;,
+              label: &apos;Favorite Things&apos;,
+              key: &apos;favoriteThings&apos;,
+              placeholder: &apos;These are a few of your favorite things...&apos;,
+              data: {
+                values: [
+                  {
+                    value: &apos;raindropsOnRoses&apos;,
+                    label: &apos;Raindrops on roses&apos;
+                  },
+                  {
+                    value: &apos;whiskersOnKittens&apos;,
+                    label: &apos;Whiskers on Kittens&apos;
+                  },
+                  {
+                    value: &apos;brightCopperKettles&apos;,
+                    label: &apos;Bright Copper Kettles&apos;
+                  },
+                  {
+                    value: &apos;warmWoolenMittens&apos;,
+                    label: &apos;Warm Woolen Mittens&apos;
+                  }
+                ]
+              },
+              dataSrc: &apos;values&apos;,
+              template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
+              multiple: true,
+              input: true
+            },
+            {
+              type: &apos;number&apos;,
+              key: &apos;number&apos;,
+              label: &apos;Number&apos;,
+              input: true
+            },
+            {
+              type: &apos;button&apos;,
+              action: &apos;submit&apos;,
+              label: &apos;Submit&apos;,
+              theme: &apos;primary&apos;
+            }
+          ]
+        }
+      ).then(() =&gt; {
+        form.setSubmission({
+          data: {
+            firstName: &apos;Joe&apos;,
+            lastName: &apos;Bob&apos;,
+            favoriteThings: [&apos;whiskersOnKittens&apos;, &apos;warmWoolenMittens&apos;],
+            number: 233
+          }
+        }).then(() =&gt; {
+          expect(form.submission).to.deep.equal({
+            data: {
+              firstName: &apos;Joe&apos;,
+              lastName: &apos;Bob&apos;,
+              favoriteThings: [&apos;whiskersOnKittens&apos;, &apos;warmWoolenMittens&apos;],
+              number: 233,
+              submit: false
+            }
+          });
+          form.setSubmission({ data: {} }).then(() =&gt; {
+            expect(form.submission).to.deep.equal({
+              data: {
+                firstName: &apos;&apos;,
+                lastName: &apos;&apos;,
+                favoriteThings: [],
+                submit: false
+              }
+            });
+          });
+        });
+      });
+    });
+  });
+
   each(FormTests, (formTest) =&gt; {
     describe(formTest.title || &apos;&apos;, () =&gt; {
       each(formTest.tests, (formTestTest, title) =&gt; {

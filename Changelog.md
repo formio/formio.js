@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Problems where Number components would not get reset properly.
  - Issues where wizards would always show errors when navigating.
+ 
+### Changed
+ - Revert changes to iframe where src was replaced with blob file hosting. It causes too many problems with different browsers and CSP issues.
+ - Upgrade i18next@19.3.3, fetch-mock@9.2.1, gulp-clean-css@4.3.0, file-loader@6.0.0
 
 ## 4.9.0-rc.10
 ### Fixed
