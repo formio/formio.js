@@ -789,7 +789,7 @@ export default class Webform extends NestedDataComponent {
         owner: userId
       }
     }).then(submissions => {
-      if (submissions.length > 0) {
+      if (submissions.length > 0 && !this.options.skipDraftRestore) {
         const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() => {
           this.draftEnabled = true;
