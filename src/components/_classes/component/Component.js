@@ -2160,7 +2160,7 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray && this.refs.input && this.refs.input.length !== value.length) {
+    if (this.component.multiple && isArray && this.refs.input && this.refs.input.length !== value.length) {
       this.redraw();
     }
     for (const i in this.refs.input) {
