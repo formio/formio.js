@@ -1109,7 +1109,7 @@ export default class Component extends Element {
     else {
       this.refreshOnChanged = true;
     }
-    this.refreshOnValue = value;
+    this.refreshOnValue = fastCloneDeep(value);
     if (this.refreshOnChanged) {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
