@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0
+### Fixed
+ - A few cases where flags would not get passed in and would cause errors to throw.
+
 ## 4.9.0-rc.12
 ### Fixed
  - Problems where the changed flag was not getting triggered and handled properly.

@@ -714,7 +714,7 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
+  updateValue(value, flags = {}) {
     return this.components.reduce((changed, comp) =&gt; {
       return comp.updateValue(null, flags) || changed;
     }, super.updateValue(value, flags));
@@ -866,7 +866,7 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((component) =&gt; component.dataReady));
   }
 
-  setNestedValue(component, value, flags) {
+  setNestedValue(component, value, flags = {}) {
     component._data = this.componentContext(component);
     if (component.type === &apos;button&apos;) {
       return false;

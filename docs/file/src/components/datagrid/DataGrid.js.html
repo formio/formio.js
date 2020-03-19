@@ -711,9 +711,8 @@ export default class DataGridComponent extends NestedArrayComponent {
     return valid;
   }
 
-  checkColumns(data, flags) {
+  checkColumns(data, flags = {}) {
     data = data || this.rootValue;
-    flags = flags || {};
     let show = false;
 
     if (!this.rows || !this.rows.length) {
