@@ -2177,8 +2177,7 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value, flags) {
-    flags = flags || {};
+  setValueAt(index, value, flags = {}) {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
@@ -2235,8 +2234,7 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateComponentValue(value, flags) {
-    flags = flags || {};
+  updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
     flags.changed = flags.changed || ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);

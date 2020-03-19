@@ -728,7 +728,7 @@ export default class Webform extends NestedDataComponent {
    * @param flags
    * @return {Promise.<TResult>}
    */
-  setSubmission(submission, flags) {
+  setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
       fromSubmission: true,
@@ -1260,7 +1260,7 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  checkData(data, flags) {
+  checkData(data, flags = {}) {
     const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();

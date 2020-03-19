@@ -465,7 +465,7 @@ export default class FormComponent extends Component {
     return !super.checkConditions(this.rootValue);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     super.setValue(submission, flags);
     if (this.subForm) {
       if (
