@@ -295,7 +295,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
   }
 
-  setValueAt(index, value, flags) {
+  setValueAt(index, value, flags = {}) {
     super.setValueAt(index, value, flags);
 
     if (this.editorsReady[index]) {
