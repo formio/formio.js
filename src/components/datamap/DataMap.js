@@ -213,12 +213,12 @@ export default class DataMapComponent extends DataGridComponent {
     this.triggerChange();
   }
 
-  setValue(value, flags) {
-    const changed = this.hasChanged(value, this.dataValue);
+  setValue(value, flags = {}) {
+    flags.changed = flags.changed || this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.createRows();
-    this.updateOnChange(flags, changed);
-    return changed;
+    this.updateOnChange(flags);
+    return flags.changed;
   }
 
   checkColumns() {
