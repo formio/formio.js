@@ -1312,20 +1312,9 @@ export default class Webform extends NestedDataComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-      const listenerFunction = (e) =&gt; {
-        e.stopPropagation();
-
-        this.formReady.then(() =&gt; {
-          if (this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
-            this.refs.errorRef[0].focus();
-          }
-        });
-
-        this.removeEventListener(component.refs.input[0], &apos;blur&apos;, listenerFunction);
-      };
-
-      this.addEventListener(component.refs.input[0], &apos;blur&apos;, listenerFunction);
-      component.focus();
+      if (component) {
+        component.focus();
+      }
     }
   }
 
@@ -1409,11 +1398,6 @@ export default class Webform extends NestedDataComponent {
     this.setAlert(&apos;danger&apos;, message);
     if (triggerEvent) {
       this.emit(&apos;error&apos;, errors);
-    }
-
-    if (triggerEvent &amp;&amp; this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
-      const withKeys = Array.from(this.refs.errorRef).filter(ref =&gt; !!ref.dataset.componentKey);
-      withKeys.length ? this.focusOnComponent(withKeys[0].dataset.componentKey) :  this.refs.errorRef[0].focus();
     }
 
     return errors;

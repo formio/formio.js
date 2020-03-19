@@ -7308,6 +7308,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/container/fixtures/comp2.js",
+    "file/src/components/container/fixtures/comp2.js.html",
+    "src/components/container/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/container/fixtures/index.js",
     "file/src/components/container/fixtures/index.js.html",
     "src/components/container/fixtures/index.js",
@@ -12234,6 +12240,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#isjsonvalue",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-isJsonValue",
+    "src/components/textarea/TextArea.js~TextAreaComponent#isJsonValue",
+    "member"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#isplain",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-isPlain",
     "src/components/textarea/TextArea.js~TextAreaComponent#isPlain",
@@ -12345,6 +12357,12 @@ window.esdocSearchIndex = [
     "src/components/textarea/fixtures/comp1.js",
     "file/src/components/textarea/fixtures/comp1.js.html",
     "src/components/textarea/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/textarea/fixtures/comp2.js",
+    "file/src/components/textarea/fixtures/comp2.js.html",
+    "src/components/textarea/fixtures/comp2.js",
     "file"
   ],
   [

@@ -259,6 +259,10 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
+    this.on(&apos;iframe-change&apos;, (submission) =&gt; this.setValue(submission, {
+      fromIframe: true
+    }), true);
+
     // Trigger when this form is ready.
     this.on(&apos;iframe-ready&apos;, () =&gt; this.iframeReadyResolve(), true);
   }

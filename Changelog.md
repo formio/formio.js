@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0
+### Fixed
+ - Issues with infinite loops triggered by TextArea w/ ACE editor in JSON mode.
+ - Fixed the redraw on property to no store value references.
+ - Fixing how the pdf iframe-change event is handled.
+ - Fixing containers so that they will ensure the child components trigger their change events correctly.
+
+### Removed
+ - Aggressive error navigation where it would throw cursor to top of page when correcting errors. Now you just click the error to take you to the control with the error.
+
 ## 4.9.0-rc.11
 ### Fixed
  - Problems where Number components would not get reset properly.

@@ -1351,7 +1351,7 @@ export default class Component extends Element {
     else {
       this.refreshOnChanged = true;
     }
-    this.refreshOnValue = value;
+    this.refreshOnValue = fastCloneDeep(value);
     if (this.refreshOnChanged) {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
@@ -2402,7 +2402,7 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray &amp;&amp; this.refs.input &amp;&amp; this.refs.input.length !== value.length) {
+    if (this.component.multiple &amp;&amp; isArray &amp;&amp; this.refs.input &amp;&amp; this.refs.input.length !== value.length) {
       this.redraw();
     }
     for (const i in this.refs.input) {
