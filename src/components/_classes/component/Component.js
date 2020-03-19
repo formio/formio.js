@@ -2150,14 +2150,14 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed.
    */
-  setValue(value, flags) {
-    const changed = this.updateValue(value, flags);
+  setValue(value, flags = {}) {
+    this.updateValue(value, flags);
     if (this.componentModal && flags && flags.fromSubmission) {
       this.componentModal.setValue(value);
     }
     value = this.dataValue;
     if (!this.hasInput) {
-      return changed;
+      return flags.changed;
     }
     const isArray = Array.isArray(value);
     if (this.component.multiple && isArray && this.refs.input && this.refs.input.length !== value.length) {
@@ -2168,7 +2168,7 @@ export default class Component extends Element {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
-    return changed;
+    return flags.changed;
   }
 
   /**
@@ -2239,12 +2239,12 @@ export default class Component extends Element {
     flags = flags || {};
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
-    if (changed) {
+    flags.changed = flags.changed || ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
+    if (flags.changed) {
       this.dataValue = newValue;
-      this.updateOnChange(flags, changed);
+      this.updateOnChange(flags);
     }
-    return changed;
+    return flags.changed;
   }
 
   /**
@@ -2307,10 +2307,9 @@ export default class Component extends Element {
    * Update the value on change.
    *
    * @param flags
-   * @param changed
    */
-  updateOnChange(flags = {}, changed) {
-    if (!flags.noUpdateEvent && changed) {
+  updateOnChange(flags = {}) {
+    if (!flags.noUpdateEvent && flags.changed) {
       this.triggerChange(flags);
       return true;
     }
@@ -2372,9 +2371,9 @@ export default class Component extends Element {
     }
 
     // Set the new value.
-    const changed = this.setValue(calculatedValue, flags);
+    this.setValue(calculatedValue, flags);
     this.calculatedValue = this.dataValue;
-    return changed;
+    return flags.changed;
   }
 
   /**

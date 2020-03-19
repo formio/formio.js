@@ -670,6 +670,62 @@ describe('Webform tests', () => {
     });
   });
 
+  describe('getValue and setValue', () => {
+    it('should setValue and getValue', () => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      return form.setForm({
+        components: [
+          {
+            type: 'textfield',
+            key: 'a'
+          },
+          {
+            type: 'container',
+            key: 'b',
+            components: [
+              {
+                type: 'datagrid',
+                key: 'c',
+                components: [
+                  {
+                    type: 'textfield',
+                    key: 'd'
+                  },
+                  {
+                    type: 'textfield',
+                    key: 'e'
+                  },
+                  {
+                    type: 'editgrid',
+                    key: 'f',
+                    components: [
+                      {
+                        type: 'textfield',
+                        key: 'g'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }).then(() => {
+        // Ensure that it says it changes.
+        assert.equal(form.setValue({
+          a: 'a',
+          b: {
+            c: [
+              { d: 'd1', e: 'e1', f: [{ g: 'g1' }] },
+              { d: 'd2', e: 'e2', f: [{ g: 'g2' }] },
+            ]
+          }
+        }), true);
+      });
+    });
+  });
+
   describe('Reset values', () => {
     it('Should reset all values correctly.', () => {
       formElement.innerHTML = '';

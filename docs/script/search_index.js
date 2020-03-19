@@ -6114,12 +6114,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#haschanged",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasChanged",
-    "src/components/_classes/nested/NestedComponent.js~NestedComponent#hasChanged",
-    "method"
-  ],
-  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#hascomponent",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasComponent",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#hasComponent",

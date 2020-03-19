@@ -742,10 +742,10 @@ export default class Wizard extends Webform {
     return super.setForm(form);
   }
 
-  setValue(submission, flags) {
-    const changed = super.setValue(submission, flags);
+  setValue(submission, flags = {}) {
+    super.setValue(submission, flags);
     this.pageFieldLogic(this.page);
-    return changed;
+    return flags.changed;
   }
 
   isClickable(page, index) {
