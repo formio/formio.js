@@ -60,13 +60,13 @@ export default class ContainerComponent extends NestedDataComponent {
     }
     if (!value || !_.isObject(value) || !hasValue) {
       changed = true;
-      this.dataValue = this.defaultValue;
+      value = this.defaultValue;
     }
     else {
       changed = this.hasChanged(value, this.dataValue);
-      this.dataValue = value;
     }
     super.setValue(value, flags);
+    this.dataValue = value;
     this.updateOnChange(flags, changed);
     return changed;
   }
