@@ -912,6 +912,62 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
+  describe(&apos;getValue and setValue&apos;, () =&gt; {
+    it(&apos;should setValue and getValue&apos;, () =&gt; {
+      formElement.innerHTML = &apos;&apos;;
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      return form.setForm({
+        components: [
+          {
+            type: &apos;textfield&apos;,
+            key: &apos;a&apos;
+          },
+          {
+            type: &apos;container&apos;,
+            key: &apos;b&apos;,
+            components: [
+              {
+                type: &apos;datagrid&apos;,
+                key: &apos;c&apos;,
+                components: [
+                  {
+                    type: &apos;textfield&apos;,
+                    key: &apos;d&apos;
+                  },
+                  {
+                    type: &apos;textfield&apos;,
+                    key: &apos;e&apos;
+                  },
+                  {
+                    type: &apos;editgrid&apos;,
+                    key: &apos;f&apos;,
+                    components: [
+                      {
+                        type: &apos;textfield&apos;,
+                        key: &apos;g&apos;
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }).then(() =&gt; {
+        // Ensure that it says it changes.
+        assert.equal(form.setValue({
+          a: &apos;a&apos;,
+          b: {
+            c: [
+              { d: &apos;d1&apos;, e: &apos;e1&apos;, f: [{ g: &apos;g1&apos; }] },
+              { d: &apos;d2&apos;, e: &apos;e2&apos;, f: [{ g: &apos;g2&apos; }] },
+            ]
+          }
+        }), true);
+      });
+    });
+  });
+
   describe(&apos;Reset values&apos;, () =&gt; {
     it(&apos;Should reset all values correctly.&apos;, () =&gt; {
       formElement.innerHTML = &apos;&apos;;

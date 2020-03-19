@@ -573,8 +573,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (this.isPlain || this.options.readOnly || this.disabled) {
       value = (this.component.multiple &amp;&amp; Array.isArray(value)) ?
         value.map((val, index) =&gt; this.setConvertedValue(val, index)) :

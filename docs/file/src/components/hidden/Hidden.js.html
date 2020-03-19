@@ -292,7 +292,7 @@ export default class HiddenComponent extends Input {
     return &apos;&apos;;
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     return this.updateValue(value, flags);
   }
 

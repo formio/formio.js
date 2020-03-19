@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.9.0
+## 4.9.0-rc.12
 ### Fixed
+ - Problems where the changed flag was not getting triggered and handled properly.
  - Issues with infinite loops triggered by TextArea w/ ACE editor in JSON mode.
  - Fixed the redraw on property to no store value references.
  - Fixing how the pdf iframe-change event is handled.

@@ -410,9 +410,9 @@ export default class Input extends Multivalue {
   }
 
   updateValue(value, flags, index) {
-    const changed = super.updateValue(value, flags);
+    super.updateValue(value, flags);
     this.triggerUpdateValueAt(this.dataValue, flags, index);
-    return changed;
+    return flags.changed;
   }
 
   parseValue(value) {
