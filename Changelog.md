@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.10.0-rc.1
+## 4.10.0-beta.1
 ### Added
  - Added flag to check if draft restore is disabled
  - Offline authentication support.
