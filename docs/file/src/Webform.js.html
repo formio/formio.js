@@ -1003,13 +1003,22 @@ export default class Webform extends NestedDataComponent {
       console.warn(&apos;Cannot save draft unless a user is authenticated.&apos;);
       return;
     }
-    const draft = fastCloneDeep(this.submission);
+    const draft = this.submission;
     draft.state = &apos;draft&apos;;
     if (!this.savingDraft) {
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) =&gt; {
-        this.savingDraft = false;
+        const currentSubmission = _.merge(sub, draft);
+
         this.emit(&apos;saveDraft&apos;, sub);
+        if (!draft._id) {
+          this.setSubmission(currentSubmission).then(() =&gt; {
+            this.savingDraft = false;
+          });
+        }
+        else {
+          this.savingDraft = false;
+        }
       });
     }
   }
@@ -1031,7 +1040,7 @@ export default class Webform extends NestedDataComponent {
         owner: userId
       }
     }).then(submissions =&gt; {
-      if (submissions.length &gt; 0) {
+      if (submissions.length &gt; 0 &amp;&amp; !this.options.skipDraftRestore) {
         const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() =&gt; {
           this.draftEnabled = true;
