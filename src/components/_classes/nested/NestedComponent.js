@@ -478,10 +478,6 @@ export default class NestedComponent extends Field {
     }, super.updateValue(value, flags));
   }
 
-  hasChanged() {
-    return false;
-  }
-
   shouldSkipValidation(data, dirty, row) {
     // Nested components with no input should not be validated.
     if (!this.component.input) {
