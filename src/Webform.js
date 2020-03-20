@@ -736,7 +736,7 @@ export default class Webform extends NestedDataComponent {
    * @param flags
    * @return {Promise.<TResult>}
    */
-  setSubmission(submission, flags) {
+  setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
       fromSubmission: true,
@@ -769,13 +769,22 @@ export default class Webform extends NestedDataComponent {
       console.warn('Cannot save draft unless a user is authenticated.');
       return;
     }
-    const draft = fastCloneDeep(this.submission);
+    const draft = this.submission;
     draft.state = 'draft';
     if (!this.savingDraft) {
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
-        this.savingDraft = false;
+        const currentSubmission = _.merge(sub, draft);
+
         this.emit('saveDraft', sub);
+        if (!draft._id) {
+          this.setSubmission(currentSubmission).then(() => {
+            this.savingDraft = false;
+          });
+        }
+        else {
+          this.savingDraft = false;
+        }
       });
     }
   }
@@ -797,7 +806,7 @@ export default class Webform extends NestedDataComponent {
         owner: userId
       }
     }).then(submissions => {
-      if (submissions.length > 0) {
+      if (submissions.length > 0 && !this.options.skipDraftRestore) {
         const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() => {
           this.draftEnabled = true;
@@ -844,13 +853,13 @@ export default class Webform extends NestedDataComponent {
       this.options.submissionTimezone = submission.metadata.timezone;
     }
 
-    const changed = super.setValue(submission.data, flags);
+    super.setValue(submission.data, flags);
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
     submission.data = this.data;
     this._submission = submission;
-    return changed;
+    return flags.changed;
   }
 
   getValue() {
@@ -1105,7 +1114,9 @@ export default class Webform extends NestedDataComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-      component && component.focus();
+      if (component) {
+        component.focus();
+      }
     }
   }
 
@@ -1213,16 +1224,6 @@ export default class Webform extends NestedDataComponent {
 
     if (triggerEvent) {
       this.emit('error', errors);
-
-      if (this.refs.errorRef && this.refs.errorRef.length) {
-        this.ready.then(() => {
-          this.refs.errorRef[0].focus();
-        });
-      }
-      else {
-        const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
-        withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
-      }
     }
 
     return errors;
@@ -1327,7 +1328,7 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  checkData(data, flags) {
+  checkData(data, flags = {}) {
     const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();

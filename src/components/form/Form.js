@@ -465,8 +465,8 @@ export default class FormComponent extends Component {
     return !super.checkConditions(this.rootValue);
   }
 
-  setValue(submission, flags) {
-    const changed = super.setValue(submission, flags);
+  setValue(submission, flags = {}) {
+    super.setValue(submission, flags);
     if (this.subForm) {
       if (
         submission &&
@@ -482,7 +482,7 @@ export default class FormComponent extends Component {
         this.subForm.setValue(submission, flags);
       }
     }
-    return changed;
+    return flags.changed;
   }
 
   getValue() {

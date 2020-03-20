@@ -307,9 +307,8 @@ export default class SignatureComponent extends Input {
     return true;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
-    const changed = super.setValue(value, flags);
+  setValue(value, flags = {}) {
+    super.setValue(value, flags);
     if (value &amp;&amp; this.refs.signatureImage &amp;&amp; this.options.readOnly) {
       this.refs.signatureImage.setAttribute(&apos;src&apos;, value);
       this.showCanvas(false);
@@ -318,11 +317,11 @@ export default class SignatureComponent extends Input {
       if (!value) {
         this.signaturePad.clear();
       }
-      else if (changed) {
+      else if (flags.changed) {
         this.triggerChange();
       }
     }
-    return changed;
+    return flags.changed;
   }
 
   showCanvas(show) {

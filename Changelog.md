@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.1
+### Added
+ - Added flag to check if draft restore is disabled
+ - Offline authentication support.
+
+### Fixed
+ - Current submission to be set after draft save.
+
+## 4.9.0-rc.12
+### Fixed
+ - Problems where the changed flag was not getting triggered and handled properly.
+ - Issues with infinite loops triggered by TextArea w/ ACE editor in JSON mode.
+ - Fixed the redraw on property to no store value references.
+ - Fixing how the pdf iframe-change event is handled.
+ - Fixing containers so that they will ensure the child components trigger their change events correctly.
+
+### Removed
+ - Aggressive error navigation where it would throw cursor to top of page when correcting errors. Now you just click the error to take you to the control with the error.
+
+## 4.9.0-rc.11
+### Fixed
+ - Problems where Number components would not get reset properly.
+ - Issues where wizards would always show errors when navigating.
+ 
+### Changed
+ - Revert changes to iframe where src was replaced with blob file hosting. It causes too many problems with different browsers and CSP issues.
+ - Upgrade i18next@19.3.3, fetch-mock@9.2.1, gulp-clean-css@4.3.0, file-loader@6.0.0
+
 ## 4.9.0-rc.10
 ### Fixed
  - Ensure no infinite loops are triggered in build mode by not checking data.

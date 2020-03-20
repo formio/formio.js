@@ -50,7 +50,7 @@ export default class HiddenComponent extends Input {
     return '';
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     return this.updateValue(value, flags);
   }
 

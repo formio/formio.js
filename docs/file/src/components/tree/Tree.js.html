@@ -505,10 +505,10 @@ export default class TreeComponent extends NestedComponent {
     );
   }
 
-  setValue(value) {
-    const changed = this.updateValue(value);
+  setValue(value, flags = {}) {
+    this.updateValue(value, flags);
     this.setRoot();
-    return changed;
+    return flags.changed;
   }
 
   addChild(parent) {

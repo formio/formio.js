@@ -1,5 +1,4 @@
 import NativePromise from 'native-promise-only';
-import _ from 'lodash';
 import Formio from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep } from './utils/utils';
@@ -8,15 +7,6 @@ export default class PDF extends Webform {
   constructor(element, options) {
     super(element, options);
     this.components = [];
-    this.handlePdfSrc();
-  }
-
-  get iframeSrc() {
-    return this._iframeSrc || '';
-  }
-
-  set iframeSrc(src) {
-    this._iframeSrc = src;
   }
 
   init() {
@@ -24,6 +14,10 @@ export default class PDF extends Webform {
 
     // Handle an iframe submission.
     this.on('iframe-submission', (submission) => this.setValue(submission, {
+      fromIframe: true
+    }), true);
+
+    this.on('iframe-change', (submission) => this.setValue(submission, {
       fromIframe: true
     }), true);
 
@@ -59,7 +53,7 @@ export default class PDF extends Webform {
 
       // iframes cannot be in the template so manually create it
       this.iframeElement = this.ce('iframe', {
-        src: this.iframeSrc,
+        src: this.getSrc(),
         id: `iframe-${this.id}`,
         seamless: true,
         class: 'formio-iframe'
@@ -129,47 +123,31 @@ export default class PDF extends Webform {
     return this.getSubmission().then(() => super.submitForm(options));
   }
 
-  fetchPdf(url) {
-    return Formio.fetch(url);
-  }
-
-  handlePdfSrc() {
-    this
-    .formReady
-    .then(() => this.getPdf())
-    .then(response => response.blob())
-    .then((blob) => {
-      this.iframeSrc = URL.createObjectURL(blob);
-      const params = [`id=${this.id}`];
-      if (this.options.readOnly) {
-        params.push('readonly=1');
-      }
-
-      if (this.options.zoom) {
-        params.push(`zoom=${this.options.zoom}`);
-      }
-
-      if (this.builderMode) {
-        params.push('builder=1');
-      }
-
-      if (params.length) {
-        this.iframeSrc += `#${params.join('&')}`;
-      }
-
-      this.redraw();
-    })
-    .catch(() => {
-      console.warn('Invalid pdf settings');
-    });
-  }
-
-  getPdf() {
-    if (!_.has(this._form, 'settings.pdf')) {
-      return NativePromise.reject();
+  getSrc() {
+    if (!this._form || !this._form.settings || !this._form.settings.pdf) {
+      return '';
     }
 
-    return this.fetchPdf(`${this._form.settings.pdf.src}.html`);
+    let iframeSrc = `${this._form.settings.pdf.src}.html`;
+    const params = [`id=${this.id}`];
+
+    if (this.options.readOnly) {
+      params.push('readonly=1');
+    }
+
+    if (this.options.zoom) {
+      params.push(`zoom=${this.options.zoom}`);
+    }
+
+    if (this.builderMode) {
+      params.push('builder=1');
+    }
+
+    if (params.length) {
+      iframeSrc += `?${params.join('&')}`;
+    }
+
+    return iframeSrc;
   }
 
   setForm(form) {
@@ -190,14 +168,14 @@ export default class PDF extends Webform {
    * @param submission
    * @param flags
    */
-  setValue(submission, flags) {
-    const changed = super.setValue(submission, flags);
+  setValue(submission, flags = {}) {
+    super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
         this.postMessage({ name: 'submission', data: submission });
       });
     }
-    return changed;
+    return flags.changed;
   }
 
   setSubmission(submission) {

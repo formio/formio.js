@@ -140,7 +140,7 @@ export default class NumberComponent extends Input {
     return val ? this.parseNumber(val) : null;
   }
 
-  setValueAt(index, value, flags) {
+  setValueAt(index, value, flags = {}) {
     return super.setValueAt(index, this.formatValue(this.parseValue(value)), flags);
   }
 

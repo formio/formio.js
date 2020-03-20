@@ -65,9 +65,7 @@ export default class TextFieldComponent extends Input {
    * @param flags
    * @return {*}
    */
-  maskValue(value, flags) {
-    flags = flags || {};
-
+  maskValue(value, flags = {}) {
     // Convert it into the correct format.
     if (!value || (typeof value !== 'object')) {
       value = {
@@ -92,7 +90,7 @@ export default class TextFieldComponent extends Input {
    * @param flags
    * @return {*}
    */
-  normalizeValue(value, flags) {
+  normalizeValue(value, flags = {}) {
     if (!this.isMultipleMasksField) {
       return super.normalizeValue(value);
     }
@@ -109,8 +107,7 @@ export default class TextFieldComponent extends Input {
    * @param value
    * @param flags
    */
-  setValueAt(index, value, flags) {
-    flags = flags || {};
+  setValueAt(index, value, flags = {}) {
     if (!this.isMultipleMasksField) {
       return super.setValueAt(index, value, flags);
     }

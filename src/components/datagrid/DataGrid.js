@@ -469,9 +469,8 @@ export default class DataGridComponent extends NestedArrayComponent {
     return valid;
   }
 
-  checkColumns(data, flags) {
+  checkColumns(data, flags = {}) {
     data = data || this.rootValue;
-    flags = flags || {};
     let show = false;
 
     if (!this.rows || !this.rows.length) {
@@ -518,8 +517,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     return show;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (!value) {
       this.dataValue = this.defaultValue;
       this.createRows();
@@ -541,7 +539,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       value.push({});
     }
 
-    const changed = this.hasChanged(value, this.dataValue);
+    flags.changed = flags.changed || this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.createRows();
     this.rows.forEach((row, rowIndex) => {
@@ -550,12 +548,12 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       _.each(row, (col) => {
         col.rowIndex = rowIndex;
-        this.setNestedValue(col, value[rowIndex], flags, false);
+        this.setNestedValue(col, value[rowIndex], flags);
       });
     });
 
-    this.updateOnChange(flags, changed);
-    return changed;
+    this.updateOnChange(flags);
+    return flags.changed;
   }
 
   restoreComponentsContext() {

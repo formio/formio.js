@@ -474,14 +474,10 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
+  updateValue(value, flags = {}) {
     return this.components.reduce((changed, comp) => {
       return comp.updateValue(null, flags) || changed;
     }, super.updateValue(value, flags));
-  }
-
-  hasChanged() {
-    return false;
   }
 
   shouldSkipValidation(data, dirty, row) {
@@ -631,30 +627,30 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((component) => component.dataReady));
   }
 
-  setNestedValue(component, value, flags, changed) {
+  setNestedValue(component, value, flags = {}) {
     component._data = this.componentContext(component);
     if (component.type === 'button') {
       return false;
     }
     if (component.type === 'components') {
-      return component.setValue(value, flags) || changed;
+      return component.setValue(value, flags);
     }
     else if (value && component.hasValue(value)) {
-      return component.setValue(_.get(value, component.key), flags) || changed;
+      return component.setValue(_.get(value, component.key), flags);
     }
     else if (!this.rootPristine || component.visible) {
       flags.noValidate = !flags.dirty;
-      return component.setValue(component.defaultValue, flags) || changed;
+      flags.resetValue = true;
+      return component.setValue(component.defaultValue, flags);
     }
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     if (!value) {
       return false;
     }
-    flags = flags || {};
-    return this.getComponents().reduce((changed, component) => {
-      return this.setNestedValue(component, value, flags, changed);
-    }, false);
+    flags.changed = flags.changed || this.hasChanged(value, this.dataValue);
+    this.getComponents().forEach((component) => this.setNestedValue(component, value, flags));
+    return flags.changed;
   }
 }
