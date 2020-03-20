@@ -21,6 +21,17 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
+    this.on('iframe-getIframePositions', () => {
+      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
+      this.postMessage({
+        name: 'iframePositions',
+        data: {
+          iframeBoundingClientRect,
+          scrollY: window.scrollY
+        }
+      });
+    });
+
     // Trigger when this form is ready.
     this.on('iframe-ready', () => this.iframeReadyResolve(), true);
   }
