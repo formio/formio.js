@@ -122,7 +122,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       }
       input.checked = !!value[input.value];
     });
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   getValueAsString(value) {

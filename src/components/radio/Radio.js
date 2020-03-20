@@ -127,7 +127,7 @@ export default class RadioComponent extends Field {
 
   updateValue(value, flags) {
     super.updateValue(value, flags);
-    if (flags.changed && this.refs.wrapper) {
+    if (flags.valueChanged && this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
       const optionSelectedClass = 'radio-selected';
@@ -145,7 +145,7 @@ export default class RadioComponent extends Field {
     }
 
     if (!flags || !flags.modified || !this.isRadio) {
-      return flags.changed;
+      return flags.valueChanged;
     }
 
     // If they clicked on the radio that is currently selected, it needs to reset the value.
@@ -157,7 +157,7 @@ export default class RadioComponent extends Field {
       this.triggerChange();
     }
     this.previousValue = this.dataValue;
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   /**

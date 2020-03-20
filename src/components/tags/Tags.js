@@ -108,7 +108,7 @@ export default class TagsComponent extends Input {
         this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
       }
     }
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   set disabled(disabled) {
