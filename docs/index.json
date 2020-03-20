@@ -4789,7 +4789,7 @@
     "__docId__": 245,
     "kind": "file",
     "name": "src/PDF.js",
-    "content": "import NativePromise from 'native-promise-only';\nimport Formio from './Formio';\nimport Webform from './Webform';\nimport { fastCloneDeep } from './utils/utils';\n\nexport default class PDF extends Webform {\n  constructor(element, options) {\n    super(element, options);\n    this.components = [];\n  }\n\n  init() {\n    super.init();\n\n    // Handle an iframe submission.\n    this.on('iframe-submission', (submission) => this.setValue(submission, {\n      fromIframe: true\n    }), true);\n\n    this.on('iframe-change', (submission) => this.setValue(submission, {\n      fromIframe: true\n    }), true);\n\n    // Trigger when this form is ready.\n    this.on('iframe-ready', () => this.iframeReadyResolve(), true);\n  }\n\n  render() {\n    return this.renderTemplate('pdf', {\n      classes: 'formio-form-pdf',\n      children: this.renderComponents()\n    });\n  }\n\n  redraw() {\n    return super.redraw();\n  }\n\n  attach(element) {\n    return super.attach(element).then(() => {\n      this.loadRefs(element, {\n        submitButton: 'single',\n        zoomIn: 'single',\n        zoomOut: 'single',\n        iframeContainer: 'single'\n      });\n\n      // Reset the iframeReady promise.\n      this.iframeReady = new NativePromise((resolve, reject) => {\n        this.iframeReadyResolve = resolve;\n        this.iframeReadyReject = reject;\n      });\n\n      // iframes cannot be in the template so manually create it\n      this.iframeElement = this.ce('iframe', {\n        src: this.getSrc(),\n        id: `iframe-${this.id}`,\n        seamless: true,\n        class: 'formio-iframe'\n      });\n\n      this.iframeElement.formioContainer = this.component.components;\n      this.iframeElement.formioComponent = this;\n\n      // Append the iframe to the iframeContainer in the template\n      this.empty(this.refs.iframeContainer);\n      this.appendChild(this.refs.iframeContainer, this.iframeElement);\n\n      // Post the form to the iframe\n      this.postMessage({ name: 'form', data: this.form });\n\n      // Hide the submit button if the associated component is hidden\n      const submitButton = this.components.find(c => c.element === this.refs.submitButton);\n      this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);\n\n      // Submit the form if they click the submit button.\n      this.addEventListener(this.refs.submitButton, 'click', () => {\n        this.postMessage({ name: 'getErrors' });\n        return this.submit();\n      });\n\n      this.addEventListener(this.refs.zoomIn, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomIn' });\n      });\n\n      this.addEventListener(this.refs.zoomOut, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomOut' });\n      });\n\n      const form = fastCloneDeep(this.form);\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n\n      this.emit('attach');\n    });\n  }\n\n  /**\n   * Get the submission from the iframe.\n   *\n   * @return {Promise<any>}\n   */\n  getSubmission() {\n    return new NativePromise((resolve) => {\n      this.once('iframe-submission', resolve);\n      this.postMessage({ name: 'getSubmission' });\n    });\n  }\n\n  /**\n   * Ensure we have the submission from the iframe before we submit the form.\n   *\n   * @param options\n   * @return {*}\n   */\n  submitForm(options = {}) {\n    return this.getSubmission().then(() => super.submitForm(options));\n  }\n\n  getSrc() {\n    if (!this._form || !this._form.settings || !this._form.settings.pdf) {\n      return '';\n    }\n\n    let iframeSrc = `${this._form.settings.pdf.src}.html`;\n    const params = [`id=${this.id}`];\n\n    if (this.options.readOnly) {\n      params.push('readonly=1');\n    }\n\n    if (this.options.zoom) {\n      params.push(`zoom=${this.options.zoom}`);\n    }\n\n    if (this.builderMode) {\n      params.push('builder=1');\n    }\n\n    if (params.length) {\n      iframeSrc += `?${params.join('&')}`;\n    }\n\n    return iframeSrc;\n  }\n\n  setForm(form) {\n    return super.setForm(form).then(() => {\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n      this.postMessage({ name: 'form', data: form });\n    });\n  }\n\n  /**\n   * Set's the value of this form component.\n   *\n   * @param submission\n   * @param flags\n   */\n  setValue(submission, flags = {}) {\n    super.setValue(submission, flags);\n    if (!flags || !flags.fromIframe) {\n      this.once('iframe-ready', () => {\n        this.postMessage({ name: 'submission', data: submission });\n      });\n    }\n    return flags.changed;\n  }\n\n  setSubmission(submission) {\n    submission.readOnly = !!this.options.readOnly;\n    return super.setSubmission(submission).then(() => {\n      if (this.formio) {\n        this.formio.getDownloadUrl().then((url) => {\n          // Add a download button if it has a download url.\n          if (!url) {\n            return;\n          }\n          if (!this.downloadButton) {\n            if (this.options.primaryProject) {\n              url += `&project=${this.options.primaryProject}`;\n            }\n            this.downloadButton = this.ce('a', {\n              href: url,\n              target: '_blank',\n              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'\n            }, this.ce('img', {\n              src: require('./pdf.image'),\n              style: 'width:3em;'\n            }));\n            this.element.insertBefore(this.downloadButton, this.iframe);\n          }\n        });\n      }\n    });\n  }\n\n  postMessage(message) {\n    // If we get here before the iframeReady promise is set up, it's via the superclass constructor\n    if (!this.iframeReady) {\n      return;\n    }\n\n    if (!message.type) {\n      message.type = 'iframe-data';\n    }\n\n    this.iframeReady.then(() => {\n      if (this.iframeElement && this.iframeElement.contentWindow) {\n        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');\n      }\n    });\n  }\n\n  // Do not clear the iframe.\n  clear() {}\n\n  showErrors(error, triggerEvent) {\n    const p = this.ce('p');\n    p.classList.add('help-block');\n    this.setContent(p, this.t('submitError'));\n    p.addEventListener('click', () => {\n      window.scrollTo(0, 0);\n    });\n    const div = this.ce('div');\n    div.classList.add('has-error');\n    this.appendTo(p, div);\n    this.appendTo(div, this.element);\n\n    super.showErrors(error, triggerEvent);\n  }\n}\n\n/**\n * Listen for window messages.\n */\nwindow.addEventListener('message', (event) => {\n  let eventData = null;\n  try {\n    eventData = JSON.parse(event.data);\n  }\n  catch (err) {\n    eventData = null;\n  }\n\n  // If this form exists, then emit the event within this form.\n  if (\n    eventData &&\n    eventData.name &&\n    eventData.formId &&\n    Formio.forms.hasOwnProperty(eventData.formId)\n  ) {\n    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);\n  }\n});\n",
+    "content": "import NativePromise from 'native-promise-only';\nimport Formio from './Formio';\nimport Webform from './Webform';\nimport { fastCloneDeep } from './utils/utils';\n\nexport default class PDF extends Webform {\n  constructor(element, options) {\n    super(element, options);\n    this.components = [];\n  }\n\n  init() {\n    super.init();\n\n    // Handle an iframe submission.\n    this.on('iframe-submission', (submission) => this.setValue(submission, {\n      fromIframe: true\n    }), true);\n\n    this.on('iframe-change', (submission) => this.setValue(submission, {\n      fromIframe: true\n    }), true);\n\n    this.on('iframe-getIframePositions', () => {\n      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();\n      this.postMessage({\n        name: 'iframePositions',\n        data: {\n          iframeBoundingClientRect,\n          scrollY: window.scrollY\n        }\n      });\n    });\n\n    // Trigger when this form is ready.\n    this.on('iframe-ready', () => this.iframeReadyResolve(), true);\n  }\n\n  render() {\n    return this.renderTemplate('pdf', {\n      classes: 'formio-form-pdf',\n      children: this.renderComponents()\n    });\n  }\n\n  redraw() {\n    return super.redraw();\n  }\n\n  attach(element) {\n    return super.attach(element).then(() => {\n      this.loadRefs(element, {\n        submitButton: 'single',\n        zoomIn: 'single',\n        zoomOut: 'single',\n        iframeContainer: 'single'\n      });\n\n      // Reset the iframeReady promise.\n      this.iframeReady = new NativePromise((resolve, reject) => {\n        this.iframeReadyResolve = resolve;\n        this.iframeReadyReject = reject;\n      });\n\n      // iframes cannot be in the template so manually create it\n      this.iframeElement = this.ce('iframe', {\n        src: this.getSrc(),\n        id: `iframe-${this.id}`,\n        seamless: true,\n        class: 'formio-iframe'\n      });\n\n      this.iframeElement.formioContainer = this.component.components;\n      this.iframeElement.formioComponent = this;\n\n      // Append the iframe to the iframeContainer in the template\n      this.empty(this.refs.iframeContainer);\n      this.appendChild(this.refs.iframeContainer, this.iframeElement);\n\n      // Post the form to the iframe\n      this.postMessage({ name: 'form', data: this.form });\n\n      // Hide the submit button if the associated component is hidden\n      const submitButton = this.components.find(c => c.element === this.refs.submitButton);\n      this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);\n\n      // Submit the form if they click the submit button.\n      this.addEventListener(this.refs.submitButton, 'click', () => {\n        this.postMessage({ name: 'getErrors' });\n        return this.submit();\n      });\n\n      this.addEventListener(this.refs.zoomIn, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomIn' });\n      });\n\n      this.addEventListener(this.refs.zoomOut, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomOut' });\n      });\n\n      const form = fastCloneDeep(this.form);\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n\n      this.emit('attach');\n    });\n  }\n\n  /**\n   * Get the submission from the iframe.\n   *\n   * @return {Promise<any>}\n   */\n  getSubmission() {\n    return new NativePromise((resolve) => {\n      this.once('iframe-submission', resolve);\n      this.postMessage({ name: 'getSubmission' });\n    });\n  }\n\n  /**\n   * Ensure we have the submission from the iframe before we submit the form.\n   *\n   * @param options\n   * @return {*}\n   */\n  submitForm(options = {}) {\n    return this.getSubmission().then(() => super.submitForm(options));\n  }\n\n  getSrc() {\n    if (!this._form || !this._form.settings || !this._form.settings.pdf) {\n      return '';\n    }\n\n    let iframeSrc = `${this._form.settings.pdf.src}.html`;\n    const params = [`id=${this.id}`];\n\n    if (this.options.readOnly) {\n      params.push('readonly=1');\n    }\n\n    if (this.options.zoom) {\n      params.push(`zoom=${this.options.zoom}`);\n    }\n\n    if (this.builderMode) {\n      params.push('builder=1');\n    }\n\n    if (params.length) {\n      iframeSrc += `?${params.join('&')}`;\n    }\n\n    return iframeSrc;\n  }\n\n  setForm(form) {\n    return super.setForm(form).then(() => {\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n      this.postMessage({ name: 'form', data: form });\n    });\n  }\n\n  /**\n   * Set's the value of this form component.\n   *\n   * @param submission\n   * @param flags\n   */\n  setValue(submission, flags = {}) {\n    super.setValue(submission, flags);\n    if (!flags || !flags.fromIframe) {\n      this.once('iframe-ready', () => {\n        this.postMessage({ name: 'submission', data: submission });\n      });\n    }\n    return flags.changed;\n  }\n\n  setSubmission(submission) {\n    submission.readOnly = !!this.options.readOnly;\n    return super.setSubmission(submission).then(() => {\n      if (this.formio) {\n        this.formio.getDownloadUrl().then((url) => {\n          // Add a download button if it has a download url.\n          if (!url) {\n            return;\n          }\n          if (!this.downloadButton) {\n            if (this.options.primaryProject) {\n              url += `&project=${this.options.primaryProject}`;\n            }\n            this.downloadButton = this.ce('a', {\n              href: url,\n              target: '_blank',\n              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'\n            }, this.ce('img', {\n              src: require('./pdf.image'),\n              style: 'width:3em;'\n            }));\n            this.element.insertBefore(this.downloadButton, this.iframe);\n          }\n        });\n      }\n    });\n  }\n\n  postMessage(message) {\n    // If we get here before the iframeReady promise is set up, it's via the superclass constructor\n    if (!this.iframeReady) {\n      return;\n    }\n\n    if (!message.type) {\n      message.type = 'iframe-data';\n    }\n\n    this.iframeReady.then(() => {\n      if (this.iframeElement && this.iframeElement.contentWindow) {\n        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');\n      }\n    });\n  }\n\n  // Do not clear the iframe.\n  clear() {}\n\n  showErrors(error, triggerEvent) {\n    const p = this.ce('p');\n    p.classList.add('help-block');\n    this.setContent(p, this.t('submitError'));\n    p.addEventListener('click', () => {\n      window.scrollTo(0, 0);\n    });\n    const div = this.ce('div');\n    div.classList.add('has-error');\n    this.appendTo(p, div);\n    this.appendTo(div, this.element);\n\n    super.showErrors(error, triggerEvent);\n  }\n}\n\n/**\n * Listen for window messages.\n */\nwindow.addEventListener('message', (event) => {\n  let eventData = null;\n  try {\n    eventData = JSON.parse(event.data);\n  }\n  catch (err) {\n    eventData = null;\n  }\n\n  // If this form exists, then emit the event within this form.\n  if (\n    eventData &&\n    eventData.name &&\n    eventData.formId &&\n    Formio.forms.hasOwnProperty(eventData.formId)\n  ) {\n    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);\n  }\n});\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/PDF.js",
     "access": "public",
@@ -4873,7 +4873,7 @@
     "longname": "src/PDF.js~PDF#render",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 39,
     "undocument": true,
     "params": [],
     "return": {
@@ -4893,7 +4893,7 @@
     "longname": "src/PDF.js~PDF#redraw",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 46,
     "undocument": true,
     "params": [],
     "return": {
@@ -4913,7 +4913,7 @@
     "longname": "src/PDF.js~PDF#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 50,
     "undocument": true,
     "params": [
       {
@@ -4938,7 +4938,7 @@
     "longname": "src/PDF.js~PDF#iframeReady",
     "access": "public",
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 60,
     "undocument": true,
     "type": {
       "types": [
@@ -4955,7 +4955,7 @@
     "longname": "src/PDF.js~PDF#iframeReadyResolve",
     "access": "public",
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 61,
     "undocument": true,
     "type": {
       "types": [
@@ -4972,7 +4972,7 @@
     "longname": "src/PDF.js~PDF#iframeReadyReject",
     "access": "public",
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 62,
     "undocument": true,
     "type": {
       "types": [
@@ -4989,7 +4989,7 @@
     "longname": "src/PDF.js~PDF#iframeElement",
     "access": "public",
     "description": null,
-    "lineNumber": 55,
+    "lineNumber": 66,
     "undocument": true,
     "type": {
       "types": [
@@ -5008,7 +5008,7 @@
     "longname": "src/PDF.js~PDF#getSubmission",
     "access": "public",
     "description": "Get the submission from the iframe.",
-    "lineNumber": 109,
+    "lineNumber": 120,
     "return": {
       "nullable": null,
       "types": [
@@ -5030,7 +5030,7 @@
     "longname": "src/PDF.js~PDF#submitForm",
     "access": "public",
     "description": "Ensure we have the submission from the iframe before we submit the form.",
-    "lineNumber": 122,
+    "lineNumber": 133,
     "params": [
       {
         "nullable": null,
@@ -5063,7 +5063,7 @@
     "longname": "src/PDF.js~PDF#getSrc",
     "access": "public",
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 137,
     "undocument": true,
     "params": [],
     "return": {
@@ -5083,7 +5083,7 @@
     "longname": "src/PDF.js~PDF#setForm",
     "access": "public",
     "description": null,
-    "lineNumber": 153,
+    "lineNumber": 164,
     "undocument": true,
     "params": [
       {
@@ -5110,7 +5110,7 @@
     "longname": "src/PDF.js~PDF#setValue",
     "access": "public",
     "description": "Set's the value of this form component.",
-    "lineNumber": 171,
+    "lineNumber": 182,
     "params": [
       {
         "nullable": null,
@@ -5150,7 +5150,7 @@
     "longname": "src/PDF.js~PDF#setSubmission",
     "access": "public",
     "description": null,
-    "lineNumber": 181,
+    "lineNumber": 192,
     "undocument": true,
     "params": [
       {
@@ -5175,7 +5175,7 @@
     "longname": "src/PDF.js~PDF#downloadButton",
     "access": "public",
     "description": null,
-    "lineNumber": 194,
+    "lineNumber": 205,
     "undocument": true,
     "type": {
       "types": [
@@ -5194,7 +5194,7 @@
     "longname": "src/PDF.js~PDF#postMessage",
     "access": "public",
     "description": null,
-    "lineNumber": 209,
+    "lineNumber": 220,
     "undocument": true,
     "params": [
       {
@@ -5217,7 +5217,7 @@
     "longname": "src/PDF.js~PDF#clear",
     "access": "public",
     "description": null,
-    "lineNumber": 227,
+    "lineNumber": 238,
     "undocument": true,
     "params": [],
     "return": null
@@ -5233,7 +5233,7 @@
     "longname": "src/PDF.js~PDF#showErrors",
     "access": "public",
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 240,
     "undocument": true,
     "params": [
       {
@@ -58385,7 +58385,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.9.0\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.3.0\",\n    \"@formio/semantic\": \"^2.3.0\",\n    \"autocompleter\": \"^6.0.2\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^9.0.1\",\n    \"core-js\": \"^3.6.4\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"dompurify\": \"^2.0.8\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^6.1.0\",\n    \"fast-deep-equal\": \"^3.1.1\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.3\",\n    \"i18next\": \"^19.3.3\",\n    \"idb\": \"^5.0.1\",\n    \"ismobilejs\": \"^1.0.3\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^2.2.0\",\n    \"lodash\": \"^4.17.15\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.28\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^7.0.2\",\n    \"vanilla-picker\": \"^2.10.1\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.8.4\",\n    \"@babel/core\": \"^7.8.7\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.8.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.8.3\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.8.3\",\n    \"@babel/polyfill\": \"^7.8.7\",\n    \"@babel/preset-env\": \"^7.8.7\",\n    \"@babel/register\": \"^7.8.6\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.0.6\",\n    \"bootstrap\": \"^4.4.1\",\n    \"bootswatch\": \"^4.4.1\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.4\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.3.5\",\n    \"escape-string-regexp\": \"^2.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^6.8.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.2.1\",\n    \"file-loader\": \"^6.0.0\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.4.1\",\n    \"jsdom\": \"^16.2.1\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^4.4.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^0.8.1\",\n    \"mocha\": \"^7.1.1\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.0\",\n    \"sinon\": \"^9.0.1\",\n    \"webpack\": \"^4.42.0\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.9.1\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.3.0\",\n    \"@formio/semantic\": \"^2.3.0\",\n    \"autocompleter\": \"^6.0.2\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^9.0.1\",\n    \"core-js\": \"^3.6.4\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"dompurify\": \"^2.0.8\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^6.1.0\",\n    \"fast-deep-equal\": \"^3.1.1\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.3\",\n    \"i18next\": \"^19.3.3\",\n    \"idb\": \"^5.0.1\",\n    \"ismobilejs\": \"^1.0.3\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^2.2.0\",\n    \"lodash\": \"^4.17.15\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.28\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^7.0.2\",\n    \"vanilla-picker\": \"^2.10.1\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.8.4\",\n    \"@babel/core\": \"^7.9.0\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.8.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.8.3\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.9.0\",\n    \"@babel/polyfill\": \"^7.8.7\",\n    \"@babel/preset-env\": \"^7.9.0\",\n    \"@babel/register\": \"^7.9.0\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.1.0\",\n    \"bootstrap\": \"^4.4.1\",\n    \"bootswatch\": \"^4.4.1\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.4\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.3.5\",\n    \"escape-string-regexp\": \"^2.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^6.8.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.2.1\",\n    \"file-loader\": \"^6.0.0\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.4.1\",\n    \"jsdom\": \"^16.2.1\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^4.4.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^0.8.1\",\n    \"mocha\": \"^7.1.1\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.0\",\n    \"sinon\": \"^9.0.1\",\n    \"webpack\": \"^4.42.0\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,

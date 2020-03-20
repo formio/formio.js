@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.1
+### Added
+ - A way for the child pdf to retrieve the parent position information.
+ 
+### Changed
+ - Upgrade @babel/core@7.9.0, @babel/plugin-proposal-optional-chaining@7.9.0, @babel/preset-env@7.9.0, @babel/register@7.9.0, babel-loader@8.1.0
+
 ## 4.9.0
 ### Fixed
  - A few cases where flags would not get passed in and would cause errors to throw.

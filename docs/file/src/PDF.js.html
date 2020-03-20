@@ -263,6 +263,17 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
+    this.on(&apos;iframe-getIframePositions&apos;, () =&gt; {
+      const iframeBoundingClientRect = document.querySelector(&apos;iframe&apos;).getBoundingClientRect();
+      this.postMessage({
+        name: &apos;iframePositions&apos;,
+        data: {
+          iframeBoundingClientRect,
+          scrollY: window.scrollY
+        }
+      });
+    });
+
     // Trigger when this form is ready.
     this.on(&apos;iframe-ready&apos;, () =&gt; this.iframeReadyResolve(), true);
   }
