@@ -1365,7 +1365,7 @@ export default class Webform extends NestedDataComponent {
           // Use the form action to submit the form if available.
           if (this._form && this._form.action) {
             const method = (submission.data._id && this._form.action.includes(submission.data._id)) ? 'PUT' : 'POST';
-            return Formio.makeStaticRequest(this._form.action, method, submission.data, this.formio ? this.formio.options : {})
+            return Formio.makeStaticRequest(this._form.action, method, submission, this.formio ? this.formio.options : {})
               .then((result) => resolve({
                 submission: result,
                 saved: true,
