@@ -503,7 +503,7 @@ export default class Wizard extends Webform {
   setValue(submission, flags = {}) {
     super.setValue(submission, flags);
     this.pageFieldLogic(this.page);
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   isClickable(page, index) {

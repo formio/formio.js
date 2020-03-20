@@ -2157,7 +2157,7 @@ export default class Component extends Element {
     }
     value = this.dataValue;
     if (!this.hasInput) {
-      return flags.changed;
+      return flags.valueChanged;
     }
     const isArray = Array.isArray(value);
     if (
@@ -2174,7 +2174,7 @@ export default class Component extends Element {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   /**
@@ -2243,12 +2243,12 @@ export default class Component extends Element {
   updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    flags.changed = flags.changed || ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
-    if (flags.changed) {
+    flags.valueChanged = flags.valueChanged || ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
+    if (flags.valueChanged) {
       this.dataValue = newValue;
       this.updateOnChange(flags);
     }
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   /**
@@ -2313,7 +2313,7 @@ export default class Component extends Element {
    * @param flags
    */
   updateOnChange(flags = {}) {
-    if (!flags.noUpdateEvent && flags.changed) {
+    if (!flags.noUpdateEvent && flags.valueChanged) {
       this.triggerChange(flags);
       return true;
     }
@@ -2377,7 +2377,7 @@ export default class Component extends Element {
     // Set the new value.
     this.setValue(calculatedValue, flags);
     this.calculatedValue = this.dataValue;
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   /**
@@ -2513,7 +2513,7 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changed);
+    this.checkRefreshOn(flags.valueChanged);
     if (flags.noCheck) {
       return true;
     }

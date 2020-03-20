@@ -57,15 +57,15 @@ export default class ContainerComponent extends NestedDataComponent {
       flags.noValidate = true;
     }
     if (!value || !_.isObject(value) || !hasValue) {
-      flags.changed = true;
+      flags.valueChanged = true;
       this.dataValue = this.defaultValue;
     }
     else {
-      flags.changed = flags.changed || this.hasChanged(value, this.dataValue);
+      flags.valueChanged = flags.valueChanged || this.hasChanged(value, this.dataValue);
       this.dataValue = value;
     }
     super.setValue(value, flags);
     this.updateOnChange(flags);
-    return flags.changed;
+    return flags.valueChanged;
   }
 }

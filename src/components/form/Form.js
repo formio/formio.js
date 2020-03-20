@@ -482,7 +482,7 @@ export default class FormComponent extends Component {
         this.subForm.setValue(submission, flags);
       }
     }
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   getValue() {

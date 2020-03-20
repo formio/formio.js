@@ -842,7 +842,7 @@ export default class Webform extends NestedDataComponent {
     }
     submission.data = this.data;
     this._submission = submission;
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   getValue() {
@@ -1261,6 +1261,7 @@ export default class Webform extends NestedDataComponent {
   }
 
   checkData(data, flags = {}) {
+    flags.valueChanged = false;
     const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
