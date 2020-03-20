@@ -2160,7 +2160,13 @@ export default class Component extends Element {
       return flags.changed;
     }
     const isArray = Array.isArray(value);
-    if (this.component.multiple && isArray && this.refs.input && this.refs.input.length !== value.length) {
+    if (
+      isArray &&
+      Array.isArray(this.defaultValue) &&
+      this.refs.hasOwnProperty('input') &&
+      this.refs.input &&
+      (this.refs.input.length !== value.length)
+    ) {
       this.redraw();
     }
     for (const i in this.refs.input) {
