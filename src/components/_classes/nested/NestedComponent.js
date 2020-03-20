@@ -646,8 +646,8 @@ export default class NestedComponent extends Field {
     if (!value) {
       return false;
     }
-    flags.changed = flags.changed || this.hasChanged(value, this.dataValue);
+    flags.valueChanged = flags.valueChanged || this.hasChanged(value, this.dataValue);
     this.getComponents().forEach((component) => this.setNestedValue(component, value, flags));
-    return flags.changed;
+    return flags.valueChanged;
   }
 }

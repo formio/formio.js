@@ -172,7 +172,7 @@ export default class Input extends Multivalue {
     flags = flags || {};
     super.updateValue(value, flags);
     this.triggerUpdateValueAt(this.dataValue, flags, index);
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   parseValue(value) {
