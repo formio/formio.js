@@ -428,7 +428,7 @@ export default class PDF extends Webform {
         this.postMessage({ name: &apos;submission&apos;, data: submission });
       });
     }
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   setSubmission(submission) {

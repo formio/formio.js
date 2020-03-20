@@ -474,11 +474,11 @@ export default class AddressComponent extends ContainerComponent {
       this.restoreComponentsContext();
     }
 
-    if (flags.changed) {
+    if (flags.valueChanged) {
       this.redraw();
     }
 
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   static get modeSwitcherRef() {
