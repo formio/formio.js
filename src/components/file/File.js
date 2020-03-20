@@ -316,6 +316,8 @@ export default class FileComponent extends Field {
       fileImage: 'multiple',
       fileType: 'multiple',
     });
+    // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
+    this.refs.input = [];
     const superAttach = super.attach(element);
 
     if (this.refs.fileDrop) {
