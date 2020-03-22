@@ -2513,7 +2513,7 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.valueChanged);
+    this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
     }
