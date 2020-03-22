@@ -671,10 +671,10 @@ describe('Webform tests', () => {
   });
 
   describe('getValue and setValue', () => {
-    it('should setValue and getValue', () => {
+    it('should setValue and getValue', (done) => {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-      return form.setForm({
+      form.setForm({
         components: [
           {
             type: 'textfield',
@@ -712,6 +712,13 @@ describe('Webform tests', () => {
           }
         ]
       }).then(() => {
+        let count = 0;
+        const onChange = form.onChange;
+        form.onChange = function(...args) {
+          count++;
+          return onChange.apply(form, args);
+        };
+
         // Ensure that it says it changes.
         assert.equal(form.setValue({
           a: 'a',
@@ -722,6 +729,12 @@ describe('Webform tests', () => {
             ]
           }
         }), true);
+
+        setTimeout(() => {
+          // It should have only updated once.
+          assert.equal(count, 1);
+          done();
+        }, 500);
       });
     });
   });

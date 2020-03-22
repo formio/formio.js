@@ -836,13 +836,13 @@ export default class Webform extends NestedDataComponent {
       this.options.submissionTimezone = submission.metadata.timezone;
     }
 
-    super.setValue(submission.data, flags);
+    const changed = super.setValue(submission.data, flags);
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
     submission.data = this.data;
     this._submission = submission;
-    return flags.valueChanged;
+    return changed;
   }
 
   getValue() {
@@ -1261,7 +1261,6 @@ export default class Webform extends NestedDataComponent {
   }
 
   checkData(data, flags = {}) {
-    flags.valueChanged = false;
     const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();

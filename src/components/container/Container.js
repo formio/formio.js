@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
+import _ from 'lodash';
 
 export default class ContainerComponent extends NestedDataComponent {
   static schema(...extend) {
@@ -52,20 +52,15 @@ export default class ContainerComponent extends NestedDataComponent {
   }
 
   setValue(value, flags = {}) {
+    let changed = false;
     const hasValue = this.hasValue();
     if (hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
     if (!value || !_.isObject(value) || !hasValue) {
-      flags.valueChanged = true;
+      changed = true;
       this.dataValue = this.defaultValue;
     }
-    else {
-      flags.valueChanged = flags.valueChanged || this.hasChanged(value, this.dataValue);
-      this.dataValue = value;
-    }
-    super.setValue(value, flags);
-    this.updateOnChange(flags);
-    return flags.valueChanged;
+    return super.setValue(value, flags) || changed;
   }
 }

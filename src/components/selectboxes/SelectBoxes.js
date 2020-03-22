@@ -114,7 +114,7 @@ export default class SelectBoxesComponent extends RadioComponent {
    * @param flags
    */
   setValue(value, flags = {}) {
-    this.updateValue(value, flags);
+    const changed = this.updateValue(value, flags);
     value = this.dataValue;
     _.each(this.refs.input, (input) => {
       if (_.isUndefined(value[input.value])) {
@@ -122,7 +122,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       }
       input.checked = !!value[input.value];
     });
-    return flags.valueChanged;
+    return changed;
   }
 
   getValueAsString(value) {
