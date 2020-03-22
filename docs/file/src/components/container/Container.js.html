@@ -240,8 +240,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/container/Container.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import NestedDataComponent from &apos;../_classes/nesteddata/NestedDataComponent&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NestedDataComponent from &apos;../_classes/nesteddata/NestedDataComponent&apos;;
+import _ from &apos;lodash&apos;;
 
 export default class ContainerComponent extends NestedDataComponent {
   static schema(...extend) {
@@ -294,21 +294,16 @@ export default class ContainerComponent extends NestedDataComponent {
   }
 
   setValue(value, flags = {}) {
+    let changed = false;
     const hasValue = this.hasValue();
     if (hasValue &amp;&amp; _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
     if (!value || !_.isObject(value) || !hasValue) {
-      flags.valueChanged = true;
+      changed = true;
       this.dataValue = this.defaultValue;
     }
-    else {
-      flags.valueChanged = flags.valueChanged || this.hasChanged(value, this.dataValue);
-      this.dataValue = value;
-    }
-    super.setValue(value, flags);
-    this.updateOnChange(flags);
-    return flags.valueChanged;
+    return super.setValue(value, flags) || changed;
   }
 }
 </code></pre>

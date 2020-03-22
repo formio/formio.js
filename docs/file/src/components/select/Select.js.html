@@ -1367,7 +1367,7 @@ export default class SelectComponent extends Field {
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
-    this.updateValue(value, flags);
+    const changed = this.updateValue(value, flags);
     value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
@@ -1389,7 +1389,7 @@ export default class SelectComponent extends Field {
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
-      return flags.valueChanged;
+      return changed;
     }
 
     // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
@@ -1398,13 +1398,13 @@ export default class SelectComponent extends Field {
       this.lazyLoadInit = true;
       const searchProperty = this.component.searchField || this.component.valueProperty;
       this.triggerUpdate(_.get(value.data || value, searchProperty, value), true);
-      return flags.valueChanged;
+      return changed;
     }
 
     // Add the value options.
     this.addValueOptions();
     this.setChoicesValue(value, hasPreviousValue);
-    return flags.valueChanged;
+    return changed;
   }
 
   isInitApiCallNeeded(hasValue) {

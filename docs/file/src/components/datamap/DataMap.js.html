@@ -456,11 +456,11 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   setValue(value, flags = {}) {
-    flags.valueChanged = flags.valueChanged || this.hasChanged(value, this.dataValue);
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.createRows();
-    this.updateOnChange(flags);
-    return flags.valueChanged;
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 
   checkColumns() {
