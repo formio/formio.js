@@ -317,11 +317,11 @@ export default class SignatureComponent extends Input {
       if (!value) {
         this.signaturePad.clear();
       }
-      else if (flags.changed) {
+      else if (flags.valueChanged) {
         this.triggerChange();
       }
     }
-    return flags.changed;
+    return flags.valueChanged;
   }
 
   showCanvas(show) {

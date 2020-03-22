@@ -12,6 +12,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Current submission to be set after draft save.
 
+## 4.9.3
+### Fixed
+ - Infinite loop issues that could arise within the renderer.
+
+## 4.9.2
+### Fixed
+ - Issues where the File component would not always show the file lists.
+ 
+### Changed
+ - Upgrade eventemitter2@6.2.0
+
+## 4.9.1
+### Added
+ - A way for the child pdf to retrieve the parent position information.
+ 
+### Changed
+ - Upgrade @babel/core@7.9.0, @babel/plugin-proposal-optional-chaining@7.9.0, @babel/preset-env@7.9.0, @babel/register@7.9.0, babel-loader@8.1.0
+
+## 4.9.0
+### Fixed
+ - A few cases where flags would not get passed in and would cause errors to throw.
+
 ## 4.9.0-rc.12
 ### Fixed
  - Problems where the changed flag was not getting triggered and handled properly.
