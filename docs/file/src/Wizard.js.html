@@ -674,23 +674,14 @@ export default class Wizard extends Webform {
   }
 
   cancel(noconfirm) {
-    const redraw = (0 === this.page);
     if (super.cancel(noconfirm)) {
       this.setPristine(true);
       return this.setPage(0).then(() =&gt; {
-        if (redraw) {
           this.redraw();
-        }
+          return this.page;
       });
     }
-    else {
-      this.setPristine(true);
-      return this.setPage(0).then(() =&gt; {
-        if (redraw) {
-          this.redraw();
-        }
-      });
-    }
+    return NativePromise.resolve();
   }
 
   getPageIndexByKey(key) {

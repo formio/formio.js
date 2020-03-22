@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.4
+### Fixed
+ - Issues with the refresh on property.
+ - Fixed issue with loss of focus on Cancel button during Wizard cancel event.
+
+### Changed
+ - Upgrade eventemitter2@6.2.1, fetch-mock@9.3.0
+
 ## 4.9.3
 ### Fixed
  - Infinite loop issues that could arise within the renderer.
