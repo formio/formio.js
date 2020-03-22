@@ -539,7 +539,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       value.push({});
     }
 
-    flags.valueChanged = flags.valueChanged || this.hasChanged(value, this.dataValue);
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.createRows();
     this.rows.forEach((row, rowIndex) => {
@@ -552,8 +552,8 @@ export default class DataGridComponent extends NestedArrayComponent {
       });
     });
 
-    this.updateOnChange(flags);
-    return flags.valueChanged;
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 
   restoreComponentsContext() {

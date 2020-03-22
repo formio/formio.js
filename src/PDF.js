@@ -180,13 +180,13 @@ export default class PDF extends Webform {
    * @param flags
    */
   setValue(submission, flags = {}) {
-    super.setValue(submission, flags);
+    const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
         this.postMessage({ name: 'submission', data: submission });
       });
     }
-    return flags.valueChanged;
+    return changed;
   }
 
   setSubmission(submission) {

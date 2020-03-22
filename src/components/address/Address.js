@@ -226,17 +226,17 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   setValue(value, flags = {}) {
-    Field.prototype.setValue.call(this, value, flags);
+    const changed = Field.prototype.setValue.call(this, value, flags);
 
     if (this.manualMode) {
       this.restoreComponentsContext();
     }
 
-    if (flags.valueChanged) {
+    if (changed) {
       this.redraw();
     }
 
-    return flags.valueChanged;
+    return changed;
   }
 
   static get modeSwitcherRef() {
