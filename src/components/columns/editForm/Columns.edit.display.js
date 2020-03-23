@@ -43,6 +43,20 @@ export default [
         defaultValue: []
       },
       {
+        type: 'select',
+        key: 'prefix',
+        defaultValue: 'md',
+        label: 'Prefix',
+        data: {
+          values: [
+            { label: 'sm', value: 'sm' },
+            { label: 'md', value: 'md' },
+            { label: 'lg', value: 'lg' },
+            { label: 'xl', value: 'xl' },
+          ],
+        },
+      },
+      {
         type: 'number',
         key: 'width',
         defaultValue: 6,
