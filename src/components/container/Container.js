@@ -61,6 +61,8 @@ export default class ContainerComponent extends NestedDataComponent {
       changed = true;
       this.dataValue = this.defaultValue;
     }
-    return super.setValue(value, flags) || changed;
+    changed = super.setValue(value, flags) || changed;
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 }
