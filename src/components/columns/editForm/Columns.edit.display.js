@@ -44,9 +44,9 @@ export default [
       },
       {
         type: 'select',
-        key: 'prefix',
+        key: 'size',
         defaultValue: 'md',
-        label: 'Prefix',
+        label: 'Size',
         data: {
           values: [
             { label: 'sm', value: 'sm' },

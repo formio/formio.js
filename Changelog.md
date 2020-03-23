@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.6
+### Fixed
+ - GS-PDF27: Add DOMTokenList polyfill to resolve submit issues with IE11.
+
+### Added
+ - UIP-157: Feat(Columns): add option for grid classes prefixes
+
 ## 4.9.5
 ### Changed
  - The change flow logic to be more isolated and component specific.

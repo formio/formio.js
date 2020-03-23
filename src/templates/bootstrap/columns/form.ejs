@@ -1,9 +1,9 @@
 {% ctx.component.columns.forEach(function(column, index) { %}
 <div class="
-    col-{{column.prefix}}-{{column.width}}
-    col-{{column.prefix}}-offset-{{column.offset}}
-    col-{{column.prefix}}-push-{{column.push}}
-    col-{{column.prefix}}-pull-{{column.pull}}
+    col-{{column.size}}-{{column.width}}
+    col-{{column.size}}-offset-{{column.offset}}
+    col-{{column.size}}-push-{{column.push}}
+    col-{{column.size}}-pull-{{column.pull}}
   " ref="{{ctx.columnKey}}">
   {{ctx.columnComponents[index]}}
 </div>
