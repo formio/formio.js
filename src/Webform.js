@@ -853,13 +853,13 @@ export default class Webform extends NestedDataComponent {
       this.options.submissionTimezone = submission.metadata.timezone;
     }
 
-    super.setValue(submission.data, flags);
+    const changed = super.setValue(submission.data, flags);
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
     submission.data = this.data;
     this._submission = submission;
-    return flags.changed;
+    return changed;
   }
 
   getValue() {

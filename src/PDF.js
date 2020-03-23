@@ -21,6 +21,17 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
+    this.on('iframe-getIframePositions', () => {
+      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
+      this.postMessage({
+        name: 'iframePositions',
+        data: {
+          iframeBoundingClientRect,
+          scrollY: window.scrollY
+        }
+      });
+    });
+
     // Trigger when this form is ready.
     this.on('iframe-ready', () => this.iframeReadyResolve(), true);
   }
@@ -169,13 +180,13 @@ export default class PDF extends Webform {
    * @param flags
    */
   setValue(submission, flags = {}) {
-    super.setValue(submission, flags);
+    const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
         this.postMessage({ name: 'submission', data: submission });
       });
     }
-    return flags.changed;
+    return changed;
   }
 
   setSubmission(submission) {

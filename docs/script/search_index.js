@@ -9426,6 +9426,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.unit.js",
+    "file/src/components/file/File.unit.js.html",
+    "src/components/file/File.unit.js",
+    "file"
+  ],
+  [
     "src/components/file/editform/file.edit.data.js",
     "file/src/components/file/editForm/File.edit.data.js.html",
     "src/components/file/editForm/File.edit.data.js",
@@ -9447,6 +9453,18 @@ window.esdocSearchIndex = [
     "src/components/file/editform/file.edit.validation.js",
     "file/src/components/file/editForm/File.edit.validation.js.html",
     "src/components/file/editForm/File.edit.validation.js",
+    "file"
+  ],
+  [
+    "src/components/file/fixtures/comp1.js",
+    "file/src/components/file/fixtures/comp1.js.html",
+    "src/components/file/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/file/fixtures/index.js",
+    "file/src/components/file/fixtures/index.js.html",
+    "src/components/file/fixtures/index.js",
     "file"
   ],
   [

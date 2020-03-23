@@ -101,10 +101,10 @@ export default class ReCaptchaComponent extends Component {
     return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`);
   }
 
-  setValue(value, flags = {}) {
-    flags.changed = flags.changed || this.hasChanged(value, this.dataValue);
+  setValue(value) {
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
-    return flags.changed;
+    return changed;
   }
 
   getValue() {

@@ -97,7 +97,7 @@ export default class TagsComponent extends Input {
   }
 
   setValue(value, flags = {}) {
-    super.setValue(value, flags);
+    const changed = super.setValue(value, flags);
     if (this.choices) {
       let dataValue = this.dataValue;
       this.choices.removeActiveItems();
@@ -108,7 +108,7 @@ export default class TagsComponent extends Input {
         this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
       }
     }
-    return flags.changed;
+    return changed;
   }
 
   set disabled(disabled) {

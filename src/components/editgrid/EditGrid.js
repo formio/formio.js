@@ -673,7 +673,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    flags.changed = flags.changed || this.hasChanged(value, this.dataValue);
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
@@ -701,11 +701,11 @@ export default class EditGridComponent extends NestedArrayComponent {
         this.checkRow(null, this.editRows[rowIndex], {}, this.editRows[rowIndex].data);
       }
     });
-    this.updateOnChange(flags);
-    if (flags.changed) {
+    this.updateOnChange(flags, changed);
+    if (changed) {
       this.redraw();
     }
-    return flags.changed;
+    return changed;
   }
 
   restoreComponentsContext() {
