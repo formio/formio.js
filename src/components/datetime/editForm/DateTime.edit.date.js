@@ -15,7 +15,7 @@ export default [
     input: true,
     key: 'enableMinDateInput',
     label: 'Use Input to add moment.js for minDate',
-    weight: 0,
+    weight: 10,
     tooltip: 'Enables to use input for moment functions instead of calendar.'
   },
   {
@@ -23,7 +23,7 @@ export default [
     input: true,
     key: 'datePicker.minDate',
     label: 'Use calendar to set minDate',
-    weight: 0,
+    weight: 10,
     tooltip: 'Enables to use calendar to set date.',
     customConditional({ data, component }) {
       if (component.datePicker && component.datePicker.minDate && component.datePicker.minDate.indexOf('moment') !== -1) {
