@@ -15,7 +15,7 @@ export default [
     input: true,
     key: 'enableMinDateInput',
     label: 'Use Input to add moment.js for minDate',
-    weight: 10,
+    weight: 0,
     tooltip: 'Enables to use input for moment functions instead of calendar.'
   },
   {
