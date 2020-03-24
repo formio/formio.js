@@ -1123,8 +1123,7 @@ export default class SelectComponent extends Field {
     return super.normalizeValue(this.normalizeSingleValue(value));
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     value = this.dataValue;

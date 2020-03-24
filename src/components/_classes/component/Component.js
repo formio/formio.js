@@ -298,10 +298,17 @@ export default class Component extends Element {
     this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
 
     /**
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {Component}
+     */
+    this.root = this.options.root;
+
+    /**
      * Determines if this component is visible, or not.
      */
     this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
-    this._visible = this._parentVisible && this.conditionallyVisible(data);
+    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
     this._parentDisabled = false;
 
     /**
@@ -317,13 +324,6 @@ export default class Component extends Element {
      * @type {Component}
      */
     this.parent = this.options.parent;
-
-    /**
-     * Points to the root component, usually the FormComponent.
-     *
-     * @type {Component}
-     */
-    this.root = this.options.root;
 
     this.options.name = this.options.name || 'data';
 
@@ -1109,7 +1109,7 @@ export default class Component extends Element {
     else {
       this.refreshOnChanged = true;
     }
-    this.refreshOnValue = value;
+    this.refreshOnValue = fastCloneDeep(value);
     if (this.refreshOnChanged) {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
@@ -2150,7 +2150,7 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed.
    */
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
     if (this.componentModal && flags && flags.fromSubmission) {
       this.componentModal.setValue(value);
@@ -2160,7 +2160,13 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray && this.refs.input && this.refs.input.length !== value.length) {
+    if (
+      isArray &&
+      Array.isArray(this.defaultValue) &&
+      this.refs.hasOwnProperty('input') &&
+      this.refs.input &&
+      (this.refs.input.length !== value.length)
+    ) {
       this.redraw();
     }
     for (const i in this.refs.input) {
@@ -2177,8 +2183,7 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value, flags) {
-    flags = flags || {};
+  setValueAt(index, value, flags = {}) {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
@@ -2235,11 +2240,10 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateComponentValue(value, flags) {
-    flags = flags || {};
+  updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
@@ -2307,9 +2311,8 @@ export default class Component extends Element {
    * Update the value on change.
    *
    * @param flags
-   * @param changed
    */
-  updateOnChange(flags = {}, changed) {
+  updateOnChange(flags = {}, changed = false) {
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
       return true;

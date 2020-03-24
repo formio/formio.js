@@ -655,7 +655,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     return defaultValue;
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     if (equal(this.defaultValue, value)) {
       return false;
     }
@@ -687,7 +687,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           else {
             editRow.components.forEach(col => {
               col.rowIndex = rowIndex;
-              this.setNestedValue(col, row, flags, false);
+              this.setNestedValue(col, row, flags);
             });
           }
         }

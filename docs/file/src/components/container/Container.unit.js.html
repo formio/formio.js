@@ -245,7 +245,8 @@ import Harness from &apos;../../../test/harness&apos;;
 import ContainerComponent from &apos;./Container&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Container Component&apos;, () =&gt; {
@@ -267,6 +268,28 @@ describe(&apos;Container Component&apos;, () =&gt; {
       });
       assert.equal(inputs[0].value, &apos;Joe&apos;);
       assert.equal(inputs[1].value, &apos;Smith&apos;);
+    });
+  });
+
+  it(&apos;Should set the dataValue, but after it sets the value of its nested components&apos;, () =&gt; {
+    return Harness.testCreate(ContainerComponent, comp2).then((component) =&gt; {
+      const editGrid = component.getComponent(&apos;children&apos;);
+      const setValue = editGrid.setValue;
+      editGrid.setValue = function(...args) {
+        const changed = setValue.call(editGrid, ...args);
+        assert(changed, &apos;The edit grid must have changed&apos;);
+        return changed;
+      };
+      component.setValue({
+        children: [
+          {
+            name: &apos;Joe&apos;
+          },
+          {
+            name: &apos;Sally&apos;
+          }
+        ]
+      });
     });
   });
 });

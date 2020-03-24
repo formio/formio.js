@@ -307,8 +307,7 @@ export default class SignatureComponent extends Input {
     return true;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
     if (value &amp;&amp; this.refs.signatureImage &amp;&amp; this.options.readOnly) {
       this.refs.signatureImage.setAttribute(&apos;src&apos;, value);

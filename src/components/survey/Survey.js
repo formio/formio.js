@@ -49,8 +49,7 @@ export default class SurveyComponent extends Field {
     return superAttach;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (!value) {
       return false;
     }

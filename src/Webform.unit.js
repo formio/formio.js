@@ -670,6 +670,177 @@ describe('Webform tests', () => {
     });
   });
 
+  describe('getValue and setValue', () => {
+    it('should setValue and getValue', (done) => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm({
+        components: [
+          {
+            type: 'textfield',
+            key: 'a'
+          },
+          {
+            type: 'container',
+            key: 'b',
+            components: [
+              {
+                type: 'datagrid',
+                key: 'c',
+                components: [
+                  {
+                    type: 'textfield',
+                    key: 'd'
+                  },
+                  {
+                    type: 'textfield',
+                    key: 'e'
+                  },
+                  {
+                    type: 'editgrid',
+                    key: 'f',
+                    components: [
+                      {
+                        type: 'textfield',
+                        key: 'g'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }).then(() => {
+        let count = 0;
+        const onChange = form.onChange;
+        form.onChange = function(...args) {
+          count++;
+          return onChange.apply(form, args);
+        };
+
+        // Ensure that it says it changes.
+        assert.equal(form.setValue({
+          a: 'a',
+          b: {
+            c: [
+              { d: 'd1', e: 'e1', f: [{ g: 'g1' }] },
+              { d: 'd2', e: 'e2', f: [{ g: 'g2' }] },
+            ]
+          }
+        }), true);
+
+        setTimeout(() => {
+          // It should have only updated once.
+          assert.equal(count, 1);
+          done();
+        }, 500);
+      });
+    });
+  });
+
+  describe('Reset values', () => {
+    it('Should reset all values correctly.', () => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      return form.setForm(
+        {
+          components: [
+            {
+              type: 'textfield',
+              key: 'firstName',
+              label: 'First Name',
+              placeholder: 'Enter your first name.',
+              input: true,
+              tooltip: 'Enter your <strong>First Name</strong>',
+              description: 'Enter your <strong>First Name</strong>'
+            },
+            {
+              type: 'textfield',
+              key: 'lastName',
+              label: 'Last Name',
+              placeholder: 'Enter your last name',
+              input: true,
+              tooltip: 'Enter your <strong>Last Name</strong>',
+              description: 'Enter your <strong>Last Name</strong>'
+            },
+            {
+              type: 'select',
+              label: 'Favorite Things',
+              key: 'favoriteThings',
+              placeholder: 'These are a few of your favorite things...',
+              data: {
+                values: [
+                  {
+                    value: 'raindropsOnRoses',
+                    label: 'Raindrops on roses'
+                  },
+                  {
+                    value: 'whiskersOnKittens',
+                    label: 'Whiskers on Kittens'
+                  },
+                  {
+                    value: 'brightCopperKettles',
+                    label: 'Bright Copper Kettles'
+                  },
+                  {
+                    value: 'warmWoolenMittens',
+                    label: 'Warm Woolen Mittens'
+                  }
+                ]
+              },
+              dataSrc: 'values',
+              template: '<span>{{ item.label }}</span>',
+              multiple: true,
+              input: true
+            },
+            {
+              type: 'number',
+              key: 'number',
+              label: 'Number',
+              input: true
+            },
+            {
+              type: 'button',
+              action: 'submit',
+              label: 'Submit',
+              theme: 'primary'
+            }
+          ]
+        }
+      ).then(() => {
+        form.setSubmission({
+          data: {
+            firstName: 'Joe',
+            lastName: 'Bob',
+            favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
+            number: 233
+          }
+        }).then(() => {
+          expect(form.submission).to.deep.equal({
+            data: {
+              firstName: 'Joe',
+              lastName: 'Bob',
+              favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
+              number: 233,
+              submit: false
+            }
+          });
+          form.setSubmission({ data: {} }).then(() => {
+            expect(form.submission).to.deep.equal({
+              data: {
+                firstName: '',
+                lastName: '',
+                favoriteThings: [],
+                submit: false
+              }
+            });
+          });
+        });
+      });
+    });
+  });
+
   each(FormTests, (formTest) => {
     describe(formTest.title || '', () => {
       each(formTest.tests, (formTestTest, title) => {

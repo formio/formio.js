@@ -218,7 +218,7 @@ export default class Wizard extends Webform {
         this.addEventListener(link, 'click', (event) => {
           this.emit('wizardNavigationClicked', this.pages[index]);
           event.preventDefault();
-          return this.setPage(index, true).then(() => {
+          return this.setPage(index).then(() => {
             this.emit('wizardPageSelected', this.pages[index], index);
           });
         });
@@ -294,7 +294,7 @@ export default class Wizard extends Webform {
     this.establishPages();
   }
 
-  setPage(num, shouldValidate) {
+  setPage(num) {
     if (num === this.page) {
       return NativePromise.resolve();
     }
@@ -308,8 +308,8 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw().then(() => {
-        if (shouldValidate && !this.options.readOnly) {
-          this.checkValidity(this.submission.data, true, this.submission.data, true);
+        if (!this.options.readOnly) {
+          this.checkValidity(this.submission.data, false, this.submission.data, true);
         }
       });
       return NativePromise.resolve();
@@ -425,30 +425,21 @@ export default class Wizard extends Webform {
 
   prevPage() {
     return this.beforePage().then(() => {
-      return this.setPage(this.getPreviousPage(), true).then(() => {
+      return this.setPage(this.getPreviousPage()).then(() => {
         this.emit('prevPage', { page: this.page, submission: this.submission });
       });
     });
   }
 
   cancel(noconfirm) {
-    const redraw = (0 === this.page);
     if (super.cancel(noconfirm)) {
       this.setPristine(true);
       return this.setPage(0).then(() => {
-        if (redraw) {
           this.redraw();
-        }
+          return this.page;
       });
     }
-    else {
-      this.setPristine(true);
-      return this.setPage(0).then(() => {
-        if (redraw) {
-          this.redraw();
-        }
-      });
-    }
+    return NativePromise.resolve();
   }
 
   getPageIndexByKey(key) {
@@ -500,7 +491,7 @@ export default class Wizard extends Webform {
     return super.setForm(form);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
     this.pageFieldLogic(this.page);
     return changed;
