@@ -15,6 +15,7 @@ export default [
     input: true,
     key: 'enableMinDateInput',
     label: 'Use Input to add moment.js for minDate',
+    persistent: false,
     weight: 0,
     tooltip: 'Enables to use input for moment functions instead of calendar.'
   },
@@ -52,6 +53,7 @@ export default [
     input: true,
     key: 'enableMaxDateInput',
     label: 'Use Input to add moment.js for maxDate',
+    persistent: false,
     weight: 20,
     tooltip: 'Enables to use input for moment functions instead of calendar.'
   },
