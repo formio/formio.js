@@ -12,6 +12,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Current submission to be set after draft save.
 
+## 4.9.6
+### Fixed
+ - GS-PDF27: Add DOMTokenList polyfill to resolve submit issues with IE11.
+
+### Added
+ - UIP-157: Feat(Columns): add option for grid classes prefixes
+
+## 4.9.5
+### Changed
+ - The change flow logic to be more isolated and component specific.
+
+### Fixed
+ - Issue with Component constructor not executing conditionals correctly.
+
+## 4.9.4
+### Fixed
+ - Issues with the refresh on property.
+ - Fixed issue with loss of focus on Cancel button during Wizard cancel event.
+
+### Changed
+ - Upgrade eventemitter2@6.2.1, fetch-mock@9.3.0
+
 ## 4.9.3
 ### Fixed
  - Infinite loop issues that could arise within the renderer.
