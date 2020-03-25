@@ -1240,8 +1240,25 @@ export default class SelectComponent extends Field {
    * Output this select dropdown as a string value.
    * @return {*}
    */
+
+  isBooleanOrNumber(value) {
+    return typeof value === 'number' || typeof value === 'boolean';
+  }
+
   asString(value) {
     value = value || this.getValue();
+    //need to convert values to strings to be able to compare values with available options that are strings
+    if (this.isBooleanOrNumber(value)) {
+      value = value.toString();
+    }
+
+    if (Array.isArray(value) && value.some(item => this.isBooleanOrNumber(item))) {
+      value = value.map(item => {
+        if (this.isBooleanOrNumber(item)) {
+          item = item.toString();
+        }
+      });
+    }
 
     if (['values', 'custom'].includes(this.component.dataSrc)) {
       const {
