@@ -251,10 +251,25 @@ import {
   comp1,
   comp2,
   multiSelect,
-  multiSelectOptions
+  multiSelectOptions,
+  comp4
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
+  it(&apos;should return string value for different value types&apos;, function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) =&gt; {
+      const stringValue = component.asString(true);
+      const stringValue1 = component.asString(11);
+      const stringValue2 = component.asString(&apos;test&apos;);
+      const stringValue3 = component.asString(12);
+      assert.equal(stringValue, &apos;&lt;span&gt;true&lt;/span&gt;&apos;);
+      assert.equal(stringValue1, &apos;&lt;span&gt;11&lt;/span&gt;&apos;);
+      assert.equal(stringValue2, &apos;&lt;span&gt;test&lt;/span&gt;&apos;);
+      assert.equal(stringValue3, &apos;&lt;span&gt;1.2&lt;/span&gt;&apos;);
+      done();
+    });
+  });
+
   it(&apos;should set multiple selected values not repeating them&apos;, function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) =&gt; {
       component.setItems(multiSelectOptions, false);

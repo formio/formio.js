@@ -10998,6 +10998,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#isbooleanornumber",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-isBooleanOrNumber",
+    "src/components/select/Select.js~SelectComponent#isBooleanOrNumber",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#isfromsearch",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-isFromSearch",
     "src/components/select/Select.js~SelectComponent#isFromSearch",
@@ -11289,6 +11295,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp3.js",
     "file/src/components/select/fixtures/comp3.js.html",
     "src/components/select/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp4.js",
+    "file/src/components/select/fixtures/comp4.js.html",
+    "src/components/select/fixtures/comp4.js",
     "file"
   ],
   [
