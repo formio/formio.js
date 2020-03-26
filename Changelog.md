@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.2
+### Fixed
+ - Fixed display of selected values in table view
+ - T826: Fix nested forms never submitting.
+ - UIP-159: Fixing the UUID import.
+
+### Changed
+ - VPAT-236 Changed variable types for future extension in vpat
+
+### Added
+ - UIP-131: Add option to change from moment input to calendar
+
 ## 4.10.0-beta.1
 ### Added
  - Added flag to check if draft restore is disabled

@@ -1,6 +1,7 @@
 import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import _ from 'lodash';
 import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
@@ -735,6 +736,35 @@ describe('Webform tests', () => {
           assert.equal(count, 1);
           done();
         }, 500);
+      });
+    });
+  });
+
+  describe('ReadOnly Form', () => {
+    it('Should apply conditionals when in readOnly mode.', (done) => {
+      done = _.once(done);
+      const Conditions = require('../test/forms/conditions').default;
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        readOnly: true,
+        language: 'en',
+        template: 'bootstrap3'
+      });
+      form.setForm(Conditions.form).then(() => {
+        Harness.testConditionals(form, {
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'The',
+            typeMonkey: 'Monkey!'
+          }
+        }, [], (error) => {
+          form.destroy();
+          if (error) {
+            throw new Error(error);
+          }
+          done();
+        });
       });
     });
   });
