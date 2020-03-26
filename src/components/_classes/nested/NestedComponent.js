@@ -489,8 +489,7 @@ export default class NestedComponent extends Field {
   }
 
   checkData(data, flags, row, components) {
-    // Do not check data for disabled components
-    if (this.shouldDisabled || this.builderMode) {
+    if (this.builderMode) {
       return true;
     }
     data = data || this.rootValue;
@@ -647,7 +646,7 @@ export default class NestedComponent extends Field {
       return false;
     }
     return this.getComponents().reduce((changed, component) => {
-      return this.setNestedValue(component, value, flags, changed);
+      return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);
   }
 }

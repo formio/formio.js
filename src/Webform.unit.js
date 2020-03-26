@@ -739,6 +739,34 @@ describe('Webform tests', () => {
     });
   });
 
+  describe('ReadOnly Form', () => {
+    it('Should apply conditionals when in readOnly mode.', (done) => {
+      const Conditions = require('../test/forms/conditions').default;
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        readOnly: true,
+        language: 'en',
+        template: 'bootstrap3'
+      });
+      form.setForm(Conditions.form).then(() => {
+        Harness.testConditionals(form, {
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'The',
+            typeMonkey: 'Monkey!'
+          }
+        }, [], (error) => {
+          form.destroy();
+          if (error) {
+            throw new Error(error);
+          }
+          done();
+        });
+      });
+    });
+  });
+
   describe('Reset values', () => {
     it('Should reset all values correctly.', () => {
       formElement.innerHTML = '';
