@@ -312,6 +312,20 @@ export default class FileComponent extends Field {
     }
   }
 
+  activateRemoveLink(event, index) {
+    const fileInfo = this.dataValue[index];
+    this.deleteFile(fileInfo);
+    event.preventDefault();
+    this.splice(index);
+    this.redraw();
+  }
+
+  activateFileStatusRemoveLink(event, index) {
+    event.preventDefault();
+    this.statuses.splice(index, 1);
+    this.redraw();
+  }
+
   attach(element) {
     this.loadRefs(element, {
       fileDrop: 'single',
@@ -365,17 +379,8 @@ export default class FileComponent extends Field {
       });
     });
 
-    const activateRemoveLink = (event, index) => {
-      const fileInfo = this.dataValue[index];
-
-      this.deleteFile(fileInfo);
-      event.preventDefault();
-      this.splice(index);
-      this.redraw();
-    };
-
     this.refs.removeLink.forEach((removeLink, index) => {
-      this.addEventListener(removeLink, 'click', (event) => activateRemoveLink(event, index));
+      this.addEventListener(removeLink, 'click', (event) => this.activateRemoveLink(event, index));
     });
 
     this.refs.removeLink.forEach((removeLink, index) => {
@@ -383,19 +388,13 @@ export default class FileComponent extends Field {
         const { keyCode } = event;
 
         if (keyCode === ENTER_KEY || keyCode === SPACE_KEY) {
-          activateRemoveLink(event, index);
+          this.activateRemoveLink(event, index);
         }
       });
     });
 
-    const activateFileStatusRemove = (event, index) => {
-      event.preventDefault();
-      this.statuses.splice(index, 1);
-      this.redraw();
-    };
-
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
-      this.addEventListener(fileStatusRemove, 'click', (event) => activateFileStatusRemove(event, index));
+      this.addEventListener(fileStatusRemove, 'click', (event) => this.activateFileStatusRemoveLink(event, index));
     });
 
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
@@ -403,7 +402,7 @@ export default class FileComponent extends Field {
         const { keyCode } = event;
 
         if (keyCode === ENTER_KEY || keyCode === SPACE_KEY) {
-          activateFileStatusRemove(event, index);
+          this.activateFileStatusRemoveLink(event, index);
         }
       });
     });
@@ -587,7 +586,7 @@ export default class FileComponent extends Field {
     return file.size - 0.1 <= this.translateScalars(val);
   }
 
-  upload(files) {
+  upload(files, fileUploadCallback) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
       files = Array.prototype.slice.call(files, 0, 1);
@@ -669,7 +668,13 @@ export default class FileComponent extends Field {
               fileUpload.message = response;
               delete fileUpload.progress;
               this.redraw();
+            })
+            .then(() => {
+              fileUploadCallback && fileUploadCallback.call(this, fileUpload);
             });
+        }
+        else {
+          fileUploadCallback && fileUploadCallback.call(this, fileUpload);
         }
       });
     }
