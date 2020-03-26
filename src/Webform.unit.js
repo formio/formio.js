@@ -1,6 +1,7 @@
 import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import _ from 'lodash';
 import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
@@ -741,6 +742,7 @@ describe('Webform tests', () => {
 
   describe('ReadOnly Form', () => {
     it('Should apply conditionals when in readOnly mode.', (done) => {
+      done = _.once(done);
       const Conditions = require('../test/forms/conditions').default;
       const formElement = document.createElement('div');
       const form = new Webform(formElement, {
