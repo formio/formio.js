@@ -245,16 +245,19 @@ export default class PDF extends Webform {
   clear() {}
 
   showErrors(error, triggerEvent) {
-    const p = this.ce('p');
-    p.classList.add('help-block');
-    this.setContent(p, this.t('submitError'));
-    p.addEventListener('click', () => {
-      window.scrollTo(0, 0);
-    });
-    const div = this.ce('div');
-    div.classList.add('has-error');
-    this.appendTo(p, div);
-    this.appendTo(div, this.element);
+    if (!document.getElementById('submit-error')) {
+      const p = this.ce('p', { id: 'submit-error', class: 'help-block' });
+
+      this.setContent(p, this.t('submitError'));
+      p.addEventListener('click', () => {
+        window.scrollTo(0, 0);
+      });
+
+      const div = this.ce('div', { class: 'has-error' });
+
+      this.appendTo(p, div);
+      this.appendTo(div, this.element);
+    }
 
     super.showErrors(error, triggerEvent);
   }
