@@ -243,6 +243,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
 import { expect } from &apos;chai&apos;;
 import sinon from &apos;sinon&apos;;
+import _ from &apos;lodash&apos;;
 import each from &apos;lodash/each&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
@@ -983,6 +984,7 @@ describe(&apos;Webform tests&apos;, () =&gt; {
 
   describe(&apos;ReadOnly Form&apos;, () =&gt; {
     it(&apos;Should apply conditionals when in readOnly mode.&apos;, (done) =&gt; {
+      done = _.once(done);
       const Conditions = require(&apos;../test/forms/conditions&apos;).default;
       const formElement = document.createElement(&apos;div&apos;);
       const form = new Webform(formElement, {
