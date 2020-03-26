@@ -266,6 +266,13 @@ export default class PDF extends Webform {
     });
   }
 
+  focusOnComponent(key) {
+    this.postMessage({
+      name: 'focusErroredField',
+      data: key,
+    });
+  }
+
   // Do not clear the iframe.
   clear() {}
 
