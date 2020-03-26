@@ -981,6 +981,34 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
+  describe(&apos;ReadOnly Form&apos;, () =&gt; {
+    it(&apos;Should apply conditionals when in readOnly mode.&apos;, (done) =&gt; {
+      const Conditions = require(&apos;../test/forms/conditions&apos;).default;
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, {
+        readOnly: true,
+        language: &apos;en&apos;,
+        template: &apos;bootstrap3&apos;
+      });
+      form.setForm(Conditions.form).then(() =&gt; {
+        Harness.testConditionals(form, {
+          data: {
+            typeShow: &apos;Show&apos;,
+            typeMe: &apos;Me&apos;,
+            typeThe: &apos;The&apos;,
+            typeMonkey: &apos;Monkey!&apos;
+          }
+        }, [], (error) =&gt; {
+          form.destroy();
+          if (error) {
+            throw new Error(error);
+          }
+          done();
+        });
+      });
+    });
+  });
+
   describe(&apos;Reset values&apos;, () =&gt; {
     it(&apos;Should reset all values correctly.&apos;, () =&gt; {
       formElement.innerHTML = &apos;&apos;;

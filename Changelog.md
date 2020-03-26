@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.8
+### Fixed
+ - Issues where the setValue of nested components would not return the correct changed status.
+ - Issues where read only forms would not apply conditions correctly.
+
 ## 4.9.7
 ### Fixed
  - UIP-159: Fixing the UUID import.
