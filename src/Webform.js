@@ -8,6 +8,7 @@ import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
 import { fastCloneDeep, currentTimezone } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
+import { use } from './formio.module.js';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -647,7 +648,7 @@ export default class Webform extends NestedDataComponent {
         formModule = form.module;
       }
       if (formModule) {
-        Formio.use(formModule);
+        use(formModule);
 
         // Since we got here after instantiation, we need to manually apply form options.
         if (formModule.options && formModule.options.form) {
