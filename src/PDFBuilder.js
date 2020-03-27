@@ -180,7 +180,7 @@ export default class PDFBuilder extends WebformBuilder {
     // Normal PDF Builder
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
-        iframeDropzone: 'single', 'sidebar-container': 'single'
+        iframeDropzone: 'single', 'sidebar-container': 'multiple'
       });
 
       this.afterAttach();
@@ -367,13 +367,15 @@ export default class PDFBuilder extends WebformBuilder {
     if (!this.refs['sidebar-container']) {
       return;
     }
-    [...this.refs['sidebar-container'].children].forEach(el => {
-      el.draggable = true;
-      el.setAttribute('draggable', true);
-      this.removeEventListener(el, 'dragstart');
-      this.removeEventListener(el, 'dragend');
-      this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
-      this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+    this.refs['sidebar-container'].forEach(container => {
+      [...container.children].forEach(el => {
+        el.draggable = true;
+        el.setAttribute('draggable', true);
+        this.removeEventListener(el, 'dragstart');
+        this.removeEventListener(el, 'dragend');
+        this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
+        this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+      });
     });
   }
 
