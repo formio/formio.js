@@ -389,6 +389,21 @@ export default class PDFBuilder extends WebformBuilder {
     this.refs.iframeDropzone.style.width  = iframeRect && iframeRect.width  ? `${iframeRect.width }px` : '100%';
   }
 
+  tryUpdateCustomComponentSchema(schema, key) {
+    const comp = _.get(this, `groups.custom.components[${key}]`);
+
+    if (!comp) {
+      return false;
+    }
+
+    schema.key = comp.schema &&  comp.schema.key || schema.key;
+    schema.label = comp.schema && comp.schema.label || schema.label;
+    schema.keyForShow = schema.key;
+    schema.customField = true;
+
+    return true;
+  }
+
   onDragStart(e) {
     e.dataTransfer.setData('text/html', null);
     this.updateDropzoneDimensions();
@@ -417,14 +432,18 @@ export default class PDFBuilder extends WebformBuilder {
 
     const element = e.target;
     const type = element.getAttribute('data-type');
+    const group = element.getAttribute('data-group');
+    const key = element.getAttribute('data-key');
 
     const schema = fastCloneDeep(this.schemas[type]);
 
-    schema.key = _.camelCase(
-      schema.label ||
-      schema.placeholder ||
-      schema.type
-    );
+    if (!(group === 'custom' && key && this.tryUpdateCustomComponentSchema(schema, key))) {
+      schema.key = _.camelCase(
+        schema.label ||
+        schema.placeholder ||
+        schema.type
+      );
+    }
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);
