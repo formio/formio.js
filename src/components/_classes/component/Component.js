@@ -2001,15 +2001,17 @@ export default class Component extends Element {
     return _.get(this, 'root.pristine', false);
   }
 
+  get shouldSetValue() {
+    const shouldClearValue = (!this.visible && this.component.clearOnHide);
+    return this.allowData && this.key && !shouldClearValue;
+  }
+
   /**
    * Get the static value of this component.
    * @return {*}
    */
   get dataValue() {
-    if (
-      !this.key ||
-      (!this.visible && this.component.clearOnHide && !this.rootPristine)
-    ) {
+    if (!this.shouldSetValue) {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
@@ -2028,11 +2030,7 @@ export default class Component extends Element {
    * @param value
    */
   set dataValue(value) {
-    if (
-      !this.allowData ||
-      !this.key ||
-      (!this.visible && this.component.clearOnHide && !this.rootPristine)
-    ) {
+    if (!this.shouldSetValue) {
       return value;
     }
     if ((value !== null) && (value !== undefined)) {

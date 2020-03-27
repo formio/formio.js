@@ -49,6 +49,7 @@ export default [
         label: 'Size',
         data: {
           values: [
+            { label: 'xs', value: 'xs' },
             { label: 'sm', value: 'sm' },
             { label: 'md', value: 'md' },
             { label: 'lg', value: 'lg' },
