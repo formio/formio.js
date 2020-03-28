@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.9
+### Fixed
+ - Issue where checkboxes configured as Radio input would still add checkbox key to data.
+
+### Added
+ - An xs column size.
+ 
+### Changed
+ - Upgrade i18next@19.3.4
+
 ## 4.9.8
 ### Fixed
  - Issues where the setValue of nested components would not return the correct changed status.
