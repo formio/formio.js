@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -102,33 +101,6 @@ export default class CheckBoxComponent extends Field {
 
   isEmpty(value = this.dataValue) {
     return super.isEmpty(value) || value === false;
-  }
-
-  /**
-   *
-   * @param value {*}
-   * @returns {*}
-   */
-  set dataValue(value) {
-    const setValue = (super.dataValue = value);
-    if (
-      !this.key ||
-      (!this.visible && this.component.clearOnHide && !this.rootPristine)
-    ) {
-      return setValue;
-    }
-    if (this.component.name) {
-      _.set(this._data, this.component.key, setValue === this.component.value);
-    }
-    return setValue;
-  }
-
-  get dataValue() {
-    const getValue = super.dataValue;
-    if (this.component.name) {
-      _.set(this._data, this.component.key, getValue === this.component.value);
-    }
-    return getValue;
   }
 
   get key() {
