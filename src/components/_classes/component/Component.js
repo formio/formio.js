@@ -2327,6 +2327,14 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
+
+  convertNumberOrBoolToString(value) {
+    if (typeof value === 'number' || typeof value === 'boolean' ) {
+      return value.toString();
+    }
+    return value;
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -2349,8 +2357,8 @@ export default class Component extends Element {
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
       allowOverride &&
-      (this.calculatedValue !== null) &&
-      !_.isEqual(dataValue, this.calculatedValue)
+      this.calculatedValue &&
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(this.calculatedValue))
     ) {
       return false;
     }
@@ -2367,7 +2375,7 @@ export default class Component extends Element {
       allowOverride &&
       firstPass &&
       !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, calculatedValue)
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue))
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
