@@ -1143,7 +1143,7 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages && err.messages.length) {
-          err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
+          err.messages.forEach(({ message }) => createListItem(`${this.t(err.component.label)}. ${message}`));
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || '' : err;
