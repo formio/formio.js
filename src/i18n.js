@@ -5,7 +5,7 @@ export default {
       translation: {
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
-        submitError: 'Please correct all errors before submitting.',
+        submitError: 'Please check the form and correct all errors before submitting.',
         required: '{{field}} is required',
         unique: '{{field}} must be unique',
         array: '{{field}} must be an array',

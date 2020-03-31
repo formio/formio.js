@@ -1394,7 +1394,7 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages &amp;&amp; err.messages.length) {
-          err.messages.forEach(({ message }) =&gt; createListItem(`${err.component.label}. ${message}`));
+          err.messages.forEach(({ message }) =&gt; createListItem(`${this.t(err.component.label)}. ${message}`));
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || &apos;&apos; : err;
@@ -1616,7 +1616,7 @@ export default class Webform extends NestedDataComponent {
           // Use the form action to submit the form if available.
           if (this._form &amp;&amp; this._form.action) {
             const method = (submission.data._id &amp;&amp; this._form.action.includes(submission.data._id)) ? &apos;PUT&apos; : &apos;POST&apos;;
-            return Formio.makeStaticRequest(this._form.action, method, submission.data, this.formio ? this.formio.options : {})
+            return Formio.makeStaticRequest(this._form.action, method, submission, this.formio ? this.formio.options : {})
               .then((result) =&gt; resolve({
                 submission: result,
                 saved: true,

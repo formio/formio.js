@@ -240,8 +240,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/checkbox/Checkbox.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import Field from &apos;../_classes/field/Field&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Field from &apos;../_classes/field/Field&apos;;
 
 export default class CheckBoxComponent extends Field {
   static schema(...extend) {
@@ -344,33 +343,6 @@ export default class CheckBoxComponent extends Field {
 
   isEmpty(value = this.dataValue) {
     return super.isEmpty(value) || value === false;
-  }
-
-  /**
-   *
-   * @param value {*}
-   * @returns {*}
-   */
-  set dataValue(value) {
-    const setValue = (super.dataValue = value);
-    if (
-      !this.key ||
-      (!this.visible &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)
-    ) {
-      return setValue;
-    }
-    if (this.component.name) {
-      _.set(this._data, this.component.key, setValue === this.component.value);
-    }
-    return setValue;
-  }
-
-  get dataValue() {
-    const getValue = super.dataValue;
-    if (this.component.name) {
-      _.set(this._data, this.component.key, getValue === this.component.value);
-    }
-    return getValue;
   }
 
   get key() {

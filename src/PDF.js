@@ -234,20 +234,36 @@ export default class PDF extends Webform {
     });
   }
 
+  focusOnComponent(key) {
+    this.postMessage({
+      name: 'focusErroredField',
+      data: key,
+    });
+  }
+
   // Do not clear the iframe.
   clear() {}
 
   showErrors(error, triggerEvent) {
-    const p = this.ce('p');
-    p.classList.add('help-block');
-    this.setContent(p, this.t('submitError'));
-    p.addEventListener('click', () => {
-      window.scrollTo(0, 0);
-    });
-    const div = this.ce('div');
-    div.classList.add('has-error');
-    this.appendTo(p, div);
-    this.appendTo(div, this.element);
+    const helpBlock = document.getElementById('submit-error');
+
+    if (!helpBlock) {
+      const p = this.ce('p', { class: 'help-block' });
+
+      this.setContent(p, this.t('submitError'));
+      p.addEventListener('click', () => {
+        window.scrollTo(0, 0);
+      });
+
+      const div = this.ce('div', { id: 'submit-error', class: 'has-error' });
+
+      this.appendTo(p, div);
+      this.appendTo(div, this.element);
+    }
+
+    if (!this.errors.length && helpBlock) {
+      helpBlock.remove();
+    }
 
     super.showErrors(error, triggerEvent);
   }

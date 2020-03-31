@@ -2430,6 +2430,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdf.js~pdf#focusoncomponent",
+    "class/src/PDF.js~PDF.html#instance-method-focusOnComponent",
+    "src/PDF.js~PDF#focusOnComponent",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#getsrc",
     "class/src/PDF.js~PDF.html#instance-method-getSrc",
     "src/PDF.js~PDF#getSrc",
@@ -2655,6 +2661,12 @@ window.esdocSearchIndex = [
     "src/pdfbuilder.js~pdfbuilder#setuploaderror",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setUploadError",
     "src/PDFBuilder.js~PDFBuilder#setUploadError",
+    "method"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#tryupdatecustomcomponentschema",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-tryUpdateCustomComponentSchema",
+    "src/PDFBuilder.js~PDFBuilder#tryUpdateCustomComponentSchema",
     "method"
   ],
   [
@@ -4413,6 +4425,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#constructor",
     "class/src/components/_classes/component/Component.js~Component.html#instance-constructor-constructor",
     "src/components/_classes/component/Component.js~Component#constructor",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#convertnumberorbooltostring",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-convertNumberOrBoolToString",
+    "src/components/_classes/component/Component.js~Component#convertNumberOrBoolToString",
     "method"
   ],
   [
@@ -6876,18 +6894,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
-    "member"
-  ],
-  [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
-    "member"
-  ],
-  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#defaultschema",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-defaultSchema",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#defaultSchema",
@@ -8853,18 +8859,6 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#renderrow",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-renderRow",
     "src/components/editgrid/EditGrid.js~EditGridComponent#renderRow",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#restorecomponentscontext",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreComponentsContext",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreComponentsContext",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#restorerowcontext",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreRowContext",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreRowContext",
     "method"
   ],
   [
