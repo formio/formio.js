@@ -2800,6 +2800,10 @@ export default class Component extends Element {
   }
 
   attachLogic() {
+    // Do not attach logic during builder mode.
+    if (this.builderMode) {
+      return;
+    }
     this.logic.forEach((logic) => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
