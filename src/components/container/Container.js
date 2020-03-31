@@ -53,8 +53,7 @@ export default class ContainerComponent extends NestedDataComponent {
     return this.dataValue;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     let changed = false;
     const hasValue = this.hasValue();
     if (hasValue && _.isEmpty(this.dataValue)) {
@@ -64,11 +63,7 @@ export default class ContainerComponent extends NestedDataComponent {
       changed = true;
       this.dataValue = this.defaultValue;
     }
-    else {
-      changed = this.hasChanged(value, this.dataValue);
-      this.dataValue = value;
-    }
-    super.setValue(value, flags);
+    changed = super.setValue(value, flags) || changed;
     this.updateOnChange(flags, changed);
     return changed;
   }

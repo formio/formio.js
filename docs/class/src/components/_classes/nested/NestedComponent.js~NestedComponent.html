@@ -1929,34 +1929,6 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasChanged">hasChanged</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasComponent">hasComponent</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -2268,7 +2240,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setNestedValue">setNestedValue</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>, value: <span>*</span>, flags: <span>*</span>, changed: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setNestedValue">setNestedValue</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>, value: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2324,7 +2296,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2380,7 +2352,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5509,14 +5481,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, row: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Perform a calculated value operation.</p>
-</div>
+        
       </div>
     </td>
     <td>
@@ -5972,6 +5943,35 @@ something changed.</p>
         
         
         <div data-ice="description"><p>Check if this component is conditionally visible.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-convertNumberOrBoolToString">convertNumberOrBoolToString</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Perform a calculated value operation.</p>
 </div>
       </div>
     </td>
@@ -6998,6 +6998,36 @@ something changed.</p>
         
         
         <div data-ice="description"><p>Returns if the component is valid or not.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-isValueHidden">isValueHidden</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span> | <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Determines if the value of this component is hidden from the user as if it is coming from the server, but is
+protected.</p>
 </div>
       </div>
     </td>
@@ -8265,7 +8295,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateOnChange">updateOnChange</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>, changed: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateOnChange">updateOnChange</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -8885,7 +8915,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber623">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber622">source</a></span></span>
     </span>
   </h3>
 
@@ -8928,7 +8958,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber514">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber513">source</a></span></span>
     </span>
   </h3>
 
@@ -9103,7 +9133,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber608">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber607">source</a></span></span>
     </span>
   </h3>
 
@@ -10147,7 +10177,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber532">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber531">source</a></span></span>
     </span>
   </h3>
 
@@ -10219,7 +10249,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber541">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber540">source</a></span></span>
     </span>
   </h3>
 
@@ -10275,7 +10305,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber545">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber544">source</a></span></span>
     </span>
   </h3>
 
@@ -10359,7 +10389,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber579">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber578">source</a></span></span>
     </span>
   </h3>
 
@@ -10442,7 +10472,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber505">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber504">source</a></span></span>
     </span>
   </h3>
 
@@ -10526,7 +10556,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber495">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber491">source</a></span></span>
     </span>
   </h3>
 
@@ -10617,7 +10647,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber567">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber566">source</a></span></span>
     </span>
   </h3>
 
@@ -10700,7 +10730,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber510">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber509">source</a></span></span>
     </span>
   </h3>
 
@@ -10892,7 +10922,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber597">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber596">source</a></span></span>
     </span>
   </h3>
 
@@ -10935,7 +10965,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber602">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber601">source</a></span></span>
     </span>
   </h3>
 
@@ -10978,7 +11008,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber590">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber589">source</a></span></span>
     </span>
   </h3>
 
@@ -11473,7 +11503,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber613">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber612">source</a></span></span>
     </span>
   </h3>
 
@@ -11494,62 +11524,6 @@ component tree.</p>
       <tbody>
         <tr>
           <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
-        </tr>
-      </tbody>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-hasChanged">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">hasChanged</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber481">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>Determine if the value of this component has changed.</p>
-</div>
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-hasChanged">Component#hasChanged</a></span></div>
-
-  <div data-ice="properties">
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tbody>
-        <tr>
-          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
           
         </tr>
       </tbody>
@@ -11711,7 +11685,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber556">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber555">source</a></span></span>
     </span>
   </h3>
 
@@ -11766,7 +11740,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber560">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber559">source</a></span></span>
     </span>
   </h3>
 
@@ -12214,7 +12188,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber617">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber616">source</a></span></span>
     </span>
   </h3>
 
@@ -12258,7 +12232,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber523">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber522">source</a></span></span>
     </span>
   </h3>
 
@@ -12297,11 +12271,11 @@ component tree.</p>
     
     
     
-    <span class="code" data-ice="name">setNestedValue</span><span class="code" data-ice="signature">(component: <span>*</span>, value: <span>*</span>, flags: <span>*</span>, changed: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">setNestedValue</span><span class="code" data-ice="signature">(component: <span>*</span>, value: <span>*</span>, flags: {}): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber627">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber626">source</a></span></span>
     </span>
   </h3>
 
@@ -12334,14 +12308,9 @@ component tree.</p>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">flags</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">changed</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
+      <td data-ice="type" class="code">{}</td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: {}</li></ul></td>
       <td data-ice="description"></td>
     </tr>
 </tbody>
@@ -12390,7 +12359,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber585">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber584">source</a></span></span>
     </span>
   </h3>
 
@@ -12446,7 +12415,7 @@ component tree.</p>
     
     
     
-    <span class="code" data-ice="name">setValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">setValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: {}): <span>*</span></span>
     <span class="right-info">
       
       
@@ -12478,8 +12447,9 @@ component tree.</p>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">flags</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
+      <td data-ice="type" class="code">{}</td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: {}</li></ul></td>
       <td data-ice="description"></td>
     </tr>
 </tbody>
@@ -12528,7 +12498,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber485">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber481">source</a></span></span>
     </span>
   </h3>
 
@@ -12607,7 +12577,7 @@ component tree.</p>
     
     
     
-    <span class="code" data-ice="name">updateValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">updateValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: {}): <span>*</span></span>
     <span class="right-info">
       
       
@@ -12639,8 +12609,9 @@ component tree.</p>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">flags</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
+      <td data-ice="type" class="code">{}</td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: {}</li></ul></td>
       <td data-ice="description"></td>
     </tr>
 </tbody>

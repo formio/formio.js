@@ -270,6 +270,7 @@ function getOptions(options) {
     iconset: getIconSet((options &amp;&amp; options.icons) ? options.icons : Formio.icons),
     i18next,
     saveDraft: false,
+    alwaysDirty: false,
     saveDraftThrottle: 5000
   });
   if (!options.events) {
@@ -969,7 +970,7 @@ export default class Webform extends NestedDataComponent {
    * @param flags
    * @return {Promise.&lt;TResult&gt;}
    */
-  setSubmission(submission, flags) {
+  setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
       fromSubmission: true,
@@ -977,8 +978,8 @@ export default class Webform extends NestedDataComponent {
     return this.onSubmission = this.formReady.then(
       () =&gt; {
         this.submissionSet = true;
+        this.triggerChange(flags);
         this.setValue(submission, flags);
-        submission.data ? this.triggerChange() : this.triggerChange(flags, this.submission);
         return this.submissionReadyResolve(submission);
       },
       (err) =&gt; this.submissionReadyReject(err)
@@ -1002,13 +1003,22 @@ export default class Webform extends NestedDataComponent {
       console.warn(&apos;Cannot save draft unless a user is authenticated.&apos;);
       return;
     }
-    const draft = fastCloneDeep(this.submission);
+    const draft = this.submission;
     draft.state = &apos;draft&apos;;
     if (!this.savingDraft) {
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) =&gt; {
-        this.savingDraft = false;
+        const currentSubmission = _.merge(sub, draft);
+
         this.emit(&apos;saveDraft&apos;, sub);
+        if (!draft._id) {
+          this.setSubmission(currentSubmission).then(() =&gt; {
+            this.savingDraft = false;
+          });
+        }
+        else {
+          this.savingDraft = false;
+        }
       });
     }
   }
@@ -1030,7 +1040,7 @@ export default class Webform extends NestedDataComponent {
         owner: userId
       }
     }).then(submissions =&gt; {
-      if (submissions.length &gt; 0) {
+      if (submissions.length &gt; 0 &amp;&amp; !this.options.skipDraftRestore) {
         const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() =&gt; {
           this.draftEnabled = true;
@@ -1066,6 +1076,7 @@ export default class Webform extends NestedDataComponent {
     }
     // Metadata needs to be available before setValue
     this._submission.metadata = submission.metadata || {};
+    this.editing = !!submission._id;
 
     // Set the timezone in the options if available.
     if (
@@ -1310,20 +1321,9 @@ export default class Webform extends NestedDataComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-      const listenerFunction = (e) =&gt; {
-        e.stopPropagation();
-
-        this.formReady.then(() =&gt; {
-          if (this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
-            this.refs.errorRef[0].focus();
-          }
-        });
-
-        this.removeEventListener(component.refs.input[0], &apos;blur&apos;, listenerFunction);
-      };
-
-      this.addEventListener(component.refs.input[0], &apos;blur&apos;, listenerFunction);
-      component.focus();
+      if (component) {
+        component.focus();
+      }
     }
   }
 
@@ -1394,7 +1394,7 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages &amp;&amp; err.messages.length) {
-          err.messages.forEach(({ message }) =&gt; createListItem(`${err.component.label}. ${message}`));
+          err.messages.forEach(({ message }) =&gt; createListItem(`${this.t(err.component.label)}. ${message}`));
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || &apos;&apos; : err;
@@ -1407,11 +1407,6 @@ export default class Webform extends NestedDataComponent {
     this.setAlert(&apos;danger&apos;, message);
     if (triggerEvent) {
       this.emit(&apos;error&apos;, errors);
-    }
-
-    if (triggerEvent &amp;&amp; this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
-      const withKeys = Array.from(this.refs.errorRef).filter(ref =&gt; !!ref.dataset.componentKey);
-      withKeys.length ? this.focusOnComponent(withKeys[0].dataset.componentKey) :  this.refs.errorRef[0].focus();
     }
 
     return errors;
@@ -1504,7 +1499,7 @@ export default class Webform extends NestedDataComponent {
       this.triggerSaveDraft();
     }
 
-    if ((!flags || !flags.noEmit) &amp;&amp; !flags.fromSubmission) {
+    if (!flags || !flags.noEmit) {
       this.emit(&apos;change&apos;, value);
       isChangeEventEmitted = true;
     }
@@ -1516,7 +1511,7 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  checkData(data, flags) {
+  checkData(data, flags = {}) {
     const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) &amp;&amp; this.submitted) {
       this.showErrors();
@@ -1621,7 +1616,7 @@ export default class Webform extends NestedDataComponent {
           // Use the form action to submit the form if available.
           if (this._form &amp;&amp; this._form.action) {
             const method = (submission.data._id &amp;&amp; this._form.action.includes(submission.data._id)) ? &apos;PUT&apos; : &apos;POST&apos;;
-            return Formio.makeStaticRequest(this._form.action, method, submission.data, this.formio ? this.formio.options : {})
+            return Formio.makeStaticRequest(this._form.action, method, submission, this.formio ? this.formio.options : {})
               .then((result) =&gt; resolve({
                 submission: result,
                 saved: true,

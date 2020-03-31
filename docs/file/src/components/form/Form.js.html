@@ -625,7 +625,7 @@ export default class FormComponent extends Component {
    * @return {*|boolean}
    */
   get shouldSubmit() {
-    return this.subFormReady &amp;&amp; (!this.component.hasOwnProperty(&apos;reference&apos;) || this.component.reference) &amp;&amp; !this.isHidden;
+    return this.subFormReady &amp;&amp; (!this.component.hasOwnProperty(&apos;reference&apos;) || this.component.reference) &amp;&amp; !this.isHidden();
   }
 
   /**
@@ -707,7 +707,7 @@ export default class FormComponent extends Component {
     return !super.checkConditions(this.rootValue);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
     if (this.subForm) {
       if (

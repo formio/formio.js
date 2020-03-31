@@ -460,7 +460,7 @@ export default class Wizard extends Webform {
         this.addEventListener(link, &apos;click&apos;, (event) =&gt; {
           this.emit(&apos;wizardNavigationClicked&apos;, this.pages[index]);
           event.preventDefault();
-          return this.setPage(index, true).then(() =&gt; {
+          return this.setPage(index).then(() =&gt; {
             this.emit(&apos;wizardPageSelected&apos;, this.pages[index], index);
           });
         });
@@ -536,7 +536,7 @@ export default class Wizard extends Webform {
     this.establishPages();
   }
 
-  setPage(num, shouldValidate) {
+  setPage(num) {
     if (num === this.page) {
       return NativePromise.resolve();
     }
@@ -549,10 +549,11 @@ export default class Wizard extends Webform {
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
       }
-      this.redraw();
-      if (shouldValidate &amp;&amp; !this.options.readOnly) {
-        this.checkValidity(this.submission.data, true, this.submission.data, true);
-      }
+      this.redraw().then(() =&gt; {
+        if (!this.options.readOnly) {
+          this.checkValidity(this.submission.data, false, this.submission.data, true);
+        }
+      });
       return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
@@ -659,35 +660,28 @@ export default class Wizard extends Webform {
       });
     }
     else {
+      this.currentPage.components.forEach((comp) =&gt; comp.setPristine(false));
       return NativePromise.reject(this.showErrors([], true));
     }
   }
 
   prevPage() {
     return this.beforePage().then(() =&gt; {
-      return this.setPage(this.getPreviousPage(), true).then(() =&gt; {
+      return this.setPage(this.getPreviousPage()).then(() =&gt; {
         this.emit(&apos;prevPage&apos;, { page: this.page, submission: this.submission });
       });
     });
   }
 
-  checkData(data, flags) {
-    let dirty = this.currentPage.components.some(component =&gt; !component.isEmpty());
-
-    if (flags &amp;&amp; flags.fromSubmission) {
-      dirty = !flags.noValidate;
-    }
-
-    return super.checkData(data, flags) &amp;&amp; this.checkValidity(data, dirty, true);
-  }
-
   cancel(noconfirm) {
     if (super.cancel(noconfirm)) {
-      return this.setPage(0);
+      this.setPristine(true);
+      return this.setPage(0).then(() =&gt; {
+          this.redraw();
+          return this.page;
+      });
     }
-    else {
-      return this.setPage();
-    }
+    return NativePromise.resolve();
   }
 
   getPageIndexByKey(key) {
@@ -739,7 +733,7 @@ export default class Wizard extends Webform {
     return super.setForm(form);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
     this.pageFieldLogic(this.page);
     return changed;

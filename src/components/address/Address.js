@@ -225,7 +225,7 @@ export default class AddressComponent extends ContainerComponent {
       : value;
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = Field.prototype.setValue.call(this, value, flags);
 
     if (this.manualMode) {

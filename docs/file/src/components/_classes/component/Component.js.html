@@ -540,10 +540,17 @@ export default class Component extends Element {
     this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
 
     /**
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {Component}
+     */
+    this.root = this.options.root;
+
+    /**
      * Determines if this component is visible, or not.
      */
     this._parentVisible = this.options.hasOwnProperty(&apos;parentVisible&apos;) ? this.options.parentVisible : true;
-    this._visible = this._parentVisible &amp;&amp; this.conditionallyVisible(data);
+    this._visible = this._parentVisible &amp;&amp; this.conditionallyVisible(null, data);
     this._parentDisabled = false;
 
     /**
@@ -560,13 +567,6 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
-    /**
-     * Points to the root component, usually the FormComponent.
-     *
-     * @type {Component}
-     */
-    this.root = this.options.root;
-
     this.options.name = this.options.name || &apos;data&apos;;
 
     /**
@@ -582,10 +582,12 @@ export default class Component extends Element {
      * @type {function} - Call to trigger a change in this component.
      */
     let lastChanged = null;
+    let triggerArgs = [];
     const _triggerChange = _.debounce((...args) =&gt; {
       if (this.root) {
         this.root.changing = false;
       }
+      triggerArgs = [];
       if (!args[1] &amp;&amp; lastChanged) {
         // Set the changed component if one isn&apos;t provided.
         args[1] = lastChanged;
@@ -606,7 +608,10 @@ export default class Component extends Element {
       if (this.root) {
         this.root.changing = true;
       }
-      return _triggerChange(...args);
+      if (args.length) {
+        triggerArgs = args;
+      }
+      return _triggerChange(...triggerArgs);
     };
 
     /**
@@ -1346,7 +1351,7 @@ export default class Component extends Element {
     else {
       this.refreshOnChanged = true;
     }
-    this.refreshOnValue = value;
+    this.refreshOnValue = fastCloneDeep(value);
     if (this.refreshOnChanged) {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
@@ -2024,7 +2029,7 @@ export default class Component extends Element {
     }
 
     // If we are supposed to validate on blur, then don&apos;t trigger validation yet.
-    if (this.component.validateOn === &apos;blur&apos; &amp;&amp; !this.errors.length &amp;&amp; !flags.fromSubmission) {
+    if (this.component.validateOn === &apos;blur&apos; &amp;&amp; !this.errors.length) {
       flags.noValidate = true;
     }
 
@@ -2387,7 +2392,7 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed.
    */
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
     if (this.componentModal &amp;&amp; flags &amp;&amp; flags.fromSubmission) {
       this.componentModal.setValue(value);
@@ -2397,7 +2402,13 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray &amp;&amp; this.refs.input &amp;&amp; this.refs.input.length !== value.length) {
+    if (
+      isArray &amp;&amp;
+      Array.isArray(this.defaultValue) &amp;&amp;
+      this.refs.hasOwnProperty(&apos;input&apos;) &amp;&amp;
+      this.refs.input &amp;&amp;
+      (this.refs.input.length !== value.length)
+    ) {
       this.redraw();
     }
     for (const i in this.refs.input) {
@@ -2414,8 +2425,7 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value, flags) {
-    flags = flags || {};
+  setValueAt(index, value, flags = {}) {
     if (!flags.noDefault &amp;&amp; (value === null || value === undefined) &amp;&amp; !this.component.multiple) {
       value = this.defaultValue;
     }
@@ -2472,11 +2482,10 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateComponentValue(value, flags) {
-    flags = flags || {};
+  updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue &amp;&amp; (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
@@ -2544,9 +2553,8 @@ export default class Component extends Element {
    * Update the value on change.
    *
    * @param flags
-   * @param changed
    */
-  updateOnChange(flags = {}, changed) {
+  updateOnChange(flags = {}, changed = false) {
     if (!flags.noUpdateEvent &amp;&amp; changed) {
       this.triggerChange(flags);
       return true;
@@ -2561,6 +2569,14 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
+
+  convertNumberOrBoolToString(value) {
+    if (typeof value === &apos;number&apos; || typeof value === &apos;boolean&apos; ) {
+      return value.toString();
+    }
+    return value;
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don&apos;t calculate a value for a hidden field set to clear when hidden)
@@ -2570,11 +2586,6 @@ export default class Component extends Element {
 
     // If this component allows overrides.
     const allowOverride = this.component.allowCalculateOverride;
-
-    // Skip this operation if this component allows modification and it is no longer pristine.
-    if (allowOverride &amp;&amp; !this.pristine) {
-      return false;
-    }
 
     let firstPass = false;
     const dataValue = this.dataValue;
@@ -2588,8 +2599,8 @@ export default class Component extends Element {
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
       allowOverride &amp;&amp;
-      (this.calculatedValue !== null) &amp;&amp;
-      !_.isEqual(dataValue, this.calculatedValue)
+      this.calculatedValue &amp;&amp;
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(this.calculatedValue))
     ) {
       return false;
     }
@@ -2606,7 +2617,7 @@ export default class Component extends Element {
       allowOverride &amp;&amp;
       firstPass &amp;&amp;
       !this.isEmpty(dataValue) &amp;&amp;
-      !_.isEqual(dataValue, calculatedValue)
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue))
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
@@ -2758,13 +2769,28 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+    if (flags.noValidate) {
+      return true;
+    }
 
     // We need to perform a test to see if they provided a default value that is not valid and immediately show
     // an error if that is the case.
-    if (!this.builderMode &amp;&amp; !this.options.preview &amp;&amp; !this.isEmpty(this.defaultValue) &amp;&amp; !flags.noValidate) {
-      return this.checkComponentValidity(data, true, row);
+    let isDirty = !this.builderMode &amp;&amp;
+      !this.options.preview &amp;&amp;
+      !this.isEmpty(this.defaultValue) &amp;&amp;
+      this.isEqual(this.defaultValue, this.dataValue);
+
+    // We need to set dirty if they explicitly set noValidate to false.
+    if (this.options.alwaysDirty || flags.dirty) {
+      isDirty = true;
     }
-    return flags.noValidate ? true : this.checkComponentValidity(data, !!flags.fromSubmission, row, flags);
+
+    // See if they explicitely set the values with setSubmission.
+    if (flags.fromSubmission &amp;&amp; this.hasValue(data)) {
+      isDirty = true;
+    }
+
+    return this.checkComponentValidity(data, isDirty, row);
   }
 
   get validationValue() {
@@ -2794,7 +2820,7 @@ export default class Component extends Element {
   }
 
   clearErrorClasses() {
-    this.removeClass(this.element, &apos;formio-error-wrapper&apos;);
+    this.removeClass(this.element, this.options.componentErrorClass);
     this.removeClass(this.element, &apos;alert alert-danger&apos;);
     this.removeClass(this.element, &apos;has-error&apos;);
     this.removeClass(this.element, &apos;has-message&apos;);
@@ -2857,8 +2883,28 @@ export default class Component extends Element {
     // });
   }
 
+  /**
+   * Determines if the value of this component is hidden from the user as if it is coming from the server, but is
+   * protected.
+   *
+   * @return {boolean|*}
+   */
+  isValueHidden() {
+    if (!this.root || !this.root.hasOwnProperty(&apos;editing&apos;)) {
+      return false;
+    }
+    if (!this.root || !this.root.editing) {
+      return false;
+    }
+    return (this.component.protected || !this.component.persistent || (this.component.persistent === &apos;client-only&apos;));
+  }
+
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Skip validatoin for disabled componoents.
+      () =&gt; this.shouldDisabled,
+      // Check to see if we are editing and if so, check component persistence.
+      () =&gt; this.isValueHidden(),
       // Force valid if component is hidden.
       () =&gt; !this.visible,
       // Force valid if component is conditionally hidden.
@@ -2996,6 +3042,10 @@ export default class Component extends Element {
   }
 
   attachLogic() {
+    // Do not attach logic during builder mode.
+    if (this.builderMode) {
+      return;
+    }
     this.logic.forEach((logic) =&gt; {
       if (logic.trigger.type === &apos;event&apos;) {
         const event = this.interpolate(logic.trigger.event);

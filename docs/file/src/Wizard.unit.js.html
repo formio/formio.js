@@ -244,6 +244,7 @@
 import Wizard from &apos;./Wizard&apos;;
 import assert from &apos;power-assert&apos;;
 import wizard from &apos;../test/forms/wizardValidationOnPageChanged&apos;;
+import wizard1 from &apos;../test/forms/wizardValidationOnNextBtn&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
   let wizardForm = null;
@@ -264,12 +265,41 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         }], done);
         Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
         assert.equal(wizardForm.page, 2);
-        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
-        assert.equal(wizardForm.page, 0);
-        const aInput = wizardForm.currentPage.getComponent(&apos;a&apos;);
-        assert.equal(aInput.errors.length, 1);
-        assert.equal(aInput.errors[0].message, &apos;a must have at least 4 characters.&apos;);
-        done();
+        setTimeout(() =&gt; {
+          Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
+          assert.equal(wizardForm.page, 0);
+          setTimeout(() =&gt; {
+            const aInput = wizardForm.currentPage.getComponent(&apos;a&apos;);
+            assert.equal(aInput.errors.length, 1);
+            assert.equal(aInput.errors[0].message, &apos;a must have at least 4 characters.&apos;);
+            done();
+          }, 100);
+        }, 100);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should leave errors for invalid fields after validation on next button and entering valid data in one of the fields&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizard1).then(() =&gt; {
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-next`]);
+      setTimeout(() =&gt; {
+        assert.equal(wizardForm.errors.length, 2);
+
+        const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
+        const inputA = formElement.querySelector(&apos;input[name=&quot;data[a]&quot;]&apos;);
+
+        for (let i = 0; i &lt; 5; i++) {
+          inputA.value += i;
+          inputA.dispatchEvent(inputEvent);
+        }
+
+        setTimeout(() =&gt; {
+          assert.equal(wizardForm.errors.length, 1);
+          done();
+        }, 250);
+      }, 250);
     })
     .catch((err) =&gt; done(err));
   });

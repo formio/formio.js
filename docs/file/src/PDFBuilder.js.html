@@ -422,7 +422,7 @@ export default class PDFBuilder extends WebformBuilder {
     // Normal PDF Builder
     return super.attach(element).then(() =&gt; {
       this.loadRefs(this.element, {
-        iframeDropzone: &apos;single&apos;, &apos;sidebar-container&apos;: &apos;single&apos;
+        iframeDropzone: &apos;single&apos;, &apos;sidebar-container&apos;: &apos;multiple&apos;
       });
 
       this.afterAttach();
@@ -609,13 +609,15 @@ export default class PDFBuilder extends WebformBuilder {
     if (!this.refs[&apos;sidebar-container&apos;]) {
       return;
     }
-    [...this.refs[&apos;sidebar-container&apos;].children].forEach(el =&gt; {
-      el.draggable = true;
-      el.setAttribute(&apos;draggable&apos;, true);
-      this.removeEventListener(el, &apos;dragstart&apos;);
-      this.removeEventListener(el, &apos;dragend&apos;);
-      this.addEventListener(el, &apos;dragstart&apos;, this.onDragStart.bind(this), true);
-      this.addEventListener(el, &apos;dragend&apos;,   this.onDragEnd  .bind(this), true);
+    this.refs[&apos;sidebar-container&apos;].forEach(container =&gt; {
+      [...container.children].forEach(el =&gt; {
+        el.draggable = true;
+        el.setAttribute(&apos;draggable&apos;, true);
+        this.removeEventListener(el, &apos;dragstart&apos;);
+        this.removeEventListener(el, &apos;dragend&apos;);
+        this.addEventListener(el, &apos;dragstart&apos;, this.onDragStart.bind(this), true);
+        this.addEventListener(el, &apos;dragend&apos;,   this.onDragEnd  .bind(this), true);
+      });
     });
   }
 
@@ -627,6 +629,21 @@ export default class PDFBuilder extends WebformBuilder {
     const iframeRect = getElementRect(this.webform.refs.iframeContainer);
     this.refs.iframeDropzone.style.height = iframeRect &amp;&amp; iframeRect.height ? `${iframeRect.height}px` : &apos;1000px&apos;;
     this.refs.iframeDropzone.style.width  = iframeRect &amp;&amp; iframeRect.width  ? `${iframeRect.width }px` : &apos;100%&apos;;
+  }
+
+  tryUpdateCustomComponentSchema(schema, key) {
+    const comp = _.get(this, `groups.custom.components[${key}]`);
+
+    if (!comp) {
+      return false;
+    }
+
+    schema.key = comp.schema &amp;&amp;  comp.schema.key || schema.key;
+    schema.label = comp.schema &amp;&amp; comp.schema.label || schema.label;
+    schema.keyForShow = schema.key;
+    schema.customField = true;
+
+    return true;
   }
 
   onDragStart(e) {
@@ -657,14 +674,18 @@ export default class PDFBuilder extends WebformBuilder {
 
     const element = e.target;
     const type = element.getAttribute(&apos;data-type&apos;);
+    const group = element.getAttribute(&apos;data-group&apos;);
+    const key = element.getAttribute(&apos;data-key&apos;);
 
     const schema = fastCloneDeep(this.schemas[type]);
 
-    schema.key = _.camelCase(
-      schema.label ||
-      schema.placeholder ||
-      schema.type
-    );
+    if (!(group === &apos;custom&apos; &amp;&amp; key &amp;&amp; this.tryUpdateCustomComponentSchema(schema, key))) {
+      schema.key = _.camelCase(
+        schema.label ||
+        schema.placeholder ||
+        schema.type
+      );
+    }
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);

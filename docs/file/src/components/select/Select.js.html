@@ -1365,8 +1365,7 @@ export default class SelectComponent extends Field {
     return super.normalizeValue(this.normalizeSingleValue(value));
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
@@ -1483,8 +1482,25 @@ export default class SelectComponent extends Field {
    * Output this select dropdown as a string value.
    * @return {*}
    */
+
+  isBooleanOrNumber(value) {
+    return typeof value === &apos;number&apos; || typeof value === &apos;boolean&apos;;
+  }
+
   asString(value) {
     value = value || this.getValue();
+    //need to convert values to strings to be able to compare values with available options that are strings
+    if (this.isBooleanOrNumber(value)) {
+      value = value.toString();
+    }
+
+    if (Array.isArray(value) &amp;&amp; value.some(item =&gt; this.isBooleanOrNumber(item))) {
+      value = value.map(item =&gt; {
+        if (this.isBooleanOrNumber(item)) {
+          item = item.toString();
+        }
+      });
+    }
 
     if ([&apos;values&apos;, &apos;custom&apos;].includes(this.component.dataSrc)) {
       const {

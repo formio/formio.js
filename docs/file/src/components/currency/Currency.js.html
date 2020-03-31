@@ -361,11 +361,20 @@ export default class CurrencyComponent extends NumberComponent {
   stripPrefixSuffix(value) {
     if (typeof value === &apos;string&apos;) {
       try {
+        const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
+        const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+        const hasDelimiter = value.includes(this.delimiter);
+        const hasDecimalSeparator = value.includes(this.decimalSeparator);
+
         if (this.prefix) {
           value = value.replace(this.prefix, &apos;&apos;);
         }
         if (this.suffix) {
           value = value.replace(this.suffix, &apos;&apos;);
+        }
+        //when we enter $ in the field using dashboard, it contains &apos;_&apos; that is NaN
+        if ((hasPrefix || hasSuffix) &amp;&amp; !hasDelimiter &amp;&amp; !hasDecimalSeparator &amp;&amp; (Number.isNaN(+value) || !value)) {
+          value =&apos;0&apos;;
         }
       }
       catch (err) {
