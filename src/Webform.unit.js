@@ -19,8 +19,6 @@ describe('Webform tests', () => {
     formWithCalculatedValue.setForm(manualOverride).then(() => {
       Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);
       setTimeout(() => {
-        console.log(formWithCalculatedValue.errors.length);
-
         const inputEvent = new Event('input');
         const input1 = formWithCalculatedValue.components[0].refs.input[0];
 
@@ -36,6 +34,48 @@ describe('Webform tests', () => {
       }, 250);
     })
     .catch((err) => done(err));
+  });
+
+  it('Should calculate the value when editing set values with possibility of manual override', function(done) {
+    const formElement = document.createElement('div');
+    formWithCalculatedValue = new Webform(formElement);
+    formWithCalculatedValue.setForm(manualOverride).then(() => {
+      formWithCalculatedValue.setSubmission({
+        data:{
+          number1: 66,
+          number2:66
+        }
+      }).then(()=>{
+        setTimeout(()=>{
+          const input1 = formElement.querySelector('input[name="data[number1]"]');
+          const input2 = formElement.querySelector('input[name="data[number2]"]');
+
+          assert.equal(input2.value, '66');
+          assert.equal(input1.value, 66);
+
+          const inputEvent = new Event('input');
+
+          input1.value =  `${input1.value}` + '78';
+          input1.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(input2.value, '6678');
+            assert.equal(input1.value, 6678);
+            //set a number as calculated value
+            formWithCalculatedValue.components[1].calculatedValue = 6678;
+            //change the value
+            input1.value =  +(`${input1.value}` + '90');
+            input1.dispatchEvent(inputEvent);
+
+            setTimeout(() => {
+              assert.equal(input2.value, '667890');
+              assert.equal(input1.value, 667890);
+              done();
+            }, 250);
+          }, 250);
+        }, 900);
+      });
+    });
   });
 
   let simpleForm = null;
