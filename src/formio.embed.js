@@ -1,3 +1,4 @@
+/*global Formio*/
 const scripts = document.getElementsByTagName('script');
 let thisScript = null;
 let i = scripts.length;
@@ -9,7 +10,7 @@ while (i--) {
 }
 
 if (thisScript) {
-  const { Form, Formio }  = require('./formio.form');
+  const Form = require('./formio.form').Form;
   Formio.loadModules();
   const query = {};
   let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
