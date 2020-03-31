@@ -7,11 +7,7 @@ import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
 export default class NestedArrayComponent extends NestedDataComponent {
   componentContext(component) {
-    let dataValue = this.dataValue;
-    if (!dataValue[component.rowIndex]) {
-      this.dataValue[component.rowIndex] = dataValue = this.emptyValue;
-    }
-    return dataValue[component.rowIndex];
+    return this.iteratableRows[component.rowIndex].data;
   }
 
   get iteratableRows() {
@@ -39,5 +35,20 @@ export default class NestedArrayComponent extends NestedDataComponent {
       (valid, component) => component[method](data, opts, row) && valid,
       true,
     );
+  }
+
+  hasAddButton() {
+    const maxLength = _.get(this.component, 'validate.maxLength');
+    const conditionalAddButton = _.get(this.component, 'conditionalAddButton');
+
+    return !this.component.disableAddingRemovingRows &&
+      !this.options.readOnly &&
+      !this.disabled &&
+      this.fullMode &&
+      !this.options.preview &&
+      (!maxLength || (this.iteratableRows.length < maxLength)) &&
+      (!conditionalAddButton || this.evaluate(conditionalAddButton, {
+        value: this.dataValue,
+      }, 'show'));
   }
 }

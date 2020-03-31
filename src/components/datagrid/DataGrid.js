@@ -186,16 +186,6 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.dataValue = _.range(n).map(() => ({}));
   }
 
-  hasAddButton() {
-    const maxLength = _.get(this.component, 'validate.maxLength');
-    return !this.component.disableAddingRemovingRows &&
-      !this.options.readOnly &&
-      !this.disabled &&
-      this.fullMode &&
-      !this.options.preview &&
-      (!maxLength || (this.dataValue.length < maxLength));
-  }
-
   hasExtraColumn() {
     return (this.hasRemoveButtons() || this.canAddColumn);
   }
