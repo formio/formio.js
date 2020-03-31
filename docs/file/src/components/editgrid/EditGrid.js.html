@@ -644,14 +644,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     const dataValue = this.dataValue || [];
     const editRow = this.editRows[rowIndex];
     this.setEditRowSettings(editRow);
-    const dataSnapshot = dataValue[rowIndex] ? fastCloneDeep(dataValue[rowIndex]) : {};
-    if (this.component.inlineEdit) {
-      editRow.backup = dataSnapshot;
-    }
-    else {
-      editRow.data = dataSnapshot;
-      this.restoreRowContext(editRow);
-    }
+    editRow.data = dataValue[rowIndex] ? dataValue[rowIndex] : {};
+    editRow.backup = dataValue[rowIndex] ? fastCloneDeep(dataValue[rowIndex]) : {};
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -680,16 +674,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
     if (editRow.editing) {
-      const dataValue = this.dataValue || [];
       editRow.dirty = false;
       editRow.isOpen = false;
       editRow.editing = false;
-      if (this.component.inlineEdit) {
-        this.dataValue[rowIndex] = editRow.backup;
-        editRow.data = editRow.backup;
-        this.restoreRowContext(editRow);
-      }
-      editRow.data = dataValue[rowIndex] || {};
+      this.dataValue[rowIndex] = editRow.data = editRow.backup;
       this.clearErrors(rowIndex);
     }
     else {
@@ -724,7 +712,6 @@ export default class EditGridComponent extends NestedArrayComponent {
         dataValue[rowIndex] = editRow.data;
       }
       else {
-        // Insert this row into its proper place.
         const newIndex = dataValue.length;
         dataValue.push(editRow.data);
         this.editRows.splice(rowIndex, 1);
@@ -948,19 +935,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.redraw();
     }
     return changed;
-  }
-
-  restoreComponentsContext() {
-    return;
-  }
-
-  restoreRowContext(editRow) {
-    editRow.components.forEach((component) =&gt; {
-      component.data = editRow.data;
-      if (_.has(editRow.data, component.key)) {
-        component.setValue(editRow.data[component.key]);
-      }
-    });
   }
 }
 
