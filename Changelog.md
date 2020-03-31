@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.10
+### Changed
+ - Update idb@5.0.2, jsdom@16.2.2, eventemitter2@6.3.1, ejs-loader@0.3.6
+
+### Fixed
+ - Issues with logic messing up form builder.
+ - EditGrid problems where data would get in a detached state.
+ - Fixed unstranslated component label in Webform
+ - Fixed calculated value doesn`t work when editing data with manual override in true position
+
 ## 4.9.9
 ### Fixed
  - Issue where checkboxes configured as Radio input would still add checkbox key to data.

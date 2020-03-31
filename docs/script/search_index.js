@@ -4416,6 +4416,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/component/component.js~component#convertnumberorbooltostring",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-convertNumberOrBoolToString",
+    "src/components/_classes/component/Component.js~Component#convertNumberOrBoolToString",
+    "method"
+  ],
+  [
     "src/components/_classes/component/component.js~component#createmodal",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-createModal",
     "src/components/_classes/component/Component.js~Component#createModal",
@@ -8841,18 +8847,6 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#renderrow",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-renderRow",
     "src/components/editgrid/EditGrid.js~EditGridComponent#renderRow",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#restorecomponentscontext",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreComponentsContext",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreComponentsContext",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#restorerowcontext",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreRowContext",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreRowContext",
     "method"
   ],
   [
