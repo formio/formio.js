@@ -74,6 +74,12 @@ Formio.use = (...plugins) => {
     }
   });
 };
+Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
+  Formio.requireLibrary(name, name, path, true)
+    .then((modules) => {
+      Formio.use(modules);
+    });
+};
 export Form from './Form';
 export Utils from './utils';
 export { Builders, Components, Displays, Providers, Templates, Formio };
