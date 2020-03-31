@@ -1859,7 +1859,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-setPage">setPage</a></span></span><span class="code" data-ice="signature">(num: <span>*</span>, shouldValidate: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-setPage">setPage</a></span></span><span class="code" data-ice="signature">(num: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1887,7 +1887,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(submission: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(submission: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5016,14 +5016,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, row: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Perform a calculated value operation.</p>
-</div>
+        
       </div>
     </td>
     <td>
@@ -5479,6 +5478,35 @@ something changed.</p>
         
         
         <div data-ice="description"><p>Check if this component is conditionally visible.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-convertNumberOrBoolToString">convertNumberOrBoolToString</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Perform a calculated value operation.</p>
 </div>
       </div>
     </td>
@@ -7802,7 +7830,7 @@ protected.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateOnChange">updateOnChange</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>, changed: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateOnChange">updateOnChange</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -9536,34 +9564,6 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasChanged">hasChanged</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasComponent">hasComponent</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -9875,7 +9875,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setNestedValue">setNestedValue</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>, value: <span>*</span>, flags: <span>*</span>, changed: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setNestedValue">setNestedValue</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>, value: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -9931,7 +9931,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -9987,7 +9987,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -10135,7 +10135,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -11738,7 +11738,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -13091,7 +13091,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber602">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber593">source</a></span></span>
     </span>
   </h3>
 
@@ -13480,7 +13480,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber465">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber456">source</a></span></span>
     </span>
   </h3>
 
@@ -13566,7 +13566,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber497">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber488">source</a></span></span>
     </span>
   </h3>
 
@@ -14100,7 +14100,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber586">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber577">source</a></span></span>
     </span>
   </h3>
 
@@ -14330,7 +14330,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber610">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber601">source</a></span></span>
     </span>
   </h3>
 
@@ -14512,7 +14512,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber454">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber445">source</a></span></span>
     </span>
   </h3>
 
@@ -14710,7 +14710,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber516">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber507">source</a></span></span>
     </span>
   </h3>
 
@@ -14898,7 +14898,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber509">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber500">source</a></span></span>
     </span>
   </h3>
 
@@ -15085,7 +15085,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber565">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber556">source</a></span></span>
     </span>
   </h3>
 
@@ -15216,7 +15216,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber549">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber540">source</a></span></span>
     </span>
   </h3>
 
@@ -15527,7 +15527,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber469">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber460">source</a></span></span>
     </span>
   </h3>
 
@@ -15570,7 +15570,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber493">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber484">source</a></span></span>
     </span>
   </h3>
 
@@ -15638,7 +15638,7 @@ within other container based components.</p>
     
     
     
-    <span class="code" data-ice="name">setPage</span><span class="code" data-ice="signature">(num: <span>*</span>, shouldValidate: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">setPage</span><span class="code" data-ice="signature">(num: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -15663,12 +15663,6 @@ within other container based components.</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">num</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">shouldValidate</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -15715,11 +15709,11 @@ within other container based components.</p>
     
     
     
-    <span class="code" data-ice="name">setValue</span><span class="code" data-ice="signature">(submission: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">setValue</span><span class="code" data-ice="signature">(submission: <span>*</span>, flags: {}): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber503">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber494">source</a></span></span>
     </span>
   </h3>
 
@@ -15747,8 +15741,9 @@ within other container based components.</p>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">flags</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
+      <td data-ice="type" class="code">{}</td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: {}</li></ul></td>
       <td data-ice="description"></td>
     </tr>
 </tbody>

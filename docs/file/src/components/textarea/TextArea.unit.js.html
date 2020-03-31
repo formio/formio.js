@@ -242,15 +242,46 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textarea/TextArea.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import TextAreaComponent from &apos;./TextArea&apos;;
+import sinon from &apos;sinon&apos;;
+import { expect } from &apos;chai&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;TextArea Component&apos;, () =&gt; {
   it(&apos;Should build a TextArea component&apos;, () =&gt; {
     return Harness.testCreate(TextAreaComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;textarea&apos;, 1);
+    });
+  });
+
+  it(&apos;setValue should be called only once&apos;, () =&gt; {
+    return Harness.testCreate(TextAreaComponent, comp2).then((component) =&gt; {
+      const valueToSet = [
+        {
+          firstName: &apos;Bobby&apos;,
+          lastName: &apos;Lynch&apos;
+        },
+        {
+          firstName: &apos;Harold&apos;,
+          lastName: &apos;Freeman&apos;
+        },
+      ];
+      const emit = sinon.spy(component, &apos;setValue&apos;);
+      component.setValue(valueToSet);
+      expect(component.getValue()).to.deep.equal([
+        {
+          firstName: &apos;Bobby&apos;,
+          lastName: &apos;Lynch&apos;
+        },
+        {
+          firstName: &apos;Harold&apos;,
+          lastName: &apos;Freeman&apos;
+        }
+      ]);
+      expect(emit.callCount).to.equal(1);
     });
   });
 });

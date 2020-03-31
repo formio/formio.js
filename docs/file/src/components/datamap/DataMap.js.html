@@ -455,7 +455,7 @@ export default class DataMapComponent extends DataGridComponent {
     this.triggerChange();
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.createRows();

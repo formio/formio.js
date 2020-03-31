@@ -2400,12 +2400,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/pdf.js~pdf#_iframesrc",
-    "class/src/PDF.js~PDF.html#instance-member-_iframeSrc",
-    "src/PDF.js~PDF#_iframeSrc",
-    "member"
-  ],
-  [
     "src/pdf.js~pdf#attach",
     "class/src/PDF.js~PDF.html#instance-method-attach",
     "src/PDF.js~PDF#attach",
@@ -2436,27 +2430,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/pdf.js~pdf#fetchpdf",
-    "class/src/PDF.js~PDF.html#instance-method-fetchPdf",
-    "src/PDF.js~PDF#fetchPdf",
+    "src/pdf.js~pdf#focusoncomponent",
+    "class/src/PDF.js~PDF.html#instance-method-focusOnComponent",
+    "src/PDF.js~PDF#focusOnComponent",
     "method"
   ],
   [
-    "src/pdf.js~pdf#getpdf",
-    "class/src/PDF.js~PDF.html#instance-method-getPdf",
-    "src/PDF.js~PDF#getPdf",
+    "src/pdf.js~pdf#getsrc",
+    "class/src/PDF.js~PDF.html#instance-method-getSrc",
+    "src/PDF.js~PDF#getSrc",
     "method"
   ],
   [
     "src/pdf.js~pdf#getsubmission",
     "class/src/PDF.js~PDF.html#instance-method-getSubmission",
     "src/PDF.js~PDF#getSubmission",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#handlepdfsrc",
-    "class/src/PDF.js~PDF.html#instance-method-handlePdfSrc",
-    "src/PDF.js~PDF#handlePdfSrc",
     "method"
   ],
   [
@@ -2481,18 +2469,6 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#iframereadyresolve",
     "class/src/PDF.js~PDF.html#instance-member-iframeReadyResolve",
     "src/PDF.js~PDF#iframeReadyResolve",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#iframesrc",
-    "class/src/PDF.js~PDF.html#instance-get-iframeSrc",
-    "src/PDF.js~PDF#iframeSrc",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#iframesrc",
-    "class/src/PDF.js~PDF.html#instance-set-iframeSrc",
-    "src/PDF.js~PDF#iframeSrc",
     "member"
   ],
   [
@@ -2685,6 +2661,12 @@ window.esdocSearchIndex = [
     "src/pdfbuilder.js~pdfbuilder#setuploaderror",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setUploadError",
     "src/PDFBuilder.js~PDFBuilder#setUploadError",
+    "method"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#tryupdatecustomcomponentschema",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-tryUpdateCustomComponentSchema",
+    "src/PDFBuilder.js~PDFBuilder#tryUpdateCustomComponentSchema",
     "method"
   ],
   [
@@ -4446,6 +4428,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/component/component.js~component#convertnumberorbooltostring",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-convertNumberOrBoolToString",
+    "src/components/_classes/component/Component.js~Component#convertNumberOrBoolToString",
+    "method"
+  ],
+  [
     "src/components/_classes/component/component.js~component#createmodal",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-createModal",
     "src/components/_classes/component/Component.js~Component#createModal",
@@ -6144,12 +6132,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#haschanged",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasChanged",
-    "src/components/_classes/nested/NestedComponent.js~NestedComponent#hasChanged",
-    "method"
-  ],
-  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#hascomponent",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasComponent",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#hasComponent",
@@ -6912,18 +6894,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
-    "member"
-  ],
-  [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
-    "member"
-  ],
-  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#defaultschema",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-defaultSchema",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#defaultSchema",
@@ -7335,6 +7305,12 @@ window.esdocSearchIndex = [
     "src/components/container/fixtures/comp1.js",
     "file/src/components/container/fixtures/comp1.js.html",
     "src/components/container/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/container/fixtures/comp2.js",
+    "file/src/components/container/fixtures/comp2.js.html",
+    "src/components/container/fixtures/comp2.js",
     "file"
   ],
   [
@@ -8886,18 +8862,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/editgrid/editgrid.js~editgridcomponent#restorecomponentscontext",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreComponentsContext",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreComponentsContext",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#restorerowcontext",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreRowContext",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreRowContext",
-    "method"
-  ],
-  [
     "src/components/editgrid/editgrid.js~editgridcomponent#saverow",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-saveRow",
     "src/components/editgrid/EditGrid.js~EditGridComponent#saveRow",
@@ -9456,6 +9420,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.unit.js",
+    "file/src/components/file/File.unit.js.html",
+    "src/components/file/File.unit.js",
+    "file"
+  ],
+  [
     "src/components/file/editform/file.edit.data.js",
     "file/src/components/file/editForm/File.edit.data.js.html",
     "src/components/file/editForm/File.edit.data.js",
@@ -9477,6 +9447,18 @@ window.esdocSearchIndex = [
     "src/components/file/editform/file.edit.validation.js",
     "file/src/components/file/editForm/File.edit.validation.js.html",
     "src/components/file/editForm/File.edit.validation.js",
+    "file"
+  ],
+  [
+    "src/components/file/fixtures/comp1.js",
+    "file/src/components/file/fixtures/comp1.js.html",
+    "src/components/file/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/file/fixtures/index.js",
+    "file/src/components/file/fixtures/index.js.html",
+    "src/components/file/fixtures/index.js",
     "file"
   ],
   [
@@ -11010,6 +10992,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#isbooleanornumber",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-isBooleanOrNumber",
+    "src/components/select/Select.js~SelectComponent#isBooleanOrNumber",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#isfromsearch",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-isFromSearch",
     "src/components/select/Select.js~SelectComponent#isFromSearch",
@@ -11301,6 +11289,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp3.js",
     "file/src/components/select/fixtures/comp3.js.html",
     "src/components/select/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp4.js",
+    "file/src/components/select/fixtures/comp4.js.html",
+    "src/components/select/fixtures/comp4.js",
     "file"
   ],
   [
@@ -12264,6 +12258,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#isjsonvalue",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-isJsonValue",
+    "src/components/textarea/TextArea.js~TextAreaComponent#isJsonValue",
+    "member"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#isplain",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-isPlain",
     "src/components/textarea/TextArea.js~TextAreaComponent#isPlain",
@@ -12375,6 +12375,12 @@ window.esdocSearchIndex = [
     "src/components/textarea/fixtures/comp1.js",
     "file/src/components/textarea/fixtures/comp1.js.html",
     "src/components/textarea/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/textarea/fixtures/comp2.js",
+    "file/src/components/textarea/fixtures/comp2.js.html",
+    "src/components/textarea/fixtures/comp2.js",
     "file"
   ],
   [

@@ -728,7 +728,7 @@ export default class Webform extends NestedDataComponent {
    * @param flags
    * @return {Promise.<TResult>}
    */
-  setSubmission(submission, flags) {
+  setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
       fromSubmission: true,
@@ -761,13 +761,22 @@ export default class Webform extends NestedDataComponent {
       console.warn('Cannot save draft unless a user is authenticated.');
       return;
     }
-    const draft = fastCloneDeep(this.submission);
+    const draft = this.submission;
     draft.state = 'draft';
     if (!this.savingDraft) {
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
-        this.savingDraft = false;
+        const currentSubmission = _.merge(sub, draft);
+
         this.emit('saveDraft', sub);
+        if (!draft._id) {
+          this.setSubmission(currentSubmission).then(() => {
+            this.savingDraft = false;
+          });
+        }
+        else {
+          this.savingDraft = false;
+        }
       });
     }
   }
@@ -789,7 +798,7 @@ export default class Webform extends NestedDataComponent {
         owner: userId
       }
     }).then(submissions => {
-      if (submissions.length > 0) {
+      if (submissions.length > 0 && !this.options.skipDraftRestore) {
         const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() => {
           this.draftEnabled = true;
@@ -1070,20 +1079,9 @@ export default class Webform extends NestedDataComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-      const listenerFunction = (e) => {
-        e.stopPropagation();
-
-        this.formReady.then(() => {
-          if (this.refs.errorRef && this.refs.errorRef.length) {
-            this.refs.errorRef[0].focus();
-          }
-        });
-
-        this.removeEventListener(component.refs.input[0], 'blur', listenerFunction);
-      };
-
-      this.addEventListener(component.refs.input[0], 'blur', listenerFunction);
-      component.focus();
+      if (component) {
+        component.focus();
+      }
     }
   }
 
@@ -1154,7 +1152,7 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages && err.messages.length) {
-          err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
+          err.messages.forEach(({ message }) => createListItem(`${this.t(err.component.label)}. ${message}`));
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || '' : err;
@@ -1167,11 +1165,6 @@ export default class Webform extends NestedDataComponent {
     this.setAlert('danger', message);
     if (triggerEvent) {
       this.emit('error', errors);
-    }
-
-    if (triggerEvent && this.refs.errorRef && this.refs.errorRef.length) {
-      const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
-      withKeys.length ? this.focusOnComponent(withKeys[0].dataset.componentKey) :  this.refs.errorRef[0].focus();
     }
 
     return errors;
@@ -1276,7 +1269,7 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  checkData(data, flags) {
+  checkData(data, flags = {}) {
     const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
@@ -1381,7 +1374,7 @@ export default class Webform extends NestedDataComponent {
           // Use the form action to submit the form if available.
           if (this._form && this._form.action) {
             const method = (submission.data._id && this._form.action.includes(submission.data._id)) ? 'PUT' : 'POST';
-            return Formio.makeStaticRequest(this._form.action, method, submission.data, this.formio ? this.formio.options : {})
+            return Formio.makeStaticRequest(this._form.action, method, submission, this.formio ? this.formio.options : {})
               .then((result) => resolve({
                 submission: result,
                 saved: true,

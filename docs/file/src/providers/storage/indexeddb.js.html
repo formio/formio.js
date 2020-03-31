@@ -240,7 +240,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/indexeddb.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const uuidv4 = require(&apos;uuid/v4&apos;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { v4 as uuidv4 } from &apos;uuid&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 const indexeddb = () =&gt; ({
   title: &apos;indexedDB&apos;,

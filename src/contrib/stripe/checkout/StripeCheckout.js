@@ -37,7 +37,7 @@ export default class StripeCheckoutComponent extends ButtonComponent {
     return this.dataValue;
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     return this.updateValue(value, flags);
   }
 

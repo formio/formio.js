@@ -1,6 +1,7 @@
 import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import _ from 'lodash';
 import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
@@ -18,8 +19,6 @@ describe('Webform tests', () => {
     formWithCalculatedValue.setForm(manualOverride).then(() => {
       Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);
       setTimeout(() => {
-        console.log(formWithCalculatedValue.errors.length);
-
         const inputEvent = new Event('input');
         const input1 = formWithCalculatedValue.components[0].refs.input[0];
 
@@ -35,6 +34,48 @@ describe('Webform tests', () => {
       }, 250);
     })
     .catch((err) => done(err));
+  });
+
+  it('Should calculate the value when editing set values with possibility of manual override', function(done) {
+    const formElement = document.createElement('div');
+    formWithCalculatedValue = new Webform(formElement);
+    formWithCalculatedValue.setForm(manualOverride).then(() => {
+      formWithCalculatedValue.setSubmission({
+        data:{
+          number1: 66,
+          number2:66
+        }
+      }).then(()=>{
+        setTimeout(()=>{
+          const input1 = formElement.querySelector('input[name="data[number1]"]');
+          const input2 = formElement.querySelector('input[name="data[number2]"]');
+
+          assert.equal(input2.value, '66');
+          assert.equal(input1.value, 66);
+
+          const inputEvent = new Event('input');
+
+          input1.value =  `${input1.value}` + '78';
+          input1.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(input2.value, '6678');
+            assert.equal(input1.value, 6678);
+            //set a number as calculated value
+            formWithCalculatedValue.components[1].calculatedValue = 6678;
+            //change the value
+            input1.value =  +(`${input1.value}` + '90');
+            input1.dispatchEvent(inputEvent);
+
+            setTimeout(() => {
+              assert.equal(input2.value, '667890');
+              assert.equal(input1.value, 667890);
+              done();
+            }, 250);
+          }, 250);
+        }, 900);
+      });
+    });
   });
 
   let simpleForm = null;
@@ -667,6 +708,206 @@ describe('Webform tests', () => {
       expect(form.nosubmit).to.be.false;
       expect(emit.callCount).to.equal(2);
       expect(emit.args[1]).to.deep.equal(['nosubmit', false]);
+    });
+  });
+
+  describe('getValue and setValue', () => {
+    it('should setValue and getValue', (done) => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm({
+        components: [
+          {
+            type: 'textfield',
+            key: 'a'
+          },
+          {
+            type: 'container',
+            key: 'b',
+            components: [
+              {
+                type: 'datagrid',
+                key: 'c',
+                components: [
+                  {
+                    type: 'textfield',
+                    key: 'd'
+                  },
+                  {
+                    type: 'textfield',
+                    key: 'e'
+                  },
+                  {
+                    type: 'editgrid',
+                    key: 'f',
+                    components: [
+                      {
+                        type: 'textfield',
+                        key: 'g'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }).then(() => {
+        let count = 0;
+        const onChange = form.onChange;
+        form.onChange = function(...args) {
+          count++;
+          return onChange.apply(form, args);
+        };
+
+        // Ensure that it says it changes.
+        assert.equal(form.setValue({
+          a: 'a',
+          b: {
+            c: [
+              { d: 'd1', e: 'e1', f: [{ g: 'g1' }] },
+              { d: 'd2', e: 'e2', f: [{ g: 'g2' }] },
+            ]
+          }
+        }), true);
+
+        setTimeout(() => {
+          // It should have only updated once.
+          assert.equal(count, 1);
+          done();
+        }, 500);
+      });
+    });
+  });
+
+  describe('ReadOnly Form', () => {
+    it('Should apply conditionals when in readOnly mode.', (done) => {
+      done = _.once(done);
+      const Conditions = require('../test/forms/conditions').default;
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        readOnly: true,
+        language: 'en',
+        template: 'bootstrap3'
+      });
+      form.setForm(Conditions.form).then(() => {
+        Harness.testConditionals(form, {
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'The',
+            typeMonkey: 'Monkey!'
+          }
+        }, [], (error) => {
+          form.destroy();
+          if (error) {
+            throw new Error(error);
+          }
+          done();
+        });
+      });
+    });
+  });
+
+  describe('Reset values', () => {
+    it('Should reset all values correctly.', () => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      return form.setForm(
+        {
+          components: [
+            {
+              type: 'textfield',
+              key: 'firstName',
+              label: 'First Name',
+              placeholder: 'Enter your first name.',
+              input: true,
+              tooltip: 'Enter your <strong>First Name</strong>',
+              description: 'Enter your <strong>First Name</strong>'
+            },
+            {
+              type: 'textfield',
+              key: 'lastName',
+              label: 'Last Name',
+              placeholder: 'Enter your last name',
+              input: true,
+              tooltip: 'Enter your <strong>Last Name</strong>',
+              description: 'Enter your <strong>Last Name</strong>'
+            },
+            {
+              type: 'select',
+              label: 'Favorite Things',
+              key: 'favoriteThings',
+              placeholder: 'These are a few of your favorite things...',
+              data: {
+                values: [
+                  {
+                    value: 'raindropsOnRoses',
+                    label: 'Raindrops on roses'
+                  },
+                  {
+                    value: 'whiskersOnKittens',
+                    label: 'Whiskers on Kittens'
+                  },
+                  {
+                    value: 'brightCopperKettles',
+                    label: 'Bright Copper Kettles'
+                  },
+                  {
+                    value: 'warmWoolenMittens',
+                    label: 'Warm Woolen Mittens'
+                  }
+                ]
+              },
+              dataSrc: 'values',
+              template: '<span>{{ item.label }}</span>',
+              multiple: true,
+              input: true
+            },
+            {
+              type: 'number',
+              key: 'number',
+              label: 'Number',
+              input: true
+            },
+            {
+              type: 'button',
+              action: 'submit',
+              label: 'Submit',
+              theme: 'primary'
+            }
+          ]
+        }
+      ).then(() => {
+        form.setSubmission({
+          data: {
+            firstName: 'Joe',
+            lastName: 'Bob',
+            favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
+            number: 233
+          }
+        }).then(() => {
+          expect(form.submission).to.deep.equal({
+            data: {
+              firstName: 'Joe',
+              lastName: 'Bob',
+              favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
+              number: 233,
+              submit: false
+            }
+          });
+          form.setSubmission({ data: {} }).then(() => {
+            expect(form.submission).to.deep.equal({
+              data: {
+                firstName: '',
+                lastName: '',
+                favoriteThings: [],
+                submit: false
+              }
+            });
+          });
+        });
+      });
     });
   });
 

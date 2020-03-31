@@ -243,6 +243,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
 import { expect } from &apos;chai&apos;;
 import sinon from &apos;sinon&apos;;
+import _ from &apos;lodash&apos;;
 import each from &apos;lodash/each&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
@@ -260,8 +261,6 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     formWithCalculatedValue.setForm(manualOverride).then(() =&gt; {
       Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);
       setTimeout(() =&gt; {
-        console.log(formWithCalculatedValue.errors.length);
-
         const inputEvent = new Event(&apos;input&apos;);
         const input1 = formWithCalculatedValue.components[0].refs.input[0];
 
@@ -277,6 +276,48 @@ describe(&apos;Webform tests&apos;, () =&gt; {
       }, 250);
     })
     .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should calculate the value when editing set values with possibility of manual override&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    formWithCalculatedValue = new Webform(formElement);
+    formWithCalculatedValue.setForm(manualOverride).then(() =&gt; {
+      formWithCalculatedValue.setSubmission({
+        data:{
+          number1: 66,
+          number2:66
+        }
+      }).then(()=&gt;{
+        setTimeout(()=&gt;{
+          const input1 = formElement.querySelector(&apos;input[name=&quot;data[number1]&quot;]&apos;);
+          const input2 = formElement.querySelector(&apos;input[name=&quot;data[number2]&quot;]&apos;);
+
+          assert.equal(input2.value, &apos;66&apos;);
+          assert.equal(input1.value, 66);
+
+          const inputEvent = new Event(&apos;input&apos;);
+
+          input1.value =  `${input1.value}` + &apos;78&apos;;
+          input1.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(input2.value, &apos;6678&apos;);
+            assert.equal(input1.value, 6678);
+            //set a number as calculated value
+            formWithCalculatedValue.components[1].calculatedValue = 6678;
+            //change the value
+            input1.value =  +(`${input1.value}` + &apos;90&apos;);
+            input1.dispatchEvent(inputEvent);
+
+            setTimeout(() =&gt; {
+              assert.equal(input2.value, &apos;667890&apos;);
+              assert.equal(input1.value, 667890);
+              done();
+            }, 250);
+          }, 250);
+        }, 900);
+      });
+    });
   });
 
   let simpleForm = null;
@@ -909,6 +950,206 @@ describe(&apos;Webform tests&apos;, () =&gt; {
       expect(form.nosubmit).to.be.false;
       expect(emit.callCount).to.equal(2);
       expect(emit.args[1]).to.deep.equal([&apos;nosubmit&apos;, false]);
+    });
+  });
+
+  describe(&apos;getValue and setValue&apos;, () =&gt; {
+    it(&apos;should setValue and getValue&apos;, (done) =&gt; {
+      formElement.innerHTML = &apos;&apos;;
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm({
+        components: [
+          {
+            type: &apos;textfield&apos;,
+            key: &apos;a&apos;
+          },
+          {
+            type: &apos;container&apos;,
+            key: &apos;b&apos;,
+            components: [
+              {
+                type: &apos;datagrid&apos;,
+                key: &apos;c&apos;,
+                components: [
+                  {
+                    type: &apos;textfield&apos;,
+                    key: &apos;d&apos;
+                  },
+                  {
+                    type: &apos;textfield&apos;,
+                    key: &apos;e&apos;
+                  },
+                  {
+                    type: &apos;editgrid&apos;,
+                    key: &apos;f&apos;,
+                    components: [
+                      {
+                        type: &apos;textfield&apos;,
+                        key: &apos;g&apos;
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }).then(() =&gt; {
+        let count = 0;
+        const onChange = form.onChange;
+        form.onChange = function(...args) {
+          count++;
+          return onChange.apply(form, args);
+        };
+
+        // Ensure that it says it changes.
+        assert.equal(form.setValue({
+          a: &apos;a&apos;,
+          b: {
+            c: [
+              { d: &apos;d1&apos;, e: &apos;e1&apos;, f: [{ g: &apos;g1&apos; }] },
+              { d: &apos;d2&apos;, e: &apos;e2&apos;, f: [{ g: &apos;g2&apos; }] },
+            ]
+          }
+        }), true);
+
+        setTimeout(() =&gt; {
+          // It should have only updated once.
+          assert.equal(count, 1);
+          done();
+        }, 500);
+      });
+    });
+  });
+
+  describe(&apos;ReadOnly Form&apos;, () =&gt; {
+    it(&apos;Should apply conditionals when in readOnly mode.&apos;, (done) =&gt; {
+      done = _.once(done);
+      const Conditions = require(&apos;../test/forms/conditions&apos;).default;
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, {
+        readOnly: true,
+        language: &apos;en&apos;,
+        template: &apos;bootstrap3&apos;
+      });
+      form.setForm(Conditions.form).then(() =&gt; {
+        Harness.testConditionals(form, {
+          data: {
+            typeShow: &apos;Show&apos;,
+            typeMe: &apos;Me&apos;,
+            typeThe: &apos;The&apos;,
+            typeMonkey: &apos;Monkey!&apos;
+          }
+        }, [], (error) =&gt; {
+          form.destroy();
+          if (error) {
+            throw new Error(error);
+          }
+          done();
+        });
+      });
+    });
+  });
+
+  describe(&apos;Reset values&apos;, () =&gt; {
+    it(&apos;Should reset all values correctly.&apos;, () =&gt; {
+      formElement.innerHTML = &apos;&apos;;
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      return form.setForm(
+        {
+          components: [
+            {
+              type: &apos;textfield&apos;,
+              key: &apos;firstName&apos;,
+              label: &apos;First Name&apos;,
+              placeholder: &apos;Enter your first name.&apos;,
+              input: true,
+              tooltip: &apos;Enter your &lt;strong&gt;First Name&lt;/strong&gt;&apos;,
+              description: &apos;Enter your &lt;strong&gt;First Name&lt;/strong&gt;&apos;
+            },
+            {
+              type: &apos;textfield&apos;,
+              key: &apos;lastName&apos;,
+              label: &apos;Last Name&apos;,
+              placeholder: &apos;Enter your last name&apos;,
+              input: true,
+              tooltip: &apos;Enter your &lt;strong&gt;Last Name&lt;/strong&gt;&apos;,
+              description: &apos;Enter your &lt;strong&gt;Last Name&lt;/strong&gt;&apos;
+            },
+            {
+              type: &apos;select&apos;,
+              label: &apos;Favorite Things&apos;,
+              key: &apos;favoriteThings&apos;,
+              placeholder: &apos;These are a few of your favorite things...&apos;,
+              data: {
+                values: [
+                  {
+                    value: &apos;raindropsOnRoses&apos;,
+                    label: &apos;Raindrops on roses&apos;
+                  },
+                  {
+                    value: &apos;whiskersOnKittens&apos;,
+                    label: &apos;Whiskers on Kittens&apos;
+                  },
+                  {
+                    value: &apos;brightCopperKettles&apos;,
+                    label: &apos;Bright Copper Kettles&apos;
+                  },
+                  {
+                    value: &apos;warmWoolenMittens&apos;,
+                    label: &apos;Warm Woolen Mittens&apos;
+                  }
+                ]
+              },
+              dataSrc: &apos;values&apos;,
+              template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
+              multiple: true,
+              input: true
+            },
+            {
+              type: &apos;number&apos;,
+              key: &apos;number&apos;,
+              label: &apos;Number&apos;,
+              input: true
+            },
+            {
+              type: &apos;button&apos;,
+              action: &apos;submit&apos;,
+              label: &apos;Submit&apos;,
+              theme: &apos;primary&apos;
+            }
+          ]
+        }
+      ).then(() =&gt; {
+        form.setSubmission({
+          data: {
+            firstName: &apos;Joe&apos;,
+            lastName: &apos;Bob&apos;,
+            favoriteThings: [&apos;whiskersOnKittens&apos;, &apos;warmWoolenMittens&apos;],
+            number: 233
+          }
+        }).then(() =&gt; {
+          expect(form.submission).to.deep.equal({
+            data: {
+              firstName: &apos;Joe&apos;,
+              lastName: &apos;Bob&apos;,
+              favoriteThings: [&apos;whiskersOnKittens&apos;, &apos;warmWoolenMittens&apos;],
+              number: 233,
+              submit: false
+            }
+          });
+          form.setSubmission({ data: {} }).then(() =&gt; {
+            expect(form.submission).to.deep.equal({
+              data: {
+                firstName: &apos;&apos;,
+                lastName: &apos;&apos;,
+                favoriteThings: [],
+                submit: false
+              }
+            });
+          });
+        });
+      });
     });
   });
 

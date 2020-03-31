@@ -4,6 +4,120 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.3
+### Changed
+ - All changes from 4.9.7 - 4.9.9
+ 
+### Fixed
+ - Issues with logic messing up form builder.
+ - EditGrid problems where data would get in a detached state.
+ - Fixed unstranslated component label in Webform
+ - Fixed calculated value doesn`t work when editing data with manual override in true position
+
+## 4.10.0-beta.2
+### Fixed
+ - Fixed display of selected values in table view
+ - T826: Fix nested forms never submitting.
+ - UIP-159: Fixing the UUID import.
+
+### Changed
+ - VPAT-236 Changed variable types for future extension in vpat
+
+### Added
+ - UIP-131: Add option to change from moment input to calendar
+
+## 4.10.0-beta.1
+### Added
+ - Added flag to check if draft restore is disabled
+ - Offline authentication support.
+
+### Fixed
+ - Current submission to be set after draft save.
+
+## 4.9.9
+### Fixed
+ - Issue where checkboxes configured as Radio input would still add checkbox key to data.
+
+### Added
+ - An xs column size.
+ 
+### Changed
+ - Upgrade i18next@19.3.4
+
+## 4.9.8
+### Fixed
+ - Issues where the setValue of nested components would not return the correct changed status.
+ - Issues where read only forms would not apply conditions correctly.
+
+## 4.9.7
+### Fixed
+ - UIP-159: Fixing the UUID import.
+ - T826: Fix nested forms never submitting.
+
+## 4.9.6
+### Fixed
+ - GS-PDF27: Add DOMTokenList polyfill to resolve submit issues with IE11.
+
+### Added
+ - UIP-157: Feat(Columns): add option for grid classes prefixes
+
+## 4.9.5
+### Changed
+ - The change flow logic to be more isolated and component specific.
+
+### Fixed
+ - Issue with Component constructor not executing conditionals correctly.
+
+## 4.9.4
+### Fixed
+ - Issues with the refresh on property.
+ - Fixed issue with loss of focus on Cancel button during Wizard cancel event.
+
+### Changed
+ - Upgrade eventemitter2@6.2.1, fetch-mock@9.3.0
+
+## 4.9.3
+### Fixed
+ - Infinite loop issues that could arise within the renderer.
+
+## 4.9.2
+### Fixed
+ - Issues where the File component would not always show the file lists.
+ 
+### Changed
+ - Upgrade eventemitter2@6.2.0
+
+## 4.9.1
+### Added
+ - A way for the child pdf to retrieve the parent position information.
+ 
+### Changed
+ - Upgrade @babel/core@7.9.0, @babel/plugin-proposal-optional-chaining@7.9.0, @babel/preset-env@7.9.0, @babel/register@7.9.0, babel-loader@8.1.0
+
+## 4.9.0
+### Fixed
+ - A few cases where flags would not get passed in and would cause errors to throw.
+
+## 4.9.0-rc.12
+### Fixed
+ - Problems where the changed flag was not getting triggered and handled properly.
+ - Issues with infinite loops triggered by TextArea w/ ACE editor in JSON mode.
+ - Fixed the redraw on property to no store value references.
+ - Fixing how the pdf iframe-change event is handled.
+ - Fixing containers so that they will ensure the child components trigger their change events correctly.
+
+### Removed
+ - Aggressive error navigation where it would throw cursor to top of page when correcting errors. Now you just click the error to take you to the control with the error.
+
+## 4.9.0-rc.11
+### Fixed
+ - Problems where Number components would not get reset properly.
+ - Issues where wizards would always show errors when navigating.
+ 
+### Changed
+ - Revert changes to iframe where src was replaced with blob file hosting. It causes too many problems with different browsers and CSP issues.
+ - Upgrade i18next@19.3.3, fetch-mock@9.2.1, gulp-clean-css@4.3.0, file-loader@6.0.0
+
 ## 4.9.0-rc.10
 ### Fixed
  - Ensure no infinite loops are triggered in build mode by not checking data.
