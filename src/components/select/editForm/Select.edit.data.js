@@ -471,6 +471,7 @@ export default [
           [
             'url',
             'resource',
+            'values'
           ],
         ],
       },
@@ -491,6 +492,7 @@ export default [
           [
             'url',
             'resource',
+            'values'
           ],
         ],
       },
