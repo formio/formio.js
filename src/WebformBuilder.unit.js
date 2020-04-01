@@ -11,4 +11,8 @@ describe('WebformBuilder tests', () => {
     assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');
     done();
   });
+  it('Should show unique API error', (done) => {
+    const builder = Harness.buildComponent('editgrid', 'panel');
+    console.log(builder.form.components);
+  });
 });
