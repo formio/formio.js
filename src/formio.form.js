@@ -6,9 +6,9 @@ import Templates from './templates/Templates';
 import Providers from './providers';
 import Rules from './validator/Rules';
 import Formio from './Formio';
+import Form from './Form';
+import Utils from './utils';
 Components.setComponents(AllComponents);
-Formio.Components = Components;
-Formio.Templates = Templates;
 const registerPlugin = (plugin) => {
   // Sanity check.
   if (typeof plugin !== 'object') {
@@ -74,6 +74,16 @@ Formio.use = (...plugins) => {
     }
   });
 };
-export Form from './Form';
-export Utils from './utils';
-export { Builders, Components, Displays, Providers, Templates, Formio };
+
+// This is needed to maintain correct imports using the "dist" file.
+Formio.Components = Components;
+Formio.Templates = Templates;
+Formio.Builders = Builders;
+Formio.Utils = Utils;
+Formio.Form = Form;
+Formio.Displays = Displays;
+Formio.Providers = Providers;
+Formio.Formio = Formio;
+
+// Export the components.
+export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio };
