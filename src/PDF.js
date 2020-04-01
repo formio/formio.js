@@ -287,6 +287,16 @@ export default class PDF extends Webform {
 
     super.showErrors(error, triggerEvent);
   }
+
+  setAlert(type, message) {
+    const superSetAlert = super.setAlert(type, message);
+
+    const errorList = document.getElementById(`error-list-${this.id}`);
+    const { left, top } = errorList.getBoundingClientRect();
+    window.scrollTo(left, top);
+
+    return superSetAlert;
+  }
 }
 
 /**
