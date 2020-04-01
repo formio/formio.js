@@ -9,7 +9,7 @@ module.exports = (entry, output) => {
     output: {
       library: 'Formio',
       libraryTarget: 'umd',
-      libraryExport: 'default',
+      libraryExport: 'Formio',
       path: path.resolve(__dirname, '../dist'),
       filename: output
     }
