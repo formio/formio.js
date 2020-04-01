@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.12
+### Changed
+ - Reverted https://github.com/formio/formio.js/pull/2049 for reasons described in the PR.
+
 ## 4.9.11
 ### Changed
  - Upgrade uuid@7.0.3
