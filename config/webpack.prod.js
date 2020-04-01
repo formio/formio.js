@@ -7,9 +7,6 @@ module.exports = (entry, output) => {
   return _.merge({}, require('./webpack.dev')(entry, output), {
     mode: 'production',
     output: {
-      library: 'Formio',
-      libraryTarget: 'umd',
-      libraryExport: 'default',
       filename: output
     },
     plugins: [
