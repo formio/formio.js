@@ -248,9 +248,9 @@ import Templates from &apos;./templates/Templates&apos;;
 import Providers from &apos;./providers&apos;;
 import Rules from &apos;./validator/Rules&apos;;
 import Formio from &apos;./Formio&apos;;
+import Form from &apos;./Form&apos;;
+import Utils from &apos;./utils&apos;;
 Components.setComponents(AllComponents);
-Formio.Components = Components;
-Formio.Templates = Templates;
 const registerPlugin = (plugin) =&gt; {
   // Sanity check.
   if (typeof plugin !== &apos;object&apos;) {
@@ -316,9 +316,19 @@ Formio.use = (...plugins) =&gt; {
     }
   });
 };
-export Form from &apos;./Form&apos;;
-export Utils from &apos;./utils&apos;;
-export { Builders, Components, Displays, Providers, Templates, Formio };
+
+// This is needed to maintain correct imports using the &quot;dist&quot; file.
+Formio.Components = Components;
+Formio.Templates = Templates;
+Formio.Builders = Builders;
+Formio.Utils = Utils;
+Formio.Form = Form;
+Formio.Displays = Displays;
+Formio.Providers = Providers;
+Formio.Formio = Formio;
+
+// Export the components.
+export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio };
 </code></pre>
 
 </div>

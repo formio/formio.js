@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.11
+### Changed
+ - Upgrade uuid@7.0.3
+
+### Fixed
+ - Problems where errors would throw in ACE editor regarding unknown theme.
+ - Issues where EditGrid cancel would not reset the component contexts.
+ - The export of the formiojs module to allow other libraries to import from the compiled dist file.
+
 ## 4.9.10
 ### Changed
  - Update idb@5.0.2, jsdom@16.2.2, eventemitter2@6.3.1, ejs-loader@0.3.6
