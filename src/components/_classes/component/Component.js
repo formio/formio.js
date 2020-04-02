@@ -244,11 +244,12 @@ export default class Component extends Element {
      */
     this.path = '';
 
+    var componentClone = _.cloneDeep(component);
     /**
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = this.mergeSchema(component || {});
+    this.component = this.mergeSchema(componentClone || {});
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);

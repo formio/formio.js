@@ -829,28 +829,30 @@ export default class Webform extends NestedDataComponent {
   }
 
   setValue(submission, flags = {}) {
-    if (!submission || !submission.data) {
-      submission = { data: {} };
+    let submissionClone = _.cloneDeep(submission);
+
+    if (!submissionClone || !submissionClone.data) {
+      submissionClone = { data: {} };
     }
     // Metadata needs to be available before setValue
-    this._submission.metadata = submission.metadata || {};
-    this.editing = !!submission._id;
+    this._submission.metadata = submissionClone.metadata || {};
+    this.editing = !!submissionClone._id;
 
     // Set the timezone in the options if available.
     if (
       !this.options.submissionTimezone &&
-      submission.metadata &&
-      submission.metadata.timezone
+      submissionClone.metadata &&
+      submissionClone.metadata.timezone
     ) {
-      this.options.submissionTimezone = submission.metadata.timezone;
+      this.options.submissionTimezone = submissionClone.metadata.timezone;
     }
 
-    const changed = super.setValue(submission.data, flags);
+    const changed = super.setValue(submissionClone.data, flags);
     if (!flags.sanitize) {
-      this.mergeData(this.data, submission.data);
+      this.mergeData(this.data, submissionClone.data);
     }
-    submission.data = this.data;
-    this._submission = submission;
+    submissionClone.data = this.data;
+    this._submission = submissionClone;
     return changed;
   }
 
