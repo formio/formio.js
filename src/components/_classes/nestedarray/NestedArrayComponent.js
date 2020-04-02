@@ -14,6 +14,14 @@ export default class NestedArrayComponent extends NestedDataComponent {
     throw new Error('Getter #iteratableRows() is not implemented');
   }
 
+  get rowIndex() {
+    return super.rowIndex;
+  }
+
+  set rowIndex(value) {
+    this._rowIndex = value;
+  }
+
   checkData(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
