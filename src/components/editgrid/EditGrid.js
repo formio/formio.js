@@ -122,6 +122,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.component.inlineEdit;
   }
 
+  get saveEditMode() {
+    return !this.inlineEditMode;
+  }
+
   get minLength() {
     return _.get(this.component, 'validate.minLength', 0);
   }
@@ -517,15 +521,16 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    if (!this.inlineEditMode) {
+    if (this.saveEditMode) {
       const dataValue = this.dataValue || [];
       switch (editRow.state) {
         case EditRowState.New: {
           const newIndex = dataValue.length;
           dataValue.push(editRow.data);
-          this.editRows.splice(rowIndex, 1);
-          this.editRows.splice(newIndex, 0, editRow);
-          rowIndex = newIndex;
+          if (rowIndex !== newIndex) {
+            this.editRows.splice(rowIndex, 1);
+            this.editRows.splice(newIndex, 0, editRow);
+          }
           break;
         }
         case EditRowState.Editing: {
@@ -683,7 +688,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
-    else if (rowsEditing && !this.inlineEditMode) {
+    else if (rowsEditing && this.saveEditMode) {
       this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }
