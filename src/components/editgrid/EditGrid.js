@@ -432,10 +432,13 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
     if (editRow.editing) {
+      const dataValue = this.dataValue;
       editRow.dirty = false;
       editRow.isOpen = false;
       editRow.editing = false;
-      this.dataValue[rowIndex] = editRow.data = editRow.backup;
+      dataValue[rowIndex] = editRow.data = editRow.backup;
+      this.dataValue = dataValue;
+      this.data = this._data;
       this.clearErrors(rowIndex);
     }
     else {
