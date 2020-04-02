@@ -403,12 +403,15 @@ export default class ButtonComponent extends Field {
       }, true);
     }
 
-    this.on(&apos;change&apos;, (value) =&gt; {
+    this.on(&apos;change&apos;, (value, flags) =&gt; {
+      const isValid = (flags &amp;&amp; flags.noValidate) ?
+        (this.root ? this.root.checkValidity(this.root.data) : true) :
+        value.isValid;
       this.loading = false;
-      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid &amp;&amp; !value.isValid);
+      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid &amp;&amp; !isValid);
       this.setDisabled(this.refs.button, this.disabled);
       if (onChange) {
-        onChange(value, value.isValid);
+        onChange(value, isValid);
       }
     }, true);
 

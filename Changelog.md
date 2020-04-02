@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.13
+### Fixed
+ - Issue with disableOnInvalid for buttons and added a unit test to ensure correct behavior in the future.
+ - PDF21: Focus on the first invalid field on form submission
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+
 ## 4.9.12
 ### Changed
  - Reverted https://github.com/formio/formio.js/pull/2049 for reasons described in the PR.
