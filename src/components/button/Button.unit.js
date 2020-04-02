@@ -61,6 +61,36 @@ describe('Button Component', () => {
       .catch(done);
   });
 
+  it('Should disable on invalid', (done) => {
+    const element = document.createElement('div');
+    Formio.createForm(element, {
+      components: [
+        {
+          type: 'textfield',
+          key: 'a',
+          label: 'A',
+          validate: {
+            required: true
+          }
+        },
+        {
+          type: 'button',
+          action: 'submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true
+        }
+      ]
+    }).then(form => {
+      form.on('change', () => {
+        const button = form.getComponent('submit');
+        assert(button.disabled, 'Button should be disabled');
+        done();
+      });
+      form.submission = { data: {} };
+    }).catch(done);
+  });
+
   it('POST to URL button should perform URL interpolation', (done) => {
     const formJson = {
       'type': 'form',
