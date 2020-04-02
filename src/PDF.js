@@ -26,8 +26,10 @@ export default class PDF extends Webform {
       this.postMessage({
         name: 'iframePositions',
         data: {
-          iframeBoundingClientRect,
-          scrollY: window.scrollY
+          iframe: {
+            top: iframeBoundingClientRect.top
+          },
+          scrollY: window.scrollY || window.pageYOffset
         }
       });
     });
