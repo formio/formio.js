@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.4
+### Changed
+ - Ensure that Formio is added to the window.
+ - FJS 836: Fix for storage type normalization in Select component.
+ - Fixing issues with the Disable on Invalid for button components.
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+ - PDF 21 - Focus on the first invalid field on form submission 
+ - Fix ace editor error
+ - Fix api key unique err
+ - Add options for values in Select configuration.
+ - Major EditGrid, DataGrid, and Container refactoring.
+
 ## 4.10.0-beta.3
 ### Changed
  - All changes from 4.9.7 - 4.9.9
