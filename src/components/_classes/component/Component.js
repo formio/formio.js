@@ -1940,6 +1940,9 @@ export default class Component extends Element {
       tabSize: 2,
       mode: 'javascript',
     };
+    if (!settings || (settings.theme === 'snow')) {
+      settings = {};
+    }
     settings = _.merge({}, defaultAceSettings, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {

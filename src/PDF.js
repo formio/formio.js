@@ -26,8 +26,10 @@ export default class PDF extends Webform {
       this.postMessage({
         name: 'iframePositions',
         data: {
-          iframeBoundingClientRect,
-          scrollY: window.scrollY
+          iframe: {
+            top: iframeBoundingClientRect.top
+          },
+          scrollY: window.scrollY || window.pageYOffset
         }
       });
     });
@@ -263,6 +265,10 @@ export default class PDF extends Webform {
 
     if (!this.errors.length && helpBlock) {
       helpBlock.remove();
+    }
+
+    if (this.errors.length) {
+      this.focusOnComponent(this.errors[0].component.key);
     }
 
     super.showErrors(error, triggerEvent);
