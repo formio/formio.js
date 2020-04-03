@@ -1482,3 +1482,8 @@ Formio.events = new EventEmitter({
 if (typeof global === 'object' && !global.Formio) {
   global.Formio = Formio;
 }
+
+// Ensure we also add to window in case they are using other module systems, it won't add Formio to window.
+if (typeof window === 'object' && !window.Formio) {
+  window.Formio = Formio;
+}
