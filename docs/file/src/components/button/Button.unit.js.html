@@ -303,6 +303,36 @@ describe(&apos;Button Component&apos;, () =&gt; {
       .catch(done);
   });
 
+  it(&apos;Should disable on invalid&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+    Formio.createForm(element, {
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          key: &apos;a&apos;,
+          label: &apos;A&apos;,
+          validate: {
+            required: true
+          }
+        },
+        {
+          type: &apos;button&apos;,
+          action: &apos;submit&apos;,
+          key: &apos;submit&apos;,
+          disableOnInvalid: true,
+          input: true
+        }
+      ]
+    }).then(form =&gt; {
+      form.on(&apos;change&apos;, () =&gt; {
+        const button = form.getComponent(&apos;submit&apos;);
+        assert(button.disabled, &apos;Button should be disabled&apos;);
+        done();
+      });
+      form.submission = { data: {} };
+    }).catch(done);
+  });
+
   it(&apos;POST to URL button should perform URL interpolation&apos;, (done) =&gt; {
     const formJson = {
       &apos;type&apos;: &apos;form&apos;,

@@ -271,6 +271,10 @@ export default class PDF extends Webform {
       this.focusOnComponent(this.errors[0].component.key);
     }
 
+    if (this.errors.length) {
+      this.focusOnComponent(this.errors[0].component.key);
+    }
+
     super.showErrors(error, triggerEvent);
   }
 }

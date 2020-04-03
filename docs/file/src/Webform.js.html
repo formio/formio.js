@@ -1279,6 +1279,7 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce(&apos;div&apos;, {
+        id: `error-list-${this.id}`,
         class: `alert alert-${type}`,
         role: &apos;alert&apos;
       });
@@ -1500,7 +1501,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (!flags || !flags.noEmit) {
-      this.emit(&apos;change&apos;, value);
+      this.emit(&apos;change&apos;, value, flags);
       isChangeEventEmitted = true;
     }
 
