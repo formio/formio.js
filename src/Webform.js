@@ -1057,7 +1057,9 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: classes || `alert alert-${type}`,
+        id: `error-list-${this.id}`,
+        class: `alert alert-${type}`,
+        role: 'alert'
       });
       if (message instanceof HTMLElement) {
         this.appendTo(message, this.alert);
@@ -1317,7 +1319,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (!flags || !flags.noEmit) {
-      this.emit('change', value);
+      this.emit('change', value, flags);
       isChangeEventEmitted = true;
     }
 
