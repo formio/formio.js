@@ -305,13 +305,6 @@ export default class Component extends Element {
     this.root = this.options.root;
 
     /**
-     * Determines if this component is visible, or not.
-     */
-    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
-    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
-    this._parentDisabled = false;
-
-    /**
      * If this input has been input and provided value.
      *
      * @type {boolean}
@@ -334,6 +327,13 @@ export default class Component extends Element {
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     this._path = '';
+
+    /**
+     * Determines if this component is visible, or not.
+     */
+    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
+    this._parentDisabled = false;
 
     /**
      * Used to trigger a new change in this component.
@@ -1824,41 +1824,52 @@ export default class Component extends Element {
 
   get wysiwygDefault() {
     return {
-      theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
-    };
-  }
-
-  get ckEditorConfig() {
-    return {
-      image: {
-        toolbar: [
-          'imageTextAlternative',
-          '|',
-          'imageStyle:full',
-          'imageStyle:alignLeft',
-          'imageStyle:alignCenter',
-          'imageStyle:alignRight'
-        ],
-        styles: [
-          'full',
-          'alignLeft',
-          'alignCenter',
-          'alignRight'
-        ]
-      }
+      quill: {
+        theme: 'snow',
+        placeholder: this.t(this.component.placeholder),
+        modules: {
+          toolbar: [
+            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula', 'source']
+          ]
+        }
+      },
+      ace: {
+        theme: 'ace/theme/xcode',
+        maxLines: 12,
+        minLines: 12,
+        tabSize: 2,
+        mode: 'javascript',
+        placeholder: this.t(this.component.placeholder)
+      },
+      ckeditor: {
+        image: {
+          toolbar: [
+            'imageTextAlternative',
+            '|',
+            'imageStyle:full',
+            'imageStyle:alignLeft',
+            'imageStyle:alignCenter',
+            'imageStyle:alignRight'
+          ],
+          styles: [
+            'full',
+            'alignLeft',
+            'alignCenter',
+            'alignRight'
+          ]
+        }
+      },
+      tiny: {
+        theme: 'silver'
+      },
+      default: {}
     };
   }
 
@@ -1866,7 +1877,7 @@ export default class Component extends Element {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
-    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', this.ckEditorConfig), settings);
+    settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
@@ -1880,13 +1891,10 @@ export default class Component extends Element {
   }
 
   addQuill(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
-    settings = _.merge(_.get(this.options, 'editors.quill.settings', {}), settings);
+    settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
+    settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, 'editors.quill.settings', {}), settings);
 
     // Lazy load the quill css.
-    if (!settings.theme) {
-      settings.theme = 'snow';
-    }
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
     ], true);
@@ -1934,16 +1942,7 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    const defaultAceSettings = {
-      maxLines: 12,
-      minLines: 12,
-      tabSize: 2,
-      mode: 'javascript',
-    };
-    if (!settings || (settings.theme === 'snow')) {
-      settings = {};
-    }
-    settings = _.merge({}, defaultAceSettings, _.get(this.options, 'editors.ace.settings', {}), settings || {});
+    settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
@@ -1961,7 +1960,6 @@ export default class Component extends Element {
         return editor.init({
           ...settings,
           target: element,
-          theme: 'silver',
           // eslint-disable-next-line camelcase
           init_instance_callback: (editor) => {
             editor.on('Change', () => onChange(editor.getContent()));

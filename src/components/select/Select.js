@@ -180,7 +180,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(value),
+      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
     };
 
@@ -1076,37 +1076,94 @@ export default class SelectComponent extends Field {
   }
 
   normalizeSingleValue(value) {
-    const dataType = _.get(this.component, 'dataType', 'auto');
-
-    switch (dataType) {
-      case 'auto':
-        if (!isNaN(parseFloat(value)) && isFinite(value)) {
-          value = +value;
-        }
-        if (value === 'true') {
-          value = true;
-        }
-        if (value === 'false') {
-          value = false;
-        }
-        break;
-      case 'number':
-        value = +value;
-        break;
-      case 'string':
-        if (typeof value === 'object') {
-          value = JSON.stringify(value);
-        }
-        else {
-          value = value.toString();
-        }
-        break;
-      case 'boolean':
-        value = !!value;
-        break;
+    if (!value) {
+      return;
     }
 
-    return value;
+    const dataType = this.component['dataType'] || 'auto';
+    const denormalizedValue = typeof value === 'string' ? value.toLowerCase() : value;
+    const normalize = {
+      value: denormalizedValue,
+
+      toNumber() {
+        try {
+          const numberValue = parseFloat(this.value);
+
+          if (!Number.isNaN(numberValue) && isFinite(numberValue)) {
+            this.value = numberValue;
+            return this;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      },
+
+      toBoolean() {
+        try {
+          const booleanValue = (this.value === 'true' || this.value === 'false');
+
+          if (booleanValue) {
+            this.value = (this.value === 'true');
+            return this;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      },
+
+      toString() {
+        try {
+          const stringValue = typeof this.value === 'object'
+            ? JSON.stringify(this.value)
+            : this.value.toString();
+
+          if (stringValue) {
+            this.value = stringValue;
+            return this;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      },
+
+      auto() {
+        try {
+          const autoValue = this.toString().toNumber().toBoolean();
+
+          if (autoValue && !_.isObject(autoValue)) {
+            this.value = autoValue;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      }
+    };
+
+    switch (dataType) {
+      case 'auto': {
+        return normalize.auto().value;
+      }
+      case 'number': {
+        return normalize.toNumber().value;
+      }
+      case 'string': {
+        return normalize.toString().value;
+      }
+      case 'boolean':
+        return normalize.toBoolean().value;
+    }
   }
 
   /**

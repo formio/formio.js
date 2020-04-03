@@ -11,6 +11,7 @@ while (i--) {
 
 if (thisScript) {
   const Form = require('./formio.form').Form;
+  Formio.loadModules();
   const query = {};
   let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
   scriptSrc.pop();
