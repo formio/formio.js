@@ -305,13 +305,6 @@ export default class Component extends Element {
     this.root = this.options.root;
 
     /**
-     * Determines if this component is visible, or not.
-     */
-    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
-    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
-    this._parentDisabled = false;
-
-    /**
      * If this input has been input and provided value.
      *
      * @type {boolean}
@@ -334,6 +327,13 @@ export default class Component extends Element {
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     this._path = '';
+
+    /**
+     * Determines if this component is visible, or not.
+     */
+    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
+    this._parentDisabled = false;
 
     /**
      * Used to trigger a new change in this component.
