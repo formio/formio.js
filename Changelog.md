@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.14
+### Fixed
+ - Ensure the Formio object is attached to window to fix sites that include other modules systems still able to use Formio globally.
+
+### Changed
+ - Add options for values for Select component configurations.
+
 ## 4.9.13
 ### Fixed
  - Issue with disableOnInvalid for buttons and added a unit test to ensure correct behavior in the future.
