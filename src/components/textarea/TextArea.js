@@ -123,7 +123,9 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.editor = 'ckeditor';
     }
 
-    let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
+    let settings = _.isEmpty(this.component.wysiwyg) ?
+      this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
+      : this.component.wysiwyg;
 
     // Keep track of when this editor is ready.
     this.editorsReady[index] = new NativePromise((editorReady) => {
@@ -147,7 +149,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
             console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-            settings = this.wysiwygDefault;
+            settings = this.wysiwygDefault.quill;
           }
 
           // Add the quill editor.
