@@ -64,7 +64,7 @@ const Harness = {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
     formBuilder = new WebformBuilder(formBuilderElement, options);
-    formBuilder.form = {components: []};
+    formBuilder.form = { components: [] };
     formBuilder.webform.ready.then(() => done());
   },
 
@@ -76,15 +76,31 @@ const Harness = {
   buildComponent(type) {
     // Get the builder sidebar component.
     let builderGroup = null;
-    _.each(formBuilder.groups, (group) => {
+    let groupName = '';
+
+    _.each(formBuilder.groups, (group, key) => {
       if (group.components[type]) {
-        builderGroup = group.body;
+        groupName = key;
         return false;
       }
     });
-    const component = document.getElementById(`builder-${type}`).cloneNode(true);
-    formBuilder.element.appendChild(component);
-    formBuilder.onDrop(component, formBuilder.element, builderGroup);
+
+    if (!groupName) {
+      return;
+    }
+    const groupBtn = document.getElementById(`group-${groupName}`);
+    const clickEvent = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+    groupBtn.dispatchEvent(clickEvent);
+    let component = formBuilder.element.querySelector(`span[data-type='${type}']`);
+    component = component && component.cloneNode(true);
+    const element = formBuilder.element;
+    element.appendChild(component);
+    builderGroup = document.getElementById(`group-container-${groupName}`);
+    formBuilder.onDrop(component, element, builderGroup);
     return formBuilder;
   },
 
