@@ -1,7 +1,3 @@
-/* global google */
-
-import Formio from '../../Formio';
-import NativePromise from 'native-promise-only';
 import { AddressProvider } from './AddressProvider';
 
 export class GoogleAddressProvider extends AddressProvider {
@@ -13,42 +9,43 @@ export class GoogleAddressProvider extends AddressProvider {
     return 'Google Maps';
   }
 
-  constructor(options = {}) {
-    super(options);
+  get defaultOptions() {
+    return {
+      params: {
+        sensor: 'false',
+      },
+    };
+  }
 
-    let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=googleMapsCallback';
+  get queryProperty() {
+    return 'address';
+  }
 
-    if (options.apiKey) {
-      src += `&key=${options.apiKey}`;
-    }
-    if (options.region) {
-      src += `&region=${options.region}`;
-    }
-
-    Formio.requireLibrary('googleMaps', 'google.maps.places', src);
+  get responseProperty() {
+    return 'results';
   }
 
   get displayValueProperty() {
     return 'formatted_address';
   }
 
-  search(query, options = {}) {
-    const requestOptions = this.getRequestOptions(options);
-    const params = requestOptions.params = requestOptions.params || {};
-    params[this.queryProperty] = query;
+  makeRequest(options = {}) {
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+      xhr.open('GET', this.getRequestUrl(options), true);
 
-    return Formio.libraryReady('googleMaps').then(() => {
-      const service = new google.maps.places.PlacesService(document.createElement('div'));
-      return new NativePromise((resolve, reject) => {
-        service.textSearch(params, (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-            resolve(results);
-          }
-          else {
-            reject();
-          }
-        });
-      });
+      xhr.onload = () => resolve(xhr.response);
+
+      xhr.onerror = reject;
+
+      xhr.send();
     });
+  }
+
+  getRequestUrl(options = {}) {
+    const { params } = options;
+
+    return `https://maps.googleapis.com/maps/api/geocode/json?${this.serialize(params)}`;
   }
 }
