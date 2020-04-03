@@ -167,7 +167,7 @@ export default class RadioComponent extends Field {
    * @return {*}
    */
   normalizeValue(value) {
-    const dataType = _.get(this.component, 'dataType', 'auto');
+    const dataType = this.component['dataType'] || 'auto';
     switch (dataType) {
       case 'auto':
         if (!isNaN(parseFloat(value)) && isFinite(value)) {
