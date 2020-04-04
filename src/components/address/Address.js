@@ -135,10 +135,10 @@ export default class AddressComponent extends ContainerComponent {
         } = map;
 
         if (key) {
-          providerOptions.apiKey = key;
+          _.set(providerOptions, 'params.key', key);
         }
         if (region) {
-          providerOptions.region = region;
+          _.set(providerOptions, 'params.region', region);
         }
 
         this.provider = this.initializeProvider(provider, providerOptions);
