@@ -1,6 +1,6 @@
 {
-  "coverage": "13.63%",
-  "expectCount": 2134,
+  "coverage": "13.61%",
+  "expectCount": 2137,
   "actualCount": 291,
   "files": {
     "src/EventEmitter.js": {
@@ -2335,15 +2335,18 @@
       ]
     },
     "src/providers/address/GoogleAddressProvider.js": {
-      "expectCount": 6,
+      "expectCount": 9,
       "actualCount": 0,
       "undocumentLines": [
-        7,
+        3,
+        4,
         8,
         12,
-        16,
-        31,
-        35
+        20,
+        24,
+        28,
+        32,
+        46
       ]
     },
     "src/providers/address/NominatimAddressProvider.js": {
