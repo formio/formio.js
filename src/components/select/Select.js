@@ -701,6 +701,52 @@ export default class SelectComponent extends Field {
       : element;
   }
 
+  choicesOptions() {
+    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
+    const placeholderValue = this.t(this.component.placeholder);
+    let customOptions = this.component.customOptions || {};
+    if (typeof customOptions == 'string') {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
+    return {
+      removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
+      itemSelectText: '',
+      classNames: {
+        containerOuter: 'choices form-group formio-choices',
+        containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
+      },
+      addItemText: false,
+      placeholder: !!this.component.placeholder,
+      placeholderValue: placeholderValue,
+      noResultsText: this.t('No results found'),
+      noChoicesText: this.t('No choices to choose from'),
+      searchPlaceholderValue: this.t('Type to search'),
+      shouldSort: false,
+      position: (this.component.dropdown || 'auto'),
+      searchEnabled: useSearch,
+      searchChoices: !this.component.searchField,
+      searchFields: _.get(this, 'component.searchFields', ['label']),
+      fuseOptions: Object.assign(
+        {},
+        _.get(this, 'component.fuseOptions', {}),
+        {
+          include: 'score',
+          threshold: _.get(this, 'component.searchThreshold', 0.3),
+        }
+      ),
+      valueComparer: _.isEqual,
+      resetScrollPosition: false,
+      ...customOptions,
+    };
+  }
+
   /* eslint-disable max-statements */
   attach(element) {
     const superAttach = super.attach(element);
@@ -739,56 +785,14 @@ export default class SelectComponent extends Field {
       return;
     }
 
-    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
-    const placeholderValue = this.t(this.component.placeholder);
-    let customOptions = this.component.customOptions || {};
-    if (typeof customOptions == 'string') {
-      try {
-        customOptions = JSON.parse(customOptions);
-      }
-      catch (err) {
-        console.warn(err.message);
-        customOptions = {};
-      }
-    }
-
-    const choicesOptions = {
-      removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
-      itemSelectText: '',
-      classNames: {
-        containerOuter: 'choices form-group formio-choices',
-        containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
-      },
-      addItemText: false,
-      placeholder: !!this.component.placeholder,
-      placeholderValue: placeholderValue,
-      noResultsText: this.t('No results found'),
-      noChoicesText: this.t('No choices to choose from'),
-      searchPlaceholderValue: this.t('Type to search'),
-      shouldSort: false,
-      position: (this.component.dropdown || 'auto'),
-      searchEnabled: useSearch,
-      searchChoices: !this.component.searchField,
-      searchFields: _.get(this, 'component.searchFields', ['label']),
-      fuseOptions: Object.assign(
-        {},
-        _.get(this, 'component.fuseOptions', {}),
-        {
-          include: 'score',
-          threshold: _.get(this, 'component.searchThreshold', 0.3),
-        }
-      ),
-      valueComparer: _.isEqual,
-      resetScrollPosition: false,
-      ...customOptions,
-    };
-
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
     if (this.choices) {
       this.choices.destroy();
     }
+
+    const choicesOptions = this.choicesOptions();
     this.choices = new Choices(input, choicesOptions);
 
     this.addEventListener(input, 'hideDropdown', () => {
@@ -806,7 +810,7 @@ export default class SelectComponent extends Field {
     else {
       this.focusableElement = this.choices.containerInner.element;
       this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-      if (useSearch) {
+      if (choicesOptions.searchEnabled) {
         this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
     }
@@ -860,11 +864,11 @@ export default class SelectComponent extends Field {
       this.update();
     });
 
-    if (placeholderValue && this.choices._isSelectOneElement) {
-      this.addPlaceholderItem(placeholderValue);
+    if (choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
+      this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, 'removeItem', () => {
-        this.addPlaceholderItem(placeholderValue);
+        this.addPlaceholderItem(choicesOptions.placeholderValue);
       });
     }
 
