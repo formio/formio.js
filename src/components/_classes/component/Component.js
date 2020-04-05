@@ -793,6 +793,7 @@ export default class Component extends Element {
     data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
+    data.size = this.size.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
     data.id = data.id || this.id;
@@ -1377,6 +1378,12 @@ export default class Component extends Element {
     return Templates.current.hasOwnProperty('iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
       : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
+  }
+
+  size(size) {
+    return Templates.current.hasOwnProperty('size')
+      ? Templates.current.size(size)
+      : size;
   }
 
   /**
