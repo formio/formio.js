@@ -10878,6 +10878,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#choicesoptions",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-choicesOptions",
+    "src/components/select/Select.js~SelectComponent#choicesOptions",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#dataready",
     "class/src/components/select/Select.js~SelectComponent.html#instance-get-dataReady",
     "src/components/select/Select.js~SelectComponent#dataReady",

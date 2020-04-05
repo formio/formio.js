@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.18
+### Changed
+ - Allow external modules to extend the Select options.
+ - Upgrade core-js@3.6.5, karma@5.0.1
+
 ## 4.9.17
 ### Fixed
  - Issue where error would throw for some imports that would say "global" is not defined.
