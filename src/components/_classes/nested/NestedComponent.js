@@ -176,7 +176,7 @@ export default class NestedComponent extends Field {
     const result = {};
 
     this.everyComponent((component) => {
-      result[component.key] = component;
+      result[component.component.flattenAs || component.key] = component;
     });
 
     return result;
@@ -474,14 +474,10 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
+  updateValue(value, flags = {}) {
     return this.components.reduce((changed, comp) => {
       return comp.updateValue(null, flags) || changed;
     }, super.updateValue(value, flags));
-  }
-
-  hasChanged() {
-    return false;
   }
 
   shouldSkipValidation(data, dirty, row) {
@@ -495,6 +491,9 @@ export default class NestedComponent extends Field {
   }
 
   checkData(data, flags, row, components) {
+    if (this.builderMode) {
+      return true;
+    }
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
@@ -627,29 +626,30 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((component) => component.dataReady));
   }
 
-  setNestedValue(component, value, flags, changed) {
+  setNestedValue(component, value, flags = {}) {
+    component._data = this.componentContext(component);
     if (component.type === 'button') {
       return false;
     }
     if (component.type === 'components') {
-      return component.setValue(value, flags) || changed;
+      return component.setValue(value, flags);
     }
     else if (value && component.hasValue(value)) {
-      return component.setValue(_.get(value, component.key), flags) || changed;
+      return component.setValue(_.get(value, component.key), flags);
     }
-    else if (!this.rootPristine) {
-      flags.noValidate = true;
-      return component.setValue(component.defaultValue, flags) || changed;
+    else if (!this.rootPristine || component.visible) {
+      flags.noValidate = !flags.dirty;
+      flags.resetValue = true;
+      return component.setValue(component.defaultValue, flags);
     }
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     if (!value) {
       return false;
     }
-    flags = flags || {};
     return this.getComponents().reduce((changed, component) => {
-      return this.setNestedValue(component, value, flags, changed);
+      return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);
   }
 }

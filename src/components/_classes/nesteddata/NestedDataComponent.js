@@ -33,14 +33,9 @@ export default class NestedDataComponent extends NestedComponent {
     return this.dataValue;
   }
 
-  updateValue(value, flags) {
+  updateValue(value, flags = {}) {
     // Intentionally skip over nested component updateValue method to keep
     // recursive update from occurring with sub components.
     return Component.prototype.updateValue.call(this, value, flags);
-  }
-
-  setNestedValue(component, value, flags, changed) {
-    component._data = this.componentContext(component);
-    return super.setNestedValue(component, value, flags, changed);
   }
 }

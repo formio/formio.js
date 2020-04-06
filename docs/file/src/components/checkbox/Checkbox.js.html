@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -238,8 +239,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/checkbox/Checkbox.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import Field from &apos;../_classes/field/Field&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Field from &apos;../_classes/field/Field&apos;;
 
 export default class CheckBoxComponent extends Field {
   static schema(...extend) {
@@ -344,33 +344,6 @@ export default class CheckBoxComponent extends Field {
     return super.isEmpty(value) || value === false;
   }
 
-  /**
-   *
-   * @param value {*}
-   * @returns {*}
-   */
-  set dataValue(value) {
-    const setValue = (super.dataValue = value);
-    if (
-      !this.key ||
-      (!this.visible &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)
-    ) {
-      return setValue;
-    }
-    if (this.component.name) {
-      _.set(this._data, this.component.key, setValue === this.component.value);
-    }
-    return setValue;
-  }
-
-  get dataValue() {
-    const getValue = super.dataValue;
-    if (this.component.name) {
-      _.set(this._data, this.component.key, getValue === this.component.value);
-    }
-    return getValue;
-  }
-
   get key() {
     return this.component.name ? this.component.name : super.key;
   }
@@ -425,8 +398,7 @@ export default class CheckBoxComponent extends Field {
     return value;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (
       this.setCheckedState(value) !== undefined ||
       (!this.input &amp;&amp; value !== undefined &amp;&amp; (this.visible || !this.component.clearOnHide))

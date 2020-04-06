@@ -1,14 +1,83 @@
 import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import _ from 'lodash';
 import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
+import { settingErrors, clearOnHide, manualOverride } from '../test/formtest';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  let formWithCalculatedValue;
+
+  it('Should calculate the field value after validation errors appeared on submit', function(done) {
+    const formElement = document.createElement('div');
+    formWithCalculatedValue = new Webform(formElement);
+    formWithCalculatedValue.setForm(manualOverride).then(() => {
+      Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);
+      setTimeout(() => {
+        const inputEvent = new Event('input');
+        const input1 = formWithCalculatedValue.components[0].refs.input[0];
+
+          input1.value =  55;
+          input1.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const input2 = formElement.querySelector('input[name="data[number2]"]');
+          assert.equal(input2.value, '55');
+          assert.equal(input1.value, 55);
+          done();
+        }, 250);
+      }, 250);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should calculate the value when editing set values with possibility of manual override', function(done) {
+    const formElement = document.createElement('div');
+    formWithCalculatedValue = new Webform(formElement);
+    formWithCalculatedValue.setForm(manualOverride).then(() => {
+      formWithCalculatedValue.setSubmission({
+        data:{
+          number1: 66,
+          number2:66
+        }
+      }).then(()=>{
+        setTimeout(()=>{
+          const input1 = formElement.querySelector('input[name="data[number1]"]');
+          const input2 = formElement.querySelector('input[name="data[number2]"]');
+
+          assert.equal(input2.value, '66');
+          assert.equal(input1.value, 66);
+
+          const inputEvent = new Event('input');
+
+          input1.value =  `${input1.value}` + '78';
+          input1.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(input2.value, '6678');
+            assert.equal(input1.value, 6678);
+            //set a number as calculated value
+            formWithCalculatedValue.components[1].calculatedValue = 6678;
+            //change the value
+            input1.value =  +(`${input1.value}` + '90');
+            input1.dispatchEvent(inputEvent);
+
+            setTimeout(() => {
+              assert.equal(input2.value, '667890');
+              assert.equal(input1.value, 667890);
+              done();
+            }, 250);
+          }, 250);
+        }, 900);
+      });
+    });
+  });
+
   let simpleForm = null;
   it('Should create a simple form', (done) => {
     const formElement = document.createElement('div');
@@ -284,6 +353,348 @@ describe('Webform tests', () => {
     });
   });
 
+  it('Should keep components valid if they are pristine', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(settingErrors).then(() => {
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      const input = form.element.querySelector('input[name="data[textField]"]');
+      for (let i = 0; i < 50; i++) {
+        input.value += i;
+        input.dispatchEvent(inputEvent);
+      }
+      this.timeout(1000);
+      setTimeout(() => {
+        assert.equal(form.errors.length, 0);
+        Harness.setInputValue(form, 'data[textField]', '');
+        setTimeout(() => {
+          assert.equal(form.errors.length, 1);
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
+  it('Should delete value of hidden component if clearOnHide is turned on', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(clearOnHide).then(() => {
+      const visibleData = {
+        data: {
+          visible: 'yes',
+          clearOnHideField: 'some text',
+          submit: false
+        },
+        metadata: {}
+      };
+
+      const hiddenData = {
+        data: {
+          visible: 'no',
+          submit: false
+        }
+      };
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      const textField = form.element.querySelector('input[name="data[clearOnHideField]"]');
+      textField.value = 'some text';
+      textField.dispatchEvent(inputEvent);
+      this.timeout(1000);
+      setTimeout(() => {
+        assert.deepEqual(form.data, visibleData.data);
+        Harness.setInputValue(form, 'data[visible]', 'no');
+
+        setTimeout(() => {
+          assert.deepEqual(form.data, hiddenData.data);
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
+  const formElement = document.createElement('div');
+  const checkForErrors = function(form, flags = {}, submission, numErrors, done) {
+    form.setSubmission(submission, flags).then(() => {
+      setTimeout(() => {
+        const errors = formElement.querySelectorAll('.formio-error-wrapper');
+        expect(errors.length).to.equal(numErrors);
+        expect(form.errors.length).to.equal(numErrors);
+        done();
+      }, 100);
+    }).catch(done);
+  };
+
+  it('Should not fire validations when fields are either protected or not persistent.', (done) => {
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
+      {
+        title: 'protected and persistent',
+        components: [
+          {
+            type: 'textfield',
+            label: 'A',
+            key: 'a',
+            validate: {
+              required: true
+            }
+          },
+          {
+            type: 'textfield',
+            label: 'B',
+            key: 'b',
+            protected: true,
+            validate: {
+              required: true
+            }
+          }
+        ],
+      }).then(() => {
+        checkForErrors(form, {}, {}, 0, () => {
+          checkForErrors(form, {}, {
+            data: {
+              a: 'Testing',
+              b: ''
+            }
+          }, 1, () => {
+            checkForErrors(form, {}, {
+              _id: '123123123',
+              data: {
+                a: 'Testing',
+                b: ''
+              }
+            }, 0, done);
+          });
+        });
+    });
+  });
+
+  it('Should not fire validation on init.', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }).then(() => {
+        checkForErrors(form, {}, {}, 0, done);
+    });
+  });
+
+  it('Should validation on init when alwaysDirty flag is set.', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement, {
+      language: 'en',
+      template: 'bootstrap3',
+      alwaysDirty: true
+    });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }).then(() => {
+      checkForErrors(form, {}, {}, 2, done);
+    });
+  });
+
+  it('Should validation on init when dirty flag is set.', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement, {
+      language: 'en',
+      template: 'bootstrap3'
+    });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }).then(() => {
+      checkForErrors(form, {
+        dirty: true
+      }, {}, 2, done);
+    });
+  });
+
+  it('Should not show any errors on setSubmission when providing an empty data object', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }
+    ).then(() => {
+      checkForErrors(form, {}, {}, 0, done);
+    });
+  });
+
+  it('Should not show errors when providing empty data object with data set.', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }
+    ).then(() => {
+      checkForErrors(form, {}, { data: {} }, 0, done);
+    });
+  });
+
+  it('Should show errors on setSubmission when providing explicit data values.', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }
+    ).then(() => {
+      checkForErrors(form, {}, {
+        data:{
+          number: 2,
+          textArea: ''
+        }
+      }, 2, done);
+    });
+  });
+
+  it('Should not show errors on setSubmission with noValidate:TRUE', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }
+    ).then(() => {
+      checkForErrors(form, {
+        noValidate:true
+      }, {
+        data:{
+          number: 2,
+          textArea: ''
+        }
+      }, 0, done);
+    });
+  });
+
   describe('set/get nosubmit', () => {
     it('should set/get nosubmit flag and emit nosubmit event', () => {
       const form = new Webform(null, {});
@@ -300,17 +711,219 @@ describe('Webform tests', () => {
     });
   });
 
-  each(FormTests, (formTest) => {
-    each(formTest.tests, (formTestTest, title) => {
-      it(title, () => {
-        const formElement = document.createElement('div');
-        const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-        return form.setForm(formTest.form).then(() => {
-          formTestTest(form, (error) => {
-            form.destroy();
-            if (error) {
-              throw new Error(error);
+  describe('getValue and setValue', () => {
+    it('should setValue and getValue', (done) => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm({
+        components: [
+          {
+            type: 'textfield',
+            key: 'a'
+          },
+          {
+            type: 'container',
+            key: 'b',
+            components: [
+              {
+                type: 'datagrid',
+                key: 'c',
+                components: [
+                  {
+                    type: 'textfield',
+                    key: 'd'
+                  },
+                  {
+                    type: 'textfield',
+                    key: 'e'
+                  },
+                  {
+                    type: 'editgrid',
+                    key: 'f',
+                    components: [
+                      {
+                        type: 'textfield',
+                        key: 'g'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }).then(() => {
+        let count = 0;
+        const onChange = form.onChange;
+        form.onChange = function(...args) {
+          count++;
+          return onChange.apply(form, args);
+        };
+
+        // Ensure that it says it changes.
+        assert.equal(form.setValue({
+          a: 'a',
+          b: {
+            c: [
+              { d: 'd1', e: 'e1', f: [{ g: 'g1' }] },
+              { d: 'd2', e: 'e2', f: [{ g: 'g2' }] },
+            ]
+          }
+        }), true);
+
+        setTimeout(() => {
+          // It should have only updated once.
+          assert.equal(count, 1);
+          done();
+        }, 500);
+      });
+    });
+  });
+
+  describe('ReadOnly Form', () => {
+    it('Should apply conditionals when in readOnly mode.', (done) => {
+      done = _.once(done);
+      const Conditions = require('../test/forms/conditions').default;
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        readOnly: true,
+        language: 'en',
+        template: 'bootstrap3'
+      });
+      form.setForm(Conditions.form).then(() => {
+        Harness.testConditionals(form, {
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'The',
+            typeMonkey: 'Monkey!'
+          }
+        }, [], (error) => {
+          form.destroy();
+          if (error) {
+            throw new Error(error);
+          }
+          done();
+        });
+      });
+    });
+  });
+
+  describe('Reset values', () => {
+    it('Should reset all values correctly.', () => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      return form.setForm(
+        {
+          components: [
+            {
+              type: 'textfield',
+              key: 'firstName',
+              label: 'First Name',
+              placeholder: 'Enter your first name.',
+              input: true,
+              tooltip: 'Enter your <strong>First Name</strong>',
+              description: 'Enter your <strong>First Name</strong>'
+            },
+            {
+              type: 'textfield',
+              key: 'lastName',
+              label: 'Last Name',
+              placeholder: 'Enter your last name',
+              input: true,
+              tooltip: 'Enter your <strong>Last Name</strong>',
+              description: 'Enter your <strong>Last Name</strong>'
+            },
+            {
+              type: 'select',
+              label: 'Favorite Things',
+              key: 'favoriteThings',
+              placeholder: 'These are a few of your favorite things...',
+              data: {
+                values: [
+                  {
+                    value: 'raindropsOnRoses',
+                    label: 'Raindrops on roses'
+                  },
+                  {
+                    value: 'whiskersOnKittens',
+                    label: 'Whiskers on Kittens'
+                  },
+                  {
+                    value: 'brightCopperKettles',
+                    label: 'Bright Copper Kettles'
+                  },
+                  {
+                    value: 'warmWoolenMittens',
+                    label: 'Warm Woolen Mittens'
+                  }
+                ]
+              },
+              dataSrc: 'values',
+              template: '<span>{{ item.label }}</span>',
+              multiple: true,
+              input: true
+            },
+            {
+              type: 'number',
+              key: 'number',
+              label: 'Number',
+              input: true
+            },
+            {
+              type: 'button',
+              action: 'submit',
+              label: 'Submit',
+              theme: 'primary'
             }
+          ]
+        }
+      ).then(() => {
+        form.setSubmission({
+          data: {
+            firstName: 'Joe',
+            lastName: 'Bob',
+            favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
+            number: 233
+          }
+        }).then(() => {
+          expect(form.submission).to.deep.equal({
+            data: {
+              firstName: 'Joe',
+              lastName: 'Bob',
+              favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
+              number: 233,
+              submit: false
+            }
+          });
+          form.setSubmission({ data: {} }).then(() => {
+            expect(form.submission).to.deep.equal({
+              data: {
+                firstName: '',
+                lastName: '',
+                favoriteThings: [],
+                submit: false
+              }
+            });
+          });
+        });
+      });
+    });
+  });
+
+  each(FormTests, (formTest) => {
+    describe(formTest.title || '', () => {
+      each(formTest.tests, (formTestTest, title) => {
+        it(title, () => {
+          const formElement = document.createElement('div');
+          const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+          return form.setForm(formTest.form).then(() => {
+            formTestTest(form, (error) => {
+              form.destroy();
+              if (error) {
+                throw new Error(error);
+              }
+            });
           });
         });
       });

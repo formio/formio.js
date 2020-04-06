@@ -50,7 +50,7 @@ const Evaluator = {
     }
     else if (Evaluator.noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
-      return rawTemplate.replace(/({{\s*(.*?)\s*}})/, (match, $1, $2) => _.get(data, $2));
+      return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => _.get(data, $2));
     }
     else {
       template = Evaluator.template(rawTemplate, hash);

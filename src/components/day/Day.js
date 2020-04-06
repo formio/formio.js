@@ -504,12 +504,19 @@ export default class DayComponent extends Field {
     return this.getDate();
   }
 
+  normalizeMinMaxDates() {
+   return [this.component.minDate, this.component.maxDate]
+      .map(date => date ? date.split('-').reverse().join('/') : date);
+  }
+
   /**
    * Return the raw value.
    *
    * @returns {Date}
    */
   get validationValue() {
+    [this.component.minDate, this.component.maxDate] = this.dayFirst ? this.normalizeMinMaxDates()
+      : [this.component.minDate, this.component.maxDate];
     return this.dataValue;
   }
 

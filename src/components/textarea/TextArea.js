@@ -56,7 +56,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   validateMultiple() {
-    return !this.component.as === 'json';
+    return !this.isJsonValue;
   }
 
   renderElement(value, index) {
@@ -94,7 +94,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   updateEditorValue(index, newValue) {
     newValue = this.getConvertedValue(this.removeBlanks(newValue));
     const dataValue = this.dataValue;
-    if (Array.isArray(dataValue)) {
+    if (this.component.multiple && Array.isArray(dataValue)) {
       const newArray = _.clone(dataValue);
       newArray[index] = newValue;
       newValue = newArray;
@@ -123,7 +123,9 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.editor = 'ckeditor';
     }
 
-    let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
+    let settings = _.isEmpty(this.component.wysiwyg) ?
+      this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
+      : this.component.wysiwyg;
 
     // Keep track of when this editor is ready.
     this.editorsReady[index] = new NativePromise((editorReady) => {
@@ -137,7 +139,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
             this.editors[index] = ace;
             let dataValue = this.dataValue;
-            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
             ace.setValue(this.setConvertedValue(dataValue, index));
             editorReady(ace);
             return ace;
@@ -147,7 +149,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
             console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-            settings = this.wysiwygDefault;
+            settings = this.wysiwygDefault.quill;
           }
 
           // Add the quill editor.
@@ -170,7 +172,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             }
 
             let dataValue = this.dataValue;
-            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
             quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
             editorReady(quill);
             return quill;
@@ -192,7 +194,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                 editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
               }
               let dataValue = this.dataValue;
-              dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+              dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
               editor.data.set(this.setConvertedValue(dataValue, index));
               editorReady(editor);
               return editor;
@@ -213,11 +215,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           break;
         default:
           super.attachElement(element, index);
-          this.addEventListener(element, this.inputInfo.changeEvent, () => {
-            this.updateValue(null, {
-              modified: true
-            }, index);
-          });
+          break;
       }
     });
 
@@ -299,7 +297,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
   }
 
-  setValueAt(index, value, flags) {
+  setValueAt(index, value, flags = {}) {
     super.setValueAt(index, value, flags);
 
     if (this.editorsReady[index]) {
@@ -335,10 +333,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (this.isPlain || this.options.readOnly || this.disabled) {
-      value = Array.isArray(value) ?
+      value = (this.component.multiple && Array.isArray(value)) ?
         value.map((val, index) => this.setConvertedValue(val, index)) :
         this.setConvertedValue(value);
       return super.setValue(value, flags);
@@ -356,8 +353,12 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
+  get isJsonValue() {
+    return this.component.as && this.component.as === 'json';
+  }
+
   setConvertedValue(value, index) {
-    if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
+    if (this.isJsonValue && !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
       }
@@ -375,7 +376,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setAsyncConvertedValue(value) {
-    if (this.component.as && this.component.as === 'json' && value) {
+    if (this.isJsonValue && value) {
       try {
         value = JSON.stringify(value, null, 2);
       }
@@ -543,7 +544,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   getConvertedValue(value) {
-    if (this.component.as && this.component.as === 'json' && value) {
+    if (this.isJsonValue && value) {
       try {
         value = JSON.parse(value);
       }

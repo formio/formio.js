@@ -34,7 +34,7 @@ class ValidationChecker {
           });
         },
         check(component, setting, value) {
-          if (!boolValue(setting)) {
+          if (!boolValue(setting) || component.isValueHidden()) {
             return true;
           }
 
@@ -360,7 +360,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('minLength'), {
             field: component.errorLabel,
-            length: (setting - 1),
+            length: setting,
             data: component.data
           });
         },
@@ -377,7 +377,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('maxLength'), {
             field: component.errorLabel,
-            length: (setting + 1),
+            length: setting,
             data: component.data
           });
         },
@@ -394,7 +394,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('maxWords'), {
             field: component.errorLabel,
-            length: (setting + 1),
+            length: setting,
             data: component.data
           });
         },
@@ -411,7 +411,7 @@ class ValidationChecker {
         message(component, setting) {
           return component.t(component.errorMessage('minWords'), {
             field: component.errorLabel,
-            length: (setting - 1),
+            length: setting,
             data: component.data
           });
         },
@@ -683,7 +683,7 @@ class ValidationChecker {
           let year = /\d{4}$/.exec(value);
           year = year ? year[0] : null;
 
-          if (!minYear || !year) {
+          if (!(+minYear) || !(+year)) {
             return true;
           }
 
@@ -703,7 +703,7 @@ class ValidationChecker {
           let year = /\d{4}$/.exec(value);
           year = year ? year[0] : null;
 
-          if (!maxYear || !year) {
+          if (!(+maxYear) || !(+year)) {
             return true;
           }
 
@@ -773,7 +773,7 @@ class ValidationChecker {
         return result;
       }
 
-      if (!result) {
+      if (!result && validator.message) {
         return validator.message.call(this, component, setting, index, row);
       }
 

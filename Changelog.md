@@ -4,6 +4,234 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.5
+### Changed
+ - Allow external modules to extend the select options easily.
+
+### Fixed
+ - Address component.
+
+## 4.10.0-beta.4
+### Changed
+ - Ensure that Formio is added to the window.
+ - FJS 836: Fix for storage type normalization in Select component.
+ - Fixing issues with the Disable on Invalid for button components.
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+ - PDF 21 - Focus on the first invalid field on form submission 
+ - Fix ace editor error
+ - Fix api key unique err
+ - Add options for values in Select configuration.
+ - Major EditGrid, DataGrid, and Container refactoring.
+
+## 4.10.0-beta.3
+### Changed
+ - All changes from 4.9.7 - 4.9.9
+ 
+### Fixed
+ - Issues with logic messing up form builder.
+ - EditGrid problems where data would get in a detached state.
+ - Fixed unstranslated component label in Webform
+ - Fixed calculated value doesn`t work when editing data with manual override in true position
+
+## 4.10.0-beta.2
+### Fixed
+ - Fixed display of selected values in table view
+ - T826: Fix nested forms never submitting.
+ - UIP-159: Fixing the UUID import.
+
+### Changed
+ - VPAT-236 Changed variable types for future extension in vpat
+
+### Added
+ - UIP-131: Add option to change from moment input to calendar
+
+## 4.10.0-beta.1
+### Added
+ - Added flag to check if draft restore is disabled
+ - Offline authentication support.
+
+### Fixed
+ - Current submission to be set after draft save.
+
+## 4.9.13
+### Fixed
+ - Issue with disableOnInvalid for buttons and added a unit test to ensure correct behavior in the future.
+ - PDF21: Focus on the first invalid field on form submission
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+
+## 4.9.12
+### Changed
+ - Reverted https://github.com/formio/formio.js/pull/2049 for reasons described in the PR.
+
+## 4.9.11
+### Changed
+ - Upgrade uuid@7.0.3
+
+### Fixed
+ - Problems where errors would throw in ACE editor regarding unknown theme.
+ - Issues where EditGrid cancel would not reset the component contexts.
+ - The export of the formiojs module to allow other libraries to import from the compiled dist file.
+
+## 4.9.10
+### Changed
+ - Update idb@5.0.2, jsdom@16.2.2, eventemitter2@6.3.1, ejs-loader@0.3.6
+
+### Fixed
+ - Issues with logic messing up form builder.
+ - EditGrid problems where data would get in a detached state.
+ - Fixed unstranslated component label in Webform
+ - Fixed calculated value doesn`t work when editing data with manual override in true position
+
+## 4.9.9
+### Fixed
+ - Issue where checkboxes configured as Radio input would still add checkbox key to data.
+
+### Added
+ - An xs column size.
+ 
+### Changed
+ - Upgrade i18next@19.3.4
+
+## 4.9.8
+### Fixed
+ - Issues where the setValue of nested components would not return the correct changed status.
+ - Issues where read only forms would not apply conditions correctly.
+
+## 4.9.7
+### Fixed
+ - UIP-159: Fixing the UUID import.
+ - T826: Fix nested forms never submitting.
+
+## 4.9.6
+### Fixed
+ - GS-PDF27: Add DOMTokenList polyfill to resolve submit issues with IE11.
+
+### Added
+ - UIP-157: Feat(Columns): add option for grid classes prefixes
+
+## 4.9.5
+### Changed
+ - The change flow logic to be more isolated and component specific.
+
+### Fixed
+ - Issue with Component constructor not executing conditionals correctly.
+
+## 4.9.4
+### Fixed
+ - Issues with the refresh on property.
+ - Fixed issue with loss of focus on Cancel button during Wizard cancel event.
+
+### Changed
+ - Upgrade eventemitter2@6.2.1, fetch-mock@9.3.0
+
+## 4.9.3
+### Fixed
+ - Infinite loop issues that could arise within the renderer.
+
+## 4.9.2
+### Fixed
+ - Issues where the File component would not always show the file lists.
+ 
+### Changed
+ - Upgrade eventemitter2@6.2.0
+
+## 4.9.1
+### Added
+ - A way for the child pdf to retrieve the parent position information.
+ 
+### Changed
+ - Upgrade @babel/core@7.9.0, @babel/plugin-proposal-optional-chaining@7.9.0, @babel/preset-env@7.9.0, @babel/register@7.9.0, babel-loader@8.1.0
+
+## 4.9.0
+### Fixed
+ - A few cases where flags would not get passed in and would cause errors to throw.
+
+## 4.9.0-rc.12
+### Fixed
+ - Problems where the changed flag was not getting triggered and handled properly.
+ - Issues with infinite loops triggered by TextArea w/ ACE editor in JSON mode.
+ - Fixed the redraw on property to no store value references.
+ - Fixing how the pdf iframe-change event is handled.
+ - Fixing containers so that they will ensure the child components trigger their change events correctly.
+
+### Removed
+ - Aggressive error navigation where it would throw cursor to top of page when correcting errors. Now you just click the error to take you to the control with the error.
+
+## 4.9.0-rc.11
+### Fixed
+ - Problems where Number components would not get reset properly.
+ - Issues where wizards would always show errors when navigating.
+ 
+### Changed
+ - Revert changes to iframe where src was replaced with blob file hosting. It causes too many problems with different browsers and CSP issues.
+ - Upgrade i18next@19.3.3, fetch-mock@9.2.1, gulp-clean-css@4.3.0, file-loader@6.0.0
+
+## 4.9.0-rc.10
+### Fixed
+ - Ensure no infinite loops are triggered in build mode by not checking data.
+
+## 4.9.0-rc.9
+### Changed
+ - The PDF rendering to use a local PDF rendering system instead of iframe with external source.
+
+### Fixed
+ - Fixed $ entered to the currency component disappears after submit and shows invalid value
+ - Fixed calculated value is not set after validation on submit if 'Allow override calculated value' is true
+
+## 4.9.0-rc.8
+### Fixed
+ - Issues with validations.
+
+## 4.9.0-rc.7
+### Fixed
+ - Fixed url interpolation in file upload
+ - Fixed repeated appearance of selected values in multiselect and appearance of selected values in dropdown when searching
+ - Fixed problem where pristine was not set before the checkData method was called when a component was updated.
+ - Fixing issues with noValidate flag and setSubmission.
+ - Problems where the parentDisabled flag would not get updated to contain the current parent disabled state.
+ - Fixing the noeval interpolation to replace all instances within a string.
+
+## 4.9.0-rc.6
+### Fixed
+ - Problems where forms with default values would get overridden when setting submission with empty object.
+ - Fix clear on hide does not always work
+
+## 4.9.0-rc.5
+### Fixed
+ - Fixed an issue with horizontal scroll added when using RTL interface 
+ - Fixed Wizard validation is run in readOnly mode
+ - Reverted https://github.com/formio/formio.js/commit/2b3ef7fce42410ad5e2e3a779afa401dc4209d97 to solve issues with validations firing.
+
+## 4.9.0-rc.4
+### Fixed
+ - Problems where data would not set correctly when a layout component was inside a Container component.
+ - Issues where select dropdowns would sometimes not show the correct values in EditGrid.
+ - Added trailing zeros in currency component.
+ - Validation on dayFirst for Day Component.
+ - Fixed select multivalue display in HTML renderMode
+ - Fixed validation messages to appear inside the panel on form submission
+ - Issue where a textfield with inputType set to 'password' would show as clear text.
+ 
+### Changed
+ - Upgrade uuid@7.0.2, @babel/core@7.8.7, @babel/polyfill@7.8.7, @babel/preset-env@7.8.7, @formio/bootstrap3@2.3.0, @formio/semantic@2.2.0, fetch-mock@9.1.0
+ - Improved validation message for min and max length.
+ - Required validation for select element in nested form
+ 
+### Added
+ - Added formio-form class to wizard component
+
+## 4.9.0-rc.3
+### Changed
+ - Upgrade i18next@19.3.2, @babel/core@7.8.6, @babel/preset-env@7.8.6, @babel/register@7.8.6, babel-eslint@10.1.0, mocha@7.1.0, webpack@4.42.0, uuid@7.0.1, fetch-mock@9.0.0
+
+### Added
+ - Add use(plugin) method for typescript
+
+### Fixed
+ - `oktaInit` method not rejecting promise when failed to get token
+ - Camera property not in navigator when the form is render
+ - HTMLElement bug with conditions on initialization.
+
 ## 4.9.0-rc.2
 ### Fixed
  - The parsing of noeval tokens.
@@ -948,7 +1176,7 @@ Not found
    - init: Initialize the render component.
    - render: Renders the component as a string.
    - attach: Looks up references in the template, and then binds events and attaches component logic to the template.
- - Component class replaces the BaseCompoennt class.
+ - Component class replaces the BaseComponent class.
  - Added more OOP heirarchy to components including.
    - Field
    - Input

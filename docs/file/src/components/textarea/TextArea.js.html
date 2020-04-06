@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -296,7 +297,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   validateMultiple() {
-    return !this.component.as === &apos;json&apos;;
+    return !this.isJsonValue;
   }
 
   renderElement(value, index) {
@@ -334,7 +335,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   updateEditorValue(index, newValue) {
     newValue = this.getConvertedValue(this.removeBlanks(newValue));
     const dataValue = this.dataValue;
-    if (Array.isArray(dataValue)) {
+    if (this.component.multiple &amp;&amp; Array.isArray(dataValue)) {
       const newArray = _.clone(dataValue);
       newArray[index] = newValue;
       newValue = newArray;
@@ -363,7 +364,9 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.editor = &apos;ckeditor&apos;;
     }
 
-    let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
+    let settings = _.isEmpty(this.component.wysiwyg) ?
+      this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
+      : this.component.wysiwyg;
 
     // Keep track of when this editor is ready.
     this.editorsReady[index] = new NativePromise((editorReady) =&gt; {
@@ -377,7 +380,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.addAce(element, settings, (newValue) =&gt; this.updateEditorValue(index, newValue)).then((ace) =&gt; {
             this.editors[index] = ace;
             let dataValue = this.dataValue;
-            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            dataValue = (this.component.multiple &amp;&amp; Array.isArray(dataValue)) ? dataValue[index] : dataValue;
             ace.setValue(this.setConvertedValue(dataValue, index));
             editorReady(ace);
             return ace;
@@ -387,7 +390,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty(&apos;toolbarGroups&apos;) || settings.hasOwnProperty(&apos;toolbar&apos;)) {
             console.warn(&apos;The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.&apos;);
-            settings = this.wysiwygDefault;
+            settings = this.wysiwygDefault.quill;
           }
 
           // Add the quill editor.
@@ -410,7 +413,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             }
 
             let dataValue = this.dataValue;
-            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            dataValue = (this.component.multiple &amp;&amp; Array.isArray(dataValue)) ? dataValue[index] : dataValue;
             quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
             editorReady(quill);
             return quill;
@@ -432,7 +435,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                 editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
               }
               let dataValue = this.dataValue;
-              dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+              dataValue = (this.component.multiple &amp;&amp; Array.isArray(dataValue)) ? dataValue[index] : dataValue;
               editor.data.set(this.setConvertedValue(dataValue, index));
               editorReady(editor);
               return editor;
@@ -453,11 +456,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           break;
         default:
           super.attachElement(element, index);
-          this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
-            this.updateValue(null, {
-              modified: true
-            }, index);
-          });
+          break;
       }
     });
 
@@ -539,7 +538,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly &amp;&amp; (this.component.editor || this.component.wysiwyg);
   }
 
-  setValueAt(index, value, flags) {
+  setValueAt(index, value, flags = {}) {
     super.setValueAt(index, value, flags);
 
     if (this.editorsReady[index]) {
@@ -575,10 +574,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (this.isPlain || this.options.readOnly || this.disabled) {
-      value = Array.isArray(value) ?
+      value = (this.component.multiple &amp;&amp; Array.isArray(value)) ?
         value.map((val, index) =&gt; this.setConvertedValue(val, index)) :
         this.setConvertedValue(value);
       return super.setValue(value, flags);
@@ -596,8 +594,12 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
+  get isJsonValue() {
+    return this.component.as &amp;&amp; this.component.as === &apos;json&apos;;
+  }
+
   setConvertedValue(value, index) {
-    if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; !_.isNil(value)) {
+    if (this.isJsonValue &amp;&amp; !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
       }
@@ -615,7 +617,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setAsyncConvertedValue(value) {
-    if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; value) {
+    if (this.isJsonValue &amp;&amp; value) {
       try {
         value = JSON.stringify(value, null, 2);
       }
@@ -783,7 +785,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   getConvertedValue(value) {
-    if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; value) {
+    if (this.isJsonValue &amp;&amp; value) {
       try {
         value = JSON.parse(value);
       }

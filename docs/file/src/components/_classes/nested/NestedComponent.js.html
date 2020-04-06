@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -416,7 +417,7 @@ export default class NestedComponent extends Field {
     const result = {};
 
     this.everyComponent((component) =&gt; {
-      result[component.key] = component;
+      result[component.component.flattenAs || component.key] = component;
     });
 
     return result;
@@ -712,14 +713,10 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
+  updateValue(value, flags = {}) {
     return this.components.reduce((changed, comp) =&gt; {
       return comp.updateValue(null, flags) || changed;
     }, super.updateValue(value, flags));
-  }
-
-  hasChanged() {
-    return false;
   }
 
   shouldSkipValidation(data, dirty, row) {
@@ -733,6 +730,9 @@ export default class NestedComponent extends Field {
   }
 
   checkData(data, flags, row, components) {
+    if (this.builderMode) {
+      return true;
+    }
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
@@ -864,29 +864,30 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((component) =&gt; component.dataReady));
   }
 
-  setNestedValue(component, value, flags, changed) {
+  setNestedValue(component, value, flags = {}) {
+    component._data = this.componentContext(component);
     if (component.type === &apos;button&apos;) {
       return false;
     }
     if (component.type === &apos;components&apos;) {
-      return component.setValue(value, flags) || changed;
+      return component.setValue(value, flags);
     }
     else if (value &amp;&amp; component.hasValue(value)) {
-      return component.setValue(_.get(value, component.key), flags) || changed;
+      return component.setValue(_.get(value, component.key), flags);
     }
-    else if (!this.rootPristine) {
-      flags.noValidate = true;
-      return component.setValue(component.defaultValue, flags) || changed;
+    else if (!this.rootPristine || component.visible) {
+      flags.noValidate = !flags.dirty;
+      flags.resetValue = true;
+      return component.setValue(component.defaultValue, flags);
     }
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     if (!value) {
       return false;
     }
-    flags = flags || {};
     return this.getComponents().reduce((changed, component) =&gt; {
-      return this.setNestedValue(component, value, flags, changed);
+      return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);
   }
 }

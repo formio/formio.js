@@ -121,6 +121,7 @@ export default class Wizard extends Webform {
     const ctx = this.renderContext;
     return this.renderTemplate('wizard', {
       ...ctx,
+      className: super.getClassName(),
       wizardHeader: this.renderTemplate('wizardHeader', ctx),
       wizardNav: this.renderTemplate('wizardNav', ctx),
       components: this.renderComponents([
@@ -306,11 +307,12 @@ export default class Wizard extends Webform {
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
       }
-      this.redraw();
-      return NativePromise.resolve().then(() => {
-        this.checkValidity(this.submission.data, false, this.submission.data, true);
-        this.checkData(this.submission.data);
+      this.redraw().then(() => {
+        if (!this.options.readOnly) {
+          this.checkValidity(this.submission.data, false, this.submission.data, true);
+        }
       });
+      return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
       this.redraw();
@@ -416,6 +418,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
+      this.currentPage.components.forEach((comp) => comp.setPristine(false));
       return NativePromise.reject(this.showErrors([], true));
     }
   }
@@ -428,18 +431,15 @@ export default class Wizard extends Webform {
     });
   }
 
-  checkData(data, flags) {
-    const dirty = this.currentPage.components.some(component => !component.isEmpty());
-    return super.checkData(data, flags) && this.checkValidity(data, dirty, true);
-  }
-
   cancel(noconfirm) {
     if (super.cancel(noconfirm)) {
-      return this.setPage(0);
+      this.setPristine(true);
+      return this.setPage(0).then(() => {
+          this.redraw();
+          return this.page;
+      });
     }
-    else {
-      return this.setPage();
-    }
+    return NativePromise.resolve();
   }
 
   getPageIndexByKey(key) {
@@ -491,7 +491,7 @@ export default class Wizard extends Webform {
     return super.setForm(form);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
     this.pageFieldLogic(this.page);
     return changed;

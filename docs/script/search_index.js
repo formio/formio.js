@@ -570,12 +570,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/components/select/select.js~selectcomponent",
-    "class/src/components/select/Select.js~SelectComponent.html",
-    "<span>SelectComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/select/Select.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/signature/signature.form.js~signature",
     "function/index.html#static-function-Signature",
     "<span>Signature</span> <span class=\"search-result-import-path\">formiojs/src/components/signature/Signature.form.js</span>",
@@ -1132,6 +1126,18 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-momentDate",
     "<span>momentDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
+  ],
+  [
+    "formiojs/src/components/select/fixtures/comp3.js~multiselect",
+    "variable/index.html#static-variable-multiSelect",
+    "<span>multiSelect</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp3.js</span>",
+    "variable"
+  ],
+  [
+    "formiojs/src/components/select/fixtures/comp3.js~multiselectoptions",
+    "variable/index.html#static-variable-multiSelectOptions",
+    "<span>multiSelectOptions</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp3.js</span>",
+    "variable"
   ],
   [
     "formiojs/src/utils/utils.js~observeoverload",
@@ -2418,6 +2424,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdf.js~pdf#focusoncomponent",
+    "class/src/PDF.js~PDF.html#instance-method-focusOnComponent",
+    "src/PDF.js~PDF#focusOnComponent",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#getsrc",
     "class/src/PDF.js~PDF.html#instance-method-getSrc",
     "src/PDF.js~PDF#getSrc",
@@ -2493,6 +2505,12 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#setvalue",
     "class/src/PDF.js~PDF.html#instance-method-setValue",
     "src/PDF.js~PDF#setValue",
+    "method"
+  ],
+  [
+    "src/pdf.js~pdf#showerrors",
+    "class/src/PDF.js~PDF.html#instance-method-showErrors",
+    "src/PDF.js~PDF#showErrors",
     "method"
   ],
   [
@@ -2637,6 +2655,12 @@ window.esdocSearchIndex = [
     "src/pdfbuilder.js~pdfbuilder#setuploaderror",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setUploadError",
     "src/PDFBuilder.js~PDFBuilder#setUploadError",
+    "method"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#tryupdatecustomcomponentschema",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-tryUpdateCustomComponentSchema",
+    "src/PDFBuilder.js~PDFBuilder#tryUpdateCustomComponentSchema",
     "method"
   ],
   [
@@ -2790,6 +2814,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/webform.js~webform#editing",
+    "class/src/Webform.js~Webform.html#instance-member-editing",
+    "src/Webform.js~Webform#editing",
+    "member"
+  ],
+  [
     "src/webform.js~webform#element",
     "class/src/Webform.js~Webform.html#instance-member-element",
     "src/Webform.js~Webform#element",
@@ -2854,6 +2884,12 @@ window.esdocSearchIndex = [
     "class/src/Webform.js~Webform.html#instance-member-formio",
     "src/Webform.js~Webform#formio",
     "member"
+  ],
+  [
+    "src/webform.js~webform#getclassname",
+    "class/src/Webform.js~Webform.html#instance-method-getClassName",
+    "src/Webform.js~Webform#getClassName",
+    "method"
   ],
   [
     "src/webform.js~webform#getvalue",
@@ -2973,6 +3009,12 @@ window.esdocSearchIndex = [
     "src/webform.js~webform#options",
     "class/src/Webform.js~Webform.html#instance-member-options",
     "src/Webform.js~Webform#options",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#pristine",
+    "class/src/Webform.js~Webform.html#instance-member-pristine",
+    "src/Webform.js~Webform#pristine",
     "member"
   ],
   [
@@ -3498,9 +3540,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/webformbuilder.spec.js",
-    "file/src/WebformBuilder.spec.js.html",
-    "src/WebformBuilder.spec.js",
+    "src/webformbuilder.unit.js",
+    "file/src/WebformBuilder.unit.js.html",
+    "src/WebformBuilder.unit.js",
     "file"
   ],
   [
@@ -3561,12 +3603,6 @@ window.esdocSearchIndex = [
     "src/wizard.js~wizard#cancel",
     "class/src/Wizard.js~Wizard.html#instance-method-cancel",
     "src/Wizard.js~Wizard#cancel",
-    "method"
-  ],
-  [
-    "src/wizard.js~wizard#checkdata",
-    "class/src/Wizard.js~Wizard.html#instance-method-checkData",
-    "src/Wizard.js~Wizard#checkData",
     "method"
   ],
   [
@@ -3861,6 +3897,12 @@ window.esdocSearchIndex = [
     "src/wizard.spec.js",
     "file/src/Wizard.spec.js.html",
     "src/Wizard.spec.js",
+    "file"
+  ],
+  [
+    "src/wizard.unit.js",
+    "file/src/Wizard.unit.js.html",
+    "src/Wizard.unit.js",
     "file"
   ],
   [
@@ -4326,12 +4368,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/component/component.js~component#ckeditorconfig",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-ckEditorConfig",
-    "src/components/_classes/component/Component.js~Component#ckEditorConfig",
-    "member"
-  ],
-  [
     "src/components/_classes/component/component.js~component#classname",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-className",
     "src/components/_classes/component/Component.js~Component#className",
@@ -4377,6 +4413,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#constructor",
     "class/src/components/_classes/component/Component.js~Component.html#instance-constructor-constructor",
     "src/components/_classes/component/Component.js~Component#constructor",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#convertnumberorbooltostring",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-convertNumberOrBoolToString",
+    "src/components/_classes/component/Component.js~Component#convertNumberOrBoolToString",
     "method"
   ],
   [
@@ -4758,9 +4800,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/component/component.js~component#isvaluehidden",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-isValueHidden",
+    "src/components/_classes/component/Component.js~Component#isValueHidden",
+    "method"
+  ],
+  [
     "src/components/_classes/component/component.js~component#itemvalue",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-itemValue",
     "src/components/_classes/component/Component.js~Component#itemValue",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#itemvalueforhtmlmode",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-itemValueForHTMLMode",
+    "src/components/_classes/component/Component.js~Component#itemValueForHTMLMode",
     "method"
   ],
   [
@@ -6066,12 +6120,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#haschanged",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasChanged",
-    "src/components/_classes/nested/NestedComponent.js~NestedComponent#hasChanged",
-    "method"
-  ],
-  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#hascomponent",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-hasComponent",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#hasComponent",
@@ -6276,10 +6324,58 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#_rowindex",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-member-_rowIndex",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#_rowIndex",
+    "member"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#checkdata",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-checkData",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#checkData",
+    "method"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#checkrow",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-checkRow",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#checkRow",
+    "method"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#checkrows",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-checkRows",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#checkRows",
+    "method"
+  ],
+  [
     "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#componentcontext",
     "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-componentContext",
     "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#componentContext",
     "method"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#hasaddbutton",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-hasAddButton",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#hasAddButton",
+    "method"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#iteratablerows",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-get-iteratableRows",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#iteratableRows",
+    "member"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#rowindex",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-get-rowIndex",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#rowIndex",
+    "member"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#rowindex",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-set-rowIndex",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#rowIndex",
+    "member"
   ],
   [
     "src/components/_classes/nestedarray/nestedarraycomponent.unit.js",
@@ -6315,12 +6411,6 @@ window.esdocSearchIndex = [
     "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#haschanged",
     "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-hasChanged",
     "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#hasChanged",
-    "method"
-  ],
-  [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#setnestedvalue",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-setNestedValue",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#setNestedValue",
     "method"
   ],
   [
@@ -6840,18 +6930,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
-    "member"
-  ],
-  [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
-    "member"
-  ],
-  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#defaultschema",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-defaultSchema",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#defaultSchema",
@@ -7182,6 +7260,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/container/container.js~containercomponent#checkdata",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-checkData",
+    "src/components/container/Container.js~ContainerComponent#checkData",
+    "method"
+  ],
+  [
     "src/components/container/container.js~containercomponent#componentcontext",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-componentContext",
     "src/components/container/Container.js~ContainerComponent#componentContext",
@@ -7263,6 +7347,12 @@ window.esdocSearchIndex = [
     "src/components/container/fixtures/comp1.js",
     "file/src/components/container/fixtures/comp1.js.html",
     "src/components/container/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/container/fixtures/comp2.js",
+    "file/src/components/container/fixtures/comp2.js.html",
+    "src/components/container/fixtures/comp2.js",
     "file"
   ],
   [
@@ -7368,6 +7458,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#addfocusblurevents",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-addFocusBlurEvents",
+    "src/components/currency/Currency.js~CurrencyComponent#addFocusBlurEvents",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#addzerosandformatvalue",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-addZerosAndFormatValue",
+    "src/components/currency/Currency.js~CurrencyComponent#addZerosAndFormatValue",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#constructor",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-constructor-constructor",
     "src/components/currency/Currency.js~CurrencyComponent#constructor",
@@ -7389,6 +7491,12 @@ window.esdocSearchIndex = [
     "src/components/currency/currency.js~currencycomponent#formatvalue",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-formatValue",
     "src/components/currency/Currency.js~CurrencyComponent#formatValue",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#getvalueasstring",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-getValueAsString",
+    "src/components/currency/Currency.js~CurrencyComponent#getValueAsString",
     "method"
   ],
   [
@@ -7524,24 +7632,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datagrid/datagrid.js~datagridcomponent#checkdata",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-checkData",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#checkData",
-    "method"
-  ],
-  [
-    "src/components/datagrid/datagrid.js~datagridcomponent#checkrow",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-checkRow",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#checkRow",
-    "method"
-  ],
-  [
-    "src/components/datagrid/datagrid.js~datagridcomponent#checkrows",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-checkRows",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#checkRows",
-    "method"
-  ],
-  [
     "src/components/datagrid/datagrid.js~datagridcomponent#checkvalidity",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-checkValidity",
     "src/components/datagrid/DataGrid.js~DataGridComponent#checkValidity",
@@ -7668,12 +7758,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datagrid/datagrid.js~datagridcomponent#hasaddbutton",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-hasAddButton",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#hasAddButton",
-    "method"
-  ],
-  [
     "src/components/datagrid/datagrid.js~datagridcomponent#hasbottomsubmit",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-hasBottomSubmit",
     "src/components/datagrid/DataGrid.js~DataGridComponent#hasBottomSubmit",
@@ -7714,6 +7798,12 @@ window.esdocSearchIndex = [
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-init",
     "src/components/datagrid/DataGrid.js~DataGridComponent#init",
     "method"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#iteratablerows",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-iteratableRows",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#iteratableRows",
+    "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#minlength",
@@ -7845,6 +7935,12 @@ window.esdocSearchIndex = [
     "src/components/datagrid/fixtures/comp2.js",
     "file/src/components/datagrid/fixtures/comp2.js.html",
     "src/components/datagrid/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/datagrid/fixtures/comp3.js",
+    "file/src/components/datagrid/fixtures/comp3.js.html",
+    "src/components/datagrid/fixtures/comp3.js",
     "file"
   ],
   [
@@ -8376,6 +8472,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/day/day.js~daycomponent#normalizeminmaxdates",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-normalizeMinMaxDates",
+    "src/components/day/Day.js~DayComponent#normalizeMinMaxDates",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#normalizevalue",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-normalizeValue",
     "src/components/day/Day.js~DayComponent#normalizeValue",
@@ -8544,6 +8646,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/day/fixtures/comp3.js",
+    "file/src/components/day/fixtures/comp3.js.html",
+    "src/components/day/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/day/fixtures/index.js",
     "file/src/components/day/fixtures/index.js.html",
     "src/components/day/fixtures/index.js",
@@ -8580,10 +8688,22 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#addrowelements",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-addRowElements",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#addRowElements",
+    "member"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#addrowmodal",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-addRowModal",
     "src/components/editgrid/EditGrid.js~EditGridComponent#addRowModal",
     "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#addrowref",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-addRowRef",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#addRowRef",
+    "member"
   ],
   [
     "src/components/editgrid/editgrid.js~editgridcomponent#attach",
@@ -8598,21 +8718,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#cancelrowelements",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-cancelRowElements",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#cancelRowElements",
+    "member"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#cancelrowref",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-cancelRowRef",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#cancelRowRef",
+    "member"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#checkcomponentvalidity",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-checkComponentValidity",
     "src/components/editgrid/EditGrid.js~EditGridComponent#checkComponentValidity",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#checkdata",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-checkData",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#checkData",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#checkrow",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-checkRow",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#checkRow",
     "method"
   ],
   [
@@ -8730,12 +8850,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/editgrid/editgrid.js~editgridcomponent#hasaddbutton",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-hasAddButton",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#hasAddButton",
-    "method"
-  ],
-  [
     "src/components/editgrid/editgrid.js~editgridcomponent#hasremovebuttons",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-hasRemoveButtons",
     "src/components/editgrid/EditGrid.js~EditGridComponent#hasRemoveButtons",
@@ -8746,6 +8860,24 @@ window.esdocSearchIndex = [
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-init",
     "src/components/editgrid/EditGrid.js~EditGridComponent#init",
     "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#inlineeditmode",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-inlineEditMode",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#inlineEditMode",
+    "member"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#isopen",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-isOpen",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#isOpen",
+    "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#iteratablerows",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-iteratableRows",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#iteratableRows",
+    "member"
   ],
   [
     "src/components/editgrid/editgrid.js~editgridcomponent#minlength",
@@ -8778,16 +8910,28 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/editgrid/editgrid.js~editgridcomponent#restorecomponentscontext",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreComponentsContext",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreComponentsContext",
-    "method"
-  ],
-  [
     "src/components/editgrid/editgrid.js~editgridcomponent#restorerowcontext",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreRowContext",
     "src/components/editgrid/EditGrid.js~EditGridComponent#restoreRowContext",
     "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#rowelements",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-rowElements",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#rowElements",
+    "member"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#rowref",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-rowRef",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#rowRef",
+    "member"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#saveeditmode",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-saveEditMode",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#saveEditMode",
+    "member"
   ],
   [
     "src/components/editgrid/editgrid.js~editgridcomponent#saverow",
@@ -8796,10 +8940,16 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/editgrid/editgrid.js~editgridcomponent#seteditrowsettings",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-setEditRowSettings",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#setEditRowSettings",
-    "method"
+    "src/components/editgrid/editgrid.js~editgridcomponent#saverowelements",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-saveRowElements",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#saveRowElements",
+    "member"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#saverowref",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-saveRowRef",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#saveRowRef",
+    "member"
   ],
   [
     "src/components/editgrid/editgrid.js~editgridcomponent#setvalue",
@@ -9348,6 +9498,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.unit.js",
+    "file/src/components/file/File.unit.js.html",
+    "src/components/file/File.unit.js",
+    "file"
+  ],
+  [
     "src/components/file/editform/file.edit.data.js",
     "file/src/components/file/editForm/File.edit.data.js.html",
     "src/components/file/editForm/File.edit.data.js",
@@ -9369,6 +9525,18 @@ window.esdocSearchIndex = [
     "src/components/file/editform/file.edit.validation.js",
     "file/src/components/file/editForm/File.edit.validation.js.html",
     "src/components/file/editForm/File.edit.validation.js",
+    "file"
+  ],
+  [
+    "src/components/file/fixtures/comp1.js",
+    "file/src/components/file/fixtures/comp1.js.html",
+    "src/components/file/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/file/fixtures/index.js",
+    "file/src/components/file/fixtures/index.js.html",
+    "src/components/file/fixtures/index.js",
     "file"
   ],
   [
@@ -9921,6 +10089,12 @@ window.esdocSearchIndex = [
     "src/components/html/fixtures/comp1.js",
     "file/src/components/html/fixtures/comp1.js.html",
     "src/components/html/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/html/fixtures/comp2.js",
+    "file/src/components/html/fixtures/comp2.js.html",
+    "src/components/html/fixtures/comp2.js",
     "file"
   ],
   [
@@ -10704,450 +10878,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/select/select.js",
-    "file/src/components/select/Select.js.html",
-    "src/components/select/Select.js",
-    "file"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#activate",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-activate",
-    "src/components/select/Select.js~SelectComponent#activate",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#activated",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-activated",
-    "src/components/select/Select.js~SelectComponent#activated",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#active",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-active",
-    "src/components/select/Select.js~SelectComponent#active",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#addcurrentchoices",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addCurrentChoices",
-    "src/components/select/Select.js~SelectComponent#addCurrentChoices",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#addoption",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addOption",
-    "src/components/select/Select.js~SelectComponent#addOption",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#addplaceholder",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addPlaceholder",
-    "src/components/select/Select.js~SelectComponent#addPlaceholder",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#addplaceholderitem",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addPlaceholderItem",
-    "src/components/select/Select.js~SelectComponent#addPlaceholderItem",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#addvalueoptions",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addValueOptions",
-    "src/components/select/Select.js~SelectComponent#addValueOptions",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#additionalresourcesavailable",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-additionalResourcesAvailable",
-    "src/components/select/Select.js~SelectComponent#additionalResourcesAvailable",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#asstring",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-asString",
-    "src/components/select/Select.js~SelectComponent#asString",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#attach",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-attach",
-    "src/components/select/Select.js~SelectComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#choices",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-choices",
-    "src/components/select/Select.js~SelectComponent#choices",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#dataready",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-dataReady",
-    "src/components/select/Select.js~SelectComponent#dataReady",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#defaultdownloadedresources",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-defaultDownloadedResources",
-    "src/components/select/Select.js~SelectComponent#defaultDownloadedResources",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#defaultschema",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-defaultSchema",
-    "src/components/select/Select.js~SelectComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#defaultservercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-defaultServerCount",
-    "src/components/select/Select.js~SelectComponent#defaultServerCount",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#deletevalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-deleteValue",
-    "src/components/select/Select.js~SelectComponent#deleteValue",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#detach",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-detach",
-    "src/components/select/Select.js~SelectComponent#detach",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#disableinfinitescroll",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-disableInfiniteScroll",
-    "src/components/select/Select.js~SelectComponent#disableInfiniteScroll",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#disabled",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-disabled",
-    "src/components/select/Select.js~SelectComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#disabled",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-disabled",
-    "src/components/select/Select.js~SelectComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#downloadedresources",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-downloadedResources",
-    "src/components/select/Select.js~SelectComponent#downloadedResources",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#downloadedresources",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-downloadedResources",
-    "src/components/select/Select.js~SelectComponent#downloadedResources",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#emptyvalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-emptyValue",
-    "src/components/select/Select.js~SelectComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#focus",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-focus",
-    "src/components/select/Select.js~SelectComponent#focus",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#focusableelement",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-focusableElement",
-    "src/components/select/Select.js~SelectComponent#focusableElement",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#getcustomitems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-getCustomItems",
-    "src/components/select/Select.js~SelectComponent#getCustomItems",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#getvalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-getValue",
-    "src/components/select/Select.js~SelectComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#getvalueasstring",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-getValueAsString",
-    "src/components/select/Select.js~SelectComponent#getValueAsString",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#init",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-init",
-    "src/components/select/Select.js~SelectComponent#init",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#inputinfo",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-inputInfo",
-    "src/components/select/Select.js~SelectComponent#inputInfo",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#isfromsearch",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-isFromSearch",
-    "src/components/select/Select.js~SelectComponent#isFromSearch",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#isinfinitescrollprovided",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-isInfiniteScrollProvided",
-    "src/components/select/Select.js~SelectComponent#isInfiniteScrollProvided",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#isinitapicallneeded",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-isInitApiCallNeeded",
-    "src/components/select/Select.js~SelectComponent#isInitApiCallNeeded",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#isscrollloading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-isScrollLoading",
-    "src/components/select/Select.js~SelectComponent#isScrollLoading",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#isselectresource",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-isSelectResource",
-    "src/components/select/Select.js~SelectComponent#isSelectResource",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#isselecturl",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-isSelectURL",
-    "src/components/select/Select.js~SelectComponent#isSelectURL",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#itemtemplate",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-itemTemplate",
-    "src/components/select/Select.js~SelectComponent#itemTemplate",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#itemsloaded",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-itemsLoaded",
-    "src/components/select/Select.js~SelectComponent#itemsLoaded",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#itemsloadedresolve",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-itemsLoadedResolve",
-    "src/components/select/Select.js~SelectComponent#itemsLoadedResolve",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#lazyloadinit",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-lazyLoadInit",
-    "src/components/select/Select.js~SelectComponent#lazyLoadInit",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#loaditems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-loadItems",
-    "src/components/select/Select.js~SelectComponent#loadItems",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#loading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-loading",
-    "src/components/select/Select.js~SelectComponent#loading",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#normalizesinglevalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-normalizeSingleValue",
-    "src/components/select/Select.js~SelectComponent#normalizeSingleValue",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#normalizevalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-normalizeValue",
-    "src/components/select/Select.js~SelectComponent#normalizeValue",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#onscroll",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-onScroll",
-    "src/components/select/Select.js~SelectComponent#onScroll",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#redraw",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-redraw",
-    "src/components/select/Select.js~SelectComponent#redraw",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#refresh",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-refresh",
-    "src/components/select/Select.js~SelectComponent#refresh",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#render",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-render",
-    "src/components/select/Select.js~SelectComponent#render",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#requestheaders",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-requestHeaders",
-    "src/components/select/Select.js~SelectComponent#requestHeaders",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#scrolllist",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-scrollList",
-    "src/components/select/Select.js~SelectComponent#scrollList",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#searchdownloadedresources",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-searchDownloadedResources",
-    "src/components/select/Select.js~SelectComponent#searchDownloadedResources",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#searchservercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-searchServerCount",
-    "src/components/select/Select.js~SelectComponent#searchServerCount",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#selectoptions",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-selectOptions",
-    "src/components/select/Select.js~SelectComponent#selectOptions",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#servercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-serverCount",
-    "src/components/select/Select.js~SelectComponent#serverCount",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#servercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-serverCount",
-    "src/components/select/Select.js~SelectComponent#serverCount",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#setchoicesvalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setChoicesValue",
-    "src/components/select/Select.js~SelectComponent#setChoicesValue",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#seterrorclasses",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setErrorClasses",
-    "src/components/select/Select.js~SelectComponent#setErrorClasses",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#setitems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setItems",
-    "src/components/select/Select.js~SelectComponent#setItems",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#setvalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setValue",
-    "src/components/select/Select.js~SelectComponent#setValue",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#shoulddisabled",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-shouldDisabled",
-    "src/components/select/Select.js~SelectComponent#shouldDisabled",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#triggerupdate",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-triggerUpdate",
-    "src/components/select/Select.js~SelectComponent#triggerUpdate",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#update",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-update",
-    "src/components/select/Select.js~SelectComponent#update",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#updatecustomitems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-updateCustomItems",
-    "src/components/select/Select.js~SelectComponent#updateCustomItems",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#updateitems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-updateItems",
-    "src/components/select/Select.js~SelectComponent#updateItems",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#validatemultiple",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-validateMultiple",
-    "src/components/select/Select.js~SelectComponent#validateMultiple",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#validators",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-validators",
-    "src/components/select/Select.js~SelectComponent#validators",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#valueproperty",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-valueProperty",
-    "src/components/select/Select.js~SelectComponent#valueProperty",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#visible",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-visible",
-    "src/components/select/Select.js~SelectComponent#visible",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#visible",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-visible",
-    "src/components/select/Select.js~SelectComponent#visible",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#wrapelement",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-wrapElement",
-    "src/components/select/Select.js~SelectComponent#wrapElement",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent.builderinfo",
-    "class/src/components/select/Select.js~SelectComponent.html#static-get-builderInfo",
-    "src/components/select/Select.js~SelectComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent.schema",
-    "class/src/components/select/Select.js~SelectComponent.html#static-method-schema",
-    "src/components/select/Select.js~SelectComponent.schema",
-    "method"
-  ],
-  [
     "src/components/select/select.unit.js",
     "file/src/components/select/Select.unit.js.html",
     "src/components/select/Select.unit.js",
@@ -11181,6 +10911,18 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp2.js",
     "file/src/components/select/fixtures/comp2.js.html",
     "src/components/select/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp3.js",
+    "file/src/components/select/fixtures/comp3.js.html",
+    "src/components/select/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp4.js",
+    "file/src/components/select/fixtures/comp4.js.html",
+    "src/components/select/fixtures/comp4.js",
     "file"
   ],
   [
@@ -12144,6 +11886,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#isjsonvalue",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-isJsonValue",
+    "src/components/textarea/TextArea.js~TextAreaComponent#isJsonValue",
+    "member"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#isplain",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-isPlain",
     "src/components/textarea/TextArea.js~TextAreaComponent#isPlain",
@@ -12255,6 +12003,12 @@ window.esdocSearchIndex = [
     "src/components/textarea/fixtures/comp1.js",
     "file/src/components/textarea/fixtures/comp1.js.html",
     "src/components/textarea/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/textarea/fixtures/comp2.js",
+    "file/src/components/textarea/fixtures/comp2.js.html",
+    "src/components/textarea/fixtures/comp2.js",
     "file"
   ],
   [
@@ -14172,10 +13926,10 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/providers/address/googleaddressprovider.js~googleaddressprovider#constructor",
-    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-constructor-constructor",
-    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#constructor",
-    "method"
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#defaultoptions",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-get-defaultOptions",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#defaultOptions",
+    "member"
   ],
   [
     "src/providers/address/googleaddressprovider.js~googleaddressprovider#displayvalueproperty",
@@ -14184,10 +13938,28 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/providers/address/googleaddressprovider.js~googleaddressprovider#search",
-    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-method-search",
-    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#search",
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#getrequesturl",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-method-getRequestUrl",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#getRequestUrl",
     "method"
+  ],
+  [
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#makerequest",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-method-makeRequest",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#makeRequest",
+    "method"
+  ],
+  [
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#queryproperty",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-get-queryProperty",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#queryProperty",
+    "member"
+  ],
+  [
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#responseproperty",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-get-responseProperty",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#responseProperty",
+    "member"
   ],
   [
     "src/providers/address/googleaddressprovider.js~googleaddressprovider.displayname",

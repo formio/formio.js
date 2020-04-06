@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -242,7 +243,6 @@
 // Import from &quot;dist&quot; because it would require and &quot;global&quot; would not be defined in Angular apps.
 import dragula from &apos;dragula/dist/dragula&apos;;
 import NestedArrayComponent from &apos;../_classes/nestedarray/NestedArrayComponent&apos;;
-import Component from &apos;../_classes/component/Component&apos;;
 import { fastCloneDeep } from &apos;../../utils/utils&apos;;
 
 export default class DataGridComponent extends NestedArrayComponent {
@@ -360,6 +360,13 @@ export default class DataGridComponent extends NestedArrayComponent {
     return !this.options.readOnly &amp;&amp; _.get(this.component, &apos;reorder&apos;, false);
   }
 
+  get iteratableRows() {
+    return this.rows.map((row, index) =&gt; ({
+      components: row,
+      data: this.dataValue[index],
+    }));
+  }
+
   /**
    * Split rows into chunks.
    * @param {Number[]} groups - array of numbers where each item is size of group
@@ -418,16 +425,6 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   setStaticValue(n) {
     this.dataValue = _.range(n).map(() =&gt; ({}));
-  }
-
-  hasAddButton() {
-    const maxLength = _.get(this.component, &apos;validate.maxLength&apos;);
-    return !this.component.disableAddingRemovingRows &amp;&amp;
-      !this.options.readOnly &amp;&amp;
-      !this.disabled &amp;&amp;
-      this.fullMode &amp;&amp;
-      !this.options.preview &amp;&amp;
-      (!maxLength || (this.dataValue.length &lt; maxLength));
   }
 
   hasExtraColumn() {
@@ -629,6 +626,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       const component = this.createComponent(col, options, row);
+      component.parentDisabled = !!this.disabled;
       if (component.path &amp;&amp; col.key) {
         component.path = component.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
       }
@@ -659,62 +657,15 @@ export default class DataGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    return this.checkRows(&apos;checkValidity&apos;, data, dirty, this.dataValue);
+    return this.checkRows(&apos;checkValidity&apos;, data, dirty, true);
   }
 
-  /**
-   * Checks the data within each cell of the datagrid.
-   *
-   * @param data
-   * @param flags
-   * @return {*}
-   */
-  checkData(data, flags, row) {
+  checkColumns(data, flags = {}) {
     data = data || this.rootValue;
-    row = row || this.data;
-    Component.prototype.checkData.call(this, data, flags, row);
-    return this.checkRows(&apos;checkData&apos;, data, flags, this.dataValue);
-  }
-
-  /**
-   * Checks all rows within the datagrid.
-   *
-   * @param method
-   * @param data
-   * @param opts
-   * @return {*|boolean}
-   */
-  checkRows(method, data, opts, rowData) {
-    return this.rows.reduce((valid, row, index) =&gt;
-      this.checkRow(method, data, rowData[index], row, opts) &amp;&amp; valid,
-      true
-    );
-  }
-
-  /**
-   * Checks validity of each row according to a specific method.
-   *
-   * @param method
-   * @param rowData
-   * @param row
-   * @param opts
-   * @return {boolean}
-   */
-  checkRow(method, data, rowData, row, opts) {
-    let valid = true;
-    _.each(row, (col) =&gt; {
-      valid = col[method](data, opts, rowData) &amp;&amp; valid;
-    });
-    return valid;
-  }
-
-  checkColumns(data, flags) {
-    data = data || this.rootValue;
-    flags = flags || {};
     let show = false;
 
     if (!this.rows || !this.rows.length) {
-      return { rebuld: false, show: false };
+      return { rebuild: false, show: false };
     }
 
     if (this.builderMode) {
@@ -757,8 +708,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     return show;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (!value) {
       this.dataValue = this.defaultValue;
       this.createRows();
@@ -789,7 +739,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       _.each(row, (col) =&gt; {
         col.rowIndex = rowIndex;
-        this.setNestedValue(col, value[rowIndex], flags, false);
+        this.setNestedValue(col, value[rowIndex], flags);
       });
     });
 

@@ -268,10 +268,7 @@ export default class FormComponent extends Component {
       }
 
       // Iterate through every component and hide the submit button.
-      // Override defaultValue with respective parts from old dataValue.
-      const oldData = this.dataValue ? this.dataValue.data : {};
       eachComponent(form.components, (component) => {
-        component.defaultValue = _.get(oldData, component.key, component.defaultValue);
         if (
           (component.type === 'button') &&
           ((component.action === 'submit') || !component.action)
@@ -383,7 +380,7 @@ export default class FormComponent extends Component {
    * @return {*|boolean}
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden;
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden();
   }
 
   /**
@@ -465,7 +462,7 @@ export default class FormComponent extends Component {
     return !super.checkConditions(this.rootValue);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
     if (this.subForm) {
       if (
@@ -493,7 +490,7 @@ export default class FormComponent extends Component {
   }
 
   get errors() {
-    let errors = this.errors;
+    let errors = super.errors;
     if (this.subForm) {
       errors = errors.concat(this.subForm.errors);
     }

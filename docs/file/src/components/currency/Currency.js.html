@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -309,18 +310,70 @@ export default class CurrencyComponent extends NumberComponent {
     return super.parseValue(this.stripPrefixSuffix(value));
   }
 
+  addZerosAndFormatValue(value) {
+   if (!value &amp;&amp; value !== 0) return;
+
+    const decimalLimit = _.get(this.component, &apos;decimalLimit&apos;, 2);
+
+    let integerPart;
+    let decimalPart = &apos;&apos;;
+    let decimalPartNumbers = [];
+
+    if (value.includes(this.decimalSeparator)) {
+      [integerPart, decimalPart] = value.split(this.decimalSeparator);
+      decimalPartNumbers =[...decimalPart.split(&apos;&apos;)] ;
+    }
+    else {
+      integerPart = value;
+    }
+
+    if (decimalPart.length &lt; decimalLimit) {
+      while (decimalPartNumbers.length &lt; decimalLimit) {
+        decimalPartNumbers.push(&apos;0&apos;);
+      }
+    }
+
+    const formattedValue = `${integerPart}${this.decimalSeparator}${decimalPartNumbers.join(&apos;&apos;)}`;
+
+    return super.formatValue(formattedValue);
+  }
+
+  getValueAsString(value) {
+    const stringValue = super.getValueAsString(value);
+
+    // eslint-disable-next-line eqeqeq
+    if (value || value == &apos;0&apos;) {
+      return this.addZerosAndFormatValue(stringValue);
+    }
+
+    return stringValue;
+  }
+
   formatValue(value) {
-    return super.formatValue(this.stripPrefixSuffix(value));
+    if (value &amp;&amp; this.disabled) {
+      return this.addZerosAndFormatValue(value);
+    }
+
+    return super.formatValue(value);
   }
 
   stripPrefixSuffix(value) {
     if (typeof value === &apos;string&apos;) {
       try {
+        const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
+        const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+        const hasDelimiter = value.includes(this.delimiter);
+        const hasDecimalSeparator = value.includes(this.decimalSeparator);
+
         if (this.prefix) {
           value = value.replace(this.prefix, &apos;&apos;);
         }
         if (this.suffix) {
           value = value.replace(this.suffix, &apos;&apos;);
+        }
+        //when we enter $ in the field using dashboard, it contains &apos;_&apos; that is NaN
+        if ((hasPrefix || hasSuffix) &amp;&amp; !hasDelimiter &amp;&amp; !hasDecimalSeparator &amp;&amp; (Number.isNaN(+value) || !value)) {
+          value =&apos;0&apos;;
         }
       }
       catch (err) {
@@ -328,6 +381,14 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
     return value;
+  }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, &apos;blur&apos;, () =&gt; {
+      element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(this.dataValue)));
+    });
   }
 }
 </code></pre>

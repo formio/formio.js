@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -875,6 +876,104 @@ describe(&apos;Validator Tests&apos;, () =&gt; {
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = &apos;this is a really long string&apos;;
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = undefined;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = null;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+
+    done();
+  });
+
+  it(&apos;Fulfills maxYear validation&apos;, (done) =&gt; {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: &apos;test&apos;,
+          label: &apos;Test&apos;,
+          validator: &apos;maxYear&apos;,
+        },
+        level: &apos;error&apos;,
+        message: &apos;DEF&apos;,
+      }
+    ];
+
+    const pass = [];
+
+    const component = new Component({
+      key: &apos;test&apos;,
+      label: &apos;Test&apos;,
+      validations: [
+        {
+          rule: &apos;maxYear&apos;,
+          level: &apos;error&apos;,
+          message: &apos;DEF&apos;,
+          settings: &apos;2020&apos;
+        }
+      ]
+    });
+    component.dataValue = &apos;2030&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;2021&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;3040&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;0000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;2000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = undefined;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = null;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+
+    done();
+  });
+
+  it(&apos;Fulfills minYear validation&apos;, (done) =&gt; {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: &apos;test&apos;,
+          label: &apos;Test&apos;,
+          validator: &apos;minYear&apos;,
+        },
+        level: &apos;error&apos;,
+        message: &apos;DEF&apos;,
+      }
+    ];
+
+    const pass = [];
+
+    const component = new Component({
+      key: &apos;test&apos;,
+      label: &apos;Test&apos;,
+      validations: [
+        {
+          rule: &apos;minYear&apos;,
+          level: &apos;error&apos;,
+          message: &apos;DEF&apos;,
+          settings: &apos;2000&apos;
+        }
+      ]
+    });
+    component.dataValue = &apos;1880&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;0011&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;1990&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    component.dataValue = &apos;0000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;2020&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = &apos;2000&apos;;
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
     component.dataValue = undefined;
     assert.deepEqual(Validator.checkComponent(component, {}), pass);
     component.dataValue = null;

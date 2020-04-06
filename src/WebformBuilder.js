@@ -970,25 +970,30 @@ export default class WebformBuilder extends Component {
   }
 
   highlightInvalidComponents() {
-    const formKeys = {};
-    const repeatableKeys = [];
-
-    eachComponent(this.form.components, (comp) => {
+    const repeatablePaths = [];
+    const keys = new Map();
+    eachComponent(this.form.components, (comp, path) => {
       if (!comp.key) {
         return;
       }
 
-      if (formKeys[comp.key] && !repeatableKeys.includes(comp.key)) {
-        repeatableKeys.push(comp.key);
+      if (keys.has(comp.key)) {
+        if (keys.get(comp.key).includes(path)) {
+          repeatablePaths.push(path);
+        }
+        else {
+          keys.set(comp.key, [...keys.get(comp.key), path]);
+        }
       }
-
-      formKeys[comp.key] = true;
+      else {
+        keys.set(comp.key, [path]);
+      }
     });
 
-    const components = this.webform.getComponents();
-    repeatableKeys.forEach((key) => {
-      const instances = components.filter((comp) => comp.key === key);
-      instances.forEach((instance) => instance.setCustomValidity(`API Key is not unique: ${key}`));
+    eachComponent(this.webform.getComponents(), (comp, path) => {
+      if (repeatablePaths.includes(path)) {
+        comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+      }
     });
   }
 

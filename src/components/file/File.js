@@ -6,7 +6,7 @@ import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
 
 let Camera;
-const webViewCamera = navigator.camera || Camera;
+let webViewCamera = navigator.camera || Camera;
 const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
 
   init() {
     super.init();
-
+    webViewCamera = navigator.camera || Camera;
     const fileReaderSupported = (typeof FileReader !== 'undefined');
     const formDataSupported = Boolean(window.FormData);
     const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false;
@@ -341,6 +341,8 @@ export default class FileComponent extends Field {
       fileImage: 'multiple',
       fileType: 'multiple',
     });
+    // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
+    this.refs.input = [];
     const superAttach = super.attach(element);
 
     if (this.refs.fileDrop) {
@@ -417,7 +419,9 @@ export default class FileComponent extends Field {
               });
             }
           );
-        }, null, {
+        }, (err) => {
+          console.error(err);
+        }, {
           sourceType: webViewCamera.PictureSourceType.PHOTOLIBRARY,
         });
       });
@@ -433,7 +437,9 @@ export default class FileComponent extends Field {
               });
             }
           );
-        }, null, {
+        }, (err) => {
+          console.error(err);
+        }, {
           sourceType: webViewCamera.PictureSourceType.CAMERA,
           encodingType: webViewCamera.EncodingType.PNG,
           mediaType: webViewCamera.MediaType.PICTURE,
@@ -642,7 +648,9 @@ export default class FileComponent extends Field {
           if (this.component.privateDownload) {
             file.private = true;
           }
-          const { storage, url, options = {} } = this.component;
+          const { storage, options = {} } = this.component;
+          const url = this.interpolate(this.component.url);
+
           const fileKey = this.component.fileKey || 'file';
           fileService.uploadFile(storage, file, fileName, dir, (evt) => {
             fileUpload.status = 'progress';

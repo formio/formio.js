@@ -40,6 +40,7 @@ export default class PanelComponent extends NestedComponent {
 
     return this.getComponents().reduce(
       (check, comp) => {
+        //change collapsed value only in case when the panel is collapsed to avoid additional redrawing that prevents validation messages
         if (!comp.checkValidity(data, dirty, row) && this.collapsed) {
           this.collapsed = false;
         }

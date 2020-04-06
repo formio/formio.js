@@ -29,6 +29,7 @@ function getOptions(options) {
     iconset: getIconSet((options && options.icons) ? options.icons : Formio.icons),
     i18next,
     saveDraft: false,
+    alwaysDirty: false,
     saveDraftThrottle: 5000
   });
   if (!options.events) {
@@ -735,7 +736,7 @@ export default class Webform extends NestedDataComponent {
    * @param flags
    * @return {Promise.<TResult>}
    */
-  setSubmission(submission, flags) {
+  setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
       fromSubmission: true,
@@ -743,8 +744,8 @@ export default class Webform extends NestedDataComponent {
     return this.onSubmission = this.formReady.then(
       () => {
         this.submissionSet = true;
+        this.triggerChange(flags);
         this.setValue(submission, flags);
-        this.triggerChange();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -768,13 +769,22 @@ export default class Webform extends NestedDataComponent {
       console.warn('Cannot save draft unless a user is authenticated.');
       return;
     }
-    const draft = fastCloneDeep(this.submission);
+    const draft = this.submission;
     draft.state = 'draft';
     if (!this.savingDraft) {
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
-        this.savingDraft = false;
+        const currentSubmission = _.merge(sub, draft);
+
         this.emit('saveDraft', sub);
+        if (!draft._id) {
+          this.setSubmission(currentSubmission).then(() => {
+            this.savingDraft = false;
+          });
+        }
+        else {
+          this.savingDraft = false;
+        }
       });
     }
   }
@@ -796,7 +806,7 @@ export default class Webform extends NestedDataComponent {
         owner: userId
       }
     }).then(submissions => {
-      if (submissions.length > 0) {
+      if (submissions.length > 0 && !this.options.skipDraftRestore) {
         const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() => {
           this.draftEnabled = true;
@@ -832,6 +842,7 @@ export default class Webform extends NestedDataComponent {
     }
     // Metadata needs to be available before setValue
     this._submission.metadata = submission.metadata || {};
+    this.editing = !!submission._id;
 
     // Set the timezone in the options if available.
     if (
@@ -937,9 +948,13 @@ export default class Webform extends NestedDataComponent {
     return this.ready;
   }
 
+  getClassName() {
+    return 'formio-form';
+  }
+
   render() {
     return super.render(this.renderTemplate('webform', {
-      classes: 'formio-form',
+      classes: this.getClassName(),
       children: this.renderComponents(),
     }), this.builderMode ? 'builder' : 'form', true);
   }
@@ -1042,7 +1057,9 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: classes || `alert alert-${type}`,
+        id: `error-list-${this.id}`,
+        class:  classes || `alert alert-${type}`,
+        role: 'alert'
       });
       if (message instanceof HTMLElement) {
         this.appendTo(message, this.alert);
@@ -1099,7 +1116,9 @@ export default class Webform extends NestedDataComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-      component && component.focus();
+      if (component) {
+        component.focus();
+      }
     }
   }
 
@@ -1186,8 +1205,8 @@ export default class Webform extends NestedDataComponent {
           this.appendTo(li, ul);
         };
 
-        if (err.message && !err.messages) {
-          createListItem(`${err.message}`);
+        if (err.messages && err.messages.length) {
+          err.messages.forEach(({ message }) => createListItem(`${this.t(err.component.label)}. ${message}`));
         }
         else if (err.messages && err.messages.length) {
             err.messages.forEach(({ message }) => {
@@ -1295,7 +1314,7 @@ export default class Webform extends NestedDataComponent {
     flags.changed = value.changed = changed;
 
     if (modified && this.pristine) {
-      this.setPristine(false);
+      this.pristine = false;
     }
 
     value.isValid = this.checkData(value.data, flags);
@@ -1303,13 +1322,14 @@ export default class Webform extends NestedDataComponent {
     if (this.submitted) {
       this.showErrors();
     }
+
     // See if we need to save the draft of the form.
     if (modified && this.options.saveDraft) {
       this.triggerSaveDraft();
     }
 
     if (!flags || !flags.noEmit) {
-      this.emit('change', value);
+      this.emit('change', value, flags);
       isChangeEventEmitted = true;
     }
 
@@ -1320,7 +1340,7 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  checkData(data, flags) {
+  checkData(data, flags = {}) {
     const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
@@ -1425,7 +1445,7 @@ export default class Webform extends NestedDataComponent {
           // Use the form action to submit the form if available.
           if (this._form && this._form.action) {
             const method = (submission.data._id && this._form.action.includes(submission.data._id)) ? 'PUT' : 'POST';
-            return Formio.makeStaticRequest(this._form.action, method, submission.data, this.formio ? this.formio.options : {})
+            return Formio.makeStaticRequest(this._form.action, method, submission, this.formio ? this.formio.options : {})
               .then((result) => resolve({
                 submission: result,
                 saved: true,

@@ -7,6 +7,7 @@ import DataGridComponent from './DataGrid';
 import {
   comp1,
   comp2,
+  comp3,
   withDefValue,
   withRowGroupsAndDefValue,
 } from './fixtures';
@@ -207,6 +208,14 @@ describe('DataGrid Panels', () => {
           lastName: ''
         }
       ]);
+    });
+  });
+});
+
+describe('Datagrid disabling', () => {
+  it('Child components should be disabled', () => {
+    return Harness.testCreate(DataGridComponent, comp3).then((component) => {
+      assert.equal(component.components.reduce((acc, child) => acc && child.parentDisabled, true), true);
     });
   });
 });

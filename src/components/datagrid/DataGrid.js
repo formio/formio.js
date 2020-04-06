@@ -2,7 +2,6 @@ import _ from 'lodash';
 // Import from "dist" because it would require and "global" would not be defined in Angular apps.
 import dragula from 'dragula/dist/dragula';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import Component from '../_classes/component/Component';
 import { fastCloneDeep } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedArrayComponent {
@@ -120,6 +119,13 @@ export default class DataGridComponent extends NestedArrayComponent {
     return !this.options.readOnly && _.get(this.component, 'reorder', false);
   }
 
+  get iteratableRows() {
+    return this.rows.map((row, index) => ({
+      components: row,
+      data: this.dataValue[index],
+    }));
+  }
+
   /**
    * Split rows into chunks.
    * @param {Number[]} groups - array of numbers where each item is size of group
@@ -178,16 +184,6 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   setStaticValue(n) {
     this.dataValue = _.range(n).map(() => ({}));
-  }
-
-  hasAddButton() {
-    const maxLength = _.get(this.component, 'validate.maxLength');
-    return !this.component.disableAddingRemovingRows &&
-      !this.options.readOnly &&
-      !this.disabled &&
-      this.fullMode &&
-      !this.options.preview &&
-      (!maxLength || (this.dataValue.length < maxLength));
   }
 
   hasExtraColumn() {
@@ -389,6 +385,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       const component = this.createComponent(col, options, row);
+      component.parentDisabled = !!this.disabled;
       if (component.path && col.key) {
         component.path = component.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
       }
@@ -419,58 +416,11 @@ export default class DataGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    return this.checkRows('checkValidity', data, dirty, this.dataValue);
+    return this.checkRows('checkValidity', data, dirty, true);
   }
 
-  /**
-   * Checks the data within each cell of the datagrid.
-   *
-   * @param data
-   * @param flags
-   * @return {*}
-   */
-  checkData(data, flags, row) {
+  checkColumns(data, flags = {}) {
     data = data || this.rootValue;
-    row = row || this.data;
-    Component.prototype.checkData.call(this, data, flags, row);
-    return this.checkRows('checkData', data, flags, this.dataValue);
-  }
-
-  /**
-   * Checks all rows within the datagrid.
-   *
-   * @param method
-   * @param data
-   * @param opts
-   * @return {*|boolean}
-   */
-  checkRows(method, data, opts, rowData) {
-    return this.rows.reduce((valid, row, index) =>
-      this.checkRow(method, data, rowData[index], row, opts) && valid,
-      true
-    );
-  }
-
-  /**
-   * Checks validity of each row according to a specific method.
-   *
-   * @param method
-   * @param rowData
-   * @param row
-   * @param opts
-   * @return {boolean}
-   */
-  checkRow(method, data, rowData, row, opts) {
-    let valid = true;
-    _.each(row, (col) => {
-      valid = col[method](data, opts, rowData) && valid;
-    });
-    return valid;
-  }
-
-  checkColumns(data, flags) {
-    data = data || this.rootValue;
-    flags = flags || {};
     let show = false;
 
     if (!this.rows || !this.rows.length) {
@@ -517,8 +467,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     return show;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     if (!value) {
       this.dataValue = this.defaultValue;
       this.createRows();
@@ -549,7 +498,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       _.each(row, (col) => {
         col.rowIndex = rowIndex;
-        this.setNestedValue(col, value[rowIndex], flags, false);
+        this.setNestedValue(col, value[rowIndex], flags);
       });
     });
 

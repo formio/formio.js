@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -1210,25 +1211,30 @@ export default class WebformBuilder extends Component {
   }
 
   highlightInvalidComponents() {
-    const formKeys = {};
-    const repeatableKeys = [];
-
-    eachComponent(this.form.components, (comp) =&gt; {
+    const repeatablePaths = [];
+    const keys = new Map();
+    eachComponent(this.form.components, (comp, path) =&gt; {
       if (!comp.key) {
         return;
       }
 
-      if (formKeys[comp.key] &amp;&amp; !repeatableKeys.includes(comp.key)) {
-        repeatableKeys.push(comp.key);
+      if (keys.has(comp.key)) {
+        if (keys.get(comp.key).includes(path)) {
+          repeatablePaths.push(path);
+        }
+        else {
+          keys.set(comp.key, [...keys.get(comp.key), path]);
+        }
       }
-
-      formKeys[comp.key] = true;
+      else {
+        keys.set(comp.key, [path]);
+      }
     });
 
-    const components = this.webform.getComponents();
-    repeatableKeys.forEach((key) =&gt; {
-      const instances = components.filter((comp) =&gt; comp.key === key);
-      instances.forEach((instance) =&gt; instance.setCustomValidity(`API Key is not unique: ${key}`));
+    eachComponent(this.webform.getComponents(), (comp, path) =&gt; {
+      if (repeatablePaths.includes(path)) {
+        comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+      }
     });
   }
 

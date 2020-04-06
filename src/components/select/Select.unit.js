@@ -7,10 +7,53 @@ import NativePromise from 'native-promise-only';
 
 import {
   comp1,
-  comp2
+  comp2,
+  multiSelect,
+  multiSelectOptions,
+  comp4
 } from './fixtures';
 
 describe('Select Component', () => {
+  it('should return string value for different value types', function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) => {
+      const stringValue = component.asString(true);
+      const stringValue1 = component.asString(11);
+      const stringValue2 = component.asString('test');
+      const stringValue3 = component.asString(12);
+      assert.equal(stringValue, '<span>true</span>');
+      assert.equal(stringValue1, '<span>11</span>');
+      assert.equal(stringValue2, '<span>test</span>');
+      assert.equal(stringValue3, '<span>1.2</span>');
+      done();
+    });
+  });
+
+  it('should set multiple selected values not repeating them', function(done) {
+    Harness.testCreate(SelectComponent, multiSelect).then((component) => {
+      component.setItems(multiSelectOptions, false);
+      component.setChoicesValue(['Cheers']);
+      component.setChoicesValue(['Cheers', 'Cyberdyne Systems'], 1);
+      component.setChoicesValue(['Cheers', 'Cyberdyne Systems', 'Massive Dynamic'], 2);
+      const choices = component.element.querySelector('.choices__list--multiple').children;
+      assert.equal(choices.length, 3);
+      done();
+    });
+  });
+
+  it('should not show selected values in dropdown when searching', function(done) {
+    Harness.testCreate(SelectComponent, multiSelect).then((component) => {
+      component.setItems(multiSelectOptions, false);
+      component.setChoicesValue(['Cheers']);
+      component.setChoicesValue(['Cheers', 'Cyberdyne Systems'], 1);
+      component.setItems([], true);
+      const itemsInDropdown = component.element.querySelectorAll('.choices__item--choice');
+      const choices = component.element.querySelector('.choices__list--multiple').children;
+      assert.equal(choices.length, 2);
+      assert.equal(itemsInDropdown.length, 1);
+      done();
+    });
+  });
+
   it('Should build a Select component', () => {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       Harness.testElements(component, 'select', 1);

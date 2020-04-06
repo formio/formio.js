@@ -57,7 +57,17 @@ export default class SelectComponent extends Field {
     this.validators = this.validators.concat(['select']);
 
     // Trigger an update.
-    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
+    let updateArgs = [];
+    const triggerUpdate = _.debounce((...args) => {
+      updateArgs = [];
+      return this.updateItems.apply(this, args);
+    }, 100);
+    this.triggerUpdate = (...args) => {
+      if (args.length) {
+        updateArgs = args;
+      }
+      return triggerUpdate(...updateArgs);
+    };
 
     // Keep track of the select options.
     this.selectOptions = [];
@@ -170,7 +180,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(value),
+      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
     };
 
@@ -691,6 +701,52 @@ export default class SelectComponent extends Field {
       : element;
   }
 
+  choicesOptions() {
+    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
+    const placeholderValue = this.t(this.component.placeholder);
+    let customOptions = this.component.customOptions || {};
+    if (typeof customOptions == 'string') {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
+    return {
+      removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
+      itemSelectText: '',
+      classNames: {
+        containerOuter: 'choices form-group formio-choices',
+        containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
+      },
+      addItemText: false,
+      placeholder: !!this.component.placeholder,
+      placeholderValue: placeholderValue,
+      noResultsText: this.t('No results found'),
+      noChoicesText: this.t('No choices to choose from'),
+      searchPlaceholderValue: this.t('Type to search'),
+      shouldSort: false,
+      position: (this.component.dropdown || 'auto'),
+      searchEnabled: useSearch,
+      searchChoices: !this.component.searchField,
+      searchFields: _.get(this, 'component.searchFields', ['label']),
+      fuseOptions: Object.assign(
+        {},
+        _.get(this, 'component.fuseOptions', {}),
+        {
+          include: 'score',
+          threshold: _.get(this, 'component.searchThreshold', 0.3),
+        }
+      ),
+      valueComparer: _.isEqual,
+      resetScrollPosition: false,
+      ...customOptions,
+    };
+  }
+
   /* eslint-disable max-statements */
   attach(element) {
     const superAttach = super.attach(element);
@@ -729,56 +785,14 @@ export default class SelectComponent extends Field {
       return;
     }
 
-    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
-    const placeholderValue = this.t(this.component.placeholder);
-    let customOptions = this.component.customOptions || {};
-    if (typeof customOptions == 'string') {
-      try {
-        customOptions = JSON.parse(customOptions);
-      }
-      catch (err) {
-        console.warn(err.message);
-        customOptions = {};
-      }
-    }
-
-    const choicesOptions = {
-      removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
-      itemSelectText: '',
-      classNames: {
-        containerOuter: 'choices form-group formio-choices',
-        containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
-      },
-      addItemText: false,
-      placeholder: !!this.component.placeholder,
-      placeholderValue: placeholderValue,
-      noResultsText: this.t('No results found'),
-      noChoicesText: this.t('No choices to choose from'),
-      searchPlaceholderValue: this.t('Type to search'),
-      shouldSort: false,
-      position: (this.component.dropdown || 'auto'),
-      searchEnabled: useSearch,
-      searchChoices: !this.component.searchField,
-      searchFields: _.get(this, 'component.searchFields', ['label']),
-      fuseOptions: Object.assign(
-        {},
-        _.get(this, 'component.fuseOptions', {}),
-        {
-          include: 'score',
-          threshold: _.get(this, 'component.searchThreshold', 0.3),
-        }
-      ),
-      valueComparer: _.isEqual,
-      resetScrollPosition: false,
-      ...customOptions,
-    };
-
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
     if (this.choices) {
       this.choices.destroy();
     }
+
+    const choicesOptions = this.choicesOptions();
     this.choices = new Choices(input, choicesOptions);
 
     this.addEventListener(input, 'hideDropdown', () => {
@@ -796,7 +810,7 @@ export default class SelectComponent extends Field {
     else {
       this.focusableElement = this.choices.containerInner.element;
       this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-      if (useSearch) {
+      if (choicesOptions.searchEnabled) {
         this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
     }
@@ -850,11 +864,11 @@ export default class SelectComponent extends Field {
       this.update();
     });
 
-    if (placeholderValue && this.choices._isSelectOneElement) {
-      this.addPlaceholderItem(placeholderValue);
+    if (choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
+      this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, 'removeItem', () => {
-        this.addPlaceholderItem(placeholderValue);
+        this.addPlaceholderItem(choicesOptions.placeholderValue);
       });
     }
 
@@ -993,9 +1007,9 @@ export default class SelectComponent extends Field {
       return found || defaultAdded;
     }, false);
 
-    if (notFoundValuesToAdd.length && (!this.component.searchField && !this.searchServerCount)) {
+    if (notFoundValuesToAdd.length) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
+        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
       }
       else {
         notFoundValuesToAdd.map(notFoundValue => {
@@ -1066,37 +1080,94 @@ export default class SelectComponent extends Field {
   }
 
   normalizeSingleValue(value) {
-    const dataType = _.get(this.component, 'dataType', 'auto');
-
-    switch (dataType) {
-      case 'auto':
-        if (!isNaN(parseFloat(value)) && isFinite(value)) {
-          value = +value;
-        }
-        if (value === 'true') {
-          value = true;
-        }
-        if (value === 'false') {
-          value = false;
-        }
-        break;
-      case 'number':
-        value = +value;
-        break;
-      case 'string':
-        if (typeof value === 'object') {
-          value = JSON.stringify(value);
-        }
-        else {
-          value = value.toString();
-        }
-        break;
-      case 'boolean':
-        value = !!value;
-        break;
+    if (!value) {
+      return;
     }
 
-    return value;
+    const dataType = this.component['dataType'] || 'auto';
+    const denormalizedValue = typeof value === 'string' ? value.toLowerCase() : value;
+    const normalize = {
+      value: denormalizedValue,
+
+      toNumber() {
+        try {
+          const numberValue = parseFloat(this.value);
+
+          if (!Number.isNaN(numberValue) && isFinite(numberValue)) {
+            this.value = numberValue;
+            return this;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      },
+
+      toBoolean() {
+        try {
+          const booleanValue = (this.value === 'true' || this.value === 'false');
+
+          if (booleanValue) {
+            this.value = (this.value === 'true');
+            return this;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      },
+
+      toString() {
+        try {
+          const stringValue = typeof this.value === 'object'
+            ? JSON.stringify(this.value)
+            : this.value.toString();
+
+          if (stringValue) {
+            this.value = stringValue;
+            return this;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      },
+
+      auto() {
+        try {
+          const autoValue = this.toString().toNumber().toBoolean();
+
+          if (autoValue && !_.isObject(autoValue)) {
+            this.value = autoValue;
+          }
+
+          return this;
+        }
+        catch {
+          return this;
+        }
+      }
+    };
+
+    switch (dataType) {
+      case 'auto': {
+        return normalize.auto().value;
+      }
+      case 'number': {
+        return normalize.toNumber().value;
+      }
+      case 'string': {
+        return normalize.toString().value;
+      }
+      case 'boolean':
+        return normalize.toBoolean().value;
+    }
   }
 
   /**
@@ -1113,8 +1184,7 @@ export default class SelectComponent extends Field {
     return super.normalizeValue(this.normalizeSingleValue(value));
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
@@ -1162,7 +1232,7 @@ export default class SelectComponent extends Field {
     !this.active &&
     !this.selectOptions.length &&
     hasValue &&
-    this.visible && ( this.component.searchField || this.component.valueProperty);
+    this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
   setChoicesValue(value, hasPreviousValue) {
@@ -1171,9 +1241,7 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-        if (!this.component.searchField && !this.searchServerCount) {
           this.choices.removeActiveItems();
-        }
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
@@ -1233,8 +1301,25 @@ export default class SelectComponent extends Field {
    * Output this select dropdown as a string value.
    * @return {*}
    */
+
+  isBooleanOrNumber(value) {
+    return typeof value === 'number' || typeof value === 'boolean';
+  }
+
   asString(value) {
     value = value || this.getValue();
+    //need to convert values to strings to be able to compare values with available options that are strings
+    if (this.isBooleanOrNumber(value)) {
+      value = value.toString();
+    }
+
+    if (Array.isArray(value) && value.some(item => this.isBooleanOrNumber(item))) {
+      value = value.map(item => {
+        if (this.isBooleanOrNumber(item)) {
+          item = item.toString();
+        }
+      });
+    }
 
     if (['values', 'custom'].includes(this.component.dataSrc)) {
       const {

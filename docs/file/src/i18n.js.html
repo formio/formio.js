@@ -103,8 +103,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -245,6 +246,7 @@
       translation: {
         complete: &apos;Submission Complete&apos;,
         error: &apos;Please fix the following errors before submitting.&apos;,
+        submitError: &apos;Please check the form and correct all errors before submitting.&apos;,
         required: &apos;{{field}} is required&apos;,
         unique: &apos;{{field}} must be unique&apos;,
         array: &apos;{{field}} must be an array&apos;,
@@ -252,10 +254,10 @@
         nonarray: &apos;{{field}} must not be an array&apos;,
         select: &apos;{{field}} contains an invalid selection&apos;,
         pattern: &apos;{{field}} does not match the pattern {{pattern}}&apos;,
-        minLength: &apos;{{field}} must be longer than {{length}} characters.&apos;,
-        maxLength: &apos;{{field}} must be shorter than {{length}} characters.&apos;,
-        minWords: &apos;{{field}} must have more than {{length}} words.&apos;,
-        maxWords: &apos;{{field}} must have less than {{length}} words.&apos;,
+        minLength: &apos;{{field}} must have at least {{length}} characters.&apos;,
+        maxLength: &apos;{{field}} must have no more than {{length}} characters.&apos;,
+        minWords: &apos;{{field}} must have at least {{length}} words.&apos;,
+        maxWords: &apos;{{field}} must have no more than {{length}} words.&apos;,
         min: &apos;{{field}} cannot be less than {{min}}.&apos;,
         max: &apos;{{field}} cannot be greater than {{max}}.&apos;,
         maxDate: &apos;{{field}} should not contain date after {{- maxDate}}&apos;,

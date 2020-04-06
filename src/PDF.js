@@ -17,6 +17,23 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
+    this.on('iframe-change', (submission) => this.setValue(submission, {
+      fromIframe: true
+    }), true);
+
+    this.on('iframe-getIframePositions', () => {
+      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
+      this.postMessage({
+        name: 'iframePositions',
+        data: {
+          iframe: {
+            top: iframeBoundingClientRect.top
+          },
+          scrollY: window.scrollY || window.pageYOffset
+        }
+      });
+    });
+
     // Trigger when this form is ready.
     this.on('iframe-ready', () => this.iframeReadyResolve(), true);
   }
@@ -70,7 +87,10 @@ export default class PDF extends Webform {
       this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
 
       // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.submitButton, 'click', () => this.submit());
+      this.addEventListener(this.refs.submitButton, 'click', () => {
+        this.postMessage({ name: 'getErrors' });
+        return this.submit();
+      });
 
       this.addEventListener(this.refs.zoomIn, 'click', (event) => {
         event.preventDefault();
@@ -161,7 +181,7 @@ export default class PDF extends Webform {
    * @param submission
    * @param flags
    */
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
@@ -216,8 +236,47 @@ export default class PDF extends Webform {
     });
   }
 
+  focusOnComponent(key) {
+    this.postMessage({
+      name: 'focusErroredField',
+      data: key,
+    });
+  }
+
   // Do not clear the iframe.
   clear() {}
+
+  showErrors(error, triggerEvent) {
+    const helpBlock = document.getElementById('submit-error');
+
+    if (!helpBlock) {
+      const p = this.ce('p', { class: 'help-block' });
+
+      this.setContent(p, this.t('submitError'));
+      p.addEventListener('click', () => {
+        window.scrollTo(0, 0);
+      });
+
+      const div = this.ce('div', { id: 'submit-error', class: 'has-error' });
+
+      this.appendTo(p, div);
+      this.appendTo(div, this.element);
+    }
+
+    if (!this.errors.length && helpBlock) {
+      helpBlock.remove();
+    }
+
+    if (this.errors.length) {
+      this.focusOnComponent(this.errors[0].component.key);
+    }
+
+    if (this.errors.length) {
+      this.focusOnComponent(this.errors[0].component.key);
+    }
+
+    super.showErrors(error, triggerEvent);
+  }
 }
 
 /**

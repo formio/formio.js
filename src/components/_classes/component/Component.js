@@ -298,11 +298,11 @@ export default class Component extends Element {
     this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
 
     /**
-     * Determines if this component is visible, or not.
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {Component}
      */
-    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
-    this._visible = this._parentVisible && this.conditionallyVisible(data);
-    this._parentDisabled = false;
+    this.root = this.options.root;
 
     /**
      * If this input has been input and provided value.
@@ -318,13 +318,6 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
-    /**
-     * Points to the root component, usually the FormComponent.
-     *
-     * @type {Component}
-     */
-    this.root = this.options.root;
-
     this.options.name = this.options.name || 'data';
 
     /**
@@ -336,14 +329,23 @@ export default class Component extends Element {
     this._path = '';
 
     /**
+     * Determines if this component is visible, or not.
+     */
+    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
+    this._parentDisabled = false;
+
+    /**
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
     let lastChanged = null;
+    let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
       if (this.root) {
         this.root.changing = false;
       }
+      triggerArgs = [];
       if (!args[1] && lastChanged) {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
@@ -364,7 +366,10 @@ export default class Component extends Element {
       if (this.root) {
         this.root.changing = true;
       }
-      return _triggerChange(...args);
+      if (args.length) {
+        triggerArgs = args;
+      }
+      return _triggerChange(...triggerArgs);
     };
 
     /**
@@ -1105,7 +1110,7 @@ export default class Component extends Element {
     else {
       this.refreshOnChanged = true;
     }
-    this.refreshOnValue = value;
+    this.refreshOnValue = fastCloneDeep(value);
     if (this.refreshOnChanged) {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
@@ -1231,6 +1236,16 @@ export default class Component extends Element {
     }
 
     return data;
+  }
+
+  itemValueForHTMLMode(value) {
+    if (Array.isArray(value)) {
+      const values = value.map(item => Array.isArray(item) ? this.itemValueForHTMLMode(item) : this.itemValue(item));
+
+      return values.join(', ');
+    }
+
+    return this.itemValue(value);
   }
 
   createModal(element, attr) {
@@ -1831,41 +1846,52 @@ export default class Component extends Element {
 
   get wysiwygDefault() {
     return {
-      theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
-    };
-  }
-
-  get ckEditorConfig() {
-    return {
-      image: {
-        toolbar: [
-          'imageTextAlternative',
-          '|',
-          'imageStyle:full',
-          'imageStyle:alignLeft',
-          'imageStyle:alignCenter',
-          'imageStyle:alignRight'
-        ],
-        styles: [
-          'full',
-          'alignLeft',
-          'alignCenter',
-          'alignRight'
-        ]
-      }
+      quill: {
+        theme: 'snow',
+        placeholder: this.t(this.component.placeholder),
+        modules: {
+          toolbar: [
+            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula', 'source']
+          ]
+        }
+      },
+      ace: {
+        theme: 'ace/theme/xcode',
+        maxLines: 12,
+        minLines: 12,
+        tabSize: 2,
+        mode: 'javascript',
+        placeholder: this.t(this.component.placeholder)
+      },
+      ckeditor: {
+        image: {
+          toolbar: [
+            'imageTextAlternative',
+            '|',
+            'imageStyle:full',
+            'imageStyle:alignLeft',
+            'imageStyle:alignCenter',
+            'imageStyle:alignRight'
+          ],
+          styles: [
+            'full',
+            'alignLeft',
+            'alignCenter',
+            'alignRight'
+          ]
+        }
+      },
+      tiny: {
+        theme: 'silver'
+      },
+      default: {}
     };
   }
 
@@ -1873,7 +1899,7 @@ export default class Component extends Element {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
-    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', this.ckEditorConfig), settings);
+    settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
@@ -1887,13 +1913,10 @@ export default class Component extends Element {
   }
 
   addQuill(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
-    settings = _.merge(_.get(this.options, 'editors.quill.settings', {}), settings);
+    settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
+    settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, 'editors.quill.settings', {}), settings);
 
     // Lazy load the quill css.
-    if (!settings.theme) {
-      settings.theme = 'snow';
-    }
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
     ], true);
@@ -1941,13 +1964,7 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    const defaultAceSettings = {
-      maxLines: 12,
-      minLines: 12,
-      tabSize: 2,
-      mode: 'javascript',
-    };
-    settings = _.merge({}, defaultAceSettings, _.get(this.options, 'editors.ace.settings', {}), settings || {});
+    settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
@@ -1965,7 +1982,6 @@ export default class Component extends Element {
         return editor.init({
           ...settings,
           target: element,
-          theme: 'silver',
           // eslint-disable-next-line camelcase
           init_instance_callback: (editor) => {
             editor.on('Change', () => onChange(editor.getContent()));
@@ -2157,7 +2173,7 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed.
    */
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
     if (this.componentModal && flags && flags.fromSubmission) {
       this.componentModal.setValue(value);
@@ -2167,7 +2183,13 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray && this.refs.input && this.refs.input.length !== value.length) {
+    if (
+      isArray &&
+      Array.isArray(this.defaultValue) &&
+      this.refs.hasOwnProperty('input') &&
+      this.refs.input &&
+      (this.refs.input.length !== value.length)
+    ) {
       this.redraw();
     }
     for (const i in this.refs.input) {
@@ -2184,8 +2206,7 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value, flags) {
-    flags = flags || {};
+  setValueAt(index, value, flags = {}) {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
@@ -2242,11 +2263,10 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateComponentValue(value, flags) {
-    flags = flags || {};
+  updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
@@ -2314,9 +2334,8 @@ export default class Component extends Element {
    * Update the value on change.
    *
    * @param flags
-   * @param changed
    */
-  updateOnChange(flags = {}, changed) {
+  updateOnChange(flags = {}, changed = false) {
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
       return true;
@@ -2331,6 +2350,14 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
+
+  convertNumberOrBoolToString(value) {
+    if (typeof value === 'number' || typeof value === 'boolean' ) {
+      return value.toString();
+    }
+    return value;
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -2340,11 +2367,6 @@ export default class Component extends Element {
 
     // If this component allows overrides.
     const allowOverride = this.component.allowCalculateOverride;
-
-    // Skip this operation if this component allows modification and it is no longer pristine.
-    if (allowOverride && !this.pristine) {
-      return false;
-    }
 
     let firstPass = false;
     const dataValue = this.dataValue;
@@ -2358,8 +2380,8 @@ export default class Component extends Element {
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
       allowOverride &&
-      (this.calculatedValue !== null) &&
-      !_.isEqual(dataValue, this.calculatedValue)
+      this.calculatedValue &&
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(this.calculatedValue))
     ) {
       return false;
     }
@@ -2376,7 +2398,7 @@ export default class Component extends Element {
       allowOverride &&
       firstPass &&
       !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, calculatedValue)
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue))
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
@@ -2528,13 +2550,28 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+    if (flags.noValidate) {
+      return true;
+    }
 
     // We need to perform a test to see if they provided a default value that is not valid and immediately show
     // an error if that is the case.
-    if (!this.builderMode && !this.options.preview && !this.isEmpty(this.defaultValue) && !flags.noValidate) {
-      return this.checkComponentValidity(data, true, row);
+    let isDirty = !this.builderMode &&
+      !this.options.preview &&
+      !this.isEmpty(this.defaultValue) &&
+      this.isEqual(this.defaultValue, this.dataValue);
+
+    // We need to set dirty if they explicitly set noValidate to false.
+    if (this.options.alwaysDirty || flags.dirty) {
+      isDirty = true;
     }
-    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
+
+    // See if they explicitely set the values with setSubmission.
+    if (flags.fromSubmission && this.hasValue(data)) {
+      isDirty = true;
+    }
+
+    return this.checkComponentValidity(data, isDirty, row);
   }
 
   get validationValue() {
@@ -2564,7 +2601,7 @@ export default class Component extends Element {
   }
 
   clearErrorClasses() {
-    this.removeClass(this.element, 'formio-error-wrapper');
+    this.removeClass(this.element, this.options.componentErrorClass);
     this.removeClass(this.element, 'alert alert-danger');
     this.removeClass(this.element, 'has-error');
     this.removeClass(this.element, 'has-message');
@@ -2651,8 +2688,28 @@ export default class Component extends Element {
     // });
   }
 
+  /**
+   * Determines if the value of this component is hidden from the user as if it is coming from the server, but is
+   * protected.
+   *
+   * @return {boolean|*}
+   */
+  isValueHidden() {
+    if (!this.root || !this.root.hasOwnProperty('editing')) {
+      return false;
+    }
+    if (!this.root || !this.root.editing) {
+      return false;
+    }
+    return (this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
+  }
+
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Skip validatoin for disabled componoents.
+      () => this.shouldDisabled,
+      // Check to see if we are editing and if so, check component persistence.
+      () => this.isValueHidden(),
       // Force valid if component is hidden.
       () => !this.visible,
       // Force valid if component is conditionally hidden.
@@ -2790,6 +2847,10 @@ export default class Component extends Element {
   }
 
   attachLogic() {
+    // Do not attach logic during builder mode.
+    if (this.builderMode) {
+      return;
+    }
     this.logic.forEach((logic) => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);

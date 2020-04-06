@@ -113,7 +113,7 @@ export default class SelectBoxesComponent extends RadioComponent {
    * @param value
    * @param flags
    */
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
     _.each(this.refs.input, (input) => {
