@@ -1080,93 +1080,61 @@ export default class SelectComponent extends Field {
   }
 
   normalizeSingleValue(value) {
-    if (!value) {
+    if (_.isNil(value)) {
       return;
     }
 
-    const dataType = this.component['dataType'] || 'auto';
-    const denormalizedValue = typeof value === 'string' ? value.toLowerCase() : value;
+    const dataType = this.component.dataType || 'auto';
     const normalize = {
-      value: denormalizedValue,
+      value,
 
-      toNumber() {
-        try {
-          const numberValue = parseFloat(this.value);
+      number() {
+        const numberValue = Number.parseFloat(this.value);
 
-          if (!Number.isNaN(numberValue) && isFinite(numberValue)) {
-            this.value = numberValue;
-            return this;
-          }
-
-          return this;
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue)) {
+          this.value = numberValue;
         }
-        catch {
-          return this;
-        }
+
+        return this;
       },
 
-      toBoolean() {
-        try {
-          const booleanValue = (this.value === 'true' || this.value === 'false');
-
-          if (booleanValue) {
-            this.value = (this.value === 'true');
-            return this;
-          }
-
-          return this;
+      boolean() {
+        if (
+          _.isString(this.value)
+          && (this.value.toLowerCase() === 'true'
+          || this.value.toLowerCase() === 'false')
+        ) {
+          this.value = (this.value.toLowerCase() === 'true');
         }
-        catch {
-          return this;
-        }
+
+        return this;
       },
 
-      toString() {
-        try {
-          const stringValue = typeof this.value === 'object'
-            ? JSON.stringify(this.value)
-            : this.value.toString();
+      string() {
+        this.value = String(this.value);
+        return this;
+      },
 
-          if (stringValue) {
-            this.value = stringValue;
-            return this;
-          }
+      object() {
+        if (_.isObject(this.value)) {
+          this.value = JSON.stringify(this.value);
+        }
 
-          return this;
-        }
-        catch {
-          return this;
-        }
+        return this;
       },
 
       auto() {
-        try {
-          const autoValue = this.toString().toNumber().toBoolean();
-
-          if (autoValue && !_.isObject(autoValue)) {
-            this.value = autoValue;
-          }
-
-          return this;
-        }
-        catch {
-          return this;
-        }
+        this.value = this.object().string().number().boolean().value;
+        return this;
       }
     };
 
-    switch (dataType) {
-      case 'auto': {
-        return normalize.auto().value;
-      }
-      case 'number': {
-        return normalize.toNumber().value;
-      }
-      case 'string': {
-        return normalize.toString().value;
-      }
-      case 'boolean':
-        return normalize.toBoolean().value;
+    try {
+      return normalize[dataType]().value;
+    }
+    catch (err) {
+      console.warn('Failed to normalize value', err);
+      return value;
     }
   }
 
