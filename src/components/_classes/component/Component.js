@@ -1941,7 +1941,7 @@ export default class Component extends Element {
       mode: 'javascript',
     };
     if (!settings || (settings.theme === 'snow')) {
-      const mode = settings.mode;
+      const mode = settings ? settings.mode : '';
       settings = {};
       if (mode) {
         settings.mode = mode;
