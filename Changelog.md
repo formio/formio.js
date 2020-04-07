@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
 ## 4.10.0-beta.5
 ### Changed
  - Allow external modules to extend the select options easily.
