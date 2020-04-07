@@ -2183,7 +2183,11 @@ export default class Component extends Element {
       mode: &apos;javascript&apos;,
     };
     if (!settings || (settings.theme === &apos;snow&apos;)) {
+      const mode = settings ? settings.mode : &apos;&apos;;
       settings = {};
+      if (mode) {
+        settings.mode = mode;
+      }
     }
     settings = _.merge({}, defaultAceSettings, _.get(this.options, &apos;editors.ace.settings&apos;, {}), settings || {});
     return Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, _.get(this.options, &apos;editors.ace.src&apos;, ACE_URL), true)

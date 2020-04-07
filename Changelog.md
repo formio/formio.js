@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.9.15
 ### Fixed
+ - Problem where the ACE editor would use the wrong mode.
  - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
 
 ## 4.9.14
