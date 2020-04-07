@@ -375,8 +375,8 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
     });
     // Delete any extra rows.
-    this.rows.splice(rowValues.length);
-    if (!init && added) {
+    const removed = !!this.rows.splice(rowValues.length).length;
+    if (!init && (added || removed)) {
       this.redraw();
     }
     return added;

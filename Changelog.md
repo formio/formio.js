@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.15
+### Fixed
+ - DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
 ## 4.9.14
 ### Fixed
  - Ensure the Formio object is attached to window to fix sites that include other modules systems still able to use Formio globally.
