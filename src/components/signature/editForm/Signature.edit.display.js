@@ -6,7 +6,7 @@ export default [
     label: 'Footer Label',
     tooltip: 'The footer text that appears below the signature area.',
     placeholder: 'Footer Label',
-    weight: 10
+    weight: 10,
   },
   {
     type: 'textfield',
@@ -15,7 +15,7 @@ export default [
     label: 'Width',
     tooltip: 'The width of the signature area.',
     placeholder: 'Width',
-    weight: 50
+    weight: 50,
   },
   {
     type: 'textfield',
@@ -24,7 +24,7 @@ export default [
     label: 'Height',
     tooltip: 'The height of the signature area.',
     placeholder: 'Height',
-    weight: 51
+    weight: 51,
   },
   {
     type: 'textfield',
@@ -33,7 +33,7 @@ export default [
     label: 'Background Color',
     tooltip: 'The background color of the signature area.',
     placeholder: 'Background Color',
-    weight: 52
+    weight: 52,
   },
   {
     type: 'textfield',
@@ -42,7 +42,7 @@ export default [
     label: 'Pen Color',
     tooltip: 'The ink color for the signature area.',
     placeholder: 'Pen Color',
-    weight: 53
+    weight: 53,
   },
   {
     key: 'placeholder',

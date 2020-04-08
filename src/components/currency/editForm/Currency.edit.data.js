@@ -179,8 +179,8 @@ export default [
         { label: 'Dong (VND)', value: 'VND' },
         { label: 'Yemeni Rial (YER)', value: 'YER' },
         { label: 'Zambian Kwacha (ZMW)', value: 'ZMW' },
-        { label: 'Zimbabwe Dollar (ZWL),', value:  'ZWL' }
-      ]
-    }
-  }
+        { label: 'Zimbabwe Dollar (ZWL),', value:  'ZWL' },
+      ],
+    },
+  },
 ];

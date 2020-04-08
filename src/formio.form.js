@@ -4,7 +4,11 @@ import Components from './components/Components';
 import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers';
-import Rules from './validator/Rules';
+import {
+  Operators,
+  Rules,
+  Transformers,
+} from './validator';
 import Formio from './Formio';
 import Form from './Form';
 import Utils from './utils';
@@ -50,8 +54,14 @@ const registerPlugin = (plugin) => {
       case 'builders':
         Builders.addBuilders(plugin.builders);
         break;
+      case 'operators':
+        Operators.addOperators(plugin.operators);
+        break;
       case 'rules':
         Rules.addRules(plugin.rules);
+        break;
+      case 'transformers':
+        Transformers.addTransformers(plugin.transformers);
         break;
       default:
         console.log('Unknown plugin option', key);

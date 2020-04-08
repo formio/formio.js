@@ -9,14 +9,14 @@ export default [
       values: [
         {
           label: 'Number',
-          value: 'number'
+          value: 'number',
         },
         {
           label: 'Select',
-          value: 'select'
+          value: 'select',
         },
-      ]
-    }
+      ],
+    },
   },
   {
     weight: 210,
@@ -25,7 +25,7 @@ export default [
     key: 'fields.month.placeholder',
     label: 'Placeholder',
     placeholder: 'Month Placeholder',
-    tooltip: 'The placeholder text that will appear when Month field is empty.'
+    tooltip: 'The placeholder text that will appear when Month field is empty.',
   },
   {
     weight: 215,
@@ -33,6 +33,6 @@ export default [
     label: 'Hidden',
     tooltip: 'Hide the Month part of the component.',
     key: 'fields.month.hide',
-    input: true
+    input: true,
   },
 ];

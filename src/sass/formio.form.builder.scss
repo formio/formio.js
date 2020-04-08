@@ -32,6 +32,11 @@
 .builder-component {
   position: relative;
   min-height: 15px;
+
+  &__title {
+    margin-right: 10px;
+  }
+
   .formio-component-htmlelement {
     border: dotted 2px #e8e8e8;
     [ref=html]:empty:before {
@@ -210,4 +215,12 @@
 .component-edit-tabs.col-sm-12 .editForm {
   height: calc(100% - 4em);
   overflow-y: auto;
+}
+
+.edit-form-action-buttons {
+  margin-top: 10px;
+
+  [ref="editFormWrapper"].col-sm-6 & {
+    display: none;
+  }
 }

@@ -1,5 +1,8 @@
 import _ from 'lodash';
+
+import { QuickRulesHelper, ValueSources } from '../../../../validator';
 import Evaluator from '../../../../utils/Evaluator';
+
 const EditFormUtils = {
   sortAndFilterComponents(components) {
     return _.filter(_.sortBy(components, 'weight'), (item) => !item.ignore);
@@ -25,6 +28,11 @@ const EditFormUtils = {
         if (objValue.components) {
           srcValue.components = EditFormUtils.sortAndFilterComponents(
             _.unionWith(objValue.components, srcValue.components, EditFormUtils.unifyComponents)
+          );
+        }
+        if (objValue.help) {
+          srcValue.help = EditFormUtils.sortAndFilterComponents(
+            _.unionWith(objValue.help, srcValue.help, EditFormUtils.unifyComponents)
           );
         }
         return true;
@@ -55,11 +63,114 @@ const EditFormUtils = {
       '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.</td></tr>' +
       '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a> object.</td></tr>' +
       '<tr><th>util</th><td>An alias for "utils".</td></tr>' +
-      '</table><br/>'
+      '</table><br/>',
       /* eslint-enable prefer-template */
     };
   },
-  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON, additionalParams) {
+  logicSectionHandler: {
+    js({
+      commonName,
+      property,
+      example,
+    }) {
+      return {
+        type: 'panel',
+        title: 'JavaScript',
+        collapsible: true,
+        collapsed: false,
+        style: { 'margin-bottom': '10px' },
+        key: `${commonName}-js`,
+        customConditional() {
+          return !Evaluator.noeval;
+        },
+        components: [
+          {
+            type: 'textarea',
+            key: property,
+            rows: 5,
+            editor: 'ace',
+            hideLabel: true,
+            input: true,
+          },
+          {
+            type: 'htmlelement',
+            tag: 'div',
+            content: `<p>Enter custom javascript code.</p>${example}`,
+          },
+        ],
+      };
+    },
+    json({
+      commonName,
+      property,
+      example,
+    }) {
+      return {
+        type: 'panel',
+        title: 'JSONLogic',
+        collapsible: true,
+        collapsed: true,
+        key: `${commonName}-json`,
+        components: [
+          {
+            type: 'htmlelement',
+            tag: 'div',
+            /* eslint-disable prefer-template */
+            content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
+              '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
+               example,
+            /* eslint-enable prefer-template */
+          },
+          {
+            type: 'textarea',
+            key: property,
+            rows: 5,
+            editor: 'ace',
+            hideLabel: true,
+            as: 'json',
+            input: true,
+          },
+        ],
+      };
+    },
+    variable({
+      commonName,
+      property,
+    }) {
+      return {
+        type: 'panel',
+        title: 'Variable',
+        collapsible: true,
+        collapsed: true,
+        key: `${commonName}-variable`,
+        components: [
+          {
+            ...EditFormUtils.variableSelector(),
+            key: property,
+          },
+        ],
+      };
+    },
+    condition({
+      commonName,
+      property,
+    }) {
+      return {
+        type: 'panel',
+        title: 'Condition',
+        collapsible: true,
+        collapsed: true,
+        key: `${commonName}-condition`,
+        components: [
+          {
+            ...EditFormUtils.conditionSelector(),
+            key: property,
+          },
+        ],
+      };
+    },
+  },
+  javaScriptValue(title, property, weight, logicSections, additionalParams) {
     return {
       type: 'panel',
       title: title,
@@ -70,62 +181,205 @@ const EditFormUtils = {
       weight: weight,
       components: [
         this.logicVariablesTable(additionalParams),
-        {
-          type: 'panel',
-          title: 'JavaScript',
-          collapsible: true,
-          collapsed: false,
-          style: { 'margin-bottom': '10px' },
-          key: `${property}-js`,
-          customConditional() {
-            return !Evaluator.noeval;
-          },
-          components: [
-            {
-              type: 'textarea',
-              key: property,
-              rows: 5,
-              editor: 'ace',
-              hideLabel: true,
-              input: true
-            },
-            {
-              type: 'htmlelement',
-              tag: 'div',
-              content: `<p>Enter custom javascript code.</p>${exampleHTML}`
-            }
-          ]
-        },
-        {
-          type: 'panel',
-          title: 'JSONLogic',
-          collapsible: true,
-          collapsed: true,
-          key: `${property}-json`,
-          components: [
-            {
-              type: 'htmlelement',
-              tag: 'div',
-              /* eslint-disable prefer-template */
-              content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
-                '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
-                 exampleJSON
-              /* eslint-enable prefer-template */
-            },
-            {
-              type: 'textarea',
-              key: propertyJSON,
-              rows: 5,
-              editor: 'ace',
-              hideLabel: true,
-              as: 'json',
-              input: true
-            }
-          ]
-        }
-      ]
+        ...logicSections.map((logicSection) => this.logicSectionHandler[logicSection.type]({
+          commonName: property,
+          ...logicSection,
+        })),
+      ],
     };
-  }
+  },
+  valueDeclaration({
+    excludeValueSources = [],
+    excludeVariables = [],
+    required = true,
+  } = {}) {
+    const valueSources = _
+      .chain(ValueSources.getValueSources())
+      .values()
+      .reject(({ name }) => excludeValueSources.includes(name))
+      .sortBy('weight')
+      .value();
+
+    return [
+      {
+        label: 'Value Source',
+        data: {
+          values: valueSources.map((valueSource) => ({
+            label: valueSource.title,
+            value: valueSource.name,
+          })),
+        },
+        validate: {
+          required,
+        },
+        key: 'valueSource',
+        type: 'select',
+        input: true,
+      },
+      ...valueSources
+        .map((valueSource) => {
+          const editForm = valueSource.getInputEditForm({
+            editFormUtils: EditFormUtils,
+            excludeValueSources,
+            excludeVariables,
+          });
+
+          return editForm
+            ? {
+              ...editForm,
+              key: `${valueSource.name}Input`,
+              conditional: {
+                json: {
+                  '===': [
+                    {
+                      'var': 'row.valueSource',
+                    },
+                    valueSource.name,
+                  ],
+                },
+              },
+            }
+            : null;
+        })
+        .filter(_.identity),
+    ];
+  },
+  variableSelector({
+    exclude = [],
+  } = {}) {
+    return {
+      type: 'select',
+      input: true,
+      key: 'variable',
+      label: 'Variable',
+      dataSrc: 'custom',
+      data: {
+        custom(args) {
+          const { data, options } = args;
+          const { editForm = {} } = options;
+          return _
+            .chain(editForm.variables || [])
+            .concat(data.variables || [])
+            .map(({
+              name,
+              key,
+            }) => ({
+              name,
+              key,
+            }))
+            .reject(({ key }) => exclude.some((excludeVariable) => (
+              _.isFunction(excludeVariable)
+                ? excludeVariable(exclude, args)
+                : (key !== excludeVariable)
+            )))
+            .value();
+        },
+      },
+      valueProperty: 'key',
+      template: '<span>{{ item.name || item.key }} ({{ item.key }})</span>',
+    };
+  },
+  conditionSelector({
+    exclude = [],
+  } = {}) {
+    return {
+      type: 'select',
+      input: true,
+      key: 'condition',
+      label: 'Condition',
+      dataSrc: 'custom',
+      data: {
+        custom(args) {
+          const { data, options } = args;
+          const { editForm = {} } = options;
+          return _
+            .chain(editForm.conditions || [])
+            .concat(data.conditions || [])
+            .map(({
+              name,
+              key,
+            }) => ({
+              name,
+              key,
+            }))
+            .reject(({ key }) => exclude.some((excludeCondition) => (
+              _.isFunction(excludeCondition)
+                ? excludeCondition(exclude, args)
+                : (key !== excludeCondition)
+            )))
+            .value();
+        },
+      },
+      valueProperty: 'key',
+      template: '<span>{{ item.name || item.key }} ({{ item.key }})</span>',
+    };
+  },
+  getArgument({
+    name,
+    key,
+    required = false,
+  }, {
+    excludeValueSources = [],
+    excludeVariables = [],
+  } = {}) {
+    return {
+      label: name,
+      hideLabel: false,
+      key,
+      type: 'container',
+      input: true,
+      components: EditFormUtils.valueDeclaration({
+        excludeValueSources: [
+          'conditionalAssignment',
+          ...excludeValueSources,
+        ],
+        excludeVariables,
+        required,
+      }),
+    };
+  },
+  addQuickRule(QuickRule) {
+    const {
+      name,
+      title,
+      weight,
+    } = QuickRule;
+    const editForm = QuickRule.getEditForm() || [];
+
+    return {
+      type: 'panel',
+      title,
+      key: `${name}Title`,
+      input: false,
+      collapsible: true,
+      collapsed: true,
+      components: [
+        {
+          type: 'container',
+          key: name,
+          label: title,
+          input: true,
+          weight,
+          components: editForm.concat({
+            type: 'button',
+            key: `${name}Apply`,
+            label: 'Add',
+            input: true,
+            action: 'custom',
+            custom({ form, instance }) {
+              const helper = new QuickRulesHelper(form.componentEditForm, {});
+              const quickRuleInstance = new QuickRule({});
+              const inputContainer = form.getComponent(name);
+              const input = inputContainer.dataValue;
+
+              quickRuleInstance.addRule(helper, input);
+              instance.parent.resetValue();
+            },
+          }),
+        },
+      ],
+    };
+  },
 };
 
 export default EditFormUtils;

@@ -41,7 +41,7 @@ export default [
     tooltip: 'The name of table in the indexeddb database.',
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
-    }
+    },
   },
   {
     type: 'textarea',
@@ -208,7 +208,7 @@ export default [
         if (component.input) {
           newItems.push({
             label: component.label || component.key,
-            key: `data.${path}`
+            key: `data.${path}`,
           });
         }
       });
@@ -273,7 +273,7 @@ export default [
           [
             'json',
             'url',
-            'custom'
+            'custom',
           ],
         ],
       },
@@ -399,7 +399,7 @@ export default [
           { var: 'data.dataSrc' },
           [
             'url',
-            'resource'
+            'resource',
           ],
         ],
       },
@@ -438,7 +438,7 @@ export default [
       }
 
       return context.data.template;
-    }
+    },
   },
   {
     type: 'select',
@@ -453,7 +453,7 @@ export default [
       custom(context) {
         var values = [];
         values.push({ label: 'Any Change', value: 'data' });
-        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
+        context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
           if (component.key !== context.data.key) {
             values.push({
               label: component.label || component.key,
@@ -462,7 +462,7 @@ export default [
           }
         });
         return values;
-      }
+      },
     },
     conditional: {
       json: {

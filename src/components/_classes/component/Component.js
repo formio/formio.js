@@ -6,6 +6,12 @@ import _ from 'lodash';
 import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
+import {
+  Conjunctions,
+  Operators,
+  Transformers,
+  ValueSources,
+} from '../../../validator';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
@@ -328,6 +334,8 @@ export default class Component extends Element {
 
     this._path = '';
 
+    this.resetCaches();
+
     /**
      * Determines if this component is visible, or not.
      */
@@ -534,7 +542,7 @@ export default class Component extends Element {
    */
   get visible() {
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (this.builderMode || this.options.showHiddenFields) {
+    if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
     if (
@@ -567,6 +575,10 @@ export default class Component extends Element {
 
   get builderMode() {
     return this.options.attachMode === 'builder';
+  }
+
+  get previewMode() {
+    return Boolean(this.options.preview);
   }
 
   get calculatedPath() {
@@ -955,7 +967,7 @@ export default class Component extends Element {
     const isVisible = this.visible;
     this.rendered = true;
 
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
         id: this.id,
@@ -976,7 +988,7 @@ export default class Component extends Element {
   }
 
   attach(element) {
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       this.componentModal = new ComponentModal(this, element);
       this.setOpenModalElement();
     }
@@ -1349,6 +1361,7 @@ export default class Component extends Element {
       iconClass: this.iconClass.bind(this),
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
+      options: this.options,
     }, additional));
   }
 
@@ -1490,7 +1503,7 @@ export default class Component extends Element {
   conditionallyVisible(data, row) {
     data = data || this.rootValue;
     row = row || this.data;
-    if (this.builderMode || !this.hasCondition()) {
+    if (this.builderMode || this.previewMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
@@ -1512,7 +1525,7 @@ export default class Component extends Element {
       row || this.data,
       data || this.rootValue,
       this.root ? this.root._form : {},
-      this
+      this,
     );
   }
 
@@ -1524,7 +1537,7 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    if (!this.builderMode && this.fieldLogic(data, row)) {
+    if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
 
@@ -2083,12 +2096,17 @@ export default class Component extends Element {
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
-    if (this.component.customDefaultValue && !this.options.preview) {
-      defaultValue = this.evaluate(
-        this.component.customDefaultValue,
-        { value: '' },
-        'value'
-      );
+    if (!this.previewMode) {
+      if (this.component.customDefaultValueVariable) {
+        defaultValue = this.calculateVariable(this.component.customDefaultValueVariable);
+      }
+      else if (this.component.customDefaultValue) {
+        defaultValue = this.evaluate(
+          this.component.customDefaultValue,
+          { value: '' },
+          'value'
+        );
+      }
     }
 
     if (this.defaultMask) {
@@ -2339,7 +2357,7 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
+    if (!(this.component.calculateValue || this.component.calculateValueVariable) || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
       return false;
     }
 
@@ -2365,11 +2383,13 @@ export default class Component extends Element {
     }
 
     // Calculate the new value.
-    const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: dataValue,
-      data,
-      row: row || this.data
-    }, 'value');
+    const calculatedValue = this.component.calculateValueVariable
+      ? this.calculateVariable(this.component.calculateValueVariable)
+      : this.evaluate(this.component.calculateValue, {
+        value: dataValue,
+        data,
+        row: row || this.data
+      }, 'value');
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
@@ -2400,6 +2420,169 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
     return this.calculateComponentValue(data, flags, row);
+  }
+
+  get logicOptions() {
+    return {
+      componentInstance: this,
+      formInstance: this.root,
+    };
+  }
+
+  calculateCondition(name) {
+    // Identify recurrent reference.
+    if (this.lockedConditions.has(name)) {
+      throw new Error(`Found recurrent reference with condition '${name}'.`);
+    }
+
+    const cachedValue = this.conditionsCache[name];
+    if (cachedValue) {
+      return cachedValue;
+    }
+
+    const condition = (this.component.conditions || []).find(({ key }) => (key === name));
+    if (!condition) {
+      return false;
+    }
+
+    this.lockedConditions.add(name);
+
+    const {
+      conjunction = 'and',
+      parts = [],
+    } = condition;
+
+    const Conjunction = Conjunctions.getConjunction(conjunction);
+    if (!Conjunction) {
+      return false;
+    }
+
+    const conjunctionInstance = new Conjunction(this.logicOptions);
+
+    const result = conjunctionInstance.execute(parts.map(((part) => this.calculateConditionPart(part))));
+    this.lockedConditions.delete(name);
+    this.conditionsCache[name] = result;
+    return result;
+  }
+
+  calculateConditionPart(conditionPart) {
+    const {
+      type,
+    } = conditionPart;
+
+    if (type === 'existing') {
+      const {
+        condition,
+      } = conditionPart;
+      return this.calculateCondition(condition);
+    }
+
+    if (type === 'new') {
+      const {
+        operator,
+      } = conditionPart;
+      return this.calculateOperator(operator);
+    }
+
+    return false;
+  }
+
+  calculateOperator(operator) {
+    const {
+      name,
+      [`${name}Arguments`]: args = {},
+      options = {},
+    } = operator;
+
+    const Operator = Operators.getOperator(name);
+    if (!Operator) {
+      return false;
+    }
+
+    const operatorInstance = new Operator(this.logicOptions);
+
+    return operatorInstance.execute(_.mapValues(args, ({
+      valueSource,
+      [`${valueSource}Input`]: input,
+    }) => this.calculateValueDefinition(valueSource, input)), options);
+  }
+
+  calculateValueDefinition(valueSource, input) {
+    const ValueSource = ValueSources.getValueSource(valueSource);
+    if (!ValueSource) {
+      return null;
+    }
+
+    const valueSourceInstance = new ValueSource(this.logicOptions);
+
+    return valueSourceInstance.getValue(input);
+  }
+
+  calculateVariable(name) {
+    // Identify recurrent reference.
+    if (this.lockedVariables.has(name)) {
+      throw new Error(`Found recurrent reference with variable '${name}'.`);
+    }
+
+    const cachedValue = this.variablesCache[name];
+    if (cachedValue) {
+      return cachedValue;
+    }
+
+    const variable = (this.component.variables || []).find(({ key }) => (key === name));
+    if (!variable) {
+      return null;
+    }
+
+    this.lockedVariables.add(name);
+
+    const {
+      valueSource,
+      [`${valueSource}Input`]: input,
+      transform = {},
+    } = variable;
+
+    const value = this.calculateValueDefinition(valueSource, input);
+
+    const result = this.applyTransform(value, transform);
+    this.lockedVariables.delete(name);
+    this.variablesCache[name] = result;
+    return result;
+  }
+
+  applyTransform(value, transform) {
+    const {
+      name = 'identity',
+      [`${name}Arguments`]: args = {},
+    } = transform;
+
+    const Transformer = Transformers.getTransformer(name);
+    if (!Transformer) {
+      return false;
+    }
+
+    const transformerInstance = new Transformer(this.logicOptions);
+
+    return transformerInstance.transform(value, _.mapValues(args, ({
+      valueSource,
+      [`${valueSource}Input`]: input,
+    }) => this.calculateValueDefinition(valueSource, input)));
+  }
+
+  getRowIndexes() {
+    const indexes = {};
+
+    let currentComponent = this;
+    while (currentComponent.parent) {
+      const { parent } = currentComponent;
+      if (['editgrid', 'datagrid'].includes(parent.component.type)) {
+        indexes[parent.calculatedPath] = currentComponent.rowIndex;
+      }
+
+      currentComponent = parent;
+    }
+
+    return indexes;
   }
 
   /**
@@ -2509,6 +2692,13 @@ export default class Component extends Element {
     return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
   }
 
+  resetCaches() {
+    this.conditionsCache = {};
+    this.variablesCache = {};
+    this.lockedConditions = new Set();
+    this.lockedVariables = new Set();
+  }
+
   /**
    * Check the conditions, calculations, and validity of a single component and triggers an update if
    * something changed.
@@ -2522,6 +2712,9 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+
+    this.resetCaches();
+
     this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
@@ -2535,7 +2728,7 @@ export default class Component extends Element {
     // We need to perform a test to see if they provided a default value that is not valid and immediately show
     // an error if that is the case.
     let isDirty = !this.builderMode &&
-      !this.options.preview &&
+      !this.previewMode &&
       !this.isEmpty(this.defaultValue) &&
       this.isEqual(this.defaultValue, this.dataValue);
 
@@ -2802,7 +2995,7 @@ export default class Component extends Element {
 
   attachLogic() {
     // Do not attach logic during builder mode.
-    if (this.builderMode) {
+    if (this.builderMode || this.previewMode) {
       return;
     }
     this.logic.forEach((logic) => {
@@ -2856,7 +3049,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode) {
+    if (this.component.autofocus && !this.builderMode && !this.previewMode) {
       this.on('render', () => this.focus(), true);
     }
   }

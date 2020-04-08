@@ -1,30 +1,32 @@
+import EditFormUtils from '../../_classes/component/editForm/utils';
+
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'label',
     hidden: true,
     calculateValue(context) {
       return context.data.title;
-    }
+    },
   },
   {
     key: 'tabindex',
@@ -37,7 +39,7 @@ export default [
     placeholder: 'Panel Title',
     label: 'Title',
     key: 'title',
-    tooltip: 'The title text that appears in the header of this panel.'
+    tooltip: 'The title text that appears in the header of this panel.',
   },
   {
     weight: 20,
@@ -46,7 +48,7 @@ export default [
     key: 'tooltip',
     label: 'Tooltip',
     placeholder: 'To add a tooltip to this field, enter text here.',
-    tooltip: 'Adds a tooltip to the side of this field.'
+    tooltip: 'Adds a tooltip to the side of this field.',
   },
   {
     weight: 30,
@@ -62,9 +64,9 @@ export default [
         { label: 'Info', value: 'info' },
         { label: 'Success', value: 'success' },
         { label: 'Danger', value: 'danger' },
-        { label: 'Warning', value: 'warning' }
-      ]
-    }
+        { label: 'Warning', value: 'warning' },
+      ],
+    },
   },
   {
     weight: 40,
@@ -82,8 +84,8 @@ export default [
             { label: 'Default', value: 'default' },
             { label: 'Condensed', value: 'condensed' },
             { label: 'Hidden', value: 'none' },
-          ]
-        }
+          ],
+        },
       },
       {
         input: true,
@@ -92,8 +94,8 @@ export default [
         key: 'breadcrumbClickable',
         defaultValue: true,
         conditional: {
-          json: { '!==': [{ var: 'data.breadcrumb' }, 'none'] }
-        }
+          json: { '!==': [{ var: 'data.breadcrumb' }, 'none'] },
+        },
       },
       {
         weight: 50,
@@ -111,7 +113,7 @@ export default [
           {
             label: 'Next',
             value: 'next',
-          }
+          },
         ],
         inline: true,
         type: 'selectboxes',
@@ -121,13 +123,13 @@ export default [
         defaultValue: {
           previous: true,
           cancel: true,
-          next: true
+          next: true,
         },
-      }
+      },
     ],
     customConditional(context) {
       return context.instance.options.editForm.display === 'wizard';
-    }
+    },
   },
   {
     weight: 650,
@@ -135,7 +137,7 @@ export default [
     label: 'Collapsible',
     tooltip: 'If checked, this will turn this Panel into a collapsible panel.',
     key: 'collapsible',
-    input: true
+    input: true,
   },
   {
     weight: 651,
@@ -145,7 +147,41 @@ export default [
     key: 'collapsed',
     input: true,
     conditional: {
-      json: { '===': [{ var: 'data.collapsible' }, true] }
-    }
-  }
+      json: { '===': [{ var: 'data.collapsible' }, true] },
+    },
+  },
+
+  {
+    ...EditFormUtils.javaScriptValue(
+      'Advanced Next Page',
+      'nextPage',
+      1650,
+      [
+        {
+          type: 'js',
+          property: 'nextPage',
+          example: (`
+            <p>You must assign the <strong>next</strong> variable with the API key of the next page.</p>
+            <p>The global variable <strong>data</strong> is provided, and allows you to access the data of any form component, by using its API key.</p>
+            <p>Also <strong>moment</strong> library is available, and allows you to manipulate dates in a convenient way.</p>
+            <h5>Example</h5><pre>next = data.addComment ? 'page3' : 'page4';</pre>
+          `),
+        },
+        {
+          type: 'json',
+          property: 'nextPage',
+          example: (`
+            <p>Submission data is available as JsonLogic variables, with the same api key as your components.</p>
+          `),
+        },
+        {
+          type: 'variable',
+          property: 'nextPageConstant',
+        },
+      ],
+    ),
+    customConditional(context) {
+      return context.instance.options.editForm.display === 'wizard';
+    },
+  },
 ];

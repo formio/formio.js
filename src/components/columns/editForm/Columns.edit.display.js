@@ -1,31 +1,31 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 150,
@@ -40,7 +40,7 @@ export default [
       {
         type: 'hidden',
         key: 'components',
-        defaultValue: []
+        defaultValue: [],
       },
       {
         type: 'select',
@@ -61,27 +61,27 @@ export default [
         type: 'number',
         key: 'width',
         defaultValue: 6,
-        label: 'Width'
+        label: 'Width',
       },
       {
         type: 'number',
         key: 'offset',
         defaultValue: 0,
-        label: 'Offset'
+        label: 'Offset',
       },
       {
         type: 'number',
         key: 'push',
         defaultValue: 0,
-        label: 'Push'
+        label: 'Push',
       },
       {
         type: 'number',
         key: 'pull',
         defaultValue: 0,
-        label: 'Pull'
-      }
-    ]
+        label: 'Pull',
+      },
+    ],
   },
   {
     weight: 160,
@@ -89,7 +89,7 @@ export default [
     label: 'Auto adjust columns',
     tooltip: 'Will automatically adjust columns based on if nested components are hidden.',
     key: 'autoAdjust',
-    input: true
+    input: true,
   },
   {
     weight: 161,
@@ -97,6 +97,6 @@ export default [
     label: 'Hide Column when Children Hidden',
     key: 'hideOnChildrenHidden',
     tooltip: 'Check this if you would like to hide any column when the children within that column are also hidden',
-    input: true
-  }
+    input: true,
+  },
 ];

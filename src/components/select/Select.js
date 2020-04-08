@@ -1085,9 +1085,8 @@ export default class SelectComponent extends Field {
     }
 
     const dataType = this.component['dataType'] || 'auto';
-    const denormalizedValue = typeof value === 'string' ? value.toLowerCase() : value;
     const normalize = {
-      value: denormalizedValue,
+      value,
 
       toNumber() {
         try {

@@ -1,7 +1,7 @@
 export default [
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'datagrid',
@@ -17,7 +17,7 @@ export default [
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
@@ -25,9 +25,9 @@ export default [
         input: true,
         type: 'textfield',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
-      }
-    ]
+        calculateValue: { _camelCase: [{ var: 'row.label' }] },
+      },
+    ],
   },
   {
     type: 'datagrid',
@@ -43,7 +43,7 @@ export default [
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
@@ -51,8 +51,8 @@ export default [
         input: true,
         type: 'textfield',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
-      }
-    ]
-  }
+        calculateValue: { _camelCase: [{ var: 'row.label' }] },
+      },
+    ],
+  },
 ];

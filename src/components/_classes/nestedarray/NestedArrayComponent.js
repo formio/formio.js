@@ -59,4 +59,30 @@ export default class NestedArrayComponent extends NestedDataComponent {
         value: this.dataValue,
       }, 'show'));
   }
+
+  getComponent(path, fn) {
+    path = Array.isArray(path) ? path : [path];
+    const [key, ...remainingPath] = path;
+    let result = [];
+
+    if (!_.isString(key)) {
+      return result;
+    }
+
+    this.everyComponent((component, components) => {
+      if (component.component.key === key) {
+        let comp = component;
+        if (remainingPath.length > 0 && 'getComponent' in component) {
+          comp = component.getComponent(remainingPath, fn);
+        }
+        else if (fn) {
+          fn(component, components);
+        }
+
+        result = result.concat(comp);
+      }
+    });
+
+    return result.length > 0 ? result : null;
+  }
 }

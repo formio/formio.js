@@ -1,10 +1,10 @@
 export default [
   {
     key: 'inputMask',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'allowMultipleMasks',
-    ignore: true
-  }
+    ignore: true,
+  },
 ];

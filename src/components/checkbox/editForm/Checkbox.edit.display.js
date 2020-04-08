@@ -1,5 +1,6 @@
-import BuilderUtils from '../../../utils/builder';
 import _ from 'lodash';
+
+import BuilderUtils from '../../../utils/builder';
 
 export default [
   {
@@ -25,7 +26,7 @@ export default [
       custom(context) {
         return BuilderUtils.getAvailableShortcuts(
           _.get(context, 'instance.options.editForm', {}),
-          _.get(context, 'instance.options.editComponent', {})
+          _.get(context, 'instance.options.editComponent', {}),
         );
       },
     },

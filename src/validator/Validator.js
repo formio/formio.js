@@ -6,19 +6,18 @@ import {
   getDateSetting,
   escapeRegExCharacters,
   interpolate,
-  convertFormatToMoment
+  convertFormatToMoment,
 } from '../utils/utils';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 const { fetch, Headers, Request } = fetchPonyfill({
-  Promise: NativePromise
+  Promise: NativePromise,
 });
 import {
   checkInvalidDate,
-  CALENDAR_ERROR_MESSAGES
+  CALENDAR_ERROR_MESSAGES,
 } from '../utils/calendarUtils';
-import Rules from './Rules';
 
 class ValidationChecker {
   constructor(config = {}) {
@@ -768,7 +767,7 @@ class ValidationChecker {
       resultOrPromise = validator.check.call(this, component, setting, value, data, index, row, async);
     }
 
-    const processResult = result => {
+    const processResult = (result) => {
       if (typeof result === 'string') {
         return result;
       }
@@ -798,23 +797,25 @@ class ValidationChecker {
     const setting         = _.get(component.component, validator.key, null);
     const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row, async);
 
-    const processResult = result => {
-      return result ? {
-        message: _.get(result, 'message', result),
-        level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: (component.path || '')
-          .replace(/[[\]]/g, '.')
-          .replace(/\.\./g, '.')
-          .split('.')
-          .map(part => _.defaultTo(_.toNumber(part), part)),
-        context: {
-          validator: validatorName,
-          setting,
-          key: component.key,
-          label: component.label,
-          value
+    const processResult = (result) => {
+      return result
+        ? {
+          message: _.get(result, 'message', result),
+          level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
+          path: (component.path || '')
+            .replace(/[[\]]/g, '.')
+            .replace(/\.\./g, '.')
+            .split('.')
+            .map((part) => _.defaultTo(_.toNumber(part), part)),
+          context: {
+            validator: validatorName,
+            setting,
+            key: component.key,
+            label: component.label,
+            value,
+          },
         }
-      } : false;
+        : false;
     };
 
     if (async) {
@@ -845,18 +846,51 @@ class ValidationChecker {
     // If this component has the new validation system enabled, use it instead.
     const validations = _.get(component, 'component.validations');
     if (validations && Array.isArray(validations)) {
-      const resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
+      const groupedValidation = _
+        .chain(validations)
+        .filter('active')
+        .groupBy((validation) => (validation.group || null))
+        .value();
 
-      // Define how results should be formatted
-      const formatResults = results => {
-        return includeWarnings ? results : results.filter(result => result.level === 'error');
-      };
+      const commonValidations = groupedValidation.null || [];
+      delete groupedValidation.null;
+      const results = [];
+
+      commonValidations.forEach(({
+        condition,
+        message,
+        severity,
+      }) => {
+        if (!component.calculateCondition(condition)) {
+          results.push({
+            level: severity || 'error',
+            message: component.t(message),
+          });
+        }
+      });
+
+      _.forEach(groupedValidation, (validationGroup) => {
+        _.forEach(validationGroup, ({
+          condition,
+          message,
+          severity,
+        }) => {
+          if (!component.calculateCondition(condition)) {
+            results.push({
+              level: severity || 'error',
+              message: component.t(message),
+            });
+
+            return false;
+          }
+        });
+      });
 
       if (async) {
-        return NativePromise.all(resultsOrPromises).then(formatResults);
+        return NativePromise.all(results);
       }
       else {
-        return formatResults(resultsOrPromises);
+        return results;
       }
     }
 
@@ -864,8 +898,9 @@ class ValidationChecker {
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
 
     // Run primary validators
-    const resultsOrPromises = _(component.validators).chain()
-      .map(validatorName => {
+    const resultsOrPromises = _(component.validators)
+      .chain()
+      .map((validatorName) => {
         if (!this.validators.hasOwnProperty(validatorName)) {
           return {
             message: `Validator for "${validatorName}" is not defined`,
@@ -873,8 +908,8 @@ class ValidationChecker {
             context: {
               validator: validatorName,
               key: component.key,
-              label: component.label
-            }
+              label: component.label,
+            },
           };
         }
 
@@ -898,22 +933,22 @@ class ValidationChecker {
     resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async));
 
     // Define how results should be formatted
-    const formatResults = results => {
+    const formatResults = (results) => {
       // Condense to a single flat array
       results = _(results).chain().flatten().compact().value();
 
       if (customErrorMessage || validateCustom) {
-        _.each(results, result => {
+        _.each(results, (result) => {
           result.message = component.t(customErrorMessage || result.message, {
             field: component.errorLabel,
             data,
             row,
-            error: result
+            error: result,
           });
         });
       }
 
-      return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
+      return includeWarnings ? results : _.reject(results, (result) => result.level === 'warning');
     };
 
     // Wait for results if using async mode, otherwise process and return immediately
@@ -923,70 +958,6 @@ class ValidationChecker {
     else {
       return formatResults(resultsOrPromises);
     }
-  }
-
-  /**
-   * Use the new validations engine to evaluate any errors.
-   *
-   * @param component
-   * @param validations
-   * @param data
-   * @param row
-   * @param values
-   * @returns {any[]}
-   */
-  checkValidations(component, validations, data, row, values, async) {
-    // Get results.
-    const results = validations.map((validation) => {
-      return this.checkRule(component, validation, data, row, values, async);
-    });
-
-    // Flatten array and filter out empty results.
-    const messages = results.reduce((prev, result) => {
-      if (result) {
-        return [...prev, ...result];
-      }
-      return prev;
-    }, []).filter((result) => result);
-
-    // Keep only the last error for each rule.
-    const rules = messages.reduce((prev, message) => {
-      prev[message.context.validator] = message;
-      return prev;
-    }, {});
-
-    return Object.values(rules);
-  }
-
-  checkRule(component, validation, data, row, values, async) {
-    const Rule = Rules.getRule(validation.rule);
-    const results = [];
-    if (Rule) {
-      const rule = new Rule(component, validation.settings, this.config);
-      values.map((value, index) => {
-        const result = rule.check(value, data, row, async);
-        if (result !== true) {
-          results.push({
-            level: validation.level || 'error',
-            message: component.t(validation.message || rule.defaultMessage, {
-              settings: validation.settings,
-              field: component.errorLabel,
-              data,
-              row,
-              error: result,
-            }),
-            context: {
-              key: component.key,
-              index,
-              label: component.label,
-              validator: validation.rule,
-            },
-          });
-        }
-      });
-    }
-    // If there are no results, return false so it is removed by filter.
-    return results.length === 0 ? false : results;
   }
 
   get check() {
@@ -1010,12 +981,12 @@ ValidationChecker.config = {
   db: null,
   token: null,
   form: null,
-  submission: null
+  submission: null,
 };
 
 const instance = new ValidationChecker();
 
 export {
   instance as default,
-  ValidationChecker
+  ValidationChecker,
 };

@@ -11,36 +11,22 @@
   </div>
 </div>
 <div class="row">
-  <div class="col {% if (ctx.preview) { %}col-sm-6{% } else { %}col-sm-12{% } %}">
+  <div class="col {% if (ctx.sidebarForm) { %}col-sm-6{% } else { %}col-sm-12{% } %}" ref="editFormWrapper">
     <div ref="editForm">
-        {{ctx.editForm}}
+      {{ctx.editForm}}
     </div>
-    {% if (!ctx.preview) { %}
-    <div style="margin-top: 10px;">
+    <div class="edit-form-action-buttons">
       <button class="btn btn-success" style="margin-right: 10px;" ref="saveButton">{{ctx.t('Save')}}</button>
       <button class="btn btn-secondary" style="margin-right: 10px;" ref="cancelButton">{{ctx.t('Cancel')}}</button>
       <button class="btn btn-danger" ref="removeButton">{{ctx.t('Remove')}}</button>
     </div>
-    {% } %}
   </div>
-  {% if (ctx.preview) { %}
-  <div class="col col-sm-6">
-    <div class="card panel preview-panel">
-      <div class="card-header">
-        <h4 class="card-title mb-0">{{ctx.t('Preview')}}</h4>
-      </div>
-      <div class="card-body">
-        <div class="component-preview" ref="preview">
-          {{ctx.preview}}
-        </div>
-      </div>
+  {% if (ctx.sidebarForm) { %}
+  <div class="col col-sm-6" ref="sidebarFormWrapper">
+    <div ref="sidebarForm">
+      {{ctx.sidebarForm}}
     </div>
-    {% if (ctx.componentInfo.help) { %}
-    <div class="card card-body bg-light formio-settings-help">
-      {{ ctx.t(ctx.componentInfo.help) }}
-    </div>
-    {% } %}
-    <div style="margin-top: 10px;">
+    <div class="edit-form-action-buttons">
       <button class="btn btn-success" style="margin-right: 10px;" ref="saveButton">{{ctx.t('Save')}}</button>
       <button class="btn btn-secondary" style="margin-right: 10px;" ref="cancelButton">{{ctx.t('Cancel')}}</button>
       <button class="btn btn-danger" ref="removeButton">{{ctx.t('Remove')}}</button>

@@ -1,18 +1,19 @@
 import _ from 'lodash';
+
 import Formio from '../../../Formio';
 
 export default [
   {
     key: 'inputMask',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'allowMultipleMasks',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'mask',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'number',
@@ -21,7 +22,7 @@ export default [
     label: 'Rows',
     weight: 210,
     tooltip: 'This allows control over how many rows are visible in the text area.',
-    placeholder: 'Enter the amount of rows'
+    placeholder: 'Enter the amount of rows',
   },
   {
     weight: 1350,
@@ -29,7 +30,7 @@ export default [
     input: true,
     key: 'spellcheck',
     defaultValue: true,
-    label: 'Allow Spellcheck'
+    label: 'Allow Spellcheck',
   },
   {
     type: 'select',
@@ -45,9 +46,9 @@ export default [
         { label: 'CKEditor', value: 'ckeditor' },
         { label: 'Quill', value: 'quill' },
         { label: 'TinyMCE', value: 'tiny' },
-      ]
+      ],
     },
-    weight: 415
+    weight: 415,
   },
   {
     type: 'textfield',
@@ -57,8 +58,8 @@ export default [
     weight: 415.2,
     placeholder: 'If you have a TinyMCE APi Key, enter it here.',
     conditional: {
-      json: { '===': [{ var: 'data.editor' }, 'tiny'] }
-    }
+      json: { '===': [{ var: 'data.editor' }, 'tiny'] },
+    },
   },
   {
     type: 'checkbox',
@@ -71,10 +72,10 @@ export default [
       json: {
         '==': [
           { var: 'data.editor' },
-          ''
-        ]
-      }
-    }
+          '',
+        ],
+      },
+    },
   },
   {
     type: 'checkbox',
@@ -88,12 +89,12 @@ export default [
           {
             '===': [
               { var: 'data.editor' },
-              'quill'
-            ]
+              'quill',
+            ],
           },
-        ]
-      }
-    }
+        ],
+      },
+    },
   },
   {
     type: 'select',
@@ -111,16 +112,16 @@ export default [
           label: storage.title,
           value: key
         }));
-      }
+      },
     },
     conditional: {
       json: {
         '===': [
           { var: 'data.isUploadEnabled' },
-          true
-        ]
-      }
-    }
+          true,
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -131,8 +132,13 @@ export default [
     placeholder: 'Enter the url to post the files to.',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#server-side\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.',
     conditional: {
-      json: { '===': [{ var: 'data.uploadStorage' }, 'url'] }
-    }
+      json: {
+        '===': [
+          { var: 'data.uploadStorage' },
+          'url',
+        ],
+      },
+    },
   },
   {
     type: 'textarea',
@@ -148,11 +154,12 @@ export default [
     }`,
     conditional: {
       json: {
-        '===': [{
-          var: 'data.uploadStorage'
-        }, 'url']
-      }
-    }
+        '===': [
+          { var: 'data.uploadStorage' },
+          'url',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -166,10 +173,10 @@ export default [
       json: {
         '===': [
           { var: 'data.isUploadEnabled' },
-          true
-        ]
-      }
-    }
+          true,
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -183,21 +190,27 @@ export default [
     conditional: {
       json: {
         and: [
-          { '===': [
-            { var: 'data.editor' },
-            'quill'
-          ] },
-          { '===': [
-            { var: 'data.isUploadEnabled' },
-            true
-          ] },
-          { '===': [
-            { var: 'data.uploadStorage' },
-            'url'
-          ] },
-        ]
-      }
-    }
+          {
+            '===': [
+              { var: 'data.editor' },
+              'quill',
+            ],
+          },
+          {
+            '===': [
+              { var: 'data.isUploadEnabled' },
+              true,
+            ],
+          },
+          {
+            '===': [
+              { var: 'data.uploadStorage' },
+              'url',
+            ],
+          },
+        ],
+      },
+    },
   },
   {
     type: 'select',
@@ -211,24 +224,28 @@ export default [
       values: [
         { label: 'String', value: 'string' },
         { label: 'JSON', value: 'json' },
-        { label: 'HTML', value: 'html' }
-      ]
+        { label: 'HTML', value: 'html' },
+      ],
     },
     conditional: {
       json: {
         or: [
-          { '===': [
-            { var: 'data.editor' },
-            'quill'
-          ] },
-          { '===': [
-            { var: 'data.editor' },
-            'ace'
-          ] }
-        ]
-      }
+          {
+            '===': [
+              { var: 'data.editor' },
+              'quill',
+            ],
+          },
+          {
+            '===': [
+              { var: 'data.editor' },
+              'ace',
+            ],
+          },
+        ],
+      },
     },
-    weight: 416
+    weight: 416,
   },
   {
     type: 'textarea',
@@ -245,25 +262,33 @@ export default [
     conditional: {
       json: {
         or: [
-          { '===': [
+          {
+            '===': [
               { var: 'data.editor' },
-              'ace'
-            ] },
-          { '===': [
-            { var: 'data.editor' },
-            'ckeditor'
-          ] },
-          { '===': [
-            { var: 'data.editor' },
-            'quill'
-          ] },
-          { '===': [
-            { var: 'data.editor' },
-            'tiny'
-          ] },
-        ]
-      }
+              'ace',
+            ],
+          },
+          {
+            '===': [
+              { var: 'data.editor' },
+              'ckeditor',
+            ],
+          },
+          {
+            '===': [
+              { var: 'data.editor' },
+              'quill',
+            ],
+          },
+          {
+            '===': [
+              { var: 'data.editor' },
+              'tiny',
+            ],
+          },
+        ],
+      },
     },
-    weight: 417
-  }
+    weight: 417,
+  },
 ];

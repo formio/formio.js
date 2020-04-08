@@ -1,35 +1,35 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'components',
@@ -43,7 +43,7 @@ export default [
         type: 'textfield',
         input: true,
         key: 'label',
-        label: 'Label'
+        label: 'Label',
       },
       {
         type: 'textfield',
@@ -51,8 +51,8 @@ export default [
         key: 'key',
         label: 'Key',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
-      }
-    ]
-  }
+        calculateValue: { _camelCase: [{ var: 'row.label' }] },
+      },
+    ],
+  },
 ];
