@@ -228,6 +228,27 @@ export default class SelectComponent extends Field {
     this.serverCount = this.downloadedResources.length;
   }
 
+  selectDefaultValue(items = []) {
+    // TODO: Implement setting default value for multiple component
+    if (this.component.multiple) {
+      return false;
+    }
+
+    // If there is no default value or at least item then clear select
+    if (
+      !this.defaultValue ||
+      !items[0] ||
+      _.isEqual(this.defaultValue, this.emptyValue)
+    ) {
+      this.choices.removeActiveItems();
+      return true;
+    }
+
+    // Otherwise set first value from items
+    this.setValue(items[0].value);
+    return true;
+  }
+
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
     // If the items is a string, then parse as JSON.
@@ -1005,7 +1026,9 @@ export default class SelectComponent extends Field {
 
     if (notFoundValuesToAdd.length) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+        if (!this.selectDefaultValue(items)) {
+          this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+        }
       }
       else {
         notFoundValuesToAdd.map(notFoundValue => {
