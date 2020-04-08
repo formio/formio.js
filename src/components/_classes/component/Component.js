@@ -2307,6 +2307,7 @@ export default class Component extends Element {
     if (
       newValue !== undefined &&
       newValue !== null &&
+      this.allowData &&
       !this.hasValue()
     ) {
       return true;
