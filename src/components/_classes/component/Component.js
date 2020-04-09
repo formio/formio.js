@@ -1949,6 +1949,13 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
+    if (!settings || (settings.theme === 'snow')) {
+      const mode = settings ? settings.mode : '';
+      settings = {};
+      if (mode) {
+        settings.mode = mode;
+      }
+    }
     settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
