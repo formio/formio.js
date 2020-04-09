@@ -1232,8 +1232,9 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. &quot;danger&quot;, &quot;success&quot;, &quot;warning&quot;, etc.
    * @param {string} message - The message to show in the alert.
+   * @param {string} classes - Styling classes for alert.
    */
-  setAlert(type, message) {
+  setAlert(type, message, classes) {
     if (!type &amp;&amp; this.submitted) {
       if (this.alert) {
         if (this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
@@ -1270,8 +1271,8 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce(&apos;div&apos;, {
+        class: classes || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-        class: `alert alert-${type}`,
         role: &apos;alert&apos;
       });
       if (message instanceof HTMLElement) {

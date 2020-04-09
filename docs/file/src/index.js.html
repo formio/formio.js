@@ -240,7 +240,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/index.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export * from &apos;./formio.form&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// DO NOT SAY &quot;export *&quot;!!! This messes up the umd for dist builds.
+export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio } from &apos;./formio.form&apos;;
 export FormBuilder from &apos;./FormBuilder&apos;;
 </code></pre>
 
