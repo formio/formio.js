@@ -1484,5 +1484,10 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
-Formio.addToGlobal(global);
-Formio.addToGlobal(window);
+
+if (typeof global !== 'undefined') {
+  Formio.addToGlobal(global);
+}
+if (typeof window !== 'undefined') {
+  Formio.addToGlobal(window);
+}
