@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.16
+### Fixed
+ - Import issues with including this library in other libraries.
+ - Problem where infinite loops could occur with non-input components.
+
+### Added
+ - A way to override the alert classes
+ - A way to determine the "size" provided by templates.
+ 
+### Changed
+ - Upgraded @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0
+
 ## 4.9.15
 ### Fixed
  - Problem where the ACE editor would use the wrong mode.
