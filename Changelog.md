@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.17
+### Fixed
+ - Issue where error would throw for some imports that would say "global" is not defined.
+
 ## 4.9.16
 ### Fixed
  - Import issues with including this library in other libraries.

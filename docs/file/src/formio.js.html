@@ -1726,8 +1726,13 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
-Formio.addToGlobal(global);
-Formio.addToGlobal(window);
+
+if (typeof global !== &apos;undefined&apos;) {
+  Formio.addToGlobal(global);
+}
+if (typeof window !== &apos;undefined&apos;) {
+  Formio.addToGlobal(window);
+}
 </code></pre>
 
 </div>
