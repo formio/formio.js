@@ -184,6 +184,14 @@ export default class SelectComponent extends Field {
       label: label
     };
 
+    const skipOption = this.component.uniqueValues
+      ? !!this.selectOptions.find((selectOption) => _.isEqual(selectOption.value, option.value))
+      : false;
+
+    if (skipOption) {
+      return;
+    }
+
     if (value) {
       this.selectOptions.push(option);
     }
@@ -226,6 +234,27 @@ export default class SelectComponent extends Field {
 
     this.downloadedResources.serverCount = this.downloadedResources.length;
     this.serverCount = this.downloadedResources.length;
+  }
+
+  selectDefaultValue(items = []) {
+    // TODO: Implement setting default value for multiple component
+    if (this.component.multiple) {
+      return false;
+    }
+
+    // If there is no default value or at least item then clear select
+    if (
+      !this.defaultValue ||
+      !items[0] ||
+      _.isEqual(this.defaultValue, this.emptyValue)
+    ) {
+      this.choices.removeActiveItems();
+      return true;
+    }
+
+    // Otherwise set first value from items
+    this.setValue(items[0].value);
+    return true;
   }
 
   /* eslint-disable max-statements */
@@ -1007,7 +1036,9 @@ export default class SelectComponent extends Field {
 
     if (notFoundValuesToAdd.length) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+        if (!this.selectDefaultValue(items)) {
+          this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+        }
       }
       else {
         notFoundValuesToAdd.map(notFoundValue => {
