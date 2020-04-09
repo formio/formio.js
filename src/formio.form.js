@@ -77,6 +77,13 @@ Formio.use = (...plugins) => {
   });
 };
 
+Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
+  Formio.requireLibrary(name, name, path, true)
+    .then((modules) => {
+      Formio.use(modules);
+    });
+};
+
 // This is needed to maintain correct imports using the "dist" file.
 Formio.Components = Components;
 Formio.Templates = Templates;

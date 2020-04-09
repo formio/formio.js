@@ -176,7 +176,7 @@ export default class NestedComponent extends Field {
     const result = {};
 
     this.everyComponent((component) => {
-      result[component.key] = component;
+      result[component.component.flattenAs || component.key] = component;
     });
 
     return result;

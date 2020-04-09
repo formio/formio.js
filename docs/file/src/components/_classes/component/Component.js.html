@@ -103,8 +103,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
@@ -547,13 +546,6 @@ export default class Component extends Element {
     this.root = this.options.root;
 
     /**
-     * Determines if this component is visible, or not.
-     */
-    this._parentVisible = this.options.hasOwnProperty(&apos;parentVisible&apos;) ? this.options.parentVisible : true;
-    this._visible = this._parentVisible &amp;&amp; this.conditionallyVisible(null, data);
-    this._parentDisabled = false;
-
-    /**
      * If this input has been input and provided value.
      *
      * @type {boolean}
@@ -576,6 +568,13 @@ export default class Component extends Element {
     this.validators = [&apos;required&apos;, &apos;minLength&apos;, &apos;maxLength&apos;, &apos;minWords&apos;, &apos;maxWords&apos;, &apos;custom&apos;, &apos;pattern&apos;, &apos;json&apos;, &apos;mask&apos;];
 
     this._path = &apos;&apos;;
+
+    /**
+     * Determines if this component is visible, or not.
+     */
+    this._parentVisible = this.options.hasOwnProperty(&apos;parentVisible&apos;) ? this.options.parentVisible : true;
+    this._visible = this._parentVisible &amp;&amp; this.conditionallyVisible(null, data);
+    this._parentDisabled = false;
 
     /**
      * Used to trigger a new change in this component.
@@ -2066,41 +2065,52 @@ export default class Component extends Element {
 
   get wysiwygDefault() {
     return {
-      theme: &apos;snow&apos;,
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ &apos;size&apos;: [&apos;small&apos;, false, &apos;large&apos;, &apos;huge&apos;] }],  // custom dropdown
-          [{ &apos;header&apos;: [1, 2, 3, 4, 5, 6, false] }],
-          [{ &apos;font&apos;: [] }],
-          [&apos;bold&apos;, &apos;italic&apos;, &apos;underline&apos;, &apos;strike&apos;, { &apos;script&apos;: &apos;sub&apos; }, { &apos;script&apos;: &apos;super&apos; }, &apos;clean&apos;],
-          [{ &apos;color&apos;: [] }, { &apos;background&apos;: [] }],
-          [{ &apos;list&apos;: &apos;ordered&apos; }, { &apos;list&apos;: &apos;bullet&apos; }, { &apos;indent&apos;: &apos;-1&apos; }, { &apos;indent&apos;: &apos;+1&apos; }, { &apos;align&apos;: [] }],
-          [&apos;blockquote&apos;, &apos;code-block&apos;],
-          [&apos;link&apos;, &apos;image&apos;, &apos;video&apos;, &apos;formula&apos;, &apos;source&apos;]
-        ]
-      }
-    };
-  }
-
-  get ckEditorConfig() {
-    return {
-      image: {
-        toolbar: [
-          &apos;imageTextAlternative&apos;,
-          &apos;|&apos;,
-          &apos;imageStyle:full&apos;,
-          &apos;imageStyle:alignLeft&apos;,
-          &apos;imageStyle:alignCenter&apos;,
-          &apos;imageStyle:alignRight&apos;
-        ],
-        styles: [
-          &apos;full&apos;,
-          &apos;alignLeft&apos;,
-          &apos;alignCenter&apos;,
-          &apos;alignRight&apos;
-        ]
-      }
+      quill: {
+        theme: &apos;snow&apos;,
+        placeholder: this.t(this.component.placeholder),
+        modules: {
+          toolbar: [
+            [{ &apos;size&apos;: [&apos;small&apos;, false, &apos;large&apos;, &apos;huge&apos;] }],  // custom dropdown
+            [{ &apos;header&apos;: [1, 2, 3, 4, 5, 6, false] }],
+            [{ &apos;font&apos;: [] }],
+            [&apos;bold&apos;, &apos;italic&apos;, &apos;underline&apos;, &apos;strike&apos;, { &apos;script&apos;: &apos;sub&apos; }, { &apos;script&apos;: &apos;super&apos; }, &apos;clean&apos;],
+            [{ &apos;color&apos;: [] }, { &apos;background&apos;: [] }],
+            [{ &apos;list&apos;: &apos;ordered&apos; }, { &apos;list&apos;: &apos;bullet&apos; }, { &apos;indent&apos;: &apos;-1&apos; }, { &apos;indent&apos;: &apos;+1&apos; }, { &apos;align&apos;: [] }],
+            [&apos;blockquote&apos;, &apos;code-block&apos;],
+            [&apos;link&apos;, &apos;image&apos;, &apos;video&apos;, &apos;formula&apos;, &apos;source&apos;]
+          ]
+        }
+      },
+      ace: {
+        theme: &apos;ace/theme/xcode&apos;,
+        maxLines: 12,
+        minLines: 12,
+        tabSize: 2,
+        mode: &apos;javascript&apos;,
+        placeholder: this.t(this.component.placeholder)
+      },
+      ckeditor: {
+        image: {
+          toolbar: [
+            &apos;imageTextAlternative&apos;,
+            &apos;|&apos;,
+            &apos;imageStyle:full&apos;,
+            &apos;imageStyle:alignLeft&apos;,
+            &apos;imageStyle:alignCenter&apos;,
+            &apos;imageStyle:alignRight&apos;
+          ],
+          styles: [
+            &apos;full&apos;,
+            &apos;alignLeft&apos;,
+            &apos;alignCenter&apos;,
+            &apos;alignRight&apos;
+          ]
+        }
+      },
+      tiny: {
+        theme: &apos;silver&apos;
+      },
+      default: {}
     };
   }
 
@@ -2108,7 +2118,7 @@ export default class Component extends Element {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
-    settings = _.merge(_.get(this.options, &apos;editors.ckeditor.settings&apos;, this.ckEditorConfig), settings);
+    settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, &apos;editors.ckeditor.settings&apos;, {}), settings);
     return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, _.get(this.options, &apos;editors.ckeditor.src&apos;, CKEDITOR), true)
       .then(() =&gt; {
         if (!element.parentNode) {
@@ -2122,13 +2132,10 @@ export default class Component extends Element {
   }
 
   addQuill(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
-    settings = _.merge(_.get(this.options, &apos;editors.quill.settings&apos;, {}), settings);
+    settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
+    settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, &apos;editors.quill.settings&apos;, {}), settings);
 
     // Lazy load the quill css.
-    if (!settings.theme) {
-      settings.theme = &apos;snow&apos;;
-    }
     Formio.requireLibrary(`quill-css-${settings.theme}`, &apos;Quill&apos;, [
       { type: &apos;styles&apos;, src: `${QUILL_URL}/quill.${settings.theme}.css` }
     ], true);
@@ -2176,13 +2183,7 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    const defaultAceSettings = {
-      maxLines: 12,
-      minLines: 12,
-      tabSize: 2,
-      mode: &apos;javascript&apos;,
-    };
-    settings = _.merge({}, defaultAceSettings, _.get(this.options, &apos;editors.ace.settings&apos;, {}), settings || {});
+    settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, &apos;editors.ace.settings&apos;, {}), settings || {});
     return Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, _.get(this.options, &apos;editors.ace.src&apos;, ACE_URL), true)
       .then((editor) =&gt; {
         editor = editor.edit(element);
@@ -2200,7 +2201,6 @@ export default class Component extends Element {
         return editor.init({
           ...settings,
           target: element,
-          theme: &apos;silver&apos;,
           // eslint-disable-next-line camelcase
           init_instance_callback: (editor) =&gt; {
             editor.on(&apos;Change&apos;, () =&gt; onChange(editor.getContent()));

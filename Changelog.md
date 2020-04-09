@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
+## 4.10.0-beta.5
+### Changed
+ - Allow external modules to extend the select options easily.
+
+### Fixed
+ - Address component.
+
+## 4.10.0-beta.4
+### Changed
+ - Ensure that Formio is added to the window.
+ - FJS 836: Fix for storage type normalization in Select component.
+ - Fixing issues with the Disable on Invalid for button components.
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+ - PDF 21 - Focus on the first invalid field on form submission 
+ - Fix ace editor error
+ - Fix api key unique err
+ - Add options for values in Select configuration.
+ - Major EditGrid, DataGrid, and Container refactoring.
+
 ## 4.10.0-beta.3
 ### Changed
  - All changes from 4.9.7 - 4.9.9
@@ -33,6 +56,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Current submission to be set after draft save.
+
+## 4.9.13
+### Fixed
+ - Issue with disableOnInvalid for buttons and added a unit test to ensure correct behavior in the future.
+ - PDF21: Focus on the first invalid field on form submission
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+
+## 4.9.12
+### Changed
+ - Reverted https://github.com/formio/formio.js/pull/2049 for reasons described in the PR.
+
+## 4.9.11
+### Changed
+ - Upgrade uuid@7.0.3
+
+### Fixed
+ - Problems where errors would throw in ACE editor regarding unknown theme.
+ - Issues where EditGrid cancel would not reset the component contexts.
+ - The export of the formiojs module to allow other libraries to import from the compiled dist file.
+
+## 4.9.10
+### Changed
+ - Update idb@5.0.2, jsdom@16.2.2, eventemitter2@6.3.1, ejs-loader@0.3.6
+
+### Fixed
+ - Issues with logic messing up form builder.
+ - EditGrid problems where data would get in a detached state.
+ - Fixed unstranslated component label in Webform
+ - Fixed calculated value doesn`t work when editing data with manual override in true position
 
 ## 4.9.9
 ### Fixed

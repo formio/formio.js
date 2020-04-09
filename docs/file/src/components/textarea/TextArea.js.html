@@ -103,8 +103,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
@@ -365,7 +364,9 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.editor = &apos;ckeditor&apos;;
     }
 
-    let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
+    let settings = _.isEmpty(this.component.wysiwyg) ?
+      this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
+      : this.component.wysiwyg;
 
     // Keep track of when this editor is ready.
     this.editorsReady[index] = new NativePromise((editorReady) =&gt; {
@@ -389,7 +390,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty(&apos;toolbarGroups&apos;) || settings.hasOwnProperty(&apos;toolbar&apos;)) {
             console.warn(&apos;The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.&apos;);
-            settings = this.wysiwygDefault;
+            settings = this.wysiwygDefault.quill;
           }
 
           // Add the quill editor.
