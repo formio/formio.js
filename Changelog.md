@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.10.0-beta.6
 ### Fixed
  - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
+### Changed
+ - Upgraded autocompleter@6.0.3, core-js@3.6.5, @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0, karma@5.0.0
 
 ## 4.10.0-beta.5
 ### Changed
