@@ -630,21 +630,6 @@ export default class PDFBuilder extends WebformBuilder {
     this.refs.iframeDropzone.style.width  = iframeRect &amp;&amp; iframeRect.width  ? `${iframeRect.width }px` : &apos;100%&apos;;
   }
 
-  tryUpdateCustomComponentSchema(schema, key) {
-    const comp = _.get(this, `groups.custom.components[${key}]`);
-
-    if (!comp) {
-      return false;
-    }
-
-    schema.key = comp.schema &amp;&amp;  comp.schema.key || schema.key;
-    schema.label = comp.schema &amp;&amp; comp.schema.label || schema.label;
-    schema.keyForShow = schema.key;
-    schema.customField = true;
-
-    return true;
-  }
-
   onDragStart(e) {
     e.dataTransfer.setData(&apos;text/html&apos;, null);
     this.updateDropzoneDimensions();
@@ -673,18 +658,14 @@ export default class PDFBuilder extends WebformBuilder {
 
     const element = e.target;
     const type = element.getAttribute(&apos;data-type&apos;);
-    const group = element.getAttribute(&apos;data-group&apos;);
-    const key = element.getAttribute(&apos;data-key&apos;);
 
     const schema = fastCloneDeep(this.schemas[type]);
 
-    if (!(group === &apos;custom&apos; &amp;&amp; key &amp;&amp; this.tryUpdateCustomComponentSchema(schema, key))) {
-      schema.key = _.camelCase(
-        schema.label ||
-        schema.placeholder ||
-        schema.type
-      );
-    }
+    schema.key = _.camelCase(
+      schema.label ||
+      schema.placeholder ||
+      schema.type
+    );
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);

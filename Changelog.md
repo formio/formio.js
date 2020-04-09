@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
 
 ### Changed
+ - All changes part of v4.9.14 through v4.9.17
  - Upgraded autocompleter@6.0.3, core-js@3.6.5, @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0, karma@5.0.0
 
 ## 4.10.0-beta.5
@@ -59,6 +60,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Current submission to be set after draft save.
+
+## 4.9.17
+### Fixed
+ - Issue where error would throw for some imports that would say "global" is not defined.
+
+## 4.9.16
+### Fixed
+ - Import issues with including this library in other libraries.
+ - Problem where infinite loops could occur with non-input components.
+
+### Added
+ - A way to override the alert classes
+ - A way to determine the "size" provided by templates.
+ 
+### Changed
+ - Upgraded @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0
+
+## 4.9.15
+### Fixed
+ - Problem where the ACE editor would use the wrong mode.
+ - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
+## 4.9.14
+### Fixed
+ - Ensure the Formio object is attached to window to fix sites that include other modules systems still able to use Formio globally.
+
+### Changed
+ - Add options for values for Select component configurations.
 
 ## 4.9.13
 ### Fixed
