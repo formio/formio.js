@@ -587,10 +587,12 @@ export default class SelectComponent extends Field {
         else {
           method = this.component.data.method;
           if (method.toUpperCase() === 'POST') {
-            body = this.component.data.body;
-          }
-          else {
-            body = null;
+            if (typeof this.component.data.body === 'string') {
+              body = JSON.parse(this.component.data.body);
+            }
+            else {
+              body = this.component.data.body;
+            }
           }
         }
         const options = this.component.authenticate ? {} : { noToken: true };
