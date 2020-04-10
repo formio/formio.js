@@ -2136,6 +2136,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio.addtoglobal",
+    "class/src/Formio.js~Formio.html#static-method-addToGlobal",
+    "src/Formio.js~Formio.addToGlobal",
+    "method"
+  ],
+  [
     "src/formio.js~formio.clearcache",
     "class/src/Formio.js~Formio.html#static-method-clearCache",
     "src/Formio.js~Formio.clearCache",
@@ -2655,12 +2661,6 @@ window.esdocSearchIndex = [
     "src/pdfbuilder.js~pdfbuilder#setuploaderror",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setUploadError",
     "src/PDFBuilder.js~PDFBuilder#setUploadError",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#tryupdatecustomcomponentschema",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-tryUpdateCustomComponentSchema",
-    "src/PDFBuilder.js~PDFBuilder#tryUpdateCustomComponentSchema",
     "method"
   ],
   [
@@ -5211,6 +5211,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#shouldskipvalidation",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-shouldSkipValidation",
     "src/components/_classes/component/Component.js~Component#shouldSkipValidation",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#size",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-size",
+    "src/components/_classes/component/Component.js~Component#size",
     "method"
   ],
   [

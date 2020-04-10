@@ -1700,6 +1700,12 @@ export default class Formio {
 
     return NativePromise.reject(`${name} library was not required.`);
   }
+
+  static addToGlobal(global) {
+    if (typeof global === &apos;object&apos; &amp;&amp; !global.Formio) {
+      global.Formio = Formio;
+    }
+  }
 }
 
 // Define all the static properties.
@@ -1720,13 +1726,11 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-if (typeof global === &apos;object&apos; &amp;&amp; !global.Formio) {
-  global.Formio = Formio;
+if (typeof global !== &apos;undefined&apos;) {
+  Formio.addToGlobal(global);
 }
-
-// Ensure we also add to window in case they are using other module systems, it won&apos;t add Formio to window.
-if (typeof window === &apos;object&apos; &amp;&amp; !window.Formio) {
-  window.Formio = Formio;
+if (typeof window !== &apos;undefined&apos;) {
+  Formio.addToGlobal(window);
 }
 </code></pre>
 

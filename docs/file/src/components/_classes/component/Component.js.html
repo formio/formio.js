@@ -1034,6 +1034,7 @@ export default class Component extends Element {
     data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
+    data.size = this.size.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
     data.id = data.id || this.id;
@@ -1620,6 +1621,12 @@ export default class Component extends Element {
       : this.options.iconset === &apos;fa&apos; ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
   }
 
+  size(size) {
+    return Templates.current.hasOwnProperty(&apos;size&apos;)
+      ? Templates.current.size(size)
+      : size;
+  }
+
   /**
    * The readible name for this component.
    * @returns {string} - The name of the component.
@@ -2183,6 +2190,13 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
+    if (!settings || (settings.theme === &apos;snow&apos;)) {
+      const mode = settings ? settings.mode : &apos;&apos;;
+      settings = {};
+      if (mode) {
+        settings.mode = mode;
+      }
+    }
     settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, &apos;editors.ace.settings&apos;, {}), settings || {});
     return Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, _.get(this.options, &apos;editors.ace.src&apos;, ACE_URL), true)
       .then((editor) =&gt; {
@@ -2542,6 +2556,7 @@ export default class Component extends Element {
     if (
       newValue !== undefined &amp;&amp;
       newValue !== null &amp;&amp;
+      this.allowData &amp;&amp;
       !this.hasValue()
     ) {
       return true;
