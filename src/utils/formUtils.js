@@ -190,7 +190,7 @@ export function findComponents(components, query) {
  * This function will find a component in a form and return the component AND THE PATH to the component in the form.
  * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively
  * when you iterating through the nested structure.
- * If the component is not found the call back won't be called and function won't return anything.
+ * If the component is not found the callback won't be called and function won't return anything.
  *
  * @param components
  * @param key
