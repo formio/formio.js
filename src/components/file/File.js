@@ -679,4 +679,9 @@ export default class FileComponent extends Field {
       this.refs.fileBrowse.focus();
     }
   }
+
+  destroy() {
+    this.stopVideo();
+    super.destroy();
+  }
 }
