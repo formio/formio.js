@@ -431,6 +431,13 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   afterAttach() {
+    this.on(&apos;saveComponent&apos;, (schema, component) =&gt; {
+      schema.id = component.id;
+      this.webform.postMessage({ name: &apos;updateElement&apos;, data: schema });
+    });
+    this.on(&apos;removeComponent&apos;, (component) =&gt; {
+      this.webform.postMessage({ name: &apos;removeElement&apos;, data: component });
+    });
     this.initIframeEvents();
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
@@ -496,19 +503,12 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   setForm(form) {
-    return super.setForm(form).then(() =&gt; {
-      return this.ready.then(() =&gt; {
-        if (this.webform) {
-          this.webform.postMessage({ name: &apos;form&apos;, data: form });
-          return this.webform.setForm(form);
-        }
-        return form;
-      });
+    return super.setForm(form).then((form) =&gt; {
+      if (this.webform) {
+        this.webform.postMessage({ name: &apos;form&apos;, data: form });
+      }
+      return form;
     });
-  }
-
-  saveComponent(...args) {
-    return super.saveComponent(...args).then(() =&gt; this.afterAttach());
   }
 
   destroy() {

@@ -248,6 +248,7 @@ import utils from &apos;.&apos;;
 const components = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components.json&apos;));
 const components2 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components2.json&apos;));
 const components3 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components3.json&apos;));
+const components4 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components4.json&apos;));
 const submission1 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/submission1.json&apos;));
 
 describe(&apos;Util Tests&apos;, () =&gt; {
@@ -294,6 +295,19 @@ describe(&apos;Util Tests&apos;, () =&gt; {
         testPaths.push(path);
       }, true);
       expect(paths).to.deep.equal(testPaths);
+    });
+
+    describe(&apos;findComponent&apos;, () =&gt; {
+      it(&apos;should find correct component in nested structure&apos;, () =&gt; {
+        utils.findComponent(components4, &apos;four&apos;, null, (component) =&gt; {
+          expect(component.label).to.equal(&apos;4&apos;);
+        });
+      });
+      it(&apos;should find correct component in flat structure&apos;, () =&gt; {
+        utils.findComponent(components4, &apos;one&apos;, null, (component) =&gt; {
+          expect(component.label).to.equal(&apos;1&apos;);
+        });
+      });
     });
 
     it(&apos;Should be able to find all textfield components&apos;, () =&gt; {

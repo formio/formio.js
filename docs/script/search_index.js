@@ -2484,6 +2484,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdf.js~pdf#rebuild",
+    "class/src/PDF.js~PDF.html#instance-method-rebuild",
+    "src/PDF.js~PDF#rebuild",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#redraw",
     "class/src/PDF.js~PDF.html#instance-method-redraw",
     "src/PDF.js~PDF#redraw",
@@ -2643,12 +2649,6 @@ window.esdocSearchIndex = [
     "src/pdfbuilder.js~pdfbuilder#render",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-render",
     "src/PDFBuilder.js~PDFBuilder#render",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#savecomponent",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-saveComponent",
-    "src/PDFBuilder.js~PDFBuilder#saveComponent",
     "method"
   ],
   [
@@ -9219,6 +9219,12 @@ window.esdocSearchIndex = [
     "src/components/file/file.js~filecomponent#deletefile",
     "class/src/components/file/File.js~FileComponent.html#instance-method-deleteFile",
     "src/components/file/File.js~FileComponent#deleteFile",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#destroy",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-destroy",
+    "src/components/file/File.js~FileComponent#destroy",
     "method"
   ],
   [

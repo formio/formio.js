@@ -1111,6 +1111,12 @@ export function fieldData(data, component) {
     if (component.multiple &amp;&amp; !Array.isArray(data[component.key])) {
       data[component.key] = [data[component.key]];
     }
+
+    // Fix for checkbox type radio submission values in tableView
+    if (component.type === &apos;checkbox&apos; &amp;&amp; component.inputType === &apos;radio&apos;) {
+      return data[component.name] === component.value;
+    }
+
     return data[component.key];
   }
 }

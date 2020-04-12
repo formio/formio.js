@@ -1201,7 +1201,7 @@ export default class Webform extends NestedDataComponent {
     this.addEventListener(this.element, &apos;keydown&apos;, this.executeShortcuts);
     this.currentForm = this;
     return childPromise.then(() =&gt; {
-      this.emit(&apos;render&apos;);
+      this.emit(&apos;render&apos;, this.element);
 
       return this.setValue(this._submission, {
         noUpdateEvent: true,
