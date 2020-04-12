@@ -6,6 +6,7 @@ import utils from '.';
 const components = JSON.parse(fs.readFileSync('src/utils/fixtures/components.json'));
 const components2 = JSON.parse(fs.readFileSync('src/utils/fixtures/components2.json'));
 const components3 = JSON.parse(fs.readFileSync('src/utils/fixtures/components3.json'));
+const components4 = JSON.parse(fs.readFileSync('src/utils/fixtures/components4.json'));
 const submission1 = JSON.parse(fs.readFileSync('src/utils/fixtures/submission1.json'));
 
 describe('Util Tests', () => {
@@ -52,6 +53,19 @@ describe('Util Tests', () => {
         testPaths.push(path);
       }, true);
       expect(paths).to.deep.equal(testPaths);
+    });
+
+    describe('findComponent', () => {
+      it('should find correct component in nested structure', () => {
+        utils.findComponent(components4, 'four', null, (component) => {
+          expect(component.label).to.equal('4');
+        });
+      });
+      it('should find correct component in flat structure', () => {
+        utils.findComponent(components4, 'one', null, (component) => {
+          expect(component.label).to.equal('1');
+        });
+      });
     });
 
     it('Should be able to find all textfield components', () => {
