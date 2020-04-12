@@ -46,7 +46,18 @@ export default class PDF extends Webform {
   }
 
   redraw() {
-    return super.redraw();
+    this.postMessage({ name: 'redraw' });
+    return this.builderMode ? NativePromise.resolve() : super.redraw();
+  }
+
+  rebuild() {
+    this.postMessage({ name: 'redraw' });
+    if (this.builderMode) {
+      this.destroyComponents();
+      this.addComponents();
+      return NativePromise.resolve();
+    }
+    return super.rebuild();
   }
 
   attach(element) {
@@ -84,7 +95,9 @@ export default class PDF extends Webform {
 
       // Hide the submit button if the associated component is hidden
       const submitButton = this.components.find(c => c.element === this.refs.submitButton);
-      this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
+      if (submitButton) {
+        this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
+      }
 
       // Submit the form if they click the submit button.
       this.addEventListener(this.refs.submitButton, 'click', () => {
