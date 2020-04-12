@@ -211,6 +211,11 @@ export default class Component extends Element {
       attachMode: 'full'
     }, options || {}));
 
+    // Restore the component id.
+    if (component && component.id) {
+      this.id = component.id;
+    }
+
     /**
      * Determines if this component has a condition assigned to it.
      * @type {null}
