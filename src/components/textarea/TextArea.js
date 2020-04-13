@@ -305,6 +305,11 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.editorReady) {
       this.editorReady.then((editor) => {
+        // This change solves an issue where the change event was erroneously firing.
+        // This also negates the need for the "value" parameter, but I am keeping that there for reverse compatibility,
+        // and ensure any extended classes do not break.
+        value = this.dataValue;
+
         this.autoModified = (flags && flags.autoModified)
           || (_.isNil(this.autoModified) ? true : this.autoModified);
 
