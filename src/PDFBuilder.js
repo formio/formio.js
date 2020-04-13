@@ -300,7 +300,10 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.height,
           width: schema.width
         };
-        this.editComponent(component.component, this.webform.iframeElement);
+
+        if (!this.options.noNewEdit) {
+          this.editComponent(component.component, this.webform.iframeElement);
+        }
         this.emit('updateComponent', component);
       }
       return component;
