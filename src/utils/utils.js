@@ -1108,3 +1108,26 @@ export function isInputComponent(componentJson) {
       return true;
   }
 }
+
+export function getArrayFromComponentPath(pathStr) {
+  return pathStr.replace(/[[\]]/g, '.')
+    .replace(/\.\./g, '.')
+    .split('.')
+    .map(part => _.defaultTo(_.toNumber(part), part));
+}
+
+export function getStringFromComponentPath(path) {
+  if (!_.isArray(path)) {
+    return path;
+  }
+  let strPath = '';
+  path.forEach((part, i) => {
+    if (_.isNumber(part)) {
+      strPath += `[${part}]`;
+    }
+    else {
+      strPath += i === 0 ? part : `.${part}`;
+    }
+  });
+  return strPath;
+}
