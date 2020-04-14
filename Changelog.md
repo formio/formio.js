@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.19-rc.2
+### Added
+ - A noNewEdit option to keep the edit modal from showing up when a new component is added.
+
 ## 4.9.19-rc.1
 ### Fixed
  - Refresh issues with the PDF builder.
