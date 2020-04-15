@@ -39,7 +39,18 @@ export default class PDF extends Webform {
   }
 
   render() {
+    this.submitButton = this.addComponent({
+      input: true,
+      type: 'button',
+      action: 'submit',
+      internal: true,
+      label: 'Submit',
+      key: 'submit',
+      ref: 'button'
+    });
+
     return this.renderTemplate('pdf', {
+      submitButton: this.submitButton.render(),
       classes: 'formio-form-pdf',
       children: this.renderComponents()
     });
@@ -65,11 +76,15 @@ export default class PDF extends Webform {
   attach(element) {
     return super.attach(element).then(() => {
       this.loadRefs(element, {
-        submitButton: 'single',
+        button: 'single',
+        buttonMessageContainer: 'single',
+        buttonMessage: 'single',
         zoomIn: 'single',
         zoomOut: 'single',
         iframeContainer: 'single'
       });
+      this.submitButton.refs = { ...this.refs };
+      this.submitButton.attachButton();
 
       // Reset the iframeReady promise.
       this.iframeReady = new NativePromise((resolve, reject) => {
@@ -96,13 +111,13 @@ export default class PDF extends Webform {
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
-      const submitButton = this.components.find(c => c.element === this.refs.submitButton);
+      const submitButton = this.components.find(c => c.element === this.refs.button);
       if (submitButton) {
-        this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
+        this.refs.button.classList.toggle('hidden', !submitButton.visible);
       }
 
       // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.submitButton, 'click', () => {
+      this.addEventListener(this.refs.button, 'click', () => {
         this.postMessage({ name: 'getErrors' });
         return this.submit();
       });
