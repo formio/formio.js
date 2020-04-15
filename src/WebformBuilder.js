@@ -300,7 +300,7 @@ export default class WebformBuilder extends Component {
           title: this.t('Edit'),
         });
 
-        component.addEventListener(component.refs.editForm, 'click', () => this.editBuilingForm());
+        component.addEventListener(component.refs.editForm, 'click', () => this.editBuildingForm());
       }
 
       if (component.refs.editFormJson) {
@@ -310,7 +310,7 @@ export default class WebformBuilder extends Component {
           title: this.t('Edit JSON'),
         });
 
-        component.addEventListener(component.refs.editFormJson, 'click', () => this.editBuilingForm(true));
+        component.addEventListener(component.refs.editFormJson, 'click', () => this.editBuildingForm(true));
       }
 
       return element;
@@ -1152,7 +1152,7 @@ export default class WebformBuilder extends Component {
 
   }
 
-  editBuilingForm(isJsonEdit) {
+  editBuildingForm(isJsonEdit) {
     if (this.dialog) {
       this.dialog.close();
     }
