@@ -14,11 +14,13 @@ export class VariableValueSource extends ValueSource {
   }
 
   static getInputEditForm({
+    customVariables,
     editFormUtils,
     excludeVariables,
   }) {
     return {
       ...editFormUtils.variableSelector({
+        customValues: customVariables,
         exclude: excludeVariables,
       }),
       validate: {

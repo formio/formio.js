@@ -14,6 +14,8 @@ export class ConditionalAssignmentValueSource extends ValueSource {
   }
 
   static getInputEditForm({
+    customConditions,
+    customVariables,
     editFormUtils,
     excludeValueSources,
     excludeVariables,
@@ -70,8 +72,11 @@ export class ConditionalAssignmentValueSource extends ValueSource {
       addAnother: 'Add Assignment',
       saveRow: 'Save Assignment',
       components: [
-        editFormUtils.conditionSelector(),
+        editFormUtils.conditionSelector({
+          customConditions,
+        }),
         ...editFormUtils.valueDeclaration({
+          customVariables,
           excludeValueSources: [
             ...excludeValueSources,
             // Exclude current valueSource to prevent infinite recursion.

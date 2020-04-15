@@ -1,6 +1,12 @@
 import _ from 'lodash';
 
-import { QuickRulesHelper, ValueSources } from '../../../../validator';
+import {
+  Conjunctions,
+  QuickRulesHelper,
+  Operators,
+  Transformers,
+  ValueSources,
+} from '../../../../validator';
 import Evaluator from '../../../../utils/Evaluator';
 
 const EditFormUtils = {
@@ -189,6 +195,8 @@ const EditFormUtils = {
     };
   },
   valueDeclaration({
+    customConditions = null,
+    customVariables = null,
     excludeValueSources = [],
     excludeVariables = [],
     required = true,
@@ -219,6 +227,8 @@ const EditFormUtils = {
       ...valueSources
         .map((valueSource) => {
           const editForm = valueSource.getInputEditForm({
+            customConditions,
+            customVariables,
             editFormUtils: EditFormUtils,
             excludeValueSources,
             excludeVariables,
@@ -246,6 +256,7 @@ const EditFormUtils = {
   },
   variableSelector({
     exclude = [],
+    customValues = null,
   } = {}) {
     return {
       type: 'select',
@@ -257,9 +268,10 @@ const EditFormUtils = {
         custom(args) {
           const { data, options } = args;
           const { editForm = {} } = options;
+          const values = customValues ? customValues(args) : (editForm.settings?.variables ?? []).concat(data.variables ?? []);
+
           return _
-            .chain(editForm.variables || [])
-            .concat(data.variables || [])
+            .chain(values)
             .map(({
               name,
               key,
@@ -269,7 +281,7 @@ const EditFormUtils = {
             }))
             .reject(({ key }) => exclude.some((excludeVariable) => (
               _.isFunction(excludeVariable)
-                ? excludeVariable(exclude, args)
+                ? excludeVariable(key, args)
                 : (key !== excludeVariable)
             )))
             .value();
@@ -281,6 +293,7 @@ const EditFormUtils = {
   },
   conditionSelector({
     exclude = [],
+    customValues = null,
   } = {}) {
     return {
       type: 'select',
@@ -292,9 +305,10 @@ const EditFormUtils = {
         custom(args) {
           const { data, options } = args;
           const { editForm = {} } = options;
+          const values = customValues ? customValues(args) : (editForm.settings?.conditions ?? []).concat(data.conditions ?? []);
+
           return _
-            .chain(editForm.conditions || [])
-            .concat(data.conditions || [])
+            .chain(values)
             .map(({
               name,
               key,
@@ -304,7 +318,7 @@ const EditFormUtils = {
             }))
             .reject(({ key }) => exclude.some((excludeCondition) => (
               _.isFunction(excludeCondition)
-                ? excludeCondition(exclude, args)
+                ? excludeCondition(key, args)
                 : (key !== excludeCondition)
             )))
             .value();
@@ -314,11 +328,128 @@ const EditFormUtils = {
       template: '<span>{{ item.name || item.key }} ({{ item.key }})</span>',
     };
   },
+  getTransformer({
+    title,
+    name,
+    arguments: transformerArguments,
+  }, {
+    customConditions = null,
+    customVariables = null,
+    excludeValueSources = [],
+    excludeVariables = [],
+  } = {}) {
+    return (
+    (transformerArguments && transformerArguments.length)
+      ? (
+        [
+          {
+            label: `${title} Transform Arguments`,
+            key: `${name}Arguments`,
+            conditional: {
+              json: {
+                '===': [
+                  {
+                    var: 'row.name',
+                  },
+                  name,
+                ],
+              },
+            },
+            type: 'container',
+            input: true,
+            components: transformerArguments.map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
+              customConditions,
+              customVariables,
+              excludeValueSources,
+              excludeVariables: [
+                (key, { instance }) => (key === instance.parent.data.key),
+                ...excludeVariables,
+              ],
+            })),
+          },
+        ]
+      )
+      : []
+    );
+  },
+  getOperator({
+    title,
+    name,
+    arguments: operatorArguments,
+    optionsEditForm,
+  }, {
+    customConditions = null,
+    customVariables = null,
+    excludeValueSources = [],
+    excludeVariables = [],
+  } = {}) {
+    const conditional = {
+      json: {
+        '===': [
+          {
+            var: 'row.name',
+          },
+          name,
+        ],
+      },
+    };
+
+    return ([
+      {
+        label: title,
+        key: `${name}Arguments`,
+        type: 'container',
+        input: true,
+        components: [
+          {
+            key: `${name}ArgumentsPanel`,
+            type: 'panel',
+            title: 'Arguments',
+            input: false,
+            collapsible: true,
+            collapsed: false,
+            components: operatorArguments.map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
+              customConditions,
+              customVariables,
+              excludeValueSources,
+              excludeVariables,
+            })),
+          },
+        ],
+        conditional,
+      },
+    ]).concat(
+      (optionsEditForm && optionsEditForm.length)
+        ? (
+          {
+            label: 'Options',
+            key: `${name}Options`,
+            type: 'container',
+            input: true,
+            components: [
+              {
+                key: `${name}OptionsPanel`,
+                type: 'panel',
+                title: 'Options',
+                input: false,
+                collapsible: true,
+                collapsed: true,
+                components: optionsEditForm,
+              },
+            ],
+            conditional,
+          }
+        )
+        : [],
+    );
+  },
   getArgument({
     name,
     key,
     required = false,
   }, {
+    customConditions = null,
+    customVariables = null,
     excludeValueSources = [],
     excludeVariables = [],
   } = {}) {
@@ -329,6 +460,8 @@ const EditFormUtils = {
       type: 'container',
       input: true,
       components: EditFormUtils.valueDeclaration({
+        customConditions,
+        customVariables,
         excludeValueSources: [
           'conditionalAssignment',
           ...excludeValueSources,
@@ -376,6 +509,334 @@ const EditFormUtils = {
               instance.parent.resetValue();
             },
           }),
+        },
+      ],
+    };
+  },
+  getVariablesEditForm({
+    customConditions = null,
+    customVariables = null,
+    excludeValueSources = [],
+  } = {}) {
+    return {
+      label: 'Variables',
+      key: 'variables',
+      input: true,
+      type: 'editgrid',
+      inlineEdit: true,
+      templates: {
+        header: (
+          `<div class="row">
+            <div class="col-sm-10">Name</div>
+            <div class="col-sm-2">Actions</div>
+          </div>`
+        ),
+        row: (
+          `<div class="row">
+            <div class="col-sm-10">{{ row.name ? row.name + " (" + row.key + ")" : row.key }}</div>
+            <div class="col-sm-2">
+              <button class="btn btn-default btn-light btn-sm editRow">Edit</button>
+              <button class="btn btn-danger btn-sm removeRow">Delete</button>
+            </div>
+          </div>`
+        ),
+      },
+      addAnother: 'Add Variable',
+      saveRow: 'Save Variable',
+      components: [
+        {
+          type: 'textfield',
+          input: true,
+          key: 'name',
+          label: 'Name',
+          validate: {
+            required: true,
+          },
+        },
+        {
+          type: 'textfield',
+          input: true,
+          key: 'key',
+          label: 'Key',
+          allowCalculateOverride: true,
+          calculateValue: {
+            _camelCase: [
+              {
+                var: 'row.name',
+              },
+            ],
+          },
+          validate: {
+            required: true,
+          },
+        },
+        ...EditFormUtils.valueDeclaration({
+          customConditions,
+          customVariables,
+          excludeVariables: [
+            (key, { row }) => (key === row.key),
+            (key, { instance }) => (key === instance?.parent?.data?.key),
+          ],
+          excludeValueSources,
+        }),
+        {
+          label: 'Transform',
+          key: 'transform',
+          input: true,
+          type: 'container',
+          components: [
+              {
+                label: 'Transform',
+                dataSrc: 'values',
+                defaultValue: 'identity',
+                data: {
+                  values: _.map(Transformers.getTransformers(), (transform) => ({
+                    label: transform.title,
+                    value: transform.name,
+                  })),
+                },
+                dataType: 'string',
+                validate: {
+                  required: true,
+                },
+                key: 'name',
+                type: 'select',
+                input: true,
+              },
+              ..._.flatMap(Transformers.getTransformers(), (transformer) => EditFormUtils.getTransformer(transformer, {
+                customConditions,
+                customVariables,
+                excludeValueSources,
+              })),
+          ],
+          conditional: {
+            json: {
+              and: [
+                {
+                  '!!': {
+                    var: 'row.valueSource',
+                  },
+                },
+                {
+                  '!==': [
+                    {
+                      var: 'row.valueSource',
+                    },
+                    'conditionalAssignment',
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      ],
+    };
+  },
+  getConditionsEditForm({
+    customConditions = null,
+    customVariables = null,
+    excludeValueSources = [],
+  } = {}) {
+    return {
+      type: 'editgrid',
+      input: true,
+      label: 'Conditions',
+      key: 'conditions',
+      inlineEdit: true,
+      templates: {
+        header: (
+          `<div class="row">
+            <div class="col-sm-10">Name</div>
+            <div class="col-sm-2">Actions</div>
+          </div>`
+        ),
+        row: (
+          `<div class="row">
+            <div class="col-sm-10">{{ row.name ? row.name + " (" + row.key + ")" : row.key }}</div>
+            <div class="col-sm-2">
+              <button class="btn btn-default btn-light btn-sm editRow">Edit</button>
+              <button class="btn btn-danger btn-sm removeRow">Delete</button>
+            </div>
+          </div>`
+        ),
+      },
+      addAnother: 'Add Condition',
+      saveRow: 'Save Condition',
+      components: [
+        {
+          type: 'textfield',
+          input: true,
+          key: 'name',
+          label: 'Name',
+          validate: {
+            required: true,
+          },
+        },
+        {
+          type: 'textfield',
+          input: true,
+          key: 'key',
+          label: 'Key',
+          allowCalculateOverride: true,
+          calculateValue: {
+            _camelCase: [
+              {
+                var: 'row.name',
+              },
+            ],
+          },
+          validate: {
+            required: true,
+          },
+        },
+        {
+          type: 'radio',
+          input: true,
+          key: 'conjunction',
+          label: 'Conjunction',
+          hideLabel: true,
+          defaultValue: 'and',
+          inline: true,
+          values: _
+            .chain(Conjunctions.getConjunctions())
+            .sortBy('weight')
+            .map((conjunction) => ({
+              label: conjunction.title,
+              value: conjunction.name,
+            }))
+            .value(),
+          validate: {
+            required: true,
+          },
+        },
+        {
+          type: 'editgrid',
+          input: true,
+          key: 'parts',
+          label: 'Parts',
+          hideLabel: true,
+          inlineEdit: true,
+          templates: {
+            header: (
+              `<div class="row">
+                <div class="col-sm-2">Type</div>
+                <div class="col-sm-8">Description</div>
+                <div class="col-sm-2">Actions</div>
+              </div>`
+            ),
+            row: (
+              `<div class="row">
+                <div class="col-sm-2">{{ flattenedComponents.type.getView(row.type) }}</div>
+                <div class="col-sm-8">{{ (row.type === 'existing') ? flattenedComponents.condition.getView(row.condition) : (row.description || flattenedComponents.name.getView(row.operator.name)) }}</div>
+                <div class="col-sm-2">
+                  <button class="btn btn-default btn-light btn-sm editRow">Edit</button>
+                  <button class="btn btn-danger btn-sm removeRow">Delete</button>
+                </div>
+              </div>`
+            ),
+          },
+          addAnother: 'Add Condition Part',
+          saveRow: 'Save Condition Part',
+          components: [
+            {
+              type: 'select',
+              input: true,
+              key: 'type',
+              label: 'Type',
+              dataSrc: 'values',
+              data: {
+                values: [
+                  {
+                    label: 'New Condition',
+                    value: 'new',
+                  },
+                  {
+                    label: 'Existing Condition',
+                    value: 'existing',
+                  },
+                ],
+              },
+              validate: {
+                required: true,
+              },
+            },
+            {
+              ...EditFormUtils.conditionSelector({
+                customValues: customConditions,
+                exclude: [
+                  (key, { instance }) => (key === instance.parent.data.key),
+                ],
+              }),
+              validate: {
+                required: true,
+              },
+              conditional: {
+                json: {
+                  '===': [
+                    {
+                      var: 'row.type',
+                    },
+                    'existing',
+                  ],
+                },
+              },
+            },
+            {
+              type: 'textfield',
+              input: true,
+              key: 'description',
+              label: 'Description',
+              conditional: {
+                json: {
+                  '===': [
+                    {
+                      var: 'row.type',
+                    },
+                    'new',
+                  ],
+                },
+              },
+            },
+            {
+              type: 'container',
+              input: true,
+              label: 'Operator',
+              key: 'operator',
+              components: [
+                {
+                  type: 'select',
+                  input: true,
+                  key: 'name',
+                  label: 'Operator',
+                  dataSrc: 'values',
+                  data: {
+                    values: _.map(Operators.getOperators(), (operator) => ({
+                      label: operator.title,
+                      value: operator.name,
+                    })),
+                  },
+                  validate: {
+                    required: true,
+                  },
+                },
+                ..._.flatMap(Operators.getOperators(), (operator) => EditFormUtils.getOperator(operator, {
+                  customConditions,
+                  customVariables,
+                  excludeValueSources,
+                })),
+              ],
+              conditional: {
+                json: {
+                  '===': [
+                    {
+                      var: 'row.type',
+                    },
+                    'new',
+                  ],
+                },
+              },
+            },
+          ],
         },
       ],
     };

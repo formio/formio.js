@@ -4,7 +4,8 @@ import builderComponent from './builderComponent';
 import builderComponents from './builderComponents';
 import builderEditForm from './builderEditForm';
 import builderPlaceholder from './builderPlaceholder';
-import builderSettings from './builderSettings';
+import builderForm from './builderForm';
+import builderFormEditForm from './builderFormEditForm';
 import builderSidebar from './builderSidebar';
 import builderSidebarGroup from './builderSidebarGroup';
 import builderWizard from './builderWizard';
@@ -74,8 +75,9 @@ export default {
   builderComponent,
   builderComponents,
   builderEditForm,
+  builderFormEditForm,
+  builderForm,
   builderPlaceholder,
-  builderSettings,
   builderSidebar,
   builderSidebarGroup,
   builderWizard,

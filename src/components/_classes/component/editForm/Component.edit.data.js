@@ -153,7 +153,14 @@ export default [
     label: 'Allow Manual Override of Calculated Value',
     tooltip: 'When checked, this will allow the user to manually override the calculated value.',
   },
-
+  {
+    key: 'apiInfoHeading',
+    type: 'htmlelement',
+    input: false,
+    weight: 1299,
+    tag: 'h4',
+    content: 'API Info',
+  },
   {
     weight: 1300,
     type: 'textfield',

@@ -12,6 +12,7 @@ import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import Templates from './templates/Templates';
 require('./components/builder');
+import { FormEditForms } from './formEditForm';
 
 const nestedDataComponents = ['container', 'datagrid', 'editgrid'];
 const arrayDataComponents = ['datagrid', 'editgrid'];
@@ -125,7 +126,7 @@ export default class WebformBuilder extends Component {
     this.options.hooks.renderComponent = (html, { self }) => {
       if (self.type === 'form' && !self.key) {
         // The main webform shouldn't have this class as it adds extra styles.
-        return this.renderTemplate('builderSettings', {
+        return this.renderTemplate('builderForm', {
           html: html.replace('formio-component-form', ''),
         });
       }
@@ -221,7 +222,7 @@ export default class WebformBuilder extends Component {
         copyComponent: 'single',
         pasteComponent: 'single',
         editJson: 'single',
-        editFormSettings: 'single',
+        editForm: 'single',
         editFormJson: 'single',
       });
 
@@ -292,15 +293,14 @@ export default class WebformBuilder extends Component {
           this.removeComponent(component.schema, parent, component.component));
       }
 
-      if (component.refs.editFormSettings) {
-        new Tooltip(component.refs.editFormSettings, {
+      if (component.refs.editForm) {
+        new Tooltip(component.refs.editForm, {
           trigger: 'hover',
           placement: 'top',
           title: this.t('Edit'),
         });
 
-        component.addEventListener(component.refs.editFormSettings, 'click', () =>
-          this.editComponent(component.schema, parent, false, false, component.component));
+        component.addEventListener(component.refs.editForm, 'click', () => this.editBuilingForm());
       }
 
       if (component.refs.editFormJson) {
@@ -310,8 +310,7 @@ export default class WebformBuilder extends Component {
           title: this.t('Edit JSON'),
         });
 
-        component.addEventListener(component.refs.editFormJson, 'click', () =>
-          this.editComponent(component.schema, parent, false, true, component.component));
+        component.addEventListener(component.refs.editFormJson, 'click', () => this.editBuilingForm(true));
       }
 
       return element;
@@ -1151,6 +1150,108 @@ export default class WebformBuilder extends Component {
 
   getAdditionalPages() {
 
+  }
+
+  editBuilingForm(isJsonEdit) {
+    if (this.dialog) {
+      this.dialog.close();
+    }
+
+    if (this.editForm) {
+      this.editForm.destroy();
+    }
+
+    if (this.sidebarForm) {
+      this.sidebarForm.destroy();
+    }
+
+    const editFormOptions = _.clone(_.get(this, 'options.editForm', {}));
+    editFormOptions.editForm = this.form;
+    this.editForm = new Webform(
+      {
+        ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
+        language: this.options.language,
+        ...editFormOptions
+      }
+    );
+
+    this.getNestedComponentsMap();
+    this.editForm.pathComponentsMapping = this.pathComponentsMapping;
+    this.editForm.arrayDataComponentPaths = this.arrayDataComponentPaths;
+    this.editForm.parentPath = this.getParentPath(parent && parent.formioComponent);
+
+    this.editForm.form = isJsonEdit ? {
+      components: [
+        {
+          type: 'textarea',
+          as: 'json',
+          editor: 'ace',
+          weight: 10,
+          input: true,
+          key: 'componentJson',
+          label: 'Component JSON',
+          tooltip: 'Edit the JSON for this component.'
+        }
+      ]
+    } : FormEditForms.getFormEditForm(this.form.display || 'form')();
+
+    const form = _.cloneDeep(this.form);
+
+    this.editForm.submission = isJsonEdit ? {
+      data: {
+        componentJson: form,
+      },
+    } : {
+      data: form,
+    };
+
+    this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
+    this.setContent(this.componentEdit, this.renderTemplate('builderFormEditForm', {
+      editForm: this.editForm.render(),
+    }));
+
+    this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
+
+    this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+
+    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
+    cancelButtons.forEach((cancelButton) => {
+      this.addEventListener(cancelButton, 'click', (event) => {
+        event.preventDefault();
+        this.editForm.detach();
+        this.emit('cancelFormEditForm', this.form);
+        this.dialog.close();
+      });
+    });
+
+    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    saveButtons.forEach((saveButton) => {
+      this.addEventListener(saveButton, 'click', (event) => {
+        event.preventDefault();
+        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+          this.editForm.setPristine(false);
+          this.editForm.showErrors();
+          return false;
+        }
+
+        const newFormSchema = isJsonEdit ? this.editForm.data.componentJson : this.editForm.data;
+        this.editForm.detach();
+        this.emit('saveFormEditForm', newFormSchema);
+        this.dialog.close();
+        this.form = newFormSchema;
+      });
+    });
+
+    const dialogClose = () => {
+      this.editForm.destroy();
+      // Clean up.
+      this.removeEventListener(this.dialog, 'close', dialogClose);
+      this.dialog = null;
+    };
+    this.addEventListener(this.dialog, 'close', dialogClose);
+
+    // Called when we edit a component.
+    this.emit('editFormEditForm', this.form);
   }
 
   editComponent(component, parent, isNew, isJsonEdit, original) {

@@ -295,6 +295,14 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
+  get conditions() {
+    return this.schema.settings?.conditions ?? [];
+  }
+
+  get variables() {
+    return this.schema.settings?.variables ?? [];
+  }
+
   /**
    * Add a language for translations
    *

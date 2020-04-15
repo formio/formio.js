@@ -195,7 +195,14 @@ export default [
     key: 'modalEdit',
     input: true,
   },
-
+  {
+    key: 'conditionalVisibilityHeading',
+    type: 'htmlelement',
+    weight: 1699,
+    input: false,
+    tag: 'h4',
+    content: 'Conditional Visibility',
+  },
   {
     weight: 1700,
     type: 'panel',
@@ -260,7 +267,14 @@ export default [
       },
     ],
   ),
-
+  {
+    key: 'pdfLayoutHeading',
+    type: 'htmlelement',
+    weight: 1899,
+    input: false,
+    tag: 'h4',
+    content: 'PDF Layout',
+  },
   {
     weight: 1900,
     label: 'HTML Attributes',

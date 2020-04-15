@@ -2429,6 +2429,14 @@ export default class Component extends Element {
     };
   }
 
+  get conditions() {
+    return this.component.conditions ?? [];
+  }
+
+  get variables() {
+    return this.component.variables ?? [];
+  }
+
   calculateCondition(name) {
     // Identify recurrent reference.
     if (this.lockedConditions.has(name)) {
@@ -2440,8 +2448,12 @@ export default class Component extends Element {
       return cachedValue;
     }
 
-    const condition = (this.component.conditions || []).find(({ key }) => (key === name));
+    const condition = this.conditions.find(({ key }) => (key === name));
     if (!condition) {
+      if (this.root !== this) {
+        return this.root.calculateCondition(name);
+      }
+
       return false;
     }
 
@@ -2529,8 +2541,12 @@ export default class Component extends Element {
       return cachedValue;
     }
 
-    const variable = (this.component.variables || []).find(({ key }) => (key === name));
+    const variable = this.variables.find(({ key }) => (key === name));
     if (!variable) {
+      if (this.root !== this) {
+        return this.root.calculateVariable(name);
+      }
+
       return null;
     }
 
@@ -2558,7 +2574,7 @@ export default class Component extends Element {
 
     const Transformer = Transformers.getTransformer(name);
     if (!Transformer) {
-      return false;
+      return value;
     }
 
     const transformerInstance = new Transformer(this.logicOptions);
