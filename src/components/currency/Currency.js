@@ -109,7 +109,7 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   formatValue(value) {
-    if (value && this.disabled) {
+    if (value || value === '0') {
       return this.addZerosAndFormatValue(value);
     }
 
