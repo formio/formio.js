@@ -197,6 +197,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getArrayFromComponentPath">getArrayFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
@@ -207,6 +208,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberSeparators">getNumberSeparators</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
@@ -281,7 +283,18 @@ export default class PDF extends Webform {
   }
 
   render() {
+    this.submitButton = this.addComponent({
+      input: true,
+      type: &apos;button&apos;,
+      action: &apos;submit&apos;,
+      internal: true,
+      label: &apos;Submit&apos;,
+      key: &apos;submit&apos;,
+      ref: &apos;button&apos;
+    });
+
     return this.renderTemplate(&apos;pdf&apos;, {
+      submitButton: this.submitButton.render(),
       classes: &apos;formio-form-pdf&apos;,
       children: this.renderComponents()
     });
@@ -293,11 +306,13 @@ export default class PDF extends Webform {
   }
 
   rebuild() {
-    this.postMessage({ name: &apos;redraw&apos; });
     if (this.builderMode) {
       this.destroyComponents();
       this.addComponents();
       return NativePromise.resolve();
+    }
+    else {
+      this.postMessage({ name: &apos;redraw&apos; });
     }
     return super.rebuild();
   }
@@ -305,11 +320,15 @@ export default class PDF extends Webform {
   attach(element) {
     return super.attach(element).then(() =&gt; {
       this.loadRefs(element, {
-        submitButton: &apos;single&apos;,
+        button: &apos;single&apos;,
+        buttonMessageContainer: &apos;single&apos;,
+        buttonMessage: &apos;single&apos;,
         zoomIn: &apos;single&apos;,
         zoomOut: &apos;single&apos;,
         iframeContainer: &apos;single&apos;
       });
+      this.submitButton.refs = { ...this.refs };
+      this.submitButton.attachButton();
 
       // Reset the iframeReady promise.
       this.iframeReady = new NativePromise((resolve, reject) =&gt; {
@@ -336,13 +355,13 @@ export default class PDF extends Webform {
       this.postMessage({ name: &apos;form&apos;, data: this.form });
 
       // Hide the submit button if the associated component is hidden
-      const submitButton = this.components.find(c =&gt; c.element === this.refs.submitButton);
+      const submitButton = this.components.find(c =&gt; c.element === this.refs.button);
       if (submitButton) {
-        this.refs.submitButton.classList.toggle(&apos;hidden&apos;, !submitButton.visible);
+        this.refs.button.classList.toggle(&apos;hidden&apos;, !submitButton.visible);
       }
 
       // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.submitButton, &apos;click&apos;, () =&gt; {
+      this.addEventListener(this.refs.button, &apos;click&apos;, () =&gt; {
         this.postMessage({ name: &apos;getErrors&apos; });
         return this.submit();
       });

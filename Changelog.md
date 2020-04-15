@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.19-rc.3
+### Fixed
+ - Fixing the PDF builder and form to not reset the forms when it changes.
+ - Changed pdf button to make it highlighted on form state changing
+ - FJS 858: Fixed no zeros in currency component when start editing
+ - Fix focus on invalid components
+ 
+### Changed
+ - Upgrade i18next@19.4.2, ismobilejs@1.1.1, raw-loader@4.0.1
+
 ## 4.9.19-rc.2
 ### Added
  - A noNewEdit option to keep the edit modal from showing up when a new component is added.

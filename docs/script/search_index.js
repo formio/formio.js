@@ -960,6 +960,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~getarrayfromcomponentpath",
+    "function/index.html#static-function-getArrayFromComponentPath",
+    "<span>getArrayFromComponentPath</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/formutils.js~getcomponent",
     "function/index.html#static-function-getComponent",
     "<span>getComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -1023,6 +1029,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~getrandomcomponentid",
     "function/index.html#static-function-getRandomComponentId",
     "<span>getRandomComponentId</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~getstringfromcomponentpath",
+    "function/index.html#static-function-getStringFromComponentPath",
+    "<span>getStringFromComponentPath</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -2526,6 +2538,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdf.js~pdf#submitbutton",
+    "class/src/PDF.js~PDF.html#instance-member-submitButton",
+    "src/PDF.js~PDF#submitButton",
+    "member"
+  ],
+  [
     "src/pdf.js~pdf#submitform",
     "class/src/PDF.js~PDF.html#instance-method-submitForm",
     "src/PDF.js~PDF#submitForm",
@@ -3423,6 +3441,12 @@ window.esdocSearchIndex = [
     "src/webformbuilder.js~webformbuilder#highlightinvalidcomponents",
     "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-highlightInvalidComponents",
     "src/WebformBuilder.js~WebformBuilder#highlightInvalidComponents",
+    "method"
+  ],
+  [
+    "src/webformbuilder.js~webformbuilder#init",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-init",
+    "src/WebformBuilder.js~WebformBuilder#init",
     "method"
   ],
   [
