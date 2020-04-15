@@ -1009,7 +1009,7 @@ export default class SelectComponent extends Field {
 
     if (notFoundValuesToAdd.length) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
       else {
         notFoundValuesToAdd.map(notFoundValue => {

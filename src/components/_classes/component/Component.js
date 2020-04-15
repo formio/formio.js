@@ -211,6 +211,11 @@ export default class Component extends Element {
       attachMode: 'full'
     }, options || {}));
 
+    // Restore the component id.
+    if (component && component.id) {
+      this.id = component.id;
+    }
+
     /**
      * Determines if this component has a condition assigned to it.
      * @type {null}
@@ -2714,8 +2719,8 @@ export default class Component extends Element {
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
-      // Skip validatoin for disabled componoents.
-      () => this.shouldDisabled,
+      // Force valid if component is read-only
+      () => this.options.readOnly,
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
