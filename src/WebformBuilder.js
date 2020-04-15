@@ -1289,6 +1289,13 @@ export default class WebformBuilder extends Component {
     return component;
   }
 
+  init() {
+    if (this.webform) {
+      this.webform.init();
+    }
+    return super.init();
+  }
+
   destroy() {
     if (this.webform.initialized) {
       this.webform.destroy();
