@@ -28,6 +28,24 @@ describe('Select Component', () => {
     });
   });
 
+  it('should correctly determine storage type when dataType is auto', function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) => {
+      const value = component.normalizeSingleValue('true');
+      const value1 = component.normalizeSingleValue('11');
+      const value2 = component.normalizeSingleValue('test');
+      const value3 = component.normalizeSingleValue('11test11test');
+      const value4 = component.normalizeSingleValue('test11');
+      const value5 = component.normalizeSingleValue('0');
+      assert.equal(typeof value, 'boolean');
+      assert.equal(typeof value1, 'number');
+      assert.equal(typeof value2, 'string');
+      assert.equal(typeof value3, 'string');
+      assert.equal(typeof value4, 'string');
+      assert.equal(typeof value5, 'number');
+      done();
+    });
+  });
+
   it('should set multiple selected values not repeating them', function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);

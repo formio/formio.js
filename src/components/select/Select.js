@@ -1091,7 +1091,7 @@ export default class SelectComponent extends Field {
 
       toNumber() {
         try {
-          const numberValue = parseFloat(this.value);
+          const numberValue = Number(this.value);
 
           if (!Number.isNaN(numberValue) && isFinite(numberValue)) {
             this.value = numberValue;
