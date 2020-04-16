@@ -347,7 +347,12 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
   }
 
-  everyComponent(fn, rowIndex) {
+  everyComponent(fn, rowIndex, options) {
+    if (_.isObject(rowIndex)) {
+      options = rowIndex;
+      rowIndex = null;
+    }
+
     const components = this.getComponents(rowIndex);
     _.each(components, (component, index) => {
       if (fn(component, components, index) === false) {
@@ -355,7 +360,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
 
       if (typeof component.everyComponent === 'function') {
-        if (component.everyComponent(fn) === false) {
+        if (component.everyComponent(fn, options) === false) {
           return false;
         }
       }

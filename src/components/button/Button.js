@@ -65,6 +65,10 @@ export default class ButtonComponent extends Field {
     this.setLoading(this.refs.button, loading);
   }
 
+  get skipInEmail() {
+    return true;
+  }
+
   // No label needed for buttons.
   createLabel() {}
 
