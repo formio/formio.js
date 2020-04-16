@@ -207,8 +207,33 @@ export default class WebformBuilder extends Component {
         [`${component.key}-container`]: 'single',
       });
       component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
+    };
 
-      // Need to set up horizontal rearrangement of fields.
+    this.options.hooks.attachWebform = (element, component) => {
+      component.loadRefs(element, {
+        editForm: 'single',
+        editFormJson: 'single',
+      });
+
+      if (component.refs.editForm) {
+        new Tooltip(component.refs.editForm, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Edit'),
+        });
+
+        component.addEventListener(component.refs.editForm, 'click', () => this.editBuildingForm());
+      }
+
+      if (component.refs.editFormJson) {
+        new Tooltip(component.refs.editFormJson, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Edit JSON'),
+        });
+
+        component.addEventListener(component.refs.editFormJson, 'click', () => this.editBuildingForm(true));
+      }
     };
 
     this.options.hooks.attachComponent = (element, component) => {
@@ -222,8 +247,6 @@ export default class WebformBuilder extends Component {
         copyComponent: 'single',
         pasteComponent: 'single',
         editJson: 'single',
-        editForm: 'single',
-        editFormJson: 'single',
       });
 
       if (component.refs.copyComponent) {
@@ -291,26 +314,6 @@ export default class WebformBuilder extends Component {
 
         component.addEventListener(component.refs.removeComponent, 'click', () =>
           this.removeComponent(component.schema, parent, component.component));
-      }
-
-      if (component.refs.editForm) {
-        new Tooltip(component.refs.editForm, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Edit'),
-        });
-
-        component.addEventListener(component.refs.editForm, 'click', () => this.editBuildingForm());
-      }
-
-      if (component.refs.editFormJson) {
-        new Tooltip(component.refs.editFormJson, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Edit JSON'),
-        });
-
-        component.addEventListener(component.refs.editFormJson, 'click', () => this.editBuildingForm(true));
       }
 
       return element;
@@ -1219,8 +1222,8 @@ export default class WebformBuilder extends Component {
       this.addEventListener(cancelButton, 'click', (event) => {
         event.preventDefault();
         this.editForm.detach();
-        this.emit('cancelFormEditForm', this.form);
         this.dialog.close();
+        this.emit('cancelFormEditForm', this.form);
       });
     });
 
@@ -1236,9 +1239,9 @@ export default class WebformBuilder extends Component {
 
         const newFormSchema = isJsonEdit ? this.editForm.data.componentJson : this.editForm.data;
         this.editForm.detach();
-        this.emit('saveFormEditForm', newFormSchema);
         this.dialog.close();
         this.form = newFormSchema;
+        this.emit('saveFormEditForm', newFormSchema);
       });
     });
 
