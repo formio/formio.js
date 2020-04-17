@@ -144,7 +144,7 @@ export default class SelectComponent extends Field {
   }
 
   itemTemplate(data) {
-    if (!data) {
+    if (_.isEmpty(data)) {
       return '';
     }
 
