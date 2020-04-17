@@ -188,6 +188,9 @@ export function findComponents(components, query) {
 
 /**
  * This function will find a component in a form and return the component AND THE PATH to the component in the form.
+ * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively
+ * when you iterating through the nested structure.
+ * If the component is not found the callback won't be called and function won't return anything.
  *
  * @param components
  * @param key
@@ -205,6 +208,7 @@ export function findComponent(components, key, path, fn) {
 
   components.forEach(function(component, index) {
     var newPath = path.slice();
+    // Add an index of the component it iterates through in nested structure
     newPath.push(index);
     if (!component) return;
 
@@ -238,6 +242,7 @@ export function findComponent(components, key, path, fn) {
     }
 
     if (component.key === key) {
+      //Final callback if the component is found
       fn(component, newPath);
     }
   });

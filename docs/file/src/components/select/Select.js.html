@@ -197,6 +197,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getArrayFromComponentPath">getArrayFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
@@ -207,6 +208,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberSeparators">getNumberSeparators</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
@@ -943,6 +945,52 @@ export default class SelectComponent extends Field {
       : element;
   }
 
+  choicesOptions() {
+    const useSearch = this.component.hasOwnProperty(&apos;searchEnabled&apos;) ? this.component.searchEnabled : true;
+    const placeholderValue = this.t(this.component.placeholder);
+    let customOptions = this.component.customOptions || {};
+    if (typeof customOptions == &apos;string&apos;) {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
+    return {
+      removeItemButton: this.component.disabled ? false : _.get(this.component, &apos;removeItemButton&apos;, true),
+      itemSelectText: &apos;&apos;,
+      classNames: {
+        containerOuter: &apos;choices form-group formio-choices&apos;,
+        containerInner: this.transform(&apos;class&apos;, &apos;form-control ui fluid selection dropdown&apos;)
+      },
+      addItemText: false,
+      placeholder: !!this.component.placeholder,
+      placeholderValue: placeholderValue,
+      noResultsText: this.t(&apos;No results found&apos;),
+      noChoicesText: this.t(&apos;No choices to choose from&apos;),
+      searchPlaceholderValue: this.t(&apos;Type to search&apos;),
+      shouldSort: false,
+      position: (this.component.dropdown || &apos;auto&apos;),
+      searchEnabled: useSearch,
+      searchChoices: !this.component.searchField,
+      searchFields: _.get(this, &apos;component.searchFields&apos;, [&apos;label&apos;]),
+      fuseOptions: Object.assign(
+        {},
+        _.get(this, &apos;component.fuseOptions&apos;, {}),
+        {
+          include: &apos;score&apos;,
+          threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
+        }
+      ),
+      valueComparer: _.isEqual,
+      resetScrollPosition: false,
+      ...customOptions,
+    };
+  }
+
   /* eslint-disable max-statements */
   attach(element) {
     const superAttach = super.attach(element);
@@ -981,56 +1029,14 @@ export default class SelectComponent extends Field {
       return;
     }
 
-    const useSearch = this.component.hasOwnProperty(&apos;searchEnabled&apos;) ? this.component.searchEnabled : true;
-    const placeholderValue = this.t(this.component.placeholder);
-    let customOptions = this.component.customOptions || {};
-    if (typeof customOptions == &apos;string&apos;) {
-      try {
-        customOptions = JSON.parse(customOptions);
-      }
-      catch (err) {
-        console.warn(err.message);
-        customOptions = {};
-      }
-    }
-
-    const choicesOptions = {
-      removeItemButton: this.component.disabled ? false : _.get(this.component, &apos;removeItemButton&apos;, true),
-      itemSelectText: &apos;&apos;,
-      classNames: {
-        containerOuter: &apos;choices form-group formio-choices&apos;,
-        containerInner: this.transform(&apos;class&apos;, &apos;form-control ui fluid selection dropdown&apos;)
-      },
-      addItemText: false,
-      placeholder: !!this.component.placeholder,
-      placeholderValue: placeholderValue,
-      noResultsText: this.t(&apos;No results found&apos;),
-      noChoicesText: this.t(&apos;No choices to choose from&apos;),
-      searchPlaceholderValue: this.t(&apos;Type to search&apos;),
-      shouldSort: false,
-      position: (this.component.dropdown || &apos;auto&apos;),
-      searchEnabled: useSearch,
-      searchChoices: !this.component.searchField,
-      searchFields: _.get(this, &apos;component.searchFields&apos;, [&apos;label&apos;]),
-      fuseOptions: Object.assign(
-        {},
-        _.get(this, &apos;component.fuseOptions&apos;, {}),
-        {
-          include: &apos;score&apos;,
-          threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
-        }
-      ),
-      valueComparer: _.isEqual,
-      resetScrollPosition: false,
-      ...customOptions,
-    };
-
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute(&apos;dir&apos;, this.i18next.dir());
     if (this.choices) {
       this.choices.destroy();
     }
+
+    const choicesOptions = this.choicesOptions();
     this.choices = new Choices(input, choicesOptions);
 
     this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
@@ -1048,7 +1054,7 @@ export default class SelectComponent extends Field {
     else {
       this.focusableElement = this.choices.containerInner.element;
       this.choices.containerOuter.element.setAttribute(&apos;tabIndex&apos;, &apos;-1&apos;);
-      if (useSearch) {
+      if (choicesOptions.searchEnabled) {
         this.addEventListener(this.choices.containerOuter.element, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
       }
     }
@@ -1102,11 +1108,11 @@ export default class SelectComponent extends Field {
       this.update();
     });
 
-    if (placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
-      this.addPlaceholderItem(placeholderValue);
+    if (choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
+      this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, &apos;removeItem&apos;, () =&gt; {
-        this.addPlaceholderItem(placeholderValue);
+        this.addPlaceholderItem(choicesOptions.placeholderValue);
       });
     }
 
@@ -1247,7 +1253,7 @@ export default class SelectComponent extends Field {
 
     if (notFoundValuesToAdd.length) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, &apos;value&apos;, &apos;label&apos;, true);
+        this.choices.setChoices(notFoundValuesToAdd, &apos;value&apos;, &apos;label&apos;);
       }
       else {
         notFoundValuesToAdd.map(notFoundValue =&gt; {

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.6
+### Fixed
+ - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
+### Changed
+ - All changes part of v4.9.14 through v4.9.17
+ - Upgraded autocompleter@6.0.3, core-js@3.6.5, @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0, karma@5.0.0
+
 ## 4.10.0-beta.5
 ### Changed
  - Allow external modules to extend the select options easily.
@@ -52,6 +60,75 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Current submission to be set after draft save.
+
+## 4.9.19
+### Changed
+ - No changes. 4.9.19-rc.3 production release.
+
+## 4.9.19-rc.3
+### Fixed
+ - Fixing the PDF builder and form to not reset the forms when it changes.
+ - Changed pdf button to make it highlighted on form state changing
+ - FJS 858: Fixed no zeros in currency component when start editing
+ - Fix focus on invalid components
+ 
+### Changed
+ - Upgrade i18next@19.4.2, ismobilejs@1.1.1, raw-loader@4.0.1
+
+## 4.9.19-rc.2
+### Added
+ - A noNewEdit option to keep the edit modal from showing up when a new component is added.
+
+## 4.9.19-rc.1
+### Fixed
+ - Refresh issues with the PDF builder.
+ - Form builder demo to chage the JSON form correctly.
+ - Fixing erroneous spaces causing crashes in Chromium 
+ - Fixied memory leak by stopping video stream on destroy
+ - Don't replace choices when adding not found values
+ - FJS-844 implement basic fix for checkbox type radio submit values in tableView
+ - 'Add Another' button isn't translated with leading space
+
+### Changed
+ - Don't skip validation for disabled components
+ - Upgrade i18next@19.4.1, ismobilejs@1.1.0, jquery@3.5.0, dialog-polyfill@0.5.1
+
+### Added
+ - Add tests for the findComponent method, comment code
+ - Add context object while emit render event
+
+## 4.9.18
+### Changed
+ - Allow external modules to extend the Select options.
+ - Upgrade core-js@3.6.5, karma@5.0.1
+
+## 4.9.17
+### Fixed
+ - Issue where error would throw for some imports that would say "global" is not defined.
+
+## 4.9.16
+### Fixed
+ - Import issues with including this library in other libraries.
+ - Problem where infinite loops could occur with non-input components.
+
+### Added
+ - A way to override the alert classes
+ - A way to determine the "size" provided by templates.
+ 
+### Changed
+ - Upgraded @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0
+
+## 4.9.15
+### Fixed
+ - Problem where the ACE editor would use the wrong mode.
+ - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
+## 4.9.14
+### Fixed
+ - Ensure the Formio object is attached to window to fix sites that include other modules systems still able to use Formio globally.
+
+### Changed
+ - Add options for values for Select component configurations.
 
 ## 4.9.13
 ### Fixed

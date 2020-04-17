@@ -32,6 +32,16 @@ describe('Currency Component', () => {
     });
   });
 
+  it('Should set values with trailing zeros', () => {
+    return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
+      assert.equal(component.formatValue(null), null);
+      assert.equal(component.formatValue('0'), '0.00');
+      assert.equal(component.formatValue('3'), '3.00');
+      assert.equal(component.formatValue('3.3'), '3.30');
+      assert.equal(component.formatValue('3.33'), '3.33');
+    });
+  });
+
   it('Should format currency for USA locale', () => {
     /* eslint-disable max-statements */
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {

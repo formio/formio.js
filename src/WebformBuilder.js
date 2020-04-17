@@ -456,29 +456,7 @@ export default class WebformBuilder extends Component {
   }
 
   set form(value) {
-    if (!value.components) {
-      value.components = [];
-    }
-
-    const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && !value.components.length;
-
-    // Ensure there is at least a submit button.
-    if (isShowSubmitButton) {
-      value.components.push({
-        type: 'button',
-        label: 'Submit',
-        key: 'submit',
-        size: 'md',
-        block: false,
-        action: 'submit',
-        disableOnInvalid: true,
-        theme: 'primary'
-      });
-    }
-
-    this.webform.form = value;
-    this.rebuild();
+    this.setForm(value);
   }
 
   get container() {
@@ -827,15 +805,43 @@ export default class WebformBuilder extends Component {
 
     return rebuild.then(() => {
       this.emit('addComponent', info, parent, path, index, isNew);
+      if (!isNew) {
+        this.emit('change', this.form);
+      }
     });
   }
 
   setForm(form) {
-    this.emit('change', form);
-    return super.setForm(form).then(retVal => {
-      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
-      return retVal;
-    });
+    if (!form.components) {
+      form.components = [];
+    }
+
+    const isShowSubmitButton = !this.options.noDefaultSubmitButton
+      && !form.components.length;
+
+    // Ensure there is at least a submit button.
+    if (isShowSubmitButton) {
+      form.components.push({
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        size: 'md',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary'
+      });
+    }
+
+    if (this.webform) {
+      return this.webform.setForm(form).then(() => {
+        if (this.refs.form) {
+          this.builderHeight = this.refs.form.offsetHeight;
+        }
+        return this.rebuild().then(() => this.form);
+      });
+    }
+    return NativePromise.resolve(form);
   }
 
   populateRecaptchaSettings(form) {
@@ -1017,20 +1023,24 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      let comp = null;
+      parentComponent.getComponents().forEach((component) => {
+        if (component.key === original.key) {
+          comp = component;
+        }
+      });
       if (parentContainer) {
         parentContainer[index] = submissionData;
+        if (comp) {
+          comp.component = submissionData;
+        }
       }
       else if (parentComponent && parentComponent.saveChildComponent) {
         parentComponent.saveChildComponent(submissionData);
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        let schema = parentContainer ? parentContainer[index] : [];
-        parentComponent.getComponents().forEach((component) => {
-          if (component.key === schema.key) {
-            schema = component.schema;
-          }
-        });
+        const schema = comp ? comp.schema : (parentContainer ? parentContainer[index] : []);
         this.emit('saveComponent',
           schema,
           component,
@@ -1282,6 +1292,13 @@ export default class WebformBuilder extends Component {
       groupInfo.components[component.key] = component;
     }
     return component;
+  }
+
+  init() {
+    if (this.webform) {
+      this.webform.init();
+    }
+    return super.init();
   }
 
   destroy() {

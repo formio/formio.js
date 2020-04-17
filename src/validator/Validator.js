@@ -6,7 +6,7 @@ import {
   getDateSetting,
   escapeRegExCharacters,
   interpolate,
-  convertFormatToMoment
+  convertFormatToMoment, getArrayFromComponentPath
 } from '../utils/utils';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
@@ -802,11 +802,7 @@ class ValidationChecker {
       return result ? {
         message: _.get(result, 'message', result),
         level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: (component.path || '')
-          .replace(/[[\]]/g, '.')
-          .replace(/\.\./g, '.')
-          .split('.')
-          .map(part => _.defaultTo(_.toNumber(part), part)),
+        path: getArrayFromComponentPath(component.path || ''),
         context: {
           validator: validatorName,
           setting,

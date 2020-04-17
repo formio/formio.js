@@ -408,12 +408,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html",
-    "<span>NestedArrayComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nestedarray/NestedArrayComponent.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/_classes/nested/nestedcomponent.form.js~nestedcomponent",
     "function/index.html#static-function-NestedComponent",
     "<span>NestedComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nested/NestedComponent.form.js</span>",
@@ -423,12 +417,6 @@ window.esdocSearchIndex = [
     "formiojs/src/components/_classes/nested/nestedcomponent.js~nestedcomponent",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html",
     "<span>NestedComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nested/NestedComponent.js</span>",
-    "class"
-  ],
-  [
-    "formiojs/src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html",
-    "<span>NestedDataComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nesteddata/NestedDataComponent.js</span>",
     "class"
   ],
   [
@@ -598,12 +586,6 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-Survey",
     "<span>Survey</span> <span class=\"search-result-import-path\">formiojs/src/components/survey/Survey.form.js</span>",
     "function"
-  ],
-  [
-    "formiojs/src/components/survey/survey.js~surveycomponent",
-    "class/src/components/survey/Survey.js~SurveyComponent.html",
-    "<span>SurveyComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/survey/Survey.js</span>",
-    "class"
   ],
   [
     "formiojs/src/components/table/table.form.js~table",
@@ -954,6 +936,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~getarrayfromcomponentpath",
+    "function/index.html#static-function-getArrayFromComponentPath",
+    "<span>getArrayFromComponentPath</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/formutils.js~getcomponent",
     "function/index.html#static-function-getComponent",
     "<span>getComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -1017,6 +1005,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~getrandomcomponentid",
     "function/index.html#static-function-getRandomComponentId",
     "<span>getRandomComponentId</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~getstringfromcomponentpath",
+    "function/index.html#static-function-getStringFromComponentPath",
+    "<span>getStringFromComponentPath</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -2136,6 +2130,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio.addtoglobal",
+    "class/src/Formio.js~Formio.html#static-method-addToGlobal",
+    "src/Formio.js~Formio.addToGlobal",
+    "method"
+  ],
+  [
     "src/formio.js~formio.clearcache",
     "class/src/Formio.js~Formio.html#static-method-clearCache",
     "src/Formio.js~Formio.clearCache",
@@ -2478,6 +2478,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdf.js~pdf#rebuild",
+    "class/src/PDF.js~PDF.html#instance-method-rebuild",
+    "src/PDF.js~PDF#rebuild",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#redraw",
     "class/src/PDF.js~PDF.html#instance-method-redraw",
     "src/PDF.js~PDF#redraw",
@@ -2512,6 +2518,12 @@ window.esdocSearchIndex = [
     "class/src/PDF.js~PDF.html#instance-method-showErrors",
     "src/PDF.js~PDF#showErrors",
     "method"
+  ],
+  [
+    "src/pdf.js~pdf#submitbutton",
+    "class/src/PDF.js~PDF.html#instance-member-submitButton",
+    "src/PDF.js~PDF#submitButton",
+    "member"
   ],
   [
     "src/pdf.js~pdf#submitform",
@@ -2640,12 +2652,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/pdfbuilder.js~pdfbuilder#savecomponent",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-saveComponent",
-    "src/PDFBuilder.js~PDFBuilder#saveComponent",
-    "method"
-  ],
-  [
     "src/pdfbuilder.js~pdfbuilder#setform",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setForm",
     "src/PDFBuilder.js~PDFBuilder#setForm",
@@ -2655,12 +2661,6 @@ window.esdocSearchIndex = [
     "src/pdfbuilder.js~pdfbuilder#setuploaderror",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setUploadError",
     "src/PDFBuilder.js~PDFBuilder#setUploadError",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#tryupdatecustomcomponentschema",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-tryUpdateCustomComponentSchema",
-    "src/PDFBuilder.js~PDFBuilder#tryUpdateCustomComponentSchema",
     "method"
   ],
   [
@@ -2824,6 +2824,12 @@ window.esdocSearchIndex = [
     "class/src/Webform.js~Webform.html#instance-member-element",
     "src/Webform.js~Webform#element",
     "member"
+  ],
+  [
+    "src/webform.js~webform#everycomponent",
+    "class/src/Webform.js~Webform.html#instance-method-everyComponent",
+    "src/Webform.js~Webform#everyComponent",
+    "method"
   ],
   [
     "src/webform.js~webform#executeformcontroller",
@@ -3423,6 +3429,12 @@ window.esdocSearchIndex = [
     "src/webformbuilder.js~webformbuilder#highlightinvalidcomponents",
     "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-highlightInvalidComponents",
     "src/WebformBuilder.js~WebformBuilder#highlightInvalidComponents",
+    "method"
+  ],
+  [
+    "src/webformbuilder.js~webformbuilder#init",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-init",
+    "src/WebformBuilder.js~WebformBuilder#init",
     "method"
   ],
   [
@@ -5214,6 +5226,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/component/component.js~component#size",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-size",
+    "src/components/_classes/component/Component.js~Component#size",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#skipinemail",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-skipInEmail",
+    "src/components/_classes/component/Component.js~Component#skipInEmail",
+    "member"
+  ],
+  [
     "src/components/_classes/component/component.js~component#splice",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-splice",
     "src/components/_classes/component/Component.js~Component#splice",
@@ -6318,106 +6342,10 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js",
-    "file/src/components/_classes/nestedarray/NestedArrayComponent.js.html",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js",
-    "file"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#_rowindex",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-member-_rowIndex",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#_rowIndex",
-    "member"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#checkdata",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-checkData",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#checkData",
-    "method"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#checkrow",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-checkRow",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#checkRow",
-    "method"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#checkrows",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-checkRows",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#checkRows",
-    "method"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#componentcontext",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-componentContext",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#componentContext",
-    "method"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#hasaddbutton",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-hasAddButton",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#hasAddButton",
-    "method"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#iteratablerows",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-get-iteratableRows",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#iteratableRows",
-    "member"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#rowindex",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-get-rowIndex",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#rowIndex",
-    "member"
-  ],
-  [
-    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#rowindex",
-    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-set-rowIndex",
-    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#rowIndex",
-    "member"
-  ],
-  [
     "src/components/_classes/nestedarray/nestedarraycomponent.unit.js",
     "file/src/components/_classes/nestedarray/NestedArrayComponent.unit.js.html",
     "src/components/_classes/nestedarray/NestedArrayComponent.unit.js",
     "file"
-  ],
-  [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js",
-    "file/src/components/_classes/nesteddata/NestedDataComponent.js.html",
-    "src/components/_classes/nesteddata/NestedDataComponent.js",
-    "file"
-  ],
-  [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#allowdata",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-get-allowData",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#allowData",
-    "member"
-  ],
-  [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#getvalue",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-getValue",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#getvalueasstring",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-getValueAsString",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#getValueAsString",
-    "method"
-  ],
-  [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#haschanged",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-hasChanged",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#hasChanged",
-    "method"
-  ],
-  [
-    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#updatevalue",
-    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-updateValue",
-    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#updateValue",
-    "method"
   ],
   [
     "src/components/_classes/nesteddata/nesteddatacomponent.unit.js",
@@ -6862,6 +6790,12 @@ window.esdocSearchIndex = [
     "class/src/components/button/Button.js~ButtonComponent.html#instance-method-render",
     "src/components/button/Button.js~ButtonComponent#render",
     "method"
+  ],
+  [
+    "src/components/button/button.js~buttoncomponent#skipinemail",
+    "class/src/components/button/Button.js~ButtonComponent.html#instance-get-skipInEmail",
+    "src/components/button/Button.js~ButtonComponent#skipInEmail",
+    "member"
   ],
   [
     "src/components/button/button.js~buttoncomponent#triggerrecaptcha",
@@ -9300,6 +9234,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#destroy",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-destroy",
+    "src/components/file/File.js~FileComponent#destroy",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#emptyvalue",
     "class/src/components/file/File.js~FileComponent.html#instance-get-emptyValue",
     "src/components/file/File.js~FileComponent#emptyValue",
@@ -9946,6 +9886,12 @@ window.esdocSearchIndex = [
     "class/src/components/hidden/Hidden.js~HiddenComponent.html#instance-method-setValue",
     "src/components/hidden/Hidden.js~HiddenComponent#setValue",
     "method"
+  ],
+  [
+    "src/components/hidden/hidden.js~hiddencomponent#skipinemail",
+    "class/src/components/hidden/Hidden.js~HiddenComponent.html#instance-get-skipInEmail",
+    "src/components/hidden/Hidden.js~HiddenComponent#skipInEmail",
+    "member"
   ],
   [
     "src/components/hidden/hidden.js~hiddencomponent#validatemultiple",
@@ -11262,84 +11208,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/survey/survey.js",
-    "file/src/components/survey/Survey.js.html",
-    "src/components/survey/Survey.js",
-    "file"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#attach",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-attach",
-    "src/components/survey/Survey.js~SurveyComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#defaultschema",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-get-defaultSchema",
-    "src/components/survey/Survey.js~SurveyComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#disabled",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-set-disabled",
-    "src/components/survey/Survey.js~SurveyComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#disabled",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-get-disabled",
-    "src/components/survey/Survey.js~SurveyComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#emptyvalue",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-get-emptyValue",
-    "src/components/survey/Survey.js~SurveyComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#getinputname",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-getInputName",
-    "src/components/survey/Survey.js~SurveyComponent#getInputName",
-    "method"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#getvalue",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-getValue",
-    "src/components/survey/Survey.js~SurveyComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#render",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-render",
-    "src/components/survey/Survey.js~SurveyComponent#render",
-    "method"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#setvalue",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-setValue",
-    "src/components/survey/Survey.js~SurveyComponent#setValue",
-    "method"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent#validaterequired",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-validateRequired",
-    "src/components/survey/Survey.js~SurveyComponent#validateRequired",
-    "method"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent.builderinfo",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#static-get-builderInfo",
-    "src/components/survey/Survey.js~SurveyComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/survey/survey.js~surveycomponent.schema",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#static-method-schema",
-    "src/components/survey/Survey.js~SurveyComponent.schema",
-    "method"
-  ],
-  [
     "src/components/survey/survey.unit.js",
     "file/src/components/survey/Survey.unit.js.html",
     "src/components/survey/Survey.unit.js",
@@ -11751,6 +11619,12 @@ window.esdocSearchIndex = [
     "src/components/tags/fixtures/comp1.js",
     "file/src/components/tags/fixtures/comp1.js.html",
     "src/components/tags/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/tags/fixtures/comp2.js",
+    "file/src/components/tags/fixtures/comp2.js.html",
+    "src/components/tags/fixtures/comp2.js",
     "file"
   ],
   [

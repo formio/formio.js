@@ -97,8 +97,8 @@ export default class CurrencyComponent extends NumberComponent {
     return super.formatValue(formattedValue);
   }
 
-  getValueAsString(value) {
-    const stringValue = super.getValueAsString(value);
+  getValueAsString(value, options) {
+    const stringValue = super.getValueAsString(value, options);
 
     // eslint-disable-next-line eqeqeq
     if (value || value == '0') {
@@ -109,7 +109,7 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   formatValue(value) {
-    if (value && this.disabled) {
+    if (value || value === '0') {
       return this.addZerosAndFormatValue(value);
     }
 
