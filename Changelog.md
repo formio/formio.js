@@ -61,6 +61,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Current submission to be set after draft save.
 
+## 4.9.19
+### Changed
+ - No changes. 4.9.19-rc.3 production release.
+
+## 4.9.19-rc.3
+### Fixed
+ - Fixing the PDF builder and form to not reset the forms when it changes.
+ - Changed pdf button to make it highlighted on form state changing
+ - FJS 858: Fixed no zeros in currency component when start editing
+ - Fix focus on invalid components
+ 
+### Changed
+ - Upgrade i18next@19.4.2, ismobilejs@1.1.1, raw-loader@4.0.1
+
+## 4.9.19-rc.2
+### Added
+ - A noNewEdit option to keep the edit modal from showing up when a new component is added.
+
+## 4.9.19-rc.1
+### Fixed
+ - Refresh issues with the PDF builder.
+ - Form builder demo to chage the JSON form correctly.
+ - Fixing erroneous spaces causing crashes in Chromium 
+ - Fixied memory leak by stopping video stream on destroy
+ - Don't replace choices when adding not found values
+ - FJS-844 implement basic fix for checkbox type radio submit values in tableView
+ - 'Add Another' button isn't translated with leading space
+
+### Changed
+ - Don't skip validation for disabled components
+ - Upgrade i18next@19.4.1, ismobilejs@1.1.0, jquery@3.5.0, dialog-polyfill@0.5.1
+
+### Added
+ - Add tests for the findComponent method, comment code
+ - Add context object while emit render event
+
+## 4.9.18
+### Changed
+ - Allow external modules to extend the Select options.
+ - Upgrade core-js@3.6.5, karma@5.0.1
+
 ## 4.9.17
 ### Fixed
  - Issue where error would throw for some imports that would say "global" is not defined.
