@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.19
+### Changed
+ - No changes. 4.9.19-rc.3 production release.
+
 ## 4.9.19-rc.3
 ### Fixed
  - Fixing the PDF builder and form to not reset the forms when it changes.
