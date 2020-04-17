@@ -510,20 +510,36 @@ export default class PDF extends Webform {
     });
   }
 
+  focusOnComponent(key) {
+    this.postMessage({
+      name: &apos;focusErroredField&apos;,
+      data: key,
+    });
+  }
+
   // Do not clear the iframe.
   clear() {}
 
   showErrors(error, triggerEvent) {
-    const p = this.ce(&apos;p&apos;);
-    p.classList.add(&apos;help-block&apos;);
-    this.setContent(p, this.t(&apos;submitError&apos;));
-    p.addEventListener(&apos;click&apos;, () =&gt; {
-      window.scrollTo(0, 0);
-    });
-    const div = this.ce(&apos;div&apos;);
-    div.classList.add(&apos;has-error&apos;);
-    this.appendTo(p, div);
-    this.appendTo(div, this.element);
+    const helpBlock = document.getElementById(&apos;submit-error&apos;);
+
+    if (!helpBlock) {
+      const p = this.ce(&apos;p&apos;, { class: &apos;help-block&apos; });
+
+      this.setContent(p, this.t(&apos;submitError&apos;));
+      p.addEventListener(&apos;click&apos;, () =&gt; {
+        window.scrollTo(0, 0);
+      });
+
+      const div = this.ce(&apos;div&apos;, { id: &apos;submit-error&apos;, class: &apos;has-error&apos; });
+
+      this.appendTo(p, div);
+      this.appendTo(div, this.element);
+    }
+
+    if (!this.errors.length &amp;&amp; helpBlock) {
+      helpBlock.remove();
+    }
 
     if (this.errors.length) {
       this.focusOnComponent(this.errors[0].component.key);

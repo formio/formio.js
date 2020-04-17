@@ -2448,6 +2448,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdf.js~pdf#focusoncomponent",
+    "class/src/PDF.js~PDF.html#instance-method-focusOnComponent",
+    "src/PDF.js~PDF#focusOnComponent",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#getsrc",
     "class/src/PDF.js~PDF.html#instance-method-getSrc",
     "src/PDF.js~PDF#getSrc",
