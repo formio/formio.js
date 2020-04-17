@@ -46,6 +46,30 @@ describe('Select Component', () => {
     });
   });
 
+  it('should not change value letter case', function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) => {
+      const value = component.normalizeSingleValue('data.textArea');
+      const value1 = component.normalizeSingleValue('ECMAScript');
+      const value2 = component.normalizeSingleValue('JS');
+      assert.equal(value, 'data.textArea');
+      assert.equal(value1, 'ECMAScript');
+      assert.equal(value2, 'JS');
+      done();
+    });
+  });
+
+  it('should define boolean value', function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) => {
+      const value = component.normalizeSingleValue('TRUE');
+      const value1 = component.normalizeSingleValue('False');
+      const value2 = component.normalizeSingleValue('true');
+      assert.equal(value, true);
+      assert.equal(value1, false);
+      assert.equal(value2, true);
+      done();
+    });
+  });
+
   it('should set multiple selected values not repeating them', function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);
