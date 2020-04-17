@@ -59,4 +59,72 @@ export default class NestedArrayComponent extends NestedDataComponent {
         value: this.dataValue,
       }, 'show'));
   }
+
+  getComponent(path, fn) {
+    path = Array.isArray(path) ? path : [path];
+    const [key, ...remainingPath] = path;
+    let result = [];
+
+    if (!_.isString(key)) {
+      return result;
+    }
+
+    this.everyComponent((component, components) => {
+      if (component.component.key === key) {
+        let comp = component;
+        if (remainingPath.length > 0 && 'getComponent' in component) {
+          comp = component.getComponent(remainingPath, fn);
+        }
+        else if (fn) {
+          fn(component, components);
+        }
+
+        result = result.concat(comp);
+      }
+    });
+
+    return result.length > 0 ? result : null;
+  }
+
+  getValueAsString(value, options) {
+    if (options?.email) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <thead>
+            <tr>
+      `);
+
+      this.component.components.forEach((component) => {
+        const label = component.label || component.key;
+        result += `<th style="padding: 5px 10px;">${label}</th>`;
+      });
+
+      result += (`
+          </tr>
+        </thead>
+        <tbody>
+      `);
+
+      this.iteratableRows.forEach(({ components }) => {
+        result += '<tr>';
+        _.each(components, (component) => {
+          result += '<td style="padding:5px 10px;">';
+          if (component.isInputComponent && component.visible && !component.skipInEmail) {
+            result += component.getView(component.dataValue, options);
+          }
+          result += '</td>';
+        });
+        result += '</tr>';
+      });
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    }
+
+    return super.getValueAsString(value, options);
+  }
 }

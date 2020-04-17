@@ -623,6 +623,10 @@ export default class Component extends Element {
     return this.labelPosition.split('-');
   }
 
+  get skipInEmail() {
+    return false;
+  }
+
   rightDirection(direction) {
     return direction === 'right';
   }
@@ -1175,7 +1179,7 @@ export default class Component extends Element {
    * @param value
    * @return {*}
    */
-  getWidgetValueAsString(value) {
+  getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
       return value;
@@ -1185,21 +1189,21 @@ export default class Component extends Element {
       value.forEach((val, index) => {
         const widget = this.refs.input[index] && this.refs.input[index].widge;
         if (widget) {
-          values.push(widget.getValueAsString(val));
+          values.push(widget.getValueAsString(val, options));
         }
       });
       return values;
     }
 
     const widget = this.refs.input[0].widget;
-    return widget.getValueAsString(value);
+    return widget.getValueAsString(value, options);
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value) {
       return '';
     }
-    value = this.getWidgetValueAsString(value);
+    value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1212,11 +1216,11 @@ export default class Component extends Element {
     return value.toString();
   }
 
-  getView(value) {
+  getView(value, options) {
     if (this.component.protected) {
       return '--- PROTECTED ---';
     }
-    return this.getValueAsString(value);
+    return this.getValueAsString(value, options);
   }
 
   updateItems(...args) {

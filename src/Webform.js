@@ -5,6 +5,7 @@ import i18next from 'i18next';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
+import NestedComponent from './components/_classes/nested/NestedComponent';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
 import {
   fastCloneDeep,
@@ -869,6 +870,10 @@ export default class Webform extends NestedDataComponent {
     const submission = this._submission;
     submission.data = this.data;
     return this._submission;
+  }
+
+  everyComponent(fn, options) {
+    return NestedComponent.prototype.everyComponent.call(this, fn, options);
   }
 
   /**
