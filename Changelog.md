@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+<<<<<<< HEAD
 ## 4.10.0-beta.6
 ### Fixed
  - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
@@ -61,6 +62,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Current submission to be set after draft save.
 
+=======
+>>>>>>> 42fdedef4c55a0e1b69d17bd984378b591b9d7ab
 ## 4.9.19
 ### Changed
  - No changes. 4.9.19-rc.3 production release.
