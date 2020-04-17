@@ -36,7 +36,10 @@ export default class NestedDataComponent extends NestedComponent {
             </tr>
           `);
         }
-      }, options);
+      }, {
+        ...options,
+        fromRoot: true,
+      });
 
       result += (`
           </tbody>
@@ -51,10 +54,15 @@ export default class NestedDataComponent extends NestedComponent {
 
   everyComponent(fn, options) {
     if (options?.email) {
-      return;
+      if (options.fromRoot) {
+        delete options.fromRoot;
+      }
+      else {
+        return;
+      }
     }
 
-    return super.everyComponent(fn);
+    return super.everyComponent(fn, options);
   }
 
   /**

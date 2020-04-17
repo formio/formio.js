@@ -86,6 +86,30 @@ export default class NestedArrayComponent extends NestedDataComponent {
     return result.length > 0 ? result : null;
   }
 
+  everyComponent(fn, rowIndex, options) {
+    if (_.isObject(rowIndex)) {
+      options = rowIndex;
+      rowIndex = null;
+    }
+
+    if (options?.email) {
+      return;
+    }
+
+    const components = this.getComponents(rowIndex);
+    _.each(components, (component, index) => {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyComponent === 'function') {
+        if (component.everyComponent(fn, options) === false) {
+          return false;
+        }
+      }
+    });
+  }
+
   getValueAsString(value, options) {
     if (options?.email) {
       let result = (`
