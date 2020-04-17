@@ -169,12 +169,14 @@ export default class WizardBuilder extends WebformBuilder {
     const newPage = this.getPageConfig(pageNum);
     BuilderUtils.uniquify(this._form.components, newPage);
     this._form.components.push(newPage);
-    this.emit('saveComponent', newPage);
+    this.emit('saveComponent', newPage, this._form.components);
+    this.emit('change', this._form);
     return this.rebuild();
   }
 
   removePage(pageIndex, componentIndex) {
     this._form.components.splice(componentIndex, 1);
+    this.emit('change', this._form);
 
     if (pageIndex === this.pages.length) {
       // If the last page is removed.
