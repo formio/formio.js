@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.20-rc.2
+### Fixed
+ - FJS-815 - Fixed multiple mask selector disabling when the component is disabled #2667
+ - Improve Select component itemTemplate check #2668
+ - FJS-848 - Fixed adding and immediate deleting wizard page is not saved #2670
+ - Fixed issues with the PDF form would double submit.
+ - Fixed refresh issues when building PDF forms.
+
 ## 4.9.20-rc.1
 ### Changed
  - Added message to focus on pdf form component
