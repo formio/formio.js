@@ -219,17 +219,15 @@ export default class SelectComponent extends BaseComponent {
 
   addValueOptions(items) {
     items = items || [];
+    let added = false;
     if (!this.selectOptions.length) {
-      if (this.choices) {
-        // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        return this.addCurrentChoices(currentChoices, items);
-      }
-      else if (!this.component.multiple) {
+      const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+      added = this.addCurrentChoices(currentChoices, items);
+      if (!added && !this.component.multiple) {
         this.addPlaceholder(this.selectInput);
       }
     }
-    return false;
+    return added;
   }
 
   disableInfiniteScroll() {
