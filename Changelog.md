@@ -47,25 +47,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed unstranslated component label in Webform
  - Fixed calculated value doesn`t work when editing data with manual override in true position
 
-## 4.10.0-beta.2
+## 4.9.20-rc.3
 ### Fixed
- - Fixed display of selected values in table view
- - T826: Fix nested forms never submitting.
- - UIP-159: Fixing the UUID import.
-
-### Changed
- - VPAT-236 Changed variable types for future extension in vpat
-
-### Added
- - UIP-131: Add option to change from moment input to calendar
-
-## 4.10.0-beta.1
-### Added
- - Added flag to check if draft restore is disabled
- - Offline authentication support.
-
-### Fixed
- - Current submission to be set after draft save.
+ - Issue introduced with rc.2 where the builder components would not show up.
 
 ## 4.9.20-rc.2
 ### Fixed
