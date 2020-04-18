@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.11
+### Fixed
+ - Problem where select values would not show when HTML5 widget and Lazy Load is enabled.
+
 ## 3.29.10
 ### Fixed
  - An issue where text area with wysiwyg was erroneously firing change events.
