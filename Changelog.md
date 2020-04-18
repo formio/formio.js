@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.9
+### Changed
+ - Merged v4.9.20-rc.3
+
 ## 4.10.0-beta.8
 ### Changed
  - All changes v4.9.19 - v4.9.20-rc.2
