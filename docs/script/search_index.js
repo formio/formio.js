@@ -2676,12 +2676,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/pdfbuilder.js~pdfbuilder#setform",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setForm",
-    "src/PDFBuilder.js~PDFBuilder#setForm",
-    "method"
-  ],
-  [
     "src/pdfbuilder.js~pdfbuilder#setuploaderror",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setUploadError",
     "src/PDFBuilder.js~PDFBuilder#setUploadError",
@@ -12543,6 +12537,12 @@ window.esdocSearchIndex = [
     "src/components/textfield/fixtures/comp3.js",
     "file/src/components/textfield/fixtures/comp3.js.html",
     "src/components/textfield/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/textfield/fixtures/comp4.js",
+    "file/src/components/textfield/fixtures/comp4.js.html",
+    "src/components/textfield/fixtures/comp4.js",
     "file"
   ],
   [

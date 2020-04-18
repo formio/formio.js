@@ -306,14 +306,10 @@ export default class PDF extends Webform {
   }
 
   rebuild() {
-    if (this.builderMode) {
-      this.destroyComponents();
-      this.addComponents();
+    if (this.builderMode &amp;&amp; this.component.components) {
       return NativePromise.resolve();
     }
-    else {
-      this.postMessage({ name: &apos;redraw&apos; });
-    }
+    this.postMessage({ name: &apos;redraw&apos; });
     return super.rebuild();
   }
 
@@ -360,12 +356,6 @@ export default class PDF extends Webform {
         this.refs.button.classList.toggle(&apos;hidden&apos;, !submitButton.visible);
       }
 
-      // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.button, &apos;click&apos;, () =&gt; {
-        this.postMessage({ name: &apos;getErrors&apos; });
-        return this.submit();
-      });
-
       this.addEventListener(this.refs.zoomIn, &apos;click&apos;, (event) =&gt; {
         event.preventDefault();
         this.postMessage({ name: &apos;zoomIn&apos; });
@@ -407,6 +397,7 @@ export default class PDF extends Webform {
    * @return {*}
    */
   submitForm(options = {}) {
+    this.postMessage({ name: &apos;getErrors&apos; });
     return this.getSubmission().then(() =&gt; super.submitForm(options));
   }
 
@@ -438,6 +429,10 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
+    if (this.builderMode &amp;&amp; this.form.components) {
+      this.postMessage({ name: &apos;form&apos;, data: this.form });
+      return NativePromise.resolve();
+    }
     return super.setForm(form).then(() =&gt; {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
