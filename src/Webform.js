@@ -5,7 +5,6 @@ import i18next from 'i18next';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
-import NestedComponent from './components/_classes/nested/NestedComponent';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
 import {
   fastCloneDeep,
