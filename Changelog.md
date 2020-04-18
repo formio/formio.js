@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-815 - Fixed multiple mask selector disabling when the component is disabled #2667
  - Improve Select component itemTemplate check #2668
  - FJS-848 - Fixed adding and immediate deleting wizard page is not saved #2670
- - Fixed issues with the PDF form would double submit.
- - Fixed refresh issues when building PDF forms.
+ - PDF 49 - Fixed issues with the PDF form would double submit. #2671
+ - FJS 878 - Fixed refresh issues when building PDF forms. #2671
 
 ## 4.9.20-rc.1
 ### Changed
