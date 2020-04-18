@@ -6,7 +6,8 @@ import NativePromise from 'native-promise-only';
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp4
 } from './fixtures';
 
 describe('TextField Component', () => {
@@ -24,6 +25,13 @@ describe('TextField Component', () => {
   it('Should build a TextField component', () => {
     return Harness.testCreate(TextFieldComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
+    });
+  });
+
+  it('Should disable multiple mask selector if component is disabled', (done) => {
+    Harness.testCreate(TextFieldComponent, comp4).then((component) => {
+      Harness.testElements(component, '[disabled]', 2);
+      done();
     });
   });
 
