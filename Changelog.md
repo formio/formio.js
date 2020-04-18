@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.20-rc.3
+### Fixed
+ - Issue introduced with rc.2 where the builder components would not show up.
+
 ## 4.9.20-rc.2
 ### Fixed
  - FJS-815 - Fixed multiple mask selector disabling when the component is disabled #2667
