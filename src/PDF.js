@@ -112,12 +112,6 @@ export default class PDF extends Webform {
         this.refs.button.classList.toggle('hidden', !submitButton.visible);
       }
 
-      // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.button, 'click', () => {
-        this.postMessage({ name: 'getErrors' });
-        return this.submit();
-      });
-
       this.addEventListener(this.refs.zoomIn, 'click', (event) => {
         event.preventDefault();
         this.postMessage({ name: 'zoomIn' });
@@ -159,6 +153,7 @@ export default class PDF extends Webform {
    * @return {*}
    */
   submitForm(options = {}) {
+    this.postMessage({ name: 'getErrors' });
     return this.getSubmission().then(() => super.submitForm(options));
   }
 
