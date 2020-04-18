@@ -838,7 +838,7 @@ export default class WebformBuilder extends Component {
         if (this.refs.form) {
           this.builderHeight = this.refs.form.offsetHeight;
         }
-        return this.rebuild().then(() => this.form);
+        return this.form;
       });
     }
     return NativePromise.resolve(form);
