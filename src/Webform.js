@@ -872,10 +872,6 @@ export default class Webform extends NestedDataComponent {
     return this._submission;
   }
 
-  everyComponent(fn, options) {
-    return NestedComponent.prototype.everyComponent.call(this, fn, options);
-  }
-
   /**
    * Build the form.
    */
