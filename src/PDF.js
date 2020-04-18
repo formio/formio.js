@@ -62,14 +62,10 @@ export default class PDF extends Webform {
   }
 
   rebuild() {
-    if (this.builderMode) {
-      this.destroyComponents();
-      this.addComponents();
+    if (this.builderMode && this.component.components) {
       return NativePromise.resolve();
     }
-    else {
-      this.postMessage({ name: 'redraw' });
-    }
+    this.postMessage({ name: 'redraw' });
     return super.rebuild();
   }
 
@@ -194,6 +190,10 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
+    if (this.builderMode && this.form.components) {
+      this.postMessage({ name: 'form', data: this.form });
+      return NativePromise.resolve();
+    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;

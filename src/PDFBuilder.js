@@ -259,15 +259,6 @@ export default class PDFBuilder extends WebformBuilder {
     return this.webform;
   }
 
-  setForm(form) {
-    return super.setForm(form).then((form) => {
-      if (this.webform) {
-        this.webform.postMessage({ name: 'form', data: form });
-      }
-      return form;
-    });
-  }
-
   destroy() {
     super.destroy();
     this.webform.destroy();
