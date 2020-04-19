@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.20
+### Changed
+ - No changes. Released 4.9.20-rc.4
+
 ## 4.9.20-rc.4
 ### Fixed
  - Problem where PDF components could not get deleted from the form.
