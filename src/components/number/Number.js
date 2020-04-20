@@ -194,7 +194,7 @@ export default class NumberComponent extends Input {
     super.addFocusBlurEvents(element);
 
     this.addEventListener(element, 'blur', () => {
-      element.value = this.getValueAsString(this.formatValue(this.parseValue(this.dataValue)));
+      element.value = this.getValueAsString(this.formatValue(this.parseValue(element.value)));
     });
   }
 }
