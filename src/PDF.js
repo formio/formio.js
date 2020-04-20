@@ -63,6 +63,8 @@ export default class PDF extends Webform {
 
   rebuild() {
     if (this.builderMode && this.component.components) {
+      this.destroyComponents();
+      this.addComponents();
       return NativePromise.resolve();
     }
     this.postMessage({ name: 'redraw' });

@@ -51,6 +51,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed unstranslated component label in Webform
  - Fixed calculated value doesn`t work when editing data with manual override in true position
 
+## 4.9.20
+### Changed
+ - No changes. Released 4.9.20-rc.4
+
+## 4.9.20-rc.4
+### Fixed
+ - Problem where PDF components could not get deleted from the form.
+
 ## 4.9.20-rc.3
 ### Fixed
  - Issue introduced with rc.2 where the builder components would not show up.

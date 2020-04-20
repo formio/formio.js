@@ -7494,6 +7494,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/currency/fixtures/comp2.js",
+    "file/src/components/currency/fixtures/comp2.js.html",
+    "src/components/currency/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/currency/fixtures/index.js",
     "file/src/components/currency/fixtures/index.js.html",
     "src/components/currency/fixtures/index.js",
@@ -10233,6 +10239,12 @@ window.esdocSearchIndex = [
     "src/components/number/fixtures/comp4.js",
     "file/src/components/number/fixtures/comp4.js.html",
     "src/components/number/fixtures/comp4.js",
+    "file"
+  ],
+  [
+    "src/components/number/fixtures/comp5.js",
+    "file/src/components/number/fixtures/comp5.js.html",
+    "src/components/number/fixtures/comp5.js",
     "file"
   ],
   [

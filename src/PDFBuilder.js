@@ -421,10 +421,8 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);
-
+    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, true);
     this.webform.component.components.push(schema);
-
-    this.emit('addComponent', schema);
 
     schema.overlay = {
       top: offsetY,

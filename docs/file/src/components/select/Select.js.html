@@ -343,6 +343,9 @@ export default class SelectComponent extends Field {
   }
 
   get emptyValue() {
+    if (this.component.multiple) {
+      return [];
+    }
     if (this.valueProperty) {
       return &apos;&apos;;
     }
@@ -1329,7 +1332,7 @@ export default class SelectComponent extends Field {
       value,
 
       number() {
-        const numberValue = Number.parseFloat(this.value);
+        const numberValue = Number(this.value);
 
         if (!Number.isNaN(numberValue) &amp;&amp; Number.isFinite(numberValue)) {
           this.value = numberValue;

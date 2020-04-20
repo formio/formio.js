@@ -248,13 +248,40 @@ import NumberComponent from &apos;./Number&apos;;
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp5
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Number Component&apos;, () =&gt; {
   it(&apos;Should build an number component&apos;, () =&gt; {
     return Harness.testCreate(NumberComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
+    });
+  });
+
+  it(&apos;Should not change entered value on blur if multiple value is set&apos;, (done) =&gt; {
+    Harness.testCreate(NumberComponent, comp5).then((component) =&gt; {
+      component.root = {
+        onChange: ()=&gt;{},
+        triggerChange: ()=&gt;{},
+      };
+      const blurEvent = new Event(&apos;blur&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      const addBtn = component.refs.addButton[0];
+
+      addBtn.dispatchEvent(clickEvent);
+
+      const firstValueElement = component.element.querySelectorAll(&apos;[name=&quot;data[number]&quot;]&apos;)[0];
+      const secondValueElement = component.element.querySelectorAll(&apos;[name=&quot;data[number]&quot;]&apos;)[1];
+
+      component.setValue([111,222]);
+
+      firstValueElement.dispatchEvent(blurEvent);
+      secondValueElement.dispatchEvent(blurEvent);
+
+      assert.equal(component.dataValue[0], component.getValue()[0]);
+      assert.equal(component.dataValue[1], component.getValue()[1]);
+      done();
     });
   });
 
