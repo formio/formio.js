@@ -102,6 +102,9 @@ export default class SelectComponent extends Field {
   }
 
   get emptyValue() {
+    if (this.component.multiple) {
+      return [];
+    }
     if (this.valueProperty) {
       return '';
     }
