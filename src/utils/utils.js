@@ -588,7 +588,7 @@ export function formatDate(value, format, timezone) {
 
   // Load the zones since we need timezone information.
   loadZones();
-  if (moment.zonesLoaded) {
+  if (moment.zonesLoaded && timezone) {
     return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
   }
   else {
