@@ -68,6 +68,7 @@ export default class SignatureComponent extends Input {
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
     if (value && this.refs.signatureImage && this.options.readOnly) {
+      this.refs.signatureImage.style.height = '150px';
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
