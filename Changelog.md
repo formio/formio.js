@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.10
+### Fixed
+ - FJS-779: Fixed display of time icon
+ - Fixed select test fail
+ - FJS-859: removed raw data value check
+ - FJS-805: Fixed replacing multiple value by initial value on blur
+ - PDF 34 - Fixed an issue of not formatted date in pdf header
+ - Fixed select component empty value when set to multiple
+
 ## 4.10.0-beta.9
 ### Changed
  - Merged v4.9.20-rc.3
