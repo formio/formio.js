@@ -50,7 +50,8 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
-    this.decimalLimit = getNumberDecimalLimit(this.component);
+    const requireDecimal = _.get(this.component, 'requireDecimal', false);
+    this.decimalLimit = getNumberDecimalLimit(this.component, requireDecimal ? 2 : 20);
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
@@ -106,8 +107,8 @@ export default class NumberComponent extends Input {
 
   setInputMask(input) {
     let numberPattern = '[0-9';
-    numberPattern += this.decimalSeparator ? `\\${this.decimalSeparator}` : '';
-    numberPattern += this.delimiter ? `\\${this.delimiter}` : '';
+    numberPattern += this.decimalSeparator || '';
+    numberPattern += this.delimiter || '';
     numberPattern += ']*';
     input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
@@ -138,7 +139,7 @@ export default class NumberComponent extends Input {
     return val ? this.parseNumber(val) : null;
   }
 
-  setValueAt(index, value, flags) {
+  setValueAt(index, value, flags = {}) {
     return super.setValueAt(index, this.formatValue(this.parseValue(value)), flags);
   }
 
@@ -178,14 +179,22 @@ export default class NumberComponent extends Input {
     return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value && value !== 0) {
       return '';
     }
-    value = this.getWidgetValueAsString(value);
+    value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
       return value.map(this.getMaskedValue).join(', ');
     }
     return this.getMaskedValue(value);
+  }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(this.formatValue(this.parseValue(this.dataValue)));
+    });
   }
 }

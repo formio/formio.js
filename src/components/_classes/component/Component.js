@@ -3,15 +3,18 @@ import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
+import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
-import Validator from '../../Validator';
+import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
-const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
-const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
+import ComponentModal from '../componentModal/ComponentModal';
+const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
+const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.8/ace.js';
+const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
  * This is the Component class
@@ -101,6 +104,11 @@ export default class Component extends Element {
       tableView: false,
 
       /**
+       * If this component should be rendering in modal.
+       */
+      modalEdit: false,
+
+      /**
        * The input label provided to this component.
        */
       label: '',
@@ -149,7 +157,9 @@ export default class Component extends Element {
         /**
          * If this component should implement a strict date validation if the Calendar widget is implemented.
          */
-        strictDateValidation: false
+        strictDateValidation: false,
+        multiple: false,
+        unique: false
       },
 
       /**
@@ -201,8 +211,10 @@ export default class Component extends Element {
       attachMode: 'full'
     }, options || {}));
 
-    // Save off the original component.
-    this.originalComponent = fastCloneDeep(component);
+    // Restore the component id.
+    if (component && component.id) {
+      this.id = component.id;
+    }
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -226,6 +238,27 @@ export default class Component extends Element {
     }
 
     /**
+     * Set the validator instance.
+     */
+    this.validator = Validator;
+
+    /**
+     * The data path to this specific component instance.
+     *
+     * @type {string}
+     */
+    this.path = '';
+
+    /**
+     * The Form.io component JSON schema.
+     * @type {*}
+     */
+    this.component = this.mergeSchema(component || {});
+
+    // Save off the original component to be used in logic.
+    this.originalComponent = fastCloneDeep(this.component);
+
+    /**
      * If the component has been attached
      */
     this.attached = false;
@@ -239,13 +272,7 @@ export default class Component extends Element {
      * The data object in which this component resides.
      * @type {*}
      */
-    this.data = data || {};
-
-    /**
-     * The Form.io component JSON schema.
-     * @type {*}
-     */
-    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
+    this._data = data || {};
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -276,11 +303,11 @@ export default class Component extends Element {
     this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
 
     /**
-     * Determines if this component is visible, or not.
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {Component}
      */
-    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
-    this._visible = this._parentVisible && this.conditionallyVisible(data);
-    this._parentDisabled = false;
+    this.root = this.options.root;
 
     /**
      * If this input has been input and provided value.
@@ -296,13 +323,6 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
-    /**
-     * Points to the root component, usually the FormComponent.
-     *
-     * @type {Component}
-     */
-    this.root = this.options.root;
-
     this.options.name = this.options.name || 'data';
 
     /**
@@ -314,14 +334,23 @@ export default class Component extends Element {
     this._path = '';
 
     /**
+     * Determines if this component is visible, or not.
+     */
+    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
+    this._parentDisabled = false;
+
+    /**
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
     let lastChanged = null;
+    let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
       if (this.root) {
         this.root.changing = false;
       }
+      triggerArgs = [];
       if (!args[1] && lastChanged) {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
@@ -342,7 +371,10 @@ export default class Component extends Element {
       if (this.root) {
         this.root.changing = true;
       }
-      return _triggerChange(...args);
+      if (args.length) {
+        triggerArgs = args;
+      }
+      return _triggerChange(...triggerArgs);
     };
 
     /**
@@ -360,9 +392,6 @@ export default class Component extends Element {
 
     // To force this component to be invalid.
     this.invalid = false;
-
-    // Determine if the component has been built.
-    this.isBuilt = false;
 
     if (this.component) {
       this.type = this.component.type;
@@ -397,6 +426,18 @@ export default class Component extends Element {
     }
   }
   /* eslint-enable max-statements */
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+  }
+
+  mergeSchema(component = {}) {
+    return _.defaultsDeep(component, this.defaultSchema);
+  }
 
   // Allow componets to notify when ready.
   get ready() {
@@ -557,6 +598,58 @@ export default class Component extends Element {
     return this._path;
   }
 
+  get labelPosition() {
+    return this.component.labelPosition;
+  }
+
+  get labelWidth() {
+    return this.component.labelWidth || 30;
+  }
+
+  get labelMargin() {
+    return this.component.labelMargin || 3;
+  }
+
+  get isAdvancedLabel() {
+    return [
+      'left-left',
+      'left-right',
+      'right-left',
+      'right-right'
+    ].includes(this.labelPosition);
+  }
+
+  get labelPositions() {
+    return this.labelPosition.split('-');
+  }
+
+  get skipInEmail() {
+    return false;
+  }
+
+  rightDirection(direction) {
+    return direction === 'right';
+  }
+
+  getLabelInfo() {
+    const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isRightAlign = this.rightDirection(this.labelPositions[1]);
+    const labelStyles = `
+      flex: ${this.labelWidth};
+      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+    `;
+    const contentStyles = `
+      flex: ${100 - this.labelWidth - this.labelMargin};
+    `;
+
+    return {
+      isRightPosition,
+      isRightAlign,
+      labelStyles,
+      contentStyles
+    };
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -709,6 +802,7 @@ export default class Component extends Element {
     data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
+    data.size = this.size.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
     data.id = data.id || this.id;
@@ -716,7 +810,14 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
-    data.render = this.renderTemplate.bind(this);
+    data.render = (...args) => {
+      console.warn(`Form.io 'render' template function is deprecated.
+      If you need to render template (template A) inside of another template (template B),
+      pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
+      return this.renderTemplate(...args);
+    };
+    data.label = this.labelInfo;
+    data.tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
     // Allow more specific template names
     const names = [
@@ -839,6 +940,20 @@ export default class Component extends Element {
     }
   }
 
+  setOpenModalElement() {
+    const template = `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
+    `;
+    this.componentModal.setOpenModalElement(template);
+  }
+
+  getModalPreviewTemplate() {
+    return `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue)}</button>`;
+  }
+
   build(element) {
     element = element || this.element;
     this.empty(element);
@@ -849,16 +964,33 @@ export default class Component extends Element {
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
-    return this.renderTemplate('component', {
-      visible: isVisible,
-      id: this.id,
-      classes: this.className,
-      styles: this.customStyle,
-      children
-    }, topLevel);
+
+    if (!this.builderMode && this.component.modalEdit) {
+      return ComponentModal.render(this, {
+        visible: isVisible,
+        id: this.id,
+        classes: this.className,
+        styles: this.customStyle,
+        children
+      }, topLevel);
+    }
+    else {
+      return this.renderTemplate('component', {
+        visible: isVisible,
+        id: this.id,
+        classes: this.className,
+        styles: this.customStyle,
+        children
+      }, topLevel);
+    }
   }
 
   attach(element) {
+    if (!this.builderMode && this.component.modalEdit) {
+      this.componentModal = new ComponentModal(this, element);
+      this.setOpenModalElement();
+    }
+
     this.attached = true;
     this.element = element;
     element.component = this;
@@ -876,7 +1008,7 @@ export default class Component extends Element {
     this.refs.tooltip.forEach((tooltip, index) => {
       const title = this.interpolate(tooltip.getAttribute('data-title') || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click',
+        trigger: 'hover click focus',
         placement: 'right',
         html: true,
         title: title,
@@ -987,7 +1119,7 @@ export default class Component extends Element {
     else {
       this.refreshOnChanged = true;
     }
-    this.refreshOnValue = value;
+    this.refreshOnValue = fastCloneDeep(value);
     if (this.refreshOnChanged) {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
@@ -1047,27 +1179,31 @@ export default class Component extends Element {
    * @param value
    * @return {*}
    */
-  getWidgetValueAsString(value) {
-    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+  getWidgetValueAsString(value, options) {
+    const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
+    if (!value || noInputWidget) {
       return value;
     }
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        if (this.refs.input[index] && this.refs.input[index].widget) {
-          values.push(this.refs.input[index].widget.getValueAsString(val));
+        const widget = this.refs.input[index] && this.refs.input[index].widge;
+        if (widget) {
+          values.push(widget.getValueAsString(val, options));
         }
       });
       return values;
     }
-    return this.refs.input[0].widget.getValueAsString(value);
+
+    const widget = this.refs.input[0].widget;
+    return widget.getValueAsString(value, options);
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value) {
       return '';
     }
-    value = this.getWidgetValueAsString(value);
+    value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1080,11 +1216,11 @@ export default class Component extends Element {
     return value.toString();
   }
 
-  getView(value) {
+  getView(value, options) {
     if (this.component.protected) {
       return '--- PROTECTED ---';
     }
-    return this.getValueAsString(value);
+    return this.getValueAsString(value, options);
   }
 
   updateItems(...args) {
@@ -1109,6 +1245,16 @@ export default class Component extends Element {
     }
 
     return data;
+  }
+
+  itemValueForHTMLMode(value) {
+    if (Array.isArray(value)) {
+      const values = value.map(item => Array.isArray(item) ? this.itemValueForHTMLMode(item) : this.itemValue(item));
+
+      return values.join(', ');
+    }
+
+    return this.itemValue(value);
   }
 
   createModal(element, attr) {
@@ -1166,6 +1312,9 @@ export default class Component extends Element {
     if (this.labelIsHidden()) {
       className += ' formio-component-label-hidden';
     }
+    if (!this.visible) {
+      className += ' formio-hidden';
+    }
     return className;
   }
 
@@ -1181,6 +1330,10 @@ export default class Component extends Element {
       }
     });
     return customCSS;
+  }
+
+  get isMobile() {
+    return isMobile();
   }
 
   /**
@@ -1203,6 +1356,7 @@ export default class Component extends Element {
       row: this.data,
       rowIndex: this.rowIndex,
       data: this.rootValue,
+      iconClass: this.iconClass.bind(this),
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
     }, additional));
@@ -1230,7 +1384,15 @@ export default class Component extends Element {
 
   iconClass(name, spinning) {
     const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
-    return Templates.current.hasOwnProperty('iconClass') ? Templates.current.iconClass(iconset, name, spinning) : name;
+    return Templates.current.hasOwnProperty('iconClass')
+      ? Templates.current.iconClass(iconset, name, spinning)
+      : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
+  }
+
+  size(size) {
+    return Templates.current.hasOwnProperty('size')
+      ? Templates.current.size(size)
+      : size;
   }
 
   /**
@@ -1378,11 +1540,12 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    // Check advanced conditions
-    const visible = this.conditionallyVisible(data, row);
     if (!this.builderMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
+
+    // Check advanced conditions
+    const visible = this.conditionallyVisible(data, row);
 
     if (this.visible !== visible) {
       this.visible = visible;
@@ -1446,6 +1609,32 @@ export default class Component extends Element {
     }
 
     return changed;
+  }
+
+  isIE() {
+    const userAgent = window.navigator.userAgent;
+
+    const msie = userAgent.indexOf('MSIE ');
+    if (msie > 0) {
+      // IE 10 or older => return version number
+      return parseInt(userAgent.substring(msie + 5, userAgent.indexOf('.', msie)), 10);
+    }
+
+    const trident = userAgent.indexOf('Trident/');
+    if (trident > 0) {
+      // IE 11 => return version number
+      const rv = userAgent.indexOf('rv:');
+      return parseInt(userAgent.substring(rv + 3, userAgent.indexOf('.', rv)), 10);
+    }
+
+    const edge = userAgent.indexOf('Edge/');
+    if (edge > 0) {
+      // IE 12 (aka Edge) => return version number
+      return parseInt(userAgent.substring(edge + 5, userAgent.indexOf('.', edge)), 10);
+    }
+
+    // other browser
+    return false;
   }
 
   applyActions(newComponent, actions, result, row, data) {
@@ -1517,26 +1706,15 @@ export default class Component extends Element {
     }, false);
   }
 
-  addInputWarning(message, dirty, elements) {
-    if (!message) {
-      return;
-    }
+  // Deprecated
+  addInputError(message, dirty, elements) {
+    this.addMessages(message);
+    this.setErrorClasses(elements, dirty, !!message);
+  }
 
-    if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('warning', {
-        message
-      }));
-    }
-
-    elements
-      .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentWarningClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
-    }
+  // Deprecated
+  removeInputError(elements) {
+    this.setErrorClasses(elements, true, false);
   }
 
   /**
@@ -1545,32 +1723,46 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addInputError(message, dirty, elements) {
-    if (!message) {
+  addMessages(messages) {
+    if (!messages) {
       return;
     }
 
+    // Standardize on array of objects for message.
+    if (typeof messages === 'string') {
+      messages = {
+        messages,
+        level: 'error',
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      messages = [messages];
+    }
+
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
-        message
-      }));
-    }
-
-    // Add error classes
-    elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentErrorClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
+      this.setContent(this.refs.messageContainer, messages.map((message) =>
+        this.renderTemplate('message', message)
+      ).join(''));
     }
   }
 
-  removeInputError(elements) {
-    if (elements) {
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
+  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
+    this.clearErrorClasses();
+    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    if (hasErrors) {
+      // Add error classes
+      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.options.componentErrorClass);
+      }
+      else {
+        this.addClass(this.element, 'has-error');
+      }
+    }
+    if (hasMessages) {
+      this.addClass(this.element, 'has-message');
     }
   }
 
@@ -1648,20 +1840,52 @@ export default class Component extends Element {
 
   get wysiwygDefault() {
     return {
-      theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
+      quill: {
+        theme: 'snow',
+        placeholder: this.t(this.component.placeholder),
+        modules: {
+          toolbar: [
+            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula', 'source']
+          ]
+        }
+      },
+      ace: {
+        theme: 'ace/theme/xcode',
+        maxLines: 12,
+        minLines: 12,
+        tabSize: 2,
+        mode: 'javascript',
+        placeholder: this.t(this.component.placeholder)
+      },
+      ckeditor: {
+        image: {
+          toolbar: [
+            'imageTextAlternative',
+            '|',
+            'imageStyle:full',
+            'imageStyle:alignLeft',
+            'imageStyle:alignCenter',
+            'imageStyle:alignRight'
+          ],
+          styles: [
+            'full',
+            'alignLeft',
+            'alignCenter',
+            'alignRight'
+          ]
+        }
+      },
+      tiny: {
+        theme: 'silver'
+      },
+      default: {}
     };
   }
 
@@ -1669,11 +1893,7 @@ export default class Component extends Element {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
-    settings.image = {
-      toolbar: ['imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'],
-      styles: ['full', 'alignLeft', 'alignCenter', 'alignRight']
-    };
-    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', {}), settings);
+    settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
@@ -1687,13 +1907,10 @@ export default class Component extends Element {
   }
 
   addQuill(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
-    settings = _.merge(_.get(this.options, 'editors.quill.settings', {}), settings);
+    settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
+    settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, 'editors.quill.settings', {}), settings);
 
     // Lazy load the quill css.
-    if (!settings.theme) {
-      settings.theme = 'snow';
-    }
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
     ], true);
@@ -1741,20 +1958,41 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    settings = _.merge(_.get(this.options, 'editors.ace.settings', {}), settings || {});
+    if (!settings || (settings.theme === 'snow')) {
+      const mode = settings ? settings.mode : '';
+      settings = {};
+      if (mode) {
+        settings.mode = mode;
+      }
+    }
+    settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
-        editor.setOptions({
-          maxLines: 12,
-          minLines: 12
-        });
-        editor.getSession().setTabSize(2);
+        editor.setOptions(settings);
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
       });
+  }
+
+  addTiny(element, settings, onChange) {
+    return Formio.requireLibrary('tinymce', 'tinymce', TINYMCE_URL.replace('no-api-key', settings.tinyApiKey), true)
+      .then((editor) => {
+        return editor.init({
+          ...settings,
+          target: element,
+          // eslint-disable-next-line camelcase
+          init_instance_callback: (editor) => {
+            editor.on('Change', () => onChange(editor.getContent()));
+          },
+        });
+      });
+  }
+
+  get tree() {
+    return this.component.tree || false;
   }
 
   /**
@@ -1805,7 +2043,7 @@ export default class Component extends Element {
       }
       return empty;
     }
-    return _.get(this.data, this.key);
+    return _.get(this._data, this.key);
   }
 
   /**
@@ -1815,16 +2053,20 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
+      !this.allowData ||
       !this.key ||
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
+    if ((value !== null) && (value !== undefined)) {
+      value = this.hook('setDataValue', value, this.key, this._data);
+    }
     if ((value === null) || (value === undefined)) {
-      _.unset(this.data, this.key);
+      this.unset();
       return value;
     }
-    _.set(this.data, this.key, value);
+    _.set(this._data, this.key, value);
     return value;
   }
 
@@ -1844,6 +2086,10 @@ export default class Component extends Element {
     }
   }
 
+  unset() {
+    _.unset(this._data, this.key);
+  }
+
   /**
    * Deletes the value of the component.
    */
@@ -1852,7 +2098,7 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   get defaultValue() {
@@ -1881,7 +2127,7 @@ export default class Component extends Element {
     }
 
     // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
+    return _.cloneDeep(defaultValue);
   }
 
   /**
@@ -1928,14 +2174,23 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed.
    */
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
+    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray && this.refs.input && this.refs.input.length !== value.length) {
+    if (
+      isArray &&
+      Array.isArray(this.defaultValue) &&
+      this.refs.hasOwnProperty('input') &&
+      this.refs.input &&
+      (this.refs.input.length !== value.length)
+    ) {
       this.redraw();
     }
     for (const i in this.refs.input) {
@@ -1952,8 +2207,7 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value, flags) {
-    flags = flags || {};
+  setValueAt(index, value, flags = {}) {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
@@ -1983,12 +2237,8 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.component.multiple
-        ? this.dataValue.length
-          ? [this.defaultValue]
-          : []
-        : this.defaultValue;
-      if (defaultValue) {
+      if (this.defaultValue) {
+        const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
         this.setValue(defaultValue, {
           noUpdateEvent: true
         });
@@ -2014,11 +2264,10 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateComponentValue(value, flags) {
-    flags = flags || {};
-    let newValue = (value === undefined || value === null) ? this.getValue() : value;
+  updateComponentValue(value, flags = {}) {
+    let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
@@ -2049,8 +2298,12 @@ export default class Component extends Element {
    * Resets the value of this component.
    */
   resetValue() {
-    this.setValue(this.emptyValue, { noUpdateEvent: true, noValidate: true });
-    _.unset(this.data, this.key);
+    this.setValue(this.emptyValue, {
+      noUpdateEvent: true,
+      noValidate: true,
+      resetValue: true
+    });
+    this.unset();
   }
 
   /**
@@ -2067,6 +2320,15 @@ export default class Component extends Element {
     ) {
       return false;
     }
+    // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
+    if (
+      newValue !== undefined &&
+      newValue !== null &&
+      this.allowData &&
+      !this.hasValue()
+    ) {
+      return true;
+    }
     return !_.isEqual(newValue, oldValue);
   }
 
@@ -2074,9 +2336,8 @@ export default class Component extends Element {
    * Update the value on change.
    *
    * @param flags
-   * @param changed
    */
-  updateOnChange(flags = {}, changed) {
+  updateOnChange(flags = {}, changed = false) {
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
       return true;
@@ -2091,6 +2352,14 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
+
+  convertNumberOrBoolToString(value) {
+    if (typeof value === 'number' || typeof value === 'boolean' ) {
+      return value.toString();
+    }
+    return value;
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -2100,11 +2369,6 @@ export default class Component extends Element {
 
     // If this component allows overrides.
     const allowOverride = this.component.allowCalculateOverride;
-
-    // Skip this operation if this component allows modification and it is no longer pristine.
-    if (allowOverride && !this.pristine) {
-      return false;
-    }
 
     let firstPass = false;
     const dataValue = this.dataValue;
@@ -2118,8 +2382,8 @@ export default class Component extends Element {
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
       allowOverride &&
-      (this.calculatedValue !== null) &&
-      !_.isEqual(dataValue, this.calculatedValue)
+      this.calculatedValue &&
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(this.calculatedValue))
     ) {
       return false;
     }
@@ -2136,7 +2400,7 @@ export default class Component extends Element {
       allowOverride &&
       firstPass &&
       !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, calculatedValue)
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue))
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
@@ -2226,6 +2490,17 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
+  setComponentValidity(messages, dirty) {
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    if (messages.length && (dirty || !this.pristine)) {
+      this.setCustomValidity(messages, dirty);
+    }
+    else {
+      this.setCustomValidity('');
+    }
+    return !hasErrors;
+  }
+
   /**
    * Checks the validity of this component and sets the error message if it is invalid.
    *
@@ -2234,27 +2509,28 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row) {
+  checkComponentValidity(data, dirty, row, async = false) {
+    data = data || this.rootValue;
+    row = row || this.data;
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
-      return true;
+      return async ? NativePromise.resolve(true) : true;
     }
 
-    const errors = Validator.checkComponent(this, data);
-    if (errors.length && (dirty || !this.pristine)) {
-      const message = this.invalidMessage(data, dirty, true, row);
-      this.setCustomValidity(message, dirty);
-    }
-    else {
-      this.setCustomValidity('');
-    }
-    return !errors.length;
+    const check = Validator.checkComponent(this, data, row, true, async);
+    return async ?
+      check.then((messages) => this.setComponentValidity(messages, dirty)) :
+      this.setComponentValidity(check, dirty);
   }
 
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
     return this.checkComponentValidity(data, dirty, row);
+  }
+
+  checkAsyncValidity(data, dirty, row) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
   }
 
   /**
@@ -2276,7 +2552,28 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
+    if (flags.noValidate) {
+      return true;
+    }
+
+    // We need to perform a test to see if they provided a default value that is not valid and immediately show
+    // an error if that is the case.
+    let isDirty = !this.builderMode &&
+      !this.options.preview &&
+      !this.isEmpty(this.defaultValue) &&
+      this.isEqual(this.defaultValue, this.dataValue);
+
+    // We need to set dirty if they explicitly set noValidate to false.
+    if (this.options.alwaysDirty || flags.dirty) {
+      isDirty = true;
+    }
+
+    // See if they explicitely set the values with setSubmission.
+    if (flags.fromSubmission && this.hasValue(data)) {
+      isDirty = true;
+    }
+
+    return this.checkComponentValidity(data, isDirty, row);
   }
 
   get validationValue() {
@@ -2284,7 +2581,8 @@ export default class Component extends Element {
   }
 
   isEmpty(value = this.dataValue) {
-    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
+    const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], this.emptyValue) : false;
+    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue) || isEmptyArray;
   }
 
   isEqual(valueA, valueB = this.dataValue) {
@@ -2305,30 +2603,45 @@ export default class Component extends Element {
   }
 
   clearErrorClasses() {
-    this.removeClass(this.element, 'formio-error-wrapper');
+    this.removeClass(this.element, this.options.componentErrorClass);
     this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'alert alert-warning');
     this.removeClass(this.element, 'has-error');
+    this.removeClass(this.element, 'has-message');
   }
 
-  setCustomValidity(message, dirty, external, isWarning = false) {
-    if (message) {
+  setCustomValidity(messages, dirty, external) {
+    if (typeof messages === 'string' && messages) {
+      messages = {
+        level: 'error',
+        message: messages,
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      if (messages) {
+        messages = [messages];
+      }
+      else {
+        messages = [];
+      }
+    }
+
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+
+    if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
       this.error = {
         component: this.component,
-        message: message,
+        message: messages[0].message,
+        messages,
         external: !!external,
       };
       this.emit('componentError', this.error);
+      this.addMessages(messages, dirty, this.refs.input);
       if (this.refs.input) {
-        if (isWarning) {
-          this.addInputWarning(message, dirty, this.refs.input);
-        }
-        else {
-          this.addInputError(message, dirty, this.refs.input);
-        }
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2336,23 +2649,45 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      this.removeInputError(this.refs.input);
+      if (this.refs.input) {
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      }
       this.clearErrorClasses();
     }
 
-    if (!this.refs.input) {
-      return;
+    // if (!this.refs.input) {
+    //   return;
+    // }
+    // this.refs.input.forEach(input => {
+    //   input = this.performInputMapping(input);
+    //   if (typeof input.setCustomValidity === 'function') {
+    //     input.setCustomValidity(message, dirty);
+    //   }
+    // });
+  }
+
+  /**
+   * Determines if the value of this component is hidden from the user as if it is coming from the server, but is
+   * protected.
+   *
+   * @return {boolean|*}
+   */
+  isValueHidden() {
+    if (!this.root || !this.root.hasOwnProperty('editing')) {
+      return false;
     }
-    this.refs.input.forEach(input => {
-      input = this.performInputMapping(input);
-      if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message, dirty);
-      }
-    });
+    if (!this.root || !this.root.editing) {
+      return false;
+    }
+    return (this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
   }
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Force valid if component is read-only
+      () => this.options.readOnly,
+      // Check to see if we are editing and if so, check component persistence.
+      () => this.isValueHidden(),
       // Force valid if component is hidden.
       () => !this.visible,
       // Force valid if component is conditionally hidden.
@@ -2490,6 +2825,10 @@ export default class Component extends Element {
   }
 
   attachLogic() {
+    // Do not attach logic during builder mode.
+    if (this.builderMode) {
+      return;
+    }
     this.logic.forEach((logic) => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);

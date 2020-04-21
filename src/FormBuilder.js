@@ -5,7 +5,13 @@ import Form from './Form';
 export default class FormBuilder extends Form {
   static options = {};
   constructor(element, form, options) {
-    super(element, form, Object.assign(options, FormBuilder.options));
+    form = form || {};
+    options = options || {};
+    super(element, form, Object.assign(
+      options,
+      FormBuilder.options,
+      ((Formio.options && Formio.options.builder) ? Formio.options.builder : {})
+    ));
   }
 
   create(display) {

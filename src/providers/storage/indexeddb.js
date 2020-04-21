@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/v4');
+import { v4 as uuidv4 } from 'uuid';
 import NativePromise from 'native-promise-only';
 const indexeddb = () => ({
   title: 'indexedDB',

@@ -65,10 +65,9 @@ export default class SignatureComponent extends Input {
     return true;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && (!flags.noSign || this.options.readOnly)) {
+    if (value && this.refs.signatureImage && this.options.readOnly) {
       this.refs.signatureImage.style.height = '150px';
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
@@ -133,6 +132,10 @@ export default class SignatureComponent extends Input {
       ctx.fillStyle = this.signaturePad.backgroundColor;
       ctx.fillRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
       this.signaturePad.clear();
+
+      if (this.dataValue) {
+        this.signaturePad.fromDataURL(this.dataValue);
+      }
     }
   }
 
@@ -141,6 +144,21 @@ export default class SignatureComponent extends Input {
       element: super.renderElement(value, index),
       required: _.get(this.component, 'validate.required', false),
     });
+  }
+
+  setOpenModalElement() {
+    const template = `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
+    `;
+    this.componentModal.setOpenModalElement(template);
+  }
+
+  getModalPreviewTemplate() {
+    return `
+      <label class="control-label">${this.component.label}</label><br>
+      <img src=${this.dataValue} ref='openModal' />
+    `;
   }
 
   attach(element) {
@@ -162,9 +180,7 @@ export default class SignatureComponent extends Input {
         backgroundColor: this.component.backgroundColor
       });
 
-      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
-        noSign: true
-      });
+      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
       // Ensure the signature is always the size of its container.

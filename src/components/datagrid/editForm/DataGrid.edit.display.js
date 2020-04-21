@@ -19,6 +19,20 @@ export default [
     },
   },
   {
+    weight: 406,
+    type: 'textarea',
+    input: true,
+    key: 'conditionalAddButton',
+    label: 'Conditional Add Button',
+    placeholder: 'show = ...',
+    tooltip: 'Specify condition when Add Button should be displayed.',
+    editor: 'ace',
+    as: 'js',
+    wysiwyg: {
+      minLines: 3,
+    },
+  },
+  {
     type: 'checkbox',
     label: 'Allow Reorder',
     key: 'reorder',

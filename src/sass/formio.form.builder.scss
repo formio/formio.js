@@ -18,7 +18,7 @@
 .panel-body > .drag-container.formio-builder-components:hover,
 .tab-pane > .drag-container.formio-builder-components,
 .tab-pane > .drag-container.formio-builder-components:hover {
-  padding: 0;
+  padding: 0 0 1rem 0;
   border: none;
 }
 
@@ -176,4 +176,38 @@
 
 .builder-sidebar .btn {
   white-space: normal;
+}
+
+/* Styles for component edit modal */
+.component-settings {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+
+.component-settings .formio-dialog-content {
+  max-height: 100%;
+}
+
+.component-edit-container {
+  height: 100%;
+  overflow: hidden;
+}
+
+.component-edit-content {
+  height: calc(100% - 4em);
+}
+
+.component-edit-tabs.col-sm-6 {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.component-edit-tabs.col-sm-12 {
+  height: calc(100% - 4em);
+  overflow-y: auto;
+}
+
+.component-edit-tabs.col-sm-12 .editForm {
+  height: calc(100% - 4em);
+  overflow-y: auto;
 }

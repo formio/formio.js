@@ -180,7 +180,7 @@ export default class PDFBuilder extends WebformBuilder {
     // Normal PDF Builder
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
-        iframeDropzone: 'single', 'sidebar-container': 'single'
+        iframeDropzone: 'single', 'sidebar-container': 'multiple'
       });
 
       this.afterAttach();
@@ -189,6 +189,12 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   afterAttach() {
+    this.on('saveComponent', (schema, component) => {
+      this.webform.postMessage({ name: 'updateElement', data: component });
+    });
+    this.on('removeComponent', (component) => {
+      this.webform.postMessage({ name: 'removeElement', data: component });
+    });
     this.initIframeEvents();
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
@@ -254,22 +260,6 @@ export default class PDFBuilder extends WebformBuilder {
     return this.webform;
   }
 
-  setForm(form) {
-    return super.setForm(form).then(() => {
-      return this.ready.then(() => {
-        if (this.webform) {
-          this.webform.postMessage({ name: 'form', data: form });
-          return this.webform.setForm(form);
-        }
-        return form;
-      });
-    });
-  }
-
-  saveComponent(...args) {
-    return super.saveComponent(...args).then(() => this.afterAttach());
-  }
-
   destroy() {
     super.destroy();
     this.webform.destroy();
@@ -301,7 +291,10 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.height,
           width: schema.width
         };
-        this.editComponent(component.component, this.webform.iframeElement);
+
+        if (!this.options.noNewEdit) {
+          this.editComponent(component.component, this.webform.iframeElement);
+        }
         this.emit('updateComponent', component);
       }
       return component;
@@ -368,13 +361,15 @@ export default class PDFBuilder extends WebformBuilder {
     if (!this.refs['sidebar-container']) {
       return;
     }
-    [...this.refs['sidebar-container'].children].forEach(el => {
-      el.draggable = true;
-      el.setAttribute('draggable', true);
-      this.removeEventListener(el, 'dragstart');
-      this.removeEventListener(el, 'dragend');
-      this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
-      this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+    this.refs['sidebar-container'].forEach(container => {
+      [...container.children].forEach(el => {
+        el.draggable = true;
+        el.setAttribute('draggable', true);
+        this.removeEventListener(el, 'dragstart');
+        this.removeEventListener(el, 'dragend');
+        this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
+        this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+      });
     });
   }
 
