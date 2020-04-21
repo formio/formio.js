@@ -514,7 +514,17 @@ export default class DataGridComponent extends NestedArrayComponent {
     path = Array.isArray(path) ? path : [path];
     const [key, ...remainingPath] = path;
     let result = [];
-
+    if (_.isNumber(key) && remainingPath.length) {
+      const compKey = remainingPath.pop();
+      result = this.rows[key][compKey];
+      if (result && _.isFunction(fn)) {
+        fn(result, this.getComponents());
+      }
+      if (remainingPath.length && 'getComponent' in result) {
+        return result.getComponent(remainingPath, fn);
+      }
+      return result;
+    }
     if (!_.isString(key)) {
       return result;
     }

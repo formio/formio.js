@@ -834,9 +834,13 @@ export default class WebformBuilder extends Component {
     }
 
     if (this.webform) {
+      const shouldRebuild = !this.webform.form.components;
       return this.webform.setForm(form).then(() => {
         if (this.refs.form) {
           this.builderHeight = this.refs.form.offsetHeight;
+        }
+        if (!shouldRebuild) {
+          return this.form;
         }
         return this.rebuild().then(() => this.form);
       });
@@ -1292,6 +1296,13 @@ export default class WebformBuilder extends Component {
       groupInfo.components[component.key] = component;
     }
     return component;
+  }
+
+  init() {
+    if (this.webform) {
+      this.webform.init();
+    }
+    return super.init();
   }
 
   destroy() {

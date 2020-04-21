@@ -39,7 +39,18 @@ export default class PDF extends Webform {
   }
 
   render() {
+    this.submitButton = this.addComponent({
+      input: true,
+      type: 'button',
+      action: 'submit',
+      internal: true,
+      label: 'Submit',
+      key: 'submit',
+      ref: 'button'
+    });
+
     return this.renderTemplate('pdf', {
+      submitButton: this.submitButton.render(),
       classes: 'formio-form-pdf',
       children: this.renderComponents()
     });
@@ -51,23 +62,27 @@ export default class PDF extends Webform {
   }
 
   rebuild() {
-    this.postMessage({ name: 'redraw' });
-    if (this.builderMode) {
+    if (this.builderMode && this.component.components) {
       this.destroyComponents();
       this.addComponents();
       return NativePromise.resolve();
     }
+    this.postMessage({ name: 'redraw' });
     return super.rebuild();
   }
 
   attach(element) {
     return super.attach(element).then(() => {
       this.loadRefs(element, {
-        submitButton: 'single',
+        button: 'single',
+        buttonMessageContainer: 'single',
+        buttonMessage: 'single',
         zoomIn: 'single',
         zoomOut: 'single',
         iframeContainer: 'single'
       });
+      this.submitButton.refs = { ...this.refs };
+      this.submitButton.attachButton();
 
       // Reset the iframeReady promise.
       this.iframeReady = new NativePromise((resolve, reject) => {
@@ -94,16 +109,10 @@ export default class PDF extends Webform {
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
-      const submitButton = this.components.find(c => c.element === this.refs.submitButton);
+      const submitButton = this.components.find(c => c.element === this.refs.button);
       if (submitButton) {
-        this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
+        this.refs.button.classList.toggle('hidden', !submitButton.visible);
       }
-
-      // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.submitButton, 'click', () => {
-        this.postMessage({ name: 'getErrors' });
-        return this.submit();
-      });
 
       this.addEventListener(this.refs.zoomIn, 'click', (event) => {
         event.preventDefault();
@@ -146,6 +155,7 @@ export default class PDF extends Webform {
    * @return {*}
    */
   submitForm(options = {}) {
+    this.postMessage({ name: 'getErrors' });
     return this.getSubmission().then(() => super.submitForm(options));
   }
 
@@ -177,6 +187,10 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
+    if (this.builderMode && this.form.components) {
+      this.postMessage({ name: 'form', data: this.form });
+      return NativePromise.resolve();
+    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -278,14 +292,6 @@ export default class PDF extends Webform {
 
     if (!this.errors.length && helpBlock) {
       helpBlock.remove();
-    }
-
-    if (this.errors.length) {
-      this.focusOnComponent(this.errors[0].component.key);
-    }
-
-    if (this.errors.length) {
-      this.focusOnComponent(this.errors[0].component.key);
     }
 
     super.showErrors(error, triggerEvent);

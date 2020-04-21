@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.10
+### Fixed
+ - FJS-779: Fixed display of time icon
+ - Fixed select test fail
+ - FJS-859: removed raw data value check
+ - FJS-805: Fixed replacing multiple value by initial value on blur
+ - PDF 34 - Fixed an issue of not formatted date in pdf header
+ - Fixed select component empty value when set to multiple
+
+## 4.10.0-beta.9
+### Changed
+ - Merged v4.9.20-rc.3
+
+## 4.10.0-beta.8
+### Changed
+ - All changes v4.9.19 - v4.9.20-rc.2
+ - FJS-704: improvements and bugfixes.
+ - FJS-704: Added possibility to specify email rendering.
+
 ## 4.10.0-beta.6
 ### Fixed
  - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
@@ -41,25 +60,73 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed unstranslated component label in Webform
  - Fixed calculated value doesn`t work when editing data with manual override in true position
 
-## 4.10.0-beta.2
+## 4.9.20
+### Changed
+ - No changes. Released 4.9.20-rc.4
+
+## 4.9.20-rc.4
 ### Fixed
- - Fixed display of selected values in table view
- - T826: Fix nested forms never submitting.
- - UIP-159: Fixing the UUID import.
+ - Problem where PDF components could not get deleted from the form.
+
+## 4.9.20-rc.3
+### Fixed
+ - Issue introduced with rc.2 where the builder components would not show up.
+
+## 4.9.20-rc.2
+### Fixed
+ - FJS-815 - Fixed multiple mask selector disabling when the component is disabled #2667
+ - Improve Select component itemTemplate check #2668
+ - FJS-848 - Fixed adding and immediate deleting wizard page is not saved #2670
+ - PDF 49 - Fixed issues with the PDF form would double submit. #2671
+ - FJS 878 - Fixed refresh issues when building PDF forms. #2671
+ - Fixing issue where select value would not show up if lazyload and html5 widget is enabled.
+
+## 4.9.20-rc.1
+### Changed
+ - Added message to focus on pdf form component
+ - PDF 21 - Focus on the first invalid field on form submission
+ - FJS-811 - fixed possibility to add tags that exceed maxTags limit
+
+## 4.9.19
+### Changed
+ - No changes. 4.9.19-rc.3 production release.
+
+## 4.9.19-rc.3
+### Fixed
+ - Fixing the PDF builder and form to not reset the forms when it changes.
+ - Changed pdf button to make it highlighted on form state changing
+ - FJS 858: Fixed no zeros in currency component when start editing
+ - Fix focus on invalid components
+ 
+### Changed
+ - Upgrade i18next@19.4.2, ismobilejs@1.1.1, raw-loader@4.0.1
+
+## 4.9.19-rc.2
+### Added
+ - A noNewEdit option to keep the edit modal from showing up when a new component is added.
+
+## 4.9.19-rc.1
+### Fixed
+ - Refresh issues with the PDF builder.
+ - Form builder demo to chage the JSON form correctly.
+ - Fixing erroneous spaces causing crashes in Chromium 
+ - Fixied memory leak by stopping video stream on destroy
+ - Don't replace choices when adding not found values
+ - FJS-844 implement basic fix for checkbox type radio submit values in tableView
+ - 'Add Another' button isn't translated with leading space
 
 ### Changed
- - VPAT-236 Changed variable types for future extension in vpat
+ - Don't skip validation for disabled components
+ - Upgrade i18next@19.4.1, ismobilejs@1.1.0, jquery@3.5.0, dialog-polyfill@0.5.1
 
 ### Added
- - UIP-131: Add option to change from moment input to calendar
+ - Add tests for the findComponent method, comment code
+ - Add context object while emit render event
 
-## 4.10.0-beta.1
-### Added
- - Added flag to check if draft restore is disabled
- - Offline authentication support.
-
-### Fixed
- - Current submission to be set after draft save.
+## 4.9.18
+### Changed
+ - Allow external modules to extend the Select options.
+ - Upgrade core-js@3.6.5, karma@5.0.1
 
 ## 4.9.17
 ### Fixed

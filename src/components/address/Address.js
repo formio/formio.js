@@ -474,7 +474,7 @@ export default class AddressComponent extends ContainerComponent {
     }
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value) {
       return '';
     }
@@ -511,11 +511,11 @@ export default class AddressComponent extends ContainerComponent {
         .filter((component) => component.hasValue(address))
         .map((component) => [component, _.get(address, component.key)])
         .filter(([component, componentValue]) => !component.isEmpty(componentValue))
-        .map(([component, componentValue]) => component.getValueAsString(componentValue))
+        .map(([component, componentValue]) => component.getValueAsString(componentValue, options))
         .join(', ');
     }
 
-    return super.getValueAsString(address);
+    return super.getValueAsString(address, options);
   }
 
   focus() {

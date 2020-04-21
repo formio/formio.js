@@ -67,13 +67,22 @@ export default class TagsComponent extends Input {
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {
       const value = this.choices.input.value;
+      const maxTagsNumber = this.component.maxTags;
+      const valuesCount = this.choices.getValue(true).length;
+
       if (value) {
-        this.choices.setValue([value]);
-        this.choices.clearInput();
-        this.choices.hideDropdown(true);
-        this.updateValue(null, {
-          modified: true
-        });
+        if (maxTagsNumber && valuesCount === maxTagsNumber) {
+          this.choices.addItems = false;
+          this.choices.clearInput();
+        }
+        else {
+          this.choices.setValue([value]);
+          this.choices.clearInput();
+          this.choices.hideDropdown(true);
+          this.updateValue(null, {
+            modified: true
+          });
+        }
       }
     });
   }

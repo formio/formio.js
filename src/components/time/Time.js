@@ -124,7 +124,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   setValueAt(index, value) {
-    if (value && !this.getRawValue(index)) {
+    if (value) {
       this.setRawValue(this.getValueAsString(value), index);
     }
     this.refs.input[index].value = this.getRawValue(index);
