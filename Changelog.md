@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.21
+### Fixed
+ - Fixed issue where pdf cursor would jump around as issues were resolved.
+
 ## 4.9.20
 ### Changed
  - No changes. Released 4.9.20-rc.4
