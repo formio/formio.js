@@ -941,10 +941,16 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    const template = `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
-    `;
+    let template;
+    if (this.dataValue) {
+      template = this.getModalPreviewTemplate();
+    }
+    else {
+      template = `
+        <label class="control-label">${this.component.label}</label><br>
+        <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
+      `;
+    }
     this.componentModal.setOpenModalElement(template);
   }
 
