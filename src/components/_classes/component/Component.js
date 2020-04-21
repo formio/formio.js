@@ -2388,6 +2388,12 @@ export default class Component extends Element {
       return false;
     }
 
+    if (flags.fromSubmission &&
+      allowOverride &&
+      this.calculatedValue !== this.dataValue) {
+      return false;
+    }
+
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
