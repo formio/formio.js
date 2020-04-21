@@ -1,5 +1,5 @@
 import Input from '../_classes/input/Input';
-import Choices from 'choices.js/public/assets/scripts/choices.js';
+import Choices from 'choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -54,6 +54,9 @@ export default class TagsComponent extends Input {
       return;
     }
     element.setAttribute('dir', this.i18next.dir());
+    if (this.choices) {
+      this.choices.destroy();
+    }
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
@@ -64,10 +67,22 @@ export default class TagsComponent extends Input {
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {
       const value = this.choices.input.value;
+      const maxTagsNumber = this.component.maxTags;
+      const valuesCount = this.choices.getValue(true).length;
+
       if (value) {
-        this.choices.setValue([value]);
-        this.choices.clearInput();
-        this.choices.hideDropdown(true);
+        if (maxTagsNumber && valuesCount === maxTagsNumber) {
+          this.choices.addItems = false;
+          this.choices.clearInput();
+        }
+        else {
+          this.choices.setValue([value]);
+          this.choices.clearInput();
+          this.choices.hideDropdown(true);
+          this.updateValue(null, {
+            modified: true
+          });
+        }
       }
     });
   }
@@ -75,7 +90,6 @@ export default class TagsComponent extends Input {
   detach() {
     super.detach();
     if (this.choices) {
-      this.choices.destroyed = true;
       this.choices.destroy();
       this.choices = null;
     }
@@ -91,13 +105,16 @@ export default class TagsComponent extends Input {
     return value;
   }
 
-  setValue(value) {
-    const changed = super.setValue(value);
+  setValue(value, flags = {}) {
+    const changed = super.setValue(value, flags);
     if (this.choices) {
-      const dataValue = this.dataValue;
+      let dataValue = this.dataValue;
       this.choices.removeActiveItems();
       if (dataValue) {
-        this.choices.setValue(dataValue);
+        if (typeof dataValue === 'string') {
+          dataValue = dataValue.split(this.delimiter).filter(result => result);
+        }
+        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
       }
     }
     return changed;
@@ -118,5 +135,11 @@ export default class TagsComponent extends Input {
 
   get disabled() {
     return super.disabled;
+  }
+
+  focus() {
+    if (this.refs.input && this.refs.input.length) {
+      this.refs.input[0].parentNode.lastChild.focus();
+    }
   }
 }

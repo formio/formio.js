@@ -6,7 +6,7 @@ export default [
     data: {
       url: '/form?limit=4294967295&select=_id,title'
     },
-    searchField: 'title',
+    searchField: 'title__regex',
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
     authenticate: true,
@@ -14,7 +14,10 @@ export default [
     key: 'form',
     weight: 10,
     lazyLoad: false,
-    tooltip: 'The form to load within this form component.'
+    tooltip: 'The form to load within this form component.',
+    validate: {
+      required: true,
+    },
   },
   {
     type: 'textfield',
@@ -22,7 +25,7 @@ export default [
     label: 'Form Revision',
     placeholder: 'Current',
     tooltip: 'You can lock the nested form to a specific revision by entering the revision number here.',
-    key: 'formRevision',
+    key: 'revision',
     weight: 11,
   },
   {

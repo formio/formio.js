@@ -23,7 +23,11 @@ export default class Form extends Element {
    * form.build();
    */
   constructor(...args) {
-    super(args[0] instanceof HTMLElement ? args[2] : args[1]);
+    let options = args[0] instanceof HTMLElement ? args[2] : args[1];
+    if (Formio.options && Formio.options.form) {
+      options = Object.assign(options, Formio.options.form);
+    }
+    super(options);
     this.ready = new NativePromise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
@@ -84,22 +88,62 @@ export default class Form extends Element {
     return this.setForm(formParam);
   }
 
+  errorForm(err) {
+    return {
+      components: [
+        {
+          'label': 'HTML',
+          'tag': 'div',
+          'className': 'error error-message alert alert-danger ui red message',
+          'attrs': [
+            {
+              'attr': 'role',
+              'value': 'alert'
+            }
+          ],
+          'key': 'errorMessage',
+          'type': 'htmlelement',
+          'input': false,
+          'content': typeof err === 'string' ? err : err.message,
+        }
+      ]
+    };
+  }
+
   setForm(formParam) {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
-      result = (new Formio(formParam)).loadForm().then((form) => {
-        this.instance = this.instance || this.create(form.display);
-        this.instance.url = formParam;
-        this.instance.nosubmit = false;
-        this._form = this.instance.form = form;
-        return this.instance.ready.then(() => {
-          if (this.instance.loadSubmission) {
-            return this.instance.loadSubmission().then(() => this.instance);
-          }
-          return this.instance;
+      const formio = new Formio(formParam);
+      let error;
+      result = this.getSubmission(formio)
+        .catch((err) => {
+          error = err;
+        })
+        .then((submission) => {
+          return formio.loadForm()
+          // If the form returned an error, show it instead of the form.
+            .catch(err => {
+              error = err;
+            })
+            .then((form) => {
+              // If the submission returned an error, show it instead of the form.
+              if (error) {
+                form = this.errorForm(error);
+              }
+              this.instance = this.instance || this.create(form.display);
+              this.instance.url = formParam;
+              this.instance.nosubmit = false;
+              this._form = this.instance.form = form;
+              if (submission) {
+                this.instance.submission = submission;
+              }
+              if (error) {
+                throw error;
+              }
+              return this.instance;
+            });
         });
-      });
     }
     else {
       this.instance = this.instance || this.create(formParam.display);
@@ -112,6 +156,13 @@ export default class Form extends Element {
       this.element = this.instance.element;
       return this.instance;
     });
+  }
+
+  getSubmission(formio) {
+    if (formio.submissionId) {
+      return formio.loadSubmission();
+    }
+    return NativePromise.resolve();
   }
 
   /**

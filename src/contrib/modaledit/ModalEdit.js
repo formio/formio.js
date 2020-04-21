@@ -94,7 +94,7 @@ export default class ModalEditComponent extends TextAreaComponent {
   }
 
   /** @override **/
-  updateOnChange(flags, changed) {
+  updateOnChange(flags, changed = false) {
     if (super.updateOnChange(flags, changed)) {
       this.updateContentView(this.dataValue);
     }

@@ -1,4 +1,36 @@
-import Choices from 'choices.js/public/assets/scripts/choices.js';
+import Choices from 'choices.js';
+
+/**
+ * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.
+ *
+ * https://github.com/jshjohnson/Choices/pull/788
+ *
+ * This is intentionally not part of the extended class, since other components use Choices and need this fix as well.
+ * @type {Choices._generatePlaceholderValue}
+ * @private
+ */
+Choices.prototype._generatePlaceholderValue = function() {
+  if (this._isSelectElement && this.passedElement.placeholderOption) {
+    const { placeholderOption } = this.passedElement;
+    return placeholderOption ? placeholderOption.text : false;
+  }
+  const { placeholder, placeholderValue } = this.config;
+  const {
+    element: { dataset },
+  } = this.passedElement;
+
+  if (placeholder) {
+    if (placeholderValue) {
+      return placeholderValue;
+    }
+
+    if (dataset.placeholder) {
+      return dataset.placeholder;
+    }
+  }
+
+  return false;
+};
 
 export const KEY_CODES = {
   BACK_KEY: 46,

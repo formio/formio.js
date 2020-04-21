@@ -1,10 +1,11 @@
 import _ from 'lodash';
-import NestedComponent from '../_classes/nested/NestedComponent';
-import Component from '../_classes/component/Component';
 
-export default class ContainerComponent extends NestedComponent {
+import Component from '../_classes/component/Component';
+import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
+
+export default class ContainerComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedDataComponent.schema({
       label: 'Container',
       type: 'container',
       key: 'container',
@@ -48,51 +49,33 @@ export default class ContainerComponent extends NestedComponent {
     return 'container';
   }
 
-  get allowData() {
-    return true;
-  }
-
-  get data() {
-    return this._data;
-  }
-
-  set data(value) {
-    this._data = value;
-    this.eachComponent(component => {
-      component.data = this.dataValue;
-    });
-  }
-
-  hasChanged(newValue, oldValue) {
-    return !_.isEqual(newValue, oldValue);
-  }
-
-  getValue() {
+  componentContext() {
     return this.dataValue;
   }
 
-  getValueAsString() {
-    return '[Complex Data]';
-  }
-
-  updateValue(value, flags) {
-    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return Component.prototype.updateValue.call(this, value, flags);
-  }
-
-  setValue(value, flags) {
-    flags = flags || {};
-    if (!value || !_.isObject(value)) {
-      return false;
-    }
+  setValue(value, flags = {}) {
+    let changed = false;
     const hasValue = this.hasValue();
     if (hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
-    if (!hasValue) {
-      // Set the data value and then reset each component to use the new data object.
-      this.dataValue = {};
+    if (!value || !_.isObject(value) || !hasValue) {
+      changed = true;
+      this.dataValue = this.defaultValue;
     }
-    return super.setValue(value, flags);
+    changed = super.setValue(value, flags) || changed;
+    this.updateOnChange(flags, changed);
+    return changed;
+  }
+
+  checkData(data, flags, row, components) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    components = components || this.getComponents();
+
+    return components.reduce((valid, comp) => {
+      return comp.checkData(data, flags, this.dataValue) && valid;
+    }, Component.prototype.checkData.call(this, data, flags, row));
   }
 }

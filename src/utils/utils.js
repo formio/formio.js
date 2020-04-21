@@ -15,9 +15,6 @@ const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
 
-import BuilderUtils from './builder';
-export { BuilderUtils };
-
 export * from './formUtils';
 
 // Configure JsonLogic
@@ -54,14 +51,12 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, 'root._form', {});
   }
 
-  const originalArgs = args;
   const componentKey = component.key;
 
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
     }
-    const params = _.keys(args);
 
     if (tokenize) {
       // Replace all {{ }} references with actual data.
@@ -79,7 +74,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = Evaluator.evaluator(func, ...params);
+      func = Evaluator.evaluator(func, args);
       args = _.values(args);
     }
     catch (err) {
@@ -91,27 +86,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      if (typeof window === 'object') {
-        returnVal = Array.isArray(args) ? func(...args) : func(args);
-      }
-      else {
-        // Need to assume we're server side and limit ourselves to a sandbox VM
-        const vm = require('vm');
-        const sandbox = vm.createContext({ ...originalArgs, result: null });
-
-        // Build the arg string
-        let argStr = _.keys(originalArgs).join();
-
-        if (!Array.isArray(args)) {
-          argStr = `{${argStr}}`;
-        }
-
-        // Execute the script
-        const script = new vm.Script(`result = ${func.toString()}(${argStr});`);
-        script.runInContext(sandbox, { timeout: 250 });
-
-        returnVal = sandbox.result;
-      }
+      returnVal = Evaluator.evaluate(func, args);
     }
     catch (err) {
       returnVal = null;
@@ -327,6 +302,11 @@ export function checkCondition(component, row, data, form, instance) {
  * @returns {mixed}
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
+  // If trigger is empty, don't fire it
+  if (!trigger[trigger.type]) {
+    return false;
+  }
+
   switch (trigger.type) {
     case 'simple':
       return checkSimpleConditional(component, trigger.simple, row, data);
@@ -707,7 +687,9 @@ export function convertFormatToMoment(format) {
     // Day in week.
     .replace(/E/g, 'd')
     // AM/PM marker
-    .replace(/a/g, 'A');
+    .replace(/a/g, 'A')
+    // Unix Timestamp
+    .replace(/U/g, 'X');
 }
 
 export function convertFormatToMask(format) {
@@ -753,6 +735,7 @@ export function getInputMask(mask) {
         maskArray.push(/[a-zA-Z0-9]/);
         break;
       default:
+        maskArray.numeric = false;
         maskArray.push(mask[i]);
         break;
     }
@@ -764,6 +747,12 @@ export function matchInputMask(value, inputMask) {
   if (!inputMask) {
     return true;
   }
+
+  // If value is longer than mask, it isn't valid.
+  if (value.length > inputMask.length) {
+    return false;
+  }
+
   for (let i = 0; i < inputMask.length; i++) {
     const char = value[i];
     const charPart = inputMask[i];
@@ -791,12 +780,12 @@ export function getNumberSeparators(lang = 'en') {
   };
 }
 
-export function getNumberDecimalLimit(component) {
+export function getNumberDecimalLimit(component, defaultLimit) {
   if (_.has(component, 'decimalLimit')) {
     return _.get(component, 'decimalLimit');
   }
   // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-  let decimalLimit = 20;
+  let decimalLimit = defaultLimit || 20;
   const step = _.get(component, 'validate.step', 'any');
 
   if (step !== 'any') {
@@ -880,6 +869,12 @@ export function fieldData(data, component) {
     if (component.multiple && !Array.isArray(data[component.key])) {
       data[component.key] = [data[component.key]];
     }
+
+    // Fix for checkbox type radio submission values in tableView
+    if (component.type === 'checkbox' && component.inputType === 'radio') {
+      return data[component.name] === component.value;
+    }
+
     return data[component.key];
   }
 }
@@ -1036,10 +1031,10 @@ export function observeOverload(callback, options = {}) {
 export function getContextComponents(context) {
   const values = [];
 
-  context.utils.eachComponent(context.instance.options.editForm.components, (component) => {
+  context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
     if (component.key !== context.data.key) {
       values.push({
-        label: component.label || component.key,
+        label: `${component.label || component.key} (${path})`,
         value: component.key,
       });
     }
@@ -1112,4 +1107,27 @@ export function isInputComponent(componentJson) {
     default:
       return true;
   }
+}
+
+export function getArrayFromComponentPath(pathStr) {
+  return pathStr.replace(/[[\]]/g, '.')
+    .replace(/\.\./g, '.')
+    .split('.')
+    .map(part => _.defaultTo(_.toNumber(part), part));
+}
+
+export function getStringFromComponentPath(path) {
+  if (!_.isArray(path)) {
+    return path;
+  }
+  let strPath = '';
+  path.forEach((part, i) => {
+    if (_.isNumber(part)) {
+      strPath += `[${part}]`;
+    }
+    else {
+      strPath += i === 0 ? part : `.${part}`;
+    }
+  });
+  return strPath;
 }

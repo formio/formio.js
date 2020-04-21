@@ -145,6 +145,7 @@ export default class Input extends Multivalue {
   }
 
   updateValueAt(value, flags, index) {
+    flags = flags || {};
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
@@ -168,6 +169,7 @@ export default class Input extends Multivalue {
   }
 
   updateValue(value, flags, index) {
+    flags = flags || {};
     const changed = super.updateValue(value, flags);
     this.triggerUpdateValueAt(this.dataValue, flags, index);
     return changed;
@@ -199,8 +201,8 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value) {
-    return super.getValueAsString(this.getWidgetValueAsString(value));
+  getValueAsString(value, options) {
+    return super.getValueAsString(this.getWidgetValueAsString(value, options), options);
   }
 
   attachElement(element, index) {

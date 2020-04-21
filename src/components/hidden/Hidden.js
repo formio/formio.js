@@ -32,6 +32,10 @@ export default class HiddenComponent extends Input {
     return info;
   }
 
+  get skipInEmail() {
+    return true;
+  }
+
   /**
    * Check if a component is eligible for multiple validation
    *
@@ -50,7 +54,7 @@ export default class HiddenComponent extends Input {
     return '';
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     return this.updateValue(value, flags);
   }
 

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Input from '../_classes/input/Input';
 import FormioUtils from '../../utils';
+import Widgets from '../../widgets';
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -36,7 +37,8 @@ export default class DateTimeComponent extends Input {
         readonlyInput: false,
         mousewheel: true,
         arrowkeys: true
-      }
+      },
+      customOptions: {},
     }, ...extend);
   }
 
@@ -70,6 +72,18 @@ export default class DateTimeComponent extends Input {
       this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');
     }
 
+    let customOptions = this.component.customOptions || {};
+
+    if (typeof customOptions === 'string') {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
     /* eslint-disable camelcase */
     this.component.widget = {
       type: 'calendar',
@@ -88,7 +102,12 @@ export default class DateTimeComponent extends Input {
       time_24hr: time24hr,
       readOnly: this.options.readOnly,
       minDate: _.get(this.component, 'datePicker.minDate'),
-      maxDate: _.get(this.component, 'datePicker.maxDate')
+      disabledDates: _.get(this.component, 'datePicker.disable'),
+      disableWeekends: _.get(this.component, 'datePicker.disableWeekends'),
+      disableWeekdays: _.get(this.component, 'datePicker.disableWeekdays'),
+      disableFunction: _.get(this.component, 'datePicker.disableFunction'),
+      maxDate: _.get(this.component, 'datePicker.maxDate'),
+      ...customOptions,
     };
     /* eslint-enable camelcase */
 
@@ -101,6 +120,11 @@ export default class DateTimeComponent extends Input {
       input.widget.settings.submissionTimezone = this.submissionTimezone;
     }
     return input;
+  }
+
+  get widget() {
+    const widget = this.component.widget ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    return widget;
   }
 
   get defaultSchema() {

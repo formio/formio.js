@@ -297,33 +297,38 @@ export default class WebformBuilder extends Component {
       }
     };
     if (this.options && this.options.resourceTag) {
-      query.tags = [this.options.resourceTag];
+      query.params.tags = [this.options.resourceTag];
     }
     else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
-      query.tags = ['builder'];
+      query.params.tags = ['builder'];
     }
     const formio = new Formio(Formio.projectUrl);
-    if (!formio.noProject) {
+    const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
+
+    if (!formio.noProject && !isResourcesDisabled) {
+      const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
         .then((resources) => {
           if (resources.length) {
             this.builder.resource = {
-              title: 'Existing Resource Fields',
+              title: resourceOptions ? resourceOptions.title : 'Existing Resource Fields',
               key: 'resource',
-              weight: 50,
+              weight: resourceOptions ? resourceOptions.weight : 50,
               subgroups: [],
               components: [],
               componentOrder: []
             };
             this.groups.resource = {
-              title: 'Existing Resource Fields',
+              title: resourceOptions ? resourceOptions.title : 'Existing Resource Fields',
               key: 'resource',
-              weight: 50,
+              weight: resourceOptions ? resourceOptions.weight :  50,
               subgroups: [],
               components: [],
               componentOrder: []
             };
-            this.groupOrder.push('resource');
+            if (!this.groupOrder.includes('resource')) {
+              this.groupOrder.push('resource');
+            }
             this.addExistingResourceFields(resources);
           }
         });
@@ -451,29 +456,7 @@ export default class WebformBuilder extends Component {
   }
 
   set form(value) {
-    if (!value.components) {
-      value.components = [];
-    }
-
-    const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && !value.components.length;
-
-    // Ensure there is at least a submit button.
-    if (isShowSubmitButton) {
-      value.components.push({
-        type: 'button',
-        label: 'Submit',
-        key: 'submit',
-        size: 'md',
-        block: false,
-        action: 'submit',
-        disableOnInvalid: true,
-        theme: 'primary'
-      });
-    }
-
-    this.webform.form = value;
-    this.rebuild();
+    this.setForm(value);
   }
 
   get container() {
@@ -497,7 +480,7 @@ export default class WebformBuilder extends Component {
 
     // If the current component is the namespace, we don't need to find it again.
     if (namespaceKey === component.key) {
-      return component.components;
+      return [...component.components, component];
     }
 
     // Get the namespace component so we have the original object.
@@ -543,6 +526,9 @@ export default class WebformBuilder extends Component {
   }
 
   attach(element) {
+    this.on('change', (form) => {
+      this.populateRecaptchaSettings(form);
+    });
     return super.attach(element).then(() => {
       this.loadRefs(element, {
         form: 'single',
@@ -665,7 +651,7 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
-    else {
+    if (group.slice(0, group.indexOf('-')) === 'resource') {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
@@ -689,15 +675,23 @@ export default class WebformBuilder extends Component {
   getComponentsPath(component, parent) {
     // Get path to the component in the parent component.
     let path = 'components';
+    let columnIndex = 0;
+    let tableRowIndex = 0;
+    let tableColumnIndex = 0;
+    let tabIndex = 0;
     switch (parent.type) {
       case 'table':
-        path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key  === component.key)));
+        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key  === component.key)));
+        path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         break;
       case 'columns':
-        path = `columns[${component.column}].components`;
+        columnIndex = _.findIndex(parent.columns, column => column.components.some(comp => comp.key === component.key));
+        path = `columns[${columnIndex}].components`;
         break;
       case 'tabs':
-        path = `components[${component.tab}].components`;
+        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key  === component.key));
+        path = `components[${tabIndex}].components`;
         break;
     }
     return path;
@@ -775,7 +769,8 @@ export default class WebformBuilder extends Component {
         index = 0;
       }
     }
-    else if (parent && parent.addChildComponent) {
+
+    if (parent && parent.addChildComponent) {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 
@@ -810,13 +805,53 @@ export default class WebformBuilder extends Component {
 
     return rebuild.then(() => {
       this.emit('addComponent', info, parent, path, index, isNew);
+      if (!isNew) {
+        this.emit('change', this.form);
+      }
     });
   }
 
   setForm(form) {
+    if (!form.components) {
+      form.components = [];
+    }
+
+    const isShowSubmitButton = !this.options.noDefaultSubmitButton
+      && !form.components.length;
+
+    // Ensure there is at least a submit button.
+    if (isShowSubmitButton) {
+      form.components.push({
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        size: 'md',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary'
+      });
+    }
+
+    if (this.webform) {
+      const shouldRebuild = !this.webform.form.components;
+      return this.webform.setForm(form).then(() => {
+        if (this.refs.form) {
+          this.builderHeight = this.refs.form.offsetHeight;
+        }
+        if (!shouldRebuild) {
+          return this.form;
+        }
+        return this.rebuild().then(() => this.form);
+      });
+    }
+    return NativePromise.resolve(form);
+  }
+
+  populateRecaptchaSettings(form) {
     //populate isEnabled for recaptcha form settings
     var isRecaptchaEnabled = false;
-    if (form.components) {
+    if (this.form.components) {
       eachComponent(form.components, component => {
         if (isRecaptchaEnabled) {
           return;
@@ -833,11 +868,6 @@ export default class WebformBuilder extends Component {
         _.set(form, 'settings.recaptcha.isEnabled', false);
       }
     }
-    this.emit('change', form);
-    return super.setForm(form).then(retVal => {
-      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
-      return retVal;
-    });
   }
 
   removeComponent(component, parent, original) {
@@ -897,42 +927,51 @@ export default class WebformBuilder extends Component {
 
     // Change the "default value" field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-    const defaultChanged = changed && changed.component && changed.component.key === 'defaultValue';
-    if (defaultValueComponent && !defaultChanged) {
-      _.assign(defaultValueComponent.component, _.omit(component, [
-        'key',
-        'label',
-        'placeholder',
-        'tooltip',
-        'hidden',
-        'autofocus',
-        'validate',
-        'disabled',
-        'defaultValue',
-        'customDefaultValue',
-        'calculateValue'
-      ]));
-      const parentComponent = defaultValueComponent.parent;
-      let tabIndex = -1;
-      let index = -1;
-      parentComponent.tabs.some((tab, tIndex) => {
-        tab.some((comp, compIndex) => {
-          if (comp.id === defaultValueComponent.id) {
-            tabIndex = tIndex;
-            index = compIndex;
-            return true;
-          }
-          return false;
-        });
-      });
+    if (defaultValueComponent) {
+      const defaultChanged = changed && (
+        (changed.component && changed.component.key === 'defaultValue')
+        || (changed.instance && defaultValueComponent.hasComponent && defaultValueComponent.hasComponent(changed.instance))
+      );
 
-      if (tabIndex !== -1 && index !== -1) {
-        const sibling = parentComponent.tabs[tabIndex][index + 1];
-        parentComponent.removeComponent(defaultValueComponent);
-        const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
-        _.pull(newComp.validators, 'required');
-        parentComponent.tabs[tabIndex].splice(index, 1, newComp);
-        newComp.build(defaultValueComponent.element);
+      if (!defaultChanged) {
+        _.assign(defaultValueComponent.component, _.omit(component, [
+          'key',
+          'label',
+          'placeholder',
+          'tooltip',
+          'hidden',
+          'autofocus',
+          'validate',
+          'disabled',
+          'defaultValue',
+          'customDefaultValue',
+          'calculateValue',
+          'conditional',
+          'customConditional',
+        ]));
+        const parentComponent = defaultValueComponent.parent;
+        let tabIndex = -1;
+        let index = -1;
+        parentComponent.tabs.some((tab, tIndex) => {
+          tab.some((comp, compIndex) => {
+            if (comp.id === defaultValueComponent.id) {
+              tabIndex = tIndex;
+              index = compIndex;
+              return true;
+            }
+            return false;
+          });
+        });
+
+        if (tabIndex !== -1 && index !== -1) {
+          const sibling = parentComponent.tabs[tabIndex][index + 1];
+          parentComponent.removeComponent(defaultValueComponent);
+          const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+          _.pull(newComp.validators, 'required');
+          parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+          newComp.checkValidity = () => true;
+          newComp.build(defaultValueComponent.element);
+        }
       }
     }
 
@@ -941,25 +980,30 @@ export default class WebformBuilder extends Component {
   }
 
   highlightInvalidComponents() {
-    const formKeys = {};
-    const repeatableKeys = [];
-
-    eachComponent(this.form.components, (comp) => {
+    const repeatablePaths = [];
+    const keys = new Map();
+    eachComponent(this.form.components, (comp, path) => {
       if (!comp.key) {
         return;
       }
 
-      if (formKeys[comp.key] && !repeatableKeys.includes(comp.key)) {
-        repeatableKeys.push(comp.key);
+      if (keys.has(comp.key)) {
+        if (keys.get(comp.key).includes(path)) {
+          repeatablePaths.push(path);
+        }
+        else {
+          keys.set(comp.key, [...keys.get(comp.key), path]);
+        }
       }
-
-      formKeys[comp.key] = true;
+      else {
+        keys.set(comp.key, [path]);
+      }
     });
 
-    const components = this.webform.getComponents();
-    repeatableKeys.forEach((key) => {
-      const instances = components.filter((comp) => comp.key === key);
-      instances.forEach((instance) => instance.setCustomValidity(`API Key is not unique: ${key}`));
+    eachComponent(this.webform.getComponents(), (comp, path) => {
+      if (repeatablePaths.includes(path)) {
+        comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+      }
     });
   }
 
@@ -983,20 +1027,24 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      let comp = null;
+      parentComponent.getComponents().forEach((component) => {
+        if (component.key === original.key) {
+          comp = component;
+        }
+      });
       if (parentContainer) {
         parentContainer[index] = submissionData;
+        if (comp) {
+          comp.component = submissionData;
+        }
       }
       else if (parentComponent && parentComponent.saveChildComponent) {
         parentComponent.saveChildComponent(submissionData);
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        let schema = parentContainer ? parentContainer[index] : [];
-        parentComponent.getComponents().forEach((component) => {
-          if (component.key === schema.key) {
-            schema = component.schema;
-          }
-        });
+        const schema = comp ? comp.schema : (parentContainer ? parentContainer[index] : []);
         this.emit('saveComponent',
           schema,
           component,
@@ -1077,7 +1125,7 @@ export default class WebformBuilder extends Component {
       this.preview.destroy();
     }
     if (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview) {
-      this.preview = new Webform(_.omit(this.options, [
+      this.preview = new Webform(_.omit({ ...this.options, preview: true }, [
         'hooks',
         'builder',
         'events',
@@ -1086,7 +1134,7 @@ export default class WebformBuilder extends Component {
       ]));
     }
 
-    this.componentEdit = this.ce('div');
+    this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
@@ -1248,6 +1296,13 @@ export default class WebformBuilder extends Component {
       groupInfo.components[component.key] = component;
     }
     return component;
+  }
+
+  init() {
+    if (this.webform) {
+      this.webform.init();
+    }
+    return super.init();
   }
 
   destroy() {

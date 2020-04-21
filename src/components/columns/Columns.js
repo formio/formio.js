@@ -8,8 +8,8 @@ export default class ColumnsComponent extends NestedComponent {
       key: 'columns',
       type: 'columns',
       columns: [
-        { components: [], width: 6, offset: 0, push: 0, pull: 0 },
-        { components: [], width: 6, offset: 0, push: 0, pull: 0 }
+        { components: [], width: 6, offset: 0, push: 0, pull: 0, size: 'md' },
+        { components: [], width: 6, offset: 0, push: 0, pull: 0, size: 'md' }
       ],
       clearOnHide: false,
       input: false,
@@ -67,6 +67,10 @@ export default class ColumnsComponent extends NestedComponent {
     this.columns = [];
     _.each(this.component.columns, (column, index) => {
       this.columns[index] = [];
+      if (!column.size) {
+        column.size = 'md';
+      }
+
       // Ensure there is a components array.
       if (!Array.isArray(column.components)) {
         column.components = [];

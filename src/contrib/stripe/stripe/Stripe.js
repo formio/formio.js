@@ -1,6 +1,6 @@
 /* globals Stripe */
 import _ from 'lodash';
-import Validator from '../../../components/Validator';
+import Validator from '../../../validator/Validator';
 import Component from '../../../components/_classes/component/Component';
 import Formio from '../../../Formio';
 import NativePromise from 'native-promise-only';

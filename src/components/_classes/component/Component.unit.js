@@ -47,7 +47,7 @@ describe('Component', () => {
       bad: {
         value: 't',
         field: 'firstName',
-        error: 'First Name must be longer than 1 characters.'
+        error: 'First Name must have at least 2 characters.'
       },
       good: {
         value: 'te'
@@ -62,10 +62,40 @@ describe('Component', () => {
       bad: {
         value: 'testte',
         field: 'firstName',
-        error: 'First Name must be shorter than 6 characters.'
+        error: 'First Name must have no more than 5 characters.'
       },
       good: {
         value: 'te'
+      }
+    }, done));
+  });
+
+  it('Should provide maxWords validation', (done) => {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { maxWords: 2 }
+    })).then((component) => Harness.testComponent(component, {
+      bad: {
+        value: 'test test test',
+        field: 'firstName',
+        error: 'First Name must have no more than 2 words.'
+      },
+      good: {
+        value: 'te st'
+      }
+    }, done));
+  });
+
+  it('Should provide minWords validation', (done) => {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { minWords: 2 }
+    })).then((component) => Harness.testComponent(component, {
+      bad: {
+        value: 'test',
+        field: 'firstName',
+        error: 'First Name must have at least 2 words.'
+      },
+      good: {
+        value: 'te st'
       }
     }, done));
   });
@@ -154,5 +184,14 @@ describe('Component', () => {
         }, done)
         .catch(done);
     });
+  });
+});
+
+it('Should return value for HTML mode', () => {
+  return Harness.testCreate(Component, comp1).then((component) => {
+    assert.equal(component.itemValueForHTMLMode(['option 1', 'option 2', 'option 3']), 'option 1, option 2, option 3');
+    assert.equal(component.itemValueForHTMLMode(['option 1', ['option 2', 'option 3']]), 'option 1, option 2, option 3');
+    assert.equal(component.itemValueForHTMLMode(['2020-03-18T15:00:00.000Z', '2020-03-31T09:05:00.000Z']), '2020-03-18T15:00:00.000Z, 2020-03-31T09:05:00.000Z');
+    assert.equal(component.itemValueForHTMLMode('test'), 'test');
   });
 });

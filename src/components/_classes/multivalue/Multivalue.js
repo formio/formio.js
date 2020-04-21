@@ -16,14 +16,22 @@ export default class Multivalue extends Field {
   }
 
   get defaultValue() {
+    let value = super.defaultValue;
+
     if (this.component.multiple) {
-      return [super.defaultValue];
+      if (_.isArray(value)) {
+        value = !value.length ? [super.emptyValue] : value;
+      }
+      else {
+        value = [value];
+      }
     }
-    return super.defaultValue;
+
+    return value;
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || ' Add Another');
+    return this.t(this.component.addAnother || 'Add Another');
   }
 
   useWrapper() {
@@ -148,13 +156,13 @@ export default class Multivalue extends Field {
       if (element.mask) {
         setTimeout(() => {
           return this.updateValue(null, {
-            modified: true
+            modified: (this.component.type !== 'hidden')
           }, index);
         }, 1);
       }
       else {
         return this.updateValue(null, {
-          modified: true
+          modified: (this.component.type !== 'hidden')
         }, index);
       }
     });

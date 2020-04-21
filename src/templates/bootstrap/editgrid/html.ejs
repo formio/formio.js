@@ -10,13 +10,13 @@
   </li>
   {% } %}
   {% ctx.rows.forEach(function(row, rowIndex) { %}
-  <li class="list-group-item" ref="{{ctx.editgridKey}}">
+  <li class="list-group-item" ref="{{ctx.ref.row}}">
     {{row}}
     {% if (ctx.openRows[rowIndex] && !ctx.readOnly) { %}
     <div class="editgrid-actions">
-      <button class="btn btn-primary" ref="{{ctx.editgridKey}}-saveRow">{{ctx.t(ctx.component.saveRow || 'Save')}}</button>
+      <button class="btn btn-primary" ref="{{ctx.ref.saveRow}}">{{ctx.t(ctx.component.saveRow || 'Save')}}</button>
       {% if (ctx.component.removeRow) { %}
-      <button class="btn btn-danger" ref="{{ctx.editgridKey}}-cancelRow">{{ctx.t(ctx.component.removeRow || 'Cancel')}}</button>
+      <button class="btn btn-danger" ref="{{ctx.ref.cancelRow}}">{{ctx.t(ctx.component.removeRow || 'Cancel')}}</button>
       {% } %}
     </div>
     {% } %}

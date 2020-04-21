@@ -14,6 +14,9 @@ const Evaluator = {
       return _.noop;
     }
 
+    if (typeof params[0] === 'object') {
+      params = _.keys(params[0]);
+    }
     return new Function(...params, func);
   },
   template(template, hash) {
@@ -47,7 +50,7 @@ const Evaluator = {
     }
     else if (Evaluator.noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
-      return rawTemplate.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => _.get(data, $2));
+      return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => _.get(data, $2));
     }
     else {
       template = Evaluator.template(rawTemplate, hash);
@@ -62,6 +65,9 @@ const Evaluator = {
       }
     }
     return template;
+  },
+  evaluate(func, args) {
+    return Array.isArray(args) ? func(...args) : func(args);
   }
 };
 

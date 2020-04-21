@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 181,
+  "end": 210,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 5,
+      "line": 6,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 181,
+    "end": 210,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 5,
+        "line": 6,
         "column": 0
       }
     },
@@ -169,7 +169,7 @@
       {
         "type": "ExportNamedDeclaration",
         "start": 58,
-        "end": 107,
+        "end": 86,
         "loc": {
           "start": {
             "line": 3,
@@ -177,14 +177,14 @@
           },
           "end": {
             "line": 3,
-            "column": 49
+            "column": 28
           }
         },
         "specifiers": [
           {
             "type": "ExportDefaultSpecifier",
             "start": 65,
-            "end": 77,
+            "end": 70,
             "loc": {
               "start": {
                 "line": 3,
@@ -192,13 +192,13 @@
               },
               "end": {
                 "line": 3,
-                "column": 19
+                "column": 12
               }
             },
             "exported": {
               "type": "Identifier",
               "start": 65,
-              "end": 77,
+              "end": 70,
               "loc": {
                 "start": {
                   "line": 3,
@@ -206,6 +206,75 @@
                 },
                 "end": {
                   "line": 3,
+                  "column": 12
+                },
+                "identifierName": "comp3"
+              },
+              "name": "comp3"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 76,
+          "end": 85,
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 18
+            },
+            "end": {
+              "line": 3,
+              "column": 27
+            }
+          },
+          "extra": {
+            "rawValue": "./comp3",
+            "raw": "'./comp3'"
+          },
+          "value": "./comp3"
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 87,
+        "end": 136,
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 0
+          },
+          "end": {
+            "line": 4,
+            "column": 49
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ExportDefaultSpecifier",
+            "start": 94,
+            "end": 106,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 7
+              },
+              "end": {
+                "line": 4,
+                "column": 19
+              }
+            },
+            "exported": {
+              "type": "Identifier",
+              "start": 94,
+              "end": 106,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 7
+                },
+                "end": {
+                  "line": 4,
                   "column": 19
                 },
                 "identifierName": "withDefValue"
@@ -216,15 +285,15 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 83,
-          "end": 106,
+          "start": 112,
+          "end": 135,
           "loc": {
             "start": {
-              "line": 3,
+              "line": 4,
               "column": 25
             },
             "end": {
-              "line": 3,
+              "line": 4,
               "column": 48
             }
           },
@@ -237,44 +306,44 @@
       },
       {
         "type": "ExportNamedDeclaration",
-        "start": 108,
-        "end": 180,
+        "start": 137,
+        "end": 209,
         "loc": {
           "start": {
-            "line": 4,
+            "line": 5,
             "column": 0
           },
           "end": {
-            "line": 4,
+            "line": 5,
             "column": 72
           }
         },
         "specifiers": [
           {
             "type": "ExportDefaultSpecifier",
-            "start": 115,
-            "end": 139,
+            "start": 144,
+            "end": 168,
             "loc": {
               "start": {
-                "line": 4,
+                "line": 5,
                 "column": 7
               },
               "end": {
-                "line": 4,
+                "line": 5,
                 "column": 31
               }
             },
             "exported": {
               "type": "Identifier",
-              "start": 115,
-              "end": 139,
+              "start": 144,
+              "end": 168,
               "loc": {
                 "start": {
-                  "line": 4,
+                  "line": 5,
                   "column": 7
                 },
                 "end": {
-                  "line": 4,
+                  "line": 5,
                   "column": 31
                 },
                 "identifierName": "withRowGroupsAndDefValue"
@@ -285,15 +354,15 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 145,
-          "end": 179,
+          "start": 174,
+          "end": 208,
           "loc": {
             "start": {
-              "line": 4,
+              "line": 5,
               "column": 37
             },
             "end": {
-              "line": 4,
+              "line": 5,
               "column": 71
             }
           },
@@ -615,9 +684,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "withDefValue",
+      "value": "comp3",
       "start": 65,
-      "end": 77,
+      "end": 70,
       "loc": {
         "start": {
           "line": 3,
@@ -625,7 +694,7 @@
         },
         "end": {
           "line": 3,
-          "column": 19
+          "column": 12
         }
       }
     },
@@ -642,16 +711,16 @@
         "binop": null
       },
       "value": "from",
-      "start": 78,
-      "end": 82,
+      "start": 71,
+      "end": 75,
       "loc": {
         "start": {
           "line": 3,
-          "column": 20
+          "column": 13
         },
         "end": {
           "line": 3,
-          "column": 24
+          "column": 17
         }
       }
     },
@@ -668,17 +737,17 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "./comp-with-def-value",
-      "start": 83,
-      "end": 106,
+      "value": "./comp3",
+      "start": 76,
+      "end": 85,
       "loc": {
         "start": {
           "line": 3,
-          "column": 25
+          "column": 18
         },
         "end": {
           "line": 3,
-          "column": 48
+          "column": 27
         }
       }
     },
@@ -695,16 +764,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 106,
-      "end": 107,
+      "start": 85,
+      "end": 86,
       "loc": {
         "start": {
           "line": 3,
-          "column": 48
+          "column": 27
         },
         "end": {
           "line": 3,
-          "column": 49
+          "column": 28
         }
       }
     },
@@ -723,8 +792,8 @@
         "updateContext": null
       },
       "value": "export",
-      "start": 108,
-      "end": 114,
+      "start": 87,
+      "end": 93,
       "loc": {
         "start": {
           "line": 4,
@@ -748,9 +817,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "withRowGroupsAndDefValue",
-      "start": 115,
-      "end": 139,
+      "value": "withDefValue",
+      "start": 94,
+      "end": 106,
       "loc": {
         "start": {
           "line": 4,
@@ -758,6 +827,139 @@
         },
         "end": {
           "line": 4,
+          "column": 19
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "from",
+      "start": 107,
+      "end": 111,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 20
+        },
+        "end": {
+          "line": 4,
+          "column": 24
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "./comp-with-def-value",
+      "start": 112,
+      "end": 135,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 25
+        },
+        "end": {
+          "line": 4,
+          "column": 48
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 135,
+      "end": 136,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 48
+        },
+        "end": {
+          "line": 4,
+          "column": 49
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 137,
+      "end": 143,
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 0
+        },
+        "end": {
+          "line": 5,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "withRowGroupsAndDefValue",
+      "start": 144,
+      "end": 168,
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 7
+        },
+        "end": {
+          "line": 5,
           "column": 31
         }
       }
@@ -775,15 +977,15 @@
         "binop": null
       },
       "value": "from",
-      "start": 140,
-      "end": 144,
+      "start": 169,
+      "end": 173,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 32
         },
         "end": {
-          "line": 4,
+          "line": 5,
           "column": 36
         }
       }
@@ -802,15 +1004,15 @@
         "updateContext": null
       },
       "value": "./comp-row-groups-with-def-value",
-      "start": 145,
-      "end": 179,
+      "start": 174,
+      "end": 208,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 37
         },
         "end": {
-          "line": 4,
+          "line": 5,
           "column": 71
         }
       }
@@ -828,15 +1030,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 179,
-      "end": 180,
+      "start": 208,
+      "end": 209,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 71
         },
         "end": {
-          "line": 4,
+          "line": 5,
           "column": 72
         }
       }
@@ -854,15 +1056,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 181,
-      "end": 181,
+      "start": 210,
+      "end": 210,
       "loc": {
         "start": {
-          "line": 5,
+          "line": 6,
           "column": 0
         },
         "end": {
-          "line": 5,
+          "line": 6,
           "column": 0
         }
       }
