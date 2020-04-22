@@ -520,7 +520,7 @@ export default class PDF extends Webform {
   showErrors(error, triggerEvent) {
     const helpBlock = document.getElementById(&apos;submit-error&apos;);
 
-    if (!helpBlock) {
+    if (!helpBlock &amp;&amp; this.errors.length) {
       const p = this.ce(&apos;p&apos;, { class: &apos;help-block&apos; });
 
       this.setContent(p, this.t(&apos;submitError&apos;));

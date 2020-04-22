@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.22
+### Fixed
+ - PDF-58: Fixed an issue of the button error that disappear and reappear
+
 ## 4.9.21
 ### Fixed
  - Fixed issue where pdf cursor would jump around as issues were resolved.
