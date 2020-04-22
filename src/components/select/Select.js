@@ -1085,6 +1085,10 @@ export default class SelectComponent extends Field {
     if (_.isNil(value)) {
       return;
     }
+    //check if value equals to default emptyValue
+    if (_.isObject(value) && Object.keys(value).length === 0) {
+      return value;
+    }
 
     const dataType = this.component.dataType || 'auto';
     const normalize = {

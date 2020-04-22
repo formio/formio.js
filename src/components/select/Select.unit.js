@@ -46,6 +46,16 @@ describe('Select Component', () => {
     });
   });
 
+  it('should not stringify default empty values', function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) => {
+      const value = component.normalizeSingleValue({});
+      const value1 = component.normalizeSingleValue([]);
+      assert.equal(typeof value, 'object');
+      assert.equal(typeof value1, 'object');
+      done();
+    });
+  });
+
   it('should not change value letter case', function(done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const value = component.normalizeSingleValue('data.textArea');
