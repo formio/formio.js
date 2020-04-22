@@ -36,12 +36,14 @@ describe('Select Component', () => {
       const value3 = component.normalizeSingleValue('11test11test');
       const value4 = component.normalizeSingleValue('test11');
       const value5 = component.normalizeSingleValue('0');
+      const value6 = component.normalizeSingleValue('');
       assert.equal(typeof value, 'boolean');
       assert.equal(typeof value1, 'number');
       assert.equal(typeof value2, 'string');
       assert.equal(typeof value3, 'string');
       assert.equal(typeof value4, 'string');
       assert.equal(typeof value5, 'number');
+      assert.equal(typeof value6, 'string');
       done();
     });
   });
