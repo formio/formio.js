@@ -1150,7 +1150,7 @@ export default class Webform extends NestedDataComponent {
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
           if (keyOrPath) {
-            const formattedKeyOrPath = getStringFromComponentPath(err.messages[index].path);
+            const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
             li.dataset.componentKey = formattedKeyOrPath;
           }
 
