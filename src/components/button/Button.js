@@ -125,6 +125,7 @@ export default class ButtonComponent extends Field {
       this.on('submitError', () => {
         this.loading = false;
         this.disabled = false;
+        this.hasError = true;
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
