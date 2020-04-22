@@ -2401,6 +2401,10 @@ export default class Component extends Element {
       row: row || this.data
     }, 'value');
 
+    if (dataValue && calculatedValue !== dataValue) {
+      return false;
+    }
+
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
       allowOverride &&
