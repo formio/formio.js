@@ -10,7 +10,8 @@ import {
   comp2,
   multiSelect,
   multiSelectOptions,
-  comp4
+  comp4,
+  comp5
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -66,6 +67,41 @@ describe('Select Component', () => {
       assert.equal(value, true);
       assert.equal(value1, false);
       assert.equal(value2, true);
+      done();
+    });
+  });
+
+  it('1/2 should not display empty choice options if property value is not defined', function(done) {
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      component.setItems([{
+        'label': '111',
+        'value': '111'
+      }, {
+        'label': '222',
+        'value': '222'
+      }, {
+        'label': '333',
+        'value': '333'
+      }], false);
+      assert.equal(component.selectOptions.length, 0);
+      done();
+    });
+  });
+
+  it('2/2 should display choice option if property value is set', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      component.setItems([{
+        'label': '111',
+        'value': '111'
+      }, {
+        'label': '222',
+        'value': '222'
+      }, {
+        'label': '333',
+        'value': '333'
+      }], false);
+      assert.equal(component.selectOptions.length, 3);
       done();
     });
   });
