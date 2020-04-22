@@ -150,6 +150,9 @@ export default class FormComponent extends Component {
     if (this.options.iconset) {
       options.iconset = this.options.iconset;
     }
+    if (this.options.fileService) {
+      options.fileService = this.options.fileService;
+    }
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
