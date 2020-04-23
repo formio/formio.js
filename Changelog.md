@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+ - Moved `fileService` getter from `File` component to `Component` base component
+
+### Fixed
+ - WYSIWYG image upload not working without form URL provided
+
 ## 4.10.0-beta.10
 ### Fixed
  - FJS-779: Fixed display of time icon
