@@ -2885,6 +2885,27 @@ export default class Component extends Element {
       this.refs.input[0].focus();
     }
   }
+
+  /**
+   * Get `Formio` instance for working with files
+   */
+  get fileService() {
+    if (this.options.fileService) {
+      return this.options.fileService;
+    }
+    if (this.options.formio) {
+      return this.options.formio;
+    }
+    if (this.root && this.root.formio) {
+      return this.root.formio;
+    }
+    const formio = new Formio();
+    // If a form is loaded, then make sure to set the correct formUrl.
+    if (this.root && this.root._form && this.root._form._id) {
+      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
+    }
+    return formio;
+  }
 }
 
 Component.externalLibraries = {};
