@@ -168,6 +168,7 @@ export default class SelectComponent extends Field {
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
+      if (!label || !this.t(label)) return;
       return template.replace(label, this.t(label));
     }
     else {
@@ -182,6 +183,8 @@ export default class SelectComponent extends Field {
    * @param label
    */
   addOption(value, label, attrs = {}, id) {
+    if (_.isNil(label)) return;
+
     const option = {
       value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
