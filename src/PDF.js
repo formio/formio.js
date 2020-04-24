@@ -247,6 +247,13 @@ export default class PDF extends Webform {
     });
   }
 
+  setAlert(type, message, classes) {
+    super.setAlert(type, message, classes);
+
+    const buttonTop = this.refs.button.offsetTop;
+    window.scrollTo(0, buttonTop);
+  }
+
   postMessage(message) {
     // If we get here before the iframeReady promise is set up, it's via the superclass constructor
     if (!this.iframeReady) {
