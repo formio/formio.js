@@ -1064,7 +1064,6 @@ export default class Webform extends NestedDataComponent {
       this.alert = this.ce('div', {
         class: classes || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-        role: 'alert'
       });
       if (message instanceof HTMLElement) {
         this.appendTo(message, this.alert);
