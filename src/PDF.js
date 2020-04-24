@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import Formio from './Formio';
 import Webform from './Webform';
-import { fastCloneDeep } from './utils/utils';
+import { fastCloneDeep, eachComponent } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
@@ -46,7 +46,8 @@ export default class PDF extends Webform {
       internal: true,
       label: 'Submit',
       key: 'submit',
-      ref: 'button'
+      ref: 'button',
+      hidden: this.checkSubmitButtonHiddenness()
     });
 
     return this.renderTemplate('pdf', {
@@ -295,6 +296,20 @@ export default class PDF extends Webform {
     }
 
     super.showErrors(error, triggerEvent);
+  }
+
+  checkSubmitButtonHiddenness() {
+    let hidden = false;
+    eachComponent(this.component.components, (component) => {
+      if (
+        (component.type === 'button') &&
+        ((component.action === 'submit') || !component.action)
+      ) {
+        hidden = component.hidden || false;
+      }
+    });
+
+    return hidden;
   }
 }
 
