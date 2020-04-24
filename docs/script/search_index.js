@@ -4620,6 +4620,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/component/component.js~component#fileservice",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-fileService",
+    "src/components/_classes/component/Component.js~Component#fileService",
+    "member"
+  ],
+  [
     "src/components/_classes/component/component.js~component#focus",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-focus",
     "src/components/_classes/component/Component.js~Component#focus",
@@ -9255,12 +9261,6 @@ window.esdocSearchIndex = [
     "src/components/file/file.js~filecomponent#emptyvalue",
     "class/src/components/file/File.js~FileComponent.html#instance-get-emptyValue",
     "src/components/file/File.js~FileComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/file/file.js~filecomponent#fileservice",
-    "class/src/components/file/File.js~FileComponent.html#instance-get-fileService",
-    "src/components/file/File.js~FileComponent#fileService",
     "member"
   ],
   [

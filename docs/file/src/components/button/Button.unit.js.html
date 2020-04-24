@@ -437,6 +437,56 @@ describe(&apos;Button Component&apos;, () =&gt; {
       })
       .catch(done);
   });
+
+  it(&apos;Should not change color and show message if the error is silent&apos;, (done) =&gt; {
+    const formJson = {
+      &apos;type&apos;: &apos;form&apos;,
+      &apos;components&apos;: [
+        {
+          &apos;label&apos;: &apos;Some Field&apos;,
+          &apos;type&apos;: &apos;textfield&apos;,
+          &apos;input&apos;: true,
+          &apos;key&apos;: &apos;someField&apos;
+        },
+        {
+          &apos;label&apos;: &apos;Submit&apos;,
+          &apos;action&apos;: &apos;submit&apos;,
+          &apos;type&apos;: &apos;button&apos;,
+          &apos;input&apos;: true,
+          &apos;key&apos;: &apos;submit&apos;
+        }
+      ]
+    };
+    const element = document.createElement(&apos;div&apos;);
+    Formio.createForm(element, formJson, {
+      hooks: {
+        beforeSubmit: function(submission, callback) {
+          callback({
+            message: &apos;Err&apos;,
+            component: submission.component,
+            silent: true,
+          }, submission);
+        }
+      }
+    })
+      .then(form =&gt; {
+        const button = form.getComponent(&apos;submit&apos;);
+        button.emit(&apos;submitButton&apos;, {
+          state: button.component.state || &apos;submitted&apos;,
+          component: button.component,
+          instance: button
+        });
+        setTimeout(() =&gt; {
+          assert(!button.refs.button.className.includes(&apos;btn-danger submit-fail&apos;));
+          assert(!button.refs.button.className.includes(&apos;btn-success submit-success&apos;));
+          assert(!button.refs.buttonMessageContainer.className.includes(&apos;has-success&apos;));
+          assert(!button.refs.buttonMessageContainer.className.includes(&apos;has-error&apos;));
+          assert(button.refs.buttonMessage.innerHTML === &apos;&apos;);
+          done();
+        }, 100);
+      })
+      .catch(done);
+  });
 });
 </code></pre>
 

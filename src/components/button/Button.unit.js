@@ -232,9 +232,7 @@ describe('Button Component', () => {
           component: button.component,
           instance: button
         });
-        debugger;
         setTimeout(() => {
-          debugger;
           assert(!button.refs.button.className.includes('btn-danger submit-fail'));
           assert(!button.refs.button.className.includes('btn-success submit-success'));
           assert(!button.refs.buttonMessageContainer.className.includes('has-success'));
