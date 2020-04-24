@@ -2,7 +2,7 @@
   <ul class="pagination">
     {% ctx.panels.forEach(function(panel, index) { %}
     <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="">
-      <span class="page-link" ref="{{ctx.wizardKey}}-link">{{panel.title}}</span>
+      <span class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(panel.title)}}</span>
     </li>
     {% }) %}
   </ul>
