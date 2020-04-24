@@ -251,7 +251,8 @@ import {
   comp2,
   multiSelect,
   multiSelectOptions,
-  comp4
+  comp4,
+  comp5
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -277,12 +278,24 @@ describe(&apos;Select Component&apos;, () =&gt; {
       const value3 = component.normalizeSingleValue(&apos;11test11test&apos;);
       const value4 = component.normalizeSingleValue(&apos;test11&apos;);
       const value5 = component.normalizeSingleValue(&apos;0&apos;);
+      const value6 = component.normalizeSingleValue(&apos;&apos;);
       assert.equal(typeof value, &apos;boolean&apos;);
       assert.equal(typeof value1, &apos;number&apos;);
       assert.equal(typeof value2, &apos;string&apos;);
       assert.equal(typeof value3, &apos;string&apos;);
       assert.equal(typeof value4, &apos;string&apos;);
       assert.equal(typeof value5, &apos;number&apos;);
+      assert.equal(typeof value6, &apos;string&apos;);
+      done();
+    });
+  });
+
+  it(&apos;should not stringify default empty values&apos;, function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) =&gt; {
+      const value = component.normalizeSingleValue({});
+      const value1 = component.normalizeSingleValue([]);
+      assert.equal(typeof value, &apos;object&apos;);
+      assert.equal(typeof value1, &apos;object&apos;);
       done();
     });
   });
@@ -307,6 +320,41 @@ describe(&apos;Select Component&apos;, () =&gt; {
       assert.equal(value, true);
       assert.equal(value1, false);
       assert.equal(value2, true);
+      done();
+    });
+  });
+
+  it(&apos;1/2 should not display empty choice options if property value is not defined&apos;, function(done) {
+    Harness.testCreate(SelectComponent, comp5).then((component) =&gt; {
+      component.setItems([{
+        &apos;label&apos;: &apos;111&apos;,
+        &apos;value&apos;: &apos;111&apos;
+      }, {
+        &apos;label&apos;: &apos;222&apos;,
+        &apos;value&apos;: &apos;222&apos;
+      }, {
+        &apos;label&apos;: &apos;333&apos;,
+        &apos;value&apos;: &apos;333&apos;
+      }], false);
+      assert.equal(component.selectOptions.length, 0);
+      done();
+    });
+  });
+
+  it(&apos;2/2 should display choice option if property value is set&apos;, function(done) {
+    comp5.template = &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;;
+    Harness.testCreate(SelectComponent, comp5).then((component) =&gt; {
+      component.setItems([{
+        &apos;label&apos;: &apos;111&apos;,
+        &apos;value&apos;: &apos;111&apos;
+      }, {
+        &apos;label&apos;: &apos;222&apos;,
+        &apos;value&apos;: &apos;222&apos;
+      }, {
+        &apos;label&apos;: &apos;333&apos;,
+        &apos;value&apos;: &apos;333&apos;
+      }], false);
+      assert.equal(component.selectOptions.length, 3);
       done();
     });
   });

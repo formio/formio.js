@@ -1182,10 +1182,16 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    const template = `
-      &lt;label class=&quot;control-label&quot;&gt;${this.component.label}&lt;/label&gt;&lt;br&gt;
-      &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;Click to set value&lt;/button&gt;
-    `;
+    let template;
+    if (this.dataValue) {
+      template = this.getModalPreviewTemplate();
+    }
+    else {
+      template = `
+        &lt;label class=&quot;control-label&quot;&gt;${this.component.label}&lt;/label&gt;&lt;br&gt;
+        &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;Click to set value&lt;/button&gt;
+      `;
+    }
     this.componentModal.setOpenModalElement(template);
   }
 
@@ -3136,6 +3142,27 @@ export default class Component extends Element {
     if (this.refs.input &amp;&amp; this.refs.input[0]) {
       this.refs.input[0].focus();
     }
+  }
+
+  /**
+   * Get `Formio` instance for working with files
+   */
+  get fileService() {
+    if (this.options.fileService) {
+      return this.options.fileService;
+    }
+    if (this.options.formio) {
+      return this.options.formio;
+    }
+    if (this.root &amp;&amp; this.root.formio) {
+      return this.root.formio;
+    }
+    const formio = new Formio();
+    // If a form is loaded, then make sure to set the correct formUrl.
+    if (this.root &amp;&amp; this.root._form &amp;&amp; this.root._form._id) {
+      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
+    }
+    return formio;
   }
 }
 
