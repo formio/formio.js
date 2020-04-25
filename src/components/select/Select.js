@@ -165,6 +165,8 @@ export default class SelectComponent extends Field {
       return this.t(data);
     }
 
+    data.data = this.valueProperty === 'data' ? JSON.stringify(data.data) : data.data;
+
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
