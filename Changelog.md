@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.11
+### Fixed
+ - VPAT-335 Fixed currency input announcing invalid entry with any value. #2712
+ - Fixed WYSIWYG image upload not working without form URL provided. #2709
+ - FJS-133: Fixed possibility to set parent form inside nested form. #2706
+ - Fix silent errors. #2700
+ - Typo fixed in create error message. #2697
+ - FJS-884: Fixed creation of empty select options #2695
+ - FOR-2417: Check for hidden submit button in PDF. #2694
+ - FJS-884: Fixed showing stringify object in select dropdown. #2691
+ - FJS-884: Fixed zero display if there is no selected value in select component. #2690
+ - FJS-632 - Fixed an issue of data disappearance after new data grid row adding. #2688
+ - Nested form should inherit the fileService from the parent form. #2687
+
+### Changed
+ - Upgrade dompurify@2.0.10, gulp-sass@4.1.0, webpack@4.43.0, escape-string-regexp@4.0.0, marked@1.0.0
+
 ## 4.10.0-beta.10
 ### Fixed
  - FJS-779: Fixed display of time icon

@@ -146,10 +146,16 @@ export default class SignatureComponent extends Input {
   }
 
   setOpenModalElement() {
-    const template = `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
-    `;
+    let template;
+    if (this.dataValue) {
+      template = this.getModalPreviewTemplate();
+    }
+    else {
+      template = `
+        <label class="control-label">${this.component.label}</label><br>
+        <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
+      `;
+    }
     this.componentModal.setOpenModalElement(template);
   }
 

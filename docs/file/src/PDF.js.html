@@ -242,7 +242,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import Formio from &apos;./Formio&apos;;
 import Webform from &apos;./Webform&apos;;
-import { fastCloneDeep } from &apos;./utils/utils&apos;;
+import { fastCloneDeep, eachComponent } from &apos;./utils/utils&apos;;
 
 export default class PDF extends Webform {
   constructor(element, options) {
@@ -287,7 +287,8 @@ export default class PDF extends Webform {
       internal: true,
       label: &apos;Submit&apos;,
       key: &apos;submit&apos;,
-      ref: &apos;button&apos;
+      ref: &apos;button&apos;,
+      hidden: this.checkSubmitButtonHiddenness()
     });
 
     return this.renderTemplate(&apos;pdf&apos;, {
@@ -517,7 +518,7 @@ export default class PDF extends Webform {
   showErrors(error, triggerEvent) {
     const helpBlock = document.getElementById(&apos;submit-error&apos;);
 
-    if (!helpBlock) {
+    if (!helpBlock &amp;&amp; this.errors.length) {
       const p = this.ce(&apos;p&apos;, { class: &apos;help-block&apos; });
 
       this.setContent(p, this.t(&apos;submitError&apos;));
@@ -535,11 +536,21 @@ export default class PDF extends Webform {
       helpBlock.remove();
     }
 
-    if (this.errors.length) {
-      this.focusOnComponent(this.errors[0].component.key);
-    }
-
     super.showErrors(error, triggerEvent);
+  }
+
+  checkSubmitButtonHiddenness() {
+    let hidden = false;
+    eachComponent(this.component.components, (component) =&gt; {
+      if (
+        (component.type === &apos;button&apos;) &amp;&amp;
+        ((component.action === &apos;submit&apos;) || !component.action)
+      ) {
+        hidden = component.hidden || false;
+      }
+    });
+
+    return hidden;
   }
 }
 

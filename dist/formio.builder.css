@@ -1012,6 +1012,9 @@ div[data-oembed-url] {
   .formio-component-modal-wrapper .component-rendering-hidden {
     visibility: hidden; }
 
+div[read-only="true"] .formio-component-textarea div[ref="input"] {
+  white-space: pre-wrap; }
+
 .formbuilder {
   position: relative; }
 

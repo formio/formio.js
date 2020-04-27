@@ -248,7 +248,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
         let requestData;
-        this.root.formio
+        this.fileService
           .uploadFile(
             uploadStorage,
             files[0],
@@ -261,7 +261,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           )
           .then(result => {
             requestData = result;
-            return this.root.formio.downloadFile(result);
+            return this.fileService.downloadFile(result);
           })
           .then(result => {
             quillInstance.quill.enable(true);
@@ -413,7 +413,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(error);
       }
 
-      return this.root.formio.downloadFile(requestData)
+      return this.fileService.downloadFile(requestData)
         .then((result) => {
           image.setAttribute('src', result.url);
         });
