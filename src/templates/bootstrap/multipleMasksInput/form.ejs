@@ -5,7 +5,8 @@
   <select
     class="form-control formio-multiple-mask-select"
     id="{{ctx.key}}-mask"
-    ref="select">
+    ref="select"
+    {% if (ctx.input.attr.disabled) { %}disabled{% } %}>
     {% ctx.selectOptions.forEach(function(option) { %}
     <option value="{{option.value}}">{{option.label}}</option>
     {% }); %}

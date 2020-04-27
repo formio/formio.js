@@ -85,4 +85,70 @@ export default class NestedArrayComponent extends NestedDataComponent {
 
     return result.length > 0 ? result : null;
   }
+
+  everyComponent(fn, rowIndex, options) {
+    if (_.isObject(rowIndex)) {
+      options = rowIndex;
+      rowIndex = null;
+    }
+
+    if (options?.email) {
+      return;
+    }
+
+    const components = this.getComponents(rowIndex);
+    _.each(components, (component, index) => {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyComponent === 'function') {
+        if (component.everyComponent(fn, options) === false) {
+          return false;
+        }
+      }
+    });
+  }
+
+  getValueAsString(value, options) {
+    if (options?.email) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <thead>
+            <tr>
+      `);
+
+      this.component.components.forEach((component) => {
+        const label = component.label || component.key;
+        result += `<th style="padding: 5px 10px;">${label}</th>`;
+      });
+
+      result += (`
+          </tr>
+        </thead>
+        <tbody>
+      `);
+
+      this.iteratableRows.forEach(({ components }) => {
+        result += '<tr>';
+        _.each(components, (component) => {
+          result += '<td style="padding:5px 10px;">';
+          if (component.isInputComponent && component.visible && !component.skipInEmail) {
+            result += component.getView(component.dataValue, options);
+          }
+          result += '</td>';
+        });
+        result += '</tr>';
+      });
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    }
+
+    return super.getValueAsString(value, options);
+  }
 }

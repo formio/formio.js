@@ -26,7 +26,7 @@ export default {
       'custom': ''
     },
     'valueProperty': '',
-    'dataType': '',
+    'dataType': 'auto',
     'template': '<span>{{ item.label }}</span>',
     'searchEnabled': true,
     'selectThreshold': 0.3,

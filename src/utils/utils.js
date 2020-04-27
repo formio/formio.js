@@ -591,7 +591,7 @@ export function formatDate(value, format, timezone) {
 
   // Load the zones since we need timezone information.
   loadZones();
-  if (moment.zonesLoaded) {
+  if (moment.zonesLoaded && timezone) {
     return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
   }
   else {
@@ -872,6 +872,12 @@ export function fieldData(data, component) {
     if (component.multiple && !Array.isArray(data[component.key])) {
       data[component.key] = [data[component.key]];
     }
+
+    // Fix for checkbox type radio submission values in tableView
+    if (component.type === 'checkbox' && component.inputType === 'radio') {
+      return data[component.name] === component.value;
+    }
+
     return data[component.key];
   }
 }
@@ -1104,4 +1110,27 @@ export function isInputComponent(componentJson) {
     default:
       return true;
   }
+}
+
+export function getArrayFromComponentPath(pathStr) {
+  return pathStr.replace(/[[\]]/g, '.')
+    .replace(/\.\./g, '.')
+    .split('.')
+    .map(part => _.defaultTo(_.toNumber(part), part));
+}
+
+export function getStringFromComponentPath(path) {
+  if (!_.isArray(path)) {
+    return path;
+  }
+  let strPath = '';
+  path.forEach((part, i) => {
+    if (_.isNumber(part)) {
+      strPath += `[${part}]`;
+    }
+    else {
+      strPath += i === 0 ? part : `.${part}`;
+    }
+  });
+  return strPath;
 }

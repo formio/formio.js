@@ -217,6 +217,11 @@ export default class Component extends Element {
       attachMode: 'full'
     }, options || {}));
 
+    // Restore the component id.
+    if (component && component.id) {
+      this.id = component.id;
+    }
+
     /**
      * Determines if this component has a condition assigned to it.
      * @type {null}
@@ -630,6 +635,10 @@ export default class Component extends Element {
     return this.labelPosition.split('-');
   }
 
+  get skipInEmail() {
+    return false;
+  }
+
   rightDirection(direction) {
     return direction === 'right';
   }
@@ -805,6 +814,7 @@ export default class Component extends Element {
     data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
+    data.size = this.size.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
     data.id = data.id || this.id;
@@ -943,10 +953,16 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    const template = `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
-    `;
+    let template;
+    if (this.dataValue) {
+      template = this.getModalPreviewTemplate();
+    }
+    else {
+      template = `
+        <label class="control-label">${this.component.label}</label><br>
+        <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
+      `;
+    }
     this.componentModal.setOpenModalElement(template);
   }
 
@@ -1181,7 +1197,7 @@ export default class Component extends Element {
    * @param value
    * @return {*}
    */
-  getWidgetValueAsString(value) {
+  getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
       return value;
@@ -1191,21 +1207,21 @@ export default class Component extends Element {
       value.forEach((val, index) => {
         const widget = this.refs.input[index] && this.refs.input[index].widge;
         if (widget) {
-          values.push(widget.getValueAsString(val));
+          values.push(widget.getValueAsString(val, options));
         }
       });
       return values;
     }
 
     const widget = this.refs.input[0].widget;
-    return widget.getValueAsString(value);
+    return widget.getValueAsString(value, options);
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value) {
       return '';
     }
-    value = this.getWidgetValueAsString(value);
+    value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1218,11 +1234,11 @@ export default class Component extends Element {
     return value.toString();
   }
 
-  getView(value) {
+  getView(value, options) {
     if (this.component.protected) {
       return '--- PROTECTED ---';
     }
-    return this.getValueAsString(value);
+    return this.getValueAsString(value, options);
   }
 
   updateItems(...args) {
@@ -1390,6 +1406,12 @@ export default class Component extends Element {
     return Templates.current.hasOwnProperty('iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
       : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
+  }
+
+  size(size) {
+    return Templates.current.hasOwnProperty('size')
+      ? Templates.current.size(size)
+      : size;
   }
 
   /**
@@ -1955,6 +1977,13 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
+    if (!settings || (settings.theme === 'snow')) {
+      const mode = settings ? settings.mode : '';
+      settings = {};
+      if (mode) {
+        settings.mode = mode;
+      }
+    }
     settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
@@ -2319,6 +2348,7 @@ export default class Component extends Element {
     if (
       newValue !== undefined &&
       newValue !== null &&
+      this.allowData &&
       !this.hasValue()
     ) {
       return true;
@@ -2379,6 +2409,12 @@ export default class Component extends Element {
       this.calculatedValue &&
       !_.isEqual(dataValue, this.convertNumberOrBoolToString(this.calculatedValue))
     ) {
+      return false;
+    }
+
+    if (flags.fromSubmission &&
+      allowOverride &&
+      this.calculatedValue !== this.dataValue) {
       return false;
     }
 
@@ -2869,8 +2905,8 @@ export default class Component extends Element {
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
-      // Skip validatoin for disabled componoents.
-      () => this.shouldDisabled,
+      // Force valid if component is read-only
+      () => this.options.readOnly,
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
@@ -3074,6 +3110,27 @@ export default class Component extends Element {
     if (this.refs.input && this.refs.input[0]) {
       this.refs.input[0].focus();
     }
+  }
+
+  /**
+   * Get `Formio` instance for working with files
+   */
+  get fileService() {
+    if (this.options.fileService) {
+      return this.options.fileService;
+    }
+    if (this.options.formio) {
+      return this.options.formio;
+    }
+    if (this.root && this.root.formio) {
+      return this.root.formio;
+    }
+    const formio = new Formio();
+    // If a form is loaded, then make sure to set the correct formUrl.
+    if (this.root && this.root._form && this.root._form._id) {
+      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
+    }
+    return formio;
   }
 }
 

@@ -31,7 +31,7 @@ export default class Multivalue extends Field {
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || ' Add Another');
+    return this.t(this.component.addAnother || 'Add Another');
   }
 
   useWrapper() {

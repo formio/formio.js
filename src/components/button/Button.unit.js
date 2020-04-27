@@ -193,4 +193,54 @@ describe('Button Component', () => {
       })
       .catch(done);
   });
+
+  it('Should not change color and show message if the error is silent', (done) => {
+    const formJson = {
+      'type': 'form',
+      'components': [
+        {
+          'label': 'Some Field',
+          'type': 'textfield',
+          'input': true,
+          'key': 'someField'
+        },
+        {
+          'label': 'Submit',
+          'action': 'submit',
+          'type': 'button',
+          'input': true,
+          'key': 'submit'
+        }
+      ]
+    };
+    const element = document.createElement('div');
+    Formio.createForm(element, formJson, {
+      hooks: {
+        beforeSubmit: function(submission, callback) {
+          callback({
+            message: 'Err',
+            component: submission.component,
+            silent: true,
+          }, submission);
+        }
+      }
+    })
+      .then(form => {
+        const button = form.getComponent('submit');
+        button.emit('submitButton', {
+          state: button.component.state || 'submitted',
+          component: button.component,
+          instance: button
+        });
+        setTimeout(() => {
+          assert(!button.refs.button.className.includes('btn-danger submit-fail'));
+          assert(!button.refs.button.className.includes('btn-success submit-success'));
+          assert(!button.refs.buttonMessageContainer.className.includes('has-success'));
+          assert(!button.refs.buttonMessageContainer.className.includes('has-error'));
+          assert(button.refs.buttonMessage.innerHTML === '');
+          done();
+        }, 100);
+      })
+      .catch(done);
+  });
 });

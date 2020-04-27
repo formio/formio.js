@@ -6,7 +6,12 @@ import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
-import { fastCloneDeep, currentTimezone } from './utils/utils';
+import {
+  fastCloneDeep,
+  currentTimezone,
+  getArrayFromComponentPath,
+  getStringFromComponentPath
+} from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
 // Initialize the available forms.
@@ -977,7 +982,7 @@ export default class Webform extends NestedDataComponent {
     this.currentForm = this;
     this.hook('attachWebform', element, this);
     return childPromise.then(() => {
-      this.emit('render');
+      this.emit('render', this.element);
 
       return this.setValue(this._submission, {
         noUpdateEvent: true,
@@ -1008,8 +1013,9 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
+   * @param {string} classes - Styling classes for alert.
    */
-  setAlert(type, message) {
+  setAlert(type, message, classes) {
     if (!type && this.submitted) {
       if (this.alert) {
         if (this.refs.errorRef && this.refs.errorRef.length) {
@@ -1046,8 +1052,8 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
+        class: classes || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-        class: `alert alert-${type}`,
         role: 'alert'
       });
       if (message instanceof HTMLElement) {
@@ -1088,7 +1094,8 @@ export default class Webform extends NestedDataComponent {
    */
   focusOnComponent(key) {
     if (key) {
-      const component = this.getComponent(key);
+      const path = getArrayFromComponentPath(key);
+      const component = this.getComponent(path);
       if (component) {
         component.focus();
       }
@@ -1149,20 +1156,28 @@ export default class Webform extends NestedDataComponent {
     const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
-        const createListItem = (message) => {
-          const params = { ref: 'errorRef', tabIndex: 0, 'aria-label': `${message}. Click to navigate to the field with following error.` };
+        const createListItem = (message, index) => {
+          const params = {
+            ref: 'errorRef',
+            tabIndex: 0,
+            'aria-label': `${message}. Click to navigate to the field with following error.`
+          };
           const li = this.ce('li', params);
           this.setContent(li, message);
 
-          if (err.component && err.component.key) {
-            li.dataset.componentKey = err.component.key;
+          const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
+          const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
+          if (keyOrPath) {
+            const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
+            li.dataset.componentKey = formattedKeyOrPath;
           }
 
           this.appendTo(li, ul);
         };
 
         if (err.messages && err.messages.length) {
-          err.messages.forEach(({ message }) => createListItem(`${this.t(err.component.label)}. ${message}`));
+          const errLabel = this.t(err.component.label);
+          err.messages.forEach(({ message }, index) => createListItem(`${errLabel}. ${message}`, index));
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || '' : err;

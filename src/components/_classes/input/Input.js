@@ -101,7 +101,7 @@ export default class Input extends Multivalue {
     if (this.component.widget && this.component.widget.type === 'calendar') {
       const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time'),
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'o-clock'),
         styles: '',
         content: ''
       }).trim();
@@ -201,8 +201,8 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value) {
-    return super.getValueAsString(this.getWidgetValueAsString(value));
+  getValueAsString(value, options) {
+    return super.getValueAsString(this.getWidgetValueAsString(value, options), options);
   }
 
   attachElement(element, index) {

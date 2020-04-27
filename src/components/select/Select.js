@@ -102,6 +102,9 @@ export default class SelectComponent extends Field {
   }
 
   get emptyValue() {
+    if (this.component.multiple) {
+      return [];
+    }
     if (this.valueProperty) {
       return '';
     }
@@ -144,7 +147,7 @@ export default class SelectComponent extends Field {
   }
 
   itemTemplate(data) {
-    if (!data) {
+    if (_.isEmpty(data)) {
       return '';
     }
 
@@ -165,6 +168,7 @@ export default class SelectComponent extends Field {
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
+      if (!label || !this.t(label)) return;
       return template.replace(label, this.t(label));
     }
     else {
@@ -179,6 +183,8 @@ export default class SelectComponent extends Field {
    * @param label
    */
   addOption(value, label, attrs = {}, id) {
+    if (_.isNil(label)) return;
+
     const option = {
       value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
@@ -206,17 +212,16 @@ export default class SelectComponent extends Field {
 
   addValueOptions(items) {
     items = items || [];
+    let added = false;
     if (!this.selectOptions.length) {
-      if (this.choices) {
-        // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        return this.addCurrentChoices(currentChoices, items);
-      }
-      else if (!this.component.multiple) {
+      // Add the currently selected choices if they don't already exist.
+      const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+      added = this.addCurrentChoices(currentChoices, items);
+      if (!added && !this.component.multiple) {
         this.addPlaceholder();
       }
     }
-    return false;
+    return added;
   }
 
   disableInfiniteScroll() {
@@ -308,6 +313,8 @@ export default class SelectComponent extends Field {
 
     // Iterate through each of the items.
     _.each(items, (item, index) => {
+      // preventing references of the components inside the form to the parent form when building forms
+      if (this.root && this.root.options.editForm && this.root.options.editForm._id === item._id) return;
       this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
     });
 
@@ -1009,7 +1016,7 @@ export default class SelectComponent extends Field {
 
     if (notFoundValuesToAdd.length) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
       else {
         notFoundValuesToAdd.map(notFoundValue => {
@@ -1080,92 +1087,65 @@ export default class SelectComponent extends Field {
   }
 
   normalizeSingleValue(value) {
-    if (!value) {
+    if (_.isNil(value)) {
       return;
     }
+    //check if value equals to default emptyValue
+    if (_.isObject(value) && Object.keys(value).length === 0) {
+      return value;
+    }
 
-    const dataType = this.component['dataType'] || 'auto';
+    const dataType = this.component.dataType || 'auto';
     const normalize = {
       value,
 
-      toNumber() {
-        try {
-          const numberValue = parseFloat(this.value);
+      number() {
+        const numberValue = Number(this.value);
 
-          if (!Number.isNaN(numberValue) && isFinite(numberValue)) {
-            this.value = numberValue;
-            return this;
-          }
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !=='') {
+          this.value = numberValue;
+        }
 
-          return this;
-        }
-        catch {
-          return this;
-        }
+        return this;
       },
 
-      toBoolean() {
-        try {
-          const booleanValue = (this.value === 'true' || this.value === 'false');
-
-          if (booleanValue) {
-            this.value = (this.value === 'true');
-            return this;
-          }
-
-          return this;
+      boolean() {
+        if (
+          _.isString(this.value)
+          && (this.value.toLowerCase() === 'true'
+          || this.value.toLowerCase() === 'false')
+        ) {
+          this.value = (this.value.toLowerCase() === 'true');
         }
-        catch {
-          return this;
-        }
+
+        return this;
       },
 
-      toString() {
-        try {
-          const stringValue = typeof this.value === 'object'
-            ? JSON.stringify(this.value)
-            : this.value.toString();
+      string() {
+        this.value = String(this.value);
+        return this;
+      },
 
-          if (stringValue) {
-            this.value = stringValue;
-            return this;
-          }
+      object() {
+        if (_.isObject(this.value)) {
+          this.value = JSON.stringify(this.value);
+        }
 
-          return this;
-        }
-        catch {
-          return this;
-        }
+        return this;
       },
 
       auto() {
-        try {
-          const autoValue = this.toString().toNumber().toBoolean();
-
-          if (autoValue && !_.isObject(autoValue)) {
-            this.value = autoValue;
-          }
-
-          return this;
-        }
-        catch {
-          return this;
-        }
+        this.value = this.object().string().number().boolean().value;
+        return this;
       }
     };
 
-    switch (dataType) {
-      case 'auto': {
-        return normalize.auto().value;
-      }
-      case 'number': {
-        return normalize.toNumber().value;
-      }
-      case 'string': {
-        return normalize.toString().value;
-      }
-      case 'boolean':
-        return normalize.toBoolean().value;
+    try {
+      return normalize[dataType]().value;
+    }
+    catch (err) {
+      console.warn('Failed to normalize value', err);
+      return value;
     }
   }
 

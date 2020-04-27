@@ -189,6 +189,12 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   afterAttach() {
+    this.on('saveComponent', (schema, component) => {
+      this.webform.postMessage({ name: 'updateElement', data: component });
+    });
+    this.on('removeComponent', (component) => {
+      this.webform.postMessage({ name: 'removeElement', data: component });
+    });
     this.initIframeEvents();
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
@@ -253,22 +259,6 @@ export default class PDFBuilder extends WebformBuilder {
     return this.webform;
   }
 
-  setForm(form) {
-    return super.setForm(form).then(() => {
-      return this.ready.then(() => {
-        if (this.webform) {
-          this.webform.postMessage({ name: 'form', data: form });
-          return this.webform.setForm(form);
-        }
-        return form;
-      });
-    });
-  }
-
-  saveComponent(...args) {
-    return super.saveComponent(...args).then(() => this.afterAttach());
-  }
-
   destroy() {
     super.destroy();
     this.webform.destroy();
@@ -300,7 +290,10 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.height,
           width: schema.width
         };
-        this.editComponent(component.component, this.webform.iframeElement);
+
+        if (!this.options.noNewEdit) {
+          this.editComponent(component.component, this.webform.iframeElement);
+        }
         this.emit('updateComponent', component);
       }
       return component;
@@ -428,10 +421,8 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);
-
+    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, true);
     this.webform.component.components.push(schema);
-
-    this.emit('addComponent', schema);
 
     schema.overlay = {
       top: offsetY,
