@@ -803,11 +803,7 @@ class ValidationChecker {
         ? {
           message: _.get(result, 'message', result),
           level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-          path: getArrayFromComponentPath(component.path || '')
-            .replace(/[[\]]/g, '.')
-            .replace(/\.\./g, '.')
-            .split('.')
-            .map((part) => _.defaultTo(_.toNumber(part), part)),
+          path: getArrayFromComponentPath(component.path || ''),
           context: {
             validator: validatorName,
             setting,
