@@ -1180,13 +1180,15 @@ export default class Webform extends NestedDataComponent {
     const message = document.createDocumentFragment();
     const p = this.ce('p', { id: `fix-errors-${this.id}` });
     this.setContent(p, this.t('error'));
+    const errorHotkeyMessage = this.t('errorListHotkey');
 
     const params = {
       class: 'fa fa-question-circle text-based',
       style: 'margin-left: 5px',
       ref: 'errorTooltip',
       tabIndex: 0,
-      'data-title': this.t('errorListHotkey'),
+      'data-title': errorHotkeyMessage,
+      'aria-label': errorHotkeyMessage,
     };
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
