@@ -2553,7 +2553,6 @@ export default class Component extends Element {
    * @return boolean - If component is valid or not.
    */
   checkData(data, flags, row) {
-    // if (flags && flags.changed && _.isEqual(flags.changed.instance.data, row)) {
       data = data || this.rootValue;
       flags = flags || {};
       row = row || this.data;
@@ -2587,7 +2586,6 @@ export default class Component extends Element {
       }
 
       return this.checkComponentValidity(data, isDirty, row);
-    // }
   }
 
   get validationValue() {
