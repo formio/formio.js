@@ -2394,6 +2394,10 @@ export default class Component extends Element {
       return false;
     }
 
+    if (flags && flags.changed && !_.isEqual(flags.changed.instance.data,row)) {
+      return false;
+    }
+
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
@@ -2549,7 +2553,7 @@ export default class Component extends Element {
    * @return boolean - If component is valid or not.
    */
   checkData(data, flags, row) {
-    if (flags && flags.changed && _.isEqual(flags.changed.instance.data, row)) {
+    // if (flags && flags.changed && _.isEqual(flags.changed.instance.data, row)) {
       data = data || this.rootValue;
       flags = flags || {};
       row = row || this.data;
@@ -2583,7 +2587,7 @@ export default class Component extends Element {
       }
 
       return this.checkComponentValidity(data, isDirty, row);
-    }
+    // }
   }
 
   get validationValue() {
