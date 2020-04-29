@@ -80,7 +80,11 @@ export default class CurrencyComponent extends NumberComponent {
     let integerPart;
     let decimalPart = '';
     let decimalPartNumbers = [];
+    const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
+    const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+    const isNegative = value.includes('-') || false;
 
+    value = isNegative ? value.replace('-','') : value;
     value = this.stripPrefixSuffix(value);
 
     if (value.includes(this.decimalSeparator)) {
@@ -97,7 +101,7 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
 
-    const formattedValue = `${this.prefix}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${this.suffix}`;
+    const formattedValue = `${isNegative ? '-':''}${hasPrefix ? this.prefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.suffix : ''}`;
 
     return super.formatValue(formattedValue);
   }

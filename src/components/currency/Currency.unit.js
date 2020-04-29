@@ -46,7 +46,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should format value on blur', (done) => {
+  it('Should format value on blur EN', (done) => {
      Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -80,6 +80,41 @@ describe('Currency Component', () => {
       done();
     });
   });
+
+  it('Should format value on blur FR', (done) => {
+    Harness.testCreate(CurrencyComponent, comp1, { language: 'fr' }).then((component) => {
+     component.root = {
+       onChange: ()=>{},
+       triggerChange: ()=>{},
+     };
+
+     const blurEvent = new Event('blur');
+     const inputEvent = new Event('input');
+     const valueElement = component.element.querySelector('[name="data[money]"]');
+
+     valueElement.value = 22222222;
+     valueElement.dispatchEvent(inputEvent);
+     valueElement.dispatchEvent(blurEvent);
+     assert.deepEqual(valueElement.value, '22 222 222,00 $US');
+
+     valueElement.value = 22222;
+     valueElement.dispatchEvent(inputEvent);
+     valueElement.dispatchEvent(blurEvent);
+     assert.deepEqual(valueElement.value, '22 222,00 $US');
+
+     valueElement.value = 222;
+     valueElement.dispatchEvent(inputEvent);
+     valueElement.dispatchEvent(blurEvent);
+     assert.deepEqual(valueElement.value, '222,00 $US');
+
+     valueElement.value = 2;
+     valueElement.dispatchEvent(inputEvent);
+     valueElement.dispatchEvent(blurEvent);
+     assert.deepEqual(valueElement.value, '2,00 $US');
+
+     done();
+   });
+ });
 
   it('Should add trailing zeros', () => {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {

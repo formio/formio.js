@@ -176,7 +176,13 @@ export default class NumberComponent extends Input {
   }
 
   getMaskedValue(value) {
-    return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
+    value = value === null ? '0' : value.toString();
+
+    if (value.includes('.') && '.'!== this.decimalSeparator) {
+      value = value.replace('.', this.decimalSeparator);
+    }
+
+    return conformToMask(value, this.numberMask).conformedValue;
   }
 
   getValueAsString(value, options) {
