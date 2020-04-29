@@ -36,6 +36,11 @@ describe('Currency Component', () => {
       valueElement.dispatchEvent(blurEvent);
       assert.equal(valueElement.value, '$22,222,222.00');
 
+      valueElement.value = 22222222.2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '$22,222,222.20');
+
       valueElement.value = 22222;
       valueElement.dispatchEvent(inputEvent);
       valueElement.dispatchEvent(blurEvent);
@@ -70,6 +75,11 @@ describe('Currency Component', () => {
       valueElement.dispatchEvent(inputEvent);
       valueElement.dispatchEvent(blurEvent);
       assert.deepEqual(valueElement.value, '22 222 222,00 $US');
+
+      valueElement.value = '22222222,2';
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '22 222 222,20 $US');
 
       valueElement.value = 22222;
       valueElement.dispatchEvent(inputEvent);
