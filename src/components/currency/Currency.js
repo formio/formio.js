@@ -66,17 +66,22 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   parseValue(value) {
+    if (typeof value === 'string') {
+    value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
+    }
     return super.parseValue(this.stripPrefixSuffix(value));
   }
 
   addZerosAndFormatValue(value) {
-   if (!value && value !== 0) return;
+    if (!value && value !== 0) return;
 
     const decimalLimit = _.get(this.component, 'decimalLimit', 2);
 
     let integerPart;
     let decimalPart = '';
     let decimalPartNumbers = [];
+
+    value = this.stripPrefixSuffix(value);
 
     if (value.includes(this.decimalSeparator)) {
       [integerPart, decimalPart] = value.split(this.decimalSeparator);
@@ -92,7 +97,7 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
 
-    const formattedValue = `${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}`;
+    const formattedValue = `${this.prefix}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${this.suffix}`;
 
     return super.formatValue(formattedValue);
   }

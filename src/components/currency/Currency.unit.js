@@ -46,6 +46,41 @@ describe('Currency Component', () => {
     });
   });
 
+  it('Should format value on blur', (done) => {
+     Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
+      component.root = {
+        onChange: ()=>{},
+        triggerChange: ()=>{},
+      };
+
+      const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
+      const valueElement = component.element.querySelector('[name="data[money]"]');
+
+      valueElement.value = 22222222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '$22,222,222.00');
+
+      valueElement.value = 22222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '$22,222.00');
+
+      valueElement.value = 222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '$222.00');
+
+      valueElement.value = 2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '$2.00');
+
+      done();
+    });
+  });
+
   it('Should add trailing zeros', () => {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       assert.equal(component.addZerosAndFormatValue(null),);
