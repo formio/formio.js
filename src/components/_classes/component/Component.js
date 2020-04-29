@@ -2553,39 +2553,39 @@ export default class Component extends Element {
    * @return boolean - If component is valid or not.
    */
   checkData(data, flags, row) {
-      data = data || this.rootValue;
-      flags = flags || {};
-      row = row || this.data;
-      this.checkRefreshOn(flags.changed);
-      if (flags.noCheck) {
-        return true;
-      }
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    this.checkRefreshOn(flags.changed);
+    if (flags.noCheck) {
+      return true;
+    }
 
-      this.calculateComponentValue(data, flags, row);
-      this.checkComponentConditions(data, flags, row);
+    this.calculateComponentValue(data, flags, row);
+    this.checkComponentConditions(data, flags, row);
 
-      if (flags.noValidate) {
-        return true;
-      }
+    if (flags.noValidate) {
+      return true;
+    }
 
-      // We need to perform a test to see if they provided a default value that is not valid and immediately show
-      // an error if that is the case.
-      let isDirty = !this.builderMode &&
-        !this.options.preview &&
-        !this.isEmpty(this.defaultValue) &&
-        this.isEqual(this.defaultValue, this.dataValue);
+    // We need to perform a test to see if they provided a default value that is not valid and immediately show
+    // an error if that is the case.
+    let isDirty = !this.builderMode &&
+      !this.options.preview &&
+      !this.isEmpty(this.defaultValue) &&
+      this.isEqual(this.defaultValue, this.dataValue);
 
-      // We need to set dirty if they explicitly set noValidate to false.
-      if (this.options.alwaysDirty || flags.dirty) {
-        isDirty = true;
-      }
+    // We need to set dirty if they explicitly set noValidate to false.
+    if (this.options.alwaysDirty || flags.dirty) {
+      isDirty = true;
+    }
 
-      // See if they explicitely set the values with setSubmission.
-      if (flags.fromSubmission && this.hasValue(data)) {
-        isDirty = true;
-      }
+    // See if they explicitely set the values with setSubmission.
+    if (flags.fromSubmission && this.hasValue(data)) {
+      isDirty = true;
+    }
 
-      return this.checkComponentValidity(data, isDirty, row);
+    return this.checkComponentValidity(data, isDirty, row);
   }
 
   get validationValue() {
