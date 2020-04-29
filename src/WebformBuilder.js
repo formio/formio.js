@@ -300,6 +300,13 @@ export default class WebformBuilder extends Webform {
         'fields.month.required',
         'fields.year.required',
       ]));
+
+      // If default value is nested component then remove validations from its components
+      if (this.defaultValueComponent.components) {
+        eachComponent(this.defaultValueComponent.components, (comp) => {
+          comp.validate = {};
+        }, true);
+      }
     }
 
     // Called when we update a component.
