@@ -603,7 +603,10 @@ export default class SelectComponent extends BaseComponent {
         query[`${this.component.searchField}__in`] = search.join(&apos;,&apos;);
       }
       else {
-        query[`${this.component.searchField}__regex`] = search;
+        query[`${this.component.searchField}__regex`] = search
+          .replace(/\(/g, &apos;\\(&apos;)
+          .replace(/\)/g, &apos;\\)&apos;)
+          .replace(/&amp;amp;/g, &apos;&amp;&apos;);
       }
     }
 
