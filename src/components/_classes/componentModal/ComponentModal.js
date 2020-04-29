@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default class ComponentModal {
   static render(component, data, topLevel) {
     const children = component.renderTemplate('component', data, topLevel);
@@ -74,7 +76,7 @@ export default class ComponentModal {
   }
 
   updateView() {
-    const template = this.currentValue === this.component.defaultValue
+    const template = _.isEqual(this.currentValue, this.component.defaultValue)
       ? this.openModalTemplate
       : this.component.getModalPreviewTemplate();
     this.component.setContent(this.refs.openModalWrapper, template);
