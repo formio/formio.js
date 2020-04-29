@@ -242,11 +242,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/address/GoogleAddressProvider.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global google */
-
-import Formio from &apos;../../Formio&apos;;
-import NativePromise from &apos;native-promise-only&apos;;
-import { AddressProvider } from &apos;./AddressProvider&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { AddressProvider } from &apos;./AddressProvider&apos;;
 
 export class GoogleAddressProvider extends AddressProvider {
   static get name() {
@@ -257,43 +253,44 @@ export class GoogleAddressProvider extends AddressProvider {
     return &apos;Google Maps&apos;;
   }
 
-  constructor(options = {}) {
-    super(options);
+  get defaultOptions() {
+    return {
+      params: {
+        sensor: &apos;false&apos;,
+      },
+    };
+  }
 
-    let src = &apos;https://maps.googleapis.com/maps/api/js?v=3&amp;libraries=places&amp;callback=googleMapsCallback&apos;;
+  get queryProperty() {
+    return &apos;address&apos;;
+  }
 
-    if (options.apiKey) {
-      src += `&amp;key=${options.apiKey}`;
-    }
-    if (options.region) {
-      src += `&amp;region=${options.region}`;
-    }
-
-    Formio.requireLibrary(&apos;googleMaps&apos;, &apos;google.maps.places&apos;, src);
+  get responseProperty() {
+    return &apos;results&apos;;
   }
 
   get displayValueProperty() {
     return &apos;formatted_address&apos;;
   }
 
-  search(query, options = {}) {
-    const requestOptions = this.getRequestOptions(options);
-    const params = requestOptions.params = requestOptions.params || {};
-    params[this.queryProperty] = query;
+  makeRequest(options = {}) {
+    return new Promise((resolve, reject) =&gt; {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = &apos;json&apos;;
+      xhr.open(&apos;GET&apos;, this.getRequestUrl(options), true);
 
-    return Formio.libraryReady(&apos;googleMaps&apos;).then(() =&gt; {
-      const service = new google.maps.places.PlacesService(document.createElement(&apos;div&apos;));
-      return new NativePromise((resolve, reject) =&gt; {
-        service.textSearch(params, (results, status) =&gt; {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-            resolve(results);
-          }
-          else {
-            reject();
-          }
-        });
-      });
+      xhr.onload = () =&gt; resolve(xhr.response);
+
+      xhr.onerror = reject;
+
+      xhr.send();
     });
+  }
+
+  getRequestUrl(options = {}) {
+    const { params } = options;
+
+    return `https://maps.googleapis.com/maps/api/geocode/json?${this.serialize(params)}`;
   }
 }
 </code></pre>

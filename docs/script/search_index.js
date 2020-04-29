@@ -14328,10 +14328,10 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/providers/address/googleaddressprovider.js~googleaddressprovider#constructor",
-    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-constructor-constructor",
-    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#constructor",
-    "method"
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#defaultoptions",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-get-defaultOptions",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#defaultOptions",
+    "member"
   ],
   [
     "src/providers/address/googleaddressprovider.js~googleaddressprovider#displayvalueproperty",
@@ -14340,10 +14340,28 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/providers/address/googleaddressprovider.js~googleaddressprovider#search",
-    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-method-search",
-    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#search",
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#getrequesturl",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-method-getRequestUrl",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#getRequestUrl",
     "method"
+  ],
+  [
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#makerequest",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-method-makeRequest",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#makeRequest",
+    "method"
+  ],
+  [
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#queryproperty",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-get-queryProperty",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#queryProperty",
+    "member"
+  ],
+  [
+    "src/providers/address/googleaddressprovider.js~googleaddressprovider#responseproperty",
+    "class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html#instance-get-responseProperty",
+    "src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider#responseProperty",
+    "member"
   ],
   [
     "src/providers/address/googleaddressprovider.js~googleaddressprovider.displayname",
