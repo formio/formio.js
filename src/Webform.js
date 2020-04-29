@@ -1200,6 +1200,7 @@ export default class Webform extends NestedDataComponent {
           const params = {
             ref: 'errorRef',
             tabIndex: 0,
+            role: 'link',
             'aria-label': `${message}. Click to navigate to the field with following error.`
           };
           const li = this.ce('li', params);
