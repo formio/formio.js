@@ -126,6 +126,42 @@ describe('Currency Component', () => {
     });
   });
 
+  it('Should format currency submissions for table view for French locale', () => {
+    return Harness.testCreate(CurrencyComponent, comp1, { language: 'fr' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.11);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111);
+
+      assert.equal(value1, '1,00 $US');
+      assert.equal(value2, '1,10 $US');
+      assert.equal(value3, '1,11 $US');
+      assert.equal(value4, '1 111,00 $US');
+      assert.equal(value5, '1 111 111,00 $US');
+      assert.equal(value6, '-11 111,00 $US');
+    });
+  });
+
+  it('Should format currency sumbissions for table view for USA locale', () => {
+    return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.11);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111);
+
+      assert.equal(value1, '$1.00');
+      assert.equal(value2, '$1.10');
+      assert.equal(value3, '$1.11');
+      assert.equal(value4, '$1,111.00');
+      assert.equal(value5, '$1,111,111.00');
+      assert.equal(value6, '-$11,111.00');
+    });
+  });
+
   it('Should add trailing zeros', () => {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       assert.equal(component.addZerosAndFormatValue(null),);
