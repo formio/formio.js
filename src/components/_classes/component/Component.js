@@ -2560,10 +2560,8 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-
     if (flags.noValidate) {
       return true;
     }
