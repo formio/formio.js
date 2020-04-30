@@ -101,7 +101,8 @@ export default [
   EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
     '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>',
-'<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>'
+'<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>' +
+             '<tr><th>round</th><td>Is a function which takes number and amount of decimal digits and returns a rounded number with given precision. Example: <pre>round(35.8476, 2); //output: 35.85</pre></td></tr>'
   ),
   {
     type: 'checkbox',
