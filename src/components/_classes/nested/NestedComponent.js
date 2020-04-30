@@ -144,7 +144,7 @@ export default class NestedComponent extends Field {
    *
    * @param {function} fn - Called for every component.
    */
-  everyComponent(fn) {
+  everyComponent(fn, options) {
     const components = this.getComponents();
     _.each(components, (component, index) => {
       if (fn(component, components, index) === false) {
@@ -152,7 +152,7 @@ export default class NestedComponent extends Field {
       }
 
       if (typeof component.everyComponent === 'function') {
-        if (component.everyComponent(fn) === false) {
+        if (component.everyComponent(fn, options) === false) {
           return false;
         }
       }

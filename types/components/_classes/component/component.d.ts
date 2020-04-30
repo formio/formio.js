@@ -4,13 +4,13 @@ import { ComponentSchema, ElementInfo, ExtendedComponentSchema, ValidateOptions 
 export class Component extends Element {
   static schema(sources: ExtendedComponentSchema): ExtendedComponentSchema;
   static tableView(value: any, options: any): void;
-  constructor(component: Object, options: Object, data: Object);
+  constructor(component: any, options: Object, data: Object);
   public originalComponent: any | Component;
   public refs: Object;
   public attached: boolean;
   public rendered: boolean;
   public data: Object;
-  public component: Object;
+  public component: any;
   public error: string;
   public tooltip: string;
   public row: any;
@@ -43,7 +43,7 @@ export class Component extends Element {
     recursion: boolean,
   ): ExtendedComponentSchema;
   readonly schema: ExtendedComponentSchema;
-  t(text: string, params: Object): any;
+  t(text: string, params?: Object): any;
   labelIsHidden(): boolean;
   readonly transform: any;
   getTemplate(names: any, modes: any): any;

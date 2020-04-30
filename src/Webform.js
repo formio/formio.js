@@ -7,7 +7,12 @@ import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
-import { fastCloneDeep, currentTimezone } from './utils/utils';
+import {
+  fastCloneDeep,
+  currentTimezone,
+  getArrayFromComponentPath,
+  getStringFromComponentPath
+} from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
 // Initialize the available forms.
@@ -976,7 +981,7 @@ export default class Webform extends NestedDataComponent {
     this.addEventListener(this.element, 'keydown', this.executeShortcuts);
     this.currentForm = this;
     return childPromise.then(() => {
-      this.emit('render');
+      this.emit('render', this.element);
 
       return this.setValue(this._submission, {
         noUpdateEvent: true,
@@ -1025,7 +1030,7 @@ export default class Webform extends NestedDataComponent {
       if (this.refs.errorRef && this.refs.errorRef.length) {
         this.refs.errorRef.forEach(el => {
           this.removeEventListener(el, 'click');
-          this.removeEventListener(el, 'keypress');
+          this.removeEventListener(el, 'keydown');
         });
 
         this.removeChild(this.alert);
@@ -1057,9 +1062,8 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
+        class: classes || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-        class:  classes || `alert alert-${type}`,
-        role: 'alert'
       });
       if (message instanceof HTMLElement) {
         this.appendTo(message, this.alert);
@@ -1096,7 +1100,7 @@ export default class Webform extends NestedDataComponent {
           const key = e.currentTarget.dataset.componentKey;
           this.focusOnComponent(key);
         });
-        this.addEventListener(el, 'keypress', (e) => {
+        this.addEventListener(el, 'keydown', (e) => {
           if (e.keyCode === 13) {
             const key = e.currentTarget.dataset.componentKey;
             this.focusOnComponent(key);
@@ -1115,7 +1119,8 @@ export default class Webform extends NestedDataComponent {
    */
   focusOnComponent(key) {
     if (key) {
-      const component = this.getComponent(key);
+      const path = getArrayFromComponentPath(key);
+      const component = this.getComponent(path);
       if (component) {
         component.focus();
       }
@@ -1175,13 +1180,15 @@ export default class Webform extends NestedDataComponent {
     const message = document.createDocumentFragment();
     const p = this.ce('p', { id: `fix-errors-${this.id}` });
     this.setContent(p, this.t('error'));
+    const errorHotkeyMessage = this.t('errorListHotkey');
 
     const params = {
       class: 'fa fa-question-circle text-based',
       style: 'margin-left: 5px',
       ref: 'errorTooltip',
       tabIndex: 0,
-      'data-title': this.t('errorListHotkey'),
+      'data-title': errorHotkeyMessage,
+      'aria-label': errorHotkeyMessage,
     };
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
@@ -1189,16 +1196,24 @@ export default class Webform extends NestedDataComponent {
     const ul = this.ce('ul', { 'aria-describedby': `fix-errors-${this.id}` });
     errors.forEach(err => {
       if (err) {
-        const createListItem = (message) => {
-          const params = { ref: 'errorRef', tabIndex: 0 };
+        const createListItem = (message, index) => {
+          const params = {
+            ref: 'errorRef',
+            tabIndex: 0,
+            role: 'link',
+            'aria-label': `${message}. Click to navigate to the field with following error.`
+          };
           const li = this.ce('li', params);
           this.setContent(li, message);
 
           const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
           this.setContent(helpMessage, this.t('errorListHelpMessage'));
 
-          if (err.component && err.component.key) {
-            li.dataset.componentKey = err.component.key;
+          const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
+          const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
+          if (keyOrPath) {
+            const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
+            li.dataset.componentKey = formattedKeyOrPath;
           }
 
           li.appendChild(helpMessage);
@@ -1206,7 +1221,8 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages && err.messages.length) {
-          err.messages.forEach(({ message }) => createListItem(`${this.t(err.component.label)}. ${message}`));
+          const errLabel = this.t(err.component.label);
+          err.messages.forEach(({ message }, index) => createListItem(`${errLabel}. ${message}`, index));
         }
         else if (err.messages && err.messages.length) {
             err.messages.forEach(({ message }) => {
@@ -1226,7 +1242,6 @@ export default class Webform extends NestedDataComponent {
 
     if (triggerEvent) {
       this.emit('error', errors);
-
       if (this.refs.errorRef && this.refs.errorRef.length) {
         this.ready.then(() => {
           this.refs.errorRef[0].focus();

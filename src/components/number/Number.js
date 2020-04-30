@@ -180,11 +180,11 @@ export default class NumberComponent extends Input {
     return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value && value !== 0) {
       return '';
     }
-    value = this.getWidgetValueAsString(value);
+    value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
       return value.map(this.getMaskedValue).join(', ');
     }
@@ -195,7 +195,7 @@ export default class NumberComponent extends Input {
     super.addFocusBlurEvents(element);
 
     this.addEventListener(element, 'blur', () => {
-      element.value = this.getValueAsString(this.formatValue(this.parseValue(this.dataValue)));
+      element.value = this.getValueAsString(this.formatValue(this.parseValue(element.value)));
     });
   }
 }

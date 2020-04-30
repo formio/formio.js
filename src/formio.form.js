@@ -90,6 +90,8 @@ Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
+
+// This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
 
 // Export the components.

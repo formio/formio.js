@@ -27,7 +27,7 @@ export class NestedComponent extends Field {
   readonly templateName: string;
   init(): void;
   addComponents(data: any, options: Object): void;
-  addComponent(component: Object, data: Object, before: HTMLElement, noAdd?: any): Component;
+  addComponent(component: any, data: Object, before: HTMLElement, noAdd?: any): Component;
   render(children: any): any;
   renderComponents(components: any): any;
   attach(element: any): any;

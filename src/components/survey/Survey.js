@@ -106,4 +106,41 @@ export default class SurveyComponent extends Field {
   getInputName(question) {
     return `${this.options.name}[${question.value}]`;
   }
+
+  getValueAsString(value, options) {
+    if (options?.email) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+      `);
+
+        _.forIn(value, (value, key) => {
+          const question = _.find(this.component.questions, ['value', key]);
+          const answer = _.find(this.component.values, ['value', value]);
+
+          if (!question || !answer) {
+            return;
+          }
+
+          result += (`
+            <tr>
+              <td style="text-align:center;padding: 5px 10px;">${question.label}</td>
+              <td style="text-align:center;padding: 5px 10px;">${answer.label}</td>
+            </tr>
+          `);
+        });
+
+        result += '</tbody></table>';
+
+        return result;
+    }
+
+    return super.getValueAsString(value, options);
+  }
 }
