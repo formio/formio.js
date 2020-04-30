@@ -732,6 +732,8 @@ export default class Formio {
       opts = {};
     }
 
+    const encodedURI = encodeURI(url);
+
     const requestArgs = {
       url,
       method,
@@ -808,7 +810,7 @@ export default class Formio {
     }
 
     // Generate a cachekey.
-    const cacheKey = btoa(url);
+    const cacheKey = btoa(encodeURI(url));
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
@@ -840,15 +842,17 @@ export default class Formio {
       options.body = JSON.stringify(data);
     }
 
+    // encode url
+    const encodedURL = encodeURI(url);
     // Allow plugins to alter the options.
-    options = Formio.pluginAlter('requestOptions', options, url);
+    options = Formio.pluginAlter('requestOptions', options, encodedURL);
     if (options.namespace || Formio.namespace) {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
     const requestToken = options.headers['x-jwt-token'];
-    const result = Formio.pluginAlter('wrapFetchRequestPromise', Formio.fetch(url, options),
-      { url, method, data, opts }).then((response) => {
+    const result = Formio.pluginAlter('wrapFetchRequestPromise', Formio.fetch(encodedURL, options),
+      { encodedURL, method, data, opts }).then((response) => {
       // Allow plugins to respond.
       response = Formio.pluginAlter('requestResponse', response, Formio, data);
 
