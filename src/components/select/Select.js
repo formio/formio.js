@@ -314,7 +314,7 @@ export default class SelectComponent extends Field {
     // Iterate through each of the items.
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
-      if (this.root && this.root.options.editForm && this.root.options.editForm._id === item._id) return;
+      if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
       this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
     });
 
