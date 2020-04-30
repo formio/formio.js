@@ -1193,7 +1193,7 @@ export default class Webform extends NestedDataComponent {
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
 
-    const ul = this.ce('ul', { 'aria-describedby': `fix-errors-${this.id}` });
+    const ul = this.ce('ul', { 'aria-labelledby': `fix-errors-${this.id}` });
     errors.forEach(err => {
       if (err) {
         const createListItem = (message, index) => {
@@ -1203,8 +1203,9 @@ export default class Webform extends NestedDataComponent {
             role: 'link',
             'aria-label': `${message}. Click to navigate to the field with following error.`
           };
-          const li = this.ce('li', params);
-          this.setContent(li, message);
+          const li = this.ce('li');
+          const mainMessage = this.ce('span', params);
+          this.setContent(mainMessage, this.t(message));
 
           const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
           this.setContent(helpMessage, this.t('errorListHelpMessage'));
@@ -1213,9 +1214,10 @@ export default class Webform extends NestedDataComponent {
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
           if (keyOrPath) {
             const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
-            li.dataset.componentKey = formattedKeyOrPath;
+            mainMessage.dataset.componentKey = formattedKeyOrPath;
           }
 
+          li.appendChild(mainMessage);
           li.appendChild(helpMessage);
           this.appendTo(li, ul);
         };
