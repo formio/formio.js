@@ -129,26 +129,27 @@ export default class FormComponent extends BaseComponent {
       }
     });
 
-    (new Form(this.element, form, options)).render().then((instance) => {
-      this.subForm = instance;
-      this.subForm.root = this.root;
-      this.subForm.currentForm = this;
-      this.subForm.parent = this;
-      this.subForm.parentVisible = this.visible;
-      if (!this.options.temporary) {
-        this.subForm.on('change', () => {
-          this.dataValue = this.subForm.getValue();
-          this.triggerChange({
-            noEmit: true
-          });
+    this.subForm = (new Form(this.element, form, options)).create();
+    this.subForm.root = this.root;
+    this.subForm.currentForm = this;
+    this.subForm.parent = this;
+    this.subForm.parentVisible = this.visible;
+    if (!this.options.temporary) {
+      this.subForm.on('change', () => {
+        this.dataValue = this.subForm.getValue();
+        this.triggerChange({
+          noEmit: true
         });
-      }
-      this.subForm.url = this.formSrc;
-      this.subForm.nosubmit = this.nosubmit;
-      this.restoreValue();
-      this.subFormReadyResolve(this.subForm);
-      return this.subForm;
-    });
+      });
+    }
+    this.subForm.url = this.formSrc;
+    this.subForm.nosubmit = this.nosubmit;
+    this.restoreValue();
+    if (!this.isHidden()) {
+      this.subForm.form = form;
+    }
+    this.subFormReadyResolve(this.subForm);
+    return this.subFormReady;
   }
 
   clearOnHide(show) {
@@ -415,7 +416,7 @@ export default class FormComponent extends BaseComponent {
   }
 
   isHidden() {
-    if (!this.visible) {
+    if (this.component.hidden || !this.visible) {
       return true;
     }
 
