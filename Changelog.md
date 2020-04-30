@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.9.24
 ### Fixed
  - A few issues with the Address component.
+ - PDF 34 - Fixed an issue of not formatted date in pdf header
 
 ## 4.9.23
 ### Fixed
