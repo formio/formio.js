@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -307,6 +308,9 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   parseValue(value) {
+    if (typeof value === &apos;string&apos;) {
+      value = value.split(this.delimiter).join(&apos;&apos;).replace(this.decimalSeparator, &apos;.&apos;);
+    }
     return super.parseValue(this.stripPrefixSuffix(value));
   }
 
@@ -318,6 +322,12 @@ export default class CurrencyComponent extends NumberComponent {
     let integerPart;
     let decimalPart = &apos;&apos;;
     let decimalPartNumbers = [];
+    const negativeValueSymbol = &apos;-&apos;;
+    const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
+    const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+    const isNegative = value.includes(negativeValueSymbol) || false;
+
+    value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol,&apos;&apos;) : value);
 
     if (value.includes(this.decimalSeparator)) {
       [integerPart, decimalPart] = value.split(this.decimalSeparator);
@@ -333,7 +343,7 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
 
-    const formattedValue = `${integerPart}${this.decimalSeparator}${decimalPartNumbers.join(&apos;&apos;)}`;
+    const formattedValue = `${isNegative ? negativeValueSymbol:&apos;&apos;}${hasPrefix ? this.prefix : &apos;&apos;}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join(&apos;&apos;)}${hasSuffix ? this.suffix : &apos;&apos;}`;
 
     return super.formatValue(formattedValue);
   }
