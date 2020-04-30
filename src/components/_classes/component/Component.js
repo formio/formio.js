@@ -2404,12 +2404,7 @@ export default class Component extends Element {
     const calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
       data,
-      row: row || this.data,
-      round: function round(number, precision) {
-        if (typeof number === 'number') {
-          return number.toFixed(precision);
-        }
-      }
+      row: row || this.data
     }, 'value');
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
