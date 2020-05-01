@@ -1,4 +1,5 @@
 import { createNumberMask } from 'text-mask-addons';
+import { maskInput } from 'vanilla-text-mask';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';
 import NumberComponent from '../number/Number';
@@ -54,6 +55,23 @@ export default class CurrencyComponent extends NumberComponent {
       decimalLimit: decimalLimit,
       allowNegative: _.get(this.component, 'allowNegative', true),
       allowDecimal: _.get(this.component, 'allowDecimal', true)
+    });
+  }
+
+  setInputMask(input) {
+    const affixes = getCurrencyAffixes({
+      currency: this.component.currency,
+      decimalSeparator: this.decimalSeparator,
+      lang: this.options.language,
+    });
+    let numberPattern = `\\${affixes.prefix}[0-9`;
+    numberPattern += this.decimalSeparator || '';
+    numberPattern += this.delimiter || '';
+    numberPattern += ']*';
+    input.setAttribute('pattern', numberPattern);
+    input.mask = maskInput({
+      inputElement: input,
+      mask: this.numberMask || '',
     });
   }
 
