@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.13
+### Fixed
+ - VPAT-314 Removed role alert from error messages container #2734
+ - VPAT-335 Fixed currency input announcing invalid entry with any value #2734
+ - VPAT-362 Fixed axe issues for error section links #2733
+ - Encode uri before a request #2735
+
 ## 4.10.0-beta.12
 ### Fixed
  - FJS-207: Fixed submission display in read only mode in tree
