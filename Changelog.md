@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - PDF 34 - Fixed an issue of not formatted date in pdf header
 
+### Changed
+ - Temporarily pin moment@2.24.0 to resolve import issue.
+
 ## 4.9.24
 ### Fixed
  - A few issues with the Address component.
