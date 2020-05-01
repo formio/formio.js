@@ -732,8 +732,6 @@ export default class Formio {
       opts = {};
     }
 
-    const encodedURI = encodeURI(url);
-
     const requestArgs = {
       url,
       method,
@@ -809,8 +807,11 @@ export default class Formio {
       opts = {};
     }
 
+    // encode url
+    const encodedURL = encodeURI(url);
+
     // Generate a cachekey.
-    const cacheKey = btoa(encodeURI(url));
+    const cacheKey = btoa(encodedURL);
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
@@ -842,8 +843,6 @@ export default class Formio {
       options.body = JSON.stringify(data);
     }
 
-    // encode url
-    const encodedURL = encodeURI(url);
     // Allow plugins to alter the options.
     options = Formio.pluginAlter('requestOptions', options, encodedURL);
     if (options.namespace || Formio.namespace) {
