@@ -70,7 +70,7 @@ export default class CalendarWidget extends InputWidget {
   loadZones() {
     const timezone = this.timezone;
     if (!zonesLoaded() && shouldLoadZones(timezone)) {
-      loadZones(timezone).then(() => this.rebuild());
+      loadZones(timezone).then(() => this.emit('rebuild'));
 
       // Return zones are loading.
       return true;
@@ -102,11 +102,16 @@ export default class CalendarWidget extends InputWidget {
     this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
     this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
+    this.settings.wasDefaultValueChanged = false;
+    this.settings.defaultValue = '';
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () => this.emit('update');
     this.settings.onClose = () => {
       this.closedOn = Date.now();
+      if (this.settings.wasDefaultValueChanged) {
+        this.calendar._input.value = this.settings.defaultValue;
+      }
       if (this.calendar) {
         this.emit('blur');
       }
@@ -127,7 +132,13 @@ export default class CalendarWidget extends InputWidget {
     if (this._input) {
       // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
-
+      this.calendar.altInput.addEventListener('input', (event) => {
+        if (event.target.value === '') {
+          this.settings.wasDefaultValueChanged = true;
+          this.settings.defaultValue = event.target.value;
+          this.calendar.clear();
+        }
+      });
       // Enforce the input mask of the format.
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
 
