@@ -176,6 +176,18 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
+    for (const button in this.form.components[this.page].buttonSettings) {
+      const buttonElement = this.element.querySelector(`[ref='${this.wizardKey}-${button}']`);
+      if (buttonElement && !this.form.components[this.page].buttonSettings[button]) {
+        buttonElement.remove();
+      }
+    }
+
+    const headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
+    if (headerElement && this.form.components[this.page].breadcrumb === 'none') {
+      headerElement.remove();
+    }
+
     const promises = this.attachComponents(this.refs[this.wizardKey], [
       ...this.prefixComps,
       ...this.currentPage.components,
