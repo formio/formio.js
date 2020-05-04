@@ -1164,6 +1164,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~round",
+    "function/index.html#static-function-round",
+    "<span>round</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/providers/storage/s3.js~s3",
     "function/index.html#static-function-s3",
     "<span>s3</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/s3.js</span>",
@@ -7458,6 +7464,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#setinputmask",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-setInputMask",
+    "src/components/currency/Currency.js~CurrencyComponent#setInputMask",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#stripprefixsuffix",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-stripPrefixSuffix",
     "src/components/currency/Currency.js~CurrencyComponent#stripPrefixSuffix",
@@ -13132,6 +13144,24 @@ window.esdocSearchIndex = [
     "class/src/components/tree/Tree.js~TreeComponent.html#static-method-schema",
     "src/components/tree/Tree.js~TreeComponent.schema",
     "method"
+  ],
+  [
+    "src/components/tree/tree.unit.js",
+    "file/src/components/tree/Tree.unit.js.html",
+    "src/components/tree/Tree.unit.js",
+    "file"
+  ],
+  [
+    "src/components/tree/fixtures/comp1.js",
+    "file/src/components/tree/fixtures/comp1.js.html",
+    "src/components/tree/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/tree/fixtures/index.js",
+    "file/src/components/tree/fixtures/index.js.html",
+    "src/components/tree/fixtures/index.js",
+    "file"
   ],
   [
     "src/components/unknown/unknown.form.js",
