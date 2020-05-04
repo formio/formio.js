@@ -10650,6 +10650,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp2.js",
+    "file/src/components/radio/fixtures/comp2.js.html",
+    "src/components/radio/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/radio/fixtures/comp3.js",
+    "file/src/components/radio/fixtures/comp3.js.html",
+    "src/components/radio/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",

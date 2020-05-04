@@ -1288,7 +1288,7 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() =&gt; {
-        const schema = comp ? comp.schema : (parentContainer ? parentContainer[index] : []);
+        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit(&apos;saveComponent&apos;,
           schema,
           component,

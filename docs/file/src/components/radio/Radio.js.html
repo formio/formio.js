@@ -311,9 +311,15 @@ export default class RadioComponent extends Field {
       this.addShortcut(input, this.component.values[index].shortcut);
 
       if (this.isRadio) {
-        input.checked = (this.dataValue === input.value);
+        let dataValue = this.dataValue;
+
+        if (!_.isString(this.dataValue)) {
+          dataValue = _.toString(this.dataValue);
+        }
+
+        input.checked = (dataValue === input.value);
         this.addEventListener(input, &apos;keyup&apos;, (event) =&gt; {
-          if (event.key === &apos; &apos; &amp;&amp; this.dataValue === input.value) {
+          if (event.key === &apos; &apos; &amp;&amp; dataValue === input.value) {
             event.preventDefault();
 
             this.updateValue(null, {
@@ -352,7 +358,7 @@ export default class RadioComponent extends Field {
       return &apos;&apos;;
     }
     if (!_.isString(value)) {
-      return _.toString(value);
+      value = _.toString(value);
     }
 
     const option = _.find(this.component.values, (v) =&gt; v.value === value);
@@ -410,6 +416,11 @@ export default class RadioComponent extends Field {
    */
   normalizeValue(value) {
     const dataType = this.component.dataType || &apos;auto&apos;;
+
+    if (value === this.emptyValue) {
+      return value;
+    }
+
     switch (dataType) {
       case &apos;auto&apos;:
         if (!isNaN(parseFloat(value)) &amp;&amp; isFinite(value)) {
