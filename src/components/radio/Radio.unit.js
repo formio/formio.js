@@ -4,7 +4,8 @@ import Harness from '../../../test/harness';
 import RadioComponent from './Radio';
 
 import {
-  comp1
+  comp1,
+  comp2
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -12,6 +13,13 @@ describe('Radio Component', () => {
     return Harness.testCreate(RadioComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="radio"]', 4);
       Harness.testElements(component, 'span', 4);
+    });
+  });
+
+  it('Should return correct string values if storage type is Number', () => {
+    return Harness.testCreate(RadioComponent, comp2).then((component) => {
+      assert.equal(component.getValueAsString(1), 'one');
+      assert.equal(component.getValueAsString(2), 'two');
     });
   });
 
