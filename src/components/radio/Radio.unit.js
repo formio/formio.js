@@ -5,7 +5,8 @@ import RadioComponent from './Radio';
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -22,7 +23,22 @@ describe('Radio Component', () => {
       assert.equal(component.getValueAsString(2), 'two');
     });
   });
+      
+  it('Should save checked value after redrawing if storage type is Number', (done) => {
+    Harness.testCreate(RadioComponent, comp3).then((component) => {
+      component.setValue(22);
+      component.redraw();
 
+      setTimeout(()=>{
+        assert.equal(component.refs.input[0].checked, false);
+        assert.equal(component.refs.input[1].value, '22');
+        assert.equal(component.refs.input[1].checked, true);
+        assert.equal(component.refs.input[2].checked, false);
+        done();
+      }, 700);
+    });
+  });
+      
   it('Span should have correct text label', () => {
     return Harness.testCreate(RadioComponent, comp1).then((component) => {
       component.element.querySelectorAll('input').forEach((input) => {
