@@ -165,9 +165,14 @@ export default class SelectComponent extends Field {
       return this.t(data);
     }
 
+    data.data = this.valueProperty === 'data' && _.isObject(data.data)
+      ? JSON.stringify(data.data)
+      : data.data;
+
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
+      if (!label || !this.t(label)) return;
       return template.replace(label, this.t(label));
     }
     else {
@@ -182,6 +187,8 @@ export default class SelectComponent extends Field {
    * @param label
    */
   addOption(value, label, attrs = {}, id) {
+    if (_.isNil(label)) return;
+
     const option = {
       value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
@@ -310,6 +317,8 @@ export default class SelectComponent extends Field {
 
     // Iterate through each of the items.
     _.each(items, (item, index) => {
+      // preventing references of the components inside the form to the parent form when building forms
+      if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
       this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
     });
 
@@ -1085,6 +1094,10 @@ export default class SelectComponent extends Field {
     if (_.isNil(value)) {
       return;
     }
+    //check if value equals to default emptyValue
+    if (_.isObject(value) && Object.keys(value).length === 0) {
+      return value;
+    }
 
     const dataType = this.component.dataType || 'auto';
     const normalize = {
@@ -1093,7 +1106,7 @@ export default class SelectComponent extends Field {
       number() {
         const numberValue = Number(this.value);
 
-        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue)) {
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !=='') {
           this.value = numberValue;
         }
 

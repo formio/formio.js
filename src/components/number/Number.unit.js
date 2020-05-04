@@ -57,6 +57,42 @@ describe('Number Component', () => {
     });
   });
 
+  it('Should format submissions for table view for French locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, '1');
+      assert.equal(value2, '1,1');
+      assert.equal(value3, '1,1111111');
+      assert.equal(value4, '1 111');
+      assert.equal(value5, '1 111 111');
+      assert.equal(value6, '-11 111,1111');
+    });
+  });
+
+  it('Should format sumissions for table view for USA locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, '1');
+      assert.equal(value2, '1.1');
+      assert.equal(value3, '1.1111111');
+      assert.equal(value4, '1,111');
+      assert.equal(value5, '1,111,111');
+      assert.equal(value6, '-11,111.1111');
+    });
+  });
+
   it('Should format numbers for USA locale', () => {
     /* eslint-disable max-statements */
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {

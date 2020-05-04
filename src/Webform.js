@@ -1045,7 +1045,6 @@ export default class Webform extends NestedDataComponent {
       this.alert = this.ce('div', {
         class: classes || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-        role: 'alert'
       });
       if (message instanceof HTMLElement) {
         this.appendTo(message, this.alert);
@@ -1159,7 +1158,7 @@ export default class Webform extends NestedDataComponent {
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
           if (keyOrPath) {
-            const formattedKeyOrPath = getStringFromComponentPath(err.messages[index].path);
+            const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
             li.dataset.componentKey = formattedKeyOrPath;
           }
 

@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -239,7 +240,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/componentModal/ComponentModal.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default class ComponentModal {
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+export default class ComponentModal {
   static render(component, data, topLevel) {
     const children = component.renderTemplate(&apos;component&apos;, data, topLevel);
 
@@ -315,7 +318,7 @@
   }
 
   updateView() {
-    const template = this.currentValue === this.component.defaultValue
+    const template = _.isEqual(this.currentValue, this.component.defaultValue)
       ? this.openModalTemplate
       : this.component.getModalPreviewTemplate();
     this.component.setContent(this.refs.openModalWrapper, template);

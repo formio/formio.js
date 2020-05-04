@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -1048,8 +1049,11 @@ export default class Formio {
       opts = {};
     }
 
+    // encode url
+    const encodedURL = encodeURI(url);
+
     // Generate a cachekey.
-    const cacheKey = btoa(url);
+    const cacheKey = btoa(encodedURL);
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
@@ -1082,14 +1086,14 @@ export default class Formio {
     }
 
     // Allow plugins to alter the options.
-    options = Formio.pluginAlter(&apos;requestOptions&apos;, options, url);
+    options = Formio.pluginAlter(&apos;requestOptions&apos;, options, encodedURL);
     if (options.namespace || Formio.namespace) {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
     const requestToken = options.headers[&apos;x-jwt-token&apos;];
-    const result = Formio.pluginAlter(&apos;wrapFetchRequestPromise&apos;, Formio.fetch(url, options),
-      { url, method, data, opts }).then((response) =&gt; {
+    const result = Formio.pluginAlter(&apos;wrapFetchRequestPromise&apos;, Formio.fetch(encodedURL, options),
+      { encodedURL, method, data, opts }).then((response) =&gt; {
       // Allow plugins to respond.
       response = Formio.pluginAlter(&apos;requestResponse&apos;, response, Formio, data);
 

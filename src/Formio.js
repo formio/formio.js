@@ -808,7 +808,7 @@ export default class Formio {
     }
 
     // Generate a cachekey.
-    const cacheKey = btoa(url);
+    const cacheKey = btoa(encodeURI(url));
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {

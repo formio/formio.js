@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.13
+### Fixed
+ - VPAT-314 Removed role alert from error messages container #2734
+ - VPAT-335 Fixed currency input announcing invalid entry with any value #2734
+ - VPAT-362 Fixed axe issues for error section links #2733
+ - Encode uri before a request #2735
+
+## 4.10.0-beta.12
+### Fixed
+ - FJS-207: Fixed submission display in read only mode in tree
+ - FJS-723: Added entire object option in value property for select with resource
+ - FJS 904: Fixed display of resources with custom components in Existing Resource Fields in builder
+ - FJS-547: Fixed issue where default value could not be removed from Date/Time components.
+ - FJS 634: Modal Edit (Multiple Values): Does not show any default message like single regular component
+ - FJS 903: Fixed currency formatting on blur
+ - FJS 903: Fixed number/currency formatting in tableView according localization
+ - FJS-884: Fixed select Data Source Type dropdown doesn`t show all options if the form is not saved
+ 
+### Added
+ - Add round function to calculate value context
+
+### Changed
+ - Upgrade  i18next@19.4.4, @babel/core@7.9.6, @babel/preset-env@7.9.6, karma@5.0.4, karma-mocha@2.0.1, mocha@7.1.2, uuid@8.0.0
+
+## 4.10.0-beta.11
+### Fixed
+ - VPAT-335 Fixed currency input announcing invalid entry with any value. #2712
+ - Fixed WYSIWYG image upload not working without form URL provided. #2709
+ - FJS-133: Fixed possibility to set parent form inside nested form. #2706
+ - Fix silent errors. #2700
+ - Typo fixed in create error message. #2697
+ - FJS-884: Fixed creation of empty select options #2695
+ - FOR-2417: Check for hidden submit button in PDF. #2694
+ - FJS-884: Fixed showing stringify object in select dropdown. #2691
+ - FJS-884: Fixed zero display if there is no selected value in select component. #2690
+ - FJS-632 - Fixed an issue of data disappearance after new data grid row adding. #2688
+ - Nested form should inherit the fileService from the parent form. #2687
+
+### Changed
+ - Upgrade dompurify@2.0.10, gulp-sass@4.1.0, webpack@4.43.0, escape-string-regexp@4.0.0, marked@1.0.0
+
 ## 4.10.0-beta.10
 ### Fixed
  - FJS-779: Fixed display of time icon

@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -489,7 +490,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
         let requestData;
-        this.root.formio
+        this.fileService
           .uploadFile(
             uploadStorage,
             files[0],
@@ -502,7 +503,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           )
           .then(result =&gt; {
             requestData = result;
-            return this.root.formio.downloadFile(result);
+            return this.fileService.downloadFile(result);
           })
           .then(result =&gt; {
             quillInstance.quill.enable(true);
@@ -654,7 +655,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(error);
       }
 
-      return this.root.formio.downloadFile(requestData)
+      return this.fileService.downloadFile(requestData)
         .then((result) =&gt; {
           image.setAttribute(&apos;src&apos;, result.url);
         });

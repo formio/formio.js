@@ -1164,6 +1164,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~round",
+    "function/index.html#static-function-round",
+    "<span>round</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/providers/storage/s3.js~s3",
     "function/index.html#static-function-s3",
     "<span>s3</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/s3.js</span>",
@@ -2403,6 +2409,12 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#attach",
     "class/src/PDF.js~PDF.html#instance-method-attach",
     "src/PDF.js~PDF#attach",
+    "method"
+  ],
+  [
+    "src/pdf.js~pdf#checksubmitbuttonhiddenness",
+    "class/src/PDF.js~PDF.html#instance-method-checkSubmitButtonHiddenness",
+    "src/PDF.js~PDF#checkSubmitButtonHiddenness",
     "method"
   ],
   [
@@ -4594,6 +4606,12 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-fieldLogic",
     "src/components/_classes/component/Component.js~Component#fieldLogic",
     "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#fileservice",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-fileService",
+    "src/components/_classes/component/Component.js~Component#fileService",
+    "member"
   ],
   [
     "src/components/_classes/component/component.js~component#focus",
@@ -7446,6 +7464,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#setinputmask",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-setInputMask",
+    "src/components/currency/Currency.js~CurrencyComponent#setInputMask",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#stripprefixsuffix",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-stripPrefixSuffix",
     "src/components/currency/Currency.js~CurrencyComponent#stripPrefixSuffix",
@@ -9237,12 +9261,6 @@ window.esdocSearchIndex = [
     "src/components/file/file.js~filecomponent#emptyvalue",
     "class/src/components/file/File.js~FileComponent.html#instance-get-emptyValue",
     "src/components/file/File.js~FileComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/file/file.js~filecomponent#fileservice",
-    "class/src/components/file/File.js~FileComponent.html#instance-get-fileService",
-    "src/components/file/File.js~FileComponent#fileService",
     "member"
   ],
   [
@@ -11334,6 +11352,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/select/fixtures/comp5.js",
+    "file/src/components/select/fixtures/comp5.js.html",
+    "src/components/select/fixtures/comp5.js",
+    "file"
+  ],
+  [
     "src/components/select/fixtures/index.js",
     "file/src/components/select/fixtures/index.js.html",
     "src/components/select/fixtures/index.js",
@@ -13120,6 +13144,24 @@ window.esdocSearchIndex = [
     "class/src/components/tree/Tree.js~TreeComponent.html#static-method-schema",
     "src/components/tree/Tree.js~TreeComponent.schema",
     "method"
+  ],
+  [
+    "src/components/tree/tree.unit.js",
+    "file/src/components/tree/Tree.unit.js.html",
+    "src/components/tree/Tree.unit.js",
+    "file"
+  ],
+  [
+    "src/components/tree/fixtures/comp1.js",
+    "file/src/components/tree/fixtures/comp1.js.html",
+    "src/components/tree/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/tree/fixtures/index.js",
+    "file/src/components/tree/fixtures/index.js.html",
+    "src/components/tree/fixtures/index.js",
+    "file"
   ],
   [
     "src/components/unknown/unknown.form.js",

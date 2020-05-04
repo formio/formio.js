@@ -1131,3 +1131,10 @@ export function getStringFromComponentPath(path) {
   });
   return strPath;
 }
+
+export function round(number, precision) {
+  if (_.isNumber(number)) {
+    return number.toFixed(precision);
+  }
+  return number;
+}
