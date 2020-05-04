@@ -116,7 +116,7 @@ export default class RadioComponent extends Field {
       return '';
     }
     if (!_.isString(value)) {
-      return _.toString(value);
+      value = _.toString(value);
     }
 
     const option = _.find(this.component.values, (v) => v.value === value);
