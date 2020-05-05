@@ -25,6 +25,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       removeRow: 'Cancel',
       defaultOpen: false,
       openWhenEmpty: false,
+      modal: false,
       components: [],
       inlineEdit: false,
       templates: {
