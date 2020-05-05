@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -295,6 +296,42 @@ describe(&apos;Number Component&apos;, () =&gt; {
       Harness.testSetInput(component, -123456789.123456789, -123456789.123, &apos;-123,456,789.123&apos;);
       Harness.testSetInput(component, &apos;123456789.123456789&apos;, 123456789.123, &apos;123,456,789.123&apos;);
       Harness.testSetInput(component, &apos;-123456789.123456789&apos;, -123456789.123, &apos;-123,456,789.123&apos;);
+    });
+  });
+
+  it(&apos;Should format submissions for table view for French locale&apos;, () =&gt; {
+    return Harness.testCreate(NumberComponent, comp2, { language: &apos;fr&apos; }).then((component) =&gt; {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, &apos;1&apos;);
+      assert.equal(value2, &apos;1,1&apos;);
+      assert.equal(value3, &apos;1,1111111&apos;);
+      assert.equal(value4, &apos;1&#x202F;111&apos;);
+      assert.equal(value5, &apos;1&#x202F;111&#x202F;111&apos;);
+      assert.equal(value6, &apos;-11&#x202F;111,1111&apos;);
+    });
+  });
+
+  it(&apos;Should format sumissions for table view for USA locale&apos;, () =&gt; {
+    return Harness.testCreate(NumberComponent, comp2, { language: &apos;en-US&apos; }).then((component) =&gt; {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, &apos;1&apos;);
+      assert.equal(value2, &apos;1.1&apos;);
+      assert.equal(value3, &apos;1.1111111&apos;);
+      assert.equal(value4, &apos;1,111&apos;);
+      assert.equal(value5, &apos;1,111,111&apos;);
+      assert.equal(value6, &apos;-11,111.1111&apos;);
     });
   });
 

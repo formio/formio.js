@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -245,7 +246,9 @@ import Harness from &apos;../../../test/harness&apos;;
 import RadioComponent from &apos;./Radio&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2,
+  comp3
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Radio Component&apos;, () =&gt; {
@@ -256,6 +259,28 @@ describe(&apos;Radio Component&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should return correct string values if storage type is Number&apos;, () =&gt; {
+    return Harness.testCreate(RadioComponent, comp2).then((component) =&gt; {
+      assert.equal(component.getValueAsString(1), &apos;one&apos;);
+      assert.equal(component.getValueAsString(2), &apos;two&apos;);
+    });
+  });
+      
+  it(&apos;Should save checked value after redrawing if storage type is Number&apos;, (done) =&gt; {
+    Harness.testCreate(RadioComponent, comp3).then((component) =&gt; {
+      component.setValue(22);
+      component.redraw();
+
+      setTimeout(()=&gt;{
+        assert.equal(component.refs.input[0].checked, false);
+        assert.equal(component.refs.input[1].value, &apos;22&apos;);
+        assert.equal(component.refs.input[1].checked, true);
+        assert.equal(component.refs.input[2].checked, false);
+        done();
+      }, 700);
+    });
+  });
+      
   it(&apos;Span should have correct text label&apos;, () =&gt; {
     return Harness.testCreate(RadioComponent, comp1).then((component) =&gt; {
       component.element.querySelectorAll(&apos;input&apos;).forEach((input) =&gt; {

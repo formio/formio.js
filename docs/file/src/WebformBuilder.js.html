@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -610,7 +611,9 @@ export default class WebformBuilder extends Component {
 
         subgroup.componentOrder.push(component.key);
         subgroup.components[component.key] = _.merge(
-          fastCloneDeep(Components.components[component.type].builderInfo),
+          fastCloneDeep(Components.components[component.type]
+            ? Components.components[component.type].builderInfo
+            : Components.components[&apos;unknown&apos;].builderInfo),
           {
             key: component.key,
             title: componentName,
@@ -1285,7 +1288,7 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() =&gt; {
-        const schema = comp ? comp.schema : (parentContainer ? parentContainer[index] : []);
+        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit(&apos;saveComponent&apos;,
           schema,
           component,

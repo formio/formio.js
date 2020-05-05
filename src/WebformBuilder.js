@@ -369,7 +369,9 @@ export default class WebformBuilder extends Component {
 
         subgroup.componentOrder.push(component.key);
         subgroup.components[component.key] = _.merge(
-          fastCloneDeep(Components.components[component.type].builderInfo),
+          fastCloneDeep(Components.components[component.type]
+            ? Components.components[component.type].builderInfo
+            : Components.components['unknown'].builderInfo),
           {
             key: component.key,
             title: componentName,
@@ -1044,7 +1046,7 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        const schema = comp ? comp.schema : (parentContainer ? parentContainer[index] : []);
+        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
           component,

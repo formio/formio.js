@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -1182,23 +1183,14 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    let template;
-    if (this.dataValue) {
-      template = this.getModalPreviewTemplate();
-    }
-    else {
-      template = `
-        &lt;label class=&quot;control-label&quot;&gt;${this.component.label}&lt;/label&gt;&lt;br&gt;
-        &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;Click to set value&lt;/button&gt;
-      `;
-    }
+    const template = this.getModalPreviewTemplate();
     this.componentModal.setOpenModalElement(template);
   }
 
   getModalPreviewTemplate() {
     return `
       &lt;label class=&quot;control-label&quot;&gt;${this.component.label}&lt;/label&gt;&lt;br&gt;
-      &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;${this.getValueAsString(this.dataValue)}&lt;/button&gt;`;
+      &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;${this.getValueAsString(this.dataValue) || &apos;Click to set value&apos;}&lt;/button&gt;`;
   }
 
   build(element) {

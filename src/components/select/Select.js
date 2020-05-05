@@ -165,6 +165,10 @@ export default class SelectComponent extends Field {
       return this.t(data);
     }
 
+    data.data = this.valueProperty === 'data' && _.isObject(data.data)
+      ? JSON.stringify(data.data)
+      : data.data;
+
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
@@ -314,7 +318,7 @@ export default class SelectComponent extends Field {
     // Iterate through each of the items.
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
-      if (this.root && this.root.options.editForm && this.root.options.editForm._id === item._id) return;
+      if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
       this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
     });
 
