@@ -70,7 +70,7 @@ export default class CalendarWidget extends InputWidget {
   loadZones() {
     const timezone = this.timezone;
     if (!zonesLoaded() && shouldLoadZones(timezone)) {
-      loadZones(timezone).then(() => this.emit('rebuild'));
+      loadZones(timezone).then(() => this.emit('redraw'));
 
       // Return zones are loading.
       return true;
