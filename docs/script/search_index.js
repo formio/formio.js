@@ -5598,6 +5598,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#showdialog",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-showDialog",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#showDialog",
+    "method"
+  ],
+  [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#updateview",
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-updateView",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#updateView",

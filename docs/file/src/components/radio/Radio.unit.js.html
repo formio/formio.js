@@ -265,7 +265,7 @@ describe(&apos;Radio Component&apos;, () =&gt; {
       assert.equal(component.getValueAsString(2), &apos;two&apos;);
     });
   });
-      
+
   it(&apos;Should save checked value after redrawing if storage type is Number&apos;, (done) =&gt; {
     Harness.testCreate(RadioComponent, comp3).then((component) =&gt; {
       component.setValue(22);
@@ -280,7 +280,7 @@ describe(&apos;Radio Component&apos;, () =&gt; {
       }, 700);
     });
   });
-      
+
   it(&apos;Span should have correct text label&apos;, () =&gt; {
     return Harness.testCreate(RadioComponent, comp1).then((component) =&gt; {
       component.element.querySelectorAll(&apos;input&apos;).forEach((input) =&gt; {

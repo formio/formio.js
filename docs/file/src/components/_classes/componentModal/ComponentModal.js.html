@@ -299,7 +299,7 @@ export default class ComponentModal {
 
   setEventListeners() {
     this.component.addEventListener(this.refs.openModal, &apos;click&apos;, this.openModalHandler.bind(this));
-    this.component.addEventListener(this.refs.modalOverlay, &apos;click&apos;, this.closeModalHandler.bind(this));
+    this.component.addEventListener(this.refs.modalOverlay, &apos;click&apos;, this.showDialog.bind(this));
     this.component.addEventListener(this.refs.modalClose, &apos;click&apos;, this.closeModalHandler.bind(this));
     this.component.addEventListener(this.refs.modalSave, &apos;click&apos;, this.saveModalValueHandler.bind(this));
   }
@@ -334,6 +334,37 @@ export default class ComponentModal {
     event.preventDefault();
     this.component.setValue(this.currentValue);
     this.closeModal();
+  }
+
+  showDialog() {
+    const wrapper = this.component.ce(&apos;div&apos;);
+    const dialogContent = `
+      &lt;h3 ref=&quot;dialogHeader&quot;&gt;${this.component.t(&apos;Do you want to clear data?&apos;)}&lt;/h3&gt;
+      &lt;div style=&quot;display:flex; justify-content: flex-end;&quot;&gt;
+        &lt;button ref=&quot;dialogCancelButton&quot; class=&quot;btn btn-secondary&quot;&gt;${this.component.t(&apos;Cancel&apos;)}&lt;/button&gt;
+        &lt;button ref=&quot;dialogYesButton&quot; class=&quot;btn btn-primary&quot;&gt;${this.component.t(&apos;Yes, delete it&apos;)}&lt;/button&gt;
+      &lt;/div&gt;
+    `;
+
+    wrapper.innerHTML = dialogContent;
+    wrapper.refs = {};
+    this.component.loadRefs.call(wrapper, wrapper, {
+      dialogHeader: &apos;single&apos;,
+      dialogCancelButton: &apos;single&apos;,
+      dialogYesButton: &apos;single&apos;,
+    });
+
+    const dialog = this.component.createModal(wrapper);
+    const close = (event) =&gt; {
+      event.preventDefault();
+      dialog.close();
+    };
+
+    this.component.addEventListener(wrapper.refs.dialogYesButton, &apos;click&apos;, (event) =&gt; {
+      close(event);
+      this.closeModalHandler(event);
+    });
+    this.component.addEventListener(wrapper.refs.dialogCancelButton, &apos;click&apos;, close);
   }
 
   saveModalValueHandler(event) {
