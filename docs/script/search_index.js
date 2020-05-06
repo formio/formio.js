@@ -7506,6 +7506,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#setinputmask",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-setInputMask",
+    "src/components/currency/Currency.js~CurrencyComponent#setInputMask",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#stripprefixsuffix",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-stripPrefixSuffix",
     "src/components/currency/Currency.js~CurrencyComponent#stripPrefixSuffix",

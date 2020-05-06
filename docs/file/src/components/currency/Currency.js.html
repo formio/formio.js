@@ -243,6 +243,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/currency/Currency.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { createNumberMask } from &apos;text-mask-addons&apos;;
+import { maskInput } from &apos;vanilla-text-mask&apos;;
 import _ from &apos;lodash&apos;;
 import { getCurrencyAffixes } from &apos;../../utils/utils&apos;;
 import NumberComponent from &apos;../number/Number&apos;;
@@ -298,6 +299,23 @@ export default class CurrencyComponent extends NumberComponent {
       decimalLimit: decimalLimit,
       allowNegative: _.get(this.component, &apos;allowNegative&apos;, true),
       allowDecimal: _.get(this.component, &apos;allowDecimal&apos;, true)
+    });
+  }
+
+  setInputMask(input) {
+    const affixes = getCurrencyAffixes({
+      currency: this.component.currency,
+      decimalSeparator: this.decimalSeparator,
+      lang: this.options.language,
+    });
+    let numberPattern = `\\${affixes.prefix}[0-9`;
+    numberPattern += this.decimalSeparator || &apos;&apos;;
+    numberPattern += this.delimiter || &apos;&apos;;
+    numberPattern += &apos;]*&apos;;
+    input.setAttribute(&apos;pattern&apos;, numberPattern);
+    input.mask = maskInput({
+      inputElement: input,
+      mask: this.numberMask || &apos;&apos;,
     });
   }
 
