@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.27.rc.2
+### Fixed
+ - PDF-63: Update event emitting with noNewEdit flag
+
 ## 4.9.27-rc.1
 ### Fixed
  - VPAT essential commits for 1.3.0 release of uswds-viewer
