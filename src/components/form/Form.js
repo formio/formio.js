@@ -425,6 +425,9 @@ export default class FormComponent extends BaseComponent {
 
   setValue(submission, flags, norecurse) {
     this._submission = submission;
+    if (_.isEmpty(this._submission.metadata)) {
+      _.set(this._submission, 'metadata', _.get(this.root, 'submission.metadata', {}));
+    }
     if (this.subForm || norecurse) {
       if (
         !norecurse &&
