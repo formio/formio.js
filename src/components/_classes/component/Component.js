@@ -2369,6 +2369,7 @@ export default class Component extends Element {
 
     let firstPass = false;
     const dataValue = this.dataValue;
+    console.log(this.dataValue);
 
     // First pass, the calculatedValue is undefined.
     if (this.calculatedValue === undefined) {
@@ -2391,7 +2392,11 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags && flags.changed && !_.isEqual(flags.changed.instance.data,row)) {
+    if (flags.changed && !flags.changed.value) {
+      return false;
+    }
+
+    if (flags.changed && row.label && flags.changed.value !== row.label) {
       return false;
     }
 
