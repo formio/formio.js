@@ -2369,7 +2369,6 @@ export default class Component extends Element {
 
     let firstPass = false;
     const dataValue = this.dataValue;
-    console.log(this.dataValue);
 
     // First pass, the calculatedValue is undefined.
     if (this.calculatedValue === undefined) {
