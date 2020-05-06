@@ -13,6 +13,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       rows: 3,
       wysiwyg: false,
       editor: '',
+      fixedSize: true,
       inputFormat: 'html',
       validate: {
         minWords: '',
