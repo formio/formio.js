@@ -343,7 +343,8 @@ export default class Input extends Multivalue {
     if (this.component.widget &amp;&amp; this.component.widget.type === &apos;calendar&apos;) {
       const calendarIcon = this.renderTemplate(&apos;icon&apos;, {
         ref: &apos;icon&apos;,
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? &apos;calendar&apos; : &apos;o-clock&apos;),
+        // After font-awesome would be updated to v5.x, &quot;clock-o&quot; should be replaced with &quot;clock&quot;
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? &apos;calendar&apos; : &apos;clock-o&apos;),
         styles: &apos;&apos;,
         content: &apos;&apos;
       }).trim();

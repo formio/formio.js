@@ -1048,8 +1048,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() =&gt; {
-      this.emit(&apos;addComponent&apos;, info, parent, path, index, isNew);
-      if (!isNew) {
+      this.emit(&apos;addComponent&apos;, info, parent, path, index, isNew &amp;&amp; !this.options.noNewEdit);
+      if (!isNew || this.options.noNewEdit) {
         this.emit(&apos;change&apos;, this.form);
       }
     });
