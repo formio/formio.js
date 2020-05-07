@@ -130,7 +130,7 @@ export default class FormComponent extends BaseComponent {
     });
 
     this.subForm = (new Form(this.element, form, options)).create();
-    this.subForm.root = this.root;
+    this.subForm.formReady.then(() => this.subForm.root = this.root);
     this.subForm.currentForm = this;
     this.subForm.parent = this;
     this.subForm.parentVisible = this.visible;
