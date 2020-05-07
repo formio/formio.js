@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.14
+### Fixed
+ - Problem with setting root in the lazy loaded form components.
+
 ## 3.29.13
 ### Added
  - Ability to lazy render the nested form components.

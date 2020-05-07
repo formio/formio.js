@@ -348,7 +348,7 @@ export default class FormComponent extends BaseComponent {
     });
 
     this.subForm = (new Form(this.element, form, options)).create();
-    this.subForm.root = this.root;
+    this.subForm.formReady.then(() =&gt; this.subForm.root = this.root);
     this.subForm.currentForm = this;
     this.subForm.parent = this;
     this.subForm.parentVisible = this.visible;
@@ -643,6 +643,9 @@ export default class FormComponent extends BaseComponent {
 
   setValue(submission, flags, norecurse) {
     this._submission = submission;
+    if (_.isEmpty(this._submission.metadata)) {
+      _.set(this._submission, &apos;metadata&apos;, _.get(this.root, &apos;submission.metadata&apos;, {}));
+    }
     if (this.subForm || norecurse) {
       if (
         !norecurse &amp;&amp;
