@@ -356,7 +356,7 @@ export default class NestedComponent extends Field {
     return super.render(children || this.renderTemplate(this.templateName, {
       children: this.renderComponents(),
       nestedKey: this.nestedKey,
-      collapsed: this.collapsed,
+      collapsed: this.options.pdf ? false : this.collapsed,
     }));
   }
 
