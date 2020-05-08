@@ -5598,6 +5598,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#showdialog",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-showDialog",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#showDialog",
+    "method"
+  ],
+  [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#updateview",
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-updateView",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#updateView",
@@ -10647,6 +10653,18 @@ window.esdocSearchIndex = [
     "src/components/radio/fixtures/comp1.js",
     "file/src/components/radio/fixtures/comp1.js.html",
     "src/components/radio/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/radio/fixtures/comp2.js",
+    "file/src/components/radio/fixtures/comp2.js.html",
+    "src/components/radio/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/radio/fixtures/comp3.js",
+    "file/src/components/radio/fixtures/comp3.js.html",
+    "src/components/radio/fixtures/comp3.js",
     "file"
   ],
   [

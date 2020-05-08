@@ -119,7 +119,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (this.settings.saveAs === 'text' || this.loadZones()) {
+        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 
@@ -139,8 +139,11 @@ export default class CalendarWidget extends InputWidget {
           this.calendar.clear();
         }
       });
-      // Enforce the input mask of the format.
-      this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+
+      if (!this.settings.readOnly) {
+        // Enforce the input mask of the format.
+        this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+      }
 
       // Make sure we commit the value after a blur event occurs.
       this.addEventListener(this.calendar._input, 'blur', () =>

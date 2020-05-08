@@ -87,6 +87,8 @@ export default class FormComponent extends Component {
     if (this.component.revision || this.component.revision === 0) {
       this.formSrc += `/v/${this.component.revision}`;
     }
+
+    return this.createSubForm();
   }
 
   get dataReady() {
@@ -111,6 +113,12 @@ export default class FormComponent extends Component {
   }
 
   getSubOptions(options = {}) {
+    options.parentPath = `${this.calculatedPath}.data.`;
+    options.events = this.createEmitter();
+
+    // Make sure to not show the submit button in wizards in the nested forms.
+    _.set(options, 'buttonSettings.showSubmit', false);
+
     if (!this.options) {
       return options;
     }
@@ -153,10 +161,6 @@ export default class FormComponent extends Component {
     if (this.options.fileService) {
       options.fileService = this.options.fileService;
     }
-    options.events = this.createEmitter();
-
-    // Make sure to not show the submit button in wizards in the nested forms.
-    _.set(options, 'buttonSettings.showSubmit', false);
     return options;
   }
 
@@ -194,20 +198,21 @@ export default class FormComponent extends Component {
       return super.attach(element);
     }
     return super.attach(element)
-      .then(() => this.createSubForm())
       .then(() => {
-        this.empty(element);
-        if (this.options.builder) {
-          this.setContent(element, this.ce('div', {
-            class: 'text-muted text-center p-2'
-          }, this.text(this.formObj.title)));
-          return;
-        }
+        return this.subFormReady.then(() => {
+          this.empty(element);
+          if (this.options.builder) {
+            this.setContent(element, this.ce('div', {
+              class: 'text-muted text-center p-2'
+            }, this.text(this.formObj.title)));
+            return;
+          }
 
-        this.setContent(element, this.render());
-        if (this.subForm) {
-          this.subForm.attach(element);
-        }
+          this.setContent(element, this.render());
+          if (this.subForm) {
+            this.subForm.attach(element);
+          }
+        });
       });
   }
 
@@ -408,8 +413,7 @@ export default class FormComponent extends Component {
   submitSubForm(rejectOnError) {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
-      const subFormReady = this.subFormReady || this.createSubForm();
-      return subFormReady.then(() => {
+      return this.subFormReady.then(() => {
         if (!this.subForm) {
           return this.dataValue;
         }
@@ -511,8 +515,21 @@ export default class FormComponent extends Component {
   }
 
   set visible(value) {
-    super.visible = value;
-    this.updateSubFormVisibility();
+    if (this._visible !== value) {
+      this._visible = value;
+      this.clearOnHide();
+      // Form doesn't load if hidden. If it becomes visible, create the form.
+      if (!this.subForm && value) {
+        this.createSubForm();
+        this.subFormReady.then(() => {
+          this.updateSubFormVisibility();
+        });
+        this.redraw();
+        return;
+      }
+      this.updateSubFormVisibility();
+      this.redraw();
+    }
   }
 
   get parentVisible() {
@@ -520,8 +537,21 @@ export default class FormComponent extends Component {
   }
 
   set parentVisible(value) {
-    super.parentVisible = value;
-    this.updateSubFormVisibility();
+    if (this._parentVisible !== value) {
+      this._parentVisible = value;
+      this.clearOnHide();
+      // Form doesn't load if hidden. If it becomes visible, create the form.
+      if (!this.subForm && value) {
+        this.createSubForm();
+        this.subFormReady.then(() => {
+          this.updateSubFormVisibility();
+        });
+        this.redraw();
+        return;
+      }
+      this.updateSubFormVisibility();
+      this.redraw();
+    }
   }
 
   isInternalEvent(event) {

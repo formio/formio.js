@@ -57,7 +57,7 @@ export default class ComponentModal {
 
   setEventListeners() {
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
-    this.component.addEventListener(this.refs.modalOverlay, 'click', this.closeModalHandler.bind(this));
+    this.component.addEventListener(this.refs.modalOverlay, 'click', this.showDialog.bind(this));
     this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalHandler.bind(this));
     this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalValueHandler.bind(this));
   }
@@ -92,6 +92,37 @@ export default class ComponentModal {
     event.preventDefault();
     this.component.setValue(this.currentValue);
     this.closeModal();
+  }
+
+  showDialog() {
+    const wrapper = this.component.ce('div');
+    const dialogContent = `
+      <h3 ref="dialogHeader">${this.component.t('Do you want to clear data?')}</h3>
+      <div style="display:flex; justify-content: flex-end;">
+        <button ref="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
+        <button ref="dialogYesButton" class="btn btn-primary">${this.component.t('Yes, delete it')}</button>
+      </div>
+    `;
+
+    wrapper.innerHTML = dialogContent;
+    wrapper.refs = {};
+    this.component.loadRefs.call(wrapper, wrapper, {
+      dialogHeader: 'single',
+      dialogCancelButton: 'single',
+      dialogYesButton: 'single',
+    });
+
+    const dialog = this.component.createModal(wrapper);
+    const close = (event) => {
+      event.preventDefault();
+      dialog.close();
+    };
+
+    this.component.addEventListener(wrapper.refs.dialogYesButton, 'click', (event) => {
+      close(event);
+      this.closeModalHandler(event);
+    });
+    this.component.addEventListener(wrapper.refs.dialogCancelButton, 'click', close);
   }
 
   saveModalValueHandler(event) {

@@ -123,6 +123,7 @@ export default class Component extends Element {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      calculateServer: false,
       widget: null,
 
       /**
@@ -332,6 +333,8 @@ export default class Component extends Element {
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     this._path = '';
+    // Nested forms don't have parents so we need to pass their path in.
+    this._parentPath = this.options.parentPath || '';
 
     /**
      * Determines if this component is visible, or not.
@@ -576,13 +579,13 @@ export default class Component extends Element {
 
   get calculatedPath() {
     if (this._path) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     this._path = this.key;
 
     if (!this.root) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     let parent = this.parent;
@@ -595,7 +598,7 @@ export default class Component extends Element {
       parent = parent.parent;
     }
 
-    return this._path;
+    return `${this._parentPath}${this._path}`;
   }
 
   get labelPosition() {
@@ -2411,7 +2414,7 @@ export default class Component extends Element {
       value: dataValue,
       data,
       row: row || this.data
-    }, 'value');
+    }, 'value') || this.emptyValue;
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (

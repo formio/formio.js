@@ -806,8 +806,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
-      this.emit('addComponent', info, parent, path, index, isNew);
-      if (!isNew) {
+      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit);
+      if (!isNew || this.options.noNewEdit) {
         this.emit('change', this.form);
       }
     });
@@ -1046,7 +1046,7 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        const schema = comp ? comp.schema : (parentContainer ? parentContainer[index] : []);
+        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
           component,

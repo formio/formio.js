@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.14
+### Fixed
+ - Adding default params to keep them out of the minified schemas.
+ - FJS 655: Added dialog window that opens up asking user if they wish to clear the data
+ - FJS 862: Fixed radio data losing when navigating between wizard pages if values are numbers
+ - PDF-63: Update condition order to get schema
+ - FJS-883: Fixed correct radio values rendering in table view if storage type Number is set
+ - VPAT-236 Changed variable types for future extension in vpat
+
 ## 4.10.0-beta.13
 ### Fixed
  - VPAT-314 Removed role alert from error messages container #2734

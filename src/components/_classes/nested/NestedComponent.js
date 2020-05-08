@@ -356,7 +356,7 @@ export default class NestedComponent extends Field {
     return super.render(children || this.renderTemplate(this.templateName, {
       children: this.renderComponents(),
       nestedKey: this.nestedKey,
-      collapsed: this.collapsed,
+      collapsed: this.options.pdf ? false : this.collapsed,
     }));
   }
 
@@ -579,9 +579,11 @@ export default class NestedComponent extends Field {
   }
 
   checkAsyncValidity(data, dirty, row) {
-    const promises = [super.checkAsyncValidity(data, dirty, row)];
-    this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row)));
-    return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
+    return this.ready.then(() => {
+      const promises = [super.checkAsyncValidity(data, dirty, row)];
+      this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row)));
+      return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
+    });
   }
 
   setPristine(pristine) {
