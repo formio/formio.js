@@ -2399,7 +2399,7 @@ export default class Component extends Element {
       value: dataValue,
       data,
       row: row || this.data
-    }, 'value');
+    }, 'value') || this.emptyValue;
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
