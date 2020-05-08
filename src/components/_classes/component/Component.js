@@ -2669,8 +2669,9 @@ export default class Component extends Element {
 
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
     const hasNewErrors = this.checkReceivedErrors(messages);
+    const isErrorVisible = this.refs.messageContainer && !!this.refs.messageContainer.innerHTML;
 
-    if (messages.length && hasNewErrors) {
+    if (messages.length && (hasNewErrors || !isErrorVisible)) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
