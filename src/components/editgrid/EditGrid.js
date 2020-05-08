@@ -670,7 +670,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       const editRow = this.editRows[rowIndex];
       if (editRow) {
         editRow.data = row;
-        if (editRow.isOpen) {
+        if (editRow.isOpen || changed) {
           if (editRow.emptyOpen) {
             editRow.isOpen = false;
           }
@@ -693,7 +693,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
     this.updateOnChange(flags, changed);
     if (changed) {
-      this.redraw();
+      this.rebuild();
     }
     return changed;
   }
