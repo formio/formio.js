@@ -2395,7 +2395,11 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.changed && row.label && flags.changed.value !== row.label) {
+    if (flags.changed && flags.changed.value && !row.values && flags.changed.instance.data !== row) {
+      return false;
+    }
+
+    if (flags.changed && flags.changed.value === row.value && !firstPass) {
       return false;
     }
 
