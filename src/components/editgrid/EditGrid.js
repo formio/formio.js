@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import equal from 'fast-deep-equal';
 
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
@@ -300,18 +299,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     return super.attach(element);
   }
 
-  clearOnHide(show) {
-    super.clearOnHide(show);
-
-    if (this.component.clearOnHide && !this.visible) {
-      if (!this.editRows) {
-        return;
-      }
-
-      this.removeAllRows();
-    }
-  }
-
   renderRow(row, rowIndex) {
     const dataValue = this.dataValue || [];
     if (this.isOpen(row)) {
@@ -426,7 +413,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
       },
     }, this.component.saveRow || 'Save'));
-    this.attachComponents(modalContent, components);
+    return this.attachComponents(modalContent, components);
   }
 
   editRow(rowIndex) {
@@ -444,11 +431,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     if (this.component.modal) {
-      this.addRowModal(rowIndex);
+      return this.addRowModal(rowIndex);
     }
-    else {
-      this.redraw();
-    }
+
+    return this.redraw();
   }
 
   clearErrors(rowIndex) {
@@ -550,15 +536,21 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  baseRemoveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
+    editRow.state = EditRowState.Removed;
+    this.destroyComponents(rowIndex);
+
+    return editRow;
+  }
+
   removeRow(rowIndex) {
     if (this.options.readOnly) {
       return;
     }
 
-    const editRow = this.editRows[rowIndex];
-    editRow.state = EditRowState.Removed;
-
-    this.destroyComponents(rowIndex);
+    this.baseRemoveRow(rowIndex);
     this.splice(rowIndex);
     this.editRows.splice(rowIndex, 1);
     this.updateRowsComponents(rowIndex);
@@ -567,19 +559,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.checkValidity(null, true);
     this.checkData();
     this.redraw();
-  }
-
-  removeAllRows() {
-    if (this.options.readOnly) {
-      return;
-    }
-
-    const editRows = this.editRows || [];
-    const rowIndex = editRows.length - 1;
-
-    for (let index = rowIndex; index >= 0; index--) {
-      this.removeRow(index);
-    }
   }
 
   createRowComponents(row, rowIndex) {
@@ -694,14 +673,10 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   setValue(value, flags = {}) {
-    if (equal(this.defaultValue, value)) {
-      return false;
+    if (!value) {
+      value = this.defaultValue;
     }
 
-    if (!value) {
-      this.dataValue = this.defaultValue;
-      return false;
-    }
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {
         value = [value];
@@ -715,7 +690,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
-      let editRow = this.editRows[rowIndex];
+      const editRow = this.editRows[rowIndex];
       if (editRow) {
         editRow.data = row;
         this.restoreRowContext(editRow, flags);
@@ -724,17 +699,20 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.error = null;
       }
       else {
-        editRow = this.editRows[rowIndex] = {
+        this.editRows[rowIndex] = {
           components: this.createRowComponents(row, rowIndex),
           data: row,
           state: EditRowState.Saved,
           backup: null,
           error: null,
         };
-        this.checkRow('checkData', null, {}, editRow.data, editRow.components);
       }
     });
+    const { length: dataLength } = this.dataValue;
+    this.editRows.slice(dataLength).forEach((editRow, index) => this.baseRemoveRow(dataLength + index));
+    this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);
+    this.checkData();
     if (changed) {
       this.redraw();
     }
