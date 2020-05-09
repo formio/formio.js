@@ -21,7 +21,8 @@ export default class Element {
       componentErrorClass: 'formio-error-wrapper',
       componentWarningClass: 'formio-warning-wrapper',
       row: '',
-      namespace: 'formio'
+      namespace: 'formio',
+      sanitizeConfig: { preventMaliciousFunctionCall: true }
     }, options || {});
 
     /**

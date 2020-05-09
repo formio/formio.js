@@ -2267,7 +2267,7 @@ export default class Component extends Element {
     newValue = this.normalizeValue(newValue, flags);
     const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
     if (changed) {
-      this.dataValue = newValue;
+      this.dataValue = this.sanitize(newValue);
       this.updateOnChange(flags, changed);
     }
     return changed;

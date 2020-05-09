@@ -1077,6 +1077,16 @@ export function sanitize(string, options) {
   if (options.sanitizeConfig && options.sanitizeConfig.allowedUriRegex) {
     sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
   }
+
+  // Prevent calling potentially malicious JS functions (e.g. {{constructor.constructor(malicious_javascript_function)()}})
+  if (options.sanitizeConfig && options.sanitizeConfig.preventMaliciousFunctionCall) {
+    const regExp = /^\{\{.+\(.+[)]{1}\([)]{1}.*\}\}$/; // {{...(...)()...}}
+
+    if (regExp.test(string)) {
+      string = string.replace('()', '');
+    }
+  }
+
   return dompurify.sanitize(string, sanitizeOptions);
 }
 
