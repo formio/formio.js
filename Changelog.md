@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Fixed EditGrid's checkData workflow
  - Fix polyfills to not crash on server side.
- - FJS-921: When used on resource there are no button settings, so it needs check
  - Fix (Wizard): page title in navigation is not updated
  - Fix(TextArea, Input): word count is not working with editors
  - FJS-448: Fixed initial focus disabling in preview

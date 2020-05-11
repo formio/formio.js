@@ -271,7 +271,6 @@ export default class Wizard extends Webform {
     this.originalComponents = [];
     this.page = 0;
     this.currentNextPage = 0;
-    this.currentPanel = null;
     this._seenPages = [0];
   }
 
@@ -360,51 +359,13 @@ export default class Wizard extends Webform {
     };
   }
 
-  prepareNavigationSettings(ctx) {
-    const currentPanel = this.currentPanel;
-
-    if (!currentPanel) {
-      return false;
-    }
-
-    if (currentPanel.buttonSettings) {
-      Object.keys(currentPanel.buttonSettings).forEach(() =&gt; {
-        Object.keys(ctx.buttons).forEach(key =&gt; {
-          if (typeof currentPanel.buttonSettings[key] !== &apos;undefined&apos; &amp;&amp; !currentPanel.buttonSettings[key]) {
-            ctx.buttons[key] = null;
-          }
-        });
-      });
-    }
-
-    return this.renderTemplate(&apos;wizardNav&apos;, ctx);
-  }
-
-  prepareHeaderSettings(ctx) {
-    if (this.currentPanel &amp;&amp; this.currentPanel.breadcrumb === &apos;none&apos;) {
-      return null;
-    }
-    return this.renderTemplate(&apos;wizardHeader&apos;, ctx);
-  }
-
   render() {
     const ctx = this.renderContext;
-
-    if (this.component.key) {
-      ctx.panels.map(panel =&gt; {
-        if (panel.key === this.component.key) {
-          this.currentPanel = panel;
-        }
-      });
-    }
-    const wizardNav = this.prepareNavigationSettings(ctx);
-    const wizardHeader = this.prepareHeaderSettings(ctx);
-
     return this.renderTemplate(&apos;wizard&apos;, {
       ...ctx,
       className: super.getClassName(),
-      wizardHeader,
-      wizardNav,
+      wizardHeader: this.renderTemplate(&apos;wizardHeader&apos;, ctx),
+      wizardNav: this.renderTemplate(&apos;wizardNav&apos;, ctx),
       components: this.renderComponents([
         ...this.prefixComps,
         ...this.currentPage.components,

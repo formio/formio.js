@@ -3660,12 +3660,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/wizard.js~wizard#currentpanel",
-    "class/src/Wizard.js~Wizard.html#instance-member-currentPanel",
-    "src/Wizard.js~Wizard#currentPanel",
-    "member"
-  ],
-  [
     "src/wizard.js~wizard#detachheader",
     "class/src/Wizard.js~Wizard.html#instance-method-detachHeader",
     "src/Wizard.js~Wizard#detachHeader",
@@ -3832,18 +3826,6 @@ window.esdocSearchIndex = [
     "class/src/Wizard.js~Wizard.html#instance-member-prefixComps",
     "src/Wizard.js~Wizard#prefixComps",
     "member"
-  ],
-  [
-    "src/wizard.js~wizard#prepareheadersettings",
-    "class/src/Wizard.js~Wizard.html#instance-method-prepareHeaderSettings",
-    "src/Wizard.js~Wizard#prepareHeaderSettings",
-    "method"
-  ],
-  [
-    "src/wizard.js~wizard#preparenavigationsettings",
-    "class/src/Wizard.js~Wizard.html#instance-method-prepareNavigationSettings",
-    "src/Wizard.js~Wizard#prepareNavigationSettings",
-    "method"
   ],
   [
     "src/wizard.js~wizard#prevpage",
