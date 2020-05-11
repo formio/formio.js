@@ -8,12 +8,17 @@
   </span>
 </div>
 {% } %}
+  {% if (!ctx.component.editor) { %}
 <{{ctx.input.type}}
   ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
 >{{ctx.input.content}}</{{ctx.input.type}}>
+{% } %}
+{% if (ctx.component.editor) { %}
+<div ref="input"></div>
+{% } %}
 {% if (ctx.component.showCharCount) { %}
 <span class="text-muted pull-right" ref="charcount"></span>
 {% } %}
