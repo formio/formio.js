@@ -179,7 +179,7 @@ export default class Wizard extends Webform {
     for (const button in this.form.components[this.page].buttonSettings) {
       const buttonElement = this.element.querySelector(`[ref='${this.wizardKey}-${button}']`);
       if (buttonElement && !this.form.components[this.page].buttonSettings[button]) {
-        buttonElement.parentNode.remove();
+        buttonElement.remove();
       }
     }
 
