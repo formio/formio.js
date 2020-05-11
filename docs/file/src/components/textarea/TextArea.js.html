@@ -312,10 +312,6 @@ export default class TextAreaComponent extends TextFieldComponent {
         value
       });
     }
-    // Editors work better on divs.
-    if (this.component.editor || this.component.wysiwyg) {
-      return &apos;&lt;div ref=&quot;input&quot;&gt;&lt;/div&gt;&apos;;
-    }
 
     return this.renderTemplate(&apos;input&apos;, {
       input: info,
@@ -345,7 +341,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if ((!_.isEqual(newValue, dataValue)) &amp;&amp; (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
         modified: !this.autoModified
-      });
+      }, index);
     }
     this.autoModified = false;
   }

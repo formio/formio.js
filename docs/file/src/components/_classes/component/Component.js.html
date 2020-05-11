@@ -575,6 +575,8 @@ export default class Component extends Element {
     this.validators = [&apos;required&apos;, &apos;minLength&apos;, &apos;maxLength&apos;, &apos;minWords&apos;, &apos;maxWords&apos;, &apos;custom&apos;, &apos;pattern&apos;, &apos;json&apos;, &apos;mask&apos;];
 
     this._path = &apos;&apos;;
+    // Nested forms don&apos;t have parents so we need to pass their path in.
+    this._parentPath = this.options.parentPath || &apos;&apos;;
 
     /**
      * Determines if this component is visible, or not.
@@ -819,13 +821,13 @@ export default class Component extends Element {
 
   get calculatedPath() {
     if (this._path) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     this._path = this.key;
 
     if (!this.root) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     let parent = this.parent;
@@ -838,7 +840,7 @@ export default class Component extends Element {
       parent = parent.parent;
     }
 
-    return this._path;
+    return `${this._parentPath}${this._path}`;
   }
 
   get labelPosition() {
@@ -2639,7 +2641,7 @@ export default class Component extends Element {
       value: dataValue,
       data,
       row: row || this.data
-    }, &apos;value&apos;);
+    }, &apos;value&apos;) || this.emptyValue;
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
@@ -3126,7 +3128,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus &amp;&amp; !this.builderMode) {
+    if (this.component.autofocus &amp;&amp; !this.builderMode &amp;&amp; !this.options.preview) {
       this.on(&apos;render&apos;, () =&gt; this.focus(), true);
     }
   }

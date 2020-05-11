@@ -945,7 +945,7 @@ export default class SelectComponent extends Field {
   }
 
   wrapElement(element) {
-    return this.component.addResource
+    return this.component.addResource &amp;&amp; !this.options.readOnly
       ? (
         this.renderTemplate(&apos;resourceAdd&apos;, {
           element

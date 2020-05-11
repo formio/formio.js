@@ -3660,6 +3660,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/wizard.js~wizard#currentpanel",
+    "class/src/Wizard.js~Wizard.html#instance-member-currentPanel",
+    "src/Wizard.js~Wizard#currentPanel",
+    "member"
+  ],
+  [
     "src/wizard.js~wizard#detachheader",
     "class/src/Wizard.js~Wizard.html#instance-method-detachHeader",
     "src/Wizard.js~Wizard#detachHeader",
@@ -3826,6 +3832,18 @@ window.esdocSearchIndex = [
     "class/src/Wizard.js~Wizard.html#instance-member-prefixComps",
     "src/Wizard.js~Wizard#prefixComps",
     "member"
+  ],
+  [
+    "src/wizard.js~wizard#prepareheadersettings",
+    "class/src/Wizard.js~Wizard.html#instance-method-prepareHeaderSettings",
+    "src/Wizard.js~Wizard#prepareHeaderSettings",
+    "method"
+  ],
+  [
+    "src/wizard.js~wizard#preparenavigationsettings",
+    "class/src/Wizard.js~Wizard.html#instance-method-prepareNavigationSettings",
+    "src/Wizard.js~Wizard#prepareNavigationSettings",
+    "method"
   ],
   [
     "src/wizard.js~wizard#prevpage",
@@ -4149,6 +4167,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#_parentdisabled",
     "class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentDisabled",
     "src/components/_classes/component/Component.js~Component#_parentDisabled",
+    "member"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#_parentpath",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentPath",
+    "src/components/_classes/component/Component.js~Component#_parentPath",
     "member"
   ],
   [
@@ -5703,6 +5727,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/input/input.js~input#getwidget",
     "class/src/components/_classes/input/Input.js~Input.html#instance-method-getWidget",
     "src/components/_classes/input/Input.js~Input#getWidget",
+    "method"
+  ],
+  [
+    "src/components/_classes/input/input.js~input#getwordcount",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-method-getWordCount",
+    "src/components/_classes/input/Input.js~Input#getWordCount",
     "method"
   ],
   [
@@ -8676,6 +8706,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#baseremoverow",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-baseRemoveRow",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#baseRemoveRow",
+    "method"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#cancelrow",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-cancelRow",
     "src/components/editgrid/EditGrid.js~EditGridComponent#cancelRow",
@@ -8709,12 +8745,6 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#clearerrors",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-clearErrors",
     "src/components/editgrid/EditGrid.js~EditGridComponent#clearErrors",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#clearonhide",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-clearOnHide",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#clearOnHide",
     "method"
   ],
   [
@@ -8842,12 +8872,6 @@ window.esdocSearchIndex = [
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-minLength",
     "src/components/editgrid/EditGrid.js~EditGridComponent#minLength",
     "member"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#removeallrows",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-removeAllRows",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#removeAllRows",
-    "method"
   ],
   [
     "src/components/editgrid/editgrid.js~editgridcomponent#removerow",
@@ -9519,6 +9543,18 @@ window.esdocSearchIndex = [
     "src/components/form/form.js~formcomponent#_currentform",
     "class/src/components/form/Form.js~FormComponent.html#instance-member-_currentForm",
     "src/components/form/Form.js~FormComponent#_currentForm",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#_parentvisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-_parentVisible",
+    "src/components/form/Form.js~FormComponent#_parentVisible",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#_visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-_visible",
+    "src/components/form/Form.js~FormComponent#_visible",
     "member"
   ],
   [

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.15
+### Fixed
+ - Fixed EditGrid's checkData workflow
+ - Fix polyfills to not crash on server side.
+ - FJS-921: When used on resource there are no button settings, so it needs check
+ - Fix (Wizard): page title in navigation is not updated
+ - Fix(TextArea, Input): word count is not working with editors
+ - FJS-448: Fixed initial focus disabling in preview
+ - In ReadOnly mode, the users may not have the possibility to add resource for Select components as Resource.
+ - Updated some translations in Webform
+
 ## 4.10.0-beta.14
 ### Fixed
  - Adding default params to keep them out of the minified schemas.

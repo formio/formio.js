@@ -1001,11 +1001,11 @@ export default class Webform extends NestedDataComponent {
       return;
     }
     if (!this.formio) {
-      console.warn(&apos;Cannot save draft because there is no formio instance.&apos;);
+      console.warn(this.t(&apos;saveDraftInstanceError&apos;));
       return;
     }
     if (!Formio.getUser()) {
-      console.warn(&apos;Cannot save draft unless a user is authenticated.&apos;);
+      console.warn(this.t(&apos;saveDraftAuthError&apos;));
       return;
     }
     const draft = this.submission;
@@ -1035,7 +1035,7 @@ export default class Webform extends NestedDataComponent {
    */
   restoreDraft(userId) {
     if (!this.formio) {
-      console.warn(&apos;Cannot restore draft because there is no formio instance.&apos;);
+      console.warn(this.t(&apos;restoreDraftInstanceError&apos;));
       return;
     }
     this.savingDraft = true;
@@ -1239,6 +1239,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) =&gt; (comp.resetValue()));
     this.setPristine(true);
+    this.redraw();
   }
 
   /**
@@ -1552,7 +1553,7 @@ export default class Webform extends NestedDataComponent {
    */
   cancel(noconfirm) {
     const shouldReset = this.hook(&apos;beforeCancel&apos;, true);
-    if (shouldReset &amp;&amp; (noconfirm || confirm(&apos;Are you sure you want to cancel?&apos;))) {
+    if (shouldReset &amp;&amp; (noconfirm || confirm(this.t(&apos;confirmCancel&apos;)))) {
       this.resetValue();
       return true;
     }
