@@ -33,6 +33,7 @@ export default class WebformBuilder extends Component {
 
     this.builderHeight = 0;
     this.schemas = {};
+    this.repeatablePaths = [];
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
@@ -981,9 +982,10 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
-  highlightInvalidComponents() {
+  findRepeatablePaths() {
     const repeatablePaths = [];
     const keys = new Map();
+
     eachComponent(this.form.components, (comp, path) => {
       if (!comp.key) {
         return;
@@ -1001,6 +1003,12 @@ export default class WebformBuilder extends Component {
         keys.set(comp.key, [path]);
       }
     });
+
+    return repeatablePaths;
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
 
     eachComponent(this.webform.getComponents(), (comp, path) => {
       if (repeatablePaths.includes(path)) {
@@ -1023,7 +1031,7 @@ export default class WebformBuilder extends Component {
     this.dialog.close();
     const path = parentContainer ? this.getComponentsPath(component, parentComponent.component) : '';
     if (!original) {
-      original = parent.formioContainer.find((comp) => comp.key === component.key);
+      original = parent.formioContainer.find((comp) => comp.id === component.id);
     }
     const index = parentContainer ? parentContainer.indexOf(original) : 0;
     if (index !== -1) {
