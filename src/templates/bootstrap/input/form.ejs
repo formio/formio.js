@@ -8,7 +8,7 @@
   </span>
 </div>
 {% } %}
-  {% if (!ctx.component.editor) { %}
+  {% if (!ctx.component.editor && !ctx.component.wysiwyg) { %}
 <{{ctx.input.type}}
   ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
   {% for (var attr in ctx.input.attr) { %}
@@ -16,7 +16,7 @@
   {% } %}
 >{{ctx.input.content}}</{{ctx.input.type}}>
 {% } %}
-{% if (ctx.component.editor) { %}
+{% if (ctx.component.editor || ctx.component.wysiwyg) { %}
 <div ref="input"></div>
 {% } %}
 {% if (ctx.component.showCharCount) { %}
