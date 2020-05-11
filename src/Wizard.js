@@ -125,15 +125,11 @@ export default class Wizard extends Webform {
       return false;
     }
 
-    if (currentPanel.buttonSettings) {
-      Object.keys(currentPanel.buttonSettings).forEach(() => {
-        Object.keys(ctx.buttons).forEach(key => {
-          if (typeof currentPanel.buttonSettings[key] !== 'undefined' && !currentPanel.buttonSettings[key]) {
-            ctx.buttons[key] = null;
-          }
-        });
-      });
-    }
+    Object.keys(ctx.buttons).forEach(key => {
+      if (typeof currentPanel.buttonSettings[key] !== 'undefined' && !currentPanel.buttonSettings[key]) {
+        ctx.buttons[key] = null;
+      }
+    });
 
     return this.renderTemplate('wizardNav', ctx);
   }
