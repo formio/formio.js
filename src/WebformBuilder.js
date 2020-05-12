@@ -1049,7 +1049,7 @@ export default class WebformBuilder extends Component {
         const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
-          component,
+          comp.component,
           parentComponent.schema,
           path,
           index,
