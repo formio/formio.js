@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.16
+### Changed
+ - Added a way to force focus on an element.
+
 ## 3.29.15
 ### Fixed
  - Fixed validation check of datetime component if component data is null

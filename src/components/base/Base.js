@@ -2770,9 +2770,9 @@ export default class BaseComponent extends Component {
     }
   }
 
-  focus() {
+  focus(force) {
     // Do not focus for readOnly forms.
-    if (this.options.readOnly) {
+    if (!force && this.options.readOnly) {
       return;
     }
     const input = this.performInputMapping(this.inputs[0]);
