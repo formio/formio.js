@@ -248,7 +248,7 @@ import each from &apos;lodash/each&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
-import { settingErrors, clearOnHide, manualOverride } from &apos;../test/formtest&apos;;
+import { settingErrors, clearOnHide, manualOverride, validationOnBlur } from &apos;../test/formtest&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
@@ -1047,6 +1047,33 @@ describe(&apos;Webform tests&apos;, () =&gt; {
           }
           done();
         });
+      });
+    });
+  });
+
+  describe(&apos;Validate onBlur&apos;, () =&gt; {
+    it(&apos;Should keep component valid onChange when validate trigger is onBlur&apos;, (done) =&gt; {
+      formElement.innerHTML = &apos;&apos;;
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(validationOnBlur).then(() =&gt; {
+        const field = form.components[0];
+        const fieldInput = field.refs.input[0];
+
+        Harness.clickElement(form, fieldInput);
+        const inputEvent = new Event(&apos;input&apos;);
+        fieldInput.value =  &apos;12&apos;;
+        fieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(field.errors.length, 0);
+          const blurEvent = new Event(&apos;blur&apos;);
+          fieldInput.dispatchEvent(blurEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(field.errors.length, 1);
+            done();
+          }, 250);
+        }, 250);
       });
     });
   });

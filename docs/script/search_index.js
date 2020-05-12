@@ -2616,6 +2616,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#highlightinvalidcomponents",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-highlightInvalidComponents",
+    "src/PDFBuilder.js~PDFBuilder#highlightInvalidComponents",
+    "method"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#init",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-init",
     "src/PDFBuilder.js~PDFBuilder#init",
@@ -2668,6 +2674,12 @@ window.esdocSearchIndex = [
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-render",
     "src/PDFBuilder.js~PDFBuilder#render",
     "method"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#repeatablepaths",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-repeatablePaths",
+    "src/PDFBuilder.js~PDFBuilder#repeatablePaths",
+    "member"
   ],
   [
     "src/pdfbuilder.js~pdfbuilder#setuploaderror",
@@ -3390,6 +3402,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webformbuilder.js~webformbuilder#findrepeatablepaths",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-findRepeatablePaths",
+    "src/WebformBuilder.js~WebformBuilder#findRepeatablePaths",
+    "method"
+  ],
+  [
     "src/webformbuilder.js~webformbuilder#form",
     "class/src/WebformBuilder.js~WebformBuilder.html#instance-get-form",
     "src/WebformBuilder.js~WebformBuilder#form",
@@ -3502,6 +3520,12 @@ window.esdocSearchIndex = [
     "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-render",
     "src/WebformBuilder.js~WebformBuilder#render",
     "method"
+  ],
+  [
+    "src/webformbuilder.js~webformbuilder#repeatablepaths",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-member-repeatablePaths",
+    "src/WebformBuilder.js~WebformBuilder#repeatablePaths",
+    "member"
   ],
   [
     "src/webformbuilder.js~webformbuilder#savecomponent",
@@ -3657,6 +3681,12 @@ window.esdocSearchIndex = [
     "src/wizard.js~wizard#currentpage",
     "class/src/Wizard.js~Wizard.html#instance-get-currentPage",
     "src/Wizard.js~Wizard#currentPage",
+    "member"
+  ],
+  [
+    "src/wizard.js~wizard#currentpanel",
+    "class/src/Wizard.js~Wizard.html#instance-member-currentPanel",
+    "src/Wizard.js~Wizard#currentPanel",
     "member"
   ],
   [
@@ -3826,6 +3856,18 @@ window.esdocSearchIndex = [
     "class/src/Wizard.js~Wizard.html#instance-member-prefixComps",
     "src/Wizard.js~Wizard#prefixComps",
     "member"
+  ],
+  [
+    "src/wizard.js~wizard#prepareheadersettings",
+    "class/src/Wizard.js~Wizard.html#instance-method-prepareHeaderSettings",
+    "src/Wizard.js~Wizard#prepareHeaderSettings",
+    "method"
+  ],
+  [
+    "src/wizard.js~wizard#preparenavigationsettings",
+    "class/src/Wizard.js~Wizard.html#instance-method-prepareNavigationSettings",
+    "src/Wizard.js~Wizard#prepareNavigationSettings",
+    "method"
   ],
   [
     "src/wizard.js~wizard#prevpage",
@@ -12387,6 +12429,12 @@ window.esdocSearchIndex = [
     "src/components/textarea/editform/textarea.edit.display.js",
     "file/src/components/textarea/editForm/TextArea.edit.display.js.html",
     "src/components/textarea/editForm/TextArea.edit.display.js",
+    "file"
+  ],
+  [
+    "src/components/textarea/editform/textarea.edit.layout.js",
+    "file/src/components/textarea/editForm/TextArea.edit.layout.js.html",
+    "src/components/textarea/editForm/TextArea.edit.layout.js",
     "file"
   ],
   [

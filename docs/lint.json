@@ -261,35 +261,35 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 1011,
+        "lineNumber": 1019,
         "line": "  /**"
       },
       {
-        "lineNumber": 1012,
+        "lineNumber": 1020,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 1013,
+        "lineNumber": 1021,
         "line": "   *"
       },
       {
-        "lineNumber": 1014,
+        "lineNumber": 1022,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 1015,
+        "lineNumber": 1023,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 1016,
+        "lineNumber": 1024,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 1017,
+        "lineNumber": 1025,
         "line": "   */"
       },
       {
-        "lineNumber": 1018,
+        "lineNumber": 1026,
         "line": "  saveComponent(component, parent, isNew, original) {"
       }
     ],
@@ -933,14 +933,14 @@
       },
       {
         "lineNumber": 2517,
-        "line": "  checkComponentValidity(data, dirty, row, async = false) {"
+        "line": "  checkComponentValidity(data, dirty, row, options = {}) {"
       }
     ],
     "codeParams": [
       "data",
       "dirty",
       "row",
-      "async"
+      "options"
     ],
     "docParams": [
       "data",
@@ -953,43 +953,43 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2541,
+        "lineNumber": 2543,
         "line": "  /**"
       },
       {
-        "lineNumber": 2542,
+        "lineNumber": 2544,
         "line": "   * Check the conditions, calculations, and validity of a single component and triggers an update if"
       },
       {
-        "lineNumber": 2543,
+        "lineNumber": 2545,
         "line": "   * something changed."
       },
       {
-        "lineNumber": 2544,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 2545,
-        "line": "   * @param data - The root data of the change event."
-      },
-      {
         "lineNumber": 2546,
-        "line": "   * @param flags - The flags from this change event."
+        "line": "   *"
       },
       {
         "lineNumber": 2547,
-        "line": "   *"
+        "line": "   * @param data - The root data of the change event."
       },
       {
         "lineNumber": 2548,
-        "line": "   * @return boolean - If component is valid or not."
+        "line": "   * @param flags - The flags from this change event."
       },
       {
         "lineNumber": 2549,
-        "line": "   */"
+        "line": "   *"
       },
       {
         "lineNumber": 2550,
+        "line": "   * @return boolean - If component is valid or not."
+      },
+      {
+        "lineNumber": 2551,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 2552,
         "line": "  checkData(data, flags, row) {"
       }
     ],
@@ -1360,27 +1360,27 @@
     "filePath": "src/components/textarea/TextArea.js",
     "lines": [
       {
-        "lineNumber": 84,
+        "lineNumber": 85,
         "line": "  /**"
       },
       {
-        "lineNumber": 85,
+        "lineNumber": 86,
         "line": "   * Updates the editor value."
       },
       {
-        "lineNumber": 86,
+        "lineNumber": 87,
         "line": "   *"
       },
       {
-        "lineNumber": 87,
+        "lineNumber": 88,
         "line": "   * @param newValue"
       },
       {
-        "lineNumber": 88,
+        "lineNumber": 89,
         "line": "   */"
       },
       {
-        "lineNumber": 89,
+        "lineNumber": 90,
         "line": "  updateEditorValue(index, newValue) {"
       }
     ],
