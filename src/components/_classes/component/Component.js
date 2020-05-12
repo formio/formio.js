@@ -2496,9 +2496,9 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  setComponentValidity(messages, dirty) {
+  setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && (dirty || !this.pristine)) {
+    if (messages.length && !silentCheck && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
@@ -2515,9 +2515,11 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row, async = false) {
+  checkComponentValidity(data, dirty, row, options = {}) {
     data = data || this.rootValue;
     row = row || this.data;
+    const { async = false, silentCheck = false } = options;
+
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
       return async ? NativePromise.resolve(true) : true;
@@ -2525,18 +2527,18 @@ export default class Component extends Element {
 
     const check = Validator.checkComponent(this, data, row, true, async);
     return async ?
-      check.then((messages) => this.setComponentValidity(messages, dirty)) :
-      this.setComponentValidity(check, dirty);
+      check.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
+      this.setComponentValidity(check, dirty, silentCheck);
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row);
+    return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
-  checkAsyncValidity(data, dirty, row) {
-    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
+  checkAsyncValidity(data, dirty, row, silentCheck) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
   /**
