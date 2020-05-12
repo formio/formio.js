@@ -1251,10 +1251,6 @@ export default class Formio {
   }
 
   static pageQuery() {
-    if (Formio._pageQuery) {
-      return Formio._pageQuery;
-    }
-
     Formio._pageQuery = {};
     Formio._pageQuery.paths = [];
     const hashes = location.hash.substr(1).replace(/\?/g, '&').split('&');
