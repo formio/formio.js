@@ -63,23 +63,6 @@ export default [
   {
     type: 'checkbox',
     input: true,
-    key: 'fixedSize',
-    label: 'Fixed size',
-    defaultValue: true,
-    tooltip: 'This will fixed the set sizes of the component',
-    weight: 415,
-    conditional: {
-      json: {
-        '==': [
-          { var: 'data.editor' },
-          ''
-        ]
-      }
-    }
-  },
-  {
-    type: 'checkbox',
-    input: true,
     key: 'autoExpand',
     label: 'Auto Expand',
     tooltip: 'This will make the TextArea auto expand it\'s height as the user is typing into the area.',

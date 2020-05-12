@@ -19,6 +19,7 @@ export default [
     legend: 'PDF Overlay',
     title: 'PDF Overlay',
     key: 'overlay',
+    tooltip: 'The settings inside apply only to the PDF forms.',
     weight: 2000,
     collapsible: true,
     collapsed: true,
