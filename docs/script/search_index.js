@@ -6570,6 +6570,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#hasvalue",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-hasValue",
+    "src/components/datetime/DateTime.js~DateTimeComponent#hasValue",
+    "method"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent#isempty",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-isEmpty",
     "src/components/datetime/DateTime.js~DateTimeComponent#isEmpty",
