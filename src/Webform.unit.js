@@ -6,7 +6,7 @@ import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
-import { settingErrors, clearOnHide, manualOverride } from '../test/formtest';
+import { settingErrors, clearOnHide, manualOverride, validationOnBlur } from '../test/formtest';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
@@ -805,6 +805,33 @@ describe('Webform tests', () => {
           }
           done();
         });
+      });
+    });
+  });
+
+  describe('Validate onBlur', () => {
+    it('Should keep component valid onChange when validate trigger is onBlur', (done) => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(validationOnBlur).then(() => {
+        const field = form.components[0];
+        const fieldInput = field.refs.input[0];
+
+        Harness.clickElement(form, fieldInput);
+        const inputEvent = new Event('input');
+        fieldInput.value =  '12';
+        fieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(field.errors.length, 0);
+          const blurEvent = new Event('blur');
+          fieldInput.dispatchEvent(blurEvent);
+
+          setTimeout(() => {
+            assert.equal(field.errors.length, 1);
+            done();
+          }, 250);
+        }, 250);
       });
     });
   });
