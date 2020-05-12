@@ -10,6 +10,7 @@ const manualOverride = require('./manualOverride.json');
 const uniqueApiKeys = require('./uniqueApiKeys.json');
 const uniqueApiKeysLayout = require('./uniqueApiKeysLayout.json');
 const uniqueApiKeysSameLevel = require('./uniqueApiKeysSameLevel.json');
+const validationOnBlur = require('./validationOnBlur.json');
 
 module.exports = {
   advanced,
@@ -23,5 +24,6 @@ module.exports = {
   manualOverride,
   uniqueApiKeys,
   uniqueApiKeysLayout,
-  uniqueApiKeysSameLevel
+  uniqueApiKeysSameLevel,
+  validationOnBlur
 };
