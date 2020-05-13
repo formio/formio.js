@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.17
+### Fixed
+ - FJS-887 & FJS-869: Fix (calculated value): manually overridden value is recalculated after component is created again
+ - FJS-727: Fixed breadcrumb click logic
+ - FJS-924: fixed signature not displaying tooltip
+ - Fixing panel header colors to be white on non-default panels.
+
 ## 4.10.0-beta.16
 ### Added
  - PDF 48: Added 'Fixed size' checkbox for textarea edit form

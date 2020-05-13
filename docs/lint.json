@@ -810,31 +810,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2421,
+        "lineNumber": 2429,
         "line": "  /**"
       },
       {
-        "lineNumber": 2422,
+        "lineNumber": 2430,
         "line": "   * Performs calculations in this component plus any child components."
       },
       {
-        "lineNumber": 2423,
+        "lineNumber": 2431,
         "line": "   *"
       },
       {
-        "lineNumber": 2424,
+        "lineNumber": 2432,
         "line": "   * @param args"
       },
       {
-        "lineNumber": 2425,
+        "lineNumber": 2433,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 2426,
+        "lineNumber": 2434,
         "line": "   */"
       },
       {
-        "lineNumber": 2427,
+        "lineNumber": 2435,
         "line": "  calculateValue(data, flags, row) {"
       }
     ],
@@ -852,35 +852,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2462,
+        "lineNumber": 2470,
         "line": "  /**"
       },
       {
-        "lineNumber": 2463,
+        "lineNumber": 2471,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2464,
+        "lineNumber": 2472,
         "line": "   *"
       },
       {
-        "lineNumber": 2465,
+        "lineNumber": 2473,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2466,
+        "lineNumber": 2474,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2467,
+        "lineNumber": 2475,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2468,
+        "lineNumber": 2476,
         "line": "   */"
       },
       {
-        "lineNumber": 2469,
+        "lineNumber": 2477,
         "line": "  invalidMessage(data, dirty, ignoreCondition, row) {"
       }
     ],
@@ -900,39 +900,39 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2509,
+        "lineNumber": 2517,
         "line": "  /**"
       },
       {
-        "lineNumber": 2510,
+        "lineNumber": 2518,
         "line": "   * Checks the validity of this component and sets the error message if it is invalid."
       },
       {
-        "lineNumber": 2511,
+        "lineNumber": 2519,
         "line": "   *"
       },
       {
-        "lineNumber": 2512,
+        "lineNumber": 2520,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2513,
+        "lineNumber": 2521,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2514,
+        "lineNumber": 2522,
         "line": "   * @param row"
       },
       {
-        "lineNumber": 2515,
+        "lineNumber": 2523,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 2516,
+        "lineNumber": 2524,
         "line": "   */"
       },
       {
-        "lineNumber": 2517,
+        "lineNumber": 2525,
         "line": "  checkComponentValidity(data, dirty, row, options = {}) {"
       }
     ],
@@ -953,43 +953,43 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2543,
+        "lineNumber": 2551,
         "line": "  /**"
       },
       {
-        "lineNumber": 2544,
+        "lineNumber": 2552,
         "line": "   * Check the conditions, calculations, and validity of a single component and triggers an update if"
       },
       {
-        "lineNumber": 2545,
+        "lineNumber": 2553,
         "line": "   * something changed."
       },
       {
-        "lineNumber": 2546,
+        "lineNumber": 2554,
         "line": "   *"
       },
       {
-        "lineNumber": 2547,
+        "lineNumber": 2555,
         "line": "   * @param data - The root data of the change event."
       },
       {
-        "lineNumber": 2548,
+        "lineNumber": 2556,
         "line": "   * @param flags - The flags from this change event."
       },
       {
-        "lineNumber": 2549,
+        "lineNumber": 2557,
         "line": "   *"
       },
       {
-        "lineNumber": 2550,
+        "lineNumber": 2558,
         "line": "   * @return boolean - If component is valid or not."
       },
       {
-        "lineNumber": 2551,
+        "lineNumber": 2559,
         "line": "   */"
       },
       {
-        "lineNumber": 2552,
+        "lineNumber": 2560,
         "line": "  checkData(data, flags, row) {"
       }
     ],

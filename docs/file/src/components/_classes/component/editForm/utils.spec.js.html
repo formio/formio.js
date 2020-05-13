@@ -274,6 +274,17 @@ describe(&apos;Edit Form Utils&apos;, function() {
         { key: &apos;b&apos;, one: 1, two: 2, ok: true },
       ]);
     });
+
+    it(&apos;should override with &quot;override&quot; flag&apos;, () =&gt; {
+      const components = [
+        { key: &apos;a&apos;, label: 1, ok: true },
+        { key: &apos;a&apos;, label: 2, overrideEditForm: true }
+      ];
+
+      expect(_.unionWith(components, utils.unifyComponents)).to.deep.equal([
+        { key: &apos;a&apos;, label: 2, ok: true, overrideEditForm: true }
+      ]);
+    });
   });
 });
 </code></pre>
