@@ -202,12 +202,7 @@ export default [
     dataSrc: 'url',
     lazyLoad: false,
     onSetItems(component, form) {
-      const newItems = form.type === 'resource'
-      ? [{
-          label: '{Entire Object}',
-          key: 'data',
-        }]
-      : [];
+      const newItems = [];
 
       eachComponent(form.components, (component, path) => {
         if (component.input) {
