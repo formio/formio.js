@@ -327,6 +327,10 @@ export default class DateTimeComponent extends BaseComponent {
     return &apos;&apos;;
   }
 
+  hasValue(data) {
+    return super.hasValue(data) &amp;&amp; _.get(data || this.data, this.key) !== null;
+  }
+
   isEmpty(value) {
     if (value &amp;&amp; (value.toString() === &apos;Invalid Date&apos;)) {
       return true;
