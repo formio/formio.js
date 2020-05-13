@@ -255,7 +255,7 @@ import Element from &apos;../../../Element&apos;;
 import ComponentModal from &apos;../componentModal/ComponentModal&apos;;
 const CKEDITOR = &apos;https://cdn.form.io/ckeditor/16.0.0/ckeditor.js&apos;;
 const QUILL_URL = &apos;https://cdn.form.io/quill/1.3.7&apos;;
-const ACE_URL = &apos;https://cdn.form.io/ace/1.4.8/ace.js&apos;;
+const ACE_URL = &apos;https://cdn.form.io/ace/1.4.10/ace.js&apos;;
 const TINYMCE_URL = &apos;https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js&apos;;
 
 /**
@@ -575,6 +575,8 @@ export default class Component extends Element {
     this.validators = [&apos;required&apos;, &apos;minLength&apos;, &apos;maxLength&apos;, &apos;minWords&apos;, &apos;maxWords&apos;, &apos;custom&apos;, &apos;pattern&apos;, &apos;json&apos;, &apos;mask&apos;];
 
     this._path = &apos;&apos;;
+    // Nested forms don&apos;t have parents so we need to pass their path in.
+    this._parentPath = this.options.parentPath || &apos;&apos;;
 
     /**
      * Determines if this component is visible, or not.
@@ -819,13 +821,13 @@ export default class Component extends Element {
 
   get calculatedPath() {
     if (this._path) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     this._path = this.key;
 
     if (!this.root) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     let parent = this.parent;
@@ -838,7 +840,7 @@ export default class Component extends Element {
       parent = parent.parent;
     }
 
-    return this._path;
+    return `${this._parentPath}${this._path}`;
   }
 
   get labelPosition() {
@@ -2639,7 +2641,7 @@ export default class Component extends Element {
       value: dataValue,
       data,
       row: row || this.data
-    }, &apos;value&apos;);
+    }, &apos;value&apos;) || this.emptyValue;
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
@@ -2736,9 +2738,9 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  setComponentValidity(messages, dirty) {
+  setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message =&gt; message.level === &apos;error&apos;).length;
-    if (messages.length &amp;&amp; (dirty || !this.pristine)) {
+    if (messages.length &amp;&amp; !silentCheck &amp;&amp; (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
@@ -2755,9 +2757,11 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row, async = false) {
+  checkComponentValidity(data, dirty, row, options = {}) {
     data = data || this.rootValue;
     row = row || this.data;
+    const { async = false, silentCheck = false } = options;
+
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity(&apos;&apos;);
       return async ? NativePromise.resolve(true) : true;
@@ -2765,18 +2769,18 @@ export default class Component extends Element {
 
     const check = Validator.checkComponent(this, data, row, true, async);
     return async ?
-      check.then((messages) =&gt; this.setComponentValidity(messages, dirty)) :
-      this.setComponentValidity(check, dirty);
+      check.then((messages) =&gt; this.setComponentValidity(messages, dirty, silentCheck)) :
+      this.setComponentValidity(check, dirty, silentCheck);
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row);
+    return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
-  checkAsyncValidity(data, dirty, row) {
-    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
+  checkAsyncValidity(data, dirty, row, silentCheck) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
   /**
@@ -3126,7 +3130,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus &amp;&amp; !this.builderMode) {
+    if (this.component.autofocus &amp;&amp; !this.builderMode &amp;&amp; !this.options.preview) {
       this.on(&apos;render&apos;, () =&gt; this.focus(), true);
     }
   }

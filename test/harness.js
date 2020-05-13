@@ -94,13 +94,17 @@ const Harness = {
       bubbles: true,
       cancelable: true
     });
-    groupBtn.dispatchEvent(clickEvent);
+    if (groupBtn) {
+      groupBtn.dispatchEvent(clickEvent);
+    }
     let component = formBuilder.element.querySelector(`span[data-type='${type}']`);
-    component = component && component.cloneNode(true);
-    const element = formBuilder.element;
-    element.appendChild(component);
-    builderGroup = document.getElementById(`group-container-${groupName}`);
-    formBuilder.onDrop(component, element, builderGroup);
+    if (component) {
+      component = component && component.cloneNode(true);
+      const element = formBuilder.element;
+      element.appendChild(component);
+      builderGroup = document.getElementById(`group-container-${groupName}`);
+      formBuilder.onDrop(component, element, builderGroup);
+    }
     return formBuilder;
   },
 
@@ -195,7 +199,7 @@ const Harness = {
     if (typeof query === 'string') {
       element = this.testElement(component, query, true);
     }
-    return element.dispatchEvent(clickEvent);
+    return element ? element.dispatchEvent(clickEvent) : null;
   },
   testElements(component, query, number) {
     const elements = component.element.querySelectorAll(query);

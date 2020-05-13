@@ -5,6 +5,7 @@ import Formio from './Formio';
 
 import WebformBuilder from './WebformBuilder';
 import { fastCloneDeep, getElementRect } from './utils/utils';
+import { eachComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
 const { fetch, Headers } = fetchPonyfill({
@@ -437,5 +438,36 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
+
+    // update elements which path was duplicated if any pathes have been changed
+    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {
+      eachComponent(this.webform.getComponents(), (comp, path) => {
+        if (this.repeatablePaths.includes(path)) {
+          this.webform.postMessage({ name: 'updateElement', data: comp.component });
+        }
+      });
+
+      this.repeatablePaths = repeatablePaths;
+    }
+
+    if (!repeatablePaths.length) {
+      return;
+    }
+
+    eachComponent(this.webform.getComponents(), (comp, path) => {
+      if (this.repeatablePaths.includes(path)) {
+        this.webform.postMessage({
+          name: 'showBuilderErrors',
+          data: {
+            compId: comp.component.id,
+            errorMessage: `API Key is not unique: ${comp.key}`,
+          }
+        });
+      }
+    });
   }
 }

@@ -30,7 +30,44 @@
       <div ref="messageContainer"></div>
     </div>
     <div id="formField" class="field form-group has-feedback formio-component formio-component-form formio-component-formField  formio-component-label-hidden" ref="component">
-      Loading...
+      <div id="formField" class="field formio-component formio-component-form  formio-component-label-hidden" ref="component">
+        <div class="formio-form ui form" ref="webform" novalidate>
+          <div id="email" class="field form-group has-feedback formio-component formio-component-email formio-component-email " ref="component">
+            <label class="">
+              Email
+            </label>
+            <div ref="element">
+              <div class="ui input fluid ">
+                <input ref="input" name="data[email]" type="email" class="form-control" lang="en" placeholder="Enter your email address" spellcheck="true" value=""></input>
+              </div>
+            </div>
+            <div ref="messageContainer"></div>
+          </div>
+          <div id="password" class="field form-group has-feedback formio-component formio-component-password formio-component-password " ref="component">
+            <label class="">
+              Password
+            </label>
+            <div ref="element">
+              <div class="ui input fluid ">
+                <input ref="input" name="data[password]" type="password" class="form-control" lang="en" placeholder="Enter your password." spellcheck="true" value=""></input>
+              </div>
+            </div>
+            <div ref="messageContainer"></div>
+          </div>
+          <div id="valid" class="field form-group has-feedback formio-component formio-component-checkbox formio-component-valid  formio-component-label-hidden" ref="component">
+            <div class="ui checkbox">
+              <input ref="input" id="valid" name="data[valid]" type="checkbox" class="form-check-input" lang="en" value="0">
+              </input>
+              <label class="" for="valid">
+              </label>
+            </div>
+            <div ref="messageContainer"></div>
+          </div>
+          <div id="submit" class="field form-group has-feedback formio-component formio-component-button formio-component-submit  formio-hidden form-group" ref="component">
+          </div>
+        </div>
+        <div ref="messageContainer"></div>
+      </div>
       <div ref="messageContainer"></div>
     </div>
     <div id="custom" class="field form-group has-feedback formio-component formio-component-custom formio-component-custom  formio-component-label-hidden" ref="component">

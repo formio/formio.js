@@ -81,7 +81,6 @@ var builder = new Formio.FormBuilder(document.getElementById("builder"), {
     }
   }
 }, {
-  noNewEdit: true,
   baseUrl: 'https://examples.form.io'
 });
 

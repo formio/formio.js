@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.16
+### Added
+ - PDF 48: Added 'Fixed size' checkbox for textarea edit form
+
+### Changed
+ - Upgrade idb@5.0.3, bootstrap@4.5.0, fetch-mock@9.7.0
+ - Upgrade ace editor to 1.4.10
+ 
+### Fixed
+ - Fix validate on blur
+ - Remove pageQuery global cache
+ - PDF 65: Replaced sent component data in saveComponent by updated one to fix issue of not updating pdf element.
+ - PDF 38: Added logic to PDFBuilder to show api keys duplication error
+
+## 4.10.0-beta.15
+### Fixed
+ - Fixed EditGrid's checkData workflow
+ - Fix polyfills to not crash on server side.
+ - Fix (Wizard): page title in navigation is not updated
+ - Fix(TextArea, Input): word count is not working with editors
+ - FJS-448: Fixed initial focus disabling in preview
+ - In ReadOnly mode, the users may not have the possibility to add resource for Select components as Resource.
+ - Updated some translations in Webform
+
 ## 4.10.0-beta.14
 ### Fixed
  - Adding default params to keep them out of the minified schemas.

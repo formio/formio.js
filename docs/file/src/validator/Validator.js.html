@@ -1044,7 +1044,7 @@ class ValidationChecker {
       return result ? {
         message: _.get(result, &apos;message&apos;, result),
         level: _.get(result, &apos;level&apos;) === &apos;warning&apos; ? &apos;warning&apos; : &apos;error&apos;,
-        path: getArrayFromComponentPath(component.path || &apos;&apos;),
+        path: getArrayFromComponentPath(component.calculatedPath || &apos;&apos;),
         context: {
           validator: validatorName,
           setting,
