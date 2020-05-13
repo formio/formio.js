@@ -7,6 +7,8 @@ const premium = require('./premium.json');
 const settingErrors = require('./settingErrors.json');
 const clearOnHide = require('./clearOnHide.json');
 const manualOverride = require('./manualOverride.json');
+const calculateValueWithManualOverride = require('./calculateValueWithManualOverride.json');
+
 module.exports = {
   advanced,
   basic,
@@ -16,5 +18,6 @@ module.exports = {
   premium,
   settingErrors,
   clearOnHide,
-  manualOverride
+  manualOverride,
+  calculateValueWithManualOverride
 };
