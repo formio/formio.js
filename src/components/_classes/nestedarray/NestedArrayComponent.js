@@ -6,6 +6,12 @@ import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
 export default class NestedArrayComponent extends NestedDataComponent {
+  static schema(...extend) {
+    return NestedDataComponent.schema({
+      disableAddingRemovingRows: false
+    }, ...extend);
+  }
+
   componentContext(component) {
     return this.iteratableRows[component.rowIndex].data;
   }

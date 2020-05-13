@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -301,8 +302,9 @@ export default class WizardBuilder extends WebformBuilder {
     // Wizard pages don&apos;t replace themselves in the right array. Do that here.
     this.on(&apos;saveComponent&apos;, (component, originalComponent) =&gt; {
       const webformComponents = this.webform.components.map(({ component }) =&gt; component);
-      if (this._form.components.includes(originalComponent)) {
-        this._form.components[this._form.components.indexOf(originalComponent)] = component;
+      const formComponentIndex = this._form.components.findIndex((comp) =&gt; originalComponent.key === comp.key);
+      if (formComponentIndex !== -1) {
+        this._form.components[formComponentIndex] = component;
         this.rebuild();
       }
       else if (webformComponents.includes(originalComponent)) {

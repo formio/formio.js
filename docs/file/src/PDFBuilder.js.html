@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -246,6 +247,7 @@ import Formio from &apos;./Formio&apos;;
 
 import WebformBuilder from &apos;./WebformBuilder&apos;;
 import { fastCloneDeep, getElementRect } from &apos;./utils/utils&apos;;
+import { eachComponent } from &apos;./utils/formUtils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import PDF from &apos;./PDF&apos;;
 const { fetch, Headers } = fetchPonyfill({
@@ -535,7 +537,7 @@ export default class PDFBuilder extends WebformBuilder {
         if (!this.options.noNewEdit) {
           this.editComponent(component.component, this.webform.iframeElement);
         }
-        this.emit(&apos;updateComponent&apos;, component);
+        this.emit(&apos;updateComponent&apos;, component.component);
       }
       return component;
     });
@@ -550,7 +552,7 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.overlay.height,
           width: schema.overlay.width
         };
-        this.emit(&apos;updateComponent&apos;, component);
+        this.emit(&apos;updateComponent&apos;, component.component);
 
         const localComponent = _.find(this.form.components, { id: schema.id });
         if (localComponent) {
@@ -662,7 +664,6 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);
-    this.emit(&apos;addComponent&apos;, schema, this.webform, schema.key, this.webform.component.components.length, true);
     this.webform.component.components.push(schema);
 
     schema.overlay = {
@@ -675,8 +676,41 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: &apos;addElement&apos;, data: schema });
 
+    this.emit(&apos;addComponent&apos;, schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit);
+
     // Delete the stored drop event now that it&apos;s been handled
     this.dropEvent = null;
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
+
+    // update elements which path was duplicated if any pathes have been changed
+    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {
+      eachComponent(this.webform.getComponents(), (comp, path) =&gt; {
+        if (this.repeatablePaths.includes(path)) {
+          this.webform.postMessage({ name: &apos;updateElement&apos;, data: comp.component });
+        }
+      });
+
+      this.repeatablePaths = repeatablePaths;
+    }
+
+    if (!repeatablePaths.length) {
+      return;
+    }
+
+    eachComponent(this.webform.getComponents(), (comp, path) =&gt; {
+      if (this.repeatablePaths.includes(path)) {
+        this.webform.postMessage({
+          name: &apos;showBuilderErrors&apos;,
+          data: {
+            compId: comp.component.id,
+            errorMessage: `API Key is not unique: ${comp.key}`,
+          }
+        });
+      }
+    });
   }
 }
 </code></pre>

@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -321,9 +322,16 @@ export default class Input extends Multivalue {
       }));
   }
 
+  getWordCount(value) {
+    if (this.editors) {
+      return value.trim() ? value.trim().split(/\s+/).length : 0;
+    }
+    return _.words(value).length;
+  }
+
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, &apos;validate.maxWords&apos;), 10);
-    const wordCount = _.words(this.dataValue).length;
+    const wordCount = this.getWordCount(this.dataValue);
     return maxWords - wordCount;
   }
 
@@ -342,7 +350,8 @@ export default class Input extends Multivalue {
     if (this.component.widget &amp;&amp; this.component.widget.type === &apos;calendar&apos;) {
       const calendarIcon = this.renderTemplate(&apos;icon&apos;, {
         ref: &apos;icon&apos;,
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? &apos;calendar&apos; : &apos;o-clock&apos;),
+        // After font-awesome would be updated to v5.x, &quot;clock-o&quot; should be replaced with &quot;clock&quot;
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? &apos;calendar&apos; : &apos;clock-o&apos;),
         styles: &apos;&apos;,
         content: &apos;&apos;
       }).trim();
@@ -390,7 +399,7 @@ export default class Input extends Multivalue {
     if (_.get(this.component, &apos;showWordCount&apos;, false)) {
       if (this.refs.wordcount &amp;&amp; this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, &apos;validate.maxWords&apos;, 0), 10);
-        this.setCounter(&apos;words&apos;, this.refs.wordcount[index], _.words(value).length, maxWords);
+        this.setCounter(&apos;words&apos;, this.refs.wordcount[index], this.getWordCount(value), maxWords);
       }
     }
     if (_.get(this.component, &apos;showCharCount&apos;, false)) {

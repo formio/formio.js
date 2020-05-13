@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -1049,7 +1050,7 @@ export default class Formio {
     }
 
     // Generate a cachekey.
-    const cacheKey = btoa(url);
+    const cacheKey = btoa(encodeURI(url));
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
@@ -1492,31 +1493,27 @@ export default class Formio {
   }
 
   static pageQuery() {
-    if (Formio._pageQuery) {
-      return Formio._pageQuery;
-    }
-
-    Formio._pageQuery = {};
-    Formio._pageQuery.paths = [];
+    const pageQuery = {};
+    pageQuery.paths = [];
     const hashes = location.hash.substr(1).replace(/\?/g, &apos;&amp;&apos;).split(&apos;&amp;&apos;);
     let parts = [];
     location.search.substr(1).split(&apos;&amp;&apos;).forEach(function(item) {
       parts = item.split(&apos;=&apos;);
       if (parts.length &gt; 1) {
-        Formio._pageQuery[parts[0]] = parts[1] &amp;&amp; decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] &amp;&amp; decodeURIComponent(parts[1]);
       }
     });
 
     hashes.forEach(function(item) {
       parts = item.split(&apos;=&apos;);
       if (parts.length &gt; 1) {
-        Formio._pageQuery[parts[0]] = parts[1] &amp;&amp; decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] &amp;&amp; decodeURIComponent(parts[1]);
       }
       else if (item.indexOf(&apos;/&apos;) === 0) {
-        Formio._pageQuery.paths = item.substr(1).split(&apos;/&apos;);
+        pageQuery.paths = item.substr(1).split(&apos;/&apos;);
       }
     });
-    return Formio._pageQuery;
+    return pageQuery;
   }
 
   static oAuthCurrentUser(formio, token) {

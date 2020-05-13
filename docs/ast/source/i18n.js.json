@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 2447,
+  "end": 2774,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 56,
+      "line": 60,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 2447,
+    "end": 2774,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 56,
+        "line": 60,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 2446,
+        "end": 2773,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 55,
+            "line": 59,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 2445,
+          "end": 2772,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 55,
+              "line": 59,
               "column": 1
             }
           },
@@ -115,14 +115,14 @@
             {
               "type": "ObjectProperty",
               "start": 32,
-              "end": 2443,
+              "end": 2770,
               "loc": {
                 "start": {
                   "line": 3,
                   "column": 2
                 },
                 "end": {
-                  "line": 54,
+                  "line": 58,
                   "column": 3
                 }
               },
@@ -149,14 +149,14 @@
               "value": {
                 "type": "ObjectExpression",
                 "start": 43,
-                "end": 2443,
+                "end": 2770,
                 "loc": {
                   "start": {
                     "line": 3,
                     "column": 13
                   },
                   "end": {
-                    "line": 54,
+                    "line": 58,
                     "column": 3
                   }
                 },
@@ -164,14 +164,14 @@
                   {
                     "type": "ObjectProperty",
                     "start": 49,
-                    "end": 2439,
+                    "end": 2766,
                     "loc": {
                       "start": {
                         "line": 4,
                         "column": 4
                       },
                       "end": {
-                        "line": 53,
+                        "line": 57,
                         "column": 5
                       }
                     },
@@ -198,14 +198,14 @@
                     "value": {
                       "type": "ObjectExpression",
                       "start": 53,
-                      "end": 2439,
+                      "end": 2766,
                       "loc": {
                         "start": {
                           "line": 4,
                           "column": 8
                         },
                         "end": {
-                          "line": 53,
+                          "line": 57,
                           "column": 5
                         }
                       },
@@ -213,14 +213,14 @@
                         {
                           "type": "ObjectProperty",
                           "start": 61,
-                          "end": 2433,
+                          "end": 2760,
                           "loc": {
                             "start": {
                               "line": 5,
                               "column": 6
                             },
                             "end": {
-                              "line": 52,
+                              "line": 56,
                               "column": 7
                             }
                           },
@@ -247,14 +247,14 @@
                           "value": {
                             "type": "ObjectExpression",
                             "start": 74,
-                            "end": 2433,
+                            "end": 2760,
                             "loc": {
                               "start": {
                                 "line": 5,
                                 "column": 19
                               },
                               "end": {
-                                "line": 52,
+                                "line": 56,
                                 "column": 7
                               }
                             },
@@ -2901,6 +2901,226 @@
                                     "raw": "'Submit Form'"
                                   },
                                   "value": "Submit Form"
+                                }
+                              },
+                              {
+                                "type": "ObjectProperty",
+                                "start": 2435,
+                                "end": 2484,
+                                "loc": {
+                                  "start": {
+                                    "line": 52,
+                                    "column": 8
+                                  },
+                                  "end": {
+                                    "line": 52,
+                                    "column": 57
+                                  }
+                                },
+                                "method": false,
+                                "shorthand": false,
+                                "computed": false,
+                                "key": {
+                                  "type": "Identifier",
+                                  "start": 2435,
+                                  "end": 2448,
+                                  "loc": {
+                                    "start": {
+                                      "line": 52,
+                                      "column": 8
+                                    },
+                                    "end": {
+                                      "line": 52,
+                                      "column": 21
+                                    },
+                                    "identifierName": "confirmCancel"
+                                  },
+                                  "name": "confirmCancel"
+                                },
+                                "value": {
+                                  "type": "StringLiteral",
+                                  "start": 2450,
+                                  "end": 2484,
+                                  "loc": {
+                                    "start": {
+                                      "line": 52,
+                                      "column": 23
+                                    },
+                                    "end": {
+                                      "line": 52,
+                                      "column": 57
+                                    }
+                                  },
+                                  "extra": {
+                                    "rawValue": "Are you sure you want to cancel?",
+                                    "raw": "'Are you sure you want to cancel?'"
+                                  },
+                                  "value": "Are you sure you want to cancel?"
+                                }
+                              },
+                              {
+                                "type": "ObjectProperty",
+                                "start": 2494,
+                                "end": 2574,
+                                "loc": {
+                                  "start": {
+                                    "line": 53,
+                                    "column": 8
+                                  },
+                                  "end": {
+                                    "line": 53,
+                                    "column": 88
+                                  }
+                                },
+                                "method": false,
+                                "shorthand": false,
+                                "computed": false,
+                                "key": {
+                                  "type": "Identifier",
+                                  "start": 2494,
+                                  "end": 2516,
+                                  "loc": {
+                                    "start": {
+                                      "line": 53,
+                                      "column": 8
+                                    },
+                                    "end": {
+                                      "line": 53,
+                                      "column": 30
+                                    },
+                                    "identifierName": "saveDraftInstanceError"
+                                  },
+                                  "name": "saveDraftInstanceError"
+                                },
+                                "value": {
+                                  "type": "StringLiteral",
+                                  "start": 2518,
+                                  "end": 2574,
+                                  "loc": {
+                                    "start": {
+                                      "line": 53,
+                                      "column": 32
+                                    },
+                                    "end": {
+                                      "line": 53,
+                                      "column": 88
+                                    }
+                                  },
+                                  "extra": {
+                                    "rawValue": "Cannot save draft because there is no formio instance.",
+                                    "raw": "'Cannot save draft because there is no formio instance.'"
+                                  },
+                                  "value": "Cannot save draft because there is no formio instance."
+                                }
+                              },
+                              {
+                                "type": "ObjectProperty",
+                                "start": 2584,
+                                "end": 2655,
+                                "loc": {
+                                  "start": {
+                                    "line": 54,
+                                    "column": 8
+                                  },
+                                  "end": {
+                                    "line": 54,
+                                    "column": 79
+                                  }
+                                },
+                                "method": false,
+                                "shorthand": false,
+                                "computed": false,
+                                "key": {
+                                  "type": "Identifier",
+                                  "start": 2584,
+                                  "end": 2602,
+                                  "loc": {
+                                    "start": {
+                                      "line": 54,
+                                      "column": 8
+                                    },
+                                    "end": {
+                                      "line": 54,
+                                      "column": 26
+                                    },
+                                    "identifierName": "saveDraftAuthError"
+                                  },
+                                  "name": "saveDraftAuthError"
+                                },
+                                "value": {
+                                  "type": "StringLiteral",
+                                  "start": 2604,
+                                  "end": 2655,
+                                  "loc": {
+                                    "start": {
+                                      "line": 54,
+                                      "column": 28
+                                    },
+                                    "end": {
+                                      "line": 54,
+                                      "column": 79
+                                    }
+                                  },
+                                  "extra": {
+                                    "rawValue": "Cannot save draft unless a user is authenticated.",
+                                    "raw": "'Cannot save draft unless a user is authenticated.'"
+                                  },
+                                  "value": "Cannot save draft unless a user is authenticated."
+                                }
+                              },
+                              {
+                                "type": "ObjectProperty",
+                                "start": 2665,
+                                "end": 2751,
+                                "loc": {
+                                  "start": {
+                                    "line": 55,
+                                    "column": 8
+                                  },
+                                  "end": {
+                                    "line": 55,
+                                    "column": 94
+                                  }
+                                },
+                                "method": false,
+                                "shorthand": false,
+                                "computed": false,
+                                "key": {
+                                  "type": "Identifier",
+                                  "start": 2665,
+                                  "end": 2690,
+                                  "loc": {
+                                    "start": {
+                                      "line": 55,
+                                      "column": 8
+                                    },
+                                    "end": {
+                                      "line": 55,
+                                      "column": 33
+                                    },
+                                    "identifierName": "restoreDraftInstanceError"
+                                  },
+                                  "name": "restoreDraftInstanceError"
+                                },
+                                "value": {
+                                  "type": "StringLiteral",
+                                  "start": 2692,
+                                  "end": 2751,
+                                  "loc": {
+                                    "start": {
+                                      "line": 55,
+                                      "column": 35
+                                    },
+                                    "end": {
+                                      "line": 55,
+                                      "column": 94
+                                    }
+                                  },
+                                  "extra": {
+                                    "rawValue": "Cannot restore draft because there is no formio instance.",
+                                    "raw": "'Cannot restore draft because there is no formio instance.'"
+                                  },
+                                  "value": "Cannot restore draft because there is no formio instance."
                                 }
                               }
                             ]
@@ -8338,6 +8558,452 @@
     },
     {
       "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2425,
+      "end": 2426,
+      "loc": {
+        "start": {
+          "line": 51,
+          "column": 29
+        },
+        "end": {
+          "line": 51,
+          "column": 30
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "confirmCancel",
+      "start": 2435,
+      "end": 2448,
+      "loc": {
+        "start": {
+          "line": 52,
+          "column": 8
+        },
+        "end": {
+          "line": 52,
+          "column": 21
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2448,
+      "end": 2449,
+      "loc": {
+        "start": {
+          "line": 52,
+          "column": 21
+        },
+        "end": {
+          "line": 52,
+          "column": 22
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Are you sure you want to cancel?",
+      "start": 2450,
+      "end": 2484,
+      "loc": {
+        "start": {
+          "line": 52,
+          "column": 23
+        },
+        "end": {
+          "line": 52,
+          "column": 57
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2484,
+      "end": 2485,
+      "loc": {
+        "start": {
+          "line": 52,
+          "column": 57
+        },
+        "end": {
+          "line": 52,
+          "column": 58
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "saveDraftInstanceError",
+      "start": 2494,
+      "end": 2516,
+      "loc": {
+        "start": {
+          "line": 53,
+          "column": 8
+        },
+        "end": {
+          "line": 53,
+          "column": 30
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2516,
+      "end": 2517,
+      "loc": {
+        "start": {
+          "line": 53,
+          "column": 30
+        },
+        "end": {
+          "line": 53,
+          "column": 31
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Cannot save draft because there is no formio instance.",
+      "start": 2518,
+      "end": 2574,
+      "loc": {
+        "start": {
+          "line": 53,
+          "column": 32
+        },
+        "end": {
+          "line": 53,
+          "column": 88
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2574,
+      "end": 2575,
+      "loc": {
+        "start": {
+          "line": 53,
+          "column": 88
+        },
+        "end": {
+          "line": 53,
+          "column": 89
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "saveDraftAuthError",
+      "start": 2584,
+      "end": 2602,
+      "loc": {
+        "start": {
+          "line": 54,
+          "column": 8
+        },
+        "end": {
+          "line": 54,
+          "column": 26
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2602,
+      "end": 2603,
+      "loc": {
+        "start": {
+          "line": 54,
+          "column": 26
+        },
+        "end": {
+          "line": 54,
+          "column": 27
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Cannot save draft unless a user is authenticated.",
+      "start": 2604,
+      "end": 2655,
+      "loc": {
+        "start": {
+          "line": 54,
+          "column": 28
+        },
+        "end": {
+          "line": 54,
+          "column": 79
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2655,
+      "end": 2656,
+      "loc": {
+        "start": {
+          "line": 54,
+          "column": 79
+        },
+        "end": {
+          "line": 54,
+          "column": 80
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "restoreDraftInstanceError",
+      "start": 2665,
+      "end": 2690,
+      "loc": {
+        "start": {
+          "line": 55,
+          "column": 8
+        },
+        "end": {
+          "line": 55,
+          "column": 33
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2690,
+      "end": 2691,
+      "loc": {
+        "start": {
+          "line": 55,
+          "column": 33
+        },
+        "end": {
+          "line": 55,
+          "column": 34
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Cannot restore draft because there is no formio instance.",
+      "start": 2692,
+      "end": 2751,
+      "loc": {
+        "start": {
+          "line": 55,
+          "column": 35
+        },
+        "end": {
+          "line": 55,
+          "column": 94
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2751,
+      "end": 2752,
+      "loc": {
+        "start": {
+          "line": 55,
+          "column": 94
+        },
+        "end": {
+          "line": 55,
+          "column": 95
+        }
+      }
+    },
+    {
+      "type": {
         "label": "}",
         "beforeExpr": false,
         "startsExpr": false,
@@ -8348,15 +9014,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2432,
-      "end": 2433,
+      "start": 2759,
+      "end": 2760,
       "loc": {
         "start": {
-          "line": 52,
+          "line": 56,
           "column": 6
         },
         "end": {
-          "line": 52,
+          "line": 56,
           "column": 7
         }
       }
@@ -8373,15 +9039,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2438,
-      "end": 2439,
+      "start": 2765,
+      "end": 2766,
       "loc": {
         "start": {
-          "line": 53,
+          "line": 57,
           "column": 4
         },
         "end": {
-          "line": 53,
+          "line": 57,
           "column": 5
         }
       }
@@ -8398,15 +9064,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2442,
-      "end": 2443,
+      "start": 2769,
+      "end": 2770,
       "loc": {
         "start": {
-          "line": 54,
+          "line": 58,
           "column": 2
         },
         "end": {
-          "line": 54,
+          "line": 58,
           "column": 3
         }
       }
@@ -8423,15 +9089,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2444,
-      "end": 2445,
+      "start": 2771,
+      "end": 2772,
       "loc": {
         "start": {
-          "line": 55,
+          "line": 59,
           "column": 0
         },
         "end": {
-          "line": 55,
+          "line": 59,
           "column": 1
         }
       }
@@ -8449,15 +9115,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2445,
-      "end": 2446,
+      "start": 2772,
+      "end": 2773,
       "loc": {
         "start": {
-          "line": 55,
+          "line": 59,
           "column": 1
         },
         "end": {
-          "line": 55,
+          "line": 59,
           "column": 2
         }
       }
@@ -8475,15 +9141,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2447,
-      "end": 2447,
+      "start": 2774,
+      "end": 2774,
       "loc": {
         "start": {
-          "line": 56,
+          "line": 60,
           "column": 0
         },
         "end": {
-          "line": 56,
+          "line": 60,
           "column": 0
         }
       }

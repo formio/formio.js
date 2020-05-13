@@ -4,6 +4,63 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.16
+### Added
+ - PDF 48: Added 'Fixed size' checkbox for textarea edit form
+
+### Changed
+ - Upgrade idb@5.0.3, bootstrap@4.5.0, fetch-mock@9.7.0
+ - Upgrade ace editor to 1.4.10
+ 
+### Fixed
+ - Fix validate on blur
+ - Remove pageQuery global cache
+ - PDF 65: Replaced sent component data in saveComponent by updated one to fix issue of not updating pdf element.
+ - PDF 38: Added logic to PDFBuilder to show api keys duplication error
+
+## 4.10.0-beta.15
+### Fixed
+ - Fixed EditGrid's checkData workflow
+ - Fix polyfills to not crash on server side.
+ - Fix (Wizard): page title in navigation is not updated
+ - Fix(TextArea, Input): word count is not working with editors
+ - FJS-448: Fixed initial focus disabling in preview
+ - In ReadOnly mode, the users may not have the possibility to add resource for Select components as Resource.
+ - Updated some translations in Webform
+
+## 4.10.0-beta.14
+### Fixed
+ - Adding default params to keep them out of the minified schemas.
+ - FJS 655: Added dialog window that opens up asking user if they wish to clear the data
+ - FJS 862: Fixed radio data losing when navigating between wizard pages if values are numbers
+ - PDF-63: Update condition order to get schema
+ - FJS-883: Fixed correct radio values rendering in table view if storage type Number is set
+ - VPAT-236 Changed variable types for future extension in vpat
+
+## 4.10.0-beta.13
+### Fixed
+ - VPAT-314 Removed role alert from error messages container #2734
+ - VPAT-335 Fixed currency input announcing invalid entry with any value #2734
+ - VPAT-362 Fixed axe issues for error section links #2733
+ - Encode uri before a request #2735
+
+## 4.10.0-beta.12
+### Fixed
+ - FJS-207: Fixed submission display in read only mode in tree
+ - FJS-723: Added entire object option in value property for select with resource
+ - FJS 904: Fixed display of resources with custom components in Existing Resource Fields in builder
+ - FJS-547: Fixed issue where default value could not be removed from Date/Time components.
+ - FJS 634: Modal Edit (Multiple Values): Does not show any default message like single regular component
+ - FJS 903: Fixed currency formatting on blur
+ - FJS 903: Fixed number/currency formatting in tableView according localization
+ - FJS-884: Fixed select Data Source Type dropdown doesn`t show all options if the form is not saved
+ 
+### Added
+ - Add round function to calculate value context
+
+### Changed
+ - Upgrade  i18next@19.4.4, @babel/core@7.9.6, @babel/preset-env@7.9.6, karma@5.0.4, karma-mocha@2.0.1, mocha@7.1.2, uuid@8.0.0
+
 ## 4.10.0-beta.11
 ### Fixed
  - VPAT-335 Fixed currency input announcing invalid entry with any value. #2712

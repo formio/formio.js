@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -597,7 +598,7 @@ export default class NestedComponent extends Field {
     return super.render(children || this.renderTemplate(this.templateName, {
       children: this.renderComponents(),
       nestedKey: this.nestedKey,
-      collapsed: this.collapsed,
+      collapsed: this.options.pdf ? false : this.collapsed,
     }));
   }
 
@@ -804,22 +805,24 @@ export default class NestedComponent extends Field {
     );
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity(&apos;&apos;);
       return true;
     }
 
     return this.getComponents().reduce(
-      (check, comp) =&gt; comp.checkValidity(data, dirty, row) &amp;&amp; check,
-      super.checkValidity(data, dirty, row)
+      (check, comp) =&gt; comp.checkValidity(data, dirty, row, silentCheck) &amp;&amp; check,
+      super.checkValidity(data, dirty, row, silentCheck)
     );
   }
 
-  checkAsyncValidity(data, dirty, row) {
-    const promises = [super.checkAsyncValidity(data, dirty, row)];
-    this.eachComponent((component) =&gt; promises.push(component.checkAsyncValidity(data, dirty, row)));
-    return NativePromise.all(promises).then((results) =&gt; results.reduce((valid, result) =&gt; (valid &amp;&amp; result), true));
+  checkAsyncValidity(data, dirty, row, silentCheck) {
+    return this.ready.then(() =&gt; {
+      const promises = [super.checkAsyncValidity(data, dirty, row, silentCheck)];
+      this.eachComponent((component) =&gt; promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));
+      return NativePromise.all(promises).then((results) =&gt; results.reduce((valid, result) =&gt; (valid &amp;&amp; result), true));
+    });
   }
 
   setPristine(pristine) {

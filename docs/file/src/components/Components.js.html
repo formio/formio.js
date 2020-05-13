@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -240,7 +241,6 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/Components.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Component from &apos;./_classes/component/Component&apos;;
-import NestedComponent from &apos;./_classes/nested/NestedComponent&apos;;
 import _ from &apos;lodash&apos;;
 export default class Components {
   static get components() {
@@ -275,8 +275,17 @@ export default class Components {
     if (component.type &amp;&amp; Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
     }
+    else if (component.arrayTree) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components[&apos;datagrid&apos;](component, options, data);
+    }
+    else if (component.tree) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components[&apos;nesteddata&apos;](component, options, data);
+    }
     else if (Array.isArray(component.components)) {
-      comp = new NestedComponent(component, options, data);
+      // eslint-disable-next-line new-cap
+      comp = new Components.components[&apos;nested&apos;](component, options, data);
     }
     else {
       comp = new Component(component, options, data);

@@ -13,6 +13,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       rows: 3,
       wysiwyg: false,
       editor: '',
+      fixedSize: true,
       inputFormat: 'html',
       validate: {
         minWords: '',
@@ -70,10 +71,6 @@ export default class TextAreaComponent extends TextFieldComponent {
         value
       });
     }
-    // Editors work better on divs.
-    if (this.component.editor || this.component.wysiwyg) {
-      return '<div ref="input"></div>';
-    }
 
     return this.renderTemplate('input', {
       input: info,
@@ -103,7 +100,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if ((!_.isEqual(newValue, dataValue)) && (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
         modified: !this.autoModified
-      });
+      }, index);
     }
     this.autoModified = false;
   }

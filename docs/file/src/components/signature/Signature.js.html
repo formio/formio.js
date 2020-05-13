@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -350,6 +351,9 @@ export default class SignatureComponent extends Input {
         if (this.refs.refresh) {
           this.refs.refresh.classList.add(&apos;disabled&apos;);
         }
+        if (this.refs.signatureImage) {
+          this.refs.signatureImage.setAttribute(&apos;src&apos;, this.dataValue);
+        }
       }
       else {
         this.signaturePad.on();
@@ -411,8 +415,6 @@ export default class SignatureComponent extends Input {
     this.loadRefs(element, { canvas: &apos;single&apos;, refresh: &apos;single&apos;, padBody: &apos;single&apos;, signatureImage: &apos;single&apos; });
     const superAttach = super.attach(element);
 
-    this.onDisabled();
-
     if (this.refs.refresh &amp;&amp; this.options.readOnly) {
       this.refs.refresh.classList.add(&apos;disabled&apos;);
     }
@@ -428,6 +430,8 @@ export default class SignatureComponent extends Input {
 
       this.signaturePad.onEnd = () =&gt; this.setValue(this.signaturePad.toDataURL());
       this.refs.signatureImage.setAttribute(&apos;src&apos;, this.signaturePad.toDataURL());
+
+      this.onDisabled();
 
       // Ensure the signature is always the size of its container.
       if (this.refs.padBody) {

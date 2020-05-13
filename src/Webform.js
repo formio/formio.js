@@ -767,11 +767,11 @@ export default class Webform extends NestedDataComponent {
       return;
     }
     if (!this.formio) {
-      console.warn('Cannot save draft because there is no formio instance.');
+      console.warn(this.t('saveDraftInstanceError'));
       return;
     }
     if (!Formio.getUser()) {
-      console.warn('Cannot save draft unless a user is authenticated.');
+      console.warn(this.t('saveDraftAuthError'));
       return;
     }
     const draft = this.submission;
@@ -801,7 +801,7 @@ export default class Webform extends NestedDataComponent {
    */
   restoreDraft(userId) {
     if (!this.formio) {
-      console.warn('Cannot restore draft because there is no formio instance.');
+      console.warn(this.t('restoreDraftInstanceError'));
       return;
     }
     this.savingDraft = true;
@@ -1005,6 +1005,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     this.setPristine(true);
+    this.redraw();
   }
 
   /**
@@ -1193,7 +1194,7 @@ export default class Webform extends NestedDataComponent {
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
 
-    const ul = this.ce('ul', { 'aria-describedby': `fix-errors-${this.id}` });
+    const ul = this.ce('ul', { 'aria-labelledby': `fix-errors-${this.id}` });
     errors.forEach(err => {
       if (err) {
         const createListItem = (message, index) => {
@@ -1203,8 +1204,9 @@ export default class Webform extends NestedDataComponent {
             role: 'link',
             'aria-label': `${message}. Click to navigate to the field with following error.`
           };
-          const li = this.ce('li', params);
-          this.setContent(li, message);
+          const li = this.ce('li');
+          const mainMessage = this.ce('span', params);
+          this.setContent(mainMessage, this.t(message));
 
           const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
           this.setContent(helpMessage, this.t('errorListHelpMessage'));
@@ -1213,9 +1215,10 @@ export default class Webform extends NestedDataComponent {
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
           if (keyOrPath) {
             const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
-            li.dataset.componentKey = formattedKeyOrPath;
+            mainMessage.dataset.componentKey = formattedKeyOrPath;
           }
 
+          li.appendChild(mainMessage);
           li.appendChild(helpMessage);
           this.appendTo(li, ul);
         };
@@ -1381,7 +1384,7 @@ export default class Webform extends NestedDataComponent {
    */
   cancel(noconfirm) {
     const shouldReset = this.hook('beforeCancel', true);
-    if (shouldReset && (noconfirm || confirm('Are you sure you want to cancel?'))) {
+    if (shouldReset && (noconfirm || confirm(this.t('confirmCancel')))) {
       this.resetValue();
       return true;
     }

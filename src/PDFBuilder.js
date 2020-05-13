@@ -5,6 +5,7 @@ import Formio from './Formio';
 
 import WebformBuilder from './WebformBuilder';
 import { fastCloneDeep, getElementRect } from './utils/utils';
+import { eachComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
 const { fetch, Headers } = fetchPonyfill({
@@ -294,7 +295,7 @@ export default class PDFBuilder extends WebformBuilder {
         if (!this.options.noNewEdit) {
           this.editComponent(component.component, this.webform.iframeElement);
         }
-        this.emit('updateComponent', component);
+        this.emit('updateComponent', component.component);
       }
       return component;
     });
@@ -309,7 +310,7 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.overlay.height,
           width: schema.overlay.width
         };
-        this.emit('updateComponent', component);
+        this.emit('updateComponent', component.component);
 
         const localComponent = _.find(this.form.components, { id: schema.id });
         if (localComponent) {
@@ -421,7 +422,6 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);
-    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, true);
     this.webform.component.components.push(schema);
 
     schema.overlay = {
@@ -434,7 +434,40 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: 'addElement', data: schema });
 
+    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit);
+
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
+
+    // update elements which path was duplicated if any pathes have been changed
+    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {
+      eachComponent(this.webform.getComponents(), (comp, path) => {
+        if (this.repeatablePaths.includes(path)) {
+          this.webform.postMessage({ name: 'updateElement', data: comp.component });
+        }
+      });
+
+      this.repeatablePaths = repeatablePaths;
+    }
+
+    if (!repeatablePaths.length) {
+      return;
+    }
+
+    eachComponent(this.webform.getComponents(), (comp, path) => {
+      if (this.repeatablePaths.includes(path)) {
+        this.webform.postMessage({
+          name: 'showBuilderErrors',
+          data: {
+            compId: comp.component.id,
+            errorMessage: `API Key is not unique: ${comp.key}`,
+          }
+        });
+      }
+    });
   }
 }

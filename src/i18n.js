@@ -49,6 +49,10 @@ export default {
         previous: 'Previous',
         cancel: 'Cancel',
         submit: 'Submit Form',
+        confirmCancel: 'Are you sure you want to cancel?',
+        saveDraftInstanceError: 'Cannot save draft because there is no formio instance.',
+        saveDraftAuthError: 'Cannot save draft unless a user is authenticated.',
+        restoreDraftInstanceError: 'Cannot restore draft because there is no formio instance.',
         errorListHotkey: 'Press Ctrl + Alt + X to go back to the error list.',
         errorListHelpMessage: 'Click to navigate to the field with following error.',
       }

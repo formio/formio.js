@@ -13,7 +13,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.8/ace.js';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
@@ -123,6 +123,7 @@ export default class Component extends Element {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      calculateServer: false,
       widget: null,
 
       /**
@@ -332,6 +333,8 @@ export default class Component extends Element {
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     this._path = '';
+    // Nested forms don't have parents so we need to pass their path in.
+    this._parentPath = this.options.parentPath || '';
 
     /**
      * Determines if this component is visible, or not.
@@ -576,13 +579,13 @@ export default class Component extends Element {
 
   get calculatedPath() {
     if (this._path) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     this._path = this.key;
 
     if (!this.root) {
-      return this._path;
+      return `${this._parentPath}${this._path}`;
     }
 
     let parent = this.parent;
@@ -595,7 +598,7 @@ export default class Component extends Element {
       parent = parent.parent;
     }
 
-    return this._path;
+    return `${this._parentPath}${this._path}`;
   }
 
   get labelPosition() {
@@ -941,23 +944,14 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    let template;
-    if (this.dataValue) {
-      template = this.getModalPreviewTemplate();
-    }
-    else {
-      template = `
-        <label class="control-label">${this.component.label}</label><br>
-        <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
-      `;
-    }
+    const template = this.getModalPreviewTemplate();
     this.componentModal.setOpenModalElement(template);
   }
 
   getModalPreviewTemplate() {
     return `
       <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue)}</button>`;
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || 'Click to set value'}</button>`;
   }
 
   build(element) {
@@ -2420,7 +2414,7 @@ export default class Component extends Element {
       value: dataValue,
       data,
       row: row || this.data
-    }, 'value');
+    }, 'value') || this.emptyValue;
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
@@ -2517,9 +2511,9 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  setComponentValidity(messages, dirty) {
+  setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && (dirty || !this.pristine)) {
+    if (messages.length && !silentCheck && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
@@ -2536,9 +2530,11 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row, async = false) {
+  checkComponentValidity(data, dirty, row, options = {}) {
     data = data || this.rootValue;
     row = row || this.data;
+    const { async = false, silentCheck = false } = options;
+
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
       return async ? NativePromise.resolve(true) : true;
@@ -2546,18 +2542,18 @@ export default class Component extends Element {
 
     const check = Validator.checkComponent(this, data, row, true, async);
     return async ?
-      check.then((messages) => this.setComponentValidity(messages, dirty)) :
-      this.setComponentValidity(check, dirty);
+      check.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
+      this.setComponentValidity(check, dirty, silentCheck);
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row);
+    return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
-  checkAsyncValidity(data, dirty, row) {
-    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
+  checkAsyncValidity(data, dirty, row, silentCheck) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
   /**
@@ -2678,8 +2674,9 @@ export default class Component extends Element {
 
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
     const hasNewErrors = this.checkReceivedErrors(messages);
+    const isErrorVisible = this.refs.messageContainer && !!this.refs.messageContainer.innerHTML;
 
-    if (messages.length && hasNewErrors) {
+    if (messages.length && (hasNewErrors || !isErrorVisible)) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
@@ -2931,7 +2928,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode) {
+    if (this.component.autofocus && !this.builderMode && !this.options.preview) {
       this.on('render', () => this.focus(), true);
     }
   }

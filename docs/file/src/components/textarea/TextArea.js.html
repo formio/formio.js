@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -254,6 +255,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       rows: 3,
       wysiwyg: false,
       editor: &apos;&apos;,
+      fixedSize: true,
       inputFormat: &apos;html&apos;,
       validate: {
         minWords: &apos;&apos;,
@@ -311,10 +313,6 @@ export default class TextAreaComponent extends TextFieldComponent {
         value
       });
     }
-    // Editors work better on divs.
-    if (this.component.editor || this.component.wysiwyg) {
-      return &apos;&lt;div ref=&quot;input&quot;&gt;&lt;/div&gt;&apos;;
-    }
 
     return this.renderTemplate(&apos;input&apos;, {
       input: info,
@@ -344,7 +342,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if ((!_.isEqual(newValue, dataValue)) &amp;&amp; (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
         modified: !this.autoModified
-      });
+      }, index);
     }
     this.autoModified = false;
   }

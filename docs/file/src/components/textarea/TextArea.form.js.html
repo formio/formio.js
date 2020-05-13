@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -242,6 +243,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import textEditForm from &apos;../textfield/TextField.form&apos;;
 
 import TextAreaEditDisplay from &apos;./editForm/TextArea.edit.display&apos;;
+import TextAreaEditLayout from &apos;./editForm/TextArea.edit.layout&apos;;
 import TextAreaEditValidation from &apos;./editForm/TextArea.edit.validation&apos;;
 
 export default function(...extend) {
@@ -253,7 +255,11 @@ export default function(...extend) {
     {
       key: &apos;validation&apos;,
       components: TextAreaEditValidation
-    }
+    },
+    {
+      key: &apos;layout&apos;,
+      components: TextAreaEditLayout
+    },
   ], ...extend);
 }
 </code></pre>

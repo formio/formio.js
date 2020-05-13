@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -406,6 +407,10 @@ export default class SelectComponent extends Field {
       return this.t(data);
     }
 
+    data.data = this.valueProperty === &apos;data&apos; &amp;&amp; _.isObject(data.data)
+      ? JSON.stringify(data.data)
+      : data.data;
+
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/&lt;\/?[^&gt;]+(&gt;|$)/g, &apos;&apos;);
@@ -555,7 +560,7 @@ export default class SelectComponent extends Field {
     // Iterate through each of the items.
     _.each(items, (item, index) =&gt; {
       // preventing references of the components inside the form to the parent form when building forms
-      if (this.root &amp;&amp; this.root.options.editForm &amp;&amp; this.root.options.editForm._id === item._id) return;
+      if (this.root &amp;&amp; this.root.options.editForm &amp;&amp; this.root.options.editForm._id &amp;&amp; this.root.options.editForm._id === item._id) return;
       this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
     });
 
@@ -940,7 +945,7 @@ export default class SelectComponent extends Field {
   }
 
   wrapElement(element) {
-    return this.component.addResource
+    return this.component.addResource &amp;&amp; !this.options.readOnly
       ? (
         this.renderTemplate(&apos;resourceAdd&apos;, {
           element

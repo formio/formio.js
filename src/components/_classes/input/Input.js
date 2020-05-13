@@ -80,9 +80,16 @@ export default class Input extends Multivalue {
       }));
   }
 
+  getWordCount(value) {
+    if (this.editors) {
+      return value.trim() ? value.trim().split(/\s+/).length : 0;
+    }
+    return _.words(value).length;
+  }
+
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
-    const wordCount = _.words(this.dataValue).length;
+    const wordCount = this.getWordCount(this.dataValue);
     return maxWords - wordCount;
   }
 
@@ -101,7 +108,8 @@ export default class Input extends Multivalue {
     if (this.component.widget && this.component.widget.type === 'calendar') {
       const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'o-clock'),
+        // After font-awesome would be updated to v5.x, "clock-o" should be replaced with "clock"
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'clock-o'),
         styles: '',
         content: ''
       }).trim();
@@ -149,7 +157,7 @@ export default class Input extends Multivalue {
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
-        this.setCounter('words', this.refs.wordcount[index], _.words(value).length, maxWords);
+        this.setCounter('words', this.refs.wordcount[index], this.getWordCount(value), maxWords);
       }
     }
     if (_.get(this.component, 'showCharCount', false)) {
