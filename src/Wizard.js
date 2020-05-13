@@ -229,8 +229,7 @@ export default class Wizard extends Webform {
         currentPage = page;
       }
     });
-    console.log(this.component.components);
-    console.log(this.currentPage.component);
+
     return _.get(currentPage.component, 'breadcrumbClickable', true);
   }
 
