@@ -1251,31 +1251,27 @@ export default class Formio {
   }
 
   static pageQuery() {
-    if (Formio._pageQuery) {
-      return Formio._pageQuery;
-    }
-
-    Formio._pageQuery = {};
-    Formio._pageQuery.paths = [];
+    const pageQuery = {};
+    pageQuery.paths = [];
     const hashes = location.hash.substr(1).replace(/\?/g, '&').split('&');
     let parts = [];
     location.search.substr(1).split('&').forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
       }
     });
 
     hashes.forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
       }
       else if (item.indexOf('/') === 0) {
-        Formio._pageQuery.paths = item.substr(1).split('/');
+        pageQuery.paths = item.substr(1).split('/');
       }
     });
-    return Formio._pageQuery;
+    return pageQuery;
   }
 
   static oAuthCurrentUser(formio, token) {

@@ -243,6 +243,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import textEditForm from &apos;../textfield/TextField.form&apos;;
 
 import TextAreaEditDisplay from &apos;./editForm/TextArea.edit.display&apos;;
+import TextAreaEditLayout from &apos;./editForm/TextArea.edit.layout&apos;;
 import TextAreaEditValidation from &apos;./editForm/TextArea.edit.validation&apos;;
 
 export default function(...extend) {
@@ -254,7 +255,11 @@ export default function(...extend) {
     {
       key: &apos;validation&apos;,
       components: TextAreaEditValidation
-    }
+    },
+    {
+      key: &apos;layout&apos;,
+      components: TextAreaEditLayout
+    },
   ], ...extend);
 }
 </code></pre>
