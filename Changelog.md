@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.18
+### Fixed
+ - Reverted fix for FJS-723 which caused problems with resource selections.
+
 ## 4.10.0-beta.17
 ### Fixed
  - FJS-887 & FJS-869: Fix (calculated value): manually overridden value is recalculated after component is created again
