@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.9.27.rc.2
+## 4.9.27-rc.3
+### Fixed
+ - Remove pageQuery global cache to resolve formview pro issues.
+ - FJS-905: Fixed setting value by logic in edit grid.
+ - FJS-887/FJS-869: Fix (calculated value): manually overridden value is recalculated after component is created again
+
+### Changed
+ - Upgrade idb@5.0.3, chance@1.1.5, karma@5.0.5, bootstrap@4.5.0, bootswatch@4.5.0, fetch-mock@9.9.0, eslint@7.0.0
+
+## 4.9.27-rc.2
 ### Fixed
  - PDF-63: Update event emitting with noNewEdit flag
 
