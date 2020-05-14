@@ -308,7 +308,7 @@ export default class SignatureComponent extends Input {
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value &amp;&amp; this.refs.signatureImage &amp;&amp; this.options.readOnly) {
+    if (value &amp;&amp; this.refs.signatureImage &amp;&amp; (!flags.noSign || this.options.readOnly)) {
       this.refs.signatureImage.setAttribute(&apos;src&apos;, value);
       this.showCanvas(false);
     }
@@ -338,6 +338,7 @@ export default class SignatureComponent extends Input {
       }
       if (this.refs.signatureImage) {
         this.refs.signatureImage.style.display = &apos;inherit&apos;;
+        this.refs.signatureImage.style.height = &apos;150px&apos;;
       }
     }
   }
