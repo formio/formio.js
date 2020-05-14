@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.27-rc.4
+### Fixed
+ - The panel headers text to be light for certain themes.
+
 ## 4.9.27-rc.3
 ### Fixed
  - Remove pageQuery global cache to resolve formview pro issues.
