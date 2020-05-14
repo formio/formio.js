@@ -22,8 +22,8 @@ if (!fs.existsSync(dir)) {
 const fixComponent = (instance, index = 0) => {
   instance.id = instance.key;
   index++;
-  if (instance.type === 'form') {
-    instance.everyComponent(component => fixComponent(component, index));
+  if (instance.everyComponent) {
+    instance.everyComponent((component) => fixComponent(component, index));
     // if (instance.hasOwnProperty('subForm') && instance.subForm) {
     //   instance.subForm.id = instance.key;
     // }

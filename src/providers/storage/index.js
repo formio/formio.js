@@ -6,10 +6,10 @@ import url from './url';
 import indexeddb from './indexeddb';
 
 export default {
-  base64: base64,
-  dropbox: dropbox,
-  s3: s3,
-  url: url,
-  azure: azure,
-  indexeddb: indexeddb,
+  base64,
+  dropbox,
+  s3,
+  url,
+  azure,
+  indexeddb,
 };

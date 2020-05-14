@@ -113,7 +113,7 @@ export default class SelectBoxesComponent extends RadioComponent {
    * @param value
    * @param flags
    */
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
     _.each(this.refs.input, (input) => {
@@ -139,7 +139,7 @@ export default class SelectBoxesComponent extends RadioComponent {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
 
-    if (maxCount || minCount) {
+    if ((maxCount || minCount) && !this.isValid(data, dirty)) {
       const count = Object.keys(this.validationValue).reduce((total, key) => {
         if (this.validationValue[key]) {
           total++;

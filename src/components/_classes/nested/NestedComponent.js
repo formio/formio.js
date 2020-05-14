@@ -119,6 +119,10 @@ export default class NestedComponent extends Field {
     });
   }
 
+  componentContext() {
+    return this._data;
+  }
+
   get data() {
     return this._data;
   }
@@ -126,24 +130,12 @@ export default class NestedComponent extends Field {
   set data(value) {
     this._data = value;
     this.eachComponent((component) => {
-      component.data = this._data;
+      component.data = this.componentContext(component);
     });
   }
 
   getComponents() {
     return this.components || [];
-  }
-
-  getAllComponents() {
-    return this.getComponents().reduce((components, component) => {
-      let result = component;
-
-      if (component && component.getAllComponents) {
-        result = component.getAllComponents();
-      }
-
-      return components.concat(result);
-    }, []);
   }
 
   /**
@@ -152,7 +144,7 @@ export default class NestedComponent extends Field {
    *
    * @param {function} fn - Called for every component.
    */
-  everyComponent(fn) {
+  everyComponent(fn, options) {
     const components = this.getComponents();
     _.each(components, (component, index) => {
       if (fn(component, components, index) === false) {
@@ -160,18 +152,31 @@ export default class NestedComponent extends Field {
       }
 
       if (typeof component.everyComponent === 'function') {
-        if (component.everyComponent(fn) === false) {
+        if (component.everyComponent(fn, options) === false) {
           return false;
         }
       }
     });
   }
 
+  hasComponent(component) {
+    let result = false;
+
+    this.everyComponent((comp) => {
+      if (comp === component) {
+        result = true;
+        return false;
+      }
+    });
+
+    return result;
+  }
+
   flattenComponents() {
     const result = {};
 
     this.everyComponent((component) => {
-      result[component.key] = component;
+      result[component.component.flattenAs || component.key] = component;
     });
 
     return result;
@@ -251,13 +256,25 @@ export default class NestedComponent extends Field {
    * @param data
    */
   createComponent(component, options, data, before) {
+    if (!component) {
+      return;
+    }
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
     options.root = this.root || this;
+    options.skipInit = true;
     const comp = Components.create(component, options, data, true);
-    comp.isBuilt = true;
+    if (component.key) {
+      let thisPath = this;
+      while (thisPath && !thisPath.allowData && thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      comp.path = thisPath.path ? `${thisPath.path}.` : '';
+      comp.path += component.key;
+    }
+    comp.init();
     if (component.internal) {
       return comp;
     }
@@ -326,6 +343,7 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
       return comp;
@@ -454,17 +472,26 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
+  updateValue(value, flags = {}) {
     return this.components.reduce((changed, comp) => {
       return comp.updateValue(null, flags) || changed;
     }, super.updateValue(value, flags));
   }
 
-  hasChanged() {
-    return false;
+  shouldSkipValidation(data, dirty, row) {
+    // Nested components with no input should not be validated.
+    if (!this.component.input) {
+      return true;
+    }
+    else {
+      return super.shouldSkipValidation(data, dirty, row);
+    }
   }
 
   checkData(data, flags, row, components) {
+    if (this.builderMode) {
+      return true;
+    }
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
@@ -548,6 +575,12 @@ export default class NestedComponent extends Field {
     );
   }
 
+  checkAsyncValidity(data, dirty, row) {
+    const promises = [super.checkAsyncValidity(data, dirty, row)];
+    this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row)));
+    return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
+  }
+
   setPristine(pristine) {
     super.setPristine(pristine);
     this.getComponents().forEach((comp) => comp.setPristine(pristine));
@@ -572,7 +605,8 @@ export default class NestedComponent extends Field {
   }
 
   get errors() {
-    return this.getAllComponents().reduce((errors, comp) => errors.concat(comp.errors || []), []);
+    const thisErrors = this.error ? [this.error] : [];
+    return this.getComponents().reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors);
   }
 
   getValue() {
@@ -581,7 +615,7 @@ export default class NestedComponent extends Field {
 
   resetValue() {
     this.getComponents().forEach((comp) => comp.resetValue());
-    _.unset(this.data, this.key);
+    this.unset();
     this.setPristine(true);
   }
 
@@ -589,29 +623,30 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((component) => component.dataReady));
   }
 
-  setNestedValue(component, value, flags, changed) {
+  setNestedValue(component, value, flags = {}) {
+    component._data = this.componentContext(component);
     if (component.type === 'button') {
       return false;
     }
     if (component.type === 'components') {
-      return component.setValue(value, flags) || changed;
+      return component.setValue(value, flags);
     }
     else if (value && component.hasValue(value)) {
-      return component.setValue(_.get(value, component.key), flags) || changed;
+      return component.setValue(_.get(value, component.key), flags);
     }
-    else if (!this.rootPristine) {
-      flags.noValidate = true;
-      return component.setValue(component.defaultValue, flags) || changed;
+    else if (!this.rootPristine || component.visible) {
+      flags.noValidate = !flags.dirty;
+      flags.resetValue = true;
+      return component.setValue(component.defaultValue, flags);
     }
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     if (!value) {
       return false;
     }
-    flags = flags || {};
     return this.getComponents().reduce((changed, component) => {
-      return this.setNestedValue(component, value, flags, changed);
+      return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);
   }
 }

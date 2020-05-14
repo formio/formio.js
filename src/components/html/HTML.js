@@ -1,4 +1,5 @@
 import Component from '../_classes/component/Component';
+import _ from 'lodash';
 
 export default class HTMLComponent extends Component {
   static schema(...extend) {
@@ -29,7 +30,13 @@ export default class HTMLComponent extends Component {
   }
 
   get content() {
+    if (this.builderMode) {
+      return this.component.content;
+    }
+    const submission = _.get(this.root, 'submission', {});
     return this.component.content ? this.interpolate(this.component.content, {
+      metadata: submission.metadata || {},
+      submission: submission,
       data: this.rootValue,
       row: this.data
     }) : '';
@@ -41,12 +48,14 @@ export default class HTMLComponent extends Component {
 
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
-    if (this.component.refreshOnChange && this.refs.html) {
-      this.setContent(this.refs.html, this.content);
+    if (!this.builderMode && this.component.refreshOnChange && this.element &&
+      this.conditionallyVisible(this.data, this.row)) {
+      this.setContent(this.element, this.renderContent());
     }
   }
 
   renderContent() {
+    const submission = _.get(this.root, 'submission', {});
     return this.renderTemplate('html', {
       component: this.component,
       tag: this.component.tag,
@@ -54,6 +63,8 @@ export default class HTMLComponent extends Component {
         return {
           attr: attr.attr,
           value: this.interpolate(attr.value, {
+            metadata: submission.metadata || {},
+            submission: submission,
             data: this.rootValue,
             row: this.data
           })

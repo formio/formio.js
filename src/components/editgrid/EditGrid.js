@@ -1,14 +1,21 @@
 import _ from 'lodash';
 import equal from 'fast-deep-equal';
 
-import NestedComponent from '../_classes/nested/NestedComponent';
+import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import { fastCloneDeep, Evaluator } from '../../utils/utils';
 import templates from './templates';
 
-export default class EditGridComponent extends NestedComponent {
+const EditRowState = {
+  New: 'new',
+  Editing: 'editing',
+  Saved: 'saved',
+  Removed: 'removed',
+};
+
+export default class EditGridComponent extends NestedArrayComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedArrayComponent.schema({
       type: 'editgrid',
       label: 'Edit Grid',
       key: 'editGrid',
@@ -23,8 +30,8 @@ export default class EditGridComponent extends NestedComponent {
       templates: {
         header: EditGridComponent.defaultHeaderTemplate,
         row: EditGridComponent.defaultRowTemplate,
-        footer: ''
-      }
+        footer: '',
+      },
     }, ...extend);
   }
 
@@ -35,7 +42,7 @@ export default class EditGridComponent extends NestedComponent {
       group: 'data',
       documentation: 'http://help.form.io/userguide/#editgrid',
       weight: 30,
-      schema: EditGridComponent.schema()
+      schema: EditGridComponent.schema(),
     };
   }
 
@@ -79,12 +86,48 @@ export default class EditGridComponent extends NestedComponent {
     return `editgrid-${this.key}`;
   }
 
-  get minLength() {
-    return _.get(this.component, 'validate.minLength', 0);
+  get rowRef() {
+    return `${this.editgridKey}-row`;
   }
 
-  get allowData() {
-    return true;
+  get rowElements() {
+    return this.refs[this.rowRef];
+  }
+
+  get addRowRef() {
+    return `${this.editgridKey}-addRow`;
+  }
+
+  get addRowElements() {
+    return this.refs[this.addRowRef];
+  }
+
+  get saveRowRef() {
+    return `${this.editgridKey}-saveRow`;
+  }
+
+  get saveRowElements() {
+    return this.refs[this.saveRowRef];
+  }
+
+  get cancelRowRef() {
+    return `${this.editgridKey}-cancelRow`;
+  }
+
+  get cancelRowElements() {
+    return this.refs[this.cancelRowRef];
+  }
+
+  get inlineEditMode() {
+    return this.component.inlineEdit;
+  }
+
+  get saveEditMode() {
+    return !this.inlineEditMode;
+  }
+
+  get minLength() {
+    return _.get(this.component, 'validate.minLength', 0);
   }
 
   get data() {
@@ -106,24 +149,13 @@ export default class EditGridComponent extends NestedComponent {
     });
   }
 
+  get iteratableRows() {
+    return this.editRows;
+  }
+
   constructor(...args) {
     super(...args);
     this.type = 'editgrid';
-    // this.editRows = [];
-  }
-
-  getValueAsString() {
-    return '[Complex Data]';
-  }
-
-  hasAddButton() {
-    const maxLength = _.get(this.component, 'validate.maxLength');
-    return !this.component.disableAddingRemovingRows &&
-      !this.options.readOnly &&
-      !this.disabled &&
-      this.fullMode &&
-      !this.options.preview &&
-      (!maxLength || (this.editRows.length < maxLength));
   }
 
   hasRemoveButtons() {
@@ -145,21 +177,34 @@ export default class EditGridComponent extends NestedComponent {
     const openWhenEmpty = !dataValue.length && this.component.openWhenEmpty;
     if (openWhenEmpty) {
       const dataObj = {};
-      this.editRows = [{
-        isOpen: true,
-        data: dataObj,
-        emptyOpen: true,
-        components: this.createRowComponents(dataObj, 0),
-      }];
+      this.editRows = [
+        {
+          components: this.createRowComponents(dataObj, 0),
+          data: dataObj,
+          state: EditRowState.New,
+          backup: null,
+          error: null,
+        },
+      ];
+      if (this.inlineEditMode) {
+        this.dataValue.push(dataObj);
+      }
     }
     else {
       this.editRows = dataValue.map((row, rowIndex) => ({
-        isOpen: false,
-        data: row,
         components: this.createRowComponents(row, rowIndex),
+        data: row,
+        state: EditRowState.Saved,
+        backup: null,
+        error: null,
       }));
     }
+
     this.checkData();
+  }
+
+  isOpen(editRow) {
+    return [EditRowState.New, EditRowState.Editing].includes(editRow.state);
   }
 
   render(children) {
@@ -170,20 +215,25 @@ export default class EditGridComponent extends NestedComponent {
     const dataValue = this.dataValue || [];
     const headerTemplate = Evaluator.noeval ? templates.header : _.get(this.component, 'templates.header');
     return super.render(children || this.renderTemplate('editgrid', {
-      editgridKey: this.editgridKey,
+      ref: {
+        row: this.rowRef,
+        addRow: this.addRowRef,
+        saveRow: this.saveRowRef,
+        cancelRow: this.cancelRowRef,
+      },
       header: this.renderString(headerTemplate, {
         components: this.component.components,
-        value: dataValue
+        value: dataValue,
       }),
       footer: this.renderString(_.get(this.component, 'templates.footer'), {
         components: this.component.components,
-        value: dataValue
+        value: dataValue,
       }),
       rows: this.editRows.map(this.renderRow.bind(this)),
-      openRows: this.editRows.map(row => row.isOpen),
-      errors: this.editRows.map(row => row.error),
+      openRows: this.editRows.map((row) => this.isOpen(row)),
+      errors: this.editRows.map((row) => row.error),
       hasAddButton: this.hasAddButton(),
-      hasRemoveButtons: this.hasRemoveButtons()
+      hasRemoveButtons: this.hasRemoveButtons(),
     }));
   }
 
@@ -193,46 +243,46 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     this.loadRefs(element, {
-      [`${this.editgridKey}-addRow`]: 'multiple',
-      [`${this.editgridKey}-removeRow`]: 'multiple',
-      [`${this.editgridKey}-saveRow`]: 'multiple',
-      [`${this.editgridKey}-cancelRow`]: 'multiple',
-      [this.editgridKey]: 'multiple',
+      [this.addRowRef]: 'multiple',
+      [this.saveRowRef]: 'multiple',
+      [this.cancelRowRef]: 'multiple',
+      [this.rowRef]: 'multiple',
     });
 
-    this.refs[`${this.editgridKey}-addRow`].forEach((addButton) => {
-      this.addEventListener(addButton, 'click', this.addRow.bind(this));
+    this.addRowElements.forEach((addButton) => {
+      this.addEventListener(addButton, 'click', () => this.addRow());
     });
 
     let openRowCount = 0;
-    this.refs[this.editgridKey].forEach((row, rowIndex) => {
-      if (this.editRows[rowIndex].isOpen) {
-        this.attachComponents(row, this.editRows[rowIndex].components);
-        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], 'click', () =>
-          this.saveRow(rowIndex)
-        );
-        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], 'click', () =>
-          this.cancelRow(rowIndex)
-        );
+    this.rowElements.forEach((row, rowIndex) => {
+      const editRow = this.editRows[rowIndex];
+      if (this.isOpen(editRow)) {
+        this.attachComponents(row, editRow.components);
+        this.addEventListener(this.saveRowElements[openRowCount], 'click', () => this.saveRow(rowIndex));
+        this.addEventListener(this.cancelRowElements[openRowCount], 'click', () => this.cancelRow(rowIndex));
         openRowCount++;
       }
       else {
         // Attach edit and remove button events.
         [
           {
-            class: 'removeRow',
+            className: 'removeRow',
             event: 'click',
-            action: this.removeRow.bind(this, rowIndex)
+            action: () => this.removeRow(rowIndex),
           },
           {
-            class: 'editRow',
+            className: 'editRow',
             event: 'click',
-            action: this.editRow.bind(this, rowIndex)
+            action: () => this.editRow(rowIndex),
           },
-        ].forEach(action => {
-          const elements = row.getElementsByClassName(action.class);
-          Array.prototype.forEach.call(elements, element => {
-            this.addEventListener(element, action.event, action.action);
+        ].forEach(({
+          className,
+          event,
+          action,
+        }) => {
+          const elements = row.getElementsByClassName(className);
+          Array.prototype.forEach.call(elements, (element) => {
+            this.addEventListener(element, event, action);
           });
         });
       }
@@ -249,9 +299,21 @@ export default class EditGridComponent extends NestedComponent {
     return super.attach(element);
   }
 
+  clearOnHide(show) {
+    super.clearOnHide(show);
+
+    if (this.component.clearOnHide && !this.visible) {
+      if (!this.editRows) {
+        return;
+      }
+
+      this.removeAllRows();
+    }
+  }
+
   renderRow(row, rowIndex) {
     const dataValue = this.dataValue || [];
-    if (row.isOpen) {
+    if (this.isOpen(row)) {
       return this.renderComponents(row.components);
     }
     else {
@@ -267,48 +329,29 @@ export default class EditGridComponent extends NestedComponent {
           flattenedComponents,
           getView: (component, data) => {
             const instance = flattenedComponents[component.key];
-            return instance ? instance.getView(data) : '';
+            let view = instance ? instance.getView(data) : '';
+
+            if (instance && instance.widget && (view !== '--- PROTECTED ---' )) {
+              if (_.isArray(view)) {
+                view = view.map((value) => instance.widget.getValueAsString(value));
+              }
+              else {
+                view = instance.widget.getValueAsString(view);
+              }
+            }
+
+            return view;
           },
         },
       );
     }
   }
 
-  checkData(data, flags, row) {
-    data = data || this.rootValue;
-    flags = flags || {};
-    row = row || this.data;
-    Component.prototype.checkData.call(this, data, flags, row);
-    return this.editRows.reduce(
-      (valid, editRow) => this.checkRow(data, editRow, flags, editRow.data) && valid,
-      true
-    );
-  }
-
-  checkRow(data, editRow, flags, row) {
-    return super.checkData(data, flags, row, editRow.components);
-  }
-
-  everyComponent(fn, rowIndex) {
-    const components = this.getComponents(rowIndex);
-    _.each(components, (component, index) => {
-      if (fn(component, components, index) === false) {
-        return false;
-      }
-
-      if (typeof component.everyComponent === 'function') {
-        if (component.everyComponent(fn) === false) {
-          return false;
-        }
-      }
-    });
-  }
-
   flattenComponents(rowIndex) {
     const result = {};
 
     this.everyComponent((component) => {
-      result[component.key] = component;
+      result[component.component.flattenAs || component.key] = component;
     }, rowIndex);
 
     return result;
@@ -337,23 +380,27 @@ export default class EditGridComponent extends NestedComponent {
     if (this.options.readOnly) {
       return;
     }
+
     const dataObj = {};
-    this.editRows.push({
-      components: [],
-      isOpen: true,
-      data: dataObj
-    });
-    if (this.component.inlineEdit) {
+    const rowIndex = this.editRows.length;
+    const editRow = {
+      components: this.createRowComponents(dataObj, rowIndex),
+      data: dataObj,
+      state: EditRowState.New,
+      backup: null,
+      error: null,
+    };
+    this.editRows.push(editRow);
+
+    if (this.inlineEditMode) {
       this.dataValue.push(dataObj);
+      this.triggerChange();
     }
-    const rowIndex = this.editRows.length - 1;
-    const editRow = this.editRows[rowIndex];
     this.emit('editGridAddRow', {
       component: this.component,
-      row: editRow
+      row: editRow,
     });
-    editRow.components = this.createRowComponents(editRow.data, rowIndex);
-    this.checkRow(null, editRow, {}, editRow.data);
+    this.checkRow('checkData', null, {}, editRow.data, editRow.components);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -364,37 +411,37 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   addRowModal(rowIndex) {
-    const formComponents =  this.ce('div');
-    formComponents.innerHTML = this.renderComponents(this.editRows[rowIndex].components);
-    const dialog = this.component.modal ? this.createModal(formComponents) : undefined;
-    dialog.refs.dialogContents.appendChild( this.ce('button', {
+    const modalContent =  this.ce('div');
+    const editRow = this.editRows[rowIndex];
+    const { components } = editRow;
+    modalContent.innerHTML = this.renderComponents(components);
+    const dialog = this.component.modal ? this.createModal(modalContent) : undefined;
+    dialog.refs.dialogContents.appendChild(this.ce('button', {
       class: 'btn btn-primary',
       onClick: () => {
-        dialog.close();
-        this.saveRow(rowIndex);
-      }
+        if (this.validateRow(editRow, true)) {
+          dialog.close();
+          this.saveRow(rowIndex);
+        }
+      },
     }, this.component.saveRow || 'Save'));
-    this.attachComponents(formComponents, this.editRows[rowIndex].components);
-  }
-
-  setEditRowSettings(editRow) {
-    editRow.dirty = false;
-    editRow.isOpen = true;
-    editRow.editing = true;
+    this.attachComponents(modalContent, components);
   }
 
   editRow(rowIndex) {
-    const dataValue = this.dataValue || [];
     const editRow = this.editRows[rowIndex];
-    this.setEditRowSettings(editRow);
-    const dataSnapshot = dataValue[rowIndex] ? fastCloneDeep(dataValue[rowIndex]) : {};
-    if (this.component.inlineEdit) {
+    editRow.state = EditRowState.Editing;
+    const dataSnapshot = fastCloneDeep(editRow.data);
+
+    if (this.inlineEditMode) {
       editRow.backup = dataSnapshot;
     }
     else {
+      editRow.backup = editRow.data;
       editRow.data = dataSnapshot;
       this.restoreRowContext(editRow);
     }
+
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -406,7 +453,7 @@ export default class EditGridComponent extends NestedComponent {
   clearErrors(rowIndex) {
     const editRow = this.editRows[rowIndex];
     if (editRow && Array.isArray(editRow.components)) {
-      editRow.components.forEach(comp => {
+      editRow.components.forEach((comp) => {
         comp.setPristine(true);
         comp.setCustomValidity('');
       });
@@ -414,34 +461,35 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   cancelRow(rowIndex) {
-    const editRow = this.editRows[rowIndex];
     if (this.options.readOnly) {
-      editRow.dirty = false;
-      editRow.isOpen = false;
-      editRow.editing = false;
-      this.redraw();
       return;
     }
-    if (editRow.editing) {
-      const dataValue = this.dataValue || [];
-      editRow.dirty = false;
-      editRow.isOpen = false;
-      editRow.editing = false;
-      if (this.component.inlineEdit) {
-        this.dataValue[rowIndex] = editRow.backup;
+
+    const editRow = this.editRows[rowIndex];
+    switch (editRow.state) {
+      case EditRowState.New: {
+        editRow.state = EditRowState.Removed;
+
+        this.clearErrors(rowIndex);
+        this.destroyComponents(rowIndex);
+        if (this.inlineEditMode) {
+          this.splice(rowIndex);
+        }
+        this.editRows.splice(rowIndex, 1);
+        break;
+      }
+      case EditRowState.Editing: {
+        editRow.state = EditRowState.Saved;
+
+        if (this.inlineEditMode) {
+          this.dataValue[rowIndex] = editRow.backup;
+        }
         editRow.data = editRow.backup;
+        editRow.backup = null;
         this.restoreRowContext(editRow);
+        this.clearErrors(rowIndex);
+        break;
       }
-      editRow.data = dataValue[rowIndex] || {};
-      this.clearErrors(rowIndex);
-    }
-    else {
-      this.clearErrors(rowIndex);
-      this.destroyComponents(rowIndex);
-      if (this.component.inlineEdit) {
-        this.splice(rowIndex);
-      }
-      this.editRows.splice(rowIndex, 1);
     }
 
     this.checkValidity(null, true);
@@ -449,35 +497,37 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   saveRow(rowIndex) {
-    const editRow = this.editRows[rowIndex];
     if (this.options.readOnly) {
-      editRow.dirty = false;
-      editRow.isOpen = false;
-      this.redraw();
       return;
     }
-    editRow.dirty = true;
-    if (!!this.validateRow(editRow, true) !== true) {
+
+    const editRow = this.editRows[rowIndex];
+    if (!this.validateRow(editRow, true)) {
       return false;
     }
 
-    if (!this.component.inlineEdit) {
+    if (this.saveEditMode) {
       const dataValue = this.dataValue || [];
-      if (editRow.editing) {
-        dataValue[rowIndex] = editRow.data;
-      }
-      else {
-        // Insert this row into its proper place.
-        const newIndex = dataValue.length;
-        dataValue.push(editRow.data);
-        this.editRows.splice(rowIndex, 1);
-        this.editRows.splice(newIndex, 0, editRow);
-        rowIndex = newIndex;
+      switch (editRow.state) {
+        case EditRowState.New: {
+          const newIndex = dataValue.length;
+          dataValue.push(editRow.data);
+          if (rowIndex !== newIndex) {
+            this.editRows.splice(rowIndex, 1);
+            this.editRows.splice(newIndex, 0, editRow);
+          }
+          break;
+        }
+        case EditRowState.Editing: {
+          dataValue[rowIndex] = editRow.data;
+          break;
+        }
       }
     }
-    editRow.dirty = false;
-    editRow.isOpen = false;
-    editRow.editing = false;
+
+    editRow.state = EditRowState.Saved;
+    editRow.backup = null;
+
     this.updateValue();
     this.triggerChange();
     this.checkValidity(null, true);
@@ -486,16 +536,27 @@ export default class EditGridComponent extends NestedComponent {
     return true;
   }
 
+  updateComponentsRowIndex(components, rowIndex) {
+    components.forEach((component, colIndex) => {
+      component.rowIndex = rowIndex;
+      component.row = `${rowIndex}-${colIndex}`;
+    });
+  }
+
   updateRowsComponents(rowIndex) {
-    for (let i = rowIndex; i < this.editRows.length; i++) {
-      this.updateComponentsRowIndex(this.editRows[i].components, i);
-    }
+    this.editRows.slice(rowIndex).forEach((row, index) => {
+      this.updateComponentsRowIndex(row.components, index);
+    });
   }
 
   removeRow(rowIndex) {
     if (this.options.readOnly) {
       return;
     }
+
+    const editRow = this.editRows[rowIndex];
+    editRow.state = EditRowState.Removed;
+
     this.destroyComponents(rowIndex);
     this.splice(rowIndex);
     this.editRows.splice(rowIndex, 1);
@@ -507,46 +568,55 @@ export default class EditGridComponent extends NestedComponent {
     this.redraw();
   }
 
-  updateComponentsRowIndex(components, rowIndex) {
-    components.forEach((component, colIndex) => {
-      component.rowIndex = rowIndex;
-      component.row = `${rowIndex}-${colIndex}`;
-    });
+  removeAllRows() {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    const editRows = this.editRows || [];
+    const rowIndex = editRows.length - 1;
+
+    for (let index = rowIndex; index >= 0; index--) {
+      this.removeRow(index);
+    }
   }
 
   createRowComponents(row, rowIndex) {
-    const components = [];
-    this.component.components.map((col, colIndex) => {
+    return this.component.components.map((col, colIndex) => {
       const column = _.clone(col);
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.onChange = (flags, changed, modified) => {
-        if (this.component.inlineEdit && this.options.onChange) {
-          this.options.onChange(flags, changed, modified);
+        const editRow = this.editRows[rowIndex];
+        if (this.inlineEditMode) {
+          this.triggerRootChange(flags, changed, modified);
         }
-        else if (this.editRows[rowIndex]) {
-          this.checkRow(null, this.editRows[rowIndex], {
-            changed
-          }, this.editRows[rowIndex].data);
+        else if (editRow) {
+          this.checkRow('checkData', null, {
+            changed,
+          }, editRow.data, editRow.components);
         }
       };
+
       const comp = this.createComponent(_.assign({}, column, {
-        row: options.row
+        row: options.row,
       }), options, row);
       comp.rowIndex = rowIndex;
-      components.push(comp);
+      if (comp.path && column.key) {
+        comp.path = comp.path.replace(new RegExp(`\\.${column.key}$`), `[${rowIndex}].${column.key}`);
+      }
+
+      return comp;
     });
-    return components;
   }
 
   validateRow(editRow, dirty) {
     let valid = true;
-    const isDirty = dirty || !!editRow.dirty;
-    if (editRow.editing || isDirty) {
+    if (editRow.state === EditRowState.Editing || dirty) {
       editRow.components.forEach(comp => {
-        comp.setPristine(!isDirty);
-        valid &= comp.checkValidity(null, isDirty, editRow.data);
+        comp.setPristine(!dirty);
+        valid &= comp.checkValidity(null, dirty, editRow.data);
       });
     }
 
@@ -560,7 +630,7 @@ export default class EditGridComponent extends NestedComponent {
         valid = false;
       }
       else {
-        delete editRow.error;
+        editRow.error = null;
       }
       if (valid === null) {
         valid = `Invalid row validation for ${this.key}`;
@@ -573,13 +643,18 @@ export default class EditGridComponent extends NestedComponent {
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
+
+    if (!this.checkCondition(row, data)) {
+      this.setCustomValidity('');
+      return true;
+    }
+
     return this.checkComponentValidity(data, dirty, row);
   }
 
   checkComponentValidity(data, dirty, row) {
-    if (!this.checkCondition(row, data)) {
-      this.setCustomValidity('');
-      return true;
+    if (!super.checkComponentValidity(data, dirty, row)) {
+      return false;
     }
 
     let rowsValid = true;
@@ -591,14 +666,14 @@ export default class EditGridComponent extends NestedComponent {
       rowsValid &= rowValid;
 
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
-      rowsEditing |= (dirty && (editRow.editing || editRow.isOpen));
+      rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
     if (!rowsValid) {
       this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
-    else if (rowsEditing && !this.component.inlineEdit) {
+    else if (rowsEditing && this.saveEditMode) {
       this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }
@@ -612,14 +687,12 @@ export default class EditGridComponent extends NestedComponent {
     const value = super.defaultValue;
     const defaultValue = Array.isArray(value) ? value : [];
 
-    for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {
-      defaultValue.push({});
-    }
+    _.times(this.minLength - defaultValue.length, () => defaultValue.push({}));
 
     return defaultValue;
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     if (equal(this.defaultValue, value)) {
       return false;
     }
@@ -641,28 +714,23 @@ export default class EditGridComponent extends NestedComponent {
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
-      const editRow = this.editRows[rowIndex];
+      let editRow = this.editRows[rowIndex];
       if (editRow) {
         editRow.data = row;
-        if (editRow.isOpen) {
-          if (editRow.emptyOpen) {
-            editRow.isOpen = false;
-          }
-          else {
-            editRow.components.forEach(col => {
-              col.data = row;
-              col.setValue(row[col.key], flags);
-            });
-          }
-        }
+        this.restoreRowContext(editRow, flags);
+        editRow.state = EditRowState.Saved;
+        editRow.backup = null;
+        editRow.error = null;
       }
       else {
-        this.editRows[rowIndex] = {
+        editRow = this.editRows[rowIndex] = {
           components: this.createRowComponents(row, rowIndex),
-          isOpen: false,
           data: row,
+          state: EditRowState.Saved,
+          backup: null,
+          error: null,
         };
-        this.checkRow(null, this.editRows[rowIndex], {}, this.editRows[rowIndex].data);
+        this.checkRow('checkData', null, {}, editRow.data, editRow.components);
       }
     });
     this.updateOnChange(flags, changed);
@@ -672,23 +740,12 @@ export default class EditGridComponent extends NestedComponent {
     return changed;
   }
 
-  /**
-   * Get the value of this component.
-   *
-   * @returns {*}
-   */
-  getValue() {
-    return this.dataValue;
-  }
-
-  restoreComponentsContext() {
-    return;
-  }
-
-  restoreRowContext(editRow) {
-    editRow.components.forEach((component) => component.data = editRow.data);
+  restoreRowContext(editRow, flags = {}) {
+    editRow.components.forEach((component) => {
+      component.data = editRow.data;
+      this.setNestedValue(component, editRow.data, flags);
+    });
   }
 }
 
 EditGridComponent.prototype.hasChanged = Component.prototype.hasChanged;
-EditGridComponent.prototype.updateValue = Component.prototype.updateValue;

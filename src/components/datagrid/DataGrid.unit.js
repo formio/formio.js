@@ -7,6 +7,7 @@ import DataGridComponent from './DataGrid';
 import {
   comp1,
   comp2,
+  comp3,
   withDefValue,
   withRowGroupsAndDefValue,
 } from './fixtures';
@@ -16,6 +17,15 @@ describe('DataGrid Component', () => {
     return Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 3);
     });
+  });
+
+  it('Should not skip validation on input nested components', done => {
+    Harness.testCreate(DataGridComponent, comp1)
+      .then(cmp => {
+        expect(cmp.shouldSkipValidation()).to.be.false;
+        done();
+      }, done)
+      .catch(done);
   });
 
   it('Should get and set values within the grid.', () => {
@@ -198,6 +208,14 @@ describe('DataGrid Panels', () => {
           lastName: ''
         }
       ]);
+    });
+  });
+});
+
+describe('Datagrid disabling', () => {
+  it('Child components should be disabled', () => {
+    return Harness.testCreate(DataGridComponent, comp3).then((component) => {
+      assert.equal(component.components.reduce((acc, child) => acc && child.parentDisabled, true), true);
     });
   });
 });

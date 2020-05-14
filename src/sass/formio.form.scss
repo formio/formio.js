@@ -1,3 +1,6 @@
+$dialog-z-index: 10000;
+$autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
+
 .formio-form {
   position: relative;
   min-height: 80px;
@@ -27,10 +30,22 @@
 .builder-component.has-error .invalid-feedback,
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
-.formio-component.alert-warning .invalid-feedback {
+.formio-component.has-message .invalid-feedback {
   display: block;
   color: inherit;
   margin-top: 4px;
+}
+
+.formio-errors {
+  .error {
+    color: #dc3545;
+  }
+  .warning {
+    color: #856404;
+  }
+  .info {
+    color: #004085;
+  }
 }
 
 .formio-wysiwyg-editor {
@@ -264,6 +279,7 @@ td > .form-group {
   padding-right: 16px;
   border-left: unset;
   border-right: 1px solid #008fa1;
+  overflow: hidden;
 }
 /* end fix for choices.js deletable items in rtl */
 
@@ -351,7 +367,7 @@ td > .form-group {
   position: fixed;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  z-index: 10000;
+  z-index: $dialog-z-index;
   top: 0;
   right: 0;
   bottom: 0;
@@ -661,6 +677,10 @@ body.formio-dialog-open {
   position: relative;
 }
 
+.formio-hidden {
+  margin: 0;
+}
+
 .control-label--hidden {
   position: absolute;
   top: 6px;
@@ -684,7 +704,8 @@ body.formio-dialog-open {
   z-index: 2;
 }
 
-.formio-component-hidden,
+/* Fix for Hidden checkbox in component editform. */
+.formio-component-hidden:not(.formio-component-checkbox),
 .formio-component-datasource {
   margin-bottom: 0;
 }
@@ -993,6 +1014,10 @@ div[data-oembed-url] {
   margin-left: 10px;
 }
 
+.open-modal-button {
+  width: 100%;
+  text-align: left;
+}
 
 /* ckeditor5-image/theme/image.css */
 .formio-component-content .image {
@@ -1090,4 +1115,70 @@ div[data-oembed-url] {
 .formio-component-content[dir="rtl"] blockquote {
   border-left: 0;
   border-right: solid 5px hsl(0, 0%, 80%);
+}
+
+.formio-component-address.formio-component-label-hidden {
+  & > label.field-required {
+    z-index: 1;
+
+    & ~ .address-autocomplete-container .address-autocomplete-remove-value-icon {
+      right: 20px;
+    }
+  }
+}
+
+.address-autocomplete-container {
+  position: relative;
+
+  .address-autocomplete-remove-value-icon {
+    cursor: pointer;
+    position: absolute;
+    margin-top: -9px;
+    right: 10px;
+    top: 50%;
+
+    &--hidden {
+      display: none;
+    }
+  }
+}
+
+.autocomplete {
+  background: white;
+  font: 14px/22px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid rgba(50, 50, 50, 0.6);
+  z-index: $autocomplete-in-dialog-z-index;
+}
+
+.autocomplete > div {
+  cursor: pointer;
+  padding: 6px 10px;
+}
+
+.autocomplete > div:hover:not(.group),
+.autocomplete > div.selected {
+  background: #1e90ff;
+  color: #ffffff;
+}
+
+.field-wrapper {
+  display: flex;
+
+  &--reverse {
+    flex-direction: row-reverse;
+  }
+
+  .field-label--right {
+    text-align: right;
+  }
+}
+
+.formio-component-modal-wrapper {
+  margin-bottom: 10px;
+
+  .component-rendering-hidden {
+    visibility: hidden;
+  }
 }

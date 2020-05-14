@@ -17,6 +17,23 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
+    this.on('iframe-change', (submission) => this.setValue(submission, {
+      fromIframe: true
+    }), true);
+
+    this.on('iframe-getIframePositions', () => {
+      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
+      this.postMessage({
+        name: 'iframePositions',
+        data: {
+          iframe: {
+            top: iframeBoundingClientRect.top
+          },
+          scrollY: window.scrollY || window.pageYOffset
+        }
+      });
+    });
+
     // Trigger when this form is ready.
     this.on('iframe-ready', () => {
       return this.iframeReadyResolve();
@@ -24,24 +41,48 @@ export default class PDF extends Webform {
   }
 
   render() {
+    this.submitButton = this.addComponent({
+      input: true,
+      type: 'button',
+      action: 'submit',
+      internal: true,
+      label: 'Submit',
+      key: 'submit',
+      ref: 'button'
+    });
+
     return this.renderTemplate('pdf', {
+      submitButton: this.submitButton.render(),
       classes: 'formio-form-pdf',
       children: this.renderComponents()
     });
   }
 
   redraw() {
-    return super.redraw();
+    this.postMessage({ name: 'redraw' });
+    return this.builderMode ? NativePromise.resolve() : super.redraw();
+  }
+
+  rebuild() {
+    if (this.builderMode && this.component.components) {
+      return NativePromise.resolve();
+    }
+    this.postMessage({ name: 'redraw' });
+    return super.rebuild();
   }
 
   attach(element) {
     return super.attach(element).then(async() => {
       this.loadRefs(element, {
-        submitButton: 'single',
+        button: 'single',
+        buttonMessageContainer: 'single',
+        buttonMessage: 'single',
         zoomIn: 'single',
         zoomOut: 'single',
         iframeContainer: 'single'
       });
+      this.submitButton.refs = { ...this.refs };
+      this.submitButton.attachButton();
 
       // Reset the iframeReady promise.
       this.iframeReady = new NativePromise((resolve, reject) => {
@@ -94,11 +135,10 @@ export default class PDF extends Webform {
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
-      const submitButton = this.components.find(c => c.element === this.refs.submitButton);
-      this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
-
-      // Submit the form if they click the submit button.
-      this.addEventListener(this.refs.submitButton, 'click', () => this.submit());
+      const submitButton = this.components.find(c => c.element === this.refs.button);
+      if (submitButton) {
+        this.refs.button.classList.toggle('hidden', !submitButton.visible);
+      }
 
       this.addEventListener(this.refs.zoomIn, 'click', (event) => {
         event.preventDefault();
@@ -141,6 +181,7 @@ export default class PDF extends Webform {
    * @return {*}
    */
   submitForm(options = {}) {
+    this.postMessage({ name: 'getErrors' });
     return this.getSubmission().then(() => super.submitForm(options));
   }
 
@@ -172,6 +213,10 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
+    if (this.builderMode && this.form.components) {
+      this.postMessage({ name: 'form', data: this.form });
+      return NativePromise.resolve();
+    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -189,7 +234,7 @@ export default class PDF extends Webform {
    * @param submission
    * @param flags
    */
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
@@ -244,8 +289,43 @@ export default class PDF extends Webform {
     });
   }
 
+  focusOnComponent(key) {
+    this.postMessage({
+      name: 'focusErroredField',
+      data: key,
+    });
+  }
+
   // Do not clear the iframe.
   clear() {}
+
+  showErrors(error, triggerEvent) {
+    const helpBlock = document.getElementById('submit-error');
+
+    if (!helpBlock) {
+      const p = this.ce('p', { class: 'help-block' });
+
+      this.setContent(p, this.t('submitError'));
+      p.addEventListener('click', () => {
+        window.scrollTo(0, 0);
+      });
+
+      const div = this.ce('div', { id: 'submit-error', class: 'has-error' });
+
+      this.appendTo(p, div);
+      this.appendTo(div, this.element);
+    }
+
+    if (!this.errors.length && helpBlock) {
+      helpBlock.remove();
+    }
+
+    if (this.errors.length) {
+      this.focusOnComponent(this.errors[0].component.key);
+    }
+
+    super.showErrors(error, triggerEvent);
+  }
 }
 
 /**

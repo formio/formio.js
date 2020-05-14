@@ -9,16 +9,11 @@ export default {
   'clearOnHide': true,
   'unique': false,
   'persistent': true,
-  'map': {
-    'region': '',
-    'key': '',
-    'autocompleteOptions': null,
-    'autocompleteFilter': null
-  },
+  'provider': 'nominatim',
   'validate': {
     'customPrivate': false,
     'custom': '',
-    'required': false
+    'required': false,
   },
   'type': 'address',
   'tags': [
@@ -27,6 +22,50 @@ export default {
   'conditional': {
     'show': '',
     'when': null,
-    'eq': ''
-  }
+    'eq': '',
+  },
+  'components': [
+    {
+      label: 'Street',
+      tableView: true,
+      key: 'street',
+      type: 'textfield',
+      input: true,
+    },
+    {
+      label: 'City',
+      tableView: true,
+      key: 'city',
+      type: 'textfield',
+      input: true,
+    },
+    {
+      label: 'County',
+      tableView: true,
+      key: 'county',
+      type: 'textfield',
+      input: true,
+    },
+    {
+      label: 'State',
+      tableView: true,
+      key: 'state',
+      type: 'textfield',
+      input: true,
+    },
+    {
+      label: 'Zip Code',
+      tableView: true,
+      key: 'zip',
+      type: 'textfield',
+      input: true,
+    },
+    {
+      label: 'Country',
+      tableView: true,
+      key: 'country',
+      type: 'textfield',
+      input: true,
+    },
+  ],
 };

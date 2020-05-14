@@ -101,8 +101,7 @@ var onBuild = function(build) {
 var onReady = function() {
   var jsonElement = document.getElementById('json');
   var formElement = document.getElementById('formio');
-  builder.instance.on('saveComponent', onBuild);
-  builder.instance.on('editComponent', onBuild);
+  builder.instance.on('change', onBuild);
 };
 
 var setDisplay = function(display) {
