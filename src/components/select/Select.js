@@ -186,7 +186,12 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
-      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
+      value: _.isObject(value) && this.valueProperty
+        ? value
+        : _.isObject(value) && !this.valueProperty
+          ? this.interpolate(this.component.template, { item: value }).replace(/<\/?[^>]+(>|$)/g, '')
+          : _.isNull(value)
+            ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
     };
 
