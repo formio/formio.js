@@ -211,6 +211,7 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
+            this.restoreValue();
           }
         });
       });
@@ -307,7 +308,6 @@ export default class FormComponent extends Component {
         this.subForm.url = this.formSrc;
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
-        this.restoreValue();
         return this.subForm;
       });
     });
