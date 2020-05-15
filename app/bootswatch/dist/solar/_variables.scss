@@ -1,4 +1,4 @@
-// Solar 4.3.1
+// Solar 4.5.0
 // Bootswatch
 
 //
@@ -136,6 +136,15 @@ $popover-bg:                        $gray-800 !default;
 $popover-border-color:              $body-bg !default;
 
 $popover-header-bg:                 $gray-800 !default;
+
+// Toasts
+
+$toast-background-color:            lighten($body-bg, 5%) !default;
+$toast-border-color:                rgba(0,0,0,.2) !default;
+
+$toast-header-color:                $body-color !default;
+$toast-header-background-color:     $toast-background-color !default;
+$toast-header-border-color:         $toast-border-color !default;
 
 // Modals
 

@@ -1,4 +1,4 @@
-// Darkly 4.3.1
+// Darkly 4.5.0
 // Bootswatch
 
 //
@@ -11,7 +11,7 @@ $gray-200: #ebebeb !default;
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
-$gray-600: #999 !default;
+$gray-600: #888 !default;
 $gray-700: #444 !default;
 $gray-800: #303030 !default;
 $gray-900: #222 !default;
@@ -34,7 +34,7 @@ $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
-$light:         $gray-600 !default;
+$light:         $gray-500 !default;
 $dark:          $gray-800 !default;
 
 $yiq-contrasted-threshold:  175 !default;
@@ -57,6 +57,8 @@ $font-size-base:              0.9375rem !default;
 $h1-font-size:                3rem !default;
 $h2-font-size:                2.5rem !default;
 $h3-font-size:                2rem !default;
+
+$text-muted:                  $gray-600 !default;
 
 // Tables
 
@@ -101,11 +103,10 @@ $navbar-padding-y:                  1rem !default;
 $navbar-dark-color:                rgba($white,.6) !default;
 $navbar-dark-hover-color:          $white !default;
 
-$navbar-light-color:                 $white !default;
-$navbar-light-hover-color:           $success !default;
-$navbar-light-active-color:         $white !default;
-$navbar-light-disabled-color:       rgba($white,.3) !default;
-$navbar-light-toggler-border-color: rgba($white,.1) !default;
+$navbar-light-color:                rgba($gray-900, .7) !default;
+$navbar-light-hover-color:          $gray-900 !default;
+$navbar-light-active-color:         $gray-900 !default;
+$navbar-light-toggler-border-color: rgba($gray-900, .1) !default;
 
 // Pagination
 
@@ -140,6 +141,12 @@ $popover-bg:                        $gray-800 !default;
 
 $popover-header-bg:                 $gray-700 !default;
 
+// Toasts
+
+$toast-background-color:            $gray-700 !default;
+
+$toast-header-background-color:     $gray-800 !default;
+
 // Modals
 
 $modal-content-bg:                  $gray-800 !default;
@@ -149,8 +156,6 @@ $modal-header-border-color:         $gray-700 !default;
 
 // Progress bars
 
-$progress-height:                   0.625rem !default;
-$progress-font-size:                0.625rem !default;
 $progress-bg:                       $gray-700 !default;
 
 // List group

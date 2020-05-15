@@ -18,7 +18,7 @@ describe('Number Component', () => {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
-  
+
   it('Should format submissions for table view for French locale', () => {
     return Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
       const value1 = component.getValueAsString(1);
@@ -85,11 +85,9 @@ describe('Number Component', () => {
       valueElement.dispatchEvent(inputEvent);
       valueElement.dispatchEvent(blurEvent);
       assert.equal(valueElement.value, '2.00');
-
     });
   });
-  
-  
+
   it('Should format value on blur for French locale', (done) => {
     Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
       component.root = {
