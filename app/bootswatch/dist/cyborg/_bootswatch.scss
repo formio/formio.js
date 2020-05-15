@@ -1,10 +1,10 @@
-// Cyborg 4.3.1
+// Cyborg 4.5.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Roboto:400,700" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" !default;
 @import url($web-font-path);
 
 // Navbar ======================================================================
@@ -175,6 +175,15 @@ table {
 
 legend {
   color: #fff;
+}
+
+.form-control {
+  background-clip: border-box;
+
+  &:disabled,
+  &[readonly] {
+    border-color: transparent;
+  }
 }
 
 // Navs ========================================================================

@@ -1,6 +1,6 @@
 <div class="mb-2 card border">
   <div class="card-header {{ctx.transform('class', 'bg-' + ctx.component.theme)}}" ref="header">
-    <span class="mb-0 card-title">
+    <span class="mb-0 card-title {% if (ctx.component.theme && ctx.component.theme !== 'default') { %}text-light{% } %}">
       {% if (ctx.component.collapsible) { %}
         <i class="formio-collapse-icon {{ctx.iconClass(ctx.collapsed ? 'plus-square-o' : 'minus-square-o')}} text-muted" data-title="Collapse Panel"></i>
       {% } %}

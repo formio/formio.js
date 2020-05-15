@@ -248,7 +248,13 @@ import each from &apos;lodash/each&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
-import { settingErrors, clearOnHide, manualOverride, validationOnBlur } from &apos;../test/formtest&apos;;
+import {
+  settingErrors,
+  clearOnHide,
+  manualOverride,
+  validationOnBlur,
+  calculateValueWithManualOverride
+} from &apos;../test/formtest&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
@@ -1177,6 +1183,64 @@ describe(&apos;Webform tests&apos;, () =&gt; {
           });
         });
       });
+    });
+  });
+
+  describe(&apos;Calculate Value with allowed manual override&apos;, () =&gt; {
+    it(&apos;Should reset all values correctly.&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(calculateValueWithManualOverride).then(() =&gt; {
+        const dataGrid = form.getComponent(&apos;dataGrid&apos;);
+        dataGrid.setValue([{ label: &apos;yes&apos; }, { label: &apos;no&apos; }]);
+        setTimeout(() =&gt; {
+          expect(form.submission).to.deep.equal({
+            data: {
+              dataGrid: [
+                { label: &apos;yes&apos;, value: &apos;yes&apos; },
+                { label: &apos;no&apos;, value: &apos;no&apos; },
+              ],
+              checkbox: false,
+              submit: false
+            },
+            metadata: {}
+          });
+          const row1Value = form.getComponent([&apos;dataGrid&apos;, 0, &apos;value&apos;]);
+          const row2Value = form.getComponent([&apos;dataGrid&apos;, 1, &apos;value&apos;]);
+          row1Value.setValue(&apos;y&apos;);
+          row2Value.setValue(&apos;n&apos;);
+
+          setTimeout(() =&gt; {
+            expect(form.submission).to.deep.equal({
+              data: {
+                dataGrid: [
+                  { label: &apos;yes&apos;, value: &apos;y&apos; },
+                  { label: &apos;no&apos;, value: &apos;n&apos; },
+                ],
+                checkbox: false,
+                submit: false
+              },
+              metadata: {}
+            });
+            const row1Label = form.getComponent([&apos;dataGrid&apos;, 0, &apos;label&apos;]);
+            row1Label.setValue(&apos;yes2&apos;);
+            setTimeout(() =&gt; {
+              expect(form.submission).to.deep.equal({
+                data: {
+                  dataGrid: [
+                    { label: &apos;yes2&apos;, value: &apos;yes2&apos; },
+                    { label: &apos;no&apos;, value: &apos;n&apos; },
+                  ],
+                  checkbox: false,
+                  submit: false
+                },
+                metadata: {}
+              });
+              done();
+            }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
     });
   });
 

@@ -62,7 +62,7 @@ export default class SignatureComponent extends Input {
   }
 
   labelIsHidden() {
-    return true;
+    return this.component.hideLabel;
   }
 
   setValue(value, flags = {}) {
