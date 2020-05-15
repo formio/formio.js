@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Add translation for html element content
  - Fix (customDefaultValue): make subForms value be set only after they were attached
  - Fix (FormioRequest): handle 416 http code
- - VPAT-363 Fixed issue with custom validation on blur
 
 ### Changed
  - Upgrade bootswatch@4.5.0, fetch-mock@9.9.0
