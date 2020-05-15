@@ -268,16 +268,16 @@ export default class SelectComponent extends Field {
     }
 
     let areItemsEqual;
-
     if (this.isInfiniteScrollProvided) {
       areItemsEqual = this.isSelectURL ? _.isEqual(items, this.downloadedResources) : false;
 
-      const areItemsEnded = this.component.limit > items.length;
+      const areItemsEnded = this.component.limit > items.serverCount;
       const areItemsDownloaded = areItemsEqual
         && this.downloadedResources
         && this.downloadedResources.length === items.length;
 
       if (areItemsEnded) {
+        console.log(88888)
         this.disableInfiniteScroll();
       }
       else if (areItemsDownloaded) {
@@ -560,7 +560,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (forceUpdate || this.additionalResourcesAvailable) {
+        if (forceUpdate || this.additionalResourcesAvailable || this.dataValue.length && !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
