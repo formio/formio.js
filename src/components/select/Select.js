@@ -186,12 +186,7 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
-      value: _.isObject(value) && this.valueProperty
-        ? value
-        : _.isObject(value) && !this.valueProperty
-          ? this.interpolate(this.component.template, { item: value }).replace(/<\/?[^>]+(>|$)/g, '')
-          : _.isNull(value)
-            ? this.emptyValue : String(this.normalizeSingleValue(value)),
+      value: _.isObject(value) ? value : _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
     };
 
@@ -1132,15 +1127,17 @@ export default class SelectComponent extends Field {
       },
 
       object() {
-        if (_.isObject(this.value)) {
-          this.value = JSON.stringify(this.value);
-        }
-
         return this;
       },
 
       auto() {
-        this.value = this.object().string().number().boolean().value;
+        if (_.isObject(this.value)) {
+          this.value = this.object().value;
+        }
+        else {
+          this.value = this.string().number().boolean().value;
+        }
+
         return this;
       }
     };
