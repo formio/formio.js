@@ -32,6 +32,7 @@ export default class SelectComponent extends Field {
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
+      uniqueValues: false,
       tableView: true,
       fuseOptions: {
         include: 'score',
@@ -189,6 +190,14 @@ export default class SelectComponent extends Field {
       value: _.isObject(value) ? value : _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
     };
+
+    const skipOption = this.component.uniqueValues
+      ? !!this.selectOptions.find((selectOption) => _.isEqual(selectOption.value, option.value))
+      : false;
+
+    if (skipOption) {
+      return;
+    }
 
     if (value) {
       this.selectOptions.push(option);
