@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.19
+### Fixed
+ - FJS-903: Fixed number formatting
+ - Fixed select value if valueProperty is not set
+ - FJS-884: fixed select resource values displayed only after second click in edit tab
+ - Fix draft submissions by replacing setSubmission with id change
+ - Add translation for html element content
+ - Fix (customDefaultValue): make subForms value be set only after they were attached
+ - Fix (FormioRequest): handle 416 http code
+ - Fix visual height of display options so that they will completely show. #2804
+ - Fix day component where it was not showing label in builder settings. #2805
+
+### Changed
+ - Upgrade bootswatch@4.5.0, fetch-mock@9.9.0
+
+## 4.10.0-beta.18
+### Fixed
+ - Reverted fix for FJS-723 which caused problems with resource selections.
+
+## 4.10.0-beta.17
+### Fixed
+ - FJS-887 & FJS-869: Fix (calculated value): manually overridden value is recalculated after component is created again
+ - FJS-727: Fixed breadcrumb click logic
+ - FJS-924: fixed signature not displaying tooltip
+ - Fixing panel header colors to be white on non-default panels.
+
 ## 4.10.0-beta.16
 ### Added
  - PDF 48: Added 'Fixed size' checkbox for textarea edit form

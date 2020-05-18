@@ -1,14 +1,13 @@
 export default {
-  label: 'Number',
-  multiple: true,
-  mask: false,
-  tableView: true,
-  alwaysEnabled: false,
-  type: 'number',
-  input: true,
-  key: 'number',
-  delimiter: true,
-  requireDecimal: true,
-  encrypted: false,
-  decimalLimit: 2
+  'label': 'Number',
+  'mask': false,
+  'spellcheck': true,
+  'tableView': true,
+  'delimiter': true,
+  'requireDecimal': true,
+  'inputFormat': 'plain',
+  'key': 'number',
+  'type': 'number',
+  'decimalLimit': 2,
+  'input': true
 };

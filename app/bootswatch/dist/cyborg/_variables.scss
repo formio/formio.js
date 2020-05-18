@@ -1,4 +1,4 @@
-// Cyborg 4.3.1
+// Cyborg 4.5.0
 // Bootswatch
 
 //
@@ -78,10 +78,11 @@ $input-btn-padding-x:       1rem !default;
 
 $input-disabled-bg:              $gray-400 !default;
 
-$input-border-color:             transparent !default;
+$input-border-color:             $white !default;
 
 $input-group-addon-color:           $white !default;
 $input-group-addon-bg:              $gray-700 !default;
+$input-group-addon-border-color:    transparent !default;
 
 $custom-file-color:                 $white !default;
 $custom-file-border-color:          $gray-700 !default;
@@ -137,6 +138,16 @@ $tooltip-opacity:             1 !default;
 // Popovers
 
 $popover-bg:                          $gray-700 !default;
+
+// Toasts
+
+$toast-color:                       $white !default;
+$toast-background-color:            $gray-800 !default;
+$toast-border-color:                $gray-700 !default;
+
+$toast-header-color:                $body-color !default;
+$toast-header-background-color:     $toast-background-color !default;
+$toast-header-border-color:         $toast-border-color !default;
 
 // Modals
 

@@ -165,10 +165,6 @@ export default class SelectComponent extends Field {
       return this.t(data);
     }
 
-    data.data = this.valueProperty === 'data' && _.isObject(data.data)
-      ? JSON.stringify(data.data)
-      : data.data;
-
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
@@ -190,7 +186,7 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
-      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
+      value: _.isObject(value) ? value : _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
       label: label
     };
 
@@ -564,7 +560,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (forceUpdate || this.additionalResourcesAvailable) {
+        if (forceUpdate || this.additionalResourcesAvailable || this.dataValue.length && !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
@@ -1131,15 +1127,17 @@ export default class SelectComponent extends Field {
       },
 
       object() {
-        if (_.isObject(this.value)) {
-          this.value = JSON.stringify(this.value);
-        }
-
         return this;
       },
 
       auto() {
-        this.value = this.object().string().number().boolean().value;
+        if (_.isObject(this.value)) {
+          this.value = this.object().value;
+        }
+        else {
+          this.value = this.string().number().boolean().value;
+        }
+
         return this;
       }
     };

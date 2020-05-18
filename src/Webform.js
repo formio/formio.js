@@ -774,22 +774,16 @@ export default class Webform extends NestedDataComponent {
       console.warn(this.t('saveDraftAuthError'));
       return;
     }
-    const draft = this.submission;
+    const draft = fastCloneDeep(this.submission);
     draft.state = 'draft';
+
     if (!this.savingDraft) {
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
-        const currentSubmission = _.merge(sub, draft);
-
+        // Set id to submission to avoid creating new draft submission
+        this.submission._id = sub._id;
+        this.savingDraft = false;
         this.emit('saveDraft', sub);
-        if (!draft._id) {
-          this.setSubmission(currentSubmission).then(() => {
-            this.savingDraft = false;
-          });
-        }
-        else {
-          this.savingDraft = false;
-        }
       });
     }
   }

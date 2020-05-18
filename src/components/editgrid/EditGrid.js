@@ -708,7 +708,12 @@ export default class EditGridComponent extends NestedArrayComponent {
         };
       }
     });
-    const { length: dataLength } = this.dataValue;
+    let { length: dataLength } = this.dataValue;
+
+    // If the last row is a new row, then do not remove it.
+    if (this.editRows[dataLength] && (this.editRows[dataLength].state === EditRowState.New)) {
+      dataLength = (dataLength + 1);
+    }
     this.editRows.slice(dataLength).forEach((editRow, index) => this.baseRemoveRow(dataLength + index));
     this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);

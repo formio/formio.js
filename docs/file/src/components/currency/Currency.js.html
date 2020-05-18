@@ -326,9 +326,6 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   parseValue(value) {
-    if (typeof value === &apos;string&apos;) {
-      value = value.split(this.delimiter).join(&apos;&apos;).replace(this.decimalSeparator, &apos;.&apos;);
-    }
     return super.parseValue(this.stripPrefixSuffix(value));
   }
 

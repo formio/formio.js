@@ -2605,7 +2605,10 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don&apos;t calculate a value for a hidden field set to clear when hidden)
-    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)) {
+    const { hidden, clearOnHide } = this.component;
+    const shouldBeCleared = (!this.visible || hidden) &amp;&amp; clearOnHide &amp;&amp; !this.rootPristine;
+
+    if (!this.component.calculateValue || shouldBeCleared) {
       return false;
     }
 
@@ -2621,21 +2624,6 @@ export default class Component extends Element {
       this.calculatedValue = null;
     }
 
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &amp;&amp;
-      this.calculatedValue &amp;&amp;
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(this.calculatedValue))
-    ) {
-      return false;
-    }
-
-    if (flags.fromSubmission &amp;&amp;
-      allowOverride &amp;&amp;
-      this.calculatedValue !== this.dataValue) {
-      return false;
-    }
-
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
@@ -2643,12 +2631,32 @@ export default class Component extends Element {
       row: row || this.data
     }, &apos;value&apos;) || this.emptyValue;
 
+    const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
+    const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
+
+    // Check to ensure that the calculated value is different than the previously calculated value.
+    if (
+      allowOverride &amp;&amp;
+      this.calculatedValue &amp;&amp;
+      !_.isEqual(dataValue, currentCalculatedValue) &amp;&amp;
+      _.isEqual(newCalculatedValue, currentCalculatedValue)) {
+      return false;
+    }
+
+    if (flags.fromSubmission &amp;&amp;
+      allowOverride &amp;&amp;
+      currentCalculatedValue !== this.dataValue) {
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
+
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
       allowOverride &amp;&amp;
       firstPass &amp;&amp;
       !this.isEmpty(dataValue) &amp;&amp;
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue))
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue)) &amp;&amp;
+      !_.isEqual(calculatedValue, this.convertNumberOrBoolToString(calculatedValue))
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
