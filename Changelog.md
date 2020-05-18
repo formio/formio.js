@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Add translation for html element content
  - Fix (customDefaultValue): make subForms value be set only after they were attached
  - Fix (FormioRequest): handle 416 http code
+ - Fix visual height of display options so that they will completely show. #2804
+ - Fix day component where it was not showing label in builder settings. #2805
 
 ### Changed
  - Upgrade bootswatch@4.5.0, fetch-mock@9.9.0
