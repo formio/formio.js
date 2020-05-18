@@ -574,7 +574,7 @@ export default class SelectComponent extends Field {
         break;
       }
       case 'url': {
-        if (!forceUpdate && !this.active) {
+        if (!forceUpdate && !this.active && !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
           return;
         }
