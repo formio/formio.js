@@ -113,7 +113,7 @@ export default class FormComponent extends Component {
   }
 
   getSubOptions(options = {}) {
-    options.parentPath = `${this.calculatedPath}.data.`;
+    options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
