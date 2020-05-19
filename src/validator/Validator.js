@@ -802,7 +802,7 @@ class ValidationChecker {
       return result ? {
         message: _.get(result, 'message', result),
         level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: getArrayFromComponentPath(component.calculatedPath || ''),
+        path: getArrayFromComponentPath(component.path || ''),
         context: {
           validator: validatorName,
           setting,
