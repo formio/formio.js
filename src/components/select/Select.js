@@ -191,7 +191,7 @@ export default class SelectComponent extends Field {
       label: label
     };
 
-    const skipOption = this.component.uniqueValues
+    const skipOption = this.component.uniqueOptions
       ? !!this.selectOptions.find((selectOption) => _.isEqual(selectOption.value, option.value))
       : false;
 

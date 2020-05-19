@@ -118,9 +118,9 @@ describe('Select Component', () => {
     });
   });
 
-  it('should have only unique dropdown values', function(done) {
+  it('should have only unique dropdown options', function(done) {
     comp5.template = '<span>{{ item.label }}</span>';
-    comp5.uniqueValues = true;
+    comp5.uniqueOptions = true;
     Harness.testCreate(SelectComponent, comp5).then((component) => {
       component.setItems([{
         'label': 'Label 1',
