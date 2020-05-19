@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-beta.20
+### Reverted
+ - Fix (customDefaultValue): make subForms value be set only after they were attached
+ 
+### Fixed
+ - Fix components path. (Standardize the way to find a components path)
+
 ## 4.10.0-beta.19
 ### Fixed
  - FJS-903: Fixed number formatting
