@@ -252,6 +252,12 @@ export default class NestedComponent extends Field {
     return comp;
   }
 
+  /**
+   * Return a path of component's value.
+   *
+   * @param {Object} component - The component instance.
+   * @return {string} - The component's value path.
+   */
   calculateComponentPath(component) {
     let path = '';
     if (component.component.key) {
