@@ -118,7 +118,7 @@ export default class ButtonComponent extends Field {
         this.disabled = true;
       }, true);
       this.on('submitDone', (message) => {
-        let resultMessage = message || this.t('complete');
+        const resultMessage = message || this.t('complete');
         this.loading = false;
         this.disabled = false;
         this.addClass(this.refs.button, 'btn-success submit-success');
@@ -128,7 +128,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        let resultMessage = message || this.t(this.errorMessage('error'));
+        const resultMessage = message || this.t(this.errorMessage('error'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;

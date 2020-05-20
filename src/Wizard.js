@@ -6,7 +6,7 @@ import {
   fastCloneDeep,
   checkCondition,
   firstNonNil,
-  uniqueKey, getArrayFromComponentPath
+  uniqueKey
 } from './utils/utils';
 
 export default class Wizard extends Webform {
