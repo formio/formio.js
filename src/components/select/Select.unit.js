@@ -11,10 +11,23 @@ import {
   multiSelect,
   multiSelectOptions,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from './fixtures';
 
 describe('Select Component', () => {
+  it('should not stringify select option value', function(done) {
+    Harness.testCreate(SelectComponent, comp6).then((component) => {
+      component.setValue({ value:'a', label:'A' });
+
+      assert.equal(component.choices._currentState.items[0].value.value, 'a');
+      assert.equal(typeof component.choices._currentState.items[0].value , 'object');
+      assert.equal(component.dataValue.value, 'a');
+      assert.equal(typeof component.dataValue , 'object');
+      done();
+    });
+  });
+
   it('should return string value for different value types', function(done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const stringValue = component.asString(true);
