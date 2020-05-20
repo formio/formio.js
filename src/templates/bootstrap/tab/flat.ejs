@@ -3,7 +3,10 @@
     <div class="card-header bg-default">
       <h4 class="mb-0 card-title">{{ ctx.t(tab.label) }}</h4>
     </div>
-    <div class="card-body">
+    <div
+      class="card-body"
+      ref="{{ctx.tabKey}}"
+    >
       {{ ctx.tabComponents[index] }}
     </div>
   </div>
