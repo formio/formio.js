@@ -1296,6 +1296,15 @@ export default class SelectComponent extends Field {
     return typeof value === 'number' || typeof value === 'boolean';
   }
 
+  getNormalizedValues() {
+    if (!this.component || !this.component.data || !this.component.data.values) {
+      return;
+    }
+    return this.component.data.values.map(
+      value => ({ label: value.label, value: String(this.normalizeSingleValue(value.value)) })
+    );
+  }
+
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
@@ -1317,7 +1326,7 @@ export default class SelectComponent extends Field {
         valueProperty,
       } = this.component.dataSrc === 'values'
         ? {
-          items: this.component.data.values,
+          items: this.getNormalizedValues(),
           valueProperty: 'value',
         }
         : {
