@@ -2,7 +2,12 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import EventEmitter from 'eventemitter2';
 import NativePromise from 'native-promise-only';
-import { isMongoId, eachComponent } from '../../utils/utils';
+import {
+  isMongoId,
+  eachComponent,
+  getStringFromComponentPath,
+  getArrayFromComponentPath
+} from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
@@ -112,8 +117,19 @@ export default class FormComponent extends Component {
     return this.subFormReady || NativePromise.resolve();
   }
 
+  getComponent(path, fn) {
+    path = getArrayFromComponentPath(path);
+    if (path[0] === 'data') {
+      path.shift();
+    }
+    const originalPathStr = `${this.path}.data.${getStringFromComponentPath(path)}`;
+    if (this.subForm) {
+      return this.subForm.getComponent(path, fn, originalPathStr);
+    }
+  }
+
   getSubOptions(options = {}) {
-    options.parentPath = `${this.calculatedPath}.data.`;
+    options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
@@ -211,7 +227,6 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
-            this.restoreValue();
           }
         });
       });
@@ -308,6 +323,7 @@ export default class FormComponent extends Component {
         this.subForm.url = this.formSrc;
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
+        this.restoreValue();
         return this.subForm;
       });
     });

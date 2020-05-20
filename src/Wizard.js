@@ -2,7 +2,12 @@ import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
 import Formio from './Formio';
-import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from './utils/utils';
+import {
+  fastCloneDeep,
+  checkCondition,
+  firstNonNil,
+  uniqueKey, getArrayFromComponentPath
+} from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -643,6 +648,7 @@ export default class Wizard extends Webform {
 
   focusOnComponent(key) {
     let pageIndex = 0;
+
     const [page] = this.pages.filter((page, index) => {
       if (page.getComponent(key)) {
         pageIndex = index;
