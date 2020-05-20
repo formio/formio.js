@@ -12,9 +12,10 @@ import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
-const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
+const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.2';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
+import TableModule from 'quill-table';
 
 /**
  * This is the Component class
@@ -1902,8 +1903,13 @@ export default class Component extends Element {
         if (!element.parentNode) {
           return NativePromise.reject();
         }
-        this.quill = new Quill(element, settings);
-
+        Quill.register('modules/table', TableModule);
+        this.quill = new Quill(element, {
+          ...settings,
+          modules: {
+            table: true,
+          },
+        });
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
         const txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
