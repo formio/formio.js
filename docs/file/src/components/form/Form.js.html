@@ -244,7 +244,12 @@
 import Component from &apos;../_classes/component/Component&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
-import { isMongoId, eachComponent } from &apos;../../utils/utils&apos;;
+import {
+  isMongoId,
+  eachComponent,
+  getStringFromComponentPath,
+  getArrayFromComponentPath
+} from &apos;../../utils/utils&apos;;
 import Formio from &apos;../../Formio&apos;;
 import Form from &apos;../../Form&apos;;
 
@@ -354,8 +359,19 @@ export default class FormComponent extends Component {
     return this.subFormReady || NativePromise.resolve();
   }
 
+  getComponent(path, fn) {
+    path = getArrayFromComponentPath(path);
+    if (path[0] === &apos;data&apos;) {
+      path.shift();
+    }
+    const originalPathStr = `${this.path}.data.${getStringFromComponentPath(path)}`;
+    if (this.subForm) {
+      return this.subForm.getComponent(path, fn, originalPathStr);
+    }
+  }
+
   getSubOptions(options = {}) {
-    options.parentPath = `${this.calculatedPath}.data.`;
+    options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
@@ -453,7 +469,6 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
-            this.restoreValue();
           }
         });
       });
@@ -550,6 +565,7 @@ export default class FormComponent extends Component {
         this.subForm.url = this.formSrc;
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
+        this.restoreValue();
         return this.subForm;
       });
     });

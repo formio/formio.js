@@ -274,6 +274,7 @@ export default class SelectComponent extends Field {
       template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
       selectFields: &apos;&apos;,
       searchThreshold: 0.3,
+      uniqueOptions: false,
       tableView: true,
       fuseOptions: {
         include: &apos;score&apos;,
@@ -388,6 +389,10 @@ export default class SelectComponent extends Field {
     return super.shouldDisabled || this.parentDisabled;
   }
 
+  isEntireObjectDisplay() {
+    return this.component.dataSrc === &apos;resource&apos; &amp;&amp; this.valueProperty === &apos;data&apos;;
+  }
+
   itemTemplate(data) {
     if (_.isEmpty(data)) {
       return &apos;&apos;;
@@ -405,6 +410,12 @@ export default class SelectComponent extends Field {
     }
     if (typeof data === &apos;string&apos;) {
       return this.t(data);
+    }
+
+    if (data.data) {
+      data.data = this.isEntireObjectDisplay() &amp;&amp; _.isObject(data.data)
+        ? JSON.stringify(data.data)
+        : data.data;
     }
 
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
@@ -428,9 +439,23 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
-      value: _.isObject(value) ? value : _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
+      value: _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
+        ? this.normalizeSingleValue(value)
+        : _.isObject(value)
+          ? value
+          : _.isNull(value)
+            ? this.emptyValue
+            : String(this.normalizeSingleValue(value)),
       label: label
     };
+
+    const skipOption = this.component.uniqueOptions
+      ? !!this.selectOptions.find((selectOption) =&gt; _.isEqual(selectOption.value, option.value))
+      : false;
+
+    if (skipOption) {
+      return;
+    }
 
     if (value) {
       this.selectOptions.push(option);
@@ -816,7 +841,7 @@ export default class SelectComponent extends Field {
         break;
       }
       case &apos;url&apos;: {
-        if (!forceUpdate &amp;&amp; !this.active) {
+        if (!forceUpdate &amp;&amp; !this.active &amp;&amp; !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
           return;
         }
@@ -1336,7 +1361,7 @@ export default class SelectComponent extends Field {
     if (_.isObject(value) &amp;&amp; Object.keys(value).length === 0) {
       return value;
     }
-
+    const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || &apos;auto&apos;;
     const normalize = {
       value,
@@ -1369,6 +1394,10 @@ export default class SelectComponent extends Field {
       },
 
       object() {
+        if (_.isObject(this.value) &amp;&amp; displayEntireObject) {
+          this.value = JSON.stringify(this.value);
+        }
+
         return this;
       },
 
@@ -1529,6 +1558,15 @@ export default class SelectComponent extends Field {
     return typeof value === &apos;number&apos; || typeof value === &apos;boolean&apos;;
   }
 
+  getNormalizedValues() {
+    if (!this.component || !this.component.data || !this.component.data.values) {
+      return;
+    }
+    return this.component.data.values.map(
+      value =&gt; ({ label: value.label, value: String(this.normalizeSingleValue(value.value)) })
+    );
+  }
+
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
@@ -1550,7 +1588,7 @@ export default class SelectComponent extends Field {
         valueProperty,
       } = this.component.dataSrc === &apos;values&apos;
         ? {
-          items: this.component.data.values,
+          items: this.getNormalizedValues(),
           valueProperty: &apos;value&apos;,
         }
         : {

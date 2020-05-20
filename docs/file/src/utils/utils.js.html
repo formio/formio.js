@@ -1352,6 +1352,12 @@ export function isInputComponent(componentJson) {
 }
 
 export function getArrayFromComponentPath(pathStr) {
+  if (!pathStr || !_.isString(pathStr)) {
+    if (!_.isArray(pathStr)) {
+      return [pathStr];
+    }
+    return pathStr;
+  }
   return pathStr.replace(/[[\]]/g, &apos;.&apos;)
     .replace(/\.\./g, &apos;.&apos;)
     .split(&apos;.&apos;)

@@ -253,10 +253,23 @@ import {
   multiSelect,
   multiSelectOptions,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
+  it(&apos;should not stringify select option value&apos;, function(done) {
+    Harness.testCreate(SelectComponent, comp6).then((component) =&gt; {
+      component.setValue({ value:&apos;a&apos;, label:&apos;A&apos; });
+
+      assert.equal(component.choices._currentState.items[0].value.value, &apos;a&apos;);
+      assert.equal(typeof component.choices._currentState.items[0].value , &apos;object&apos;);
+      assert.equal(component.dataValue.value, &apos;a&apos;);
+      assert.equal(typeof component.dataValue , &apos;object&apos;);
+      done();
+    });
+  });
+
   it(&apos;should return string value for different value types&apos;, function(done) {
     Harness.testCreate(SelectComponent, comp4).then((component) =&gt; {
       const stringValue = component.asString(true);
@@ -355,6 +368,29 @@ describe(&apos;Select Component&apos;, () =&gt; {
         &apos;label&apos;: &apos;333&apos;,
         &apos;value&apos;: &apos;333&apos;
       }], false);
+      assert.equal(component.selectOptions.length, 3);
+      done();
+    });
+  });
+
+  it(&apos;should have only unique dropdown options&apos;, function(done) {
+    comp5.template = &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;;
+    comp5.uniqueOptions = true;
+    Harness.testCreate(SelectComponent, comp5).then((component) =&gt; {
+      component.setItems([{
+        &apos;label&apos;: &apos;Label 1&apos;,
+        &apos;value&apos;: &apos;value1&apos;
+      }, {
+        &apos;label&apos;: &apos;Label 2&apos;,
+        &apos;value&apos;: &apos;value2&apos;
+      }, {
+        &apos;label&apos;: &apos;Label 3&apos;,
+        &apos;value&apos;: &apos;value3&apos;
+      }, {
+        &apos;label&apos;: &apos;Label 4&apos;,
+        &apos;value&apos;: &apos;value3&apos;
+      }], false);
+
       assert.equal(component.selectOptions.length, 3);
       done();
     });

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.1
+### Fixed
+ - FJS-723: Added Entire Object option for select with resource
+ - FJS-836: Fix (Select): number values starting with zero failed being displayed in data tab
+ - FJS-907: If there is calculated value, it will override select component's value that is inactive
+ - Fix issue with flatten tabs printing
+
+### Added
+ - Add message props on submit
+ - Add unique values property to select component
+
 ## 4.10.0-beta.20
 ### Reverted
  - Fix (customDefaultValue): make subForms value be set only after they were attached

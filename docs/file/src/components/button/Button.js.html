@@ -359,16 +359,18 @@ export default class ButtonComponent extends Field {
       this.on(&apos;submitButton&apos;, () =&gt; {
         this.disabled = true;
       }, true);
-      this.on(&apos;submitDone&apos;, () =&gt; {
+      this.on(&apos;submitDone&apos;, (message) =&gt; {
+        const resultMessage = message || this.t(&apos;complete&apos;);
         this.loading = false;
         this.disabled = false;
         this.addClass(this.refs.button, &apos;btn-success submit-success&apos;);
         this.removeClass(this.refs.button, &apos;btn-danger submit-fail&apos;);
         this.addClass(this.refs.buttonMessageContainer, &apos;has-success&apos;);
         this.removeClass(this.refs.buttonMessageContainer, &apos;has-error&apos;);
-        this.setContent(this.refs.buttonMessage, this.t(&apos;complete&apos;));
+        this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
-      this.on(&apos;submitError&apos;, () =&gt; {
+      this.on(&apos;submitError&apos;, (message) =&gt; {
+        const resultMessage = message || this.t(this.errorMessage(&apos;error&apos;));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -376,7 +378,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.button, &apos;btn-danger submit-fail&apos;);
         this.removeClass(this.refs.buttonMessageContainer, &apos;has-success&apos;);
         this.addClass(this.refs.buttonMessageContainer, &apos;has-error&apos;);
-        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage(&apos;error&apos;)));
+        this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       onChange = (value, isValid) =&gt; {
         this.removeClass(this.refs.button, &apos;btn-success submit-success&apos;);
