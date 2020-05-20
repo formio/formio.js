@@ -118,6 +118,29 @@ describe('Select Component', () => {
     });
   });
 
+  it('should have only unique dropdown options', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    comp5.uniqueOptions = true;
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      component.setItems([{
+        'label': 'Label 1',
+        'value': 'value1'
+      }, {
+        'label': 'Label 2',
+        'value': 'value2'
+      }, {
+        'label': 'Label 3',
+        'value': 'value3'
+      }, {
+        'label': 'Label 4',
+        'value': 'value3'
+      }], false);
+
+      assert.equal(component.selectOptions.length, 3);
+      done();
+    });
+  });
+
   it('should set multiple selected values not repeating them', function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);
