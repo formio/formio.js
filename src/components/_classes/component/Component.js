@@ -7,6 +7,7 @@ import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
+import TableModule from 'quill-table';
 import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
@@ -15,7 +16,6 @@ const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.2';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
-import TableModule from 'quill-table';
 
 /**
  * This is the Component class
@@ -1907,9 +1907,10 @@ export default class Component extends Element {
         this.quill = new Quill(element, {
           ...settings,
           modules: {
-            table: true,
-          },
+            table: true
+          }
         });
+
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
         const txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
