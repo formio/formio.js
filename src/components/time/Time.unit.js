@@ -1,34 +1,42 @@
 import Harness from '../../../test/harness';
 import assert from 'power-assert';
 import TimeComponent from './Time';
+import { timeForm } from './fixtures';
 
 import {
   comp1,
   comp2
 } from './fixtures';
+import Webform from '../../Webform';
 
 describe('Time Component', () => {
   it('Should build a time component', () => {
     return Harness.testCreate(TimeComponent, comp1);
   });
 
-  it('Should show error if value does not correspond to the mask', (done) => {
-    Harness.testCreate(TimeComponent, comp2).then((component) => {
+  it('Should format value on blur', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(timeForm).then(() => {
+      const component = form.components[0];
       const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      const blurEvent = new Event('blur');
       const timeInput = component.element.querySelector('input[name="data[time]"]');
 
-      timeInput.value = '12:0_';
+      timeInput.value = '10:0_ __';
       timeInput.dispatchEvent(inputEvent);
 
       setTimeout(() => {
-        component.checkData(component.data);
+        assert.equal(component.dataValue, '10:0_ __');
+        timeInput.dispatchEvent(blurEvent);
 
         setTimeout(() => {
-          assert.equal(component.errors.length, 1);
+          assert.equal(timeInput.value, '10:00 AM');
           done();
-        }, 700);
-      }, 500);
-    });
+        }, 500);
+      }, 250);
+    })
+      .catch(done);
   });
 
   it('Should not show error if value corresponds to the mask', (done) => {
