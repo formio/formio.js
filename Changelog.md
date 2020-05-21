@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.2
+### Fixed
+ - FJS-940: Fixed not match mask validation error if minute value is 00 in time component
+ - Fix (Time): made inputMask be relative to format
+ - Fix (Form/Wizard): made child forms be submitted only when Next clicked
+ - Fix (Time): required error is revealed even if value is set
+ - Fix saveComponent event not passing original component.
+ - FJS-952: Fixed data display in editGrid with chain of nested components	
+ 
+### Changed
+ - Updated eventemitter2@6.4.1
+
 ## 4.10.0-rc.1
 ### Fixed
  - FJS-723: Added Entire Object option for select with resource

@@ -8868,6 +8868,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#flattenrowdatavalue",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-flattenRowDataValue",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#flattenRowDataValue",
+    "method"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#getcomponents",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-getComponents",
     "src/components/editgrid/EditGrid.js~EditGridComponent#getComponents",
@@ -9063,6 +9069,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp2.js",
     "file/src/components/editgrid/fixtures/comp2.js.html",
     "src/components/editgrid/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp3.js",
+    "file/src/components/editgrid/fixtures/comp3.js.html",
+    "src/components/editgrid/fixtures/comp3.js",
     "file"
   ],
   [
@@ -12678,6 +12690,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/time/time.js~timecomponent#getinputmaskfromformat",
+    "class/src/components/time/Time.js~TimeComponent.html#instance-method-getInputMaskFromFormat",
+    "src/components/time/Time.js~TimeComponent#getInputMaskFromFormat",
+    "method"
+  ],
+  [
     "src/components/time/time.js~timecomponent#getrawvalue",
     "class/src/components/time/Time.js~TimeComponent.html#instance-method-getRawValue",
     "src/components/time/Time.js~TimeComponent#getRawValue",
@@ -12789,6 +12807,12 @@ window.esdocSearchIndex = [
     "src/components/time/fixtures/comp1.js",
     "file/src/components/time/fixtures/comp1.js.html",
     "src/components/time/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/time/fixtures/comp2.js",
+    "file/src/components/time/fixtures/comp2.js.html",
+    "src/components/time/fixtures/comp2.js",
     "file"
   ],
   [
