@@ -2,9 +2,24 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1 } from './fixtures';
+import { comp1, comp3 } from './fixtures';
 
 describe('EditGrid Component', () => {
+  it('Should display saved values if there are more then 1 nested components', (done) => {
+    Harness.testCreate(EditGridComponent, comp3).then((component) => {
+      component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
+
+      setTimeout(()=>{
+        const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
+        const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
+
+        assert.equal(firstValue, '55555');
+        assert.equal(secondValue, '666666');
+        done();
+      }, 600);
+    });
+  });
+
   it('Should build an empty edit grid component', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(1)', 'Field 1');
