@@ -1043,6 +1043,7 @@ export default class WebformBuilder extends Component {
           comp = component;
         }
       });
+      const originalComp = comp.component;
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
@@ -1057,7 +1058,7 @@ export default class WebformBuilder extends Component {
         const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
-          comp.component,
+          originalComp,
           parentComponent.schema,
           path,
           index,
