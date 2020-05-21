@@ -7,8 +7,7 @@ export default {
     {
       label: 'Form',
       tableView: true,
-      form: '5ec4ed12ca7d5e7c7c325b42',
-      src: 'https://remote.form.io/fagvuyyenifemop/testpathchild',
+      "components":[{"label":"Text Field","tableView":true,"key":"textField","type":"textfield","input":true},{"label":"Data Grid","reorder":false,"addAnotherPosition":"bottom","defaultOpen":false,"layoutFixed":false,"enableRowGroups":false,"tableView":false,"defaultValue":[{}],"key":"dataGrid","type":"datagrid","input":true,"components":[{"label":"Text Field","tableView":true,"key":"textField","type":"textfield","input":true}]},{"type":"button","label":"Submit","key":"submit","disableOnInvalid":true,"input":true,"tableView":false}],
       key: 'form',
       type: 'form',
       input: true

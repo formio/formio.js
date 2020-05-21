@@ -209,6 +209,7 @@ export default class NestedComponent extends Field {
     const pathStr = originalPath || getStringFromComponentPath(path);
     const [key, ...remainingPath] = path;
     let comp = null;
+    let possibleComp = null;
 
     if (!_.isString(key)) {
       return comp;
@@ -216,17 +217,24 @@ export default class NestedComponent extends Field {
 
     this.everyComponent((component, components) => {
       const matchPath = component.hasInput && component.path ? pathStr.includes(component.path) : true;
-      if (component.component.key === key && matchPath) {
-        comp = component;
-        if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn, originalPath);
+      if (component.component.key === key) {
+        possibleComp = component;
+        if (matchPath) {
+          comp = component;
+          if (remainingPath.length > 0 && 'getComponent' in component) {
+            comp = component.getComponent(remainingPath, fn, originalPath);
+          }
+          else if (fn) {
+            fn(component, components);
+          }
+          return false;
         }
-        else if (fn) {
-          fn(component, components);
-        }
-        return false;
       }
     });
+
+    if (!comp) {
+      comp = possibleComp;
+    }
 
     return comp;
   }
