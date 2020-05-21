@@ -56,7 +56,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get validationValue() {
-    return this.rawData;
+    return this.rawData || this.dataValue;
   }
 
   get inputInfo() {
