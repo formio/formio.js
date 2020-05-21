@@ -456,6 +456,10 @@ export default class FormComponent extends Component {
    * Submit the form before the next page is triggered.
    */
   beforePage(next) {
+    // Should not submit child forms if we are going to the previous page
+    if (!next) {
+      return super.beforePage(next);
+    }
     return this.submitSubForm(true).then(() => super.beforePage(next));
   }
 
