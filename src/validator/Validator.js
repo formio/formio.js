@@ -585,7 +585,7 @@ class ValidationChecker {
 
           inputMask = inputMask ? getInputMask(inputMask) : null;
 
-          if (value && inputMask) {
+          if (value && inputMask && !component.skipMaskValidation) {
             return matchInputMask(value, inputMask);
           }
 
