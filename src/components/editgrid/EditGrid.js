@@ -299,6 +299,21 @@ export default class EditGridComponent extends NestedArrayComponent {
     return super.attach(element);
   }
 
+  flattenRowDataValue(dataValue) {
+    const flattened = {};
+
+    Object.keys(dataValue).forEach((key) => {
+      if (_.isObject(dataValue[key]) && !_.isNil(dataValue[key])) {
+        Object.assign(flattened, this.flattenRowDataValue(dataValue[key]));
+      }
+      else {
+        flattened[key] = dataValue[key];
+      }
+    });
+
+    return flattened;
+  }
+
   renderRow(row, rowIndex) {
     const dataValue = this.dataValue || [];
     if (this.isOpen(row)) {
@@ -307,10 +322,11 @@ export default class EditGridComponent extends NestedArrayComponent {
     else {
       const flattenedComponents = this.flattenComponents(rowIndex);
       const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
+
       return this.renderString(
         rowTemplate,
         {
-          row: dataValue[rowIndex] || {},
+          row: this.flattenRowDataValue(dataValue[rowIndex]) || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
