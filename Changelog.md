@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FJS-959: `EventEmitter`'s infinite loop logic
+   - Changed events amount (`loadLimit`) from 30 to 1000
+   - Changed warning message
+   - Removed logic for ignoring events when suspecting infinite loop
+
 ## 4.10.0-rc.2
 ### Fixed
  - FJS-940: Fixed not match mask validation error if minute value is 00 in time component
