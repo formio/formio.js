@@ -1312,6 +1312,20 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
+  setMetadata(submission) {
+    // Add in metadata about client submitting the form
+    submission.metadata = submission.metadata || {};
+    _.defaults(submission.metadata, {
+      timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
+      offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+      referrer: document.referrer,
+      browserName: navigator.appName,
+      userAgent: navigator.userAgent,
+      pathName: window.location.pathname,
+      onLine: navigator.onLine
+    });
+  }
+
   submitForm(options = {}) {
     return new NativePromise((resolve, reject) => {
       // Read-only forms should never submit.
@@ -1324,17 +1338,7 @@ export default class Webform extends NestedDataComponent {
 
       const submission = fastCloneDeep(this.submission || {});
 
-      // Add in metadata about client submitting the form
-      submission.metadata = submission.metadata || {};
-      _.defaults(submission.metadata, {
-        timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-        offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
-        referrer: document.referrer,
-        browserName: navigator.appName,
-        userAgent: navigator.userAgent,
-        pathName: window.location.pathname,
-        onLine: navigator.onLine
-      });
+      this.setMetadata(submission);
 
       submission.state = options.state || 'submitted';
 
