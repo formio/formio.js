@@ -43,6 +43,7 @@ export default class FormComponent extends Component {
       settings: this.component.settings,
       components: this.component.components
     };
+    this.valueChanged = false;
     this.subForm = null;
     this.formSrc = '';
     if (this.component.src) {
@@ -227,6 +228,9 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
+            if (!this.valueChanged) {
+              this.setDefaultValue();
+            }
           }
         });
       });
@@ -324,6 +328,7 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.restoreValue();
+        this.valueChanged = false;
         return this.subForm;
       });
     });
@@ -491,6 +496,7 @@ export default class FormComponent extends Component {
 
   setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
+    this.valueChanged = true;
     if (this.subForm) {
       if (
         submission &&
