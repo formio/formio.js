@@ -672,7 +672,7 @@ export default class Webform extends NestedDataComponent {
         this.formReadyResolve(flags);
       };
 
-      if (flags.validateOnInit) {
+      if (flags && flags.validateOnInit) {
         resolveForm(flags);
       }
       else {
