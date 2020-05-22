@@ -628,7 +628,7 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
    * @returns {*}
    */
-  setForm(form) {
+  setForm(form, flags) {
     // Create the form.
     this._form = form;
 
@@ -667,10 +667,18 @@ export default class Webform extends NestedDataComponent {
       this.emit('formLoad', form);
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
-      setTimeout(() => {
+      const resolveForm = (flags) => {
         this.onChange();
-        this.formReadyResolve();
-      }, 0);
+        this.formReadyResolve(flags);
+      };
+
+      if (flags.validateOnInit) {
+        resolveForm(flags);
+      }
+      else {
+        setTimeout(resolveForm, 0);
+      }
+
       return this.formReady;
     });
   }
@@ -739,7 +747,13 @@ export default class Webform extends NestedDataComponent {
       fromSubmission: true,
     };
     return this.onSubmission = this.formReady.then(
-      () => {
+      (resolveFlags) => {
+        if (resolveFlags) {
+          flags = {
+            ...flags,
+            ...resolveFlags
+          };
+        }
         this.submissionSet = true;
         this.triggerChange(flags);
         this.setValue(submission, flags);
@@ -848,7 +862,9 @@ export default class Webform extends NestedDataComponent {
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
-    submission.data = this.data;
+    submission.data = submission.data
+      ? { ...this.data, ...submission.data }
+      : this.data;
     this._submission = submission;
     return changed;
   }
