@@ -157,13 +157,13 @@ export default class Input extends Multivalue {
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
-        this.setCounter('words', this.refs.wordcount[index], this.getWordCount(value), maxWords);
+        this.setCounter(this.t('words'), this.refs.wordcount[index], this.getWordCount(value), maxWords);
       }
     }
     if (_.get(this.component, 'showCharCount', false)) {
       if (this.refs.charcount && this.refs.charcount[index]) {
         const maxChars = _.parseInt(_.get(this.component, 'validate.maxLength', 0), 10);
-        this.setCounter('characters', this.refs.charcount[index], value.length, maxChars);
+        this.setCounter(this.t('characters'), this.refs.charcount[index], value.length, maxChars);
       }
     }
   }

@@ -932,7 +932,7 @@ export default class Component extends Element {
   getModalPreviewTemplate() {
     return `
       <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || 'Click to set value'}</button>`;
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || this.t('Click to set value')}</button>`;
   }
 
   build(element) {
