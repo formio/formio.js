@@ -2208,6 +2208,15 @@ export default class Component extends Element {
     return this.hasValue() && !this.isEmpty(this.dataValue);
   }
 
+  setDefaultValue() {
+    if (this.defaultValue) {
+      const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
+      this.setValue(defaultValue, {
+        noUpdateEvent: true
+      });
+    }
+  }
+
   /**
    * Restore the value of a control.
    */
@@ -2218,12 +2227,7 @@ export default class Component extends Element {
       });
     }
     else {
-      if (this.defaultValue) {
-        const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
-        this.setValue(defaultValue, {
-          noUpdateEvent: true
-        });
-      }
+      this.setDefaultValue();
     }
   }
 
