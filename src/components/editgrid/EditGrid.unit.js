@@ -2,9 +2,33 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp3 } from './fixtures';
+import { comp1, comp3, comp4 } from './fixtures';
 
 describe('EditGrid Component', () => {
+  it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
+    Harness.testCreate(EditGridComponent, comp4).then((component) => {
+      component.setValue([{ dataMap: { key111: '111' } }]);
+
+      setTimeout(()=>{
+        const clickEvent = new Event('click');
+        const editBtn = component.element.querySelector('.editRow');
+
+        editBtn.dispatchEvent(clickEvent);
+
+        setTimeout(()=>{
+          const keyValue = component.element.querySelectorAll('[ref="input"]')[0].value;
+          const valueValue = component.element.querySelectorAll('[ref="input"]')[1].value;
+          const saveBtnsQty = component.element.querySelectorAll('[ref="editgrid-editGrid-saveRow"]').length; 
+
+          assert.equal(saveBtnsQty, 1);
+          assert.equal(keyValue, 'key111');
+          assert.equal(valueValue, '111');
+          done();
+        }, 500);
+      }, 200);
+    });
+  });
+
   it('Should display saved values if there are more then 1 nested components', (done) => {
     Harness.testCreate(EditGridComponent, comp3).then((component) => {
       component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
