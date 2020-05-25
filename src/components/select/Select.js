@@ -32,6 +32,7 @@ export default class SelectComponent extends Field {
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
+      uniqueOptions: false,
       tableView: true,
       fuseOptions: {
         include: 'score',
@@ -146,6 +147,10 @@ export default class SelectComponent extends Field {
     return super.shouldDisabled || this.parentDisabled;
   }
 
+  isEntireObjectDisplay() {
+    return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
+  }
+
   itemTemplate(data) {
     if (_.isEmpty(data)) {
       return '';
@@ -163,6 +168,12 @@ export default class SelectComponent extends Field {
     }
     if (typeof data === 'string') {
       return this.t(data);
+    }
+
+    if (data.data) {
+      data.data = this.isEntireObjectDisplay() && _.isObject(data.data)
+        ? JSON.stringify(data.data)
+        : data.data;
     }
 
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
@@ -186,9 +197,23 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
-      value: _.isObject(value) ? value : _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
+      value: _.isObject(value) && this.isEntireObjectDisplay()
+        ? this.normalizeSingleValue(value)
+        : _.isObject(value)
+          ? value
+          : _.isNull(value)
+            ? this.emptyValue
+            : String(this.normalizeSingleValue(value)),
       label: label
     };
+
+    const skipOption = this.component.uniqueOptions
+      ? !!this.selectOptions.find((selectOption) => _.isEqual(selectOption.value, option.value))
+      : false;
+
+    if (skipOption) {
+      return;
+    }
 
     if (value) {
       this.selectOptions.push(option);
@@ -574,7 +599,7 @@ export default class SelectComponent extends Field {
         break;
       }
       case 'url': {
-        if (!forceUpdate && !this.active) {
+        if (!forceUpdate && !this.active && !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
           return;
         }
@@ -1094,7 +1119,7 @@ export default class SelectComponent extends Field {
     if (_.isObject(value) && Object.keys(value).length === 0) {
       return value;
     }
-
+    const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || 'auto';
     const normalize = {
       value,
@@ -1127,6 +1152,10 @@ export default class SelectComponent extends Field {
       },
 
       object() {
+        if (_.isObject(this.value) && displayEntireObject) {
+          this.value = JSON.stringify(this.value);
+        }
+
         return this;
       },
 
@@ -1287,6 +1316,15 @@ export default class SelectComponent extends Field {
     return typeof value === 'number' || typeof value === 'boolean';
   }
 
+  getNormalizedValues() {
+    if (!this.component || !this.component.data || !this.component.data.values) {
+      return;
+    }
+    return this.component.data.values.map(
+      value => ({ label: value.label, value: String(this.normalizeSingleValue(value.value)) })
+    );
+  }
+
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
@@ -1308,7 +1346,7 @@ export default class SelectComponent extends Field {
         valueProperty,
       } = this.component.dataSrc === 'values'
         ? {
-          items: this.component.data.values,
+          items: this.getNormalizedValues(),
           valueProperty: 'value',
         }
         : {

@@ -244,7 +244,12 @@
 import _ from &apos;lodash&apos;;
 import Webform from &apos;./Webform&apos;;
 import Formio from &apos;./Formio&apos;;
-import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from &apos;./utils/utils&apos;;
+import {
+  fastCloneDeep,
+  checkCondition,
+  firstNonNil,
+  uniqueKey
+} from &apos;./utils/utils&apos;;
 
 export default class Wizard extends Webform {
   /**
@@ -885,6 +890,7 @@ export default class Wizard extends Webform {
 
   focusOnComponent(key) {
     let pageIndex = 0;
+
     const [page] = this.pages.filter((page, index) =&gt; {
       if (page.getComponent(key)) {
         pageIndex = index;

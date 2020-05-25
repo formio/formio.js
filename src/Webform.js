@@ -635,7 +635,7 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
    * @returns {*}
    */
-  setForm(form) {
+  setForm(form, flags) {
     // Create the form.
     this._form = form;
 
@@ -674,10 +674,18 @@ export default class Webform extends NestedDataComponent {
       this.emit('formLoad', form);
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
-      setTimeout(() => {
+      const resolveForm = (flags) => {
         this.onChange();
-        this.formReadyResolve();
-      }, 0);
+        this.formReadyResolve(flags);
+      };
+
+      if (flags && flags.validateOnInit) {
+        resolveForm(flags);
+      }
+      else {
+        setTimeout(resolveForm, 0);
+      }
+
       return this.formReady;
     });
   }
@@ -746,7 +754,13 @@ export default class Webform extends NestedDataComponent {
       fromSubmission: true,
     };
     return this.onSubmission = this.formReady.then(
-      () => {
+      (resolveFlags) => {
+        if (resolveFlags) {
+          flags = {
+            ...flags,
+            ...resolveFlags
+          };
+        }
         this.submissionSet = true;
         this.triggerChange(flags);
         this.setValue(submission, flags);
@@ -855,7 +869,9 @@ export default class Webform extends NestedDataComponent {
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
-    submission.data = this.data;
+    submission.data = submission.data
+      ? { ...this.data, ...submission.data }
+      : this.data;
     this._submission = submission;
     return changed;
   }
@@ -1385,6 +1401,21 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
+  setMetadata(submission) {
+    // Add in metadata about client submitting the form
+    submission.metadata = submission.metadata || {};
+    _.defaults(submission.metadata, {
+      timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
+      offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+      origin: document.location.origin,
+      referrer: document.referrer,
+      browserName: navigator.appName,
+      userAgent: navigator.userAgent,
+      pathName: window.location.pathname,
+      onLine: navigator.onLine
+    });
+  }
+
   submitForm(options = {}) {
     return new NativePromise((resolve, reject) => {
       // Read-only forms should never submit.
@@ -1397,17 +1428,7 @@ export default class Webform extends NestedDataComponent {
 
       const submission = fastCloneDeep(this.submission || {});
 
-      // Add in metadata about client submitting the form
-      submission.metadata = submission.metadata || {};
-      _.defaults(submission.metadata, {
-        timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-        offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
-        referrer: document.referrer,
-        browserName: navigator.appName,
-        userAgent: navigator.userAgent,
-        pathName: window.location.pathname,
-        onLine: navigator.onLine
-      });
+      this.setMetadata(submission);
 
       submission.state = options.state || 'submitted';
 

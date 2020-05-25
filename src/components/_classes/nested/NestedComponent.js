@@ -209,6 +209,7 @@ export default class NestedComponent extends Field {
     const pathStr = originalPath || getStringFromComponentPath(path);
     const [key, ...remainingPath] = path;
     let comp = null;
+    let possibleComp = null;
 
     if (!_.isString(key)) {
       return comp;
@@ -216,17 +217,24 @@ export default class NestedComponent extends Field {
 
     this.everyComponent((component, components) => {
       const matchPath = component.hasInput && component.path ? pathStr.includes(component.path) : true;
-      if (component.component.key === key && matchPath) {
-        comp = component;
-        if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn, originalPath);
+      if (component.component.key === key) {
+        possibleComp = component;
+        if (matchPath) {
+          comp = component;
+          if (remainingPath.length > 0 && 'getComponent' in component) {
+            comp = component.getComponent(remainingPath, fn, originalPath);
+          }
+          else if (fn) {
+            fn(component, components);
+          }
+          return false;
         }
-        else if (fn) {
-          fn(component, components);
-        }
-        return false;
       }
     });
+
+    if (!comp) {
+      comp = possibleComp;
+    }
 
     return comp;
   }
@@ -252,6 +260,12 @@ export default class NestedComponent extends Field {
     return comp;
   }
 
+  /**
+   * Return a path of component's value.
+   *
+   * @param {Object} component - The component instance.
+   * @return {string} - The component's value path.
+   */
   calculateComponentPath(component) {
     let path = '';
     if (component.component.key) {
@@ -652,6 +666,11 @@ export default class NestedComponent extends Field {
     }
     if (component.type === 'components') {
       return component.setValue(value, flags);
+    }
+    else if (flags.validateOnInit) {
+      return component.defaultValue
+        ? component.setValue(component.defaultValue, flags)
+        : component.setValue(_.get(value, component.key), flags);
     }
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);

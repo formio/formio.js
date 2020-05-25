@@ -1,11 +1,4 @@
 {
-  "_args": [
-    [
-      "bootswatch@4.5.0",
-      "/Users/randallknutson/Projects/formio.js"
-    ]
-  ],
-  "_development": true,
   "_from": "bootswatch@4.5.0",
   "_id": "bootswatch@4.5.0",
   "_inBundle": false,
@@ -23,18 +16,22 @@
     "fetchSpec": "4.5.0"
   },
   "_requiredBy": [
-    "#DEV:/"
+    "#DEV:/",
+    "#USER"
   ],
   "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.5.0.tgz",
-  "_spec": "4.5.0",
-  "_where": "/Users/randallknutson/Projects/formio.js",
+  "_shasum": "1f4ea460118d0da8113418f1627ca755697d7e0f",
+  "_spec": "bootswatch@4.5.0",
+  "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
   "author": {
     "name": "Thomas Park"
   },
   "bugs": {
     "url": "https://github.com/thomaspark/bootswatch/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {},
+  "deprecated": false,
   "description": "Bootswatch is a collection of themes for Bootstrap.",
   "devDependencies": {
     "autoprefixer": "^7.1.2",

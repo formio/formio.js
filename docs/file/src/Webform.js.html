@@ -251,7 +251,6 @@ import NestedDataComponent from &apos;./components/_classes/nesteddata/NestedDat
 import {
   fastCloneDeep,
   currentTimezone,
-  getArrayFromComponentPath,
   getStringFromComponentPath
 } from &apos;./utils/utils&apos;;
 import { eachComponent } from &apos;./utils/formUtils&apos;;
@@ -1321,8 +1320,7 @@ export default class Webform extends NestedDataComponent {
    */
   focusOnComponent(key) {
     if (key) {
-      const path = getArrayFromComponentPath(key);
-      const component = this.getComponent(path);
+      const component = this.getComponent(key);
       if (component) {
         component.focus();
       }

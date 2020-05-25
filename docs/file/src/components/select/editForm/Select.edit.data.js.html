@@ -444,7 +444,12 @@ export default [
     dataSrc: &apos;url&apos;,
     lazyLoad: false,
     onSetItems(component, form) {
-      const newItems = [];
+      const newItems = form.type === &apos;resource&apos;
+        ? [{
+            label: &apos;{Entire Object}&apos;,
+            key: &apos;data&apos;,
+          }]
+        : [];
 
       eachComponent(form.components, (component, path) =&gt; {
         if (component.input) {

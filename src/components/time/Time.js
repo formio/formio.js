@@ -19,7 +19,7 @@ export default class TimeComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
-    this.component.inputMask = '99:99';
+    this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
     this.component.defaultMask = FormioUtils.getInputMask('99:99:99');
     this.component.inputType = this.component.inputType || 'time';
     this.rawData = this.component.multiple ? [] : this.emptyValue;
@@ -58,7 +58,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get validationValue() {
-    return this.rawData;
+    return this.rawData || this.dataValue;
   }
 
   get inputInfo() {
@@ -131,10 +131,29 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getStringAsValue(view) {
-    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
+    return view && this.component.inputType !=='text' ? moment(view, this.component.format).format(this.component.dataFormat) : view;
   }
 
   getValueAsString(value) {
     return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
+  }
+
+  getInputMaskFromFormat(format) {
+    if (format === 'LT') {
+      return '99:99 AA';
+    }
+    if (format === 'LTS') {
+      return '99:99:99 AA';
+    }
+    return format.replace(/[hHmMsSk]/g, '9')
+                 .replace(/[aA]/, 'AA');
+  }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(element.value);
+    });
   }
 }

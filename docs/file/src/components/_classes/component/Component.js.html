@@ -820,27 +820,8 @@ export default class Component extends Element {
   }
 
   get calculatedPath() {
-    if (this._path) {
-      return `${this._parentPath}${this._path}`;
-    }
-
-    this._path = this.key;
-
-    if (!this.root) {
-      return `${this._parentPath}${this._path}`;
-    }
-
-    let parent = this.parent;
-
-    while (parent &amp;&amp; parent.id !== this.root.id) {
-      if ([&apos;datagrid&apos;, &apos;container&apos;, &apos;editgrid&apos;].includes(parent.type) || parent.tree) {
-        this._path = `${parent.key}.${this._path}`;
-      }
-
-      parent = parent.parent;
-    }
-
-    return `${this._parentPath}${this._path}`;
+    console.error(&apos;component.calculatedPath was deprecated, use component.path instead.&apos;);
+    return this.path;
   }
 
   get labelPosition() {
@@ -1316,9 +1297,9 @@ export default class Component extends Element {
   }
 
   checkRefresh(refreshData, changed) {
-    const changePath = _.get(changed, &apos;instance.calculatedPath&apos;, false);
+    const changePath = _.get(changed, &apos;instance.path&apos;, false);
     // Don&apos;t let components change themselves.
-    if (changePath &amp;&amp; this.calculatedPath === changePath) {
+    if (changePath &amp;&amp; this.path === changePath) {
       return;
     }
     if (refreshData === &apos;data&apos;) {
