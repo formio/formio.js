@@ -934,13 +934,18 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
-  destroy() {
+  destroy(deleteFromGlobal = false) {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
     this.off('resetForm');
     this.off('deleteSubmission');
     this.off('refreshData');
+
+    if (deleteFromGlobal) {
+      delete Formio.forms[this.id];
+    }
+
     return super.destroy();
   }
 
