@@ -14,7 +14,7 @@ import {
 } from '../../../validator';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue, delay } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
@@ -1040,6 +1040,7 @@ export default class Component extends Element {
 
     // Attach logic.
     this.attachLogic();
+    this.addFocusBlurEvents(element);
     this.autofocus();
 
     // Allow global attach.
@@ -1051,6 +1052,45 @@ export default class Component extends Element {
     }
 
     return NativePromise.resolve();
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focusin', (event) => {
+      event.stopPropagation();
+
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+        this.addClass(element, 'formio-active-component');
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'focusout', (event) => {
+      event.stopPropagation();
+
+      this.root.pendingBlur = delay(() => {
+        this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({}, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: {}
+          });
+        }
+        this.root.focusedComponent = null;
+        this.removeClass(element, 'formio-active-component');
+        this.root.pendingBlur = null;
+      });
+    });
   }
 
   addShortcut(element, shortcut) {
