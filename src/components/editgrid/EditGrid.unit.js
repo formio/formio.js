@@ -18,7 +18,7 @@ describe('EditGrid Component', () => {
         setTimeout(()=>{
           const keyValue = component.element.querySelectorAll('[ref="input"]')[0].value;
           const valueValue = component.element.querySelectorAll('[ref="input"]')[1].value;
-          const saveBtnsQty = component.element.querySelectorAll('[ref="editgrid-editGrid-saveRow"]').length; 
+          const saveBtnsQty = component.element.querySelectorAll('[ref="editgrid-editGrid-saveRow"]').length;
 
           assert.equal(saveBtnsQty, 1);
           assert.equal(keyValue, 'key111');

@@ -243,34 +243,42 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import assert from &apos;power-assert&apos;;
 import TimeComponent from &apos;./Time&apos;;
+import { timeForm } from &apos;./fixtures&apos;;
 
 import {
   comp1,
   comp2
 } from &apos;./fixtures&apos;;
+import Webform from &apos;../../Webform&apos;;
 
 describe(&apos;Time Component&apos;, () =&gt; {
   it(&apos;Should build a time component&apos;, () =&gt; {
     return Harness.testCreate(TimeComponent, comp1);
   });
 
-  it(&apos;Should show error if value does not correspond to the mask&apos;, (done) =&gt; {
-    Harness.testCreate(TimeComponent, comp2).then((component) =&gt; {
+  it(&apos;Should format value on blur&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm(timeForm).then(() =&gt; {
+      const component = form.components[0];
       const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
+      const blurEvent = new Event(&apos;blur&apos;);
       const timeInput = component.element.querySelector(&apos;input[name=&quot;data[time]&quot;]&apos;);
 
-      timeInput.value = &apos;12:0_&apos;;
+      timeInput.value = &apos;10:0_ __&apos;;
       timeInput.dispatchEvent(inputEvent);
 
       setTimeout(() =&gt; {
-        component.checkData(component.data);
+        assert.equal(component.dataValue, &apos;10:0_ __&apos;);
+        timeInput.dispatchEvent(blurEvent);
 
         setTimeout(() =&gt; {
-          assert.equal(component.errors.length, 1);
+          assert.equal(timeInput.value, &apos;10:00 AM&apos;);
           done();
-        }, 700);
-      }, 500);
-    });
+        }, 500);
+      }, 250);
+    })
+      .catch(done);
   });
 
   it(&apos;Should not show error if value corresponds to the mask&apos;, (done) =&gt; {

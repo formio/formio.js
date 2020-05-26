@@ -3114,6 +3114,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webform.js~webform#setmetadata",
+    "class/src/Webform.js~Webform.html#instance-method-setMetadata",
+    "src/Webform.js~Webform#setMetadata",
+    "method"
+  ],
+  [
     "src/webform.js~webform#setsrc",
     "class/src/Webform.js~Webform.html#instance-method-setSrc",
     "src/Webform.js~Webform#setSrc",
@@ -5223,6 +5229,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#setcustomvalidity",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity",
     "src/components/_classes/component/Component.js~Component#setCustomValidity",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#setdefaultvalue",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-setDefaultValue",
+    "src/components/_classes/component/Component.js~Component#setDefaultValue",
     "method"
   ],
   [
@@ -7872,6 +7884,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#setrowcomponentsdata",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-setRowComponentsData",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#setRowComponentsData",
+    "method"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#setstaticvalue",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-setStaticValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#setStaticValue",
@@ -8016,6 +8034,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datamap/datamap.js~datamapcomponent#componentcontext",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-componentContext",
+    "src/components/datamap/DataMap.js~DataMapComponent#componentContext",
+    "method"
+  ],
+  [
     "src/components/datamap/datamap.js~datamapcomponent#components",
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-member-components",
     "src/components/datamap/DataMap.js~DataMapComponent#components",
@@ -8100,6 +8124,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datamap/datamap.js~datamapcomponent#iteratablerows",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-iteratableRows",
+    "src/components/datamap/DataMap.js~DataMapComponent#iteratableRows",
+    "member"
+  ],
+  [
     "src/components/datamap/datamap.js~datamapcomponent#keyschema",
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-keySchema",
     "src/components/datamap/DataMap.js~DataMapComponent#keySchema",
@@ -8134,6 +8164,12 @@ window.esdocSearchIndex = [
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-schema",
     "src/components/datamap/DataMap.js~DataMapComponent#schema",
     "member"
+  ],
+  [
+    "src/components/datamap/datamap.js~datamapcomponent#setrowcomponentsdata",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-setRowComponentsData",
+    "src/components/datamap/DataMap.js~DataMapComponent#setRowComponentsData",
+    "method"
   ],
   [
     "src/components/datamap/datamap.js~datamapcomponent#setvalue",
@@ -9078,6 +9114,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp4.js",
+    "file/src/components/editgrid/fixtures/comp4.js.html",
+    "src/components/editgrid/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/index.js",
     "file/src/components/editgrid/fixtures/index.js.html",
     "src/components/editgrid/fixtures/index.js",
@@ -9868,6 +9910,12 @@ window.esdocSearchIndex = [
     "class/src/components/form/Form.js~FormComponent.html#instance-method-updateSubFormVisibility",
     "src/components/form/Form.js~FormComponent#updateSubFormVisibility",
     "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#valuechanged",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-valueChanged",
+    "src/components/form/Form.js~FormComponent#valueChanged",
+    "member"
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
@@ -12666,6 +12714,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/time/time.js~timecomponent#addfocusblurevents",
+    "class/src/components/time/Time.js~TimeComponent.html#instance-method-addFocusBlurEvents",
+    "src/components/time/Time.js~TimeComponent#addFocusBlurEvents",
+    "method"
+  ],
+  [
     "src/components/time/time.js~timecomponent#constructor",
     "class/src/components/time/Time.js~TimeComponent.html#instance-constructor-constructor",
     "src/components/time/Time.js~TimeComponent#constructor",
@@ -12819,6 +12873,12 @@ window.esdocSearchIndex = [
     "src/components/time/fixtures/index.js",
     "file/src/components/time/fixtures/index.js.html",
     "src/components/time/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/components/time/fixtures/timeform.js",
+    "file/src/components/time/fixtures/timeForm.js.html",
+    "src/components/time/fixtures/timeForm.js",
     "file"
   ],
   [

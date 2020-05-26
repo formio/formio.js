@@ -1174,7 +1174,7 @@ export default class Component extends Element {
   getModalPreviewTemplate() {
     return `
       &lt;label class=&quot;control-label&quot;&gt;${this.component.label}&lt;/label&gt;&lt;br&gt;
-      &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;${this.getValueAsString(this.dataValue) || &apos;Click to set value&apos;}&lt;/button&gt;`;
+      &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;${this.getValueAsString(this.dataValue) || this.t(&apos;Click to set value&apos;)}&lt;/button&gt;`;
   }
 
   build(element) {
@@ -2450,6 +2450,15 @@ export default class Component extends Element {
     return this.hasValue() &amp;&amp; !this.isEmpty(this.dataValue);
   }
 
+  setDefaultValue() {
+    if (this.defaultValue) {
+      const defaultValue = (this.component.multiple &amp;&amp; !this.dataValue.length) ? [] : this.defaultValue;
+      this.setValue(defaultValue, {
+        noUpdateEvent: true
+      });
+    }
+  }
+
   /**
    * Restore the value of a control.
    */
@@ -2460,12 +2469,7 @@ export default class Component extends Element {
       });
     }
     else {
-      if (this.defaultValue) {
-        const defaultValue = (this.component.multiple &amp;&amp; !this.dataValue.length) ? [] : this.defaultValue;
-        this.setValue(defaultValue, {
-          noUpdateEvent: true
-        });
-      }
+      this.setDefaultValue();
     }
   }
 

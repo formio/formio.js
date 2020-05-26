@@ -4,12 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.10.0-rc.3
 ### Fixed
+ - Fixing issues where form default values were not getting set properly. #2834
+ - Fix/uip validation error display #2831
+ - Fix localization for few labels #2829
+ - PDF 72: Fixed an issue of PDF instances duplication and messy Formio.forms
+ - FJS-951: Fixed unable to submit form with dataMap inside dataGrid/editGrid
  - FJS-959: `EventEmitter`'s infinite loop logic
    - Changed events amount (`loadLimit`) from 30 to 1000
    - Changed warning message
    - Removed logic for ignoring events when suspecting infinite loop
+   
+### Changed
+ - Split metadata setter into separate method #2832
+ - Update i18next@19.4.5, chance@1.1.6, eslint@7.1.0, fetch-mock@9.10.1, mocha@7.2.0
 
 ## 4.10.0-rc.2
 ### Fixed
