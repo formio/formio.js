@@ -285,7 +285,10 @@ export default class ContentComponent extends BaseComponent {
 
   destroy() {
     const state = super.destroy();
-    if (this.editor) {
+    if (
+      this.options.builder &amp;&amp; this.editor &amp;&amp;
+      this.element &amp;&amp; this.element.parentNode
+    ) {
       this.editor.destroy();
     }
     return state;
