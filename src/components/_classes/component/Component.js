@@ -455,7 +455,7 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required)) {
+    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !this.options.readOnly) {
       label.className += ' field-required';
     }
     if (label.hidden) {
