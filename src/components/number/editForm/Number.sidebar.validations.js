@@ -4,23 +4,23 @@ import EditFormUtils from '../../_classes/component/editForm/utils';
 
 export default [
   {
-    key: 'minLength',
+    key: 'minLengthTitle',
     ignore: true,
   },
   {
-    key: 'maxLength',
+    key: 'maxLengthTitle',
     ignore: true,
   },
   {
-    key: 'minWords',
+    key: 'minWordsTitle',
     ignore: true,
   },
   {
-    key: 'maxWords',
+    key: 'maxWordsTitle',
     ignore: true,
   },
   {
-    key: 'pattern',
+    key: 'patternTitle',
     ignore: true,
   },
   ...[

@@ -160,6 +160,7 @@ export default class WizardBuilder extends WebformBuilder {
       display: 'form',
       type: 'form',
       components: page ? [page] : [],
+      settings: this.form.settings ?? {},
     };
     return this.redraw();
   }
@@ -195,7 +196,7 @@ export default class WizardBuilder extends WebformBuilder {
 
   setPage(index) {
     if (index === this.page) {
-      return;
+      return Promise.resolve();
     }
     this.page = index;
     return this.rebuild();
@@ -216,5 +217,9 @@ export default class WizardBuilder extends WebformBuilder {
       return;
     }
     return super.pasteComponent(component);
+  }
+
+  getComponents() {
+    return this.pages;
   }
 }

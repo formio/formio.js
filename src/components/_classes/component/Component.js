@@ -2387,7 +2387,12 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    if (!(this.component.calculateValue || this.component.calculateValueVariable) || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
+    if (
+      !(this.component.calculateValue || this.component.calculateValueVariable)
+      || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)
+      || this.builderMode
+      || this.previewMode
+    ) {
       return false;
     }
 
@@ -2460,8 +2465,21 @@ export default class Component extends Element {
 
   get logicOptions() {
     return {
-      componentInstance: this,
+      targetComponentInstance: this,
+      sourceComponentInstance: this,
       formInstance: this.root,
+    };
+  }
+
+  get engineOptions() {
+    return {
+    };
+  }
+
+  get logicContext() {
+    return {
+      options: this.logicOptions,
+      engineOptions: this.engineOptions,
     };
   }
 
@@ -2473,7 +2491,14 @@ export default class Component extends Element {
     return this.component.variables ?? [];
   }
 
-  calculateCondition(name) {
+  updateLogicContext(context) {
+    return {
+      ...context,
+      targetComponentInstance: this,
+    };
+  }
+
+  calculateCondition(name, context = this.logicContext) {
     // Identify recurrent reference.
     if (this.lockedConditions.has(name)) {
       throw new Error(`Found recurrent reference with condition '${name}'.`);
@@ -2484,10 +2509,12 @@ export default class Component extends Element {
       return cachedValue;
     }
 
+    const updatedContext = this.updateLogicContext(context);
+
     const condition = this.conditions.find(({ key }) => (key === name));
     if (!condition) {
-      if (this.root !== this) {
-        return this.root.calculateCondition(name);
+      if (this.parent) {
+        return this.parent.calculateCondition(name, updatedContext);
       }
 
       return false;
@@ -2505,15 +2532,43 @@ export default class Component extends Element {
       return false;
     }
 
-    const conjunctionInstance = new Conjunction(this.logicOptions);
+    const conjunctionInstance = new Conjunction(updatedContext);
 
-    const result = conjunctionInstance.execute(parts.map(((part) => this.calculateConditionPart(part))));
+    const result = conjunctionInstance.execute(
+      parts.map(((part) => {
+        const evaluationContext = {
+          part,
+          context: updatedContext,
+        };
+        const evaluator = ({
+          part = evaluationContext.part,
+          context = evaluationContext.context,
+        } = evaluationContext) => this.calculateConditionPart(
+          part,
+          context,
+        );
+        evaluator.evaluationContext = evaluationContext;
+
+        return Conjunction.lazyConditionPartsEvaluation ? evaluator : evaluator();
+      })),
+    );
+
     this.lockedConditions.delete(name);
+
+    const {
+      cachable = true,
+    } = (updatedContext.engineOptions ?? this.engineOptions);
+
+    if (cachable) {
     this.conditionsCache[name] = result;
+    }
+
     return result;
   }
 
-  calculateConditionPart(conditionPart) {
+  calculateConditionPart(conditionPart, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
     const {
       type,
     } = conditionPart;
@@ -2522,24 +2577,26 @@ export default class Component extends Element {
       const {
         condition,
       } = conditionPart;
-      return this.calculateCondition(condition);
+      return this.calculateCondition(condition, updatedContext);
     }
 
     if (type === 'new') {
       const {
         operator,
       } = conditionPart;
-      return this.calculateOperator(operator);
+      return this.calculateOperator(operator, updatedContext);
     }
 
     return false;
   }
 
-  calculateOperator(operator) {
+  calculateOperator(operator, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
     const {
       name,
       [`${name}Arguments`]: args = {},
-      options = {},
+      [`${name}Options`]: options = {},
     } = operator;
 
     const Operator = Operators.getOperator(name);
@@ -2547,26 +2604,49 @@ export default class Component extends Element {
       return false;
     }
 
-    const operatorInstance = new Operator(this.logicOptions);
+    const operatorInstance = new Operator(updatedContext);
 
-    return operatorInstance.execute(_.mapValues(args, ({
+    return operatorInstance.execute(
+      _.mapValues(args, ({
       valueSource,
       [`${valueSource}Input`]: input,
-    }) => this.calculateValueDefinition(valueSource, input)), options);
+      }) => {
+        const evaluationContext = {
+          valueSource,
+          input,
+          context: updatedContext,
+        };
+        const evaluator = ({
+          valueSource = evaluationContext.valueSource,
+          input = evaluationContext.input,
+          context = evaluationContext.context,
+        } = evaluationContext) => this.calculateValueDefinition(
+          valueSource,
+          input,
+          context,
+        );
+        evaluator.evaluationContext = evaluationContext;
+
+        return Operator.lazyArgsEvaluation ? evaluator : evaluator();
+      }),
+      options,
+    );
   }
 
-  calculateValueDefinition(valueSource, input) {
+  calculateValueDefinition(valueSource, input, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
     const ValueSource = ValueSources.getValueSource(valueSource);
     if (!ValueSource) {
       return null;
     }
 
-    const valueSourceInstance = new ValueSource(this.logicOptions);
+    const valueSourceInstance = new ValueSource(updatedContext);
 
     return valueSourceInstance.getValue(input);
   }
 
-  calculateVariable(name) {
+  calculateVariable(name, context = this.logicContext) {
     // Identify recurrent reference.
     if (this.lockedVariables.has(name)) {
       throw new Error(`Found recurrent reference with variable '${name}'.`);
@@ -2577,10 +2657,12 @@ export default class Component extends Element {
       return cachedValue;
     }
 
+    const updatedContext = this.updateLogicContext(context);
+
     const variable = this.variables.find(({ key }) => (key === name));
     if (!variable) {
-      if (this.root !== this) {
-        return this.root.calculateVariable(name);
+      if (this.parent) {
+        return this.parent.calculateVariable(name, updatedContext);
       }
 
       return null;
@@ -2594,31 +2676,78 @@ export default class Component extends Element {
       transform = {},
     } = variable;
 
-    const value = this.calculateValueDefinition(valueSource, input);
+    const evaluationContext = {
+      valueSource,
+      input,
+      context: updatedContext,
+    };
+    const valueEvaluator = ({
+      valueSource = evaluationContext.valueSource,
+      input = evaluationContext.input,
+      context = evaluationContext.context,
+    } = evaluationContext) => this.calculateValueDefinition(
+      valueSource,
+      input,
+      context,
+    );
+    valueEvaluator.evaluationContext = evaluationContext;
 
-    const result = this.applyTransform(value, transform);
+    const result = this.applyTransform(valueEvaluator, transform, updatedContext);
     this.lockedVariables.delete(name);
+
+    const {
+      cachable = true,
+    } = (updatedContext.engineOptions ?? this.engineOptions);
+
+    if (cachable) {
     this.variablesCache[name] = result;
+    }
+
     return result;
   }
 
-  applyTransform(value, transform) {
+  applyTransform(valueEvaluator, transform, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
     const {
       name = 'identity',
       [`${name}Arguments`]: args = {},
+      [`${name}Options`]: options = {},
     } = transform;
 
     const Transformer = Transformers.getTransformer(name);
     if (!Transformer) {
-      return value;
+      return valueEvaluator();
     }
 
-    const transformerInstance = new Transformer(this.logicOptions);
+    const transformerInstance = new Transformer(updatedContext);
 
-    return transformerInstance.transform(value, _.mapValues(args, ({
+    return transformerInstance.transform(
+      (Transformer.lazyValueEvaluation ? valueEvaluator : valueEvaluator()),
+      _.mapValues(args, ({
       valueSource,
       [`${valueSource}Input`]: input,
-    }) => this.calculateValueDefinition(valueSource, input)));
+      }) => {
+        const evaluationContext = {
+          valueSource,
+          input,
+          context: updatedContext,
+        };
+        const evaluator = ({
+          valueSource = evaluationContext.valueSource,
+          input = evaluationContext.input,
+          context = evaluationContext.context,
+        } = evaluationContext) => this.calculateValueDefinition(
+          valueSource,
+          input,
+          context,
+        );
+        evaluator.evaluationContext = evaluationContext;
+
+        return Transformer.lazyArgsEvaluation ? evaluator : evaluator();
+      }),
+      options,
+    );
   }
 
   getRowIndexes() {
@@ -2907,6 +3036,10 @@ export default class Component extends Element {
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
+      // Force valid if we in builder mode
+      () => this.builderMode,
+      // Force valid if we in preview mode
+      () => this.previewMode,
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.

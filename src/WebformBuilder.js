@@ -371,6 +371,8 @@ export default class WebformBuilder extends Component {
 
     this.pathComponentsMapping = {};
     this.arrayDataComponentPaths = [];
+    this.nestedDataComponents = [];
+    this.arrayDataComponents = [];
   }
 
   allowDrop() {
@@ -440,8 +442,17 @@ export default class WebformBuilder extends Component {
       if (nestedDataComponents.includes(component.type)) {
         const nestedPath = path ? `${path}.${component.key}` : component.key;
 
+        this.nestedDataComponents.push({
+          path: nestedPath,
+          component,
+        });
+
         if (arrayDataComponents.includes(component.type)) {
           this.arrayDataComponentPaths.push(nestedPath);
+          this.arrayDataComponents.push({
+            path: nestedPath,
+            component,
+          });
         }
 
         this.getNestedComponents(component.components, nestedPath);
@@ -456,23 +467,14 @@ export default class WebformBuilder extends Component {
   getNestedComponentsMap() {
     this.pathComponentsMapping = {};
     this.arrayDataComponentPaths = [];
-    this.getNestedComponents(this.webform.schema.components);
+    this.nestedDataComponents = [];
+    this.arrayDataComponents = [];
+    this.getNestedComponents(this.getComponents());
   }
 
-  getParentPath(component) {
-    let result = '';
-    let current = component;
-
-    while (current) {
-      if (nestedDataComponents.includes(current.type)) {
-        result = `${current.key}.`;
+  getComponents() {
+    return this.webform.schema.components;
       }
-
-      current = current.parent;
-    }
-
-    return result;
-  }
 
   createForm(options) {
     this.webform = new Webform(this.element, options);
@@ -1011,7 +1013,10 @@ export default class WebformBuilder extends Component {
         _.assign(previewComponent.component, _.omit(component, [
           'hidden',
           'conditional',
+          'customDefaultValue',
+          'customDefaultValueVariable',
           'calculateValue',
+          'calculateValueVariable',
           'logic',
           'autofocus',
           'customConditional',
@@ -1042,7 +1047,9 @@ export default class WebformBuilder extends Component {
           'disabled',
           'defaultValue',
           'customDefaultValue',
+          'customDefaultValueVariable',
           'calculateValue',
+          'calculateValueVariable',
           'conditional',
           'customConditional',
           'validations',
@@ -1195,7 +1202,9 @@ export default class WebformBuilder extends Component {
     this.getNestedComponentsMap();
     this.editForm.pathComponentsMapping = this.pathComponentsMapping;
     this.editForm.arrayDataComponentPaths = this.arrayDataComponentPaths;
-    this.editForm.parentPath = this.getParentPath(parent && parent.formioComponent);
+    this.editForm.nestedDataComponents = this.nestedDataComponents;
+    this.editForm.arrayDataComponents = this.arrayDataComponents;
+    this.editForm.parentPath = '';
 
     this.editForm.form = isJsonEdit ? {
       components: [
@@ -1256,6 +1265,7 @@ export default class WebformBuilder extends Component {
         this.dialog.close();
         this.form = newFormSchema;
         this.emit('saveFormEditForm', newFormSchema);
+        this.emit('change', this.form);
       });
     });
 
@@ -1299,6 +1309,7 @@ export default class WebformBuilder extends Component {
     // Pass along the form being edited.
     editFormOptions.editForm = this.form;
     editFormOptions.editComponent = component;
+    editFormOptions.editComponentParentInstance = parent.formioComponent;
     this.editForm = new Webform(
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
@@ -1310,7 +1321,9 @@ export default class WebformBuilder extends Component {
     this.getNestedComponentsMap();
     this.editForm.pathComponentsMapping = this.pathComponentsMapping;
     this.editForm.arrayDataComponentPaths = this.arrayDataComponentPaths;
-    this.editForm.parentPath = this.getParentPath(parent && parent.formioComponent);
+    this.editForm.nestedDataComponents = this.nestedDataComponents;
+    this.editForm.arrayDataComponents = this.arrayDataComponents;
+    this.editForm.parentPath = parent?.formioComponent?.calculatedPath;
 
     this.editForm.form = (isJsonEdit && !isCustom) ? {
       components: [
@@ -1339,7 +1352,7 @@ export default class WebformBuilder extends Component {
     if (this.sidebarForm) {
       this.sidebarForm.destroy();
     }
-    if (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview) {
+    if (!isJsonEdit && (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview)) {
       this.sidebarForm = new Webform(_.omit({ ...this.options, preview: true }, [
         'hooks',
         'builder',
@@ -1381,7 +1394,9 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+    if (this.sidebarForm) {
     this.sidebarForm.attach(this.componentEdit.querySelector('[ref="sidebarForm"]'));
+    }
     this.editFormWrapper = this.componentEdit.querySelector('[ref="editFormWrapper"]');
     this.sidebarFormWrapper = this.componentEdit.querySelector('[ref="sidebarFormWrapper"]');
     this.updateComponent(componentCopy);

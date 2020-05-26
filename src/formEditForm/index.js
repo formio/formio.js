@@ -1,7 +1,9 @@
 import WebformEditForm from './webform';
+import WizardEditForm from './wizard';
 
 const formEditForms = {
   form: WebformEditForm,
+  wizard: WizardEditForm,
 };
 
 export class FormEditForms {

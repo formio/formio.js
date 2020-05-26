@@ -36,9 +36,9 @@ const EditFormUtils = {
             _.unionWith(objValue.components, srcValue.components, EditFormUtils.unifyComponents)
           );
         }
-        if (objValue.help) {
-          srcValue.help = EditFormUtils.sortAndFilterComponents(
-            _.unionWith(objValue.help, srcValue.help, EditFormUtils.unifyComponents)
+        if (objValue.sidebar) {
+          srcValue.sidebar = EditFormUtils.sortAndFilterComponents(
+            _.unionWith(objValue.sidebar, srcValue.sidebar, EditFormUtils.unifyComponents)
           );
         }
         return true;
@@ -197,6 +197,7 @@ const EditFormUtils = {
   valueDeclaration({
     customConditions = null,
     customVariables = null,
+    excludeConditions = [],
     excludeValueSources = [],
     excludeVariables = [],
     required = true,
@@ -230,6 +231,7 @@ const EditFormUtils = {
             customConditions,
             customVariables,
             editFormUtils: EditFormUtils,
+            excludeConditions,
             excludeValueSources,
             excludeVariables,
           });
@@ -255,8 +257,8 @@ const EditFormUtils = {
     ];
   },
   variableSelector({
-    exclude = [],
     customValues = null,
+    exclude = [],
   } = {}) {
     return {
       type: 'select',
@@ -267,17 +269,41 @@ const EditFormUtils = {
       data: {
         custom(args) {
           const { data, options } = args;
-          const { editForm = {} } = options;
-          const values = customValues ? customValues(args) : (editForm.settings?.variables ?? []).concat(data.variables ?? []);
+          const {
+            editComponentParentInstance = null,
+          } = options;
+
+          const getDefaultVariables = () => {
+            let result = (data.variables ?? []).map((variable) => ({
+              ...variable,
+              group: 'This Component',
+            }));
+
+            let current = editComponentParentInstance;
+            while (current) {
+              const variables = (current.variables ?? []).map((variable) => ({
+                ...variable,
+                group: current.parent ? current.label : 'Webform',
+              }));
+              result = result.concat(variables);
+              current = current.parent;
+            }
+
+            return result;
+          };
+
+          const values = customValues ? customValues(args) : getDefaultVariables();
 
           return _
             .chain(values)
             .map(({
               name,
               key,
+              group,
             }) => ({
               name,
               key,
+              group,
             }))
             .reject(({ key }) => exclude.some((excludeVariable) => (
               _.isFunction(excludeVariable)
@@ -292,8 +318,8 @@ const EditFormUtils = {
     };
   },
   conditionSelector({
-    exclude = [],
     customValues = null,
+    exclude = [],
   } = {}) {
     return {
       type: 'select',
@@ -304,17 +330,41 @@ const EditFormUtils = {
       data: {
         custom(args) {
           const { data, options } = args;
-          const { editForm = {} } = options;
-          const values = customValues ? customValues(args) : (editForm.settings?.conditions ?? []).concat(data.conditions ?? []);
+          const {
+            editComponentParentInstance = null,
+          } = options;
+
+          const getDefaultConditions = () => {
+            let result = (data.conditions ?? []).map((condition) => ({
+              ...condition,
+              group: 'This Component',
+            }));
+
+            let current = editComponentParentInstance;
+            while (current) {
+              const conditions = (current.conditions ?? []).map((condition) => ({
+                ...condition,
+                group: current.parent ? current.label : 'Webform',
+              }));
+              result = result.concat(conditions);
+              current = current.parent;
+            }
+
+            return result;
+          };
+
+          const values = customValues ? customValues(args) : getDefaultConditions();
 
           return _
             .chain(values)
             .map(({
               name,
               key,
+              group,
             }) => ({
               name,
               key,
+              group,
             }))
             .reject(({ key }) => exclude.some((excludeCondition) => (
               _.isFunction(excludeCondition)
@@ -332,20 +382,14 @@ const EditFormUtils = {
     title,
     name,
     arguments: transformerArguments,
+    optionsEditForm,
   }, {
     customConditions = null,
     customVariables = null,
     excludeValueSources = [],
     excludeVariables = [],
   } = {}) {
-    return (
-    (transformerArguments && transformerArguments.length)
-      ? (
-        [
-          {
-            label: `${title} Transform Arguments`,
-            key: `${name}Arguments`,
-            conditional: {
+    const conditional = {
               json: {
                 '===': [
                   {
@@ -354,7 +398,15 @@ const EditFormUtils = {
                   name,
                 ],
               },
-            },
+    };
+
+    return (
+    (transformerArguments && transformerArguments.length)
+      ? (
+        [
+          {
+            label: `${title} Transform Arguments`,
+            key: `${name}Arguments`,
             type: 'container',
             input: true,
             components: transformerArguments.map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
@@ -362,14 +414,41 @@ const EditFormUtils = {
               customVariables,
               excludeValueSources,
               excludeVariables: [
-                (key, { instance }) => (key === instance.parent.data.key),
+                (key, { instance }) => (key === instance?.parent?.parent?.parent?.data?.key),
+                (key, { instance }) => (key === instance?.parent?.parent?.parent?.parent?.data?.key),
+                (key, { instance }) => (key === instance?.parent?.parent?.parent?.parent?.parent?.data?.key),
                 ...excludeVariables,
               ],
             })),
+            conditional,
           },
         ]
       )
       : []
+    )
+    .concat(
+      (optionsEditForm && optionsEditForm.length)
+        ? (
+          {
+            label: 'Options',
+            key: `${name}Options`,
+            type: 'container',
+            input: true,
+            components: [
+              {
+                key: `${name}OptionsPanel`,
+                type: 'panel',
+                title: 'Options',
+                input: false,
+                collapsible: true,
+                collapsed: true,
+                components: optionsEditForm,
+              },
+            ],
+            conditional,
+          }
+        )
+        : [],
     );
   },
   getOperator({
@@ -380,8 +459,8 @@ const EditFormUtils = {
   }, {
     customConditions = null,
     customVariables = null,
+    excludeConditions = [],
     excludeValueSources = [],
-    excludeVariables = [],
   } = {}) {
     const conditional = {
       json: {
@@ -411,8 +490,12 @@ const EditFormUtils = {
             components: operatorArguments.map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
               customConditions,
               customVariables,
+              excludeConditions: [
+                (key, { instance }) => (key === instance.parent.parent.parent.parent.parent.data.key),
+                (key, { instance }) => (key === instance.parent.parent.parent.parent.parent.parent.data.key),
+                ...excludeConditions,
+              ],
               excludeValueSources,
-              excludeVariables,
             })),
           },
         ],
@@ -450,6 +533,7 @@ const EditFormUtils = {
   }, {
     customConditions = null,
     customVariables = null,
+    excludeConditions = [],
     excludeValueSources = [],
     excludeVariables = [],
   } = {}) {
@@ -462,6 +546,7 @@ const EditFormUtils = {
       components: EditFormUtils.valueDeclaration({
         customConditions,
         customVariables,
+        excludeConditions,
         excludeValueSources: [
           'conditionalAssignment',
           ...excludeValueSources,
@@ -576,6 +661,8 @@ const EditFormUtils = {
           excludeVariables: [
             (key, { row }) => (key === row.key),
             (key, { instance }) => (key === instance?.parent?.data?.key),
+            (key, { instance }) => (key === instance?.parent?.parent?.data?.key),
+            (key, { instance }) => (key === instance?.parent?.parent?.parent?.data?.key),
           ],
           excludeValueSources,
         }),
@@ -838,6 +925,28 @@ const EditFormUtils = {
             },
           ],
         },
+      ],
+    };
+  },
+  getWebformLogicEditFormSettings() {
+    return {
+      customConditions({ data }) {
+        return (data.settings?.conditions ?? []).map((condition) => ({
+          ...condition,
+          group: 'Webform',
+        }));
+      },
+      customVariables({ data }) {
+        return (data.settings?.variables ?? []).map((variable) => ({
+          ...variable,
+          group: 'Webform',
+        }));
+      },
+      excludeValueSources: [
+        'thisComponent',
+        'thisComponentRow',
+        'thisComponentRowIndex',
+        'thisComponentValue',
       ],
     };
   },
