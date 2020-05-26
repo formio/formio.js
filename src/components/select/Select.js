@@ -1350,13 +1350,13 @@ export default class SelectComponent extends Field {
     }
   }
 
-  setErrorClasses(elements, dirty, hasError) {
-    super.setErrorClasses(elements, dirty, hasError);
+  setErrorClasses(elements, dirty, options) {
+    super.setErrorClasses(elements, dirty, options);
     if (this.choices) {
-      super.setErrorClasses([this.choices.containerInner.element], dirty, hasError);
+      super.setErrorClasses([this.choices.containerInner.element], dirty, options);
     }
     else {
-      super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
+      super.setErrorClasses([this.refs.selectContainer], dirty, options);
     }
   }
 }

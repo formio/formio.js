@@ -1725,17 +1725,6 @@ export default class Component extends Element {
     }, false);
   }
 
-  // Deprecated
-  addInputError(message, dirty, elements) {
-    this.addMessages(message);
-    this.setErrorClasses(elements, dirty, !!message);
-  }
-
-  // Deprecated
-  removeInputError(elements) {
-    this.setErrorClasses(elements, true, false);
-  }
-
   /**
    * Add a new input error to this element.
    *
@@ -1766,22 +1755,36 @@ export default class Component extends Element {
     }
   }
 
-  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
-    this.clearErrorClasses();
-    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
-    if (hasErrors) {
-      // Add error classes
-      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+  getMessageClass(level) {
+    return this.options[`component${_.capitalize(level)}Class`] || this.transform('class', `formio-${level}-wrapper`);
+  }
 
-      if (dirty && this.options.highlightErrors) {
-        this.addClass(this.element, this.options.componentErrorClass);
-      }
-      else {
-        this.addClass(this.element, 'has-error');
-      }
-    }
+  setErrorClasses(elements, dirty, {
+    hasErrors,
+    hasWarnings,
+    hasInfos,
+    hasMessages,
+  }) {
+    this.clearErrorClasses();
+
     if (hasMessages) {
       this.addClass(this.element, 'has-message');
+    }
+
+    if (hasErrors) {
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.getMessageClass('error'));
+      }
+    }
+    else if (hasWarnings) {
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.getMessageClass('warning'));
+      }
+      }
+    else if (hasInfos) {
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.getMessageClass('info'));
+    }
     }
   }
 
@@ -2953,9 +2956,9 @@ export default class Component extends Element {
   }
 
   clearErrorClasses() {
-    this.removeClass(this.element, this.options.componentErrorClass);
-    this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'has-error');
+    this.removeClass(this.element, this.getMessageClass('error'));
+    this.removeClass(this.element, this.getMessageClass('warning'));
+    this.removeClass(this.element, this.getMessageClass('info'));
     this.removeClass(this.element, 'has-message');
   }
 
@@ -2976,7 +2979,18 @@ export default class Component extends Element {
       }
     }
 
-    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    const levels = messages.map((message) => message.level);
+    const hasErrors = levels.includes('error');
+    const hasWarnings = levels.includes('warning');
+    const hasInfos = levels.includes('info');
+    const hasMessages = Boolean(messages.length);
+
+    const options = {
+      hasErrors,
+      hasWarnings,
+      hasInfos,
+      hasMessages,
+    };
 
     if (messages.length) {
       if (this.refs.messageContainer) {
@@ -2991,7 +3005,7 @@ export default class Component extends Element {
       this.emit('componentError', this.error);
       this.addMessages(messages, dirty, this.refs.input);
       if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+        this.setErrorClasses(this.refs.input, dirty, options);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -3000,7 +3014,7 @@ export default class Component extends Element {
       }
       this.error = null;
       if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+        this.setErrorClasses(this.refs.input, dirty, options);
       }
       this.clearErrorClasses();
     }

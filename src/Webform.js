@@ -1112,15 +1112,7 @@ export default class Webform extends NestedDataComponent {
     this.loading = false;
     let errors = this.errors;
     if (error) {
-      if (Array.isArray(error)) {
-        errors = errors.concat(error);
-      }
-      else {
-        errors.push(error);
-      }
-    }
-    else {
-      errors = super.errors;
+      errors = errors.concat(error);
     }
 
     errors = errors.concat(this.customErrors);
