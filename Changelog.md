@@ -184,7 +184,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
- -  `bower.json` main file
+ -  `bower.json` main file in order to fix issues with formio.js used as external dependency (using `Formio` global object)
 
 ## 4.10.0-beta.5
 ### Changed
