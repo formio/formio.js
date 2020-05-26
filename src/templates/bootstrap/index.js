@@ -61,10 +61,12 @@ export default {
     if (!text) {
       return text;
     }
+
     switch (type) {
       case 'class':
-        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
+        return this.cssClasses[text] ?? text;
     }
+
     return text;
   },
   defaultIconset: 'fa',

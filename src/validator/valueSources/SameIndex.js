@@ -17,15 +17,10 @@ export class SameIndexValueSource extends ValueSource {
 
   getValue() {
     const {
-      componentInstance,
       pathForRowIndex,
     } = this.options;
 
-    if (!componentInstance) {
-      throw new Error('`componentInstance` is not defined.');
-    }
-
-    const indexes = componentInstance.getRowIndexes();
+    const indexes = this.targetComponentInstance.getRowIndexes();
     return _.get(indexes, pathForRowIndex, -1);
   }
 }

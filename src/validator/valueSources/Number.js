@@ -10,7 +10,7 @@ export class NumberValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 300;
+    return 410;
   }
 
   static getInputEditForm() {

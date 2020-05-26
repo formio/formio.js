@@ -10,7 +10,7 @@ export class StringValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 200;
+    return 400;
   }
 
   static getInputEditForm() {
@@ -18,9 +18,6 @@ export class StringValueSource extends ValueSource {
       label: 'String',
       type: 'textfield',
       input: true,
-      validate: {
-        required: true,
-      },
     };
   }
 

@@ -30,6 +30,6 @@ export class IsNilOperator extends Operator {
       value,
     } = args;
 
-    return _.isNil(value);
+    return _.isNil(value) || Number.isNaN(value);
   }
 }

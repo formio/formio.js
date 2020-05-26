@@ -18,12 +18,20 @@ export class PropertyTransformer extends Transformer {
         key: 'path',
         required: false,
       },
+      {
+        name: 'Default Value',
+        key: 'defaultValue',
+        required: false,
+      },
     ];
   }
 
   transform(value, args) {
-    const { path } = args;
+    const {
+      path,
+      defaultValue,
+    } = args;
 
-    return _.get(value, path, value);
+    return _.get(value, path, defaultValue ?? value);
   }
 }

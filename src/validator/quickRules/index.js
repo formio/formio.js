@@ -1,3 +1,4 @@
+import { BetweenQuickRule } from './Between';
 import { MaxQuickRule } from './Max';
 import { MaxLengthQuickRule } from './MaxLength';
 import { MaxWordsQuickRule } from './MaxWords';
@@ -8,6 +9,7 @@ import { PatternRule } from './Pattern';
 import { RequiredQuickRule } from './Required';
 
 const quickRules = [
+  BetweenQuickRule,
   MaxQuickRule,
   MaxLengthQuickRule,
   MaxWordsQuickRule,

@@ -1,30 +1,64 @@
+import { AccumulatorValueSource } from './Accumulator';
 import { BooleanValueSource } from './Boolean';
 import { ComponentByPathValueSource } from './ComponentByPath';
+import { ComponentRowByPathValueSource } from './ComponentRowByPath';
+import { ComponentRowIndexByPathValueSource } from './ComponentRowIndexByPath';
 import { ComponentValueByPathValueSource } from './ComponentValueByPath';
+import { ConditionValueSource } from './Condition';
 import { ConditionalAssignmentValueSource } from './ConditionalAssignment';
 import { CurrentDateTimeValueSource } from './CurrentDateTime';
 import { DateValueSource } from './Date';
 import { DateTimeValueSource } from './DateTime';
+import { FormValueSource } from './Form';
+import { FormDataValueSource } from './FormData';
+import { ItemValueSource } from './Item';
+import { ItemIndexValueSource } from './ItemIndex';
+import { ListValueSource } from './List';
 import { NumberValueSource } from './Number';
+import { ParentItemIndexesValueSource } from './ParentItemIndexes';
+import { ParentItemsValueSource } from './ParentItems';
 import { RegExpValueSource } from './RegExp';
+import { SourceComponentValueSource } from './SourceComponent';
+import { SourceComponentRowValueSource } from './SourceComponentRow';
+import { SourceComponentRowIndexValueSource } from './SourceComponentRowIndex';
+import { SourceComponentValueValueSource } from './SourceComponentValue';
 import { StringValueSource } from './String';
 import { ThisComponentValueSource } from './ThisComponent';
+import { ThisComponentRowValueSource } from './ThisComponentRow';
+import { ThisComponentRowIndexValueSource } from './ThisComponentRowIndex';
 import { ThisComponentValueValueSource } from './ThisComponentValue';
 import { TimeValueSource } from './Time';
 import { VariableValueSource } from './Variable';
 
 const valueSources = [
+  AccumulatorValueSource,
   BooleanValueSource,
   ComponentByPathValueSource,
+  ComponentRowByPathValueSource,
+  ComponentRowIndexByPathValueSource,
   ComponentValueByPathValueSource,
+  ConditionValueSource,
   ConditionalAssignmentValueSource,
   CurrentDateTimeValueSource,
   DateValueSource,
   DateTimeValueSource,
+  FormValueSource,
+  FormDataValueSource,
+  ItemValueSource,
+  ItemIndexValueSource,
+  ListValueSource,
   NumberValueSource,
+  ParentItemIndexesValueSource,
+  ParentItemsValueSource,
   RegExpValueSource,
+  SourceComponentValueSource,
+  SourceComponentRowValueSource,
+  SourceComponentRowIndexValueSource,
+  SourceComponentValueValueSource,
   StringValueSource,
   ThisComponentValueSource,
+  ThisComponentRowValueSource,
+  ThisComponentRowIndexValueSource,
   ThisComponentValueValueSource,
   TimeValueSource,
   VariableValueSource,

@@ -14,12 +14,6 @@ export class ThisComponentValueSource extends ValueSource {
   }
 
   getValue() {
-    const { componentInstance } = this.options;
-
-    if (!componentInstance) {
-      throw new Error('`componentInstance` is not defined.');
-    }
-
-    return componentInstance;
+    return this.targetComponentInstance;
   }
 }

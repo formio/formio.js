@@ -12,7 +12,7 @@ export class CurrentDateTimeValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 900;
+    return 500;
   }
 
   getValue() {

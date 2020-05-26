@@ -13,7 +13,11 @@ export class OrConjunction extends Conjunction {
     return 10;
   }
 
+  static get lazyConditionPartsEvaluation() {
+    return true;
+  }
+
   execute(conditionParts) {
-    return conditionParts.reduce((result, conditionPart) => (result || conditionPart), false);
+    return conditionParts.reduce((result, conditionPart) => (result || conditionPart()), false);
   }
 }

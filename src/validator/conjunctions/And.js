@@ -13,7 +13,11 @@ export class AndConjunction extends Conjunction {
     return 0;
   }
 
+  static get lazyConditionPartsEvaluation() {
+    return true;
+  }
+
   execute(conditionParts) {
-    return conditionParts.reduce((result, conditionPart) => (result && conditionPart), true);
+    return conditionParts.reduce((result, conditionPart) => (result && conditionPart()), true);
   }
 }

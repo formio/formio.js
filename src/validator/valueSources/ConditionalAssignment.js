@@ -10,13 +10,14 @@ export class ConditionalAssignmentValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 1000;
+    return 720;
   }
 
   static getInputEditForm({
     customConditions,
     customVariables,
     editFormUtils,
+    excludeConditions,
     excludeValueSources,
     excludeVariables,
   }) {
@@ -73,10 +74,13 @@ export class ConditionalAssignmentValueSource extends ValueSource {
       saveRow: 'Save Assignment',
       components: [
         editFormUtils.conditionSelector({
-          customConditions,
+          customValues: customConditions,
+          exclude: excludeConditions,
         }),
         ...editFormUtils.valueDeclaration({
+          customConditions,
           customVariables,
+          excludeConditions,
           excludeValueSources: [
             ...excludeValueSources,
             // Exclude current valueSource to prevent infinite recursion.
@@ -89,17 +93,15 @@ export class ConditionalAssignmentValueSource extends ValueSource {
   }
 
   getValue(input) {
-    const { componentInstance } = this.options;
-
-    if (!componentInstance) {
-      throw new Error('`componentInstance` is not defined.');
-    }
-
-    const branch = input.find(({ condition }) => (!condition || componentInstance.calculateCondition(condition)));
+    const branch = input.find(({ condition }) => (!condition || this.targetComponentInstance.calculateCondition(condition)));
 
     return (
       branch
-        ? componentInstance.calculateValueDefinition(branch.valueSource, branch[`${branch.valueSource}Input`])
+        ? this.targetComponentInstance.calculateValueDefinition(
+          branch.valueSource,
+          branch[`${branch.valueSource}Input`],
+          this.context,
+        )
         : null
     );
   }

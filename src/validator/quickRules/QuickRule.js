@@ -1,16 +1,6 @@
-export class QuickRule {
-  constructor(options) {
-    this.options = options;
-  }
+import { BaseEntity } from '../BaseEntity';
 
-  static get name() {
-    throw new Error('Getter #name() is abstract.');
-  }
-
-  static get title() {
-    throw new Error('Getter #title() is abstract.');
-  }
-
+export class QuickRule extends BaseEntity {
   static get weight() {
     return 0;
   }

@@ -13,7 +13,11 @@ export class NandConjunction extends Conjunction {
     return 30;
   }
 
+  static get lazyConditionPartsEvaluation() {
+    return true;
+  }
+
   execute(conditionParts) {
-    return conditionParts.reduce((result, conditionPart) => (result || !conditionPart), false);
+    return conditionParts.reduce((result, conditionPart) => (result || !conditionPart()), false);
   }
 }

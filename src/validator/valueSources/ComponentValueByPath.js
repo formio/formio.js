@@ -14,6 +14,9 @@ export class ComponentValueByPathValueSource extends ComponentByPathValueSource 
   }
 
   getValue(input) {
-    return super.getValue(input)?.dataValue ?? null;
+    const component = super.getValue(input);
+    return Array.isArray(component)
+      ? component.map((comp) => comp?.dataValue ?? null)
+      : (component?.dataValue ?? null);
   }
 }

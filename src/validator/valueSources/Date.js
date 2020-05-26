@@ -14,7 +14,7 @@ export class DateValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 600;
+    return 440;
   }
 
   static getInputEditForm() {

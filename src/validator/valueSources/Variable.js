@@ -10,7 +10,7 @@ export class VariableValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 1000;
+    return 700;
   }
 
   static getInputEditForm({
@@ -30,12 +30,6 @@ export class VariableValueSource extends ValueSource {
   }
 
   getValue(input) {
-    const { componentInstance } = this.options;
-
-    if (!componentInstance) {
-      throw new Error('`componentInstance` is not defined.');
-    }
-
-    return componentInstance.calculateVariable(input);
+    return this.targetComponentInstance.calculateVariable(input, this.context);
   }
 }

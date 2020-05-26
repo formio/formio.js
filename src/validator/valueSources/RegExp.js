@@ -10,7 +10,7 @@ export class RegExpValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 800;
+    return 460;
   }
 
   static getInputEditForm() {

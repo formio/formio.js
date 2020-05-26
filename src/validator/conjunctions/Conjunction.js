@@ -1,18 +1,12 @@
-export class Conjunction {
-  constructor(options) {
-    this.options = options;
-  }
+import { BaseEntity } from '../BaseEntity';
 
-  static get name() {
-    throw new Error('Getter #name() is abstract.');
-  }
-
-  static get title() {
-    throw new Error('Getter #title() is abstract.');
-  }
-
+export class Conjunction extends BaseEntity {
   static get weight() {
     return 0;
+  }
+
+  static get lazyConditionPartsEvaluation() {
+    return false;
   }
 
   // eslint-disable-next-line no-unused-vars

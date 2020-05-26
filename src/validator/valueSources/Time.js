@@ -14,7 +14,7 @@ export class TimeValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 700;
+    return 450;
   }
 
   static getInputEditForm() {

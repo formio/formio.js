@@ -10,7 +10,7 @@ export class BooleanValueSource extends ValueSource {
   }
 
   static get weight() {
-    return 400;
+    return 420;
   }
 
   static getInputEditForm() {

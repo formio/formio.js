@@ -1,22 +1,16 @@
-export class Transformer {
-  constructor(options) {
-    this.options = options;
+import { BaseCalulatableEntity } from '../BaseCalculatableEntity';
+
+export class Transformer extends BaseCalulatableEntity {
+  static get lazyValueEvaluation() {
+    return false;
   }
 
-  static get name() {
-    throw new Error('Getter #name() is abstract.');
-  }
-
-  static get title() {
-    throw new Error('Getter #title() is abstract.');
-  }
-
-  static get arguments() {
-    return [];
+  static get lazyArgsEvaluation() {
+    return false;
   }
 
   // eslint-disable-next-line no-unused-vars
-  transform(value, args) {
+  transform(value, args, opts) {
     throw new Error('Method #transform() is abstract.');
   }
 }

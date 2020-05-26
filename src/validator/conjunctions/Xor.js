@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { Conjunction } from './Conjunction';
 
 export class XorConjunction extends Conjunction {
@@ -15,7 +13,25 @@ export class XorConjunction extends Conjunction {
     return 20;
   }
 
+  static get lazyConditionPartsEvaluation() {
+    return true;
+  }
+
   execute(conditionParts) {
-    return conditionParts.filter(_.identity).length === 1;
+    let amount = 0;
+
+    for (const conditionPart of conditionParts) {
+      const result = conditionPart();
+
+      if (result) {
+        amount += 1;
+
+        if (amount > 1) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }

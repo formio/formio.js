@@ -862,6 +862,7 @@ class ValidationChecker {
           results.push({
             level: severity || 'error',
             message: component.t(message),
+            componentInstance: component,
           });
         }
       });
@@ -876,6 +877,7 @@ class ValidationChecker {
             results.push({
               level: severity || 'error',
               message: component.t(message),
+              componentInstance: component,
             });
 
             return false;

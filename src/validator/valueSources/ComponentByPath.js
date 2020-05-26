@@ -114,7 +114,7 @@ export class ComponentByPathValueSource extends ValueSource {
               const { parentPath } = instance.root;
               const path = instance.parent.dataValue;
               const currentPath = path.slice(0, rowIndex + 1).map(({ component }) => component).join('.');
-              const inSameScope = parentPath.startsWith(`${currentPath}.`);
+              const inSameScope = parentPath.startsWith(`${currentPath}.`) || (parentPath === currentPath);
               const commonOptions = commonIndexSources.map((indexSource) => ({
                 label: indexSource.title,
                 value: indexSource.name,
@@ -161,30 +161,15 @@ export class ComponentByPathValueSource extends ValueSource {
         })),
       ],
       conditionalAddButton({ value, instance }) {
-        const { pathComponentsMapping, arrayDataComponentPaths } = instance.root;
+        const { pathComponentsMapping } = instance.root;
         const currentPath = value.map(({ component }) => component).join('.');
-        const lastRow = _.last(value);
 
-        return Boolean(pathComponentsMapping[currentPath])
-          && (!arrayDataComponentPaths.includes(currentPath) || (lastRow.indexType === 'same') || lastRow[`${lastRow.indexType}Index`]);
+        return Boolean(pathComponentsMapping[currentPath]);
       },
     };
   }
 
   getValue(input) {
-    const {
-      componentInstance,
-      formInstance,
-    } = this.options;
-
-    if (!componentInstance) {
-      throw new Error('`componentInstance` is not defined.');
-    }
-
-    if (!formInstance) {
-      throw new Error('`formInstance` is not defined.');
-    }
-
     let pathForRowIndex;
     let lastIndex = null;
 
@@ -199,9 +184,18 @@ export class ComponentByPathValueSource extends ValueSource {
         [`${indexType}Index`]: indexInput,
       } = pathPart;
 
-      let newContext = context.getComponent(component);
-      if (_.isNumber(lastIndex) && _.isArray(newContext)) {
-        newContext = newContext[lastIndex];
+      const getNextContext = (prevContext) => {
+        const nextContext = prevContext.getComponent(component);
+        return (_.isNumber(lastIndex) && _.isArray(nextContext))
+          ? nextContext[lastIndex]
+          : nextContext;
+      };
+
+      const nextContext = Array.isArray(context)
+        ? context.flatMap((contextElement) => getNextContext(contextElement))
+        : getNextContext(context);
+
+      if (_.isNumber(lastIndex)) {
         lastIndex = null;
       }
 
@@ -214,14 +208,17 @@ export class ComponentByPathValueSource extends ValueSource {
         }
 
         const indexTypeInstance = new IndexType({
-          ...this.options,
-          pathForRowIndex,
+          ...this.context,
+          options: {
+            ...this.options,
+            pathForRowIndex,
+          },
         });
         lastIndex = indexTypeInstance.getValue(indexInput);
       }
 
-      return newContext;
-    }, formInstance);
+      return nextContext;
+    }, this.formInstance);
 
     return component ?? null;
   }

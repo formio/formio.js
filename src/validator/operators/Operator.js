@@ -1,18 +1,8 @@
 import _ from 'lodash';
 
-export class Operator {
-  constructor(options) {
-    this.options = options;
-  }
+import { BaseCalulatableEntity } from '../BaseCalculatableEntity';
 
-  static get name() {
-    throw new Error('Getter #name() is abstract.');
-  }
-
-  static get title() {
-    throw new Error('Getter #title() is abstract.');
-  }
-
+export class Operator extends BaseCalulatableEntity {
   static get hasComplementaryOperator() {
     return false;
   }
@@ -70,12 +60,8 @@ export class Operator {
     return ParentClass._complementaryOperator;
   }
 
-  static get arguments() {
-    return [];
-  }
-
-  static get optionsEditForm() {
-    return [];
+  static get lazyArgsEvaluation() {
+    return false;
   }
 
   // eslint-disable-next-line no-unused-vars

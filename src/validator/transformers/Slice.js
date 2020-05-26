@@ -1,6 +1,6 @@
 import { Transformer } from './Transformer';
 
-export class SliceArrayTransformer extends Transformer {
+export class SliceTransformer extends Transformer {
   static get title() {
     return 'Slice';
   }
