@@ -13,7 +13,8 @@ import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
-const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.2';
+const QUILL_TABLES_URL = 'https://cdn.quilljs.com/2.0.0-dev.2';
+const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
@@ -1891,25 +1892,26 @@ export default class Component extends Element {
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
     settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, 'editors.quill.settings', {}), settings);
-
+    const quillUrl = this.component.allowTables ? QUILL_TABLES_URL : QUILL_URL;
+    settings = this.component.allowTables ?  {
+        ...settings,
+        modules: {
+          table: true
+        }
+      } : settings;
     // Lazy load the quill css.
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${quillUrl}/quill.min.js`), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
         }
         Quill.register('modules/table', TableModule);
-        this.quill = new Quill(element, {
-          ...settings,
-          modules: {
-            table: true
-          }
-        });
+        this.quill = new Quill(element, settings);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
         const txtArea = document.createElement('textarea');
