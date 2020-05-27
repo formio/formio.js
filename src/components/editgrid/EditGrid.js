@@ -427,6 +427,9 @@ export default class EditGridComponent extends NestedArrayComponent {
           dialog.close();
           this.saveRow(rowIndex);
         }
+        else {
+          this._currentForm.showErrors(null, false, dialog.refs.dialogContents);
+        }
       },
     }, this.component.saveRow || 'Save'));
     return this.attachComponents(modalContent, components);

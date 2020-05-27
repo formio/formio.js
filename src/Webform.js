@@ -1021,7 +1021,7 @@ export default class Webform extends NestedDataComponent {
    * @param {string} message - The message to show in the alert.
    * @param {string} classes - Styling classes for alert.
    */
-  setAlert(type, message, classes) {
+  setAlert(type, message, classes, target) {
     if (!type && this.submitted) {
       if (this.alert) {
         if (this.refs.errorRef && this.refs.errorRef.length) {
@@ -1088,7 +1088,7 @@ export default class Webform extends NestedDataComponent {
         });
       });
     }
-    this.prepend(this.alert);
+    this.prependTo(this.alert, target || this.element);
   }
 
   /**
@@ -1112,7 +1112,7 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-  showErrors(error, triggerEvent) {
+  showErrors(error, triggerEvent, target) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1191,7 +1191,7 @@ export default class Webform extends NestedDataComponent {
     });
     p.appendChild(ul);
     message.appendChild(p);
-    this.setAlert('danger', message);
+    this.setAlert('danger', message, '', target);
     if (triggerEvent) {
       this.emit('error', errors);
     }
