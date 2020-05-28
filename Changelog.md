@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.5
+### Added
+ - FIN 025 - Added html element into pdf builder.
+ 
+
 ## 4.10.0-rc.4
 ### Fixed
  - Angular ZoneAware Promise issue and IE11 issue when using native promises.
