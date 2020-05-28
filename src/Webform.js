@@ -1202,7 +1202,7 @@ export default class Webform extends NestedDataComponent {
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
 
-    const ul = this.ce('ul', { 'aria-labelledby': `fix-errors-${this.id}` });
+    const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
         const createListItem = (message, index) => {
@@ -1210,24 +1210,25 @@ export default class Webform extends NestedDataComponent {
             ref: 'errorRef',
             tabIndex: 0,
             role: 'link',
-            'aria-label': `${message}. Click to navigate to the field with following error.`
           };
           const li = this.ce('li');
-          const mainMessage = this.ce('span', params);
-          this.setContent(mainMessage, this.t(message));
-
+          const messageContainer = this.ce('span', params);
+          const mainMessage = this.ce('span');
           const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
+
+          this.setContent(mainMessage, this.t(message));
           this.setContent(helpMessage, this.t('errorListHelpMessage'));
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
           if (keyOrPath) {
             const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
-            mainMessage.dataset.componentKey = formattedKeyOrPath;
+            messageContainer.dataset.componentKey = formattedKeyOrPath;
           }
 
-          li.appendChild(mainMessage);
-          li.appendChild(helpMessage);
+          messageContainer.appendChild(mainMessage);
+          messageContainer.appendChild(helpMessage);
+          li.appendChild(messageContainer);
           this.appendTo(li, ul);
         };
 
