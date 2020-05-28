@@ -353,6 +353,7 @@ export default class CalendarWidget extends InputWidget {
       this.closedOn = Date.now();
       if (this.settings.wasDefaultValueChanged) {
         this.calendar._input.value = this.settings.defaultValue;
+        this.settings.wasDefaultValueChanged = false;
       }
       if (this.calendar) {
         this.emit(&apos;blur&apos;);
@@ -375,10 +376,13 @@ export default class CalendarWidget extends InputWidget {
       // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
       this.calendar.altInput.addEventListener(&apos;input&apos;, (event) =&gt; {
-        if (event.target.value === &apos;&apos;) {
+        if (event.target.value === &apos;&apos; &amp;&amp; this.calendar.selectedDates.length &gt; 0) {
           this.settings.wasDefaultValueChanged = true;
           this.settings.defaultValue = event.target.value;
           this.calendar.clear();
+        }
+        else {
+          this.settings.wasDefaultValueChanged = false;
         }
       });
 

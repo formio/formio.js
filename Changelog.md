@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - PDF 40 - Fixed element's location on its adding.
  - Fix error classes setting.
  - FJS-958 fixed DateTime not saving input in IE11
+ 
+### Updated
+ - @babel/cli@7.10.1, @babel/core@7.10.1, @babel/plugin-proposal-class-properties@7.10.1, @babel/plugin-proposal-export-default-from@7.10.1, @babel/plugin-proposal-optional-chaining@7.10.1, @babel/polyfill@7.10.1, @babel/preset-env@7.10.1, @babel/register@7.10.1
 
 ## 4.10.0-rc.4
 ### Fixed
