@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
 import NativePromise from 'native-promise-only';
+import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -203,27 +204,37 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(path, fn) {
-    path = Array.isArray(path) ? path : [path];
+  getComponent(path, fn, originalPath) {
+    path = getArrayFromComponentPath(path);
+    const pathStr = originalPath || getStringFromComponentPath(path);
     const [key, ...remainingPath] = path;
     let comp = null;
+    let possibleComp = null;
 
     if (!_.isString(key)) {
       return comp;
     }
 
     this.everyComponent((component, components) => {
+      const matchPath = component.hasInput && component.path ? pathStr.includes(component.path) : true;
       if (component.component.key === key) {
-        comp = component;
-        if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
+        possibleComp = component;
+        if (matchPath) {
+          comp = component;
+          if (remainingPath.length > 0 && 'getComponent' in component) {
+            comp = component.getComponent(remainingPath, fn, originalPath);
+          }
+          else if (fn) {
+            fn(component, components);
+          }
+          return false;
         }
-        else if (fn) {
-          fn(component, components);
-        }
-        return false;
       }
     });
+
+    if (!comp) {
+      comp = possibleComp;
+    }
 
     return comp;
   }
@@ -250,6 +261,27 @@ export default class NestedComponent extends Field {
   }
 
   /**
+   * Return a path of component's value.
+   *
+   * @param {Object} component - The component instance.
+   * @return {string} - The component's value path.
+   */
+  calculateComponentPath(component) {
+    let path = '';
+    if (component.component.key) {
+      let thisPath = this;
+      while (thisPath && !thisPath.allowData && thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';
+      path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
+      path += component._parentPath && component.component.subFormDirectChild ? component._parentPath : '';
+      path += component.component.key;
+      return path;
+    }
+  }
+
+  /**
    * Create a new component and add it to the components array.
    *
    * @param component
@@ -266,13 +298,9 @@ export default class NestedComponent extends Field {
     options.root = this.root || this;
     options.skipInit = true;
     const comp = Components.create(component, options, data, true);
-    if (component.key) {
-      let thisPath = this;
-      while (thisPath && !thisPath.allowData && thisPath.parent) {
-        thisPath = thisPath.parent;
-      }
-      comp.path = thisPath.path ? `${thisPath.path}.` : '';
-      comp.path += component.key;
+    const path = this.calculateComponentPath(comp);
+    if (path) {
+      comp.path = path;
     }
     comp.init();
     if (component.internal) {
@@ -343,6 +371,9 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    if (this.options.parentPath) {
+      component.subFormDirectChild = true;
+    }
     component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
@@ -635,6 +666,11 @@ export default class NestedComponent extends Field {
     }
     if (component.type === 'components') {
       return component.setValue(value, flags);
+    }
+    else if (flags.validateOnInit) {
+      return component.defaultValue
+        ? component.setValue(component.defaultValue, flags)
+        : component.setValue(_.get(value, component.key), flags);
     }
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);

@@ -145,6 +145,9 @@ export default class NumberComponent extends Input {
   }
 
   parseValue(input) {
+    if (typeof input === 'string') {
+      input = input.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
+    }
     let value = parseFloat(input);
 
     if (!_.isNaN(value)) {
@@ -183,7 +186,7 @@ export default class NumberComponent extends Input {
       value = value.replace('.', this.decimalSeparator);
     }
 
-    return conformToMask(value, this.numberMask).conformedValue;
+    return conformToMask(this.formatValue(value), this.numberMask).conformedValue;
   }
 
   getValueAsString(value, options) {

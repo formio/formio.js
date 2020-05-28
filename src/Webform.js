@@ -10,7 +10,6 @@ import NestedDataComponent from './components/_classes/nesteddata/NestedDataComp
 import {
   fastCloneDeep,
   currentTimezone,
-  getArrayFromComponentPath,
   getStringFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
@@ -636,7 +635,7 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
    * @returns {*}
    */
-  setForm(form) {
+  setForm(form, flags) {
     // Create the form.
     this._form = form;
 
@@ -675,10 +674,18 @@ export default class Webform extends NestedDataComponent {
       this.emit('formLoad', form);
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
-      setTimeout(() => {
+      const resolveForm = (flags) => {
         this.onChange();
-        this.formReadyResolve();
-      }, 0);
+        this.formReadyResolve(flags);
+      };
+
+      if (flags && flags.validateOnInit) {
+        resolveForm(flags);
+      }
+      else {
+        setTimeout(resolveForm, 0);
+      }
+
       return this.formReady;
     });
   }
@@ -747,7 +754,13 @@ export default class Webform extends NestedDataComponent {
       fromSubmission: true,
     };
     return this.onSubmission = this.formReady.then(
-      () => {
+      (resolveFlags) => {
+        if (resolveFlags) {
+          flags = {
+            ...flags,
+            ...resolveFlags
+          };
+        }
         this.submissionSet = true;
         this.triggerChange(flags);
         this.setValue(submission, flags);
@@ -774,22 +787,16 @@ export default class Webform extends NestedDataComponent {
       console.warn(this.t('saveDraftAuthError'));
       return;
     }
-    const draft = this.submission;
+    const draft = fastCloneDeep(this.submission);
     draft.state = 'draft';
+
     if (!this.savingDraft) {
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
-        const currentSubmission = _.merge(sub, draft);
-
+        // Set id to submission to avoid creating new draft submission
+        this.submission._id = sub._id;
+        this.savingDraft = false;
         this.emit('saveDraft', sub);
-        if (!draft._id) {
-          this.setSubmission(currentSubmission).then(() => {
-            this.savingDraft = false;
-          });
-        }
-        else {
-          this.savingDraft = false;
-        }
       });
     }
   }
@@ -862,7 +869,9 @@ export default class Webform extends NestedDataComponent {
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
-    submission.data = this.data;
+    submission.data = submission.data
+      ? { ...this.data, ...submission.data }
+      : this.data;
     this._submission = submission;
     return changed;
   }
@@ -933,13 +942,18 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
-  destroy() {
+  destroy(deleteFromGlobal = false) {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
     this.off('resetForm');
     this.off('deleteSubmission');
     this.off('refreshData');
+
+    if (deleteFromGlobal) {
+      delete Formio.forms[this.id];
+    }
+
     return super.destroy();
   }
 
@@ -1120,8 +1134,7 @@ export default class Webform extends NestedDataComponent {
    */
   focusOnComponent(key) {
     if (key) {
-      const path = getArrayFromComponentPath(key);
-      const component = this.getComponent(path);
+      const component = this.getComponent(key);
       if (component) {
         component.focus();
       }
@@ -1194,7 +1207,7 @@ export default class Webform extends NestedDataComponent {
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
 
-    const ul = this.ce('ul', { 'aria-labelledby': `fix-errors-${this.id}` });
+    const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
         const createListItem = (message, index) => {
@@ -1202,24 +1215,25 @@ export default class Webform extends NestedDataComponent {
             ref: 'errorRef',
             tabIndex: 0,
             role: 'link',
-            'aria-label': `${message}. Click to navigate to the field with following error.`
           };
           const li = this.ce('li');
-          const mainMessage = this.ce('span', params);
-          this.setContent(mainMessage, this.t(message));
-
+          const messageContainer = this.ce('span', params);
+          const mainMessage = this.ce('span');
           const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
+
+          this.setContent(mainMessage, this.t(message));
           this.setContent(helpMessage, this.t('errorListHelpMessage'));
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
           if (keyOrPath) {
             const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
-            mainMessage.dataset.componentKey = formattedKeyOrPath;
+            messageContainer.dataset.componentKey = formattedKeyOrPath;
           }
 
-          li.appendChild(mainMessage);
-          li.appendChild(helpMessage);
+          messageContainer.appendChild(mainMessage);
+          messageContainer.appendChild(helpMessage);
+          li.appendChild(messageContainer);
           this.appendTo(li, ul);
         };
 
@@ -1245,15 +1259,6 @@ export default class Webform extends NestedDataComponent {
 
     if (triggerEvent) {
       this.emit('error', errors);
-      if (this.refs.errorRef && this.refs.errorRef.length) {
-        this.ready.then(() => {
-          this.refs.errorRef[0].focus();
-        });
-      }
-      else {
-        const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
-        withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
-      }
     }
 
     return errors;
@@ -1393,6 +1398,21 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
+  setMetadata(submission) {
+    // Add in metadata about client submitting the form
+    submission.metadata = submission.metadata || {};
+    _.defaults(submission.metadata, {
+      timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
+      offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+      origin: document.location.origin,
+      referrer: document.referrer,
+      browserName: navigator.appName,
+      userAgent: navigator.userAgent,
+      pathName: window.location.pathname,
+      onLine: navigator.onLine
+    });
+  }
+
   submitForm(options = {}) {
     return new NativePromise((resolve, reject) => {
       // Read-only forms should never submit.
@@ -1405,17 +1425,7 @@ export default class Webform extends NestedDataComponent {
 
       const submission = fastCloneDeep(this.submission || {});
 
-      // Add in metadata about client submitting the form
-      submission.metadata = submission.metadata || {};
-      _.defaults(submission.metadata, {
-        timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-        offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
-        referrer: document.referrer,
-        browserName: navigator.appName,
-        userAgent: navigator.userAgent,
-        pathName: window.location.pathname,
-        onLine: navigator.onLine
-      });
+      this.setMetadata(submission);
 
       submission.state = options.state || 'submitted';
 

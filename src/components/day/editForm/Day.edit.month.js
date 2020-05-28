@@ -4,7 +4,7 @@ export default [
     type: 'select',
     datasrc: 'values',
     key: 'fields.month.type',
-    title: 'Type',
+    label: 'Type of input',
     data: {
       values: [
         {

@@ -245,6 +245,7 @@ import _ from &apos;lodash&apos;;
 import Field from &apos;../field/Field&apos;;
 import Components from &apos;../../Components&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import { getArrayFromComponentPath, getStringFromComponentPath } from &apos;../../../utils/utils&apos;;
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -445,27 +446,37 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(path, fn) {
-    path = Array.isArray(path) ? path : [path];
+  getComponent(path, fn, originalPath) {
+    path = getArrayFromComponentPath(path);
+    const pathStr = originalPath || getStringFromComponentPath(path);
     const [key, ...remainingPath] = path;
     let comp = null;
+    let possibleComp = null;
 
     if (!_.isString(key)) {
       return comp;
     }
 
     this.everyComponent((component, components) =&gt; {
+      const matchPath = component.hasInput &amp;&amp; component.path ? pathStr.includes(component.path) : true;
       if (component.component.key === key) {
-        comp = component;
-        if (remainingPath.length &gt; 0 &amp;&amp; &apos;getComponent&apos; in component) {
-          comp = component.getComponent(remainingPath, fn);
+        possibleComp = component;
+        if (matchPath) {
+          comp = component;
+          if (remainingPath.length &gt; 0 &amp;&amp; &apos;getComponent&apos; in component) {
+            comp = component.getComponent(remainingPath, fn, originalPath);
+          }
+          else if (fn) {
+            fn(component, components);
+          }
+          return false;
         }
-        else if (fn) {
-          fn(component, components);
-        }
-        return false;
       }
     });
+
+    if (!comp) {
+      comp = possibleComp;
+    }
 
     return comp;
   }
@@ -492,6 +503,27 @@ export default class NestedComponent extends Field {
   }
 
   /**
+   * Return a path of component&apos;s value.
+   *
+   * @param {Object} component - The component instance.
+   * @return {string} - The component&apos;s value path.
+   */
+  calculateComponentPath(component) {
+    let path = &apos;&apos;;
+    if (component.component.key) {
+      let thisPath = this;
+      while (thisPath &amp;&amp; !thisPath.allowData &amp;&amp; thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : &apos;&apos;;
+      path = thisPath.path ? `${thisPath.path}${rowIndex}.` : &apos;&apos;;
+      path += component._parentPath &amp;&amp; component.component.subFormDirectChild ? component._parentPath : &apos;&apos;;
+      path += component.component.key;
+      return path;
+    }
+  }
+
+  /**
    * Create a new component and add it to the components array.
    *
    * @param component
@@ -508,13 +540,9 @@ export default class NestedComponent extends Field {
     options.root = this.root || this;
     options.skipInit = true;
     const comp = Components.create(component, options, data, true);
-    if (component.key) {
-      let thisPath = this;
-      while (thisPath &amp;&amp; !thisPath.allowData &amp;&amp; thisPath.parent) {
-        thisPath = thisPath.parent;
-      }
-      comp.path = thisPath.path ? `${thisPath.path}.` : &apos;&apos;;
-      comp.path += component.key;
+    const path = this.calculateComponentPath(comp);
+    if (path) {
+      comp.path = path;
     }
     comp.init();
     if (component.internal) {
@@ -585,6 +613,9 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    if (this.options.parentPath) {
+      component.subFormDirectChild = true;
+    }
     component = this.hook(&apos;addComponent&apos;, component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
@@ -874,6 +905,11 @@ export default class NestedComponent extends Field {
     }
     if (component.type === &apos;components&apos;) {
       return component.setValue(value, flags);
+    }
+    else if (flags.validateOnInit) {
+      return component.defaultValue
+        ? component.setValue(component.defaultValue, flags)
+        : component.setValue(_.get(value, component.key), flags);
     }
     else if (value &amp;&amp; component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);

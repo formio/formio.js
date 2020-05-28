@@ -2,7 +2,12 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import EventEmitter from 'eventemitter2';
 import NativePromise from 'native-promise-only';
-import { isMongoId, eachComponent } from '../../utils/utils';
+import {
+  isMongoId,
+  eachComponent,
+  getStringFromComponentPath,
+  getArrayFromComponentPath
+} from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
@@ -38,6 +43,7 @@ export default class FormComponent extends Component {
       settings: this.component.settings,
       components: this.component.components
     };
+    this.valueChanged = false;
     this.subForm = null;
     this.formSrc = '';
     if (this.component.src) {
@@ -112,8 +118,19 @@ export default class FormComponent extends Component {
     return this.subFormReady || NativePromise.resolve();
   }
 
+  getComponent(path, fn) {
+    path = getArrayFromComponentPath(path);
+    if (path[0] === 'data') {
+      path.shift();
+    }
+    const originalPathStr = `${this.path}.data.${getStringFromComponentPath(path)}`;
+    if (this.subForm) {
+      return this.subForm.getComponent(path, fn, originalPathStr);
+    }
+  }
+
   getSubOptions(options = {}) {
-    options.parentPath = `${this.calculatedPath}.data.`;
+    options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
@@ -211,6 +228,9 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
+            if (!this.valueChanged) {
+              this.setDefaultValue();
+            }
           }
         });
       });
@@ -308,6 +328,7 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.restoreValue();
+        this.valueChanged = false;
         return this.subForm;
       });
     });
@@ -440,6 +461,10 @@ export default class FormComponent extends Component {
    * Submit the form before the next page is triggered.
    */
   beforePage(next) {
+    // Should not submit child forms if we are going to the previous page
+    if (!next) {
+      return super.beforePage(next);
+    }
     return this.submitSubForm(true).then(() => super.beforePage(next));
   }
 
@@ -471,6 +496,7 @@ export default class FormComponent extends Component {
 
   setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
+    this.valueChanged = true;
     if (this.subForm) {
       if (
         submission &&

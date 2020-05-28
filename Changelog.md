@@ -4,6 +4,96 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.5
+### Added
+ - FIN 025 - Added html element into pdf builder.
+
+### Changed
+ -  `bower.json` main file in order to fix issues with formio.js used as external dependency (using `Formio` global object)
+ - PDF 40 - Fixed element's location on its adding.
+ - Fix error classes setting.
+ - FJS-958 fixed DateTime not saving input in IE11
+ 
+### Updated
+ - @babel/cli@7.10.1, @babel/core@7.10.1, @babel/plugin-proposal-class-properties@7.10.1, @babel/plugin-proposal-export-default-from@7.10.1, @babel/plugin-proposal-optional-chaining@7.10.1, @babel/polyfill@7.10.1, @babel/preset-env@7.10.1, @babel/register@7.10.1
+
+## 4.10.0-rc.4
+### Fixed
+ - Angular ZoneAware Promise issue and IE11 issue when using native promises.
+ - Type definition to use static for "use" method.
+
+## 4.10.0-rc.3
+### Fixed
+ - Fixing issues where form default values were not getting set properly. #2834
+ - Fix/uip validation error display #2831
+ - Fix localization for few labels #2829
+ - PDF 72: Fixed an issue of PDF instances duplication and messy Formio.forms
+ - FJS-951: Fixed unable to submit form with dataMap inside dataGrid/editGrid
+ - FJS-959: `EventEmitter`'s infinite loop logic
+   - Changed events amount (`loadLimit`) from 30 to 1000
+   - Changed warning message
+   - Removed logic for ignoring events when suspecting infinite loop
+   
+### Changed
+ - Split metadata setter into separate method #2832
+ - Update i18next@19.4.5, chance@1.1.6, eslint@7.1.0, fetch-mock@9.10.1, mocha@7.2.0
+
+## 4.10.0-rc.2
+### Fixed
+ - FJS-940: Fixed not match mask validation error if minute value is 00 in time component
+ - Fix (Time): made inputMask be relative to format
+ - Fix (Form/Wizard): made child forms be submitted only when Next clicked
+ - Fix (Time): required error is revealed even if value is set
+ - Fix saveComponent event not passing original component.
+ - FJS-952: Fixed data display in editGrid with chain of nested components	
+ 
+### Changed
+ - Updated eventemitter2@6.4.1
+
+## 4.10.0-rc.1
+### Fixed
+ - FJS-723: Added Entire Object option for select with resource
+ - FJS-836: Fix (Select): number values starting with zero failed being displayed in data tab
+ - FJS-907: If there is calculated value, it will override select component's value that is inactive
+ - Fix issue with flatten tabs printing
+
+### Added
+ - Add message props on submit
+ - Add unique values property to select component
+
+## 4.10.0-beta.20
+### Reverted
+ - Fix (customDefaultValue): make subForms value be set only after they were attached
+ 
+### Fixed
+ - Fix components path. (Standardize the way to find a components path)
+
+## 4.10.0-beta.19
+### Fixed
+ - FJS-903: Fixed number formatting
+ - Fixed select value if valueProperty is not set
+ - FJS-884: fixed select resource values displayed only after second click in edit tab
+ - Fix draft submissions by replacing setSubmission with id change
+ - Add translation for html element content
+ - Fix (customDefaultValue): make subForms value be set only after they were attached
+ - Fix (FormioRequest): handle 416 http code
+ - Fix visual height of display options so that they will completely show. #2804
+ - Fix day component where it was not showing label in builder settings. #2805
+
+### Changed
+ - Upgrade bootswatch@4.5.0, fetch-mock@9.9.0
+
+## 4.10.0-beta.18
+### Fixed
+ - Reverted fix for FJS-723 which caused problems with resource selections.
+
+## 4.10.0-beta.17
+### Fixed
+ - FJS-887 & FJS-869: Fix (calculated value): manually overridden value is recalculated after component is created again
+ - FJS-727: Fixed breadcrumb click logic
+ - FJS-924: fixed signature not displaying tooltip
+ - Fixing panel header colors to be white on non-default panels.
+
 ## 4.10.0-beta.16
 ### Added
  - PDF 48: Added 'Fixed size' checkbox for textarea edit form

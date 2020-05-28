@@ -40,31 +40,184 @@
     ]
   },
   {
+    "name": "Webform#setForm",
+    "filePath": "src/Webform.js",
+    "lines": [
+      {
+        "lineNumber": 595,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 596,
+        "line": "   * Sets the JSON schema for the form to be rendered."
+      },
+      {
+        "lineNumber": 597,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 598,
+        "line": "   * @example"
+      },
+      {
+        "lineNumber": 599,
+        "line": "   * import Webform from 'formiojs/Webform';"
+      },
+      {
+        "lineNumber": 600,
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
+      },
+      {
+        "lineNumber": 601,
+        "line": "   * form.setForm({"
+      },
+      {
+        "lineNumber": 602,
+        "line": "   *   components: ["
+      },
+      {
+        "lineNumber": 603,
+        "line": "   *     {"
+      },
+      {
+        "lineNumber": 604,
+        "line": "   *       type: 'textfield',"
+      },
+      {
+        "lineNumber": 605,
+        "line": "   *       key: 'firstName',"
+      },
+      {
+        "lineNumber": 606,
+        "line": "   *       label: 'First Name',"
+      },
+      {
+        "lineNumber": 607,
+        "line": "   *       placeholder: 'Enter your first name.',"
+      },
+      {
+        "lineNumber": 608,
+        "line": "   *       input: true"
+      },
+      {
+        "lineNumber": 609,
+        "line": "   *     },"
+      },
+      {
+        "lineNumber": 610,
+        "line": "   *     {"
+      },
+      {
+        "lineNumber": 611,
+        "line": "   *       type: 'textfield',"
+      },
+      {
+        "lineNumber": 612,
+        "line": "   *       key: 'lastName',"
+      },
+      {
+        "lineNumber": 613,
+        "line": "   *       label: 'Last Name',"
+      },
+      {
+        "lineNumber": 614,
+        "line": "   *       placeholder: 'Enter your last name',"
+      },
+      {
+        "lineNumber": 615,
+        "line": "   *       input: true"
+      },
+      {
+        "lineNumber": 616,
+        "line": "   *     },"
+      },
+      {
+        "lineNumber": 617,
+        "line": "   *     {"
+      },
+      {
+        "lineNumber": 618,
+        "line": "   *       type: 'button',"
+      },
+      {
+        "lineNumber": 619,
+        "line": "   *       action: 'submit',"
+      },
+      {
+        "lineNumber": 620,
+        "line": "   *       label: 'Submit',"
+      },
+      {
+        "lineNumber": 621,
+        "line": "   *       theme: 'primary'"
+      },
+      {
+        "lineNumber": 622,
+        "line": "   *     }"
+      },
+      {
+        "lineNumber": 623,
+        "line": "   *   ]"
+      },
+      {
+        "lineNumber": 624,
+        "line": "   * });"
+      },
+      {
+        "lineNumber": 625,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 626,
+        "line": "   * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema."
+      },
+      {
+        "lineNumber": 627,
+        "line": "   * @returns {*}"
+      },
+      {
+        "lineNumber": 628,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 629,
+        "line": "  setForm(form, flags) {"
+      }
+    ],
+    "codeParams": [
+      "form",
+      "flags"
+    ],
+    "docParams": [
+      "form"
+    ]
+  },
+  {
     "name": "Webform#restoreDraft",
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 788,
+        "lineNumber": 795,
         "line": "  /**"
       },
       {
-        "lineNumber": 789,
+        "lineNumber": 796,
         "line": "   * Restores a draft submission based on the user who is authenticated."
       },
       {
-        "lineNumber": 790,
+        "lineNumber": 797,
         "line": "   *"
       },
       {
-        "lineNumber": 791,
+        "lineNumber": 798,
         "line": "   * @param {userId} - The user id where we need to restore the draft from."
       },
       {
-        "lineNumber": 792,
+        "lineNumber": 799,
         "line": "   */"
       },
       {
-        "lineNumber": 793,
+        "lineNumber": 800,
         "line": "  restoreDraft(userId) {"
       }
     ],
@@ -80,31 +233,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1095,
+        "lineNumber": 1108,
         "line": "  /**"
       },
       {
-        "lineNumber": 1096,
+        "lineNumber": 1109,
         "line": "   * Show the errors of this form within the alert dialog."
       },
       {
-        "lineNumber": 1097,
+        "lineNumber": 1110,
         "line": "   *"
       },
       {
-        "lineNumber": 1098,
+        "lineNumber": 1111,
         "line": "   * @param {Object} error - An optional additional error to display along with the component errors."
       },
       {
-        "lineNumber": 1099,
+        "lineNumber": 1112,
         "line": "   * @returns {*}"
       },
       {
-        "lineNumber": 1100,
+        "lineNumber": 1113,
         "line": "   */"
       },
       {
-        "lineNumber": 1101,
+        "lineNumber": 1114,
         "line": "  showErrors(error, triggerEvent) {"
       }
     ],
@@ -121,31 +274,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1242,
+        "lineNumber": 1255,
         "line": "  /**"
       },
       {
-        "lineNumber": 1243,
+        "lineNumber": 1256,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 1244,
+        "lineNumber": 1257,
         "line": "   *"
       },
       {
-        "lineNumber": 1245,
+        "lineNumber": 1258,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 1246,
+        "lineNumber": 1259,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1247,
+        "lineNumber": 1260,
         "line": "   */"
       },
       {
-        "lineNumber": 1248,
+        "lineNumber": 1261,
         "line": "  onChange(flags, changed, modified) {"
       }
     ],
@@ -164,87 +317,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1428,
+        "lineNumber": 1446,
         "line": "  /**"
       },
       {
-        "lineNumber": 1429,
+        "lineNumber": 1447,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1430,
+        "lineNumber": 1448,
         "line": "   *"
       },
       {
-        "lineNumber": 1431,
+        "lineNumber": 1449,
         "line": "   * @example"
       },
       {
-        "lineNumber": 1432,
+        "lineNumber": 1450,
         "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
-        "lineNumber": 1433,
+        "lineNumber": 1451,
         "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
-        "lineNumber": 1434,
+        "lineNumber": 1452,
         "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
-        "lineNumber": 1435,
+        "lineNumber": 1453,
         "line": "   * form.submission = {data: {"
       },
       {
-        "lineNumber": 1436,
+        "lineNumber": 1454,
         "line": "   *   firstName: 'Joe',"
       },
       {
-        "lineNumber": 1437,
+        "lineNumber": 1455,
         "line": "   *   lastName: 'Smith',"
       },
       {
-        "lineNumber": 1438,
+        "lineNumber": 1456,
         "line": "   *   email: 'joe@example.com'"
       },
       {
-        "lineNumber": 1439,
+        "lineNumber": 1457,
         "line": "   * }};"
       },
       {
-        "lineNumber": 1440,
+        "lineNumber": 1458,
         "line": "   * form.submit().then((submission) => {"
       },
       {
-        "lineNumber": 1441,
+        "lineNumber": 1459,
         "line": "   *   console.log(submission);"
       },
       {
-        "lineNumber": 1442,
+        "lineNumber": 1460,
         "line": "   * });"
       },
       {
-        "lineNumber": 1443,
+        "lineNumber": 1461,
         "line": "   *"
       },
       {
-        "lineNumber": 1444,
+        "lineNumber": 1462,
         "line": "   * @param {boolean} before - If this submission occured from the before handlers."
       },
       {
-        "lineNumber": 1445,
+        "lineNumber": 1463,
         "line": "   *"
       },
       {
-        "lineNumber": 1446,
+        "lineNumber": 1464,
         "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
-        "lineNumber": 1447,
+        "lineNumber": 1465,
         "line": "   */"
       },
       {
-        "lineNumber": 1448,
+        "lineNumber": 1466,
         "line": "  submit(before, options) {"
       }
     ],
@@ -309,31 +462,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 655,
+        "lineNumber": 636,
         "line": "  /**"
       },
       {
-        "lineNumber": 656,
+        "lineNumber": 637,
         "line": "   * Returns only the schema that is different from the default."
       },
       {
-        "lineNumber": 657,
+        "lineNumber": 638,
         "line": "   *"
       },
       {
-        "lineNumber": 658,
+        "lineNumber": 639,
         "line": "   * @param schema"
       },
       {
-        "lineNumber": 659,
+        "lineNumber": 640,
         "line": "   * @param defaultSchema"
       },
       {
-        "lineNumber": 660,
+        "lineNumber": 641,
         "line": "   */"
       },
       {
-        "lineNumber": 661,
+        "lineNumber": 642,
         "line": "  getModifiedSchema(schema, defaultSchema, recursion) {"
       }
     ],
@@ -352,31 +505,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 842,
+        "lineNumber": 823,
         "line": "  /**"
       },
       {
-        "lineNumber": 843,
+        "lineNumber": 824,
         "line": "   * Sanitize an html string."
       },
       {
-        "lineNumber": 844,
+        "lineNumber": 825,
         "line": "   *"
       },
       {
-        "lineNumber": 845,
+        "lineNumber": 826,
         "line": "   * @param string"
       },
       {
-        "lineNumber": 846,
+        "lineNumber": 827,
         "line": "   * @returns {*}"
       },
       {
-        "lineNumber": 847,
+        "lineNumber": 828,
         "line": "   */"
       },
       {
-        "lineNumber": 848,
+        "lineNumber": 829,
         "line": "  sanitize(dirty) {"
       }
     ],
@@ -392,43 +545,43 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 852,
+        "lineNumber": 833,
         "line": "  /**"
       },
       {
-        "lineNumber": 853,
+        "lineNumber": 834,
         "line": "   * Render a template string into html."
       },
       {
-        "lineNumber": 854,
+        "lineNumber": 835,
         "line": "   *"
       },
       {
-        "lineNumber": 855,
+        "lineNumber": 836,
         "line": "   * @param template"
       },
       {
-        "lineNumber": 856,
+        "lineNumber": 837,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 857,
+        "lineNumber": 838,
         "line": "   * @param actions"
       },
       {
-        "lineNumber": 858,
+        "lineNumber": 839,
         "line": "   *"
       },
       {
-        "lineNumber": 859,
+        "lineNumber": 840,
         "line": "   * @return {HTMLElement} - The created element."
       },
       {
-        "lineNumber": 860,
+        "lineNumber": 841,
         "line": "   */"
       },
       {
-        "lineNumber": 861,
+        "lineNumber": 842,
         "line": "  renderString(template, data) {"
       }
     ],
@@ -447,31 +600,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1175,
+        "lineNumber": 1156,
         "line": "  /**"
       },
       {
-        "lineNumber": 1176,
+        "lineNumber": 1157,
         "line": "   * Uses the widget to determine the output string."
       },
       {
-        "lineNumber": 1177,
+        "lineNumber": 1158,
         "line": "   *"
       },
       {
-        "lineNumber": 1178,
+        "lineNumber": 1159,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 1179,
+        "lineNumber": 1160,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 1180,
+        "lineNumber": 1161,
         "line": "   */"
       },
       {
-        "lineNumber": 1181,
+        "lineNumber": 1162,
         "line": "  getWidgetValueAsString(value, options) {"
       }
     ],
@@ -488,31 +641,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1499,
+        "lineNumber": 1480,
         "line": "  /**"
       },
       {
-        "lineNumber": 1500,
+        "lineNumber": 1481,
         "line": "   * Check if this component is conditionally visible."
       },
       {
-        "lineNumber": 1501,
+        "lineNumber": 1482,
         "line": "   *"
       },
       {
-        "lineNumber": 1502,
+        "lineNumber": 1483,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 1503,
+        "lineNumber": 1484,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 1504,
+        "lineNumber": 1485,
         "line": "   */"
       },
       {
-        "lineNumber": 1505,
+        "lineNumber": 1486,
         "line": "  conditionallyVisible(data, row) {"
       }
     ],
@@ -529,27 +682,27 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1556,
+        "lineNumber": 1537,
         "line": "  /**"
       },
       {
-        "lineNumber": 1557,
+        "lineNumber": 1538,
         "line": "   * Checks conditions for this component and any sub components."
       },
       {
-        "lineNumber": 1558,
+        "lineNumber": 1539,
         "line": "   * @param args"
       },
       {
-        "lineNumber": 1559,
+        "lineNumber": 1540,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 1560,
+        "lineNumber": 1541,
         "line": "   */"
       },
       {
-        "lineNumber": 1561,
+        "lineNumber": 1542,
         "line": "  checkConditions(data, flags, row) {"
       }
     ],
@@ -567,27 +720,27 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1572,
+        "lineNumber": 1553,
         "line": "  /**"
       },
       {
-        "lineNumber": 1573,
+        "lineNumber": 1554,
         "line": "   * Check all triggers and apply necessary actions."
       },
       {
-        "lineNumber": 1574,
+        "lineNumber": 1555,
         "line": "   *"
       },
       {
-        "lineNumber": 1575,
+        "lineNumber": 1556,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 1576,
+        "lineNumber": 1557,
         "line": "   */"
       },
       {
-        "lineNumber": 1577,
+        "lineNumber": 1558,
         "line": "  fieldLogic(data, row) {"
       }
     ],
@@ -604,31 +757,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1719,
+        "lineNumber": 1700,
         "line": "  /**"
       },
       {
-        "lineNumber": 1720,
+        "lineNumber": 1701,
         "line": "   * Add a new input error to this element."
       },
       {
-        "lineNumber": 1721,
+        "lineNumber": 1702,
         "line": "   *"
       },
       {
-        "lineNumber": 1722,
+        "lineNumber": 1703,
         "line": "   * @param message"
       },
       {
-        "lineNumber": 1723,
+        "lineNumber": 1704,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 1724,
+        "lineNumber": 1705,
         "line": "   */"
       },
       {
-        "lineNumber": 1725,
+        "lineNumber": 1706,
         "line": "  addMessages(messages) {"
       }
     ],
@@ -645,31 +798,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2203,
+        "lineNumber": 2184,
         "line": "  /**"
       },
       {
-        "lineNumber": 2204,
+        "lineNumber": 2185,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 2205,
+        "lineNumber": 2186,
         "line": "   *"
       },
       {
-        "lineNumber": 2206,
+        "lineNumber": 2187,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 2207,
+        "lineNumber": 2188,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 2208,
+        "lineNumber": 2189,
         "line": "   */"
       },
       {
-        "lineNumber": 2209,
+        "lineNumber": 2190,
         "line": "  setValueAt(index, value, flags = {}) {"
       }
     ],
@@ -688,27 +841,27 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2261,
+        "lineNumber": 2246,
         "line": "  /**"
       },
       {
-        "lineNumber": 2262,
+        "lineNumber": 2247,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2263,
+        "lineNumber": 2248,
         "line": "   *"
       },
       {
-        "lineNumber": 2264,
+        "lineNumber": 2249,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2265,
+        "lineNumber": 2250,
         "line": "   */"
       },
       {
-        "lineNumber": 2266,
+        "lineNumber": 2251,
         "line": "  updateComponentValue(value, flags = {}) {"
       }
     ],
@@ -725,27 +878,27 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2334,
+        "lineNumber": 2319,
         "line": "  /**"
       },
       {
-        "lineNumber": 2335,
+        "lineNumber": 2320,
         "line": "   * Update the value on change."
       },
       {
-        "lineNumber": 2336,
+        "lineNumber": 2321,
         "line": "   *"
       },
       {
-        "lineNumber": 2337,
+        "lineNumber": 2322,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2338,
+        "lineNumber": 2323,
         "line": "   */"
       },
       {
-        "lineNumber": 2339,
+        "lineNumber": 2324,
         "line": "  updateOnChange(flags = {}, changed = false) {"
       }
     ],
@@ -762,39 +915,39 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2347,
+        "lineNumber": 2332,
         "line": "  /**"
       },
       {
-        "lineNumber": 2348,
+        "lineNumber": 2333,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2349,
+        "lineNumber": 2334,
         "line": "   *"
       },
       {
-        "lineNumber": 2350,
+        "lineNumber": 2335,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 2351,
+        "lineNumber": 2336,
         "line": "   *"
       },
       {
-        "lineNumber": 2352,
+        "lineNumber": 2337,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 2353,
+        "lineNumber": 2338,
         "line": "   */"
       },
       {
-        "lineNumber": 2354,
+        "lineNumber": 2339,
         "line": ""
       },
       {
-        "lineNumber": 2355,
+        "lineNumber": 2340,
         "line": "  convertNumberOrBoolToString(value) {"
       }
     ],
@@ -810,31 +963,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2421,
+        "lineNumber": 2414,
         "line": "  /**"
       },
       {
-        "lineNumber": 2422,
+        "lineNumber": 2415,
         "line": "   * Performs calculations in this component plus any child components."
       },
       {
-        "lineNumber": 2423,
+        "lineNumber": 2416,
         "line": "   *"
       },
       {
-        "lineNumber": 2424,
+        "lineNumber": 2417,
         "line": "   * @param args"
       },
       {
-        "lineNumber": 2425,
+        "lineNumber": 2418,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 2426,
+        "lineNumber": 2419,
         "line": "   */"
       },
       {
-        "lineNumber": 2427,
+        "lineNumber": 2420,
         "line": "  calculateValue(data, flags, row) {"
       }
     ],
@@ -852,35 +1005,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2462,
+        "lineNumber": 2455,
         "line": "  /**"
       },
       {
-        "lineNumber": 2463,
+        "lineNumber": 2456,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2464,
+        "lineNumber": 2457,
         "line": "   *"
       },
       {
-        "lineNumber": 2465,
+        "lineNumber": 2458,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2466,
+        "lineNumber": 2459,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2467,
+        "lineNumber": 2460,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2468,
+        "lineNumber": 2461,
         "line": "   */"
       },
       {
-        "lineNumber": 2469,
+        "lineNumber": 2462,
         "line": "  invalidMessage(data, dirty, ignoreCondition, row) {"
       }
     ],
@@ -900,39 +1053,39 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2509,
+        "lineNumber": 2502,
         "line": "  /**"
       },
       {
-        "lineNumber": 2510,
+        "lineNumber": 2503,
         "line": "   * Checks the validity of this component and sets the error message if it is invalid."
       },
       {
-        "lineNumber": 2511,
+        "lineNumber": 2504,
         "line": "   *"
       },
       {
-        "lineNumber": 2512,
+        "lineNumber": 2505,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2513,
+        "lineNumber": 2506,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2514,
+        "lineNumber": 2507,
         "line": "   * @param row"
       },
       {
-        "lineNumber": 2515,
+        "lineNumber": 2508,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 2516,
+        "lineNumber": 2509,
         "line": "   */"
       },
       {
-        "lineNumber": 2517,
+        "lineNumber": 2510,
         "line": "  checkComponentValidity(data, dirty, row, options = {}) {"
       }
     ],
@@ -953,43 +1106,43 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2543,
+        "lineNumber": 2536,
         "line": "  /**"
       },
       {
-        "lineNumber": 2544,
+        "lineNumber": 2537,
         "line": "   * Check the conditions, calculations, and validity of a single component and triggers an update if"
       },
       {
-        "lineNumber": 2545,
+        "lineNumber": 2538,
         "line": "   * something changed."
       },
       {
-        "lineNumber": 2546,
+        "lineNumber": 2539,
         "line": "   *"
       },
       {
-        "lineNumber": 2547,
+        "lineNumber": 2540,
         "line": "   * @param data - The root data of the change event."
       },
       {
-        "lineNumber": 2548,
+        "lineNumber": 2541,
         "line": "   * @param flags - The flags from this change event."
       },
       {
-        "lineNumber": 2549,
+        "lineNumber": 2542,
         "line": "   *"
       },
       {
-        "lineNumber": 2550,
+        "lineNumber": 2543,
         "line": "   * @return boolean - If component is valid or not."
       },
       {
-        "lineNumber": 2551,
+        "lineNumber": 2544,
         "line": "   */"
       },
       {
-        "lineNumber": 2552,
+        "lineNumber": 2545,
         "line": "  checkData(data, flags, row) {"
       }
     ],
@@ -1008,31 +1161,31 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 140,
+        "lineNumber": 141,
         "line": "  /**"
       },
       {
-        "lineNumber": 141,
+        "lineNumber": 142,
         "line": "   * Perform a deep iteration over every component, including those"
       },
       {
-        "lineNumber": 142,
+        "lineNumber": 143,
         "line": "   * within other container based components."
       },
       {
-        "lineNumber": 143,
+        "lineNumber": 144,
         "line": "   *"
       },
       {
-        "lineNumber": 144,
+        "lineNumber": 145,
         "line": "   * @param {function} fn - Called for every component."
       },
       {
-        "lineNumber": 145,
+        "lineNumber": 146,
         "line": "   */"
       },
       {
-        "lineNumber": 146,
+        "lineNumber": 147,
         "line": "  everyComponent(fn, options) {"
       }
     ],
@@ -1049,45 +1202,46 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 197,
+        "lineNumber": 198,
         "line": "  /**"
       },
       {
-        "lineNumber": 198,
+        "lineNumber": 199,
         "line": "   * Returns a component provided a key. This performs a deep search within the"
       },
       {
-        "lineNumber": 199,
+        "lineNumber": 200,
         "line": "   * component tree."
       },
       {
-        "lineNumber": 200,
+        "lineNumber": 201,
         "line": "   *"
       },
       {
-        "lineNumber": 201,
+        "lineNumber": 202,
         "line": "   * @param {string} key - The key of the component to retrieve."
       },
       {
-        "lineNumber": 202,
+        "lineNumber": 203,
         "line": "   * @param {function} fn - Called with the component once found."
       },
       {
-        "lineNumber": 203,
+        "lineNumber": 204,
         "line": "   * @return {Object} - The component that is located."
       },
       {
-        "lineNumber": 204,
+        "lineNumber": 205,
         "line": "   */"
       },
       {
-        "lineNumber": 205,
-        "line": "  getComponent(path, fn) {"
+        "lineNumber": 206,
+        "line": "  getComponent(path, fn, originalPath) {"
       }
     ],
     "codeParams": [
       "path",
-      "fn"
+      "fn",
+      "originalPath"
     ],
     "docParams": [
       "key",
@@ -1099,31 +1253,31 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 251,
+        "lineNumber": 283,
         "line": "  /**"
       },
       {
-        "lineNumber": 252,
+        "lineNumber": 284,
         "line": "   * Create a new component and add it to the components array."
       },
       {
-        "lineNumber": 253,
+        "lineNumber": 285,
         "line": "   *"
       },
       {
-        "lineNumber": 254,
+        "lineNumber": 286,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 255,
+        "lineNumber": 287,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 256,
+        "lineNumber": 288,
         "line": "   */"
       },
       {
-        "lineNumber": 257,
+        "lineNumber": 289,
         "line": "  createComponent(component, options, data, before) {"
       }
     ],
@@ -1143,27 +1297,27 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 318,
+        "lineNumber": 346,
         "line": "  /**"
       },
       {
-        "lineNumber": 319,
+        "lineNumber": 347,
         "line": "   *"
       },
       {
-        "lineNumber": 320,
+        "lineNumber": 348,
         "line": "   * @param element"
       },
       {
-        "lineNumber": 321,
+        "lineNumber": 349,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 322,
+        "lineNumber": 350,
         "line": "   */"
       },
       {
-        "lineNumber": 323,
+        "lineNumber": 351,
         "line": "  addComponents(data, options) {"
       }
     ],
@@ -1181,39 +1335,39 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 335,
+        "lineNumber": 363,
         "line": "  /**"
       },
       {
-        "lineNumber": 336,
+        "lineNumber": 364,
         "line": "   * Add a new component to the components array."
       },
       {
-        "lineNumber": 337,
+        "lineNumber": 365,
         "line": "   *"
       },
       {
-        "lineNumber": 338,
+        "lineNumber": 366,
         "line": "   * @param {Object} component - The component JSON schema to add."
       },
       {
-        "lineNumber": 339,
+        "lineNumber": 367,
         "line": "   * @param {Object} data - The submission data object to house the data for this component."
       },
       {
-        "lineNumber": 340,
+        "lineNumber": 368,
         "line": "   * @param {HTMLElement} before - A DOM element to insert this element before."
       },
       {
-        "lineNumber": 341,
+        "lineNumber": 369,
         "line": "   * @return {Component} - The created component instance."
       },
       {
-        "lineNumber": 342,
+        "lineNumber": 370,
         "line": "   */"
       },
       {
-        "lineNumber": 343,
+        "lineNumber": 371,
         "line": "  addComponent(component, data, before, noAdd) {"
       }
     ],
@@ -1234,35 +1388,35 @@
     "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 398,
+        "lineNumber": 401,
         "line": "  /**"
       },
       {
-        "lineNumber": 399,
+        "lineNumber": 402,
         "line": "   * Checks the validity of this datagrid."
       },
       {
-        "lineNumber": 400,
+        "lineNumber": 403,
         "line": "   *"
       },
       {
-        "lineNumber": 401,
+        "lineNumber": 404,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 402,
+        "lineNumber": 405,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 403,
+        "lineNumber": 406,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 404,
+        "lineNumber": 407,
         "line": "   */"
       },
       {
-        "lineNumber": 405,
+        "lineNumber": 408,
         "line": "  checkValidity(data, dirty, row) {"
       }
     ],
@@ -1281,31 +1435,31 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 182,
+        "lineNumber": 189,
         "line": "  /**"
       },
       {
-        "lineNumber": 183,
+        "lineNumber": 190,
         "line": "   * Adds an option to the select dropdown."
       },
       {
-        "lineNumber": 184,
+        "lineNumber": 191,
         "line": "   *"
       },
       {
-        "lineNumber": 185,
+        "lineNumber": 192,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 186,
+        "lineNumber": 193,
         "line": "   * @param label"
       },
       {
-        "lineNumber": 187,
+        "lineNumber": 194,
         "line": "   */"
       },
       {
-        "lineNumber": 188,
+        "lineNumber": 195,
         "line": "  addOption(value, label, attrs = {}, id) {"
       }
     ],
@@ -1325,23 +1479,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 975,
+        "lineNumber": 996,
         "line": "  /**"
       },
       {
-        "lineNumber": 976,
+        "lineNumber": 997,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 977,
+        "lineNumber": 998,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 978,
+        "lineNumber": 999,
         "line": "   */"
       },
       {
-        "lineNumber": 979,
+        "lineNumber": 1000,
         "line": "  addCurrentChoices(values, items, keyValue) {"
       }
     ],

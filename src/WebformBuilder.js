@@ -1043,6 +1043,7 @@ export default class WebformBuilder extends Component {
           comp = component;
         }
       });
+      const originalComp = comp.component;
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
@@ -1057,7 +1058,7 @@ export default class WebformBuilder extends Component {
         const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
-          comp.component,
+          originalComp,
           parentComponent.schema,
           path,
           index,
@@ -1222,9 +1223,9 @@ export default class WebformBuilder extends Component {
     });
 
     const dialogClose = () => {
-      this.editForm.destroy();
+      this.editForm.destroy(true);
       if (this.preview) {
-        this.preview.destroy();
+        this.preview.destroy(true);
         this.preview = null;
       }
       if (isNew && !saved) {
@@ -1315,11 +1316,11 @@ export default class WebformBuilder extends Component {
     return super.init();
   }
 
-  destroy() {
+  destroy(deleteFromGlobal) {
     if (this.webform.initialized) {
-      this.webform.destroy();
+      this.webform.destroy(deleteFromGlobal);
     }
-    super.destroy();
+    super.destroy(deleteFromGlobal);
   }
 
   addBuilderGroup(name, group) {

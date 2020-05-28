@@ -299,6 +299,21 @@ export default class EditGridComponent extends NestedArrayComponent {
     return super.attach(element);
   }
 
+  flattenRowDataValue(dataValue) {
+    const flattened = {};
+
+    Object.keys(dataValue).forEach((key) => {
+      if (_.isObject(dataValue[key]) && !_.isNil(dataValue[key])) {
+        Object.assign(flattened, this.flattenRowDataValue(dataValue[key]));
+      }
+      else {
+        flattened[key] = dataValue[key];
+      }
+    });
+
+    return flattened;
+  }
+
   renderRow(row, rowIndex) {
     const dataValue = this.dataValue || [];
     if (this.isOpen(row)) {
@@ -307,10 +322,11 @@ export default class EditGridComponent extends NestedArrayComponent {
     else {
       const flattenedComponents = this.flattenComponents(rowIndex);
       const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
+
       return this.renderString(
         rowTemplate,
         {
-          row: dataValue[rowIndex] || {},
+          row: this.flattenRowDataValue(dataValue[rowIndex]) || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
@@ -583,10 +599,6 @@ export default class EditGridComponent extends NestedArrayComponent {
         row: options.row,
       }), options, row);
       comp.rowIndex = rowIndex;
-      if (comp.path && column.key) {
-        comp.path = comp.path.replace(new RegExp(`\\.${column.key}$`), `[${rowIndex}].${column.key}`);
-      }
-
       return comp;
     });
   }
@@ -708,7 +720,12 @@ export default class EditGridComponent extends NestedArrayComponent {
         };
       }
     });
-    const { length: dataLength } = this.dataValue;
+    let { length: dataLength } = this.dataValue;
+
+    // If the last row is a new row, then do not remove it.
+    if (this.editRows[dataLength] && (this.editRows[dataLength].state === EditRowState.New)) {
+      dataLength = (dataLength + 1);
+    }
     this.editRows.slice(dataLength).forEach((editRow, index) => this.baseRemoveRow(dataLength + index));
     this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);

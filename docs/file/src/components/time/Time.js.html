@@ -260,7 +260,7 @@ export default class TimeComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
-    this.component.inputMask = &apos;99:99&apos;;
+    this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
     this.component.inputType = this.component.inputType || &apos;time&apos;;
     this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
@@ -298,7 +298,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get validationValue() {
-    return this.rawData;
+    return this.rawData || this.dataValue;
   }
 
   get inputInfo() {
@@ -371,11 +371,30 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getStringAsValue(view) {
-    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
+    return view &amp;&amp; this.component.inputType !==&apos;text&apos; ? moment(view, this.component.format).format(this.component.dataFormat) : view;
   }
 
   getValueAsString(value) {
     return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || &apos;&apos;;
+  }
+
+  getInputMaskFromFormat(format) {
+    if (format === &apos;LT&apos;) {
+      return &apos;99:99 AA&apos;;
+    }
+    if (format === &apos;LTS&apos;) {
+      return &apos;99:99:99 AA&apos;;
+    }
+    return format.replace(/[hHmMsSk]/g, &apos;9&apos;)
+                 .replace(/[aA]/, &apos;AA&apos;);
+  }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, &apos;blur&apos;, () =&gt; {
+      element.value = this.getValueAsString(element.value);
+    });
   }
 }
 </code></pre>

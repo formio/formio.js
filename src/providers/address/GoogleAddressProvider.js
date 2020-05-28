@@ -1,4 +1,5 @@
 import { AddressProvider } from './AddressProvider';
+import NativePromise from 'native-promise-only';
 
 export class GoogleAddressProvider extends AddressProvider {
   static get name() {
@@ -30,7 +31,7 @@ export class GoogleAddressProvider extends AddressProvider {
   }
 
   makeRequest(options = {}) {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
       xhr.open('GET', this.getRequestUrl(options), true);

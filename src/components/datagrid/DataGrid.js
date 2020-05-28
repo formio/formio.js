@@ -357,13 +357,19 @@ export default class DataGridComponent extends NestedArrayComponent {
     return this.dataValue;
   }
 
+  setRowComponentsData(rowIndex, rowData) {
+    _.each(this.rows[rowIndex], (component) => {
+      component.data = rowData;
+    });
+  }
+
   createRows(init) {
     let added = false;
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) => {
       if (this.rows[index]) {
-        _.each(this.rows[index], (component) => component.data = row);
+        this.setRowComponentsData(index, row);
       }
       else {
         this.rows[index] = this.createRowComponents(row, index);
@@ -386,9 +392,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.row = `${rowIndex}-${colIndex}`;
       const component = this.createComponent(col, options, row);
       component.parentDisabled = !!this.disabled;
-      if (component.path && col.key) {
-        component.path = component.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
-      }
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
       components[col.key] = component;

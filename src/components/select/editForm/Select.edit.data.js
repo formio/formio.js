@@ -203,11 +203,11 @@ export default [
     lazyLoad: false,
     onSetItems(component, form) {
       const newItems = form.type === 'resource'
-      ? [{
-          label: '{Entire Object}',
-          key: 'data',
-        }]
-      : [];
+        ? [{
+            label: '{Entire Object}',
+            key: 'data',
+          }]
+        : [];
 
       eachComponent(form.components, (component, path) => {
         if (component.input) {

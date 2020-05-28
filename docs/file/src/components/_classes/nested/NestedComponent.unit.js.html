@@ -246,8 +246,10 @@ import Harness from &apos;../../../../test/harness&apos;;
 import assert from &apos;power-assert&apos;;
 import each from &apos;lodash/each&apos;;
 import { expect } from &apos;chai&apos;;
-import { comp1 } from &apos;./fixtures&apos;;
+import { comp1, comp2 } from &apos;./fixtures&apos;;
+import { nestedForm } from &apos;../../../../test/fixtures&apos;;
 import _map from &apos;lodash/map&apos;;
+import Webform from &apos;../../../Webform&apos;;
 
 let component = null;
 describe(&apos;NestedComponent class&apos;, () =&gt; {
@@ -448,6 +450,98 @@ describe(&apos;NestedComponent class&apos;, () =&gt; {
           expect(_map(nested.schema.components, &apos;key&apos;)).to.deep.equal([&apos;firstName&apos;, &apos;lastName&apos;]);
           done();
         }, done)
+        .catch(done);
+    });
+  });
+
+  describe(&apos;calculateComponentPath&apos;, () =&gt; {
+    it(&apos;the first layer components&apos;, (done) =&gt; {
+      Harness.testCreate(NestedComponent, comp1)
+        .then((nested) =&gt; {
+          assert(nested.components[0].path === &apos;firstName&apos;);
+          assert(nested.components[1].path === &apos;lastName&apos;);
+          done();
+        })
+        .catch(done);
+    });
+    it(&apos;inside data components&apos;, (done) =&gt; {
+      Harness.testCreate(NestedComponent, comp2)
+        .then((nested) =&gt; {
+          assert(nested.components[0].path === &apos;dataGrid&apos;);
+          const dataGrid = nested.components[0];
+          dataGrid.setValue([{ textField: &apos;&apos; }, { textField: &apos;&apos; }]);
+          setTimeout(() =&gt; {
+            assert(dataGrid.components[0].path === &apos;dataGrid[0].textField&apos;);
+            assert(dataGrid.components[1].path === &apos;dataGrid[1].textField&apos;);
+            done();
+          },250);
+        })
+        .catch(done);
+    });
+    it(&apos;inside nested forms&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(nestedForm)
+        .then(() =&gt; {
+          assert(form.components[0].path === &apos;form&apos;);
+
+          const childForm = form.components[0].subForm;
+          const textField = childForm.components[0];
+          const dataGrid = childForm.components[1];
+
+          assert(textField.path === &apos;form.data.textField&apos;);
+          assert(dataGrid.path === &apos;form.data.dataGrid&apos;);
+          assert(dataGrid.components[0].path === &apos;form.data.dataGrid[0].textField&apos;);
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  describe(&apos;getComponent&apos;, () =&gt; {
+    it(&apos;the first layer components&apos;, (done) =&gt; {
+      Harness.testCreate(NestedComponent, comp1)
+        .then((nested) =&gt; {
+          const firstNameTextFieldByStringPath = nested.getComponent(&apos;firstName&apos;);
+          const firstNameTextFieldByArrayPath = nested.getComponent([&apos;firstName&apos;]);
+          assert(firstNameTextFieldByStringPath.path === &apos;firstName&apos;);
+          assert(firstNameTextFieldByArrayPath.path === &apos;firstName&apos;);
+          done();
+        })
+        .catch(done);
+    });
+    it(&apos;inside data components&apos;, (done) =&gt; {
+      Harness.testCreate(NestedComponent, comp2)
+        .then((nested) =&gt; {
+          assert(nested.components[0].path === &apos;dataGrid&apos;);
+          const dataGrid = nested.components[0];
+          dataGrid.setValue([{ textField: &apos;&apos; }, { textField: &apos;&apos; }]);
+          setTimeout(() =&gt; {
+            const dataGridFirstRowTextField= nested.getComponent(&apos;dataGrid[0].textField&apos;);
+            const dataGridSecondRowTextField= nested.getComponent(&apos;dataGrid[1].textField&apos;);
+
+            assert(dataGrid.components[0] === dataGridFirstRowTextField);
+            assert(dataGrid.components[1] === dataGridSecondRowTextField);
+            done();
+          },250);
+        })
+        .catch(done);
+    });
+    it(&apos;inside nested forms&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(nestedForm)
+        .then(() =&gt; {
+          const childForm = form.components[0].subForm;
+          const textField = form.getComponent(&apos;form.data.textField&apos;);
+          const dataGrid = form.getComponent(&apos;form.data.dataGrid&apos;);
+          const dataGridTextField = form.getComponent(&apos;form.data.dataGrid[0].textField&apos;);
+
+          assert(textField === childForm.components[0]);
+          assert(dataGrid === childForm.components[1]);
+          assert(dataGridTextField === childForm.components[1].components[0]);
+          done();
+        })
         .catch(done);
     });
   });

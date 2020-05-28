@@ -1102,6 +1102,9 @@ export default class Formio {
         else if (response.status === 401) {
           Formio.events.emit(&apos;formio.unauthorized&apos;, response.body);
         }
+        else if (response.status === 416) {
+          Formio.events.emit(&apos;formio.rangeIsNotSatisfiable&apos;, response.body);
+        }
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get(&apos;content-type&apos;).includes(&apos;application/json&apos;)
           ? response.json()

@@ -1,10 +1,10 @@
-// Flatly 4.3.1
+// Flatly 4.5.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=swap" !default;
 @import url($web-font-path);
 
 // Navbar =======================================================================
@@ -16,7 +16,6 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
 }
 
 .bg-dark {
-  background-color: $success !important;
   &.navbar-dark .navbar-nav {
     .nav-link:focus,
     .nav-link:hover,
@@ -237,11 +236,16 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
 // Progress bars ===============================================================
 
 // Containers ==================================================================
-.modal .close{
-  color: $black;
 
-  &:not(:disabled):not(.disabled):hover,
-  &:not(:disabled):not(.disabled):focus {
+.modal,
+.toast {
+
+  .close {
     color: $black;
+
+    &:not(:disabled):not(.disabled):hover,
+    &:not(:disabled):not(.disabled):focus {
+      color: $black;
+    }
   }
 }

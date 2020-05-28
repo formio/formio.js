@@ -363,6 +363,19 @@ export default class DataMapComponent extends DataGridComponent {
     return Object.keys(dataValue).map(() =&gt; dataValue);
   }
 
+  get iteratableRows() {
+    return this.rows.map((row) =&gt; {
+      return Object.keys(row).map(key =&gt; ({
+        components: row[key],
+        data: row[key].dataValue,
+    }));
+    });
+  }
+
+  componentContext(component) {
+    return this.iteratableRows[component.row].find(comp =&gt; comp.components.key === component.key).data;
+  }
+
   hasHeader() {
     return true;
   }
@@ -392,6 +405,19 @@ export default class DataMapComponent extends DataGridComponent {
     return keys[rowIndex];
   }
 
+  setRowComponentsData(rowIndex, rowData) {
+    _.each(this.rows[rowIndex], (component) =&gt; {
+      if (component.key === &apos;__key&apos;) {
+        component.data = {
+          &apos;__key&apos;: Object.keys(rowData)[rowIndex],
+        };
+      }
+      else {
+        component.data = rowData;
+      }
+    });
+  }
+
   createRowComponents(row, rowIndex) {
     let key = this.getRowKey(rowIndex);
 
@@ -411,13 +437,18 @@ export default class DataMapComponent extends DataGridComponent {
       const newKey = uniqueKey(dataValue, event.value);
       dataValue[newKey] = dataValue[key];
       delete dataValue[key];
-      components[this.valueKey].component.key = newKey;
+      const comp = components[this.valueKey];
+      comp.component.key = newKey;
+      comp.path = this.calculateComponentPath(comp);
       key = newKey;
     });
 
     const valueComponent = _.clone(this.component.valueComponent);
     valueComponent.key = key;
-    components[this.valueKey] = this.createComponent(valueComponent, this.options, this.dataValue);
+
+    const componentOptions = this.options;
+    componentOptions.row = options.row;
+    components[this.valueKey] = this.createComponent(valueComponent, componentOptions, this.dataValue);
     return components;
   }
 

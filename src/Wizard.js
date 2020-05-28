@@ -2,7 +2,12 @@ import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
 import Formio from './Formio';
-import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from './utils/utils';
+import {
+  fastCloneDeep,
+  checkCondition,
+  firstNonNil,
+  uniqueKey
+} from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -28,6 +33,7 @@ export default class Wizard extends Webform {
     this.components = [];
     this.originalComponents = [];
     this.page = 0;
+    this.currentPanel = null;
     this.currentNextPage = 0;
     this._seenPages = [0];
   }
@@ -117,13 +123,48 @@ export default class Wizard extends Webform {
     };
   }
 
+  prepareNavigationSettings(ctx) {
+    const currentPanel = this.currentPanel;
+
+    if (currentPanel && currentPanel.buttonSettings) {
+      Object.keys(currentPanel.buttonSettings).forEach(() => {
+        Object.keys(ctx.buttons).forEach(key => {
+          if (typeof currentPanel.buttonSettings[key] !== 'undefined' && !currentPanel.buttonSettings[key]) {
+            ctx.buttons[key] = null;
+          }
+        });
+      });
+    }
+
+    return this.renderTemplate('wizardNav', ctx);
+  }
+
+  prepareHeaderSettings(ctx) {
+    if (this.currentPanel && this.currentPanel.breadcrumb === 'none') {
+      return null;
+    }
+    return this.renderTemplate('wizardHeader', ctx);
+  }
+
   render() {
     const ctx = this.renderContext;
+
+    if (this.component.key) {
+      ctx.panels.map(panel => {
+        if (panel.key === this.component.key) {
+          this.currentPanel = panel;
+        }
+      });
+    }
+
+    const wizardNav = this.prepareNavigationSettings(ctx);
+    const wizardHeader = this.prepareHeaderSettings(ctx);
+
     return this.renderTemplate('wizard', {
       ...ctx,
       className: super.getClassName(),
-      wizardHeader: this.renderTemplate('wizardHeader', ctx),
-      wizardNav: this.renderTemplate('wizardNav', ctx),
+      wizardHeader,
+      wizardNav,
       components: this.renderComponents([
         ...this.prefixComps,
         ...this.currentPage.components,
@@ -187,7 +228,14 @@ export default class Wizard extends Webform {
   }
 
   isBreadcrumbClickable() {
-    return _.get(this.options, 'breadcrumbSettings.clickable', true);
+    let currentPage = null;
+    this.pages.map(page => {
+      if (_.isEqual(this.currentPage.component, page.component)) {
+        currentPage = page;
+      }
+    });
+
+    return _.get(currentPage.component, 'breadcrumbClickable', true);
   }
 
   attachNav() {
@@ -600,6 +648,7 @@ export default class Wizard extends Webform {
 
   focusOnComponent(key) {
     let pageIndex = 0;
+
     const [page] = this.pages.filter((page, index) => {
       if (page.getComponent(key)) {
         pageIndex = index;
