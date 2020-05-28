@@ -385,6 +385,11 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   onDragStart(e) {
+    // Taking the current offset of a dragged item relative to the cursor
+    const { offsetX = 0, offsetY = 0 } = e;
+    this.itemOffsetX = offsetX;
+    this.itemOffsetY = offsetY;
+
     e.dataTransfer.setData('text/html', null);
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
@@ -401,7 +406,8 @@ export default class PDFBuilder extends WebformBuilder {
     // reflect absolute positioning if accessed after the target element is hidden
     const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
     const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
-
+    const WIDTH = 100;
+    const HEIGHT = 20;
     // Always disable the dropzone on drag end
     this.removeClass(this.refs.iframeDropzone, 'enabled');
 
@@ -426,10 +432,10 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.component.components.push(schema);
 
     schema.overlay = {
-      top: offsetY,
-      left: offsetX,
-      width: 100,
-      height: 20
+      top: offsetY - this.itemOffsetY + HEIGHT,
+      left: offsetX - this.itemOffsetX,
+      width: WIDTH,
+      height: HEIGHT
     };
 
     this.webform.addComponent(schema, {}, null, true);
