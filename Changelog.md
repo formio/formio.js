@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
  -  `bower.json` main file in order to fix issues with formio.js used as external dependency (using `Formio` global object)
+ - PDF 40 - Fixed element's location on its adding.
+ - Fix error classes setting.
+ - FJS-958 fixed DateTime not saving input in IE11
 
 ## 4.10.0-rc.4
 ### Fixed
