@@ -326,7 +326,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return this.renderString(
         rowTemplate,
         {
-          row: this.flattenRowDataValue(dataValue[rowIndex]) || {},
+          row: dataValue[rowIndex] || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
