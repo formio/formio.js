@@ -187,6 +187,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - All changes part of v4.9.14 through v4.9.17
  - Upgraded autocompleter@6.0.3, core-js@3.6.5, @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0, karma@5.0.0
 
+## [Unreleased]
+### Changed
+ -  `bower.json` main file in order to fix issues with formio.js used as external dependency (using `Formio` global object)
+
 ## 4.10.0-beta.5
 ### Changed
  - Allow external modules to extend the select options easily.
