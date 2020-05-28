@@ -244,9 +244,35 @@
 
 import Harness from &apos;../../../test/harness&apos;;
 import EditGridComponent from &apos;./EditGrid&apos;;
-import { comp1, comp3 } from &apos;./fixtures&apos;;
+import { comp1, comp3, comp4 } from &apos;./fixtures&apos;;
+import Webform from &apos;../../Webform&apos;;
+import { displayAsModalEditGrid } from &apos;../../../test/formtest&apos;;
 
 describe(&apos;EditGrid Component&apos;, () =&gt; {
+  it(&apos;Should set correct values in dataMap inside editGrid and allow aditing them&apos;, (done) =&gt; {
+    Harness.testCreate(EditGridComponent, comp4).then((component) =&gt; {
+      component.setValue([{ dataMap: { key111: &apos;111&apos; } }]);
+
+      setTimeout(()=&gt;{
+        const clickEvent = new Event(&apos;click&apos;);
+        const editBtn = component.element.querySelector(&apos;.editRow&apos;);
+
+        editBtn.dispatchEvent(clickEvent);
+
+        setTimeout(()=&gt;{
+          const keyValue = component.element.querySelectorAll(&apos;[ref=&quot;input&quot;]&apos;)[0].value;
+          const valueValue = component.element.querySelectorAll(&apos;[ref=&quot;input&quot;]&apos;)[1].value;
+          const saveBtnsQty = component.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-saveRow&quot;]&apos;).length;
+
+          assert.equal(saveBtnsQty, 1);
+          assert.equal(keyValue, &apos;key111&apos;);
+          assert.equal(valueValue, &apos;111&apos;);
+          done();
+        }, 500);
+      }, 200);
+    });
+  });
+
   it(&apos;Should display saved values if there are more then 1 nested components&apos;, (done) =&gt; {
     Harness.testCreate(EditGridComponent, comp3).then((component) =&gt; {
       component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
@@ -558,6 +584,51 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.editRow&apos;);
       Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
+    });
+  });
+
+  describe(&apos;Display As Modal&apos;, () =&gt; {
+    it(&apos;Should show errors on save&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(displayAsModalEditGrid).then(() =&gt; {
+          const editGrid = form.components[0];
+          const clickEvent = new Event(&apos;click&apos;);
+          editGrid.addRow();
+          setTimeout(() =&gt; {
+            const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+            const saveButton = dialog.querySelector(&apos;.btn.btn-primary&apos;);
+            saveButton.dispatchEvent(clickEvent);
+            setTimeout(() =&gt; {
+              assert.equal(editGrid.errors.length, 6);
+              done();
+            }, 100);
+          }, 100);
+      }).catch(done);
+    });
+
+    it(&apos;Should show add error classes to invalid components&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(displayAsModalEditGrid).then(() =&gt; {
+        const editGrid = form.components[0];
+        const clickEvent = new Event(&apos;click&apos;);
+        editGrid.addRow();
+        setTimeout(() =&gt; {
+          const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+          const saveButton = dialog.querySelector(&apos;.btn.btn-primary&apos;);
+          saveButton.dispatchEvent(clickEvent);
+          setTimeout(() =&gt; {
+            const components = Array.from(dialog.querySelectorAll(&apos;[ref=&quot;component&quot;]&apos;));
+            const areRequiredComponentsHaveErrorWrapper = components.every((comp) =&gt; {
+              const { className } = comp;
+              return (className.includes(&apos;required&apos;) &amp;&amp; className.includes(&apos;formio-error-wrapper&apos;)) || true;
+            });
+            assert.equal(areRequiredComponentsHaveErrorWrapper, true);
+            done();
+          }, 100);
+        }, 100);
+      }).catch(done);
     });
   });
 

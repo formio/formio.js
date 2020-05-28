@@ -2649,6 +2649,8 @@ export default class Component extends Element {
   }
 
   setCustomValidity(messages, dirty, external) {
+    const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
+
     if (typeof messages === 'string' && messages) {
       messages = {
         level: 'error',
@@ -2681,8 +2683,8 @@ export default class Component extends Element {
       };
       this.emit('componentError', this.error);
       this.addMessages(messages, dirty, this.refs.input);
-      if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      if (inputRefs) {
+        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external && !hasErrors) {
@@ -2690,8 +2692,8 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      if (inputRefs) {
+        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
       }
       this.clearErrorClasses();
     }

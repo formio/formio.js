@@ -388,6 +388,14 @@ export default class TimeComponent extends TextFieldComponent {
     return format.replace(/[hHmMsSk]/g, &apos;9&apos;)
                  .replace(/[aA]/, &apos;AA&apos;);
   }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, &apos;blur&apos;, () =&gt; {
+      element.value = this.getValueAsString(element.value);
+    });
+  }
 }
 </code></pre>
 
