@@ -224,7 +224,7 @@ export default class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (!this[_id]) {
-      NativePromise.reject('Nothing to delete');
+      return NativePromise.reject('Nothing to delete');
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], 'delete', null, opts);
