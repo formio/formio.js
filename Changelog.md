@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FJS-968: `eachComponent` including `htmlelement` components when `includeAll` is not provided
+
 ## 4.10.0-rc.6
 ### Changed
  - Upgrade @formio/bootstrap3 to 2.6.0

@@ -66,7 +66,8 @@ export function eachComponent(components, fn, includeAll, path, parent) {
       delete component.parent.rows;
     }
 
-    if (includeAll || component.tree || (!hasColumns && !hasRows && !hasComps)) {
+    const isLayoutComponent = hasColumns || hasRows || hasComps || component.type === 'htmlelement';
+    if (includeAll || component.tree || !isLayoutComponent) {
       noRecurse = fn(component, newPath);
     }
 
