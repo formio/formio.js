@@ -5,6 +5,7 @@ export default {
       translation: {
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
+        submitError: 'Please check the form and correct all errors before submitting.',
         required: '{{field}} is required',
         unique: '{{field}} must be unique',
         array: '{{field}} must be an array',
@@ -47,7 +48,11 @@ export default {
         next: 'Next',
         previous: 'Previous',
         cancel: 'Cancel',
-        submit: 'Submit Form'
+        submit: 'Submit Form',
+        confirmCancel: 'Are you sure you want to cancel?',
+        saveDraftInstanceError: 'Cannot save draft because there is no formio instance.',
+        saveDraftAuthError: 'Cannot save draft unless a user is authenticated.',
+        restoreDraftInstanceError: 'Cannot restore draft because there is no formio instance.',
       }
     }
   }

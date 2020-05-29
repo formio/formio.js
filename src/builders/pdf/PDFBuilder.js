@@ -5,6 +5,7 @@ import Formio from '../../Formio';
 
 import WebformBuilder from '../webform/WebformBuilder';
 import { getElementRect, fastCloneDeep } from '../../utils/utils';
+import { eachComponent } from '../../utils/formUtils';
 import BuilderUtils from '../../utils/builder';
 import PDF from '../../displays/pdf/PDF';
 const { fetch, Headers } = fetchPonyfill({
@@ -53,7 +54,8 @@ export default class PDFBuilder extends WebformBuilder {
           select: true,
           textarea: true,
           datetime: true,
-          file: true
+          file: true,
+          htmlelement: true,
         }
       },
       basic: false,
@@ -180,7 +182,7 @@ export default class PDFBuilder extends WebformBuilder {
     // Normal PDF Builder
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
-        iframeDropzone: 'single', 'sidebar-container': 'single'
+        iframeDropzone: 'single', 'sidebar-container': 'multiple'
       });
 
       this.afterAttach();
@@ -189,6 +191,12 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   afterAttach() {
+    this.on('saveComponent', (schema, component) => {
+      this.webform.postMessage({ name: 'updateElement', data: component });
+    });
+    this.on('removeComponent', (component) => {
+      this.webform.postMessage({ name: 'removeElement', data: component });
+    });
     this.initIframeEvents();
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
@@ -253,25 +261,9 @@ export default class PDFBuilder extends WebformBuilder {
     return this.webform;
   }
 
-  setForm(form) {
-    return super.setForm(form).then(() => {
-      return this.ready.then(() => {
-        if (this.webform) {
-          this.webform.postMessage({ name: 'form', data: form });
-          return this.webform.setForm(form);
-        }
-        return form;
-      });
-    });
-  }
-
-  saveComponent(...args) {
-    return super.saveComponent(...args).then(() => this.afterAttach());
-  }
-
-  destroy() {
-    super.destroy();
-    this.webform.destroy();
+  destroy(deleteFromGlobal) {
+    super.destroy(deleteFromGlobal);
+    this.webform.destroy(deleteFromGlobal);
   }
 
   // d8b 8888888888                                                                              888
@@ -300,8 +292,11 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.height,
           width: schema.width
         };
-        this.editComponent(component.component, this.webform.iframeElement);
-        this.emit('updateComponent', component);
+
+        if (!this.options.noNewEdit) {
+          this.editComponent(component.component, this.webform.iframeElement);
+        }
+        this.emit('updateComponent', component.component);
       }
       return component;
     });
@@ -316,7 +311,7 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.overlay.height,
           width: schema.overlay.width
         };
-        this.emit('updateComponent', component);
+        this.emit('updateComponent', component.component);
 
         const localComponent = _.find(this.form.components, { id: schema.id });
         if (localComponent) {
@@ -367,13 +362,15 @@ export default class PDFBuilder extends WebformBuilder {
     if (!this.refs['sidebar-container']) {
       return;
     }
-    [...this.refs['sidebar-container'].children].forEach(el => {
-      el.draggable = true;
-      el.setAttribute('draggable', true);
-      this.removeEventListener(el, 'dragstart');
-      this.removeEventListener(el, 'dragend');
-      this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
-      this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+    this.refs['sidebar-container'].forEach(container => {
+      [...container.children].forEach(el => {
+        el.draggable = true;
+        el.setAttribute('draggable', true);
+        this.removeEventListener(el, 'dragstart');
+        this.removeEventListener(el, 'dragend');
+        this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
+        this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+      });
     });
   }
 
@@ -388,6 +385,11 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   onDragStart(e) {
+    // Taking the current offset of a dragged item relative to the cursor
+    const { offsetX = 0, offsetY = 0 } = e;
+    this.itemOffsetX = offsetX;
+    this.itemOffsetY = offsetY;
+
     e.dataTransfer.setData('text/html', null);
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
@@ -404,7 +406,8 @@ export default class PDFBuilder extends WebformBuilder {
     // reflect absolute positioning if accessed after the target element is hidden
     const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
     const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
-
+    const WIDTH = 100;
+    const HEIGHT = 20;
     // Always disable the dropzone on drag end
     this.removeClass(this.refs.iframeDropzone, 'enabled');
 
@@ -426,22 +429,52 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);
-
     this.webform.component.components.push(schema);
 
-    this.emit('addComponent', schema);
-
     schema.overlay = {
-      top: offsetY,
-      left: offsetX,
-      width: 100,
-      height: 20
+      top: offsetY - this.itemOffsetY + HEIGHT,
+      left: offsetX - this.itemOffsetX,
+      width: WIDTH,
+      height: HEIGHT
     };
 
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: 'addElement', data: schema });
 
+    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit);
+
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
+
+    // update elements which path was duplicated if any pathes have been changed
+    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {
+      eachComponent(this.webform.getComponents(), (comp, path) => {
+        if (this.repeatablePaths.includes(path)) {
+          this.webform.postMessage({ name: 'updateElement', data: comp.component });
+        }
+      });
+
+      this.repeatablePaths = repeatablePaths;
+    }
+
+    if (!repeatablePaths.length) {
+      return;
+    }
+
+    eachComponent(this.webform.getComponents(), (comp, path) => {
+      if (this.repeatablePaths.includes(path)) {
+        this.webform.postMessage({
+          name: 'showBuilderErrors',
+          data: {
+            compId: comp.component.id,
+            errorMessage: `API Key is not unique: ${comp.key}`,
+          }
+        });
+      }
+    });
   }
 }

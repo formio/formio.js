@@ -62,11 +62,10 @@ export default class SignatureComponent extends Input {
   }
 
   labelIsHidden() {
-    return true;
+    return this.component.hideLabel;
   }
 
-  setValue(value, flags) {
-    flags = flags || {};
+  setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
     if (value && this.refs.signatureImage && this.options.readOnly) {
       this.refs.signatureImage.setAttribute('src', value);
@@ -110,6 +109,9 @@ export default class SignatureComponent extends Input {
         if (this.refs.refresh) {
           this.refs.refresh.classList.add('disabled');
         }
+        if (this.refs.signatureImage) {
+          this.refs.signatureImage.setAttribute('src', this.dataValue);
+        }
       }
       else {
         this.signaturePad.on();
@@ -147,10 +149,16 @@ export default class SignatureComponent extends Input {
   }
 
   setOpenModalElement() {
-    const template = `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
-    `;
+    let template;
+    if (this.dataValue) {
+      template = this.getModalPreviewTemplate();
+    }
+    else {
+      template = `
+        <label class="control-label">${this.component.label}</label><br>
+        <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
+      `;
+    }
     this.componentModal.setOpenModalElement(template);
   }
 
@@ -164,8 +172,6 @@ export default class SignatureComponent extends Input {
   attach(element) {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
     const superAttach = super.attach(element);
-
-    this.onDisabled();
 
     if (this.refs.refresh && this.options.readOnly) {
       this.refs.refresh.classList.add('disabled');
@@ -182,6 +188,8 @@ export default class SignatureComponent extends Input {
 
       this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
+
+      this.onDisabled();
 
       // Ensure the signature is always the size of its container.
       if (this.refs.padBody) {

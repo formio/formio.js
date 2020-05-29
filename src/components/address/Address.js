@@ -135,10 +135,10 @@ export default class AddressComponent extends ContainerComponent {
         } = map;
 
         if (key) {
-          providerOptions.apiKey = key;
+          _.set(providerOptions, 'params.key', key);
         }
         if (region) {
-          providerOptions.region = region;
+          _.set(providerOptions, 'params.region', region);
         }
 
         this.provider = this.initializeProvider(provider, providerOptions);
@@ -225,7 +225,7 @@ export default class AddressComponent extends ContainerComponent {
       : value;
   }
 
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = Field.prototype.setValue.call(this, value, flags);
 
     if (this.manualMode) {
@@ -474,7 +474,7 @@ export default class AddressComponent extends ContainerComponent {
     }
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value) {
       return '';
     }
@@ -511,11 +511,11 @@ export default class AddressComponent extends ContainerComponent {
         .filter((component) => component.hasValue(address))
         .map((component) => [component, _.get(address, component.key)])
         .filter(([component, componentValue]) => !component.isEmpty(componentValue))
-        .map(([component, componentValue]) => component.getValueAsString(componentValue))
+        .map(([component, componentValue]) => component.getValueAsString(componentValue, options))
         .join(', ');
     }
 
-    return super.getValueAsString(address);
+    return super.getValueAsString(address, options);
   }
 
   focus() {

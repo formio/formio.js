@@ -80,9 +80,16 @@ export default class Input extends Multivalue {
       }));
   }
 
+  getWordCount(value) {
+    if (this.editors) {
+      return value.trim() ? value.trim().split(/\s+/).length : 0;
+    }
+    return _.words(value).length;
+  }
+
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
-    const wordCount = _.words(this.dataValue).length;
+    const wordCount = this.getWordCount(this.dataValue);
     return maxWords - wordCount;
   }
 
@@ -101,7 +108,8 @@ export default class Input extends Multivalue {
     if (this.component.widget && this.component.widget.type === 'calendar') {
       const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time'),
+        // After font-awesome would be updated to v5.x, "clock-o" should be replaced with "clock"
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'clock-o'),
         styles: '',
         content: ''
       }).trim();
@@ -145,16 +153,17 @@ export default class Input extends Multivalue {
   }
 
   updateValueAt(value, flags, index) {
+    flags = flags || {};
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
-        this.setCounter('words', this.refs.wordcount[index], _.words(value).length, maxWords);
+        this.setCounter(this.t('words'), this.refs.wordcount[index], this.getWordCount(value), maxWords);
       }
     }
     if (_.get(this.component, 'showCharCount', false)) {
       if (this.refs.charcount && this.refs.charcount[index]) {
         const maxChars = _.parseInt(_.get(this.component, 'validate.maxLength', 0), 10);
-        this.setCounter('characters', this.refs.charcount[index], value.length, maxChars);
+        this.setCounter(this.t('characters'), this.refs.charcount[index], value.length, maxChars);
       }
     }
   }
@@ -168,6 +177,7 @@ export default class Input extends Multivalue {
   }
 
   updateValue(value, flags, index) {
+    flags = flags || {};
     const changed = super.updateValue(value, flags);
     this.triggerUpdateValueAt(this.dataValue, flags, index);
     return changed;
@@ -199,8 +209,8 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value) {
-    return super.getValueAsString(this.getWidgetValueAsString(value));
+  getValueAsString(value, options) {
+    return super.getValueAsString(this.getWidgetValueAsString(value, options), options);
   }
 
   attachElement(element, index) {

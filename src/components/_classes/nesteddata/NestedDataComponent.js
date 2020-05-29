@@ -20,8 +20,49 @@ export default class NestedDataComponent extends NestedComponent {
     return true;
   }
 
-  getValueAsString() {
+  getValueAsString(value, options) {
+    if (options?.email) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <tbody>
+      `);
+
+      this.everyComponent((component) => {
+        if (component.isInputComponent && component.visible && !component.skipInEmail) {
+          result += (`
+            <tr>
+              <th style="padding: 5px 10px;">${component.label}</th>
+              <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
+            </tr>
+          `);
+        }
+      }, {
+        ...options,
+        fromRoot: true,
+      });
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    }
+
     return '[Complex Data]';
+  }
+
+  everyComponent(fn, options) {
+    if (options?.email) {
+      if (options.fromRoot) {
+        delete options.fromRoot;
+      }
+      else {
+        return;
+      }
+    }
+
+    return super.everyComponent(fn, options);
   }
 
   /**
@@ -33,7 +74,7 @@ export default class NestedDataComponent extends NestedComponent {
     return this.dataValue;
   }
 
-  updateValue(value, flags) {
+  updateValue(value, flags = {}) {
     // Intentionally skip over nested component updateValue method to keep
     // recursive update from occurring with sub components.
     return Component.prototype.updateValue.call(this, value, flags);

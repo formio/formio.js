@@ -33,6 +33,7 @@ export default class WebformBuilder extends Component {
 
     this.builderHeight = 0;
     this.schemas = {};
+    this.repeatablePaths = [];
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
@@ -369,7 +370,9 @@ export default class WebformBuilder extends Component {
 
         subgroup.componentOrder.push(component.key);
         subgroup.components[component.key] = _.merge(
-          fastCloneDeep(Components.components[component.type].builderInfo),
+          fastCloneDeep(Components.components[component.type]
+            ? Components.components[component.type].builderInfo
+            : Components.components['unknown'].builderInfo),
           {
             key: component.key,
             title: componentName,
@@ -456,29 +459,7 @@ export default class WebformBuilder extends Component {
   }
 
   set form(value) {
-    if (!value.components) {
-      value.components = [];
-    }
-
-    const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && !value.components.length;
-
-    // Ensure there is at least a submit button.
-    if (isShowSubmitButton) {
-      value.components.push({
-        type: 'button',
-        label: 'Submit',
-        key: 'submit',
-        size: 'md',
-        block: false,
-        action: 'submit',
-        disableOnInvalid: true,
-        theme: 'primary'
-      });
-    }
-
-    this.webform.form = value;
-    this.rebuild();
+    this.setForm(value);
   }
 
   get container() {
@@ -826,16 +807,48 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
-      this.emit('addComponent', info, parent, path, index, isNew);
+      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit);
+      if (!isNew || this.options.noNewEdit) {
+        this.emit('change', this.form);
+      }
     });
   }
 
   setForm(form) {
-    this.emit('change', form);
-    return super.setForm(form).then(retVal => {
-      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
-      return retVal;
-    });
+    if (!form.components) {
+      form.components = [];
+    }
+
+    const isShowSubmitButton = !this.options.noDefaultSubmitButton
+      && !form.components.length;
+
+    // Ensure there is at least a submit button.
+    if (isShowSubmitButton) {
+      form.components.push({
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        size: 'md',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary'
+      });
+    }
+
+    if (this.webform) {
+      const shouldRebuild = !this.webform.form.components;
+      return this.webform.setForm(form).then(() => {
+        if (this.refs.form) {
+          this.builderHeight = this.refs.form.offsetHeight;
+        }
+        if (!shouldRebuild) {
+          return this.form;
+        }
+        return this.rebuild().then(() => this.form);
+      });
+    }
+    return NativePromise.resolve(form);
   }
 
   populateRecaptchaSettings(form) {
@@ -969,26 +982,38 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
-  highlightInvalidComponents() {
-    const formKeys = {};
-    const repeatableKeys = [];
+  findRepeatablePaths() {
+    const repeatablePaths = [];
+    const keys = new Map();
 
-    eachComponent(this.form.components, (comp) => {
+    eachComponent(this.form.components, (comp, path) => {
       if (!comp.key) {
         return;
       }
 
-      if (formKeys[comp.key] && !repeatableKeys.includes(comp.key)) {
-        repeatableKeys.push(comp.key);
+      if (keys.has(comp.key)) {
+        if (keys.get(comp.key).includes(path)) {
+          repeatablePaths.push(path);
+        }
+        else {
+          keys.set(comp.key, [...keys.get(comp.key), path]);
+        }
       }
-
-      formKeys[comp.key] = true;
+      else {
+        keys.set(comp.key, [path]);
+      }
     });
 
-    const components = this.webform.getComponents();
-    repeatableKeys.forEach((key) => {
-      const instances = components.filter((comp) => comp.key === key);
-      instances.forEach((instance) => instance.setCustomValidity(`API Key is not unique: ${key}`));
+    return repeatablePaths;
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
+
+    eachComponent(this.webform.getComponents(), (comp, path) => {
+      if (repeatablePaths.includes(path)) {
+        comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+      }
     });
   }
 
@@ -1006,29 +1031,34 @@ export default class WebformBuilder extends Component {
     this.dialog.close();
     const path = parentContainer ? this.getComponentsPath(component, parentComponent.component) : '';
     if (!original) {
-      original = parent.formioContainer.find((comp) => comp.key === component.key);
+      original = parent.formioContainer.find((comp) => comp.id === component.id);
     }
     const index = parentContainer ? parentContainer.indexOf(original) : 0;
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      let comp = null;
+      parentComponent.getComponents().forEach((component) => {
+        if (component.key === original.key) {
+          comp = component;
+        }
+      });
+      const originalComp = comp.component;
       if (parentContainer) {
         parentContainer[index] = submissionData;
+        if (comp) {
+          comp.component = submissionData;
+        }
       }
       else if (parentComponent && parentComponent.saveChildComponent) {
         parentComponent.saveChildComponent(submissionData);
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        let schema = parentContainer ? parentContainer[index] : [];
-        parentComponent.getComponents().forEach((component) => {
-          if (component.key === schema.key) {
-            schema = component.schema;
-          }
-        });
+        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
-          component,
+          originalComp,
           parentComponent.schema,
           path,
           index,
@@ -1193,9 +1223,9 @@ export default class WebformBuilder extends Component {
     });
 
     const dialogClose = () => {
-      this.editForm.destroy();
+      this.editForm.destroy(true);
       if (this.preview) {
-        this.preview.destroy();
+        this.preview.destroy(true);
         this.preview = null;
       }
       if (isNew && !saved) {
@@ -1279,11 +1309,18 @@ export default class WebformBuilder extends Component {
     return component;
   }
 
-  destroy() {
-    if (this.webform.initialized) {
-      this.webform.destroy();
+  init() {
+    if (this.webform) {
+      this.webform.init();
     }
-    super.destroy();
+    return super.init();
+  }
+
+  destroy(deleteFromGlobal) {
+    if (this.webform.initialized) {
+      this.webform.destroy(deleteFromGlobal);
+    }
+    super.destroy(deleteFromGlobal);
   }
 
   addBuilderGroup(name, group) {

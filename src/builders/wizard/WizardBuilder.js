@@ -60,8 +60,9 @@ export default class WizardBuilder extends WebformBuilder {
     // Wizard pages don't replace themselves in the right array. Do that here.
     this.on('saveComponent', (component, originalComponent) => {
       const webformComponents = this.webform.components.map(({ component }) => component);
-      if (this._form.components.includes(originalComponent)) {
-        this._form.components[this._form.components.indexOf(originalComponent)] = component;
+      const formComponentIndex = this._form.components.findIndex((comp) => originalComponent.key === comp.key);
+      if (formComponentIndex !== -1) {
+        this._form.components[formComponentIndex] = component;
         this.rebuild();
       }
       else if (webformComponents.includes(originalComponent)) {
@@ -169,12 +170,14 @@ export default class WizardBuilder extends WebformBuilder {
     const newPage = this.getPageConfig(pageNum);
     BuilderUtils.uniquify(this._form.components, newPage);
     this._form.components.push(newPage);
-    this.emit('saveComponent', newPage);
+    this.emit('saveComponent', newPage, this._form.components);
+    this.emit('change', this._form);
     return this.rebuild();
   }
 
   removePage(pageIndex, componentIndex) {
     this._form.components.splice(componentIndex, 1);
+    this.emit('change', this._form);
 
     if (pageIndex === this.pages.length) {
       // If the last page is removed.

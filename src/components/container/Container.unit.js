@@ -3,7 +3,8 @@ import Harness from '../../../test/harness';
 import ContainerComponent from './Container';
 
 import {
-  comp1
+  comp1,
+  comp2
 } from './fixtures';
 
 describe('Container Component', () => {
@@ -25,6 +26,28 @@ describe('Container Component', () => {
       });
       assert.equal(inputs[0].value, 'Joe');
       assert.equal(inputs[1].value, 'Smith');
+    });
+  });
+
+  it('Should set the dataValue, but after it sets the value of its nested components', () => {
+    return Harness.testCreate(ContainerComponent, comp2).then((component) => {
+      const editGrid = component.getComponent('children');
+      const setValue = editGrid.setValue;
+      editGrid.setValue = function(...args) {
+        const changed = setValue.call(editGrid, ...args);
+        assert(changed, 'The edit grid must have changed');
+        return changed;
+      };
+      component.setValue({
+        children: [
+          {
+            name: 'Joe'
+          },
+          {
+            name: 'Sally'
+          }
+        ]
+      });
     });
   });
 });

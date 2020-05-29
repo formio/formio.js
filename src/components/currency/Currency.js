@@ -1,4 +1,5 @@
 import { createNumberMask } from 'text-mask-addons';
+import { maskInput } from 'vanilla-text-mask';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';
 import NumberComponent from '../number/Number';
@@ -57,6 +58,23 @@ export default class CurrencyComponent extends NumberComponent {
     });
   }
 
+  setInputMask(input) {
+    const affixes = getCurrencyAffixes({
+      currency: this.component.currency,
+      decimalSeparator: this.decimalSeparator,
+      lang: this.options.language,
+    });
+    let numberPattern = `\\${affixes.prefix}[0-9`;
+    numberPattern += this.decimalSeparator || '';
+    numberPattern += this.delimiter || '';
+    numberPattern += ']*';
+    input.setAttribute('pattern', numberPattern);
+    input.mask = maskInput({
+      inputElement: input,
+      mask: this.numberMask || '',
+    });
+  }
+
   get defaultSchema() {
     return CurrencyComponent.schema();
   }
@@ -77,6 +95,12 @@ export default class CurrencyComponent extends NumberComponent {
     let integerPart;
     let decimalPart = '';
     let decimalPartNumbers = [];
+    const negativeValueSymbol = '-';
+    const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
+    const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+    const isNegative = value.includes(negativeValueSymbol) || false;
+
+    value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol,'') : value);
 
     if (value.includes(this.decimalSeparator)) {
       [integerPart, decimalPart] = value.split(this.decimalSeparator);
@@ -92,13 +116,13 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
 
-    const formattedValue = `${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}`;
+    const formattedValue = `${isNegative ? negativeValueSymbol:''}${hasPrefix ? this.prefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.suffix : ''}`;
 
     return super.formatValue(formattedValue);
   }
 
-  getValueAsString(value) {
-    const stringValue = super.getValueAsString(value);
+  getValueAsString(value, options) {
+    const stringValue = super.getValueAsString(value, options);
 
     // eslint-disable-next-line eqeqeq
     if (value || value == '0') {
@@ -109,7 +133,7 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   formatValue(value) {
-    if (value && this.disabled) {
+    if (value || value === '0') {
       return this.addZerosAndFormatValue(value);
     }
 
@@ -119,11 +143,20 @@ export default class CurrencyComponent extends NumberComponent {
   stripPrefixSuffix(value) {
     if (typeof value === 'string') {
       try {
+        const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
+        const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+        const hasDelimiter = value.includes(this.delimiter);
+        const hasDecimalSeparator = value.includes(this.decimalSeparator);
+
         if (this.prefix) {
           value = value.replace(this.prefix, '');
         }
         if (this.suffix) {
           value = value.replace(this.suffix, '');
+        }
+        //when we enter $ in the field using dashboard, it contains '_' that is NaN
+        if ((hasPrefix || hasSuffix) && !hasDelimiter && !hasDecimalSeparator && (Number.isNaN(+value) || !value)) {
+          value ='0';
         }
       }
       catch (err) {
@@ -137,7 +170,7 @@ export default class CurrencyComponent extends NumberComponent {
     super.addFocusBlurEvents(element);
 
     this.addEventListener(element, 'blur', () => {
-      element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(this.dataValue)));
+      element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
     });
   }
 }

@@ -31,7 +31,7 @@ export default class Multivalue extends Field {
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || ' Add Another');
+    return this.t(this.component.addAnother || 'Add Another');
   }
 
   useWrapper() {
@@ -156,13 +156,13 @@ export default class Multivalue extends Field {
       if (element.mask) {
         setTimeout(() => {
           return this.updateValue(null, {
-            modified: true
+            modified: (this.component.type !== 'hidden')
           }, index);
         }, 1);
       }
       else {
         return this.updateValue(null, {
-          modified: true
+          modified: (this.component.type !== 'hidden')
         }, index);
       }
     });

@@ -2,7 +2,6 @@ import Field from '../_classes/field/Field';
 import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
-import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
 
 let Camera;
@@ -115,24 +114,6 @@ export default class FileComponent extends Field {
       Array.isArray(this.component.fileTypes) &&
       this.component.fileTypes.length !== 0 &&
       (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
-  }
-
-  get fileService() {
-    if (this.options.fileService) {
-      return this.options.fileService;
-    }
-    if (this.options.formio) {
-      return this.options.formio;
-    }
-    if (this.root && this.root.formio) {
-      return this.root.formio;
-    }
-    const formio = new Formio();
-    // If a form is loaded, then make sure to set the correct formUrl.
-    if (this.root && this.root._form && this.root._form._id) {
-      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
-    }
-    return formio;
   }
 
   render() {
@@ -316,6 +297,8 @@ export default class FileComponent extends Field {
       fileImage: 'multiple',
       fileType: 'multiple',
     });
+    // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
+    this.refs.input = [];
     const superAttach = super.attach(element);
 
     if (this.refs.fileDrop) {
@@ -612,7 +595,9 @@ export default class FileComponent extends Field {
           if (this.component.privateDownload) {
             file.private = true;
           }
-          const { storage, url, options = {} } = this.component;
+          const { storage, options = {} } = this.component;
+          const url = this.interpolate(this.component.url);
+
           const fileKey = this.component.fileKey || 'file';
           fileService.uploadFile(storage, file, fileName, dir, (evt) => {
             fileUpload.status = 'progress';
@@ -674,5 +659,10 @@ export default class FileComponent extends Field {
     if (this.refs.fileBrowse) {
       this.refs.fileBrowse.focus();
     }
+  }
+
+  destroy() {
+    this.stopVideo();
+    super.destroy();
   }
 }

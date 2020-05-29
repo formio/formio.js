@@ -6,7 +6,7 @@ import {
   getDateSetting,
   escapeRegExCharacters,
   interpolate,
-  convertFormatToMoment
+  convertFormatToMoment, getArrayFromComponentPath
 } from '../utils/utils';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
@@ -34,7 +34,7 @@ class ValidationChecker {
           });
         },
         check(component, setting, value) {
-          if (!boolValue(setting)) {
+          if (!boolValue(setting) || component.isValueHidden()) {
             return true;
           }
 
@@ -585,7 +585,7 @@ class ValidationChecker {
 
           inputMask = inputMask ? getInputMask(inputMask) : null;
 
-          if (value && inputMask) {
+          if (value && inputMask && !component.skipMaskValidation) {
             return matchInputMask(value, inputMask);
           }
 
@@ -683,7 +683,7 @@ class ValidationChecker {
           let year = /\d{4}$/.exec(value);
           year = year ? year[0] : null;
 
-          if (!minYear || !year) {
+          if (!(+minYear) || !(+year)) {
             return true;
           }
 
@@ -703,7 +703,7 @@ class ValidationChecker {
           let year = /\d{4}$/.exec(value);
           year = year ? year[0] : null;
 
-          if (!maxYear || !year) {
+          if (!(+maxYear) || !(+year)) {
             return true;
           }
 
@@ -773,7 +773,7 @@ class ValidationChecker {
         return result;
       }
 
-      if (!result) {
+      if (!result && validator.message) {
         return validator.message.call(this, component, setting, index, row);
       }
 
@@ -802,11 +802,7 @@ class ValidationChecker {
       return result ? {
         message: _.get(result, 'message', result),
         level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: (component.path || '')
-          .replace(/[[\]]/g, '.')
-          .replace(/\.\./g, '.')
-          .split('.')
-          .map(part => _.defaultTo(_.toNumber(part), part)),
+        path: getArrayFromComponentPath(component.path || ''),
         context: {
           validator: validatorName,
           setting,

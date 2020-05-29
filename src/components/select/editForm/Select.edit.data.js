@@ -202,7 +202,12 @@ export default [
     dataSrc: 'url',
     lazyLoad: false,
     onSetItems(component, form) {
-      const newItems = [];
+      const newItems = form.type === 'resource'
+        ? [{
+            label: '{Entire Object}',
+            key: 'data',
+          }]
+        : [];
 
       eachComponent(form.components, (component, path) => {
         if (component.input) {
@@ -471,6 +476,7 @@ export default [
           [
             'url',
             'resource',
+            'values'
           ],
         ],
       },
@@ -491,6 +497,7 @@ export default [
           [
             'url',
             'resource',
+            'values'
           ],
         ],
       },

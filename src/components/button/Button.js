@@ -65,6 +65,10 @@ export default class ButtonComponent extends Field {
     this.setLoading(this.refs.button, loading);
   }
 
+  get skipInEmail() {
+    return true;
+  }
+
   // No label needed for buttons.
   createLabel() {}
 
@@ -113,23 +117,26 @@ export default class ButtonComponent extends Field {
       this.on('submitButton', () => {
         this.disabled = true;
       }, true);
-      this.on('submitDone', () => {
+      this.on('submitDone', (message) => {
+        const resultMessage = message || this.t('complete');
         this.loading = false;
         this.disabled = false;
         this.addClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         this.addClass(this.refs.buttonMessageContainer, 'has-success');
         this.removeClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t('complete'));
+        this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
-      this.on('submitError', () => {
+      this.on('submitError', (message) => {
+        const resultMessage = message || this.t(this.errorMessage('error'));
         this.loading = false;
         this.disabled = false;
+        this.hasError = true;
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
+        this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
@@ -161,12 +168,15 @@ export default class ButtonComponent extends Field {
       }, true);
     }
 
-    this.on('change', (value) => {
+    this.on('change', (value, flags) => {
+      const isValid = (flags && flags.noValidate) ?
+        (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true) :
+        value.isValid;
       this.loading = false;
-      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !value.isValid);
+      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
       if (onChange) {
-        onChange(value, value.isValid);
+        onChange(value, isValid);
       }
     }, true);
 

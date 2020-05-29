@@ -2,9 +2,50 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1 } from './fixtures';
+import { comp1, comp3, comp4 } from './fixtures';
+import Webform from '../../Webform';
+import { displayAsModalEditGrid } from '../../../test/formtest';
 
 describe('EditGrid Component', () => {
+  it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
+    Harness.testCreate(EditGridComponent, comp4).then((component) => {
+      component.setValue([{ dataMap: { key111: '111' } }]);
+
+      setTimeout(()=>{
+        const clickEvent = new Event('click');
+        const editBtn = component.element.querySelector('.editRow');
+
+        editBtn.dispatchEvent(clickEvent);
+
+        setTimeout(()=>{
+          const keyValue = component.element.querySelectorAll('[ref="input"]')[0].value;
+          const valueValue = component.element.querySelectorAll('[ref="input"]')[1].value;
+          const saveBtnsQty = component.element.querySelectorAll('[ref="editgrid-editGrid-saveRow"]').length;
+
+          assert.equal(saveBtnsQty, 1);
+          assert.equal(keyValue, 'key111');
+          assert.equal(valueValue, '111');
+          done();
+        }, 500);
+      }, 200);
+    });
+  });
+
+  it('Should display saved values if there are more then 1 nested components', (done) => {
+    Harness.testCreate(EditGridComponent, comp3).then((component) => {
+      component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
+
+      setTimeout(()=>{
+        const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
+        const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
+
+        assert.equal(firstValue, '55555');
+        assert.equal(secondValue, '666666');
+        done();
+      }, 600);
+    });
+  });
+
   it('Should build an empty edit grid component', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(1)', 'Field 1');
@@ -301,6 +342,51 @@ describe('EditGrid Component', () => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
+    });
+  });
+
+  describe('Display As Modal', () => {
+    it('Should show errors on save', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(displayAsModalEditGrid).then(() => {
+          const editGrid = form.components[0];
+          const clickEvent = new Event('click');
+          editGrid.addRow();
+          setTimeout(() => {
+            const dialog = document.querySelector('[ref="dialogContents"]');
+            const saveButton = dialog.querySelector('.btn.btn-primary');
+            saveButton.dispatchEvent(clickEvent);
+            setTimeout(() => {
+              assert.equal(editGrid.errors.length, 6);
+              done();
+            }, 100);
+          }, 100);
+      }).catch(done);
+    });
+
+    it('Should show add error classes to invalid components', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(displayAsModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        const clickEvent = new Event('click');
+        editGrid.addRow();
+        setTimeout(() => {
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          saveButton.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            const components = Array.from(dialog.querySelectorAll('[ref="component"]'));
+            const areRequiredComponentsHaveErrorWrapper = components.every((comp) => {
+              const { className } = comp;
+              return (className.includes('required') && className.includes('formio-error-wrapper')) || true;
+            });
+            assert.equal(areRequiredComponentsHaveErrorWrapper, true);
+            done();
+          }, 100);
+        }, 100);
+      }).catch(done);
     });
   });
 

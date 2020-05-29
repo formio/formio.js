@@ -13,7 +13,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.8/ace.js';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
@@ -123,6 +123,7 @@ export default class Component extends Element {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      calculateServer: false,
       widget: null,
 
       /**
@@ -211,6 +212,11 @@ export default class Component extends Element {
       attachMode: 'full'
     }, options || {}));
 
+    // Restore the component id.
+    if (component && component.id) {
+      this.id = component.id;
+    }
+
     /**
      * Determines if this component has a condition assigned to it.
      * @type {null}
@@ -298,11 +304,11 @@ export default class Component extends Element {
     this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
 
     /**
-     * Determines if this component is visible, or not.
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {Component}
      */
-    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
-    this._visible = this._parentVisible && this.conditionallyVisible(data);
-    this._parentDisabled = false;
+    this.root = this.options.root;
 
     /**
      * If this input has been input and provided value.
@@ -318,13 +324,6 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
-    /**
-     * Points to the root component, usually the FormComponent.
-     *
-     * @type {Component}
-     */
-    this.root = this.options.root;
-
     this.options.name = this.options.name || 'data';
 
     /**
@@ -334,16 +333,27 @@ export default class Component extends Element {
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     this._path = '';
+    // Nested forms don't have parents so we need to pass their path in.
+    this._parentPath = this.options.parentPath || '';
+
+    /**
+     * Determines if this component is visible, or not.
+     */
+    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._visible = this._parentVisible && this.conditionallyVisible(null, data);
+    this._parentDisabled = false;
 
     /**
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
     let lastChanged = null;
+    let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
       if (this.root) {
         this.root.changing = false;
       }
+      triggerArgs = [];
       if (!args[1] && lastChanged) {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
@@ -364,7 +374,10 @@ export default class Component extends Element {
       if (this.root) {
         this.root.changing = true;
       }
-      return _triggerChange(...args);
+      if (args.length) {
+        triggerArgs = args;
+      }
+      return _triggerChange(...triggerArgs);
     };
 
     /**
@@ -565,27 +578,8 @@ export default class Component extends Element {
   }
 
   get calculatedPath() {
-    if (this._path) {
-      return this._path;
-    }
-
-    this._path = this.key;
-
-    if (!this.root) {
-      return this._path;
-    }
-
-    let parent = this.parent;
-
-    while (parent && parent.id !== this.root.id) {
-      if (['datagrid', 'container', 'editgrid'].includes(parent.type) || parent.tree) {
-        this._path = `${parent.key}.${this._path}`;
-      }
-
-      parent = parent.parent;
-    }
-
-    return this._path;
+    console.error('component.calculatedPath was deprecated, use component.path instead.');
+    return this.path;
   }
 
   get labelPosition() {
@@ -611,6 +605,10 @@ export default class Component extends Element {
 
   get labelPositions() {
     return this.labelPosition.split('-');
+  }
+
+  get skipInEmail() {
+    return false;
   }
 
   rightDirection(direction) {
@@ -788,6 +786,7 @@ export default class Component extends Element {
     data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
+    data.size = this.size.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
     data.id = data.id || this.id;
@@ -926,17 +925,14 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    const template = `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
-    `;
+    const template = this.getModalPreviewTemplate();
     this.componentModal.setOpenModalElement(template);
   }
 
   getModalPreviewTemplate() {
     return `
       <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue)}</button>`;
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || this.t('Click to set value')}</button>`;
   }
 
   build(element) {
@@ -1059,9 +1055,9 @@ export default class Component extends Element {
   }
 
   checkRefresh(refreshData, changed) {
-    const changePath = _.get(changed, 'instance.calculatedPath', false);
+    const changePath = _.get(changed, 'instance.path', false);
     // Don't let components change themselves.
-    if (changePath && this.calculatedPath === changePath) {
+    if (changePath && this.path === changePath) {
       return;
     }
     if (refreshData === 'data') {
@@ -1104,7 +1100,7 @@ export default class Component extends Element {
     else {
       this.refreshOnChanged = true;
     }
-    this.refreshOnValue = value;
+    this.refreshOnValue = fastCloneDeep(value);
     if (this.refreshOnChanged) {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
@@ -1164,7 +1160,7 @@ export default class Component extends Element {
    * @param value
    * @return {*}
    */
-  getWidgetValueAsString(value) {
+  getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
       return value;
@@ -1174,21 +1170,21 @@ export default class Component extends Element {
       value.forEach((val, index) => {
         const widget = this.refs.input[index] && this.refs.input[index].widge;
         if (widget) {
-          values.push(widget.getValueAsString(val));
+          values.push(widget.getValueAsString(val, options));
         }
       });
       return values;
     }
 
     const widget = this.refs.input[0].widget;
-    return widget.getValueAsString(value);
+    return widget.getValueAsString(value, options);
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     if (!value) {
       return '';
     }
-    value = this.getWidgetValueAsString(value);
+    value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1201,11 +1197,11 @@ export default class Component extends Element {
     return value.toString();
   }
 
-  getView(value) {
+  getView(value, options) {
     if (this.component.protected) {
       return '--- PROTECTED ---';
     }
-    return this.getValueAsString(value);
+    return this.getValueAsString(value, options);
   }
 
   updateItems(...args) {
@@ -1372,6 +1368,12 @@ export default class Component extends Element {
     return Templates.current.hasOwnProperty('iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
       : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
+  }
+
+  size(size) {
+    return Templates.current.hasOwnProperty('size')
+      ? Templates.current.size(size)
+      : size;
   }
 
   /**
@@ -1819,41 +1821,52 @@ export default class Component extends Element {
 
   get wysiwygDefault() {
     return {
-      theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
-    };
-  }
-
-  get ckEditorConfig() {
-    return {
-      image: {
-        toolbar: [
-          'imageTextAlternative',
-          '|',
-          'imageStyle:full',
-          'imageStyle:alignLeft',
-          'imageStyle:alignCenter',
-          'imageStyle:alignRight'
-        ],
-        styles: [
-          'full',
-          'alignLeft',
-          'alignCenter',
-          'alignRight'
-        ]
-      }
+      quill: {
+        theme: 'snow',
+        placeholder: this.t(this.component.placeholder),
+        modules: {
+          toolbar: [
+            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula', 'source']
+          ]
+        }
+      },
+      ace: {
+        theme: 'ace/theme/xcode',
+        maxLines: 12,
+        minLines: 12,
+        tabSize: 2,
+        mode: 'javascript',
+        placeholder: this.t(this.component.placeholder)
+      },
+      ckeditor: {
+        image: {
+          toolbar: [
+            'imageTextAlternative',
+            '|',
+            'imageStyle:full',
+            'imageStyle:alignLeft',
+            'imageStyle:alignCenter',
+            'imageStyle:alignRight'
+          ],
+          styles: [
+            'full',
+            'alignLeft',
+            'alignCenter',
+            'alignRight'
+          ]
+        }
+      },
+      tiny: {
+        theme: 'silver'
+      },
+      default: {}
     };
   }
 
@@ -1861,7 +1874,7 @@ export default class Component extends Element {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
-    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', this.ckEditorConfig), settings);
+    settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
@@ -1875,13 +1888,10 @@ export default class Component extends Element {
   }
 
   addQuill(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
-    settings = _.merge(_.get(this.options, 'editors.quill.settings', {}), settings);
+    settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
+    settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, 'editors.quill.settings', {}), settings);
 
     // Lazy load the quill css.
-    if (!settings.theme) {
-      settings.theme = 'snow';
-    }
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
     ], true);
@@ -1929,13 +1939,14 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    const defaultAceSettings = {
-      maxLines: 12,
-      minLines: 12,
-      tabSize: 2,
-      mode: 'javascript',
-    };
-    settings = _.merge({}, defaultAceSettings, _.get(this.options, 'editors.ace.settings', {}), settings || {});
+    if (!settings || (settings.theme === 'snow')) {
+      const mode = settings ? settings.mode : '';
+      settings = {};
+      if (mode) {
+        settings.mode = mode;
+      }
+    }
+    settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
@@ -1953,7 +1964,6 @@ export default class Component extends Element {
         return editor.init({
           ...settings,
           target: element,
-          theme: 'silver',
           // eslint-disable-next-line camelcase
           init_instance_callback: (editor) => {
             editor.on('Change', () => onChange(editor.getContent()));
@@ -2145,7 +2155,7 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed.
    */
-  setValue(value, flags) {
+  setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
     if (this.componentModal && flags && flags.fromSubmission) {
       this.componentModal.setValue(value);
@@ -2155,7 +2165,13 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
-    if (isArray && this.refs.input && this.refs.input.length !== value.length) {
+    if (
+      isArray &&
+      Array.isArray(this.defaultValue) &&
+      this.refs.hasOwnProperty('input') &&
+      this.refs.input &&
+      (this.refs.input.length !== value.length)
+    ) {
       this.redraw();
     }
     for (const i in this.refs.input) {
@@ -2172,8 +2188,7 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value, flags) {
-    flags = flags || {};
+  setValueAt(index, value, flags = {}) {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
@@ -2193,6 +2208,15 @@ export default class Component extends Element {
     return this.hasValue() && !this.isEmpty(this.dataValue);
   }
 
+  setDefaultValue() {
+    if (this.defaultValue) {
+      const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
+      this.setValue(defaultValue, {
+        noUpdateEvent: true
+      });
+    }
+  }
+
   /**
    * Restore the value of a control.
    */
@@ -2203,12 +2227,7 @@ export default class Component extends Element {
       });
     }
     else {
-      if (this.defaultValue) {
-        const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
-        this.setValue(defaultValue, {
-          noUpdateEvent: true
-        });
-      }
+      this.setDefaultValue();
     }
   }
 
@@ -2230,11 +2249,10 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateComponentValue(value, flags) {
-    flags = flags || {};
+  updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
@@ -2291,6 +2309,7 @@ export default class Component extends Element {
     if (
       newValue !== undefined &&
       newValue !== null &&
+      this.allowData &&
       !this.hasValue()
     ) {
       return true;
@@ -2302,9 +2321,8 @@ export default class Component extends Element {
    * Update the value on change.
    *
    * @param flags
-   * @param changed
    */
-  updateOnChange(flags = {}, changed) {
+  updateOnChange(flags = {}, changed = false) {
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
       return true;
@@ -2319,20 +2337,26 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
+
+  convertNumberOrBoolToString(value) {
+    if (typeof value === 'number' || typeof value === 'boolean' ) {
+      return value.toString();
+    }
+    return value;
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
+    const { hidden, clearOnHide } = this.component;
+    const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
+
+    if (!this.component.calculateValue || shouldBeCleared) {
       return false;
     }
 
     // If this component allows overrides.
     const allowOverride = this.component.allowCalculateOverride;
-
-    // Skip this operation if this component allows modification and it is no longer pristine.
-    if (allowOverride && !this.pristine) {
-      return false;
-    }
 
     let firstPass = false;
     const dataValue = this.dataValue;
@@ -2343,28 +2367,39 @@ export default class Component extends Element {
       this.calculatedValue = null;
     }
 
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      (this.calculatedValue !== null) &&
-      !_.isEqual(dataValue, this.calculatedValue)
-    ) {
-      return false;
-    }
-
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
       data,
       row: row || this.data
-    }, 'value');
+    }, 'value') || this.emptyValue;
+
+    const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
+    const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
+
+    // Check to ensure that the calculated value is different than the previously calculated value.
+    if (
+      allowOverride &&
+      this.calculatedValue &&
+      !_.isEqual(dataValue, currentCalculatedValue) &&
+      _.isEqual(newCalculatedValue, currentCalculatedValue)) {
+      return false;
+    }
+
+    if (flags.fromSubmission &&
+      allowOverride &&
+      currentCalculatedValue !== this.dataValue) {
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
       allowOverride &&
       firstPass &&
       !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, calculatedValue)
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue)) &&
+      !_.isEqual(calculatedValue, this.convertNumberOrBoolToString(calculatedValue))
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
@@ -2454,9 +2489,9 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  setComponentValidity(messages, dirty) {
+  setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && (dirty || !this.pristine)) {
+    if (messages.length && !silentCheck && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
@@ -2473,9 +2508,11 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row, async = false) {
+  checkComponentValidity(data, dirty, row, options = {}) {
     data = data || this.rootValue;
     row = row || this.data;
+    const { async = false, silentCheck = false } = options;
+
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
       return async ? NativePromise.resolve(true) : true;
@@ -2483,18 +2520,18 @@ export default class Component extends Element {
 
     const check = Validator.checkComponent(this, data, row, true, async);
     return async ?
-      check.then((messages) => this.setComponentValidity(messages, dirty)) :
-      this.setComponentValidity(check, dirty);
+      check.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
+      this.setComponentValidity(check, dirty, silentCheck);
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row);
+    return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
-  checkAsyncValidity(data, dirty, row) {
-    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
+  checkAsyncValidity(data, dirty, row, silentCheck) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
   /**
@@ -2516,13 +2553,28 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+    if (flags.noValidate) {
+      return true;
+    }
 
     // We need to perform a test to see if they provided a default value that is not valid and immediately show
     // an error if that is the case.
-    if (!this.builderMode && !this.options.preview && !this.isEmpty(this.defaultValue) && !flags.noValidate) {
-      return this.checkComponentValidity(data, true, row);
+    let isDirty = !this.builderMode &&
+      !this.options.preview &&
+      !this.isEmpty(this.defaultValue) &&
+      this.isEqual(this.defaultValue, this.dataValue);
+
+    // We need to set dirty if they explicitly set noValidate to false.
+    if (this.options.alwaysDirty || flags.dirty) {
+      isDirty = true;
     }
-    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
+
+    // See if they explicitely set the values with setSubmission.
+    if (flags.fromSubmission && this.hasValue(data)) {
+      isDirty = true;
+    }
+
+    return this.checkComponentValidity(data, isDirty, row);
   }
 
   get validationValue() {
@@ -2552,13 +2604,15 @@ export default class Component extends Element {
   }
 
   clearErrorClasses() {
-    this.removeClass(this.element, 'formio-error-wrapper');
+    this.removeClass(this.element, this.options.componentErrorClass);
     this.removeClass(this.element, 'alert alert-danger');
     this.removeClass(this.element, 'has-error');
     this.removeClass(this.element, 'has-message');
   }
 
   setCustomValidity(messages, dirty, external) {
+    const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
+
     if (typeof messages === 'string' && messages) {
       messages = {
         level: 'error',
@@ -2589,8 +2643,8 @@ export default class Component extends Element {
       };
       this.emit('componentError', this.error);
       this.addMessages(messages, dirty, this.refs.input);
-      if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      if (inputRefs) {
+        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2598,8 +2652,8 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      if (inputRefs) {
+        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
       }
       this.clearErrorClasses();
     }
@@ -2615,8 +2669,28 @@ export default class Component extends Element {
     // });
   }
 
+  /**
+   * Determines if the value of this component is hidden from the user as if it is coming from the server, but is
+   * protected.
+   *
+   * @return {boolean|*}
+   */
+  isValueHidden() {
+    if (!this.root || !this.root.hasOwnProperty('editing')) {
+      return false;
+    }
+    if (!this.root || !this.root.editing) {
+      return false;
+    }
+    return (this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
+  }
+
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Force valid if component is read-only
+      () => this.options.readOnly,
+      // Check to see if we are editing and if so, check component persistence.
+      () => this.isValueHidden(),
       // Force valid if component is hidden.
       () => !this.visible,
       // Force valid if component is conditionally hidden.
@@ -2754,6 +2828,10 @@ export default class Component extends Element {
   }
 
   attachLogic() {
+    // Do not attach logic during builder mode.
+    if (this.builderMode) {
+      return;
+    }
     this.logic.forEach((logic) => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
@@ -2805,7 +2883,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode) {
+    if (this.component.autofocus && !this.builderMode && !this.options.preview) {
       this.on('render', () => this.focus(), true);
     }
   }
@@ -2814,6 +2892,27 @@ export default class Component extends Element {
     if (this.refs.input && this.refs.input[0]) {
       this.refs.input[0].focus();
     }
+  }
+
+  /**
+   * Get `Formio` instance for working with files
+   */
+  get fileService() {
+    if (this.options.fileService) {
+      return this.options.fileService;
+    }
+    if (this.options.formio) {
+      return this.options.formio;
+    }
+    if (this.root && this.root.formio) {
+      return this.root.formio;
+    }
+    const formio = new Formio();
+    // If a form is loaded, then make sure to set the correct formUrl.
+    if (this.root && this.root._form && this.root._form._id) {
+      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
+    }
+    return formio;
   }
 }
 

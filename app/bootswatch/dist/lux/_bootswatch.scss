@@ -1,10 +1,10 @@
-// Lux 4.3.1
+// Lux 4.5.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Nunito+Sans:400,600" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Nunito+Sans:400,600&display=swap" !default;
 @import url($web-font-path);
 
 // Navbar ======================================================================
@@ -27,7 +27,7 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Nunito+Sans:400,600" !d
 }
 
 .bg-primary {
-  background-color: $gray-900 !important;
+  background-color: theme-color("primary") !important;
 }
 
 .bg-light {

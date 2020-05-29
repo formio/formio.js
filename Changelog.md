@@ -4,6 +4,469 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.6
+### Changed
+ - Upgrade @formio/bootstrap3 to 2.6.0
+
+## 4.10.0-rc.5
+### Added
+ - FIN 025 - Added html element into pdf builder.
+
+### Changed
+ -  `bower.json` main file in order to fix issues with formio.js used as external dependency (using `Formio` global object)
+ - PDF 40 - Fixed element's location on its adding.
+ - Fix error classes setting.
+ - FJS-958 fixed DateTime not saving input in IE11
+ 
+### Updated
+ - @babel/cli@7.10.1, @babel/core@7.10.1, @babel/plugin-proposal-class-properties@7.10.1, @babel/plugin-proposal-export-default-from@7.10.1, @babel/plugin-proposal-optional-chaining@7.10.1, @babel/polyfill@7.10.1, @babel/preset-env@7.10.1, @babel/register@7.10.1
+
+## 4.10.0-rc.4
+### Fixed
+ - Angular ZoneAware Promise issue and IE11 issue when using native promises.
+ - Type definition to use static for "use" method.
+
+## 4.10.0-rc.3
+### Fixed
+ - Fixing issues where form default values were not getting set properly. #2834
+ - Fix/uip validation error display #2831
+ - Fix localization for few labels #2829
+ - PDF 72: Fixed an issue of PDF instances duplication and messy Formio.forms
+ - FJS-951: Fixed unable to submit form with dataMap inside dataGrid/editGrid
+ - FJS-959: `EventEmitter`'s infinite loop logic
+   - Changed events amount (`loadLimit`) from 30 to 1000
+   - Changed warning message
+   - Removed logic for ignoring events when suspecting infinite loop
+   
+### Changed
+ - Split metadata setter into separate method #2832
+ - Update i18next@19.4.5, chance@1.1.6, eslint@7.1.0, fetch-mock@9.10.1, mocha@7.2.0
+
+## 4.10.0-rc.2
+### Fixed
+ - FJS-940: Fixed not match mask validation error if minute value is 00 in time component
+ - Fix (Time): made inputMask be relative to format
+ - Fix (Form/Wizard): made child forms be submitted only when Next clicked
+ - Fix (Time): required error is revealed even if value is set
+ - Fix saveComponent event not passing original component.
+ - FJS-952: Fixed data display in editGrid with chain of nested components	
+ 
+### Changed
+ - Updated eventemitter2@6.4.1
+
+## 4.10.0-rc.1
+### Fixed
+ - FJS-723: Added Entire Object option for select with resource
+ - FJS-836: Fix (Select): number values starting with zero failed being displayed in data tab
+ - FJS-907: If there is calculated value, it will override select component's value that is inactive
+ - Fix issue with flatten tabs printing
+
+### Added
+ - Add message props on submit
+ - Add unique values property to select component
+
+## 4.10.0-beta.20
+### Reverted
+ - Fix (customDefaultValue): make subForms value be set only after they were attached
+ 
+### Fixed
+ - Fix components path. (Standardize the way to find a components path)
+
+## 4.10.0-beta.19
+### Fixed
+ - FJS-903: Fixed number formatting
+ - Fixed select value if valueProperty is not set
+ - FJS-884: fixed select resource values displayed only after second click in edit tab
+ - Fix draft submissions by replacing setSubmission with id change
+ - Add translation for html element content
+ - Fix (customDefaultValue): make subForms value be set only after they were attached
+ - Fix (FormioRequest): handle 416 http code
+ - Fix visual height of display options so that they will completely show. #2804
+ - Fix day component where it was not showing label in builder settings. #2805
+
+### Changed
+ - Upgrade bootswatch@4.5.0, fetch-mock@9.9.0
+
+## 4.10.0-beta.18
+### Fixed
+ - Reverted fix for FJS-723 which caused problems with resource selections.
+
+## 4.10.0-beta.17
+### Fixed
+ - FJS-887 & FJS-869: Fix (calculated value): manually overridden value is recalculated after component is created again
+ - FJS-727: Fixed breadcrumb click logic
+ - FJS-924: fixed signature not displaying tooltip
+ - Fixing panel header colors to be white on non-default panels.
+
+## 4.10.0-beta.16
+### Added
+ - PDF 48: Added 'Fixed size' checkbox for textarea edit form
+
+### Changed
+ - Upgrade idb@5.0.3, bootstrap@4.5.0, fetch-mock@9.7.0
+ - Upgrade ace editor to 1.4.10
+ 
+### Fixed
+ - Fix validate on blur
+ - Remove pageQuery global cache
+ - PDF 65: Replaced sent component data in saveComponent by updated one to fix issue of not updating pdf element.
+ - PDF 38: Added logic to PDFBuilder to show api keys duplication error
+
+## 4.10.0-beta.15
+### Fixed
+ - Fixed EditGrid's checkData workflow
+ - Fix polyfills to not crash on server side.
+ - Fix (Wizard): page title in navigation is not updated
+ - Fix(TextArea, Input): word count is not working with editors
+ - FJS-448: Fixed initial focus disabling in preview
+ - In ReadOnly mode, the users may not have the possibility to add resource for Select components as Resource.
+ - Updated some translations in Webform
+
+## 4.10.0-beta.14
+### Fixed
+ - Adding default params to keep them out of the minified schemas.
+ - FJS 655: Added dialog window that opens up asking user if they wish to clear the data
+ - FJS 862: Fixed radio data losing when navigating between wizard pages if values are numbers
+ - PDF-63: Update condition order to get schema
+ - FJS-883: Fixed correct radio values rendering in table view if storage type Number is set
+ - VPAT-236 Changed variable types for future extension in vpat
+
+## 4.10.0-beta.13
+### Fixed
+ - VPAT-314 Removed role alert from error messages container #2734
+ - VPAT-335 Fixed currency input announcing invalid entry with any value #2734
+ - VPAT-362 Fixed axe issues for error section links #2733
+ - Encode uri before a request #2735
+
+## 4.10.0-beta.12
+### Fixed
+ - FJS-207: Fixed submission display in read only mode in tree
+ - FJS-723: Added entire object option in value property for select with resource
+ - FJS 904: Fixed display of resources with custom components in Existing Resource Fields in builder
+ - FJS-547: Fixed issue where default value could not be removed from Date/Time components.
+ - FJS 634: Modal Edit (Multiple Values): Does not show any default message like single regular component
+ - FJS 903: Fixed currency formatting on blur
+ - FJS 903: Fixed number/currency formatting in tableView according localization
+ - FJS-884: Fixed select Data Source Type dropdown doesn`t show all options if the form is not saved
+ 
+### Added
+ - Add round function to calculate value context
+
+### Changed
+ - Upgrade  i18next@19.4.4, @babel/core@7.9.6, @babel/preset-env@7.9.6, karma@5.0.4, karma-mocha@2.0.1, mocha@7.1.2, uuid@8.0.0
+
+## 4.10.0-beta.11
+### Fixed
+ - VPAT-335 Fixed currency input announcing invalid entry with any value. #2712
+ - Fixed WYSIWYG image upload not working without form URL provided. #2709
+ - FJS-133: Fixed possibility to set parent form inside nested form. #2706
+ - Fix silent errors. #2700
+ - Typo fixed in create error message. #2697
+ - FJS-884: Fixed creation of empty select options #2695
+ - FOR-2417: Check for hidden submit button in PDF. #2694
+ - FJS-884: Fixed showing stringify object in select dropdown. #2691
+ - FJS-884: Fixed zero display if there is no selected value in select component. #2690
+ - FJS-632 - Fixed an issue of data disappearance after new data grid row adding. #2688
+ - Nested form should inherit the fileService from the parent form. #2687
+
+### Changed
+ - Upgrade dompurify@2.0.10, gulp-sass@4.1.0, webpack@4.43.0, escape-string-regexp@4.0.0, marked@1.0.0
+
+## 4.10.0-beta.10
+### Fixed
+ - FJS-779: Fixed display of time icon
+ - Fixed select test fail
+ - FJS-859: removed raw data value check
+ - FJS-805: Fixed replacing multiple value by initial value on blur
+ - PDF 34 - Fixed an issue of not formatted date in pdf header
+ - Fixed select component empty value when set to multiple
+
+## 4.10.0-beta.9
+### Changed
+ - Merged v4.9.20-rc.3
+
+## 4.10.0-beta.8
+### Changed
+ - All changes v4.9.19 - v4.9.20-rc.2
+ - FJS-704: improvements and bugfixes.
+ - FJS-704: Added possibility to specify email rendering.
+
+## 4.10.0-beta.6
+### Fixed
+ - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
+### Changed
+ - All changes part of v4.9.14 through v4.9.17
+ - Upgraded autocompleter@6.0.3, core-js@3.6.5, @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0, karma@5.0.0
+
+## 4.10.0-beta.5
+### Changed
+ - Allow external modules to extend the select options easily.
+
+### Fixed
+ - Address component.
+
+## 4.10.0-beta.4
+### Changed
+ - Ensure that Formio is added to the window.
+ - FJS 836: Fix for storage type normalization in Select component.
+ - Fixing issues with the Disable on Invalid for button components.
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+ - PDF 21 - Focus on the first invalid field on form submission 
+ - Fix ace editor error
+ - Fix api key unique err
+ - Add options for values in Select configuration.
+ - Major EditGrid, DataGrid, and Container refactoring.
+
+## 4.10.0-beta.3
+### Changed
+ - All changes from 4.9.7 - 4.9.9
+ 
+### Fixed
+ - Issues with logic messing up form builder.
+ - EditGrid problems where data would get in a detached state.
+ - Fixed unstranslated component label in Webform
+ - Fixed calculated value doesn`t work when editing data with manual override in true position
+
+## 4.9.20
+### Changed
+ - No changes. Released 4.9.20-rc.4
+
+## 4.9.20-rc.4
+### Fixed
+ - Problem where PDF components could not get deleted from the form.
+
+## 4.9.20-rc.3
+### Fixed
+ - Issue introduced with rc.2 where the builder components would not show up.
+
+## 4.9.20-rc.2
+### Fixed
+ - FJS-815 - Fixed multiple mask selector disabling when the component is disabled #2667
+ - Improve Select component itemTemplate check #2668
+ - FJS-848 - Fixed adding and immediate deleting wizard page is not saved #2670
+ - PDF 49 - Fixed issues with the PDF form would double submit. #2671
+ - FJS 878 - Fixed refresh issues when building PDF forms. #2671
+ - Fixing issue where select value would not show up if lazyload and html5 widget is enabled.
+
+## 4.9.20-rc.1
+### Changed
+ - Added message to focus on pdf form component
+ - PDF 21 - Focus on the first invalid field on form submission
+ - FJS-811 - fixed possibility to add tags that exceed maxTags limit
+
+## 4.9.19
+### Changed
+ - No changes. 4.9.19-rc.3 production release.
+
+## 4.9.19-rc.3
+### Fixed
+ - Fixing the PDF builder and form to not reset the forms when it changes.
+ - Changed pdf button to make it highlighted on form state changing
+ - FJS 858: Fixed no zeros in currency component when start editing
+ - Fix focus on invalid components
+ 
+### Changed
+ - Upgrade i18next@19.4.2, ismobilejs@1.1.1, raw-loader@4.0.1
+
+## 4.9.19-rc.2
+### Added
+ - A noNewEdit option to keep the edit modal from showing up when a new component is added.
+
+## 4.9.19-rc.1
+### Fixed
+ - Refresh issues with the PDF builder.
+ - Form builder demo to chage the JSON form correctly.
+ - Fixing erroneous spaces causing crashes in Chromium 
+ - Fixied memory leak by stopping video stream on destroy
+ - Don't replace choices when adding not found values
+ - FJS-844 implement basic fix for checkbox type radio submit values in tableView
+ - 'Add Another' button isn't translated with leading space
+
+### Changed
+ - Don't skip validation for disabled components
+ - Upgrade i18next@19.4.1, ismobilejs@1.1.0, jquery@3.5.0, dialog-polyfill@0.5.1
+
+### Added
+ - Add tests for the findComponent method, comment code
+ - Add context object while emit render event
+
+## 4.9.18
+### Changed
+ - Allow external modules to extend the Select options.
+ - Upgrade core-js@3.6.5, karma@5.0.1
+
+## 4.9.17
+### Fixed
+ - Issue where error would throw for some imports that would say "global" is not defined.
+
+## 4.9.16
+### Fixed
+ - Import issues with including this library in other libraries.
+ - Problem where infinite loops could occur with non-input components.
+
+### Added
+ - A way to override the alert classes
+ - A way to determine the "size" provided by templates.
+ 
+### Changed
+ - Upgraded @babel/preset-env@7.9.5, sinon@9.0.2, i18next@19.4.0, escape-string-regexp@3.0.0
+
+## 4.9.15
+### Fixed
+ - Problem where the ACE editor would use the wrong mode.
+ - FJS 850: DataGrid not redrawing after `setValue` with smaller amount of rows than it had
+
+## 4.9.14
+### Fixed
+ - Ensure the Formio object is attached to window to fix sites that include other modules systems still able to use Formio globally.
+
+### Changed
+ - Add options for values for Select component configurations.
+
+## 4.9.13
+### Fixed
+ - Issue with disableOnInvalid for buttons and added a unit test to ensure correct behavior in the future.
+ - PDF21: Focus on the first invalid field on form submission
+ - PDF20: Update object with iframe position and window scroll position and IE11 compatibility
+
+## 4.9.12
+### Changed
+ - Reverted https://github.com/formio/formio.js/pull/2049 for reasons described in the PR.
+
+## 4.9.11
+### Changed
+ - Upgrade uuid@7.0.3
+
+### Fixed
+ - Problems where errors would throw in ACE editor regarding unknown theme.
+ - Issues where EditGrid cancel would not reset the component contexts.
+ - The export of the formiojs module to allow other libraries to import from the compiled dist file.
+
+## 4.9.10
+### Changed
+ - Update idb@5.0.2, jsdom@16.2.2, eventemitter2@6.3.1, ejs-loader@0.3.6
+
+### Fixed
+ - Issues with logic messing up form builder.
+ - EditGrid problems where data would get in a detached state.
+ - Fixed unstranslated component label in Webform
+ - Fixed calculated value doesn`t work when editing data with manual override in true position
+
+## 4.9.9
+### Fixed
+ - Issue where checkboxes configured as Radio input would still add checkbox key to data.
+
+### Added
+ - An xs column size.
+ 
+### Changed
+ - Upgrade i18next@19.3.4
+
+## 4.9.8
+### Fixed
+ - Issues where the setValue of nested components would not return the correct changed status.
+ - Issues where read only forms would not apply conditions correctly.
+
+## 4.9.7
+### Fixed
+ - UIP-159: Fixing the UUID import.
+ - T826: Fix nested forms never submitting.
+
+## 4.9.6
+### Fixed
+ - GS-PDF27: Add DOMTokenList polyfill to resolve submit issues with IE11.
+
+### Added
+ - UIP-157: Feat(Columns): add option for grid classes prefixes
+
+## 4.9.5
+### Changed
+ - The change flow logic to be more isolated and component specific.
+
+### Fixed
+ - Issue with Component constructor not executing conditionals correctly.
+
+## 4.9.4
+### Fixed
+ - Issues with the refresh on property.
+ - Fixed issue with loss of focus on Cancel button during Wizard cancel event.
+
+### Changed
+ - Upgrade eventemitter2@6.2.1, fetch-mock@9.3.0
+
+## 4.9.3
+### Fixed
+ - Infinite loop issues that could arise within the renderer.
+
+## 4.9.2
+### Fixed
+ - Issues where the File component would not always show the file lists.
+ 
+### Changed
+ - Upgrade eventemitter2@6.2.0
+
+## 4.9.1
+### Added
+ - A way for the child pdf to retrieve the parent position information.
+ 
+### Changed
+ - Upgrade @babel/core@7.9.0, @babel/plugin-proposal-optional-chaining@7.9.0, @babel/preset-env@7.9.0, @babel/register@7.9.0, babel-loader@8.1.0
+
+## 4.9.0
+### Fixed
+ - A few cases where flags would not get passed in and would cause errors to throw.
+
+## 4.9.0-rc.12
+### Fixed
+ - Problems where the changed flag was not getting triggered and handled properly.
+ - Issues with infinite loops triggered by TextArea w/ ACE editor in JSON mode.
+ - Fixed the redraw on property to no store value references.
+ - Fixing how the pdf iframe-change event is handled.
+ - Fixing containers so that they will ensure the child components trigger their change events correctly.
+
+### Removed
+ - Aggressive error navigation where it would throw cursor to top of page when correcting errors. Now you just click the error to take you to the control with the error.
+
+## 4.9.0-rc.11
+### Fixed
+ - Problems where Number components would not get reset properly.
+ - Issues where wizards would always show errors when navigating.
+ 
+### Changed
+ - Revert changes to iframe where src was replaced with blob file hosting. It causes too many problems with different browsers and CSP issues.
+ - Upgrade i18next@19.3.3, fetch-mock@9.2.1, gulp-clean-css@4.3.0, file-loader@6.0.0
+
+## 4.9.0-rc.10
+### Fixed
+ - Ensure no infinite loops are triggered in build mode by not checking data.
+
+## 4.9.0-rc.9
+### Changed
+ - The PDF rendering to use a local PDF rendering system instead of iframe with external source.
+
+### Fixed
+ - Fixed $ entered to the currency component disappears after submit and shows invalid value
+ - Fixed calculated value is not set after validation on submit if 'Allow override calculated value' is true
+
+## 4.9.0-rc.8
+### Fixed
+ - Issues with validations.
+
+## 4.9.0-rc.7
+### Fixed
+ - Fixed url interpolation in file upload
+ - Fixed repeated appearance of selected values in multiselect and appearance of selected values in dropdown when searching
+ - Fixed problem where pristine was not set before the checkData method was called when a component was updated.
+ - Fixing issues with noValidate flag and setSubmission.
+ - Problems where the parentDisabled flag would not get updated to contain the current parent disabled state.
+ - Fixing the noeval interpolation to replace all instances within a string.
+
+## 4.9.0-rc.6
+### Fixed
+ - Problems where forms with default values would get overridden when setting submission with empty object.
+ - Fix clear on hide does not always work
+
 ## 4.9.0-rc.5
 ### Fixed
  - Fixed an issue with horizontal scroll added when using RTL interface 
