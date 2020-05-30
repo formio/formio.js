@@ -100,7 +100,7 @@ export default class Alert {
 
   focusOnComponent(keyOrPath) {
     if (keyOrPath) {
-      const component = this.parentComponent.getComponent(keyOrPath);
+      const component = this.parentComponent.root && this.parentComponent.root.getComponent(keyOrPath);
       if (component) {
         component.focus();
       }
