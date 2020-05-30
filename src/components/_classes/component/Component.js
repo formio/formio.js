@@ -1795,11 +1795,11 @@ export default class Component extends Element {
       if (dirty && this.options.highlightErrors) {
         this.addClass(this.element, this.getMessageClass('warning'));
       }
-      }
+    }
     else if (hasInfos) {
       if (dirty && this.options.highlightErrors) {
         this.addClass(this.element, this.getMessageClass('info'));
-    }
+      }
     }
   }
 
@@ -2585,7 +2585,7 @@ export default class Component extends Element {
     } = (updatedContext.engineOptions ?? this.engineOptions);
 
     if (cachable) {
-    this.conditionsCache[name] = result;
+      this.conditionsCache[name] = result;
     }
 
     return result;
@@ -2633,8 +2633,8 @@ export default class Component extends Element {
 
     return operatorInstance.execute(
       _.mapValues(args, ({
-      valueSource,
-      [`${valueSource}Input`]: input,
+        valueSource,
+        [`${valueSource}Input`]: input,
       }) => {
         const evaluationContext = {
           valueSource,
@@ -2725,7 +2725,7 @@ export default class Component extends Element {
     } = (updatedContext.engineOptions ?? this.engineOptions);
 
     if (cachable) {
-    this.variablesCache[name] = result;
+      this.variablesCache[name] = result;
     }
 
     return result;
@@ -2750,8 +2750,8 @@ export default class Component extends Element {
     return transformerInstance.transform(
       (Transformer.lazyValueEvaluation ? valueEvaluator : valueEvaluator()),
       _.mapValues(args, ({
-      valueSource,
-      [`${valueSource}Input`]: input,
+        valueSource,
+        [`${valueSource}Input`]: input,
       }) => {
         const evaluationContext = {
           valueSource,

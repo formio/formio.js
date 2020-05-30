@@ -390,14 +390,14 @@ const EditFormUtils = {
     excludeVariables = [],
   } = {}) {
     const conditional = {
-              json: {
-                '===': [
-                  {
-                    var: 'row.name',
-                  },
-                  name,
-                ],
-              },
+      json: {
+        '===': [
+          {
+            var: 'row.name',
+          },
+          name,
+        ],
+      },
     };
 
     return (
