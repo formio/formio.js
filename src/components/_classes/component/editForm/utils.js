@@ -620,6 +620,7 @@ const EditFormUtils = {
           `<div class="row">
             <div class="col-sm-10">{{ row.name ? row.name + " (" + row.key + ")" : row.key }}</div>
             <div class="col-sm-2">
+              <button class="btn btn-default btn-light btn-sm cloneRow">Clone</button>
               <button class="btn btn-default btn-light btn-sm editRow">Edit</button>
               <button class="btn btn-danger btn-sm removeRow">Delete</button>
             </div>
@@ -741,6 +742,7 @@ const EditFormUtils = {
           `<div class="row">
             <div class="col-sm-10">{{ row.name ? row.name + " (" + row.key + ")" : row.key }}</div>
             <div class="col-sm-2">
+              <button class="btn btn-default btn-light btn-sm cloneRow">Clone</button>
               <button class="btn btn-default btn-light btn-sm editRow">Edit</button>
               <button class="btn btn-danger btn-sm removeRow">Delete</button>
             </div>

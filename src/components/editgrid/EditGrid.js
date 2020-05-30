@@ -266,6 +266,11 @@ export default class EditGridComponent extends NestedArrayComponent {
         // Attach edit and remove button events.
         [
           {
+            className: 'cloneRow',
+            event: 'click',
+            action: () => this.cloneRow(rowIndex),
+          },
+          {
             className: 'removeRow',
             event: 'click',
             action: () => this.removeRow(rowIndex),
@@ -299,21 +304,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     return super.attach(element);
   }
 
-  flattenRowDataValue(dataValue) {
-    const flattened = {};
-
-    Object.keys(dataValue).forEach((key) => {
-      if (_.isObject(dataValue[key]) && !_.isNil(dataValue[key])) {
-        Object.assign(flattened, this.flattenRowDataValue(dataValue[key]));
-      }
-      else {
-        flattened[key] = dataValue[key];
-      }
-    });
-
-    return flattened;
-  }
-
   renderRow(row, rowIndex) {
     const dataValue = this.dataValue || [];
     if (this.isOpen(row)) {
@@ -326,7 +316,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return this.renderString(
         rowTemplate,
         {
-          row: this.flattenRowDataValue(dataValue[rowIndex]) || {},
+          row: dataValue[rowIndex] || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
@@ -380,16 +370,15 @@ export default class EditGridComponent extends NestedArrayComponent {
     components.forEach((comp) => comp.destroy());
   }
 
-  addRow() {
+  addRow(data = {}) {
     if (this.options.readOnly) {
       return;
     }
 
-    const dataObj = {};
     const rowIndex = this.editRows.length;
     const editRow = {
-      components: this.createRowComponents(dataObj, rowIndex),
-      data: dataObj,
+      components: this.createRowComponents(data, rowIndex),
+      data,
       state: EditRowState.New,
       backup: null,
       error: null,
@@ -397,7 +386,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows.push(editRow);
 
     if (this.inlineEditMode) {
-      this.dataValue.push(dataObj);
+      this.dataValue.push(data);
       this.triggerChange();
     }
     this.emit('editGridAddRow', {
@@ -412,6 +401,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.redraw();
     }
     return editRow;
+  }
+
+  cloneRow(rowIndex) {
+    const clonedRow = this.editRows[rowIndex];
+    const data = _.cloneDeep(clonedRow.data);
+    return this.addRow(data);
   }
 
   addRowModal(rowIndex) {
@@ -720,6 +715,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         };
       }
     });
+
     let { length: dataLength } = this.dataValue;
 
     // If the last row is a new row, then do not remove it.
