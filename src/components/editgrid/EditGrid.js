@@ -25,6 +25,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       defaultOpen: false,
       openWhenEmpty: false,
       modal: false,
+      // TODO: revisit solution with 'lazyComponentsInstantiation'.
+      lazyComponentsInstantiation: false,
       components: [],
       inlineEdit: false,
       templates: {
@@ -166,6 +168,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
 
+  get lazyComponentsInstantiation() {
+    return this.component.lazyComponentsInstantiation ?? false;
+  }
+
   init() {
     if (this.builderMode) {
       this.editRows = [];
@@ -192,7 +198,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     else {
       this.editRows = dataValue.map((row, rowIndex) => ({
-        components: this.createRowComponents(row, rowIndex),
+        components: this.lazyComponentsInstantiation ? [] : this.createRowComponents(row, rowIndex),
         data: row,
         state: EditRowState.Saved,
         backup: null,
@@ -377,7 +383,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const rowIndex = this.editRows.length;
     const editRow = {
-      components: this.createRowComponents(data, rowIndex),
+      components: this.lazyComponentsInstantiation ? [] : this.createRowComponents(data, rowIndex),
       data,
       state: EditRowState.New,
       backup: null,
@@ -430,6 +436,11 @@ export default class EditGridComponent extends NestedArrayComponent {
   editRow(rowIndex) {
     const editRow = this.editRows[rowIndex];
     editRow.state = EditRowState.Editing;
+
+    if (this.lazyComponentsInstantiation && (editRow.components.length === 0)) {
+      editRow.components = this.createRowComponents(editRow.data, rowIndex);
+    }
+
     const dataSnapshot = fastCloneDeep(editRow.data);
 
     if (this.inlineEditMode) {
@@ -707,7 +718,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
       else {
         this.editRows[rowIndex] = {
-          components: this.createRowComponents(row, rowIndex),
+          components: this.lazyComponentsInstantiation ? [] : this.createRowComponents(row, rowIndex),
           data: row,
           state: EditRowState.Saved,
           backup: null,

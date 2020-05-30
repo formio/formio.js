@@ -629,6 +629,7 @@ const EditFormUtils = {
       },
       addAnother: 'Add Variable',
       saveRow: 'Save Variable',
+      lazyComponentsInstantiation: true,
       components: [
         {
           type: 'textfield',
@@ -751,6 +752,7 @@ const EditFormUtils = {
       },
       addAnother: 'Add Condition',
       saveRow: 'Save Condition',
+      lazyComponentsInstantiation: true,
       components: [
         {
           type: 'textfield',
