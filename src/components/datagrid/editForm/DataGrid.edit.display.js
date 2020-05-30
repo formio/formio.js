@@ -144,4 +144,28 @@ export default [
     weight: 442,
     conditional: { json: { var: 'data.enableRowGroups' } },
   },
+  {
+    type: 'checkbox',
+    label: 'Condensed',
+    key: 'condensed',
+    tooltip: 'Condense the size of the table.',
+    weight: 1090,
+    input: true,
+  },
+  {
+    type: 'checkbox',
+    label: 'Hover',
+    key: 'hover',
+    tooltip: 'Highlight a row on hover.',
+    weight: 1091,
+    input: true,
+  },
+  {
+    type: 'checkbox',
+    label: 'Striped',
+    key: 'striped',
+    tooltip: 'This will stripe the table if checked.',
+    weight: 1092,
+    input: true,
+  },
 ];
