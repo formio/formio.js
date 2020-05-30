@@ -1037,12 +1037,14 @@ export default class Webform extends NestedDataComponent {
       }
       return;
     }
+
     if (this.options.noAlerts) {
       if (!message) {
         this.emit('error', false);
       }
       return;
     }
+
     if (this.alert) {
       try {
         if (this.refs.errorRef && this.refs.errorRef.length) {

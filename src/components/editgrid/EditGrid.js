@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
+import Alert from '../alert/Alert';
 import { fastCloneDeep, Evaluator } from '../../utils/utils';
 import templates from './templates';
 
@@ -420,11 +421,18 @@ export default class EditGridComponent extends NestedArrayComponent {
     const { components } = editRow;
     modalContent.innerHTML = this.renderComponents(components);
     const dialog = this.component.modal ? this.createModal(modalContent) : undefined;
+    if (this.alert) {
+      this.alert.clear();
+      this.alert = null;
+    }
+    this.alert = new Alert(dialog.refs.dialogContents, this);
 
     this.addEventListener(dialog, 'close', () => {
       if (!this.validateRow(editRow, true)) {
         this.removeRow(rowIndex);
       }
+      this.alert.clear();
+      this.alert = null;
     });
 
     dialog.refs.dialogContents.appendChild(this.ce('button', {
@@ -435,7 +443,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           this.saveRow(rowIndex);
         }
         else {
-          this._currentForm.showErrors(null, false, dialog.refs.dialogContents, editRow.errors);
+          this.alert.showErrors(editRow.errors, false);
         }
       },
     }, this.component.saveRow || 'Save'));
