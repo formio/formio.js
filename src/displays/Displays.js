@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import pdf from '../PDF';
-import webform from '../Webform';
-import wizard from '../Wizard';
+import pdf from './pdf/PDF';
+import webform from './webform/Webform';
+import wizard from './wizard/Wizard';
 
 export default class Displays {
   static displays = {

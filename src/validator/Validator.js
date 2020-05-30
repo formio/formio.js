@@ -309,9 +309,9 @@ class ValidationChecker {
           return component.component.minSelectedCountMessage
             ? component.component.minSelectedCountMessage
             : component.t(component.errorMessage('minSelectedCount'), {
-                minCount: parseFloat(setting),
-                data: component.data
-              });
+              minCount: parseFloat(setting),
+              data: component.data
+            });
         },
         check(component, setting, value) {
           const min = parseFloat(setting);
@@ -335,9 +335,9 @@ class ValidationChecker {
           return component.component.maxSelectedCountMessage
             ? component.component.maxSelectedCountMessage
             : component.t(component.errorMessage('maxSelectedCount'), {
-                minCount: parseFloat(setting),
-                data: component.data
-              });
+              minCount: parseFloat(setting),
+              data: component.data
+            });
         },
         check(component, setting, value) {
           const max = parseFloat(setting);
@@ -585,7 +585,7 @@ class ValidationChecker {
 
           inputMask = inputMask ? getInputMask(inputMask) : null;
 
-          if (value && inputMask) {
+          if (value && inputMask && !component.skipMaskValidation) {
             return matchInputMask(value, inputMask);
           }
 

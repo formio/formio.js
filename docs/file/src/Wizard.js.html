@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -243,7 +244,12 @@
 import _ from &apos;lodash&apos;;
 import Webform from &apos;./Webform&apos;;
 import Formio from &apos;./Formio&apos;;
-import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from &apos;./utils/utils&apos;;
+import {
+  fastCloneDeep,
+  checkCondition,
+  firstNonNil,
+  uniqueKey
+} from &apos;./utils/utils&apos;;
 
 export default class Wizard extends Webform {
   /**
@@ -269,6 +275,7 @@ export default class Wizard extends Webform {
     this.components = [];
     this.originalComponents = [];
     this.page = 0;
+    this.currentPanel = null;
     this.currentNextPage = 0;
     this._seenPages = [0];
   }
@@ -358,13 +365,48 @@ export default class Wizard extends Webform {
     };
   }
 
+  prepareNavigationSettings(ctx) {
+    const currentPanel = this.currentPanel;
+
+    if (currentPanel &amp;&amp; currentPanel.buttonSettings) {
+      Object.keys(currentPanel.buttonSettings).forEach(() =&gt; {
+        Object.keys(ctx.buttons).forEach(key =&gt; {
+          if (typeof currentPanel.buttonSettings[key] !== &apos;undefined&apos; &amp;&amp; !currentPanel.buttonSettings[key]) {
+            ctx.buttons[key] = null;
+          }
+        });
+      });
+    }
+
+    return this.renderTemplate(&apos;wizardNav&apos;, ctx);
+  }
+
+  prepareHeaderSettings(ctx) {
+    if (this.currentPanel &amp;&amp; this.currentPanel.breadcrumb === &apos;none&apos;) {
+      return null;
+    }
+    return this.renderTemplate(&apos;wizardHeader&apos;, ctx);
+  }
+
   render() {
     const ctx = this.renderContext;
+
+    if (this.component.key) {
+      ctx.panels.map(panel =&gt; {
+        if (panel.key === this.component.key) {
+          this.currentPanel = panel;
+        }
+      });
+    }
+
+    const wizardNav = this.prepareNavigationSettings(ctx);
+    const wizardHeader = this.prepareHeaderSettings(ctx);
+
     return this.renderTemplate(&apos;wizard&apos;, {
       ...ctx,
       className: super.getClassName(),
-      wizardHeader: this.renderTemplate(&apos;wizardHeader&apos;, ctx),
-      wizardNav: this.renderTemplate(&apos;wizardNav&apos;, ctx),
+      wizardHeader,
+      wizardNav,
       components: this.renderComponents([
         ...this.prefixComps,
         ...this.currentPage.components,
@@ -428,7 +470,14 @@ export default class Wizard extends Webform {
   }
 
   isBreadcrumbClickable() {
-    return _.get(this.options, &apos;breadcrumbSettings.clickable&apos;, true);
+    let currentPage = null;
+    this.pages.map(page =&gt; {
+      if (_.isEqual(this.currentPage.component, page.component)) {
+        currentPage = page;
+      }
+    });
+
+    return _.get(currentPage.component, &apos;breadcrumbClickable&apos;, true);
   }
 
   attachNav() {
@@ -841,6 +890,7 @@ export default class Wizard extends Webform {
 
   focusOnComponent(key) {
     let pageIndex = 0;
+
     const [page] = this.pages.filter((page, index) =&gt; {
       if (page.getComponent(key)) {
         pageIndex = index;

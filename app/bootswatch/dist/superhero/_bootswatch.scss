@@ -1,10 +1,10 @@
-// Superhero 4.3.1
+// Superhero 4.5.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Lato:300,400,700" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" !default;
 @import url($web-font-path);
 
 // Navbar ======================================================================
@@ -241,6 +241,8 @@ label,
 }
 
 .close {
+  color: #fff;
+  text-shadow: none;
   opacity: 0.5;
 
   &:hover,
@@ -264,16 +266,5 @@ label,
   &-header,
   &-footer {
     background-color: $table-hover-bg;
-
-    .close {
-      color: #fff;
-      text-shadow: none;
-      opacity: 0.5;
-
-      &:hover,
-      &:focus {
-        opacity: 1;
-      }
-    }
   }
 }

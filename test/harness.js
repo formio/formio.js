@@ -4,8 +4,8 @@ import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import { expect } from 'chai';
 
-import i18Defaults from '../lib/i18n';
-import WebformBuilder from '../lib/WebformBuilder';
+import i18Defaults from '../lib/displays/webform/i18n';
+import WebformBuilder from '../lib/builders/webform/WebformBuilder';
 import AllComponents from '../lib/components';
 import Components from '../lib/components/Components';
 
@@ -94,13 +94,17 @@ const Harness = {
       bubbles: true,
       cancelable: true
     });
-    groupBtn.dispatchEvent(clickEvent);
+    if (groupBtn) {
+      groupBtn.dispatchEvent(clickEvent);
+    }
     let component = formBuilder.element.querySelector(`span[data-type='${type}']`);
-    component = component && component.cloneNode(true);
-    const element = formBuilder.element;
-    element.appendChild(component);
-    builderGroup = document.getElementById(`group-container-${groupName}`);
-    formBuilder.onDrop(component, element, builderGroup);
+    if (component) {
+      component = component && component.cloneNode(true);
+      const element = formBuilder.element;
+      element.appendChild(component);
+      builderGroup = document.getElementById(`group-container-${groupName}`);
+      formBuilder.onDrop(component, element, builderGroup);
+    }
     return formBuilder;
   },
 
@@ -195,7 +199,7 @@ const Harness = {
     if (typeof query === 'string') {
       element = this.testElement(component, query, true);
     }
-    return element.dispatchEvent(clickEvent);
+    return element ? element.dispatchEvent(clickEvent) : null;
   },
   testElements(component, query, number) {
     const elements = component.element.querySelectorAll(query);

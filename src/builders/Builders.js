@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import pdf from '../PDFBuilder';
-import webform from '../WebformBuilder';
-import wizard from '../WizardBuilder';
+import pdf from './pdf/PDFBuilder';
+import webform from './webform/WebformBuilder';
+import wizard from './wizard/WizardBuilder';
 
 export default class Builders {
   static builders = {

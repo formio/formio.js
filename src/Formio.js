@@ -808,7 +808,7 @@ export default class Formio {
     }
 
     // Generate a cachekey.
-    const cacheKey = btoa(url);
+    const cacheKey = btoa(encodeURI(url));
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
@@ -859,6 +859,9 @@ export default class Formio {
         }
         else if (response.status === 401) {
           Formio.events.emit('formio.unauthorized', response.body);
+        }
+        else if (response.status === 416) {
+          Formio.events.emit('formio.rangeIsNotSatisfiable', response.body);
         }
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get('content-type').includes('application/json')
@@ -1251,31 +1254,27 @@ export default class Formio {
   }
 
   static pageQuery() {
-    if (Formio._pageQuery) {
-      return Formio._pageQuery;
-    }
-
-    Formio._pageQuery = {};
-    Formio._pageQuery.paths = [];
+    const pageQuery = {};
+    pageQuery.paths = [];
     const hashes = location.hash.substr(1).replace(/\?/g, '&').split('&');
     let parts = [];
     location.search.substr(1).split('&').forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
       }
     });
 
     hashes.forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
       }
       else if (item.indexOf('/') === 0) {
-        Formio._pageQuery.paths = item.substr(1).split('/');
+        pageQuery.paths = item.substr(1).split('/');
       }
     });
-    return Formio._pageQuery;
+    return pageQuery;
   }
 
   static oAuthCurrentUser(formio, token) {

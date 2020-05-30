@@ -152,6 +152,9 @@ export default class NumberComponent extends Input {
   }
 
   parseValue(input) {
+    if (typeof input === 'string') {
+      input = input.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
+    }
     let value = parseFloat(input);
 
     if (!_.isNaN(value)) {
@@ -184,7 +187,13 @@ export default class NumberComponent extends Input {
   }
 
   getMaskedValue(value) {
-    return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
+    value = value === null ? '0' : value.toString();
+
+    if (value.includes('.') && '.'!== this.decimalSeparator) {
+      value = value.replace('.', this.decimalSeparator);
+    }
+
+    return conformToMask(this.formatValue(value), this.numberMask).conformedValue;
   }
 
   getValueAsString(value, options) {

@@ -216,6 +216,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
@@ -274,6 +275,7 @@ export default class WebformBuilder extends Component {
 
     this.builderHeight = 0;
     this.schemas = {};
+    this.repeatablePaths = [];
 
     this.sideBarScroll = _.get(this.options, &apos;sideBarScroll&apos;, true);
     this.sideBarScrollOffset = _.get(this.options, &apos;sideBarScrollOffset&apos;, 0);
@@ -610,7 +612,9 @@ export default class WebformBuilder extends Component {
 
         subgroup.componentOrder.push(component.key);
         subgroup.components[component.key] = _.merge(
-          fastCloneDeep(Components.components[component.type].builderInfo),
+          fastCloneDeep(Components.components[component.type]
+            ? Components.components[component.type].builderInfo
+            : Components.components[&apos;unknown&apos;].builderInfo),
           {
             key: component.key,
             title: componentName,
@@ -1045,8 +1049,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() =&gt; {
-      this.emit(&apos;addComponent&apos;, info, parent, path, index, isNew);
-      if (!isNew) {
+      this.emit(&apos;addComponent&apos;, info, parent, path, index, isNew &amp;&amp; !this.options.noNewEdit);
+      if (!isNew || this.options.noNewEdit) {
         this.emit(&apos;change&apos;, this.form);
       }
     });
@@ -1220,9 +1224,10 @@ export default class WebformBuilder extends Component {
     this.emit(&apos;updateComponent&apos;, component);
   }
 
-  highlightInvalidComponents() {
+  findRepeatablePaths() {
     const repeatablePaths = [];
     const keys = new Map();
+
     eachComponent(this.form.components, (comp, path) =&gt; {
       if (!comp.key) {
         return;
@@ -1240,6 +1245,12 @@ export default class WebformBuilder extends Component {
         keys.set(comp.key, [path]);
       }
     });
+
+    return repeatablePaths;
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
 
     eachComponent(this.webform.getComponents(), (comp, path) =&gt; {
       if (repeatablePaths.includes(path)) {
@@ -1262,7 +1273,7 @@ export default class WebformBuilder extends Component {
     this.dialog.close();
     const path = parentContainer ? this.getComponentsPath(component, parentComponent.component) : &apos;&apos;;
     if (!original) {
-      original = parent.formioContainer.find((comp) =&gt; comp.key === component.key);
+      original = parent.formioContainer.find((comp) =&gt; comp.id === component.id);
     }
     const index = parentContainer ? parentContainer.indexOf(original) : 0;
     if (index !== -1) {
@@ -1274,6 +1285,7 @@ export default class WebformBuilder extends Component {
           comp = component;
         }
       });
+      const originalComp = comp.component;
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
@@ -1285,10 +1297,10 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() =&gt; {
-        const schema = comp ? comp.schema : (parentContainer ? parentContainer[index] : []);
+        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
         this.emit(&apos;saveComponent&apos;,
           schema,
-          component,
+          originalComp,
           parentComponent.schema,
           path,
           index,
@@ -1453,9 +1465,9 @@ export default class WebformBuilder extends Component {
     });
 
     const dialogClose = () =&gt; {
-      this.editForm.destroy();
+      this.editForm.destroy(true);
       if (this.preview) {
-        this.preview.destroy();
+        this.preview.destroy(true);
         this.preview = null;
       }
       if (isNew &amp;&amp; !saved) {
@@ -1546,11 +1558,11 @@ export default class WebformBuilder extends Component {
     return super.init();
   }
 
-  destroy() {
+  destroy(deleteFromGlobal) {
     if (this.webform.initialized) {
-      this.webform.destroy();
+      this.webform.destroy(deleteFromGlobal);
     }
-    super.destroy();
+    super.destroy(deleteFromGlobal);
   }
 
   addBuilderGroup(name, group) {

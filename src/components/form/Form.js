@@ -2,7 +2,12 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import EventEmitter from 'eventemitter2';
 import NativePromise from 'native-promise-only';
-import { isMongoId, eachComponent } from '../../utils/utils';
+import {
+  isMongoId,
+  eachComponent,
+  getStringFromComponentPath,
+  getArrayFromComponentPath
+} from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
@@ -38,6 +43,7 @@ export default class FormComponent extends Component {
       settings: this.component.settings,
       components: this.component.components
     };
+    this.valueChanged = false;
     this.subForm = null;
     this.formSrc = '';
     if (this.component.src) {
@@ -87,6 +93,8 @@ export default class FormComponent extends Component {
     if (this.component.revision || this.component.revision === 0) {
       this.formSrc += `/v/${this.component.revision}`;
     }
+
+    return this.createSubForm();
   }
 
   get dataReady() {
@@ -110,7 +118,24 @@ export default class FormComponent extends Component {
     return this.subFormReady || NativePromise.resolve();
   }
 
+  getComponent(path, fn) {
+    path = getArrayFromComponentPath(path);
+    if (path[0] === 'data') {
+      path.shift();
+    }
+    const originalPathStr = `${this.path}.data.${getStringFromComponentPath(path)}`;
+    if (this.subForm) {
+      return this.subForm.getComponent(path, fn, originalPathStr);
+    }
+  }
+
   getSubOptions(options = {}) {
+    options.parentPath = `${this.path}.data.`;
+    options.events = this.createEmitter();
+
+    // Make sure to not show the submit button in wizards in the nested forms.
+    _.set(options, 'buttonSettings.showSubmit', false);
+
     if (!this.options) {
       return options;
     }
@@ -153,10 +178,6 @@ export default class FormComponent extends Component {
     if (this.options.fileService) {
       options.fileService = this.options.fileService;
     }
-    options.events = this.createEmitter();
-
-    // Make sure to not show the submit button in wizards in the nested forms.
-    _.set(options, 'buttonSettings.showSubmit', false);
     return options;
   }
 
@@ -194,20 +215,24 @@ export default class FormComponent extends Component {
       return super.attach(element);
     }
     return super.attach(element)
-      .then(() => this.createSubForm())
       .then(() => {
-        this.empty(element);
-        if (this.options.builder) {
-          this.setContent(element, this.ce('div', {
-            class: 'text-muted text-center p-2'
-          }, this.text(this.formObj.title)));
-          return;
-        }
+        return this.subFormReady.then(() => {
+          this.empty(element);
+          if (this.options.builder) {
+            this.setContent(element, this.ce('div', {
+              class: 'text-muted text-center p-2'
+            }, this.text(this.formObj.title)));
+            return;
+          }
 
-        this.setContent(element, this.render());
-        if (this.subForm) {
-          this.subForm.attach(element);
-        }
+          this.setContent(element, this.render());
+          if (this.subForm) {
+            this.subForm.attach(element);
+            if (!this.valueChanged) {
+              this.setDefaultValue();
+            }
+          }
+        });
       });
   }
 
@@ -303,6 +328,7 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.restoreValue();
+        this.valueChanged = false;
         return this.subForm;
       });
     });
@@ -408,8 +434,7 @@ export default class FormComponent extends Component {
   submitSubForm(rejectOnError) {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
-      const subFormReady = this.subFormReady || this.createSubForm();
-      return subFormReady.then(() => {
+      return this.subFormReady.then(() => {
         if (!this.subForm) {
           return this.dataValue;
         }
@@ -436,6 +461,10 @@ export default class FormComponent extends Component {
    * Submit the form before the next page is triggered.
    */
   beforePage(next) {
+    // Should not submit child forms if we are going to the previous page
+    if (!next) {
+      return super.beforePage(next);
+    }
     return this.submitSubForm(true).then(() => super.beforePage(next));
   }
 
@@ -467,6 +496,7 @@ export default class FormComponent extends Component {
 
   setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
+    this.valueChanged = true;
     if (this.subForm) {
       if (
         submission &&
@@ -511,8 +541,21 @@ export default class FormComponent extends Component {
   }
 
   set visible(value) {
-    super.visible = value;
-    this.updateSubFormVisibility();
+    if (this._visible !== value) {
+      this._visible = value;
+      this.clearOnHide();
+      // Form doesn't load if hidden. If it becomes visible, create the form.
+      if (!this.subForm && value) {
+        this.createSubForm();
+        this.subFormReady.then(() => {
+          this.updateSubFormVisibility();
+        });
+        this.redraw();
+        return;
+      }
+      this.updateSubFormVisibility();
+      this.redraw();
+    }
   }
 
   get parentVisible() {
@@ -520,8 +563,21 @@ export default class FormComponent extends Component {
   }
 
   set parentVisible(value) {
-    super.parentVisible = value;
-    this.updateSubFormVisibility();
+    if (this._parentVisible !== value) {
+      this._parentVisible = value;
+      this.clearOnHide();
+      // Form doesn't load if hidden. If it becomes visible, create the form.
+      if (!this.subForm && value) {
+        this.createSubForm();
+        this.subFormReady.then(() => {
+          this.updateSubFormVisibility();
+        });
+        this.redraw();
+        return;
+      }
+      this.updateSubFormVisibility();
+      this.redraw();
+    }
   }
 
   isInternalEvent(event) {

@@ -19,7 +19,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.8/ace.js';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
@@ -129,6 +129,7 @@ export default class Component extends Element {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      calculateServer: false,
       widget: null,
 
       /**
@@ -338,6 +339,8 @@ export default class Component extends Element {
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     this._path = '';
+    // Nested forms don't have parents so we need to pass their path in.
+    this._parentPath = this.options.parentPath || '';
 
     this.resetCaches();
 
@@ -587,27 +590,8 @@ export default class Component extends Element {
   }
 
   get calculatedPath() {
-    if (this._path) {
-      return this._path;
-    }
-
-    this._path = this.key;
-
-    if (!this.root) {
-      return this._path;
-    }
-
-    let parent = this.parent;
-
-    while (parent && parent.id !== this.root.id) {
-      if (['datagrid', 'container', 'editgrid'].includes(parent.type) || parent.tree) {
-        this._path = `${parent.key}.${this._path}`;
-      }
-
-      parent = parent.parent;
-    }
-
-    return this._path;
+    console.error('component.calculatedPath was deprecated, use component.path instead.');
+    return this.path;
   }
 
   get labelPosition() {
@@ -953,23 +937,14 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    let template;
-    if (this.dataValue) {
-      template = this.getModalPreviewTemplate();
-    }
-    else {
-      template = `
-        <label class="control-label">${this.component.label}</label><br>
-        <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
-      `;
-    }
+    const template = this.getModalPreviewTemplate();
     this.componentModal.setOpenModalElement(template);
   }
 
   getModalPreviewTemplate() {
     return `
       <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue)}</button>`;
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || this.t('Click to set value')}</button>`;
   }
 
   build(element) {
@@ -1132,9 +1107,9 @@ export default class Component extends Element {
   }
 
   checkRefresh(refreshData, changed) {
-    const changePath = _.get(changed, 'instance.calculatedPath', false);
+    const changePath = _.get(changed, 'instance.path', false);
     // Don't let components change themselves.
-    if (changePath && this.calculatedPath === changePath) {
+    if (changePath && this.path === changePath) {
       return;
     }
     if (refreshData === 'data') {
@@ -2294,6 +2269,15 @@ export default class Component extends Element {
     return this.hasValue() && !this.isEmpty(this.dataValue);
   }
 
+  setDefaultValue() {
+    if (this.defaultValue) {
+      const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
+      this.setValue(defaultValue, {
+        noUpdateEvent: true
+      });
+    }
+  }
+
   /**
    * Restore the value of a control.
    */
@@ -2304,12 +2288,7 @@ export default class Component extends Element {
       });
     }
     else {
-      if (this.defaultValue) {
-        const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
-        this.setValue(defaultValue, {
-          noUpdateEvent: true
-        });
-      }
+      this.setDefaultValue();
     }
   }
 
@@ -2430,12 +2409,10 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    if (
-      !(this.component.calculateValue || this.component.calculateValueVariable)
-      || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)
-      || this.builderMode
-      || this.previewMode
-    ) {
+    const { hidden, clearOnHide } = this.component;
+    const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
+
+    if (!this.component.calculateValue || shouldBeCleared || this.builderMode || this.previewMode) {
       return false;
     }
 
@@ -2451,21 +2428,6 @@ export default class Component extends Element {
       this.calculatedValue = null;
     }
 
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      this.calculatedValue &&
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(this.calculatedValue))
-    ) {
-      return false;
-    }
-
-    if (flags.fromSubmission &&
-      allowOverride &&
-      this.calculatedValue !== this.dataValue) {
-      return false;
-    }
-
     // Calculate the new value.
     const calculatedValue = this.component.calculateValueVariable
       ? this.calculateVariable(this.component.calculateValueVariable)
@@ -2475,12 +2437,32 @@ export default class Component extends Element {
         row: row || this.data
       }, 'value');
 
+    const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
+    const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
+
+    // Check to ensure that the calculated value is different than the previously calculated value.
+    if (
+      allowOverride &&
+      this.calculatedValue &&
+      !_.isEqual(dataValue, currentCalculatedValue) &&
+      _.isEqual(newCalculatedValue, currentCalculatedValue)) {
+      return false;
+    }
+
+    if (flags.fromSubmission &&
+      allowOverride &&
+      currentCalculatedValue !== this.dataValue) {
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
+
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
       allowOverride &&
       firstPass &&
       !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue))
+      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue)) &&
+      !_.isEqual(calculatedValue, this.convertNumberOrBoolToString(calculatedValue))
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
@@ -2873,9 +2855,9 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  setComponentValidity(messages, dirty) {
+  setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && (dirty || !this.pristine)) {
+    if (messages.length && !silentCheck && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
@@ -2892,9 +2874,11 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row, async = false) {
+  checkComponentValidity(data, dirty, row, options = {}) {
     data = data || this.rootValue;
     row = row || this.data;
+    const { async = false, silentCheck = false } = options;
+
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
       return async ? NativePromise.resolve(true) : true;
@@ -2902,18 +2886,18 @@ export default class Component extends Element {
 
     const check = Validator.checkComponent(this, data, row, true, async);
     return async ?
-      check.then((messages) => this.setComponentValidity(messages, dirty)) :
-      this.setComponentValidity(check, dirty);
+      check.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
+      this.setComponentValidity(check, dirty, silentCheck);
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row);
+    return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
-  checkAsyncValidity(data, dirty, row) {
-    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
+  checkAsyncValidity(data, dirty, row, silentCheck) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
   resetCaches() {
@@ -3003,6 +2987,8 @@ export default class Component extends Element {
   }
 
   setCustomValidity(messages, dirty, external) {
+    const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
+
     if (typeof messages === 'string' && messages) {
       messages = {
         level: 'error',
@@ -3044,8 +3030,8 @@ export default class Component extends Element {
       };
       this.emit('componentError', this.error);
       this.addMessages(messages, dirty, this.refs.input);
-      if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, options);
+      if (inputRefs) {
+        this.setErrorClasses(inputRefs, dirty, options);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -3053,8 +3039,8 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      if (this.refs.input) {
-        this.setErrorClasses(this.refs.input, dirty, options);
+      if (inputRefs) {
+        this.setErrorClasses(inputRefs, dirty, options);
       }
       this.clearErrorClasses();
     }

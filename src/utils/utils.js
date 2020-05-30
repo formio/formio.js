@@ -1113,6 +1113,12 @@ export function isInputComponent(componentJson) {
 }
 
 export function getArrayFromComponentPath(pathStr) {
+  if (!pathStr || !_.isString(pathStr)) {
+    if (!_.isArray(pathStr)) {
+      return [pathStr];
+    }
+    return pathStr;
+  }
   return pathStr.replace(/[[\]]/g, '.')
     .replace(/\.\./g, '.')
     .split('.')
@@ -1133,4 +1139,11 @@ export function getStringFromComponentPath(path) {
     }
   });
   return strPath;
+}
+
+export function round(number, precision) {
+  if (_.isNumber(number)) {
+    return number.toFixed(precision);
+  }
+  return number;
 }

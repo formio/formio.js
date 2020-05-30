@@ -1,10 +1,10 @@
-// Lumen 4.3.1
+// Lumen 4.5.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic&display=swap" !default;
 @import url($web-font-path);
 
 @mixin shadow($width: 4px){
@@ -468,7 +468,7 @@ a.list-group-item {
     &.active {
       background-color: $warning;
     }
-    
+
     &.active:hover,
     &.active:focus {
       background-color: darken($warning, 5%);
@@ -479,7 +479,7 @@ a.list-group-item {
     &.active {
       background-color: $danger;
     }
-    
+
     &.active:hover,
     &.active:focus {
       background-color: darken($danger, 5%);
@@ -492,7 +492,8 @@ a.list-group-item {
   box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.modal {
+.modal,
+.toast {
 
   .close {
     color: $black;

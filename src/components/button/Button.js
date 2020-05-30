@@ -117,16 +117,18 @@ export default class ButtonComponent extends Field {
       this.on('submitButton', () => {
         this.disabled = true;
       }, true);
-      this.on('submitDone', () => {
+      this.on('submitDone', (message) => {
+        const resultMessage = message || this.t('complete');
         this.loading = false;
         this.disabled = false;
         this.addClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         this.addClass(this.refs.buttonMessageContainer, 'has-success');
         this.removeClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t('complete'));
+        this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
-      this.on('submitError', () => {
+      this.on('submitError', (message) => {
+        const resultMessage = message || this.t(this.errorMessage('error'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -134,7 +136,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
+        this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
@@ -168,7 +170,7 @@ export default class ButtonComponent extends Field {
 
     this.on('change', (value, flags) => {
       const isValid = (flags && flags.noValidate) ?
-        (this.root ? this.root.checkValidity(this.root.data) : true) :
+        (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true) :
         value.isValid;
       this.loading = false;
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);

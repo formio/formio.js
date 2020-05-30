@@ -1,33 +1,13 @@
-// Darkly 4.3.1
+// Darkly 4.5.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=swap" !default;
 @import url($web-font-path);
 
 // Navbar ======================================================================
-
-.bg-primary {
-  .navbar-nav .active > .nav-link {
-    color: $success !important;
-  }
-}
-
-.bg-light {
-  &.navbar {
-    background-color: $success !important;
-  }
-
-  &.navbar-light .navbar-nav {
-    .nav-link:focus,
-    .nav-link:hover,
-    .active > .nav-link {
-      color: $primary !important;
-    }
-  }
-}
 
 // Buttons =====================================================================
 

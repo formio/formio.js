@@ -6,7 +6,7 @@ import assert from 'power-assert';
 import i18next from 'i18next';
 import NativePromise from 'native-promise-only';
 
-const i18Defaults = require('../i18n');
+const i18Defaults = require('../displays/webform/i18n');
 const AllComponents = require('../components').default;
 const Components = require('../components/Components').default;
 const templates = require('./index').default;

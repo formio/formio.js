@@ -12,10 +12,6 @@ export default (...extend) => baseEditForm([
     ignore: true,
   },
   {
-    key: 'conditional',
-    ignore: true,
-  },
-  {
     key: 'logic',
     ignore: true,
   },

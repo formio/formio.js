@@ -29,6 +29,11 @@ if (typeof window !== 'undefined' && typeof window.document !== 'undefined') {
  * - DOMTokenList, License: CC0 */
 
 (function(self, undefined) {
+  // Don't try to do polyfills outside of browser context.
+  if (typeof document === 'undefined') {
+    return;
+  }
+
   if (!("defineProperty"in Object&&function(){try{var e={}
   return Object.defineProperty(e,"test",{value:42}),!0}catch(t){return!1}}()
   )) {

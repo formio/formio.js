@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import equal from 'fast-deep-equal';
 
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
@@ -25,6 +24,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       removeRow: 'Cancel',
       defaultOpen: false,
       openWhenEmpty: false,
+      modal: false,
       components: [],
       inlineEdit: false,
       templates: {
@@ -299,16 +299,19 @@ export default class EditGridComponent extends NestedArrayComponent {
     return super.attach(element);
   }
 
-  clearOnHide(show) {
-    super.clearOnHide(show);
+  flattenRowDataValue(dataValue) {
+    const flattened = {};
 
-    if (this.component.clearOnHide && !this.visible) {
-      if (!this.editRows) {
-        return;
+    Object.keys(dataValue).forEach((key) => {
+      if (_.isObject(dataValue[key]) && !_.isNil(dataValue[key])) {
+        Object.assign(flattened, this.flattenRowDataValue(dataValue[key]));
       }
+      else {
+        flattened[key] = dataValue[key];
+      }
+    });
 
-      this.removeAllRows();
-    }
+    return flattened;
   }
 
   renderRow(row, rowIndex) {
@@ -319,10 +322,11 @@ export default class EditGridComponent extends NestedArrayComponent {
     else {
       const flattenedComponents = this.flattenComponents(rowIndex);
       const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
+
       return this.renderString(
         rowTemplate,
         {
-          row: dataValue[rowIndex] || {},
+          row: this.flattenRowDataValue(dataValue[rowIndex]) || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
@@ -425,7 +429,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
       },
     }, this.component.saveRow || 'Save'));
-    this.attachComponents(modalContent, components);
+    return this.attachComponents(modalContent, components);
   }
 
   editRow(rowIndex) {
@@ -443,11 +447,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     if (this.component.modal) {
-      this.addRowModal(rowIndex);
+      return this.addRowModal(rowIndex);
     }
-    else {
-      this.redraw();
-    }
+
+    return this.redraw();
   }
 
   clearErrors(rowIndex) {
@@ -549,15 +552,21 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  baseRemoveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
+    editRow.state = EditRowState.Removed;
+    this.destroyComponents(rowIndex);
+
+    return editRow;
+  }
+
   removeRow(rowIndex) {
     if (this.options.readOnly) {
       return;
     }
 
-    const editRow = this.editRows[rowIndex];
-    editRow.state = EditRowState.Removed;
-
-    this.destroyComponents(rowIndex);
+    this.baseRemoveRow(rowIndex);
     this.splice(rowIndex);
     this.editRows.splice(rowIndex, 1);
     this.updateRowsComponents(rowIndex);
@@ -566,19 +575,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.checkValidity(null, true);
     this.checkData();
     this.redraw();
-  }
-
-  removeAllRows() {
-    if (this.options.readOnly) {
-      return;
-    }
-
-    const editRows = this.editRows || [];
-    const rowIndex = editRows.length - 1;
-
-    for (let index = rowIndex; index >= 0; index--) {
-      this.removeRow(index);
-    }
   }
 
   createRowComponents(row, rowIndex) {
@@ -603,10 +599,6 @@ export default class EditGridComponent extends NestedArrayComponent {
         row: options.row,
       }), options, row);
       comp.rowIndex = rowIndex;
-      if (comp.path && column.key) {
-        comp.path = comp.path.replace(new RegExp(`\\.${column.key}$`), `[${rowIndex}].${column.key}`);
-      }
-
       return comp;
     });
   }
@@ -693,14 +685,10 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   setValue(value, flags = {}) {
-    if (equal(this.defaultValue, value)) {
-      return false;
+    if (!value) {
+      value = this.defaultValue;
     }
 
-    if (!value) {
-      this.dataValue = this.defaultValue;
-      return false;
-    }
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {
         value = [value];
@@ -714,7 +702,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
-      let editRow = this.editRows[rowIndex];
+      const editRow = this.editRows[rowIndex];
       if (editRow) {
         editRow.data = row;
         this.restoreRowContext(editRow, flags);
@@ -723,19 +711,27 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.error = null;
       }
       else {
-        editRow = this.editRows[rowIndex] = {
+        this.editRows[rowIndex] = {
           components: this.createRowComponents(row, rowIndex),
           data: row,
           state: EditRowState.Saved,
           backup: null,
           error: null,
         };
-        this.checkRow('checkData', null, {}, editRow.data, editRow.components);
       }
     });
+    let { length: dataLength } = this.dataValue;
+
+    // If the last row is a new row, then do not remove it.
+    if (this.editRows[dataLength] && (this.editRows[dataLength].state === EditRowState.New)) {
+      dataLength = (dataLength + 1);
+    }
+    this.editRows.slice(dataLength).forEach((editRow, index) => this.baseRemoveRow(dataLength + index));
+    this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);
+    this.checkData();
     if (changed) {
-      this.redraw();
+      this.rebuild();
     }
     return changed;
   }
