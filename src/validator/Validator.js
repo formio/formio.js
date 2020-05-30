@@ -842,7 +842,7 @@ class ValidationChecker {
 
     // If this component has the new validation system enabled, use it instead.
     const validations = _.get(component, 'component.validations');
-    if (validations && Array.isArray(validations)) {
+    if (validations && Array.isArray(validations) && validations.length) {
       const groupedValidation = _
         .chain(validations)
         .filter('active')
