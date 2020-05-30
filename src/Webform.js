@@ -1022,6 +1022,8 @@ export default class Webform extends NestedDataComponent {
    * @param {string} classes - Styling classes for alert.
    */
   setAlert(type, message, classes, target) {
+    target = target || this.element;
+
     if (!type && this.submitted) {
       if (this.alert) {
         if (this.refs.errorRef && this.refs.errorRef.length) {
@@ -1049,7 +1051,7 @@ export default class Webform extends NestedDataComponent {
             this.removeEventListener(el, 'keypress');
           });
         }
-        this.removeChild(this.alert);
+        this.removeChildFrom(this.alert, target);
         this.alert = null;
       }
       catch (err) {
@@ -1088,7 +1090,7 @@ export default class Webform extends NestedDataComponent {
         });
       });
     }
-    this.prependTo(this.alert, target || this.element);
+    this.prependTo(this.alert, target);
   }
 
   /**
@@ -1112,22 +1114,27 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-  showErrors(error, triggerEvent, target) {
+  showErrors(error, triggerEvent, target, overridingErrors) {
     this.loading = false;
     let errors = this.errors;
-    if (error) {
-      if (Array.isArray(error)) {
-        errors = errors.concat(error);
+    if (!overridingErrors) {
+      if (error) {
+        if (Array.isArray(error)) {
+          errors = errors.concat(error);
+        }
+        else {
+          errors.push(error);
+        }
       }
       else {
-        errors.push(error);
+        errors = super.errors;
       }
+
+      errors = errors.concat(this.customErrors);
     }
     else {
-      errors = super.errors;
+      errors = overridingErrors;
     }
-
-    errors = errors.concat(this.customErrors);
 
     if (!errors.length) {
       this.setAlert(false);

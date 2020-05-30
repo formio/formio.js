@@ -333,7 +333,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           flattenedComponents,
           getView: (component, data) => {
             const instance = flattenedComponents[component.key];
-            let view = instance ? instance.getView(data) : '';
+            let view = instance ? instance.getView(data || instance.dataValue) : '';
 
             if (instance && instance.widget && (view !== '--- PROTECTED ---' )) {
               if (_.isArray(view)) {
@@ -420,6 +420,13 @@ export default class EditGridComponent extends NestedArrayComponent {
     const { components } = editRow;
     modalContent.innerHTML = this.renderComponents(components);
     const dialog = this.component.modal ? this.createModal(modalContent) : undefined;
+
+    this.addEventListener(dialog, 'close', () => {
+      if (!this.validateRow(editRow, true)) {
+        this.removeRow(rowIndex);
+      }
+    });
+
     dialog.refs.dialogContents.appendChild(this.ce('button', {
       class: 'btn btn-primary',
       onClick: () => {
@@ -428,7 +435,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           this.saveRow(rowIndex);
         }
         else {
-          this._currentForm.showErrors(null, false, dialog.refs.dialogContents);
+          this._currentForm.showErrors(null, false, dialog.refs.dialogContents, editRow.errors);
         }
       },
     }, this.component.saveRow || 'Save'));
@@ -608,6 +615,8 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   validateRow(editRow, dirty) {
     let valid = true;
+    const errorsSnapshot = [...this.errors];
+
     if (editRow.state === EditRowState.Editing || dirty) {
       editRow.components.forEach(comp => {
         comp.setPristine(!dirty);
@@ -632,6 +641,9 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
+    if (!valid) {
+      editRow.errors = this.errors.filter((err) => !errorsSnapshot.includes(err));
+    }
     return !!valid;
   }
 
