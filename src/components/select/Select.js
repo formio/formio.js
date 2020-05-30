@@ -151,6 +151,23 @@ export default class SelectComponent extends Field {
     return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
   }
 
+  groupOptions(options) {
+    const grouped = _.groupBy(options, ({ group = null }) => group);
+    const groups = _.keys(grouped);
+    if ((groups.length === 1) && (groups[0] === 'null')) {
+      return options;
+    }
+
+    return _.map(grouped, (options, groupLabel) => ({
+      label: groupLabel ?? 'No Group',
+      choices: options,
+    }));
+  }
+
+  get groupedSelectOptions() {
+    return this.groupOptions(this.selectOptions);
+  }
+
   itemTemplate(data) {
     if (_.isEmpty(data)) {
       return '';
@@ -187,13 +204,29 @@ export default class SelectComponent extends Field {
     }
   }
 
+  itemGroup(data) {
+    if (!this.component.groupProperty) {
+      return null;
+    }
+
+    return _.get(data, this.component.groupProperty, null);
+  }
+
+  itemDisabled(data) {
+    if (this.component.dataSrc !== 'values') {
+      return null;
+    }
+
+    return _.get(data, 'disabled', null);
+  }
+
   /**
    * Adds an option to the select dropdown.
    *
    * @param value
    * @param label
    */
-  addOption(value, label, attrs = {}, id) {
+  addOption(value, label, attrs = {}, id, disabled, group) {
     if (_.isNil(label)) return;
 
     const option = {
@@ -213,6 +246,14 @@ export default class SelectComponent extends Field {
 
     if (skipOption) {
       return;
+    }
+
+    if (disabled) {
+      option.disabled = this.calculateCondition(disabled);
+    }
+
+    if (group) {
+      option.group = group;
     }
 
     if (value) {
@@ -339,12 +380,14 @@ export default class SelectComponent extends Field {
     // Iterate through each of the items.
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
-      if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
+      if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) {
+        return;
+      }
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index), this.itemDisabled(item), this.itemGroup(item));
     });
 
     if (this.choices) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+      this.choices.setChoices(this.groupedSelectOptions, 'value', 'label', true);
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -833,7 +876,7 @@ export default class SelectComponent extends Field {
     });
 
     if (this.selectOptions && this.selectOptions.length) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+      this.choices.setChoices(this.groupedSelectOptions, 'value', 'label', true);
     }
 
     if (this.component.multiple) {
@@ -1255,7 +1298,7 @@ export default class SelectComponent extends Field {
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
-          this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+          this.choices.setChoices(this.groupedSelectOptions, 'value', 'label', true);
         }
         this.choices.setChoiceByValue(value);
       }

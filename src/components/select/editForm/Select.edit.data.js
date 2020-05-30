@@ -1,5 +1,7 @@
 import { eachComponent } from '../../../utils/utils';
 
+import EditFormUtils from '../../_classes/component/editForm/utils';
+
 export default [
   {
     type: 'select',
@@ -150,6 +152,11 @@ export default [
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] },
       },
+      {
+        ...EditFormUtils.conditionSelector(),
+        key: 'disabled',
+        label: 'Disabled',
+      },
     ],
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'values'] },
@@ -244,6 +251,46 @@ export default [
   {
     type: 'select',
     input: true,
+    label: 'Group Property',
+    key: 'groupProperty',
+    skipMerge: true,
+    clearOnHide: false,
+    tooltip: 'The field to use as the group selector.',
+    weight: 11.5,
+    refreshOn: 'data.resource',
+    template: '<span>{{ item.label }}</span>',
+    valueProperty: 'key',
+    dataSrc: 'url',
+    lazyLoad: false,
+    onSetItems(component, form) {
+      const newItems = [];
+
+      eachComponent(form.components, (component, path) => {
+        if (component.input) {
+          newItems.push({
+            label: component.label || component.key,
+            key: `data.${path}`,
+          });
+        }
+      });
+
+      return newItems;
+    },
+    data: {
+      url: '/form/{{ data.data.resource }}',
+    },
+    conditional: {
+      json: {
+        and: [
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { var: 'data.data.resource' },
+        ],
+      },
+    },
+  },
+  {
+    type: 'select',
+    input: true,
     label: 'Storage Type',
     key: 'dataType',
     clearOnHide: true,
@@ -279,6 +326,31 @@ export default [
             'json',
             'url',
             'custom',
+            'indexeddb',
+          ],
+        ],
+      },
+    },
+  },
+  {
+    type: 'textfield',
+    input: true,
+    label: 'Group Property',
+    key: 'groupProperty',
+    skipMerge: true,
+    clearOnHide: false,
+    weight: 13.5,
+    description: "The selected item's property to save.",
+    tooltip: 'The property of each item in the data source to use as the group selector. If not specified grouping won\'t be used.',
+    conditional: {
+      json: {
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'json',
+            'url',
+            'custom',
+            'indexeddb',
           ],
         ],
       },
@@ -474,9 +546,11 @@ export default [
         in: [
           { var: 'data.dataSrc' },
           [
+            'values',
             'url',
             'resource',
-            'values'
+            'custom',
+            'indexeddb',
           ],
         ],
       },
@@ -495,9 +569,11 @@ export default [
         in: [
           { var: 'data.dataSrc' },
           [
+            'values',
             'url',
             'resource',
-            'values'
+            'custom',
+            'indexeddb',
           ],
         ],
       },
