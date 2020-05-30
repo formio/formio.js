@@ -74,91 +74,8 @@ lib: sandbox
   </div>
 </div>
 <script type="text/javascript">
-  var formioVersion = localStorage.getItem('formioVersion');
-
-  function loadScript(url, callback){
-    var script = document.createElement("script")
-    script.type = "text/javascript";
-
-    if (script.readyState){  //IE
-      script.onreadystatechange = function(){
-        if (script.readyState == "loaded" ||
-          script.readyState == "complete"){
-          script.onreadystatechange = null;
-          callback();
-        }
-      };
-    }
-    else {  //Others
-      script.onload = function(){
-        callback();
-      };
-    }
-
-    script.src = url;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  }
-
-  function setFormioVersion(version, callback) {
-    localStorage.setItem('formioVersion', version);
-    var loading = document.getElementById('formio-loading');
-    loading.style.display = 'block';
-    // See if this version is available in cdn. This file is small so it shouldn't take long to test.
-    fetch('https://cdn.form.io/formiojs/' + version + '/formio.form.css')
-      .then(function(response) {
-        var url;
-        if (response.status === 200) {
-          url = 'https://cdn.form.io/formiojs/' + version + '/formio.full.js';
-        }
-        else {
-          url = 'https://unpkg.com/formiojs@' + version + '/dist/formio.full.js'
-        }
-        loadScript(url, function() {
-          if (!Formio.version) {
-            Formio.version = version;
-          }
-          loading.style.display = 'none';
-          document.dispatchEvent(new Event('formioChange'));
-          callback();
-        })
-      });
-
-  }
-
-  var ready = new Promise(function(resolve, reject) {
-    var resolved = false;
-    if (!formioVersion || formioVersion === 'default') {
-      resolve();
-    }
-    fetch('https://cdn.form.io/formiojs/versions.json')
-      .then(function(response) {
-        response.json().then(function(versions) {
-          var formioVersions = document.getElementById('formio-versions');
-          versions.forEach(function(version, index) {
-            // Only include recent test builds.
-            if ((index < 10 || version.indexOf('-') === -1) && version[0] === "4") {
-              var option = document.createElement('option');
-              option.text = version;
-              if (version === formioVersion) {
-                setFormioVersion(formioVersion, resolve);
-                resolved = true;
-                option.selected = true;
-              }
-              formioVersions.add(option);
-            }
-          });
-
-          formioVersions.onchange = function() {
-            setFormioVersion(formioVersions.value, function() {
-              return resolved ? resolve() : '';
-            });
-          };
-        });
-      });
-  });
-</script>
-<script type="text/javascript">
   var state = {
+    formioVersion: 'default',
     form: {
       display: 'form',
       components: [],
@@ -168,6 +85,13 @@ lib: sandbox
     },
     options: {},
   };
+
+  try {
+    state.formioVersion = localStorage.getItem('formioVersion') || state.formioVersion;
+  }
+  catch (err) {
+    console.error(err);
+  }
 
   try {
     state.form = JSON.parse(localStorage.getItem('form')) || state.form;
@@ -189,6 +113,56 @@ lib: sandbox
   catch (err) {
     console.error(err);
   }
+
+  function loadScript(url, callback){
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+
+    if (script.readyState){  //IE
+      script.onreadystatechange = function(){
+        if (script.readyState == "loaded" ||
+          script.readyState == "complete"){
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    }
+    else {  //Others
+      script.onload = function(){
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  }
+
+  fetch('https://cdn.form.io/formiojs/versions.json')
+    .then(function(response) {
+      response.json().then(function(versions) {
+        var formioVersions = document.getElementById('formio-versions');
+        versions.forEach(function(version, index) {
+          // Only include recent test builds.
+          if ((index < 10 || version.indexOf('-') === -1) && version[0] === "4") {
+            var option = document.createElement('option');
+            option.text = version;
+            if (version === state.formioVersion) {
+              option.selected = true;
+            }
+            formioVersions.add(option);
+          }
+        });
+
+        formioVersions.onchange = function() {
+          setFormioVersion(formioVersions.value, function() {
+            return resolved ? resolve() : '';
+          });
+        };
+      });
+    });
+
+  // Start init.
+  setFormioVersion(state.formioVersion);
 
   var builder;
   var renderer;
@@ -216,6 +190,7 @@ lib: sandbox
   document.getElementById('reset').addEventListener('click', reset);
   function reset() {
     setOptions({}, 'reset');
+    state.submission = { data: {}};
     setForm({display: 'form', components: []}, 'reset');
     setSubmission({data: {}}, 'reset');
   }
@@ -292,6 +267,37 @@ lib: sandbox
         });
         renderer.onAny(onEvent);
       });
+  }
+
+  function setFormioVersion(version, callback) {
+    console.log('setFormioVersion');
+    state.formioVersion = version;
+    localStorage.setItem('formioVersion', version);
+    if (version === 'default') {
+      return;
+    }
+    var loading = document.getElementById('formio-loading');
+    loading.style.display = 'block';
+    // See if this version is available in cdn. This file is small so it shouldn't take long to test.
+    fetch('https://cdn.form.io/formiojs/' + version + '/formio.form.css')
+      .then(function(response) {
+        var url;
+        if (response.status === 200) {
+          url = 'https://cdn.form.io/formiojs/' + version + '/formio.full.js';
+        }
+        else {
+          url = 'https://unpkg.com/formiojs@' + version + '/dist/formio.full.js'
+        }
+        loadScript(url, function() {
+          if (!Formio.version) {
+            Formio.version = version;
+          }
+          loading.style.display = 'none';
+          document.dispatchEvent(new Event('formioChange'));
+          callback();
+        })
+      });
+
   }
 
   function setForm(form, from) {
