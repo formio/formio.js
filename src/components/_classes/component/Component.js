@@ -590,7 +590,7 @@ export default class Component extends Element {
   }
 
   get calculatedPath() {
-    console.error('component.calculatedPath was deprecated, use component.path instead.');
+    console.warn('component.calculatedPath was deprecated, use component.path instead.');
     return this.path;
   }
 
@@ -2782,7 +2782,7 @@ export default class Component extends Element {
     while (currentComponent.parent) {
       const { parent } = currentComponent;
       if (['editgrid', 'datagrid'].includes(parent.component.type)) {
-        indexes[parent.calculatedPath] = currentComponent.rowIndex;
+        indexes[parent.path] = currentComponent.rowIndex;
       }
 
       currentComponent = parent;

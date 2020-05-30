@@ -477,7 +477,7 @@ export default class WebformBuilder extends Component {
 
   getComponents() {
     return this.webform.schema.components;
-      }
+  }
 
   createForm(options) {
     this.webform = new Webform(this.element, options);
@@ -1308,7 +1308,7 @@ export default class WebformBuilder extends Component {
     this.editForm.arrayDataComponentPaths = this.arrayDataComponentPaths;
     this.editForm.nestedDataComponents = this.nestedDataComponents;
     this.editForm.arrayDataComponents = this.arrayDataComponents;
-    this.editForm.parentPath = parent?.formioComponent?.calculatedPath;
+    this.editForm.parentPath = parent?.formioComponent?.path;
 
     this.editForm.form = (isJsonEdit && !isCustom) ? {
       components: [
@@ -1380,7 +1380,7 @@ export default class WebformBuilder extends Component {
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
     if (this.sidebarForm) {
-    this.sidebarForm.attach(this.componentEdit.querySelector('[ref="sidebarForm"]'));
+      this.sidebarForm.attach(this.componentEdit.querySelector('[ref="sidebarForm"]'));
     }
     this.editFormWrapper = this.componentEdit.querySelector('[ref="editFormWrapper"]');
     this.sidebarFormWrapper = this.componentEdit.querySelector('[ref="sidebarFormWrapper"]');
