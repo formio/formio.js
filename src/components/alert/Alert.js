@@ -10,32 +10,25 @@ export default class Alert {
     this.loadRefs  = this.parentComponent.loadRefs.bind(this);
   }
 
-  createAlert(errors) {
-    const alertTemplate = this.parentComponent.ce('p');
-    this.parentComponent.setContent(alertTemplate, this.parentComponent.t('error'));
-    const ul = this.parentComponent.ce('ul');
-    const message = document.createDocumentFragment();
-
-    errors.forEach(err => {
-      if (err) {
-        if (err.messages && err.messages.length) {
-          const errLabel = this.parentComponent.t(err.component.label);
-          err.messages.forEach(({ message }, index) => this.createMessage(ul,`${errLabel}. ${message}`, index, err));
-        }
-        else if (err) {
-          const message = _.isObject(err) ? err.message || '' : err;
-          this.createMessage(ul, message);
-        }
-      }
-    });
-    alertTemplate.appendChild(ul);
-    message.appendChild(alertTemplate);
-    return message;
+  get refsNames() {
+    return {
+      messageRef: 'multiple'
+    };
   }
 
-  showErrors(errors, triggerEvent) {
-    const alert = this.createAlert(errors);
-    this.showAlert('danger', alert);
+  get alertTypes() {
+    return {
+      error: 'danger'
+    };
+  }
+
+  showErrors(errors, triggerEvent, options) {
+    errors = errors ? errors : [];
+    errors = _.isArray(errors) ? errors : [errors];
+
+    const messagesList = this.createMessagesList('error', errors);
+    this.showAlert('error', messagesList, options);
+
     if (triggerEvent) {
       this.parentComponent.emit('error', errors);
     }
@@ -43,51 +36,95 @@ export default class Alert {
     return errors;
   }
 
-  showAlert(type, message, customClasses) {
-    if (this.alert) {
-      this.clear();
+  createMessagesList(type, ...args) {
+    switch (type) {
+      case 'error':
+        return this.createErrorList(...args);
     }
-    if (message) {
-      this.alert = this.parentComponent.ce('div', {
-        class: customClasses || `alert alert-${type}`,
-        id: `error-list-${this.parentComponent.id}`,
-      });
-      if (message instanceof HTMLElement) {
-        this.parentComponent.appendTo(message, this.alert);
-      }
-      else {
-        this.parentComponent.setContent(this.alert, message);
-      }
-    }
+  }
+
+  createErrorList(errors) {
+    const p = this.parentComponent.ce('p');
+    this.parentComponent.setContent(p, this.parentComponent.t('error'));
+    const ul = this.parentComponent.ce('ul');
+    const messagesList = document.createDocumentFragment();
+
+    errors.forEach(err => this.appendErrorToList(err, ul));
+
+    p.appendChild(ul);
+    messagesList.appendChild(p);
+    return messagesList;
+  }
+
+  showAlert(type, messagesList, options = {}) {
+    const { customClasses, customEvents } = options;
+    this.setAlert(type, messagesList, { customClasses });
     if (!this.alert) {
       return;
     }
+    this.attach({ customEvents });
+    this.parentComponent.prependTo(this.alert, this.container);
+  }
 
-    this.loadRefs(this.alert, { alertErrorRef: 'multiple' });
+  setAlert(type, messagesList, options = {}) {
+    const alertType = this.alertTypes[type];
+    if (this.alert) {
+      this.clear();
+    }
+    if (messagesList) {
+      const {
+        id = `${type}-list-${this.parentComponent.id}`,
+        customClasses = `alert alert-${alertType}`
+      } = options;
+      this.alert = this.parentComponent.ce('div', { id, class: customClasses });
+      if (messagesList instanceof HTMLElement) {
+        this.parentComponent.appendTo(messagesList, this.alert);
+      }
+      else {
+        this.parentComponent.setContent(this.alert, messagesList);
+      }
+    }
+  }
 
-    if (this.refs.alertErrorRef && this.refs.alertErrorRef.length) {
-      this.refs.alertErrorRef.forEach(el => {
-        this.parentComponent.addEventListener(el, 'click', (e) => {
+  attach(options) {
+    let { customEvents = {} } = options;
+    this.eventListenersKeys = [];
+    this.loadRefs(this.alert, this.refsNames);
+    const clickListeners = customEvents.click?.listeners || [];
+    const keyPressListeners = customEvents.keypress?.listeners || [];
+    customEvents = {
+      ...customEvents,
+      click: [
+        ...clickListeners,
+        (e) => {
           const key = e.currentTarget.dataset.componentKey;
           this.focusOnComponent(key);
-        });
-        this.parentComponent.addEventListener(el, 'keypress', (e) => {
-          if (e.keyCode === 13) {
-            const key = e.currentTarget.dataset.componentKey;
-            this.focusOnComponent(key);
-          }
+        }
+      ],
+      keypress: [
+        ...keyPressListeners,
+        (e) => {
+          const key = e.currentTarget.dataset.componentKey;
+          this.focusOnComponent(key);
+        }
+      ]
+    };
+
+    if (this.refs.messageRef?.length) {
+      this.refs.messageRef.forEach(el => {
+        Object.entries(customEvents).forEach(([event, listeners]) => {
+          listeners.forEach((listener) => this.parentComponent.addEventListener(el, event, listener));
+          this.eventListenersKeys.push(event);
         });
       });
     }
-    this.parentComponent.prependTo(this.alert, this.container);
   }
 
   clear() {
     try {
-      if (this.refs.alertErrorRef && this.refs.alertErrorRef.length) {
-        this.refs.alertErrorRef.forEach(el => {
-          this.parentComponent.removeEventListener(el, 'click');
-          this.parentComponent.removeEventListener(el, 'keypress');
+      if (this.refs.messageRef?.length) {
+        this.refs.messageRef.forEach(el => {
+          this.eventListenersKeys.forEach(event => this.parentComponent.removeEventListener(el, event));
         });
       }
       this.parentComponent.removeChildFrom(this.alert, this.container);
@@ -100,16 +137,23 @@ export default class Alert {
 
   focusOnComponent(keyOrPath) {
     if (keyOrPath) {
-      const component = this.parentComponent.root && this.parentComponent.root.getComponent(keyOrPath);
-      if (component) {
+      const component = this.parentComponent.root?.getComponent(keyOrPath);
+      if (component && _.isFunction(component.focus)) {
         component.focus();
       }
     }
   }
 
-  createMessage(element, message, index, err) {
+  createMessage(type, element, message, index, err) {
+    switch (type) {
+      case 'error':
+        return this.createErrorMessage(element, message, index, err);
+    }
+  }
+
+  createErrorMessage(element, message, index, err) {
     const params = {
-      ref: 'alertErrorRef',
+      ref: 'messageRef',
       tabIndex: 0,
       'aria-label': `${message}. Click to navigate to the field with following error.`
     };
@@ -117,13 +161,27 @@ export default class Alert {
     const li = this.parentComponent.ce('li', params);
     this.parentComponent.setContent(li, message);
 
-    const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
-    const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err && err.component && err.component.key);
+    const messageFromIndex = !_.isUndefined(index) && err?.messages?.[index];
+    const keyOrPath = messageFromIndex?.path || err?.component?.key;
     if (keyOrPath) {
       const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
       li.dataset.componentKey = formattedKeyOrPath;
     }
 
     this.parentComponent.appendTo(li, element);
+  }
+
+  appendErrorToList(err, ul) {
+    if (err?.messages?.length) {
+      const errLabel = this.parentComponent.t(err.component.label);
+      err.messages.forEach(({ message }, index) => {
+        const messageWithLabel = `${errLabel}. ${message}`;
+        this.createMessage('error', ul, messageWithLabel, index, err);
+      });
+    }
+    else if (err) {
+      const message = _.isObject(err) ? err.message || '' : err;
+      this.createMessage('error', ul, message);
+    }
   }
 }
