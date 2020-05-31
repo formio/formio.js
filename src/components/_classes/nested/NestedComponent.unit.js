@@ -246,10 +246,13 @@ describe('NestedComponent class', () => {
           const childForm = form.components[0].subForm;
           const textField = childForm.components[0];
           const dataGrid = childForm.components[1];
+          const tabs = childForm.components[2];
 
           assert(textField.path === 'form.data.textField');
           assert(dataGrid.path === 'form.data.dataGrid');
           assert(dataGrid.components[0].path === 'form.data.dataGrid[0].textField');
+          assert(tabs.path === 'form.data.tabs');
+          assert(tabs.tabs[0][0].path === 'form.data.tabsTextfield');
           done();
         })
         .catch(done);

@@ -3,6 +3,8 @@ import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
 import { comp1, comp3, comp4 } from './fixtures';
+import ModalEditGrid from '../../../test/forms/modalEditGrid';
+import Webform from '../../Webform';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -340,6 +342,32 @@ describe('EditGrid Component', () => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
+    });
+  });
+
+  describe('Modal rows editing', () => {
+    it('Should set alert with errors on save', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        form.checkValidity(form._data, true, form._data);
+        assert.equal(form.errors.length, 1);
+        editGrid.addRow();
+
+        setTimeout(() => {
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          const clickEvent = new Event('click');
+          saveButton.dispatchEvent(clickEvent);
+
+          const alert = dialog.querySelector('.alert.alert-danger');
+          assert.equal(form.errors.length, 3);
+          const errorsLinks = alert.querySelectorAll('li');
+          assert.equal(errorsLinks.length, 2);
+          done();
+        }, 100);
+      }).catch(done);
     });
   });
 
