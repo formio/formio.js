@@ -3,8 +3,10 @@ import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
 import { comp1, comp3, comp4 } from './fixtures';
+
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
+import { displayAsModalEditGrid } from '../../../test/formtest';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -345,7 +347,50 @@ describe('EditGrid Component', () => {
     });
   });
 
-  describe('Modal rows editing', () => {
+  describe('Display As Modal', () => {
+    it('Should show errors on save', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(displayAsModalEditGrid).then(() => {
+          const editGrid = form.components[0];
+          const clickEvent = new Event('click');
+          editGrid.addRow();
+          setTimeout(() => {
+            const dialog = document.querySelector('[ref="dialogContents"]');
+            const saveButton = dialog.querySelector('.btn.btn-primary');
+            saveButton.dispatchEvent(clickEvent);
+            setTimeout(() => {
+              assert.equal(editGrid.errors.length, 6);
+              done();
+            }, 100);
+          }, 100);
+      }).catch(done);
+    });
+
+    it('Should show add error classes to invalid components', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(displayAsModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        const clickEvent = new Event('click');
+        editGrid.addRow();
+        setTimeout(() => {
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          saveButton.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            const components = Array.from(dialog.querySelectorAll('[ref="component"]'));
+            const areRequiredComponentsHaveErrorWrapper = components.every((comp) => {
+              const { className } = comp;
+              return (className.includes('required') && className.includes('formio-error-wrapper')) || true;
+            });
+            assert.equal(areRequiredComponentsHaveErrorWrapper, true);
+            done();
+          }, 100);
+        }, 100);
+      }).catch(done);
+    });
+
     it('Should set alert with errors on save', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);

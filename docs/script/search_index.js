@@ -2640,6 +2640,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#itemoffsetx",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-itemOffsetX",
+    "src/PDFBuilder.js~PDFBuilder#itemOffsetX",
+    "member"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#itemoffsety",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-itemOffsetY",
+    "src/PDFBuilder.js~PDFBuilder#itemOffsetY",
+    "member"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#ondragend",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-onDragEnd",
     "src/PDFBuilder.js~PDFBuilder#onDragEnd",
