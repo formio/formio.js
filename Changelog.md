@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.6
+### Changed
+ - Upgrade @formio/bootstrap3 to 2.6.0
+
+## 4.10.0-rc.5
+### Added
+ - FIN 025 - Added html element into pdf builder.
+
+### Changed
+ -  `bower.json` main file in order to fix issues with formio.js used as external dependency (using `Formio` global object)
+ - PDF 40 - Fixed element's location on its adding.
+ - Fix error classes setting.
+ - FJS-958 fixed DateTime not saving input in IE11
+ 
+### Updated
+ - @babel/cli@7.10.1, @babel/core@7.10.1, @babel/plugin-proposal-class-properties@7.10.1, @babel/plugin-proposal-export-default-from@7.10.1, @babel/plugin-proposal-optional-chaining@7.10.1, @babel/polyfill@7.10.1, @babel/preset-env@7.10.1, @babel/register@7.10.1
+
 ## 4.10.0-rc.4
 ### Fixed
  - Angular ZoneAware Promise issue and IE11 issue when using native promises.
