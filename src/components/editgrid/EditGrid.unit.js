@@ -348,25 +348,6 @@ describe('EditGrid Component', () => {
   });
 
   describe('Display As Modal', () => {
-    it('Should show errors on save', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement);
-      form.setForm(displayAsModalEditGrid).then(() => {
-          const editGrid = form.components[0];
-          const clickEvent = new Event('click');
-          editGrid.addRow();
-          setTimeout(() => {
-            const dialog = document.querySelector('[ref="dialogContents"]');
-            const saveButton = dialog.querySelector('.btn.btn-primary');
-            saveButton.dispatchEvent(clickEvent);
-            setTimeout(() => {
-              assert.equal(editGrid.errors.length, 6);
-              done();
-            }, 100);
-          }, 100);
-      }).catch(done);
-    });
-
     it('Should show add error classes to invalid components', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
@@ -379,19 +360,22 @@ describe('EditGrid Component', () => {
           const saveButton = dialog.querySelector('.btn.btn-primary');
           saveButton.dispatchEvent(clickEvent);
           setTimeout(() => {
+            assert.equal(editGrid.errors.length, 6);
             const components = Array.from(dialog.querySelectorAll('[ref="component"]'));
             const areRequiredComponentsHaveErrorWrapper = components.every((comp) => {
               const { className } = comp;
               return (className.includes('required') && className.includes('formio-error-wrapper')) || true;
             });
             assert.equal(areRequiredComponentsHaveErrorWrapper, true);
+            dialog.parentNode.removeChild(dialog);
+            form.clear();
             done();
           }, 100);
         }, 100);
       }).catch(done);
     });
 
-    it('Should set alert with errors on save', (done) => {
+    it('Should set alert with validation errors on save', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {
@@ -406,11 +390,15 @@ describe('EditGrid Component', () => {
           const clickEvent = new Event('click');
           saveButton.dispatchEvent(clickEvent);
 
-          const alert = dialog.querySelector('.alert.alert-danger');
-          assert.equal(form.errors.length, 3);
-          const errorsLinks = alert.querySelectorAll('li');
-          assert.equal(errorsLinks.length, 2);
-          done();
+          setTimeout(() => {
+            const alert = dialog.querySelector('.alert.alert-danger');
+            assert.equal(form.errors.length, 3);
+            const errorsLinks = alert.querySelectorAll('li');
+            assert.equal(errorsLinks.length, 2);
+            dialog.parentNode.removeChild(dialog);
+            form.clear();
+            done();
+          }, 100);
         }, 100);
       }).catch(done);
     });

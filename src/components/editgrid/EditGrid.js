@@ -439,6 +439,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       class: 'btn btn-primary',
       onClick: () => {
         if (this.validateRow(editRow, true)) {
+          if (this.alert) {
+            this.alert.clear();
+            this.alert = null;
+          }
           dialog.close();
           this.saveRow(rowIndex);
         }
