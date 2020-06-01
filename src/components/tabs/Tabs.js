@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
+import { getArrayFromComponentPath } from '../../utils/utils';
 
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
@@ -148,5 +149,17 @@ export default class TabsComponent extends NestedComponent {
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
     }
     this.triggerChange();
+  }
+
+  beforeFocus(component) {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+    const tabIndex = this.tabs.findIndex((tab) => {
+      return tab.some((comp) => comp === component);
+    });
+    if (tabIndex !== -1) {
+      this.setTab(tabIndex);
+    }
   }
 }

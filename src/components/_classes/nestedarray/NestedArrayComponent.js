@@ -98,7 +98,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       }
     }, rowIndex);
     if ((!result || result.length === 0) && possibleComp) {
-      result = [possibleComp];
+      result = rowIndex !== null ? possibleComp : [possibleComp];
     }
     return result;
   }

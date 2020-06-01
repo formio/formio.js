@@ -154,6 +154,15 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.editRows;
   }
 
+  get defaultValue() {
+    const value = super.defaultValue;
+    const defaultValue = Array.isArray(value) ? value : [];
+
+    _.times(this.minLength - defaultValue.length, () => defaultValue.push({}));
+
+    return defaultValue;
+  }
+
   constructor(...args) {
     super(...args);
     this.type = 'editgrid';
@@ -559,6 +568,17 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.redraw();
 
     return true;
+  }
+
+  beforeFocus(component) {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+    const relativePath = this.getRelativePath(component.path);
+    const arrayPath = getArrayFromComponentPath(relativePath);
+    if (_.isNumber(arrayPath[0])) {
+      this.editRow(arrayPath[0]);
+    }
   }
 
   updateComponentsRowIndex(components, rowIndex) {
