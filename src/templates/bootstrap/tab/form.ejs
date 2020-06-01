@@ -1,13 +1,15 @@
 <div class="card">
-  <div class="card-header">
-    <ul class="nav nav-tabs card-header-tabs">
-      {% ctx.component.components.forEach(function(tab, index) { %}
-      <li class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" role="presentation" ref="{{ctx.tabLikey}}">
-        <a class="nav-link{{ ctx.currentTab === index ? ' active' : ''}}" href="#{{tab.key}}" ref="{{ctx.tabLinkKey}}">{{ctx.t(tab.label)}}</a>
-      </li>
-      {% }) %}
-    </ul>
-  </div>
+  {% if (!ctx.component.hideHeader) { %}
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs">
+        {% ctx.component.components.forEach(function(tab, index) { %}
+        <li class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" role="presentation" ref="{{ctx.tabLikey}}">
+          <a class="nav-link{{ ctx.currentTab === index ? ' active' : ''}}" href="#{{tab.key}}" ref="{{ctx.tabLinkKey}}">{{ctx.t(tab.label)}}</a>
+        </li>
+        {% }) %}
+      </ul>
+    </div>
+  {% } %}
   {% ctx.component.components.forEach(function(tab, index) { %}
   <div
     role="tabpanel"

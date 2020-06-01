@@ -111,21 +111,13 @@ export default class AddressComponent extends ContainerComponent {
     Field.prototype.init.call(this);
 
     if (!this.builderMode) {
-      if (this.component.provider) {
-        const {
-          provider,
-          providerOptions,
-        } = this.component;
-        this.provider = this.initializeProvider(provider, providerOptions);
-      }
-      else if (this.component.map) {
+      if (this.component.map) {
         // Fallback to legacy version where Google Maps was the only provider.
         this.component.provider = GoogleAddressProvider.name;
         this.component.providerOptions = this.component.providerOptions || {};
 
         const {
           map,
-          provider,
           providerOptions,
         } = this.component;
 
@@ -134,13 +126,19 @@ export default class AddressComponent extends ContainerComponent {
           region,
         } = map;
 
-        if (key) {
+        if (key && !_.get(providerOptions, 'params.key')) {
           _.set(providerOptions, 'params.key', key);
         }
-        if (region) {
+        if (region && !_.get(providerOptions, 'params.region')) {
           _.set(providerOptions, 'params.region', region);
         }
+      }
 
+      if (this.component.provider) {
+        const {
+          provider,
+          providerOptions,
+        } = this.component;
         this.provider = this.initializeProvider(provider, providerOptions);
       }
     }

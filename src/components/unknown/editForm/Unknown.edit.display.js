@@ -10,7 +10,7 @@ export default [
       'custom component documentation' +
       '</a>.',
     type: 'htmlelement',
-    weight: 5
+    weight: 5,
   },
   {
     type: 'textarea',
@@ -20,6 +20,6 @@ export default [
     input: true,
     key: 'componentJson',
     label: 'Custom Element JSON',
-    tooltip: 'Enter the JSON for this custom element.'
-  }
+    tooltip: 'Enter the JSON for this custom element.',
+  },
 ];

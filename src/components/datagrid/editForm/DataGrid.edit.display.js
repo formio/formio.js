@@ -1,7 +1,7 @@
 export default [
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'checkbox',
@@ -49,7 +49,7 @@ export default [
     input: true,
     customConditional(context) {
       return !context.data.disableAddingRemovingRows;
-    }
+    },
   },
   {
     type: 'select',
@@ -63,13 +63,13 @@ export default [
       values: [
         { label: 'Top', value: 'top' },
         { label: 'Bottom', value: 'bottom' },
-        { label: 'Both', value: 'both' }
-      ]
+        { label: 'Both', value: 'both' },
+      ],
     },
     weight: 411,
     customConditional(context) {
       return !context.data.disableAddingRemovingRows;
-    }
+    },
   },
   {
     type: 'checkbox',
@@ -77,7 +77,7 @@ export default [
     key: 'defaultOpen',
     tooltip: 'Check this if you would like for the rows of the edit grid to be defaulted to opened if values exist.',
     weight: 420,
-    input: true
+    input: true,
   },
   {
     type: 'checkbox',
@@ -91,7 +91,7 @@ export default [
     type: 'checkbox',
     label: 'Enable Row Groups',
     weight: 440,
-    input: true
+    input: true,
   },
   {
     label: 'Groups',
@@ -118,9 +118,9 @@ export default [
         input: true,
         key: 'label',
         widget: {
-          type: ''
+          type: '',
         },
-        row: '0-0'
+        row: '0-0',
       },
       {
         label: 'Number of Rows',
@@ -130,11 +130,11 @@ export default [
         type: 'number',
         input: true,
         key: 'numberOfRows',
-        row: '0-1'
-      }
+        row: '0-1',
+      },
     ],
     weight: 441,
-    conditional: { json: { var: 'data.enableRowGroups' } }
+    conditional: { json: { var: 'data.enableRowGroups' } },
   },
   {
     label: 'Hide Group on Header Click',
@@ -142,5 +142,30 @@ export default [
     input: true,
     key: 'groupToggle',
     weight: 442,
-    conditional: { json: { var: 'data.enableRowGroups' } }
-  }];
+    conditional: { json: { var: 'data.enableRowGroups' } },
+  },
+  {
+    type: 'checkbox',
+    label: 'Condensed',
+    key: 'condensed',
+    tooltip: 'Condense the size of the table.',
+    weight: 1090,
+    input: true,
+  },
+  {
+    type: 'checkbox',
+    label: 'Hover',
+    key: 'hover',
+    tooltip: 'Highlight a row on hover.',
+    weight: 1091,
+    input: true,
+  },
+  {
+    type: 'checkbox',
+    label: 'Striped',
+    key: 'striped',
+    tooltip: 'This will stripe the table if checked.',
+    weight: 1092,
+    input: true,
+  },
+];

@@ -278,7 +278,10 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
  * @returns {boolean}
  */
 export function checkCondition(component, row, data, form, instance) {
-  if (component.customConditional) {
+  if (component.conditional && component.conditional.condition) {
+    return instance.calculateCondition(component.conditional.condition);
+  }
+  else if (component.customConditional) {
     return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
   }
   else if (component.conditional && component.conditional.when) {

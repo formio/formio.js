@@ -1,6 +1,5 @@
 import { getContextComponents } from '../../../../utils/utils';
 
-/* eslint-disable quotes, max-len */
 export default [
   {
     weight: 0,
@@ -120,7 +119,7 @@ export default [
                 editor: 'ace',
                 input: true,
                 tableView: false,
-                placeholder: `result = (data['mykey'] > 1);`,
+                placeholder: "result = (data['mykey'] > 1);",
                 description: '"row", "data", and "component" variables are available. Return "result".',
                 customConditional({ row }) {
                   return row.type === 'javascript';
@@ -136,7 +135,7 @@ export default [
                 as: 'json',
                 input: true,
                 tableView: false,
-                placeholder: `{ ... }`,
+                placeholder: '{ ... }',
                 description: '"row", "data", "component" and "_" variables are available. Return the result to be passed to the action if truthy.',
                 customConditional({ row }) {
                   return row.type === 'json';
@@ -351,7 +350,7 @@ export default [
                 key: 'value',
                 editor: 'ace',
                 rows: 5,
-                placeholder: `value = data.myfield;`,
+                placeholder: 'value = data.myfield;',
                 type: 'textarea',
                 tableView: false,
                 description: '"row", "data", "component", and "result" variables are available. Return the value.',
@@ -366,7 +365,7 @@ export default [
                 key: 'schemaDefinition',
                 editor: 'ace',
                 rows: 5,
-                placeholder: `schema = { label: 'Updated' };`,
+                placeholder: "schema = { label: 'Updated' };",
                 type: 'textarea',
                 tableView: false,
                 description: '"row", "data", "component", and "result" variables are available. Return the schema.',
@@ -381,4 +380,3 @@ export default [
     ],
   },
 ];
-/* eslint-enable quotes, max-len */

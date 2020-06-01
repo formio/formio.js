@@ -67,6 +67,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   getComponent(path, fn) {
+    if (this.builderMode) {
+      return super.getComponent(path, fn);
+    }
+
     path = Array.isArray(path) ? path : [path];
     const [key, ...remainingPath] = path;
     let result = [];

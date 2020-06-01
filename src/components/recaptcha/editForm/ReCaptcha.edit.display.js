@@ -7,14 +7,14 @@ export default [
     values: [
       {
         label: 'Form Load',
-        value: 'formLoad'
+        value: 'formLoad',
       },
       {
         label: 'Button Click',
-        value: 'buttonClick'
-      }
+        value: 'buttonClick',
+      },
     ],
-    weight: 650
+    weight: 650,
   },
   {
     key: 'buttonKey',
@@ -24,74 +24,74 @@ export default [
     customConditional(context) {
       return context.data.eventType === 'buttonClick';
     },
-    weight: 660
+    weight: 660,
   },
   {
     key: 'label',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'errorLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'customClass',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'clearOnHide',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hidden',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'mask',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'dataGridLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tableView',
-    ignore: true
+    ignore: true,
   },
 ];

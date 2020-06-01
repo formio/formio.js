@@ -1,4 +1,5 @@
 import Evaluator from '../../../utils/Evaluator';
+
 import EditFormUtils from '../../_classes/component/editForm/utils';
 
 export default [
@@ -8,7 +9,7 @@ export default [
     key: 'enableDate',
     label: 'Enable Date Input',
     weight: 0,
-    tooltip: 'Enables date input for this field.'
+    tooltip: 'Enables date input for this field.',
   },
   {
     type: 'checkbox',
@@ -17,7 +18,7 @@ export default [
     label: 'Use Input to add moment.js for minDate',
     persistent: false,
     weight: 0,
-    tooltip: 'Enables to use input for moment functions instead of calendar.'
+    tooltip: 'Enables to use input for moment functions instead of calendar.',
   },
   {
     type: 'datetime',
@@ -55,7 +56,7 @@ export default [
     label: 'Use Input to add moment.js for maxDate',
     persistent: false,
     weight: 20,
-    tooltip: 'Enables to use input for moment functions instead of calendar.'
+    tooltip: 'Enables to use input for moment functions instead of calendar.',
   },
   {
     type: 'textfield',
@@ -93,7 +94,7 @@ export default [
     label: 'Disable specific dates or dates by range',
     placeholder: '(yyyy-MM-dd) or (yyyy-MM-dd - yyyy-MM-dd)',
     tooltip: 'Add dates that you want to blacklist. For example: \n \n 2025-02-21',
-    weight: 21
+    weight: 21,
   },
   {
     type: 'panel',
@@ -114,16 +115,16 @@ export default [
         key: 'datePicker.disableFunction',
         label: 'Disabling dates by a function',
         description: 'For more information check out the <a href="https://flatpickr.js.org/examples/#disabling-dates" target="_blank">Docs</a>',
-        weight: 22
+        weight: 22,
       },
       {
         type: 'htmlelement',
         tag: 'div',
         content: '<h4>Example</h4>' +
           `<pre>// Disable all weekends<br>date.getDay() === 0 || date.getDay() === 6</pre>
-          `
-      }
-    ]
+          `,
+      },
+    ],
   },
   {
     type: 'checkbox',
@@ -131,7 +132,7 @@ export default [
     key: 'datePicker.disableWeekends',
     label: 'Disable weekends',
     tooltip: 'Check to disable weekends',
-    weight: 23
+    weight: 23,
   },
   {
     type: 'checkbox',
@@ -139,6 +140,6 @@ export default [
     key: 'datePicker.disableWeekdays',
     label: 'Disable weekdays',
     tooltip: 'Check to disable weekdays',
-    weight: 23
-  }
+    weight: 23,
+  },
 ];

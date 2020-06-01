@@ -1,14 +1,10 @@
 import baseEditForm from '../component/Component.form';
 
-export default function(...extend) {
-  return baseEditForm([
-    {
-      key: 'data',
-      ignore: true
-    },
-    {
-      key: 'validation',
-      ignore: true
-    }
-  ], ...extend);
-}
+import NestedComponentEditData from './editForm/NestedComponent.edit.data';
+
+export default (...extend) => baseEditForm([
+  {
+    key: 'data',
+    components: NestedComponentEditData,
+  },
+], ...extend);

@@ -9,14 +9,14 @@ export default [
       values: [
         {
           label: 'Number',
-          value: 'number'
+          value: 'number',
         },
         {
           label: 'Select',
-          value: 'select'
+          value: 'select',
         },
-      ]
-    }
+      ],
+    },
   },
   {
     weight: 210,
@@ -25,7 +25,7 @@ export default [
     key: 'fields.day.placeholder',
     label: 'Placeholder',
     placeholder: 'Day Placeholder',
-    tooltip: 'The placeholder text that will appear when Day field is empty.'
+    tooltip: 'The placeholder text that will appear when Day field is empty.',
   },
   {
     weight: 215,
@@ -33,7 +33,7 @@ export default [
     label: 'Hidden',
     tooltip: 'Hide the Day part of the component.',
     key: 'fields.day.hide',
-    input: true
+    input: true,
   },
   {
     weight: 214,
@@ -41,6 +41,6 @@ export default [
     label: 'Day First',
     tooltip: 'Display the Day field before the Month field.',
     key: 'dayFirst',
-    input: true
+    input: true,
   },
 ];

@@ -299,6 +299,14 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
+  get conditions() {
+    return this.schema.settings?.conditions ?? [];
+  }
+
+  get variables() {
+    return this.schema.settings?.variables ?? [];
+  }
+
   /**
    * Add a language for translations
    *
@@ -986,6 +994,7 @@ export default class Webform extends NestedDataComponent {
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(this.element, 'keydown', this.executeShortcuts);
     this.currentForm = this;
+    this.hook('attachWebform', element, this);
     return childPromise.then(() => {
       this.emit('render', this.element);
 
@@ -1116,15 +1125,7 @@ export default class Webform extends NestedDataComponent {
     this.loading = false;
     let errors = this.errors;
     if (error) {
-      if (Array.isArray(error)) {
-        errors = errors.concat(error);
-      }
-      else {
-        errors.push(error);
-      }
-    }
-    else {
-      errors = super.errors;
+      errors = errors.concat(error);
     }
 
     errors = errors.concat(this.customErrors);

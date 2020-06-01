@@ -1,5 +1,6 @@
-import BuilderUtils from '../../../utils/builder';
 import _ from 'lodash';
+
+import BuilderUtils from '../../../utils/builder';
 
 export default [
   {
@@ -30,8 +31,8 @@ export default [
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] },
         validate: {
-          required: true
-        }
+          required: true,
+        },
       },
       {
         type: 'select',
@@ -48,7 +49,7 @@ export default [
           custom(context) {
             return BuilderUtils.getAvailableShortcuts(
               _.get(context, 'instance.options.editForm', {}),
-              _.get(context, 'instance.options.editComponent', {})
+              _.get(context, 'instance.options.editComponent', {}),
             );
           },
         },

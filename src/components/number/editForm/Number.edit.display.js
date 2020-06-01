@@ -1,11 +1,11 @@
 export default [
   {
     key: 'inputMask',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'allowMultipleMasks',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'showWordCount',
@@ -14,5 +14,5 @@ export default [
   {
     key: 'showCharCount',
     ignore: true,
-  }
+  },
 ];

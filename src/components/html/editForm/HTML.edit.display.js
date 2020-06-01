@@ -1,35 +1,35 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'textfield',
@@ -38,7 +38,7 @@ export default [
     weight: 50,
     label: 'HTML Tag',
     placeholder: 'HTML Element Tag',
-    tooltip: 'The tag of this HTML element.'
+    tooltip: 'The tag of this HTML element.',
   },
   {
     type: 'textfield',
@@ -47,7 +47,7 @@ export default [
     weight: 60,
     label: 'CSS Class',
     placeholder: 'CSS Class',
-    tooltip: 'The CSS class for this HTML element.'
+    tooltip: 'The CSS class for this HTML element.',
   },
   {
     type: 'datagrid',
@@ -61,15 +61,15 @@ export default [
         label: 'Attribute',
         key: 'attr',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
         key: 'value',
         input: true,
-        type: 'textfield'
-      }
-    ]
+        type: 'textfield',
+      },
+    ],
   },
   {
     type: 'textarea',
@@ -81,7 +81,7 @@ export default [
     tooltip: 'The content of this HTML element.',
     defaultValue: '<div class="well">Content</div>',
     key: 'content',
-    weight: 80
+    weight: 80,
   },
   {
     weight: 85,
@@ -89,6 +89,6 @@ export default [
     label: 'Refresh On Change',
     tooltip: 'Rerender the field whenever a value on the form changes.',
     key: 'refreshOnChange',
-    input: true
+    input: true,
   },
 ];

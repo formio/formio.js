@@ -191,14 +191,9 @@ export default class DayComponent extends Field {
     return this._years;
   }
 
-  setErrorClasses(elements, dirty, hasError) {
-    super.setErrorClasses(elements, dirty, hasError);
-    super.setErrorClasses([this.refs.day, this.refs.month, this.refs.year], dirty, hasError);
-  }
-
-  removeInputError(elements) {
-    super.removeInputError([this.refs.day, this.refs.month, this.refs.year]);
-    super.removeInputError(elements);
+  setErrorClasses(elements, dirty, options) {
+    super.setErrorClasses(elements, dirty, options);
+    super.setErrorClasses([this.refs.day, this.refs.month, this.refs.year], dirty, options);
   }
 
   init() {

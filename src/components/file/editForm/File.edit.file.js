@@ -1,5 +1,6 @@
-import Formio from '../../../Formio';
 import _ from 'lodash';
+
+import Formio from '../../../Formio';
 
 export default [
   {
@@ -18,8 +19,8 @@ export default [
           label: storage.title,
           value: key
         }));
-      }
-    }
+      },
+    },
   },
   {
     type: 'textfield',
@@ -30,8 +31,8 @@ export default [
     placeholder: 'Enter the url to post the files to.',
     tooltip: "See <a href='https://github.com/danialfarid/ng-file-upload#server-side' target='_blank'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.",
     conditional: {
-      json: { '===': [{ var: 'data.storage' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.storage' }, 'url'] },
+    },
   },
   {
     type: 'textfield',
@@ -44,12 +45,12 @@ export default [
       json: {
         in: [
           {
-            var: 'data.storage'
+            var: 'data.storage',
           },
-          ['indexeddb']
+          ['indexeddb'],
         ],
-      }
-    }
+      },
+    },
   },
   {
     type: 'textfield',
@@ -62,12 +63,12 @@ export default [
       json: {
         in: [
           {
-            var: 'data.storage'
+            var: 'data.storage',
           },
-          ['indexeddb']
+          ['indexeddb'],
         ],
-      }
-    }
+      },
+    },
   },
   {
     type: 'textarea',
@@ -83,11 +84,14 @@ export default [
 }`,
     conditional: {
       json: {
-        '===': [{
-          var: 'data.storage'
-        }, 'url']
-      }
-    }
+        '===': [
+          {
+            var: 'data.storage',
+          },
+          'url',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -99,11 +103,12 @@ export default [
     tooltip: 'Key name that you would like to modify for the file while calling API request.',
     conditional: {
       json: {
-        '===': [{
-          var: 'data.storage'
-        }, 'url']
-      }
-    }
+        '===': [
+          { var: 'data.storage' },
+          'url',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -112,7 +117,7 @@ export default [
     label: 'Directory',
     placeholder: '(optional) Enter a directory for the files',
     tooltip: 'This will place all the files uploaded in this field in the directory',
-    weight: 20
+    weight: 20,
   },
   {
     type: 'textfield',
@@ -121,7 +126,7 @@ export default [
     label: 'File Name Template',
     placeholder: '(optional) {{{name}}-{{guid}}}}}',
     tooltip: 'Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `moment` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.',
-    weight: 25
+    weight: 25,
   },
   {
     type: 'checkbox',
@@ -129,7 +134,7 @@ export default [
     key: 'image',
     label: 'Display as image(s)',
     tooltip: 'Instead of a list of linked files, images will be rendered in the view.',
-    weight: 30
+    weight: 30,
   },
   {
     type: 'checkbox',
@@ -139,8 +144,8 @@ export default [
     tooltip: 'When this is checked, the file download will send a POST request to the download URL with the x-jwt-token header. This will allow your endpoint to create a Private download system.',
     weight: 31,
     conditional: {
-      json: { '===': [{ var: 'data.storage' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.storage' }, 'url'] },
+    },
   },
   {
     type: 'textfield',
@@ -151,8 +156,8 @@ export default [
     tooltip: 'The image size for previewing images.',
     weight: 40,
     conditional: {
-      json: { '==': [{ var: 'data.image' }, true] }
-    }
+      json: { '==': [{ var: 'data.image' }, true] },
+    },
   },
   {
     type: 'checkbox',
@@ -160,7 +165,7 @@ export default [
     key: 'webcam',
     label: 'Enable web camera',
     tooltip: 'This will allow using an attached camera to directly take a picture instead of uploading an existing file.',
-    weight: 32
+    weight: 32,
   },
   {
     type: 'textfield',
@@ -171,8 +176,8 @@ export default [
     tooltip: 'The webcam size for taking pictures.',
     weight: 38,
     conditional: {
-      json: { '==': [{ var: 'data.webcam' }, true] }
-    }
+      json: { '==': [{ var: 'data.webcam' }, true] },
+    },
   },
   {
     type: 'datagrid',
@@ -186,15 +191,15 @@ export default [
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
         key: 'value',
         input: true,
-        type: 'textfield'
-      }
-    ]
+        type: 'textfield',
+      },
+    ],
   },
   {
     type: 'textfield',
@@ -203,7 +208,7 @@ export default [
     label: 'File Pattern',
     placeholder: '.pdf,.jpg',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file patterns.',
-    weight: 50
+    weight: 50,
   },
   {
     type: 'textfield',
@@ -212,7 +217,7 @@ export default [
     label: 'File Minimum Size',
     placeholder: '1MB',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
-    weight: 60
+    weight: 60,
   },
   {
     type: 'textfield',
@@ -221,6 +226,6 @@ export default [
     label: 'File Maximum Size',
     placeholder: '10MB',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
-    weight: 70
+    weight: 70,
   },
 ];

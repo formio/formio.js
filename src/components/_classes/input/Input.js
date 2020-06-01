@@ -1,5 +1,4 @@
 import Multivalue from '../multivalue/Multivalue';
-import { delay } from '../../../utils/utils';
 import Widgets from '../../../widgets';
 import _ from 'lodash';
 
@@ -230,9 +229,6 @@ export default class Input extends Multivalue {
       }
     }
 
-    // Add focus and blur events.
-    this.addFocusBlurEvents(element);
-
     if (this.options.submitOnEnter) {
       this.addEventListener(element, 'keypress', (event) => {
         const key = event.keyCode || event.which;
@@ -285,38 +281,5 @@ export default class Input extends Multivalue {
         }
       }
     }
-  }
-
-  addFocusBlurEvents(element) {
-    this.addEventListener(element, 'focus', () => {
-      if (this.root.focusedComponent !== this) {
-        if (this.root.pendingBlur) {
-          this.root.pendingBlur();
-        }
-
-        this.root.focusedComponent = this;
-
-        this.emit('focus', this);
-      }
-      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
-        this.root.pendingBlur.cancel();
-        this.root.pendingBlur = null;
-      }
-    });
-    this.addEventListener(element, 'blur', () => {
-      this.root.pendingBlur = delay(() => {
-        this.emit('blur', this);
-        if (this.component.validateOn === 'blur') {
-          this.root.triggerChange({}, {
-            instance: this,
-            component: this.component,
-            value: this.dataValue,
-            flags: {}
-          });
-        }
-        this.root.focusedComponent = null;
-        this.root.pendingBlur = null;
-      });
-    });
   }
 }

@@ -4,6 +4,8 @@ import builderComponent from './builderComponent';
 import builderComponents from './builderComponents';
 import builderEditForm from './builderEditForm';
 import builderPlaceholder from './builderPlaceholder';
+import builderForm from './builderForm';
+import builderFormEditForm from './builderFormEditForm';
 import builderSidebar from './builderSidebar';
 import builderSidebarGroup from './builderSidebarGroup';
 import builderWizard from './builderWizard';
@@ -59,10 +61,12 @@ export default {
     if (!text) {
       return text;
     }
+
     switch (type) {
       case 'class':
-        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
+        return this.cssClasses[text] ?? text;
     }
+
     return text;
   },
   defaultIconset: 'fa',
@@ -73,6 +77,8 @@ export default {
   builderComponent,
   builderComponents,
   builderEditForm,
+  builderFormEditForm,
+  builderForm,
   builderPlaceholder,
   builderSidebar,
   builderSidebarGroup,

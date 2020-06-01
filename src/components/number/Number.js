@@ -62,6 +62,14 @@ export default class NumberComponent extends Input {
     this.numberMask = this.createNumberMask();
   }
 
+  attachElement(element, index) {
+    super.attachElement(element, index);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(this.formatValue(this.parseValue(element.value)));
+    });
+  }
+
   /**
    * Creates the number mask for normal numbers.
    *
@@ -197,13 +205,5 @@ export default class NumberComponent extends Input {
       return value.map(this.getMaskedValue).join(', ');
     }
     return this.getMaskedValue(value);
-  }
-
-  addFocusBlurEvents(element) {
-    super.addFocusBlurEvents(element);
-
-    this.addEventListener(element, 'blur', () => {
-      element.value = this.getValueAsString(this.formatValue(this.parseValue(element.value)));
-    });
   }
 }

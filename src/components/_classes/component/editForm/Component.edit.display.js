@@ -1,4 +1,7 @@
-/* eslint-disable max-len */
+import { getContextComponents } from '../../../../utils/utils';
+
+import EditFormUtils from './utils';
+
 export default [
   {
     weight: 0,
@@ -9,8 +12,8 @@ export default [
     placeholder: 'Field Label',
     tooltip: 'The label for this field that will appear next to it.',
     validate: {
-      required: true
-    }
+      required: true,
+    },
   },
   {
     type: 'select',
@@ -28,9 +31,9 @@ export default [
         { label: 'Left (Right-aligned)', value: 'left-right' },
         { label: 'Right (Left-aligned)', value: 'right-left' },
         { label: 'Right (Right-aligned)', value: 'right-right' },
-        { label: 'Bottom', value: 'bottom' }
-      ]
-    }
+        { label: 'Bottom', value: 'bottom' },
+      ],
+    },
   },
   {
     type: 'number',
@@ -44,16 +47,16 @@ export default [
     suffix: '%',
     validate: {
       min: 0,
-      max: 100
+      max: 100,
     },
     conditional: {
       json: {
         and: [
           { '!==': [{ var: 'data.labelPosition' }, 'top'] },
           { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
-        ]
-      }
-    }
+        ],
+      },
+    },
   },
   {
     type: 'number',
@@ -67,16 +70,16 @@ export default [
     suffix: '%',
     validate: {
       min: 0,
-      max: 100
+      max: 100,
     },
     conditional: {
       json: {
         and: [
           { '!==': [{ var: 'data.labelPosition' }, 'top'] },
           { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
-        ]
-      }
-    }
+        ],
+      },
+    },
   },
   {
     weight: 100,
@@ -85,7 +88,7 @@ export default [
     key: 'placeholder',
     label: 'Placeholder',
     placeholder: 'Placeholder',
-    tooltip: 'The placeholder text that will appear when this field is empty.'
+    tooltip: 'The placeholder text that will appear when this field is empty.',
   },
   {
     weight: 200,
@@ -122,7 +125,7 @@ export default [
     key: 'customClass',
     label: 'Custom CSS Class',
     placeholder: 'Custom CSS Class',
-    tooltip: 'Custom CSS class to add to this component.'
+    tooltip: 'Custom CSS class to add to this component.',
   },
   {
     weight: 600,
@@ -131,7 +134,7 @@ export default [
     key: 'tabindex',
     label: 'Tab Index',
     placeholder: '0',
-    tooltip: 'Sets the tabindex attribute of this component to override the tab order of the form. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex\'>MDN documentation</a> on tabindex for more information.'
+    tooltip: 'Sets the tabindex attribute of this component to override the tab order of the form. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex\'>MDN documentation</a> on tabindex for more information.',
   },
   {
     weight: 1100,
@@ -139,7 +142,7 @@ export default [
     label: 'Hidden',
     tooltip: 'A hidden field is still a part of the form, but is hidden from view.',
     key: 'hidden',
-    input: true
+    input: true,
   },
   {
     weight: 1200,
@@ -147,7 +150,7 @@ export default [
     label: 'Hide Label',
     tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
     key: 'hideLabel',
-    input: true
+    input: true,
   },
   {
     weight: 1350,
@@ -155,7 +158,7 @@ export default [
     label: 'Initial Focus',
     tooltip: 'Make this field the initially focused element on this form.',
     key: 'autofocus',
-    input: true
+    input: true,
   },
   {
     weight: 1370,
@@ -166,7 +169,7 @@ export default [
     input: true,
     customConditional(context) {
       return context.instance.options.editComponent.inDataGrid;
-    }
+    },
   },
   {
     weight: 1400,
@@ -174,7 +177,7 @@ export default [
     label: 'Disabled',
     tooltip: 'Disable the form input.',
     key: 'disabled',
-    input: true
+    input: true,
   },
   {
     weight: 1500,
@@ -182,7 +185,7 @@ export default [
     label: 'Table View',
     tooltip: 'Shows this value within the table view of the submissions.',
     key: 'tableView',
-    input: true
+    input: true,
   },
   {
     weight: 1600,
@@ -190,7 +193,162 @@ export default [
     label: 'Modal Edit',
     tooltip: 'Opens up a modal to edit the value of this component.',
     key: 'modalEdit',
-    input: true
+    input: true,
+  },
+  {
+    key: 'conditionalVisibilityHeading',
+    type: 'htmlelement',
+    weight: 1699,
+    input: false,
+    tag: 'h4',
+    content: 'Conditional Visibility',
+  },
+  {
+    weight: 1700,
+    type: 'panel',
+    title: 'Simple',
+    key: 'simple-conditional',
+    theme: 'default',
+    components: [
+      {
+        type: 'select',
+        input: true,
+        label: 'This component should Display:',
+        key: 'conditional.show',
+        dataSrc: 'values',
+        data: {
+          values: [
+            { label: 'True', value: 'true' },
+            { label: 'False', value: 'false' },
+          ],
+        },
+      },
+      {
+        type: 'select',
+        input: true,
+        label: 'When the form component:',
+        key: 'conditional.when',
+        dataSrc: 'custom',
+        valueProperty: 'value',
+        data: {
+          custom(context) {
+            return getContextComponents(context);
+          },
+        },
+      },
+      {
+        type: 'textfield',
+        input: true,
+        label: 'Has the value:',
+        key: 'conditional.eq',
+      },
+    ],
+  },
+  EditFormUtils.javaScriptValue(
+    'Advanced Conditions',
+    'customConditional',
+    1800,
+    [
+      {
+        type: 'js',
+        property: 'customConditional',
+        example: '<p>You must assign the <strong>show</strong> variable a boolean result.</p>' +
+        '<p><strong>Note: Advanced Conditional logic will override the results of the Simple Conditional logic.</strong></p>' +
+        '<h5>Example</h5><pre>show = !!data.showMe;</pre>',
+      },
+      {
+        type: 'json',
+        property: 'conditional.json',
+        example: '<p><a href="http://formio.github.io/formio.js/app/examples/conditions.html" target="_blank">Click here for an example</a></p>',
+      },
+      {
+        type: 'condition',
+        property: 'conditional.condition',
+      },
+    ],
+  ),
+  {
+    key: 'pdfLayoutHeading',
+    type: 'htmlelement',
+    weight: 1899,
+    input: false,
+    tag: 'h4',
+    content: 'PDF Layout',
+  },
+  {
+    weight: 1900,
+    label: 'HTML Attributes',
+    type: 'datamap',
+    input: true,
+    key: 'attributes',
+    keyLabel: 'Attribute Name',
+    valueComponent: {
+      type: 'textfield',
+      key: 'value',
+      label: 'Attribute Value',
+      input: true,
+    },
+    tooltip: 'Provide a map of HTML attributes for component\'s input element (attributes provided by other component settings or other attributes generated by form.io take precedence over attributes in this grid)',
+    addAnother: 'Add Attribute',
+  },
+  {
+    type: 'panel',
+    legend: 'PDF Overlay',
+    title: 'PDF Overlay',
+    key: 'overlay',
+    tooltip: 'The settings inside apply only to the PDF forms.',
+    weight: 2000,
+    collapsible: true,
+    collapsed: true,
+    components: [
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.style',
+        label: 'Style',
+        placeholder: '',
+        tooltip: 'Custom styles that should be applied to this component when rendered in PDF.',
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.page',
+        label: 'Page',
+        placeholder: '',
+        tooltip: 'The PDF page to place this component.',
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.left',
+        label: 'Left',
+        placeholder: '',
+        tooltip: 'The left margin within a page to place this component.',
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.top',
+        label: 'Top',
+        placeholder: '',
+        tooltip: 'The top margin within a page to place this component.',
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.width',
+        label: 'Width',
+        placeholder: '',
+        tooltip: 'The width of the component (in pixels).',
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.height',
+        label: 'Height',
+        placeholder: '',
+        tooltip: 'The height of the component (in pixels).',
+      },
+    ],
   },
 ];
-/* eslint-enable max-len */

@@ -32,6 +32,14 @@ export default class CurrencyComponent extends NumberComponent {
     super(component, options, data);
   }
 
+  attachElement(element, index) {
+    super.attachElement(element, index);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
+    });
+  }
+
   /**
    * Creates the number mask for currency numbers.
    *
@@ -164,13 +172,5 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
     return value;
-  }
-
-  addFocusBlurEvents(element) {
-    super.addFocusBlurEvents(element);
-
-    this.addEventListener(element, 'blur', () => {
-      element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
-    });
   }
 }

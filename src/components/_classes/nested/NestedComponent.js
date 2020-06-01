@@ -183,6 +183,31 @@ export default class NestedComponent extends Field {
     return result;
   }
 
+  everyExportComponent(fn) {
+    const components = this.getComponents();
+    _.each(components, (component, index) => {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyExportComponent === 'function') {
+        if (component.everyExportComponent(fn) === false) {
+          return false;
+        }
+      }
+    });
+  }
+
+  flattenExportComponents() {
+    const result = {};
+
+    this.everyExportComponent((component) => {
+      result[component.component.flattenAs || component.key] = component;
+    });
+
+    return result;
+  }
+
   /**
    * Perform an iteration over each component within this container component.
    *

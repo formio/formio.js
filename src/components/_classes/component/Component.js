@@ -6,9 +6,15 @@ import _ from 'lodash';
 import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
+import {
+  Conjunctions,
+  Operators,
+  Transformers,
+  ValueSources,
+} from '../../../validator';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue, delay } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
@@ -336,6 +342,8 @@ export default class Component extends Element {
     // Nested forms don't have parents so we need to pass their path in.
     this._parentPath = this.options.parentPath || '';
 
+    this.resetCaches();
+
     /**
      * Determines if this component is visible, or not.
      */
@@ -542,7 +550,7 @@ export default class Component extends Element {
    */
   get visible() {
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (this.builderMode || this.options.showHiddenFields) {
+    if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
     if (
@@ -577,8 +585,12 @@ export default class Component extends Element {
     return this.options.attachMode === 'builder';
   }
 
+  get previewMode() {
+    return Boolean(this.options.preview);
+  }
+
   get calculatedPath() {
-    console.error('component.calculatedPath was deprecated, use component.path instead.');
+    console.warn('component.calculatedPath was deprecated, use component.path instead.');
     return this.path;
   }
 
@@ -946,7 +958,7 @@ export default class Component extends Element {
     const isVisible = this.visible;
     this.rendered = true;
 
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
         id: this.id,
@@ -967,7 +979,7 @@ export default class Component extends Element {
   }
 
   attach(element) {
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       this.componentModal = new ComponentModal(this, element);
       this.setOpenModalElement();
     }
@@ -1003,6 +1015,7 @@ export default class Component extends Element {
 
     // Attach logic.
     this.attachLogic();
+    this.addFocusBlurEvents(element);
     this.autofocus();
 
     // Allow global attach.
@@ -1014,6 +1027,45 @@ export default class Component extends Element {
     }
 
     return NativePromise.resolve();
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focusin', (event) => {
+      event.stopPropagation();
+
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+        this.addClass(element, 'formio-active-component');
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'focusout', (event) => {
+      event.stopPropagation();
+
+      this.root.pendingBlur = delay(() => {
+        this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({}, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: {}
+          });
+        }
+        this.root.focusedComponent = null;
+        this.removeClass(element, 'formio-active-component');
+        this.root.pendingBlur = null;
+      });
+    });
   }
 
   addShortcut(element, shortcut) {
@@ -1340,6 +1392,7 @@ export default class Component extends Element {
       iconClass: this.iconClass.bind(this),
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
+      options: this.options,
     }, additional));
   }
 
@@ -1487,7 +1540,7 @@ export default class Component extends Element {
   conditionallyVisible(data, row) {
     data = data || this.rootValue;
     row = row || this.data;
-    if (this.builderMode || !this.hasCondition()) {
+    if (this.builderMode || this.previewMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
@@ -1509,7 +1562,7 @@ export default class Component extends Element {
       row || this.data,
       data || this.rootValue,
       this.root ? this.root._form : {},
-      this
+      this,
     );
   }
 
@@ -1521,7 +1574,7 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    if (!this.builderMode && this.fieldLogic(data, row)) {
+    if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
 
@@ -1687,17 +1740,6 @@ export default class Component extends Element {
     }, false);
   }
 
-  // Deprecated
-  addInputError(message, dirty, elements) {
-    this.addMessages(message);
-    this.setErrorClasses(elements, dirty, !!message);
-  }
-
-  // Deprecated
-  removeInputError(elements) {
-    this.setErrorClasses(elements, true, false);
-  }
-
   /**
    * Add a new input error to this element.
    *
@@ -1728,22 +1770,36 @@ export default class Component extends Element {
     }
   }
 
-  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
-    this.clearErrorClasses();
-    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
-    if (hasErrors) {
-      // Add error classes
-      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+  getMessageClass(level) {
+    return this.options[`component${_.capitalize(level)}Class`] || this.transform('class', `formio-${level}-wrapper`);
+  }
 
-      if (dirty && this.options.highlightErrors) {
-        this.addClass(this.element, this.options.componentErrorClass);
-      }
-      else {
-        this.addClass(this.element, 'has-error');
-      }
-    }
+  setErrorClasses(elements, dirty, {
+    hasErrors,
+    hasWarnings,
+    hasInfos,
+    hasMessages,
+  }) {
+    this.clearErrorClasses();
+
     if (hasMessages) {
       this.addClass(this.element, 'has-message');
+    }
+
+    if (hasErrors) {
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.getMessageClass('error'));
+      }
+    }
+    else if (hasWarnings) {
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.getMessageClass('warning'));
+      }
+    }
+    else if (hasInfos) {
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.getMessageClass('info'));
+      }
     }
   }
 
@@ -2087,12 +2143,17 @@ export default class Component extends Element {
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
-    if (this.component.customDefaultValue && !this.options.preview) {
-      defaultValue = this.evaluate(
-        this.component.customDefaultValue,
-        { value: '' },
-        'value'
-      );
+    if (!this.previewMode) {
+      if (this.component.customDefaultValueVariable) {
+        defaultValue = this.calculateVariable(this.component.customDefaultValueVariable);
+      }
+      else if (this.component.customDefaultValue) {
+        defaultValue = this.evaluate(
+          this.component.customDefaultValue,
+          { value: '' },
+          'value'
+        );
+      }
     }
 
     if (this.defaultMask) {
@@ -2351,7 +2412,7 @@ export default class Component extends Element {
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (!this.component.calculateValue || shouldBeCleared) {
+    if (!this.component.calculateValue || shouldBeCleared || this.builderMode || this.previewMode) {
       return false;
     }
 
@@ -2368,11 +2429,13 @@ export default class Component extends Element {
     }
 
     // Calculate the new value.
-    const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: dataValue,
-      data,
-      row: row || this.data
-    }, 'value') || this.emptyValue;
+    const calculatedValue = this.component.calculateValueVariable
+      ? this.calculateVariable(this.component.calculateValueVariable)
+      : this.evaluate(this.component.calculateValue, {
+        value: dataValue,
+        data,
+        row: row || this.data
+      }, 'value');
 
     const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
     const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
@@ -2423,6 +2486,309 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
     return this.calculateComponentValue(data, flags, row);
+  }
+
+  get logicOptions() {
+    return {
+      targetComponentInstance: this,
+      sourceComponentInstance: this,
+      formInstance: this.root,
+    };
+  }
+
+  get engineOptions() {
+    return {
+    };
+  }
+
+  get logicContext() {
+    return {
+      options: this.logicOptions,
+      engineOptions: this.engineOptions,
+    };
+  }
+
+  get conditions() {
+    return this.component.conditions ?? [];
+  }
+
+  get variables() {
+    return this.component.variables ?? [];
+  }
+
+  updateLogicContext(context) {
+    return {
+      ...context,
+      targetComponentInstance: this,
+    };
+  }
+
+  calculateCondition(name, context = this.logicContext) {
+    // Identify recurrent reference.
+    if (this.lockedConditions.has(name)) {
+      throw new Error(`Found recurrent reference with condition '${name}'.`);
+    }
+
+    const cachedValue = this.conditionsCache[name];
+    if (cachedValue) {
+      return cachedValue;
+    }
+
+    const updatedContext = this.updateLogicContext(context);
+
+    const condition = this.conditions.find(({ key }) => (key === name));
+    if (!condition) {
+      if (this.parent) {
+        return this.parent.calculateCondition(name, updatedContext);
+      }
+
+      return false;
+    }
+
+    this.lockedConditions.add(name);
+
+    const {
+      conjunction = 'and',
+      parts = [],
+    } = condition;
+
+    const Conjunction = Conjunctions.getConjunction(conjunction);
+    if (!Conjunction) {
+      return false;
+    }
+
+    const conjunctionInstance = new Conjunction(updatedContext);
+
+    const result = conjunctionInstance.execute(
+      parts.map(((part) => {
+        const evaluationContext = {
+          part,
+          context: updatedContext,
+        };
+        const evaluator = ({
+          part = evaluationContext.part,
+          context = evaluationContext.context,
+        } = evaluationContext) => this.calculateConditionPart(
+          part,
+          context,
+        );
+        evaluator.evaluationContext = evaluationContext;
+
+        return Conjunction.lazyConditionPartsEvaluation ? evaluator : evaluator();
+      })),
+    );
+
+    this.lockedConditions.delete(name);
+
+    const {
+      cachable = true,
+    } = (updatedContext.engineOptions ?? this.engineOptions);
+
+    if (cachable) {
+      this.conditionsCache[name] = result;
+    }
+
+    return result;
+  }
+
+  calculateConditionPart(conditionPart, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
+    const {
+      type,
+    } = conditionPart;
+
+    if (type === 'existing') {
+      const {
+        condition,
+      } = conditionPart;
+      return this.calculateCondition(condition, updatedContext);
+    }
+
+    if (type === 'new') {
+      const {
+        operator,
+      } = conditionPart;
+      return this.calculateOperator(operator, updatedContext);
+    }
+
+    return false;
+  }
+
+  calculateOperator(operator, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
+    const {
+      name,
+      [`${name}Arguments`]: args = {},
+      [`${name}Options`]: options = {},
+    } = operator;
+
+    const Operator = Operators.getOperator(name);
+    if (!Operator) {
+      return false;
+    }
+
+    const operatorInstance = new Operator(updatedContext);
+
+    return operatorInstance.execute(
+      _.mapValues(args, ({
+        valueSource,
+        [`${valueSource}Input`]: input,
+      }) => {
+        const evaluationContext = {
+          valueSource,
+          input,
+          context: updatedContext,
+        };
+        const evaluator = ({
+          valueSource = evaluationContext.valueSource,
+          input = evaluationContext.input,
+          context = evaluationContext.context,
+        } = evaluationContext) => this.calculateValueDefinition(
+          valueSource,
+          input,
+          context,
+        );
+        evaluator.evaluationContext = evaluationContext;
+
+        return Operator.lazyArgsEvaluation ? evaluator : evaluator();
+      }),
+      options,
+    );
+  }
+
+  calculateValueDefinition(valueSource, input, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
+    const ValueSource = ValueSources.getValueSource(valueSource);
+    if (!ValueSource) {
+      return null;
+    }
+
+    const valueSourceInstance = new ValueSource(updatedContext);
+
+    return valueSourceInstance.getValue(input);
+  }
+
+  calculateVariable(name, context = this.logicContext) {
+    // Identify recurrent reference.
+    if (this.lockedVariables.has(name)) {
+      throw new Error(`Found recurrent reference with variable '${name}'.`);
+    }
+
+    const cachedValue = this.variablesCache[name];
+    if (cachedValue) {
+      return cachedValue;
+    }
+
+    const updatedContext = this.updateLogicContext(context);
+
+    const variable = this.variables.find(({ key }) => (key === name));
+    if (!variable) {
+      if (this.parent) {
+        return this.parent.calculateVariable(name, updatedContext);
+      }
+
+      return null;
+    }
+
+    this.lockedVariables.add(name);
+
+    const {
+      valueSource,
+      [`${valueSource}Input`]: input,
+      transform = {},
+    } = variable;
+
+    const evaluationContext = {
+      valueSource,
+      input,
+      context: updatedContext,
+    };
+    const valueEvaluator = ({
+      valueSource = evaluationContext.valueSource,
+      input = evaluationContext.input,
+      context = evaluationContext.context,
+    } = evaluationContext) => this.calculateValueDefinition(
+      valueSource,
+      input,
+      context,
+    );
+    valueEvaluator.evaluationContext = evaluationContext;
+
+    const result = this.applyTransform(valueEvaluator, transform, updatedContext);
+    this.lockedVariables.delete(name);
+
+    const {
+      cachable = true,
+    } = (updatedContext.engineOptions ?? this.engineOptions);
+
+    if (cachable) {
+      this.variablesCache[name] = result;
+    }
+
+    return result;
+  }
+
+  applyTransform(valueEvaluator, transform, context = this.logicContext) {
+    const updatedContext = this.updateLogicContext(context);
+
+    const {
+      name = 'identity',
+      [`${name}Arguments`]: args = {},
+      [`${name}Options`]: options = {},
+    } = transform;
+
+    const Transformer = Transformers.getTransformer(name);
+    if (!Transformer) {
+      return valueEvaluator();
+    }
+
+    const transformerInstance = new Transformer(updatedContext);
+
+    return transformerInstance.transform(
+      (Transformer.lazyValueEvaluation ? valueEvaluator : valueEvaluator()),
+      _.mapValues(args, ({
+        valueSource,
+        [`${valueSource}Input`]: input,
+      }) => {
+        const evaluationContext = {
+          valueSource,
+          input,
+          context: updatedContext,
+        };
+        const evaluator = ({
+          valueSource = evaluationContext.valueSource,
+          input = evaluationContext.input,
+          context = evaluationContext.context,
+        } = evaluationContext) => this.calculateValueDefinition(
+          valueSource,
+          input,
+          context,
+        );
+        evaluator.evaluationContext = evaluationContext;
+
+        return Transformer.lazyArgsEvaluation ? evaluator : evaluator();
+      }),
+      options,
+    );
+  }
+
+  getRowIndexes() {
+    const indexes = {};
+
+    let currentComponent = this;
+    while (currentComponent.parent) {
+      const { parent } = currentComponent;
+      if (['editgrid', 'datagrid'].includes(parent.component.type)) {
+        indexes[parent.path] = currentComponent.rowIndex;
+      }
+
+      currentComponent = parent;
+    }
+
+    return indexes;
   }
 
   /**
@@ -2534,6 +2900,13 @@ export default class Component extends Element {
     return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
+  resetCaches() {
+    this.conditionsCache = {};
+    this.variablesCache = {};
+    this.lockedConditions = new Set();
+    this.lockedVariables = new Set();
+  }
+
   /**
    * Check the conditions, calculations, and validity of a single component and triggers an update if
    * something changed.
@@ -2547,6 +2920,9 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+
+    this.resetCaches();
+
     this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
@@ -2560,7 +2936,7 @@ export default class Component extends Element {
     // We need to perform a test to see if they provided a default value that is not valid and immediately show
     // an error if that is the case.
     let isDirty = !this.builderMode &&
-      !this.options.preview &&
+      !this.previewMode &&
       !this.isEmpty(this.defaultValue) &&
       this.isEqual(this.defaultValue, this.dataValue);
 
@@ -2604,9 +2980,9 @@ export default class Component extends Element {
   }
 
   clearErrorClasses() {
-    this.removeClass(this.element, this.options.componentErrorClass);
-    this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'has-error');
+    this.removeClass(this.element, this.getMessageClass('error'));
+    this.removeClass(this.element, this.getMessageClass('warning'));
+    this.removeClass(this.element, this.getMessageClass('info'));
     this.removeClass(this.element, 'has-message');
   }
 
@@ -2629,7 +3005,18 @@ export default class Component extends Element {
       }
     }
 
-    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    const levels = messages.map((message) => message.level);
+    const hasErrors = levels.includes('error');
+    const hasWarnings = levels.includes('warning');
+    const hasInfos = levels.includes('info');
+    const hasMessages = Boolean(messages.length);
+
+    const options = {
+      hasErrors,
+      hasWarnings,
+      hasInfos,
+      hasMessages,
+    };
 
     if (messages.length) {
       if (this.refs.messageContainer) {
@@ -2644,7 +3031,7 @@ export default class Component extends Element {
       this.emit('componentError', this.error);
       this.addMessages(messages, dirty, this.refs.input);
       if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+        this.setErrorClasses(inputRefs, dirty, options);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2653,7 +3040,7 @@ export default class Component extends Element {
       }
       this.error = null;
       if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+        this.setErrorClasses(inputRefs, dirty, options);
       }
       this.clearErrorClasses();
     }
@@ -2689,6 +3076,10 @@ export default class Component extends Element {
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
+      // Force valid if we in builder mode
+      () => this.builderMode,
+      // Force valid if we in preview mode
+      () => this.previewMode,
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
@@ -2829,7 +3220,7 @@ export default class Component extends Element {
 
   attachLogic() {
     // Do not attach logic during builder mode.
-    if (this.builderMode) {
+    if (this.builderMode || this.previewMode) {
       return;
     }
     this.logic.forEach((logic) => {
@@ -2883,7 +3274,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode && !this.options.preview) {
+    if (this.component.autofocus && !this.builderMode && !this.previewMode) {
       this.on('render', () => this.focus(), true);
     }
   }

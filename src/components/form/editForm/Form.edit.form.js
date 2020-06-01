@@ -4,7 +4,7 @@ export default [
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form?limit=4294967295&select=_id,title'
+      url: '/form?limit=4294967295&select=_id,title',
     },
     searchField: 'title__regex',
     template: '<span>{{ item.title }}</span>',
@@ -34,6 +34,6 @@ export default [
     weight: 20,
     key: 'reference',
     label: 'Save as reference',
-    tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.'
-  }
+    tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
+  },
 ];

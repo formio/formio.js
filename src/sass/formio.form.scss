@@ -7,7 +7,8 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 }
 
 .formio-error-wrapper,
-.formio-warning-wrapper {
+.formio-warning-wrapper,
+.formio-info-wrapper {
   padding: 1em;
 }
 
@@ -23,17 +24,27 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   border-color: #ffeeba;
 }
 
+.formio-info-wrapper {
+  color: #004085;
+}
+
 .formio-disabled-input .form-control.flatpickr-input {
   background-color: #eee;
 }
 
-.builder-component.has-error .invalid-feedback,
-.formio-component.has-error .invalid-feedback,
-.formio-component.alert-danger .invalid-feedback,
-.formio-component.has-message .invalid-feedback {
-  display: block;
-  color: inherit;
-  margin-top: 4px;
+.builder-component,
+.formio-component {
+  &.has-error,
+  &.alert-danger,
+  &.alert-warning,
+  &.alert-info,
+  &.has-message {
+    .invalid-feedback {
+      display: block;
+      color: inherit;
+      margin-top: 4px;
+    }
+  }
 }
 
 .formio-errors {
@@ -914,9 +925,14 @@ body.formio-dialog-open {
   }
 }
 
-.formio-component.alert-danger .help-block,
-.formio-component.alert-warning .help-block {
-  color: inherit;
+.formio-component {
+  &.alert-danger,
+  &.alert-warning,
+  &.alert-info {
+    .help-block {
+      color: inherit;
+    }
+  }
 }
 
 .tree {
@@ -1185,7 +1201,7 @@ div[data-oembed-url] {
 
 //show textarea submission in read-only mode and PDF view with initial line and space formatting
 div[read-only="true"] {
-  .formio-component-textarea { 
+  .formio-component-textarea {
     div[ref="input"] {
       white-space: pre-wrap;
     }
