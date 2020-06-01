@@ -3,7 +3,7 @@ import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator } from '../../utils/utils';
+import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from '../../utils/utils';
 import templates from './templates';
 
 const EditRowState = {
@@ -11,6 +11,7 @@ const EditRowState = {
   Editing: 'editing',
   Saved: 'saved',
   Removed: 'removed',
+  Draft: 'draft',
 };
 
 export default class EditGridComponent extends NestedArrayComponent {
@@ -465,6 +466,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   editRow(rowIndex) {
     const editRow = this.editRows[rowIndex];
+    if (!editRow) {
+      return;
+    }
     editRow.state = EditRowState.Editing;
     const dataSnapshot = fastCloneDeep(editRow.data);
 
@@ -536,8 +540,12 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const editRow = this.editRows[rowIndex];
-    if (!this.validateRow(editRow, true)) {
-      return false;
+    const isRowValid = this.validateRow(editRow, true);
+
+    if (!this.component.draft) {
+      if (!isRowValid) {
+        return false;
+      }
     }
 
     if (this.saveEditMode) {
@@ -559,7 +567,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    editRow.state = EditRowState.Saved;
+    editRow.state = this.component.draft && isRowValid ? EditRowState.Draft : EditRowState.Saved;
     editRow.backup = null;
 
     this.updateValue();
@@ -720,15 +728,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return true;
-  }
-
-  get defaultValue() {
-    const value = super.defaultValue;
-    const defaultValue = Array.isArray(value) ? value : [];
-
-    _.times(this.minLength - defaultValue.length, () => defaultValue.push({}));
-
-    return defaultValue;
   }
 
   setValue(value, flags = {}) {
