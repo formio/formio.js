@@ -12,7 +12,7 @@ import BuilderUtils from '../../utils/builder';
 import _ from 'lodash';
 import Templates from '../../templates/Templates';
 require('../../components/builder');
-import { FormEditForms } from './formEditForm';
+import { FormEditForms } from '../../formEditForm';
 
 const nestedDataComponents = ['container', 'datagrid', 'editgrid'];
 const arrayDataComponents = ['datagrid', 'editgrid'];
