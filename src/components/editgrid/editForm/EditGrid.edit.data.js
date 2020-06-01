@@ -12,8 +12,8 @@ export default [
     input: true,
     weight: 105,
     key: 'draft',
-    label: 'Allow save rows as draft',
-    tooltip: '',
+    label: 'Draft',
+    tooltip: 'Allow save rows even if it\'s data is invalid. Errors will occur when try to submit with invalid rows.',
   },
   {
     key: 'defaultValue',

@@ -357,6 +357,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
             return view;
           },
+          state: this.editRows[rowIndex].state,
         },
       );
     }
@@ -428,6 +429,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   addRowModal(rowIndex) {
     const modalContent =  this.ce('div');
     const editRow = this.editRows[rowIndex];
+    editRow.willBeSaved = false;
     const { components } = editRow;
     modalContent.innerHTML = this.renderComponents(components);
     const dialog = this.component.modal ? this.createModal(modalContent) : undefined;
@@ -438,21 +440,20 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.alert = new Alert(dialog.refs.dialogContents, this);
 
     this.addEventListener(dialog, 'close', () => {
-      if (!this.validateRow(editRow, true)) {
-        this.removeRow(rowIndex);
+      if (!editRow.willBeSaved) {
+        this.cancelRow(rowIndex);
       }
-      this.alert.clear();
-      this.alert = null;
+      if (this.alert) {
+        this.alert.clear();
+        this.alert = null;
+      }
     });
 
     dialog.refs.dialogContents.appendChild(this.ce('button', {
       class: 'btn btn-primary',
       onClick: () => {
-        if (this.validateRow(editRow, true)) {
-          if (this.alert) {
-            this.alert.clear();
-            this.alert = null;
-          }
+        if (this.validateRow(editRow, true) || this.component.draft) {
+          editRow.willBeSaved = true;
           dialog.close();
           this.saveRow(rowIndex);
         }
@@ -461,14 +462,17 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
       },
     }, this.component.saveRow || 'Save'));
+
     return this.attachComponents(modalContent, components);
   }
 
   editRow(rowIndex) {
     const editRow = this.editRows[rowIndex];
-    if (!editRow) {
+    const isAlreadyEditing = editRow.state === EditRowState.Editing || editRow.state === EditRowState.New;
+    if (!editRow || isAlreadyEditing) {
       return;
     }
+    editRow.prevState = editRow.state;
     editRow.state = EditRowState.Editing;
     const dataSnapshot = fastCloneDeep(editRow.data);
 
@@ -517,7 +521,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         break;
       }
       case EditRowState.Editing: {
-        editRow.state = EditRowState.Saved;
+        editRow.state = editRow.prevState;
 
         if (this.inlineEditMode) {
           this.dataValue[rowIndex] = editRow.backup;
@@ -567,7 +571,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    editRow.state = this.component.draft && isRowValid ? EditRowState.Draft : EditRowState.Saved;
+    editRow.state = this.component.draft && !isRowValid ? EditRowState.Draft : EditRowState.Saved;
     editRow.backup = null;
 
     this.updateValue();

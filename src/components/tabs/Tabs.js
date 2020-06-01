@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
-import { getArrayFromComponentPath } from '../../utils/utils';
 
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
