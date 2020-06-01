@@ -161,11 +161,11 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get mode() {
-    return this.manualModeEnabled
-      ? this.dataValue
-        ? this.dataValue.mode
-        : this.dataValue
-      : AddressComponentMode.Autocomplete;
+    if (!this.manualModeEnabled) {
+      return AddressComponentMode.Autocomplete;
+    }
+
+    return this.dataValue?.mode ?? AddressComponentMode.Autocomplete;
   }
 
   set mode(value) {
