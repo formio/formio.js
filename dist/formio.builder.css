@@ -78,7 +78,8 @@ dialog.fixed {
   min-height: 80px; }
 
 .formio-error-wrapper,
-.formio-warning-wrapper {
+.formio-warning-wrapper,
+.formio-info-wrapper {
   padding: 1em; }
 
 .formio-error-wrapper {
@@ -91,12 +92,17 @@ dialog.fixed {
   background-color: #fff3cd;
   border-color: #ffeeba; }
 
+.formio-info-wrapper {
+  color: #004085; }
+
 .formio-disabled-input .form-control.flatpickr-input {
   background-color: #eee; }
 
-.builder-component.has-error .invalid-feedback,
+.builder-component.has-error .invalid-feedback, .builder-component.alert-danger .invalid-feedback, .builder-component.alert-warning .invalid-feedback, .builder-component.alert-info .invalid-feedback, .builder-component.has-message .invalid-feedback,
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
+.formio-component.alert-warning .invalid-feedback,
+.formio-component.alert-info .invalid-feedback,
 .formio-component.has-message .invalid-feedback {
   display: block;
   color: inherit;
@@ -793,8 +799,7 @@ body.formio-dialog-open {
 .datagrid-group-header.clickable.collapsed .datagrid-group-label:before {
   content: '▸'; }
 
-.formio-component.alert-danger .help-block,
-.formio-component.alert-warning .help-block {
+.formio-component.alert-danger .help-block, .formio-component.alert-warning .help-block, .formio-component.alert-info .help-block {
   color: inherit; }
 
 .tree__level_even {
@@ -1044,6 +1049,8 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .builder-component {
   position: relative;
   min-height: 15px; }
+  .builder-component__title {
+    margin-right: 10px; }
   .builder-component .formio-component-htmlelement {
     border: dotted 2px #e8e8e8; }
     .builder-component .formio-component-htmlelement [ref=html]:empty:before {
@@ -1186,3 +1193,8 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .component-edit-tabs.col-sm-12 .editForm {
   height: calc(100% - 4em);
   overflow-y: auto; }
+
+.edit-form-action-buttons {
+  margin-top: 10px; }
+  [ref="editFormWrapper"].col-sm-6 .edit-form-action-buttons {
+    display: none; }
