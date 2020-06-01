@@ -920,10 +920,14 @@ export default class SelectComponent extends Field {
         new Form(formioForm, formUrl, {}).ready
           .then((form) => {
             form.on('submit', (submission) => {
+              // If valueProperty is set, replace the submission with the corresponding value
+              let value = this.valueProperty ? _.get(submission, this.valueProperty) : submission;
+
               if (this.component.multiple) {
-                submission = [...this.dataValue, submission];
+                value = [...this.dataValue, value];
               }
-              this.setValue(submission);
+              this.setValue(value);
+              this.triggerUpdate();
               dialog.close();
             });
           });
