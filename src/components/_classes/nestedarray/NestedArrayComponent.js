@@ -4,7 +4,6 @@ import _ from 'lodash';
 
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
-import { getStringFromComponentPath } from '../../../utils/utils';
 
 export default class NestedArrayComponent extends NestedDataComponent {
   static schema(...extend) {
@@ -69,7 +68,6 @@ export default class NestedArrayComponent extends NestedDataComponent {
 
   getComponent(path, fn, originalPath) {
     path = Array.isArray(path) ? path : [path];
-    const pathStr = originalPath || getStringFromComponentPath(path);
     let key = path.shift();
     const remainingPath = path;
     let result = [];
@@ -98,7 +96,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       }
     }, rowIndex);
     if ((!result || result.length === 0) && possibleComp) {
-      result = [possibleComp];
+      result = rowIndex !== null ? possibleComp : [possibleComp];
     }
     return result;
   }

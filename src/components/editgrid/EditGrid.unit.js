@@ -7,6 +7,7 @@ import { comp1, comp3, comp4 } from './fixtures';
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
+import comp5 from './fixtures/comp5';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -402,6 +403,28 @@ describe('EditGrid Component', () => {
         }, 100);
       }).catch(done);
     });
+  });
+
+  describe('Draft Rows', () => {
+    it('Check saving rows as draft', (done) => {
+      Harness.testCreate(EditGridComponent, comp5).then((component) => {
+        component.addRow();
+        Harness.clickElement(component, '[ref="editgrid-editGrid1-saveRow"]');
+        assert.deepEqual(component.dataValue, [{ textField: '' }]);
+        const isInvalid = !component.checkValidity(component.dataValue, true);
+        assert(isInvalid, 'Item should not be valid');
+        assert(component.editRows[0].state === 'draft', 'Row should be saved as draft if it has errors');
+        done();
+      }).catch(done);
+    });
+
+    // it('', (done) => {
+    //   const formElement = document.createElement('div');
+    //   const form = new Webform(formElement);
+    //   form.setForm(ModalEditGrid).then(() => {
+    //
+    //   }).catch(done);
+    // });
   });
 
   // TODO: Need to fix editing rows and conditionals.

@@ -18,12 +18,14 @@ export default class Alert {
 
   get alertTypes() {
     return {
-      error: 'danger'
+      error: 'danger',
+      success: 'success',
+      info: 'info',
+      warning: 'warning'
     };
   }
 
-  showErrors(errors, triggerEvent, options) {
-    errors = errors ? errors : [];
+  showErrors(errors = [], triggerEvent = false, options = {}) {
     errors = _.isArray(errors) ? errors : [errors];
 
     const messagesList = this.createMessagesList('error', errors);
@@ -34,6 +36,19 @@ export default class Alert {
     }
 
     return errors;
+  }
+
+  showMessage(message, type, options = {}) {
+    let messageElement = message;
+    if (messageElement instanceof HTMLElement) {
+      messageElement.setAttribute('ref', 'messageRef');
+    }
+    else {
+      messageElement = this.parentComponent.ce('p', {
+        ref: 'messageRef'
+      });
+    }
+    this.showAlert(type, messageElement, options);
   }
 
   createMessagesList(type, ...args) {

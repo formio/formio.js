@@ -2801,6 +2801,13 @@ export default class Component extends Element {
     }
   }
 
+  getRelativePath(path) {
+    const keyPart = `.${this.key}`;
+    const thisPath = this.isInputComponent ? this.path
+                                           : this.path.slice(0).replace(keyPart, '');
+    return path.replace(thisPath, '');
+  }
+
   clear() {
     this.detach();
     this.empty(this.getElement());
@@ -2889,6 +2896,9 @@ export default class Component extends Element {
   }
 
   focus() {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
     if (this.refs.input && this.refs.input[0]) {
       this.refs.input[0].focus();
     }
