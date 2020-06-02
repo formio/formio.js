@@ -4,9 +4,26 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.10.0-rc.7
+### Added
+ - Modal edit grid alerts: #2860
+ - Row drafts for Edit Grid. #2862
+ - Send auth token with logout request. #2864
+ - PDF-70: pdf builder improvements
+
 ### Fixed
  - FJS-968: `eachComponent` including `htmlelement` and `content` components when `includeAll` is not provided
+ - PDF-59: Fixed redirection after hitting the pdf submit button
+ - PDF-41: Removed red asterisk from readOnly mode and submission as PDF
+ - FJS-704: Address Refactor Issues
+ - Fix missing promise return in deleted method of Formio.js: #2855
+ - FJS-968: Fixed `eachComponent` including `htmlelement` components when `includeAll` is not provided
+ - Fix for Select component Add Resource: #2859
+ - FJS-976: fixed nested form show default value after submission
+ - S3 file uploads for Ionic. #2874
+ - Fix (Modal Edit): added isOpen to open modal window again after it was redrawn. #2866
+ - PDF-43: Fixed an issue of disability to drag components over on Firefox
+ - FJS-476: fixed multiple dateTime not override initial value when editing but add it to the end of the field
 
 ## 4.10.0-rc.6
 ### Changed
