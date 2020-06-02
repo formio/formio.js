@@ -50,7 +50,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   static get defaultHeaderTemplate() {
     return `<div class="row">
-  {% util.eachComponent(components, function(component) { %}
+  {% (component.components || []).forEach(function(component) { %}
     <div class="col-sm-2">{{ component.label }}</div>
   {% }) %}
 </div>`;
@@ -58,11 +58,11 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   static get defaultRowTemplate() {
     return `<div class="row">
-  {% util.eachComponent(components, function(component) { %}
+  {% instance.eachComponent(function(component) { %}
     <div class="col-sm-2">
-      {{ getView(component, row[component.key]) }}
+      {{ component.getView(component.dataValue) }}
     </div>
-  {% }) %}
+  {% }, rowIndex) %}
   {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
     <div class="col-sm-2">
       <div class="btn-group pull-right">
@@ -337,7 +337,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return this.renderString(
         rowTemplate,
         {
-          row: this.flattenRowDataValue(dataValue[rowIndex]) || {},
+          row: dataValue[rowIndex] || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
@@ -361,6 +361,14 @@ export default class EditGridComponent extends NestedArrayComponent {
         },
       );
     }
+  }
+
+  eachComponent(fn, rowIndex) {
+    _.each(this.getComponents(rowIndex), (component, index) => {
+      if (fn(component, index) === false) {
+        return false;
+      }
+    });
   }
 
   flattenComponents(rowIndex) {
