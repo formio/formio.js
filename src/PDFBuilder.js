@@ -387,10 +387,6 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   onDragStart(e) {
-    this.dragStartOffset = {
-      x: e.layerX,
-      y: e.target.clientHeight - e.layerY
-    };
     e.dataTransfer.setData('text/html', null);
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
@@ -405,13 +401,8 @@ export default class PDFBuilder extends WebformBuilder {
   onDragEnd(e) {
     // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
     // reflect absolute positioning if accessed after the target element is hidden
-    let offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
-    let offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
-
-    if (this.dragStartOffset && _.isNumber(offsetX) && _.isNumber(offsetY)) {
-      offsetX -= this.dragStartOffset.x;
-      offsetY += this.dragStartOffset.y;
-    }
+    const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
+    const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
 
     // Always disable the dropzone on drag end
     this.removeClass(this.refs.iframeDropzone, 'enabled');
