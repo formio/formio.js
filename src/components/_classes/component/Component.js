@@ -968,7 +968,8 @@ export default class Component extends Element {
 
   attach(element) {
     if (!this.builderMode && this.component.modalEdit) {
-      this.componentModal = new ComponentModal(this, element);
+      const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened);
       this.setOpenModalElement();
     }
 
@@ -1168,7 +1169,7 @@ export default class Component extends Element {
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        const widget = this.refs.input[index] && this.refs.input[index].widge;
+        const widget = this.refs.input[index] && this.refs.input[index].widget;
         if (widget) {
           values.push(widget.getValueAsString(val, options));
         }
