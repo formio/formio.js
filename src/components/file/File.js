@@ -363,9 +363,9 @@ export default class FileComponent extends Field {
           window.resolveLocalFileSystemURL(success, (fileEntry) => {
               fileEntry.file((file) => {
                 var reader = new FileReader();
-                reader.onloadend = function(evt) {
+                reader.onloadend = function() {
                   var blob = new Blob([new Uint8Array(this.result)], { type: file.type });
-                  blob.name = 'photo-'.concat(Date.now(), '.png');
+                  blob.name = file.name;
                   this.upload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
@@ -387,10 +387,9 @@ export default class FileComponent extends Field {
           window.resolveLocalFileSystemURL(success, (fileEntry) => {
               fileEntry.file((file) => {
                 var reader = new FileReader();
-                reader.onloadend = function(evt) {
+                reader.onloadend = function() {
                   var blob = new Blob([new Uint8Array(this.result)], { type: file.type });
-                  blob.name = 'photo-'.concat(Date.now(), '.png');
-                  console.log(blob.size);
+                  blob.name = file.name;
                   this.upload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
