@@ -50,9 +50,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -245,8 +243,11 @@
 import Harness from &apos;../../../test/harness&apos;;
 import EditGridComponent from &apos;./EditGrid&apos;;
 import { comp1, comp3, comp4 } from &apos;./fixtures&apos;;
+
+import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
 import Webform from &apos;../../Webform&apos;;
 import { displayAsModalEditGrid } from &apos;../../../test/formtest&apos;;
+import comp5 from &apos;./fixtures/comp5&apos;;
 
 describe(&apos;EditGrid Component&apos;, () =&gt; {
   it(&apos;Should set correct values in dataMap inside editGrid and allow aditing them&apos;, (done) =&gt; {
@@ -588,25 +589,6 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
   });
 
   describe(&apos;Display As Modal&apos;, () =&gt; {
-    it(&apos;Should show errors on save&apos;, (done) =&gt; {
-      const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement);
-      form.setForm(displayAsModalEditGrid).then(() =&gt; {
-          const editGrid = form.components[0];
-          const clickEvent = new Event(&apos;click&apos;);
-          editGrid.addRow();
-          setTimeout(() =&gt; {
-            const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
-            const saveButton = dialog.querySelector(&apos;.btn.btn-primary&apos;);
-            saveButton.dispatchEvent(clickEvent);
-            setTimeout(() =&gt; {
-              assert.equal(editGrid.errors.length, 6);
-              done();
-            }, 100);
-          }, 100);
-      }).catch(done);
-    });
-
     it(&apos;Should show add error classes to invalid components&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
       const form = new Webform(formElement);
@@ -619,17 +601,70 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
           const saveButton = dialog.querySelector(&apos;.btn.btn-primary&apos;);
           saveButton.dispatchEvent(clickEvent);
           setTimeout(() =&gt; {
+            assert.equal(editGrid.errors.length, 6);
             const components = Array.from(dialog.querySelectorAll(&apos;[ref=&quot;component&quot;]&apos;));
             const areRequiredComponentsHaveErrorWrapper = components.every((comp) =&gt; {
               const { className } = comp;
               return (className.includes(&apos;required&apos;) &amp;&amp; className.includes(&apos;formio-error-wrapper&apos;)) || true;
             });
             assert.equal(areRequiredComponentsHaveErrorWrapper, true);
+            dialog.parentNode.removeChild(dialog);
+            form.clear();
             done();
           }, 100);
         }, 100);
       }).catch(done);
     });
+
+    it(&apos;Should set alert with validation errors on save&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(ModalEditGrid).then(() =&gt; {
+        const editGrid = form.components[0];
+        form.checkValidity(form._data, true, form._data);
+        assert.equal(form.errors.length, 1);
+        editGrid.addRow();
+
+        setTimeout(() =&gt; {
+          const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+          const saveButton = dialog.querySelector(&apos;.btn.btn-primary&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+          saveButton.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            const alert = dialog.querySelector(&apos;.alert.alert-danger&apos;);
+            assert.equal(form.errors.length, 3);
+            const errorsLinks = alert.querySelectorAll(&apos;li&apos;);
+            assert.equal(errorsLinks.length, 2);
+            dialog.parentNode.removeChild(dialog);
+            form.clear();
+            done();
+          }, 100);
+        }, 100);
+      }).catch(done);
+    });
+  });
+
+  describe(&apos;Draft Rows&apos;, () =&gt; {
+    it(&apos;Check saving rows as draft&apos;, (done) =&gt; {
+      Harness.testCreate(EditGridComponent, comp5).then((component) =&gt; {
+        component.addRow();
+        Harness.clickElement(component, &apos;[ref=&quot;editgrid-editGrid1-saveRow&quot;]&apos;);
+        assert.deepEqual(component.dataValue, [{ textField: &apos;&apos; }]);
+        const isInvalid = !component.checkValidity(component.dataValue, true);
+        assert(isInvalid, &apos;Item should not be valid&apos;);
+        assert(component.editRows[0].state === &apos;draft&apos;, &apos;Row should be saved as draft if it has errors&apos;);
+        done();
+      }).catch(done);
+    });
+
+    // it(&apos;&apos;, (done) =&gt; {
+    //   const formElement = document.createElement(&apos;div&apos;);
+    //   const form = new Webform(formElement);
+    //   form.setForm(ModalEditGrid).then(() =&gt; {
+    //
+    //   }).catch(done);
+    // });
   });
 
   // TODO: Need to fix editing rows and conditionals.
