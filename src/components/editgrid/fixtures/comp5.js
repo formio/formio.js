@@ -1,7 +1,7 @@
 export default {
   label: 'Edit Grid',
   tableView: false,
-  draft: true,
+  rowDrafts: true,
   key: 'editGrid1',
   type: 'editgrid',
   input: true,
