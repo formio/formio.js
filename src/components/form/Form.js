@@ -228,7 +228,7 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
-            if (!this.valueChanged) {
+            if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
             }
           }
