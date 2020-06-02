@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.7
+### Added
+ - New Edit Grid row drafts feature, which allows you to save an EditGrid row without triggering validations.
+
+### Fixed
+ - Fix (Modal Edit): added isOpen to open modal window again after it was redrawn
+ - PDF-70: pdf builder improvements
+ - FJS-476: fixed multiple dateTime not override initial value when editing but add it to the end of the field
+ - PDF 43: Fixed an issue of disability to drag components over on Firefox
+
+### Changed
+ - Send auth token with logout request.
+
 ## 4.10.0-rc.6
 ### Changed
  - Upgrade @formio/bootstrap3 to 2.6.0
