@@ -110,48 +110,39 @@ export default class AddressComponent extends ContainerComponent {
     }
     Field.prototype.init.call(this);
 
-    const {
-      map,
-      provider,
-      providerOptions,
-    } = this.component;
+    if (!this.builderMode) {
+      if (this.component.provider) {
+        const {
+          provider,
+          providerOptions,
+        } = this.component;
+        this.provider = this.initializeProvider(provider, providerOptions);
+      }
+      else if (this.component.map) {
+        // Fallback to legacy version where Google Maps was the only provider.
+        this.component.provider = GoogleAddressProvider.name;
+        this.component.providerOptions = this.component.providerOptions || {};
 
-    if (map && !provider) {
-      // Fallback to legacy version where Google Maps was the only provider.
-      this.component.provider = GoogleAddressProvider.name;
-      this.component.providerOptions = this.component.providerOptions || {};
+        const {
+          map,
+          provider,
+          providerOptions,
+        } = this.component;
 
-      const {
-        key,
-        region,
-      } = map;
+        const {
+          key,
+          region,
+        } = map;
 
-      this.setProviderOptionsParams(providerOptions, key, region);
-    }
-    else if ((providerOptions.apiKey || providerOptions.region) && (!providerOptions.params || Object.keys(providerOptions.params).length === 0)) {
-      const {
-        apiKey,
-        region,
-      } = providerOptions;
+        if (key) {
+          _.set(providerOptions, 'params.key', key);
+        }
+        if (region) {
+          _.set(providerOptions, 'params.region', region);
+        }
 
-      this.setProviderOptionsParams(providerOptions, apiKey, region);
-    }
-
-    if (!this.builderMode && this.component.provider) {
-      const {
-        provider,
-        providerOptions,
-      } = this.component;
-      this.provider = this.initializeProvider(provider, providerOptions);
-    }
-  }
-
-  setProviderOptionsParams(providerOptions, key, region) {
-    if (key) {
-      _.set(providerOptions, 'params.key', key);
-    }
-    if (region) {
-      _.set(providerOptions, 'params.region', region);
+        this.provider = this.initializeProvider(provider, providerOptions);
+      }
     }
   }
 
