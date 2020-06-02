@@ -7,7 +7,69 @@ export default {
     {
       label: 'Form',
       tableView: true,
-      "components":[{"label":"Text Field","tableView":true,"key":"textField","type":"textfield","input":true},{"label":"Data Grid","reorder":false,"addAnotherPosition":"bottom","defaultOpen":false,"layoutFixed":false,"enableRowGroups":false,"tableView":false,"defaultValue":[{}],"key":"dataGrid","type":"datagrid","input":true,"components":[{"label":"Text Field","tableView":true,"key":"textField","type":"textfield","input":true}]},{"type":"button","label":"Submit","key":"submit","disableOnInvalid":true,"input":true,"tableView":false}],
+      components: [
+        {
+          label: 'Text Field',
+          tableView: true,
+          key: 'textField',
+          type: 'textfield',
+          input: true
+        },
+        {
+          label: 'Data Grid',
+          reorder: false,
+          addAnotherPosition: 'bottom',
+          defaultOpen: false,
+          layoutFixed: false,
+          enableRowGroups: false,
+          tableView: false,
+          defaultValue: [
+            {}
+          ],
+          key: 'dataGrid',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              tableView: true,
+              key: 'textField',
+              type: 'textfield',
+              input: true
+            }
+          ]
+        },
+        {
+          label: 'Tabs',
+          components: [
+            {
+              label: 'Tab 1',
+              key: 'tab1',
+              components: [
+                {
+                  label: 'tabsTextfield',
+                  tableView: true,
+                  key: 'tabsTextfield',
+                  type: 'textfield',
+                  input: true
+                }
+              ]
+            }
+          ],
+          tableView: false,
+          key: 'tabs',
+          type: 'tabs',
+          input: false
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false
+        }
+      ],
       key: 'form',
       type: 'form',
       input: true

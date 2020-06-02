@@ -275,7 +275,7 @@ export default class NestedComponent extends Field {
       }
       const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';
       path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
-      path += component._parentPath && component.component.subFormDirectChild ? component._parentPath : '';
+      path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';
       path += component.component.key;
       return path;
     }
@@ -297,7 +297,11 @@ export default class NestedComponent extends Field {
     options.parentVisible = this.visible;
     options.root = this.root || this;
     options.skipInit = true;
+    if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
+      component.shouldIncludeSubFormPath = true;
+    }
     const comp = Components.create(component, options, data, true);
+
     const path = this.calculateComponentPath(comp);
     if (path) {
       comp.path = path;
@@ -372,7 +376,7 @@ export default class NestedComponent extends Field {
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
     if (this.options.parentPath) {
-      component.subFormDirectChild = true;
+      component.shouldIncludeSubFormPath = true;
     }
     component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
