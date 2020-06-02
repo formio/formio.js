@@ -370,6 +370,9 @@ export default class PDFBuilder extends WebformBuilder {
         this.removeEventListener(el, 'dragend');
         this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
         this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+        this.addEventListener(el, 'drag', (e) => {
+          e.target.style.cursor = 'none';
+        });
       });
     });
   }
@@ -445,6 +448,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
+    e.target.style.cursor = 'default';
   }
 
   highlightInvalidComponents() {
