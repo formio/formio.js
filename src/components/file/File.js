@@ -366,7 +366,7 @@ export default class FileComponent extends Field {
                 reader.onloadend = function(evt) {
                   var blob = new Blob([new Uint8Array(this.result)], { type: file.type });
                   blob.name = 'photo-'.concat(Date.now(), '.png');
-                  _this5.upload([blob]);
+                  this.upload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
@@ -391,7 +391,7 @@ export default class FileComponent extends Field {
                   var blob = new Blob([new Uint8Array(this.result)], { type: file.type });
                   blob.name = 'photo-'.concat(Date.now(), '.png');
                   console.log(blob.size);
-                  _this5.upload([blob]);
+                  this.upload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
