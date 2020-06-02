@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
- - FJS-968: `eachComponent` including `htmlelement` components when `includeAll` is not provided
+ - FJS-968: `eachComponent` including `htmlelement` and `content` components when `includeAll` is not provided
 
 ## 4.10.0-rc.6
 ### Changed

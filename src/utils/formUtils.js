@@ -66,7 +66,9 @@ export function eachComponent(components, fn, includeAll, path, parent) {
       delete component.parent.rows;
     }
 
-    const isLayoutComponent = hasColumns || hasRows || hasComps || component.type === 'htmlelement';
+    // there's no need to add other layout components here because we expect that those would either have columns, rows or components
+    const layoutTypes = ['htmlelement', 'content'];
+    const isLayoutComponent = hasColumns || hasRows || hasComps || layoutTypes.indexOf(component.type) > -1;
     if (includeAll || component.tree || !isLayoutComponent) {
       noRecurse = fn(component, newPath);
     }

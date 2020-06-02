@@ -175,7 +175,6 @@ describe('Util Tests', () => {
         }
       });
       expect(htmlComponentsAmount).to.be.equal(0);
-      expect(numComps).to.be.equal(2);
     });
 
     it('should include `htmlelement` components when `includeAll` is provided', () => {
@@ -188,7 +187,30 @@ describe('Util Tests', () => {
         }
       }, true);
       expect(htmlComponentsAmount).to.be.equal(1);
-      expect(numComps).to.be.equal(3);
+    });
+
+    it('should not include `content` components when `includeAll` is not provided', () => {
+      let numComps = 0;
+      let contentComponentsAmount = 0;
+      utils.eachComponent(components5, (component) => {
+        numComps++;
+        if (component.type === 'content') {
+          contentComponentsAmount++;
+        }
+      });
+      expect(contentComponentsAmount).to.be.equal(0);
+    });
+
+    it('should include `content` components when `includeAll` is provided', () => {
+      let numComps = 0;
+      let contentComponentsAmount = 0;
+      utils.eachComponent(components5, (component) => {
+        numComps++;
+        if (component.type === 'content') {
+          contentComponentsAmount++;
+        }
+      }, true);
+      expect(contentComponentsAmount).to.be.equal(1);
     });
   });
 
