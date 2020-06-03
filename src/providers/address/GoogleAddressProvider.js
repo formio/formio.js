@@ -33,10 +33,10 @@ export class GoogleAddressProvider extends AddressProvider {
   makeRequest(options = {}) {
     return new NativePromise((resolve, reject) => {
       var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
+
       xhr.open('GET', this.getRequestUrl(options), true);
 
-      xhr.onload = () => resolve(xhr.response);
+      xhr.onload = () => resolve(JSON.parse(xhr.response));
 
       xhr.onerror = reject;
 
