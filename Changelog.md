@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.10.0-rc.8
 ### Changed
  - Updated @formio/bootstrap3@2.6.1
- - Updated @formio/semantic@2.1.1
+ - Updated @formio/semantic@2.4.1
 
 ## 4.10.0-rc.7
 ### Added
