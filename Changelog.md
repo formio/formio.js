@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.8
+### Changed
+ - Updated @formio/bootstrap3@2.6.1
+ - Updated @formio/semantic@2.1.1
+
 ## 4.10.0-rc.7
 ### Added
  - Modal edit grid alerts: #2860
