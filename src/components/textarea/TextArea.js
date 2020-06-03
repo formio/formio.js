@@ -7,7 +7,6 @@ import { uniqueName } from '../../utils/utils';
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
-      allowTables: false,
       type: 'textarea',
       label: 'Text Area',
       key: 'textArea',
