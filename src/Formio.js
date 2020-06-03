@@ -1248,10 +1248,11 @@ export default class Formio {
     options.formio = formio;
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
-      .then(function() {
+      .then(function(result) {
         Formio.setToken(null, options);
         Formio.setUser(null, options);
         Formio.clearCache();
+        return result;
       });
   }
 
