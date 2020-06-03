@@ -695,7 +695,10 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass(&apos;question-sign&apos;)} text-muted`;
 
-    const isPDFReadOnlyMode = this.parent &amp;&amp; this.parent.form.display === &apos;pdf&apos; &amp;&amp; this.options.readOnly;
+    const isPDFReadOnlyMode = this.parent &amp;&amp;
+      this.parent.form &amp;&amp;
+      (this.parent.form.display === &apos;pdf&apos;) &amp;&amp;
+      this.options.readOnly;
 
     if (this.hasInput &amp;&amp; this.component.validate &amp;&amp; boolValue(this.component.validate.required) &amp;&amp; !isPDFReadOnlyMode) {
       label.className += &apos; field-required&apos;;

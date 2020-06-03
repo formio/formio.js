@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - PDF-70: pdf builder improvements
 
 ### Fixed
+ - FJS- 979: fixed address google maps not showing search results in IE11
  - FJS-968: `eachComponent` including `htmlelement` and `content` components when `includeAll` is not provided
  - PDF-59: Fixed redirection after hitting the pdf submit button
  - PDF-41: Removed red asterisk from readOnly mode and submission as PDF
