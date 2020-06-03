@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 294,
+  "end": 306,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 294,
+    "end": 306,
     "loc": {
       "start": {
         "line": 1,
@@ -99,8 +99,8 @@
       },
       {
         "type": "ImportDeclaration",
-        "start": 48,
-        "end": 87,
+        "start": 49,
+        "end": 88,
         "loc": {
           "start": {
             "line": 2,
@@ -114,8 +114,8 @@
         "specifiers": [
           {
             "type": "ImportDefaultSpecifier",
-            "start": 55,
-            "end": 70,
+            "start": 56,
+            "end": 71,
             "loc": {
               "start": {
                 "line": 2,
@@ -128,8 +128,8 @@
             },
             "local": {
               "type": "Identifier",
-              "start": 55,
-              "end": 70,
+              "start": 56,
+              "end": 71,
               "loc": {
                 "start": {
                   "line": 2,
@@ -147,8 +147,8 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 76,
-          "end": 86,
+          "start": 77,
+          "end": 87,
           "loc": {
             "start": {
               "line": 2,
@@ -168,8 +168,8 @@
       },
       {
         "type": "ImportDeclaration",
-        "start": 89,
-        "end": 126,
+        "start": 92,
+        "end": 131,
         "loc": {
           "start": {
             "line": 4,
@@ -183,8 +183,8 @@
         "specifiers": [
           {
             "type": "ImportSpecifier",
-            "start": 100,
-            "end": 105,
+            "start": 104,
+            "end": 109,
             "loc": {
               "start": {
                 "line": 5,
@@ -197,8 +197,8 @@
             },
             "imported": {
               "type": "Identifier",
-              "start": 100,
-              "end": 105,
+              "start": 104,
+              "end": 109,
               "loc": {
                 "start": {
                   "line": 5,
@@ -214,8 +214,8 @@
             },
             "local": {
               "type": "Identifier",
-              "start": 100,
-              "end": 105,
+              "start": 104,
+              "end": 109,
               "loc": {
                 "start": {
                   "line": 5,
@@ -233,8 +233,8 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 113,
-          "end": 125,
+          "start": 118,
+          "end": 130,
           "loc": {
             "start": {
               "line": 6,
@@ -255,8 +255,8 @@
           {
             "type": "CommentLine",
             "value": " describe('Stripe Component', () => {",
-            "start": 128,
-            "end": 167,
+            "start": 135,
+            "end": 174,
             "loc": {
               "start": {
                 "line": 8,
@@ -271,8 +271,8 @@
           {
             "type": "CommentLine",
             "value": "   it('Should build an stripe component', () => {",
-            "start": 168,
-            "end": 219,
+            "start": 176,
+            "end": 227,
             "loc": {
               "start": {
                 "line": 9,
@@ -287,8 +287,8 @@
           {
             "type": "CommentLine",
             "value": "     return Harness.testCreate(StripeComponent, comp1);",
-            "start": 220,
-            "end": 277,
+            "start": 229,
+            "end": 286,
             "loc": {
               "start": {
                 "line": 10,
@@ -303,8 +303,8 @@
           {
             "type": "CommentLine",
             "value": "   });",
-            "start": 278,
-            "end": 286,
+            "start": 288,
+            "end": 296,
             "loc": {
               "start": {
                 "line": 11,
@@ -319,8 +319,8 @@
           {
             "type": "CommentLine",
             "value": " });",
-            "start": 287,
-            "end": 293,
+            "start": 298,
+            "end": 304,
             "loc": {
               "start": {
                 "line": 12,
@@ -341,8 +341,8 @@
     {
       "type": "CommentLine",
       "value": " describe('Stripe Component', () => {",
-      "start": 128,
-      "end": 167,
+      "start": 135,
+      "end": 174,
       "loc": {
         "start": {
           "line": 8,
@@ -357,8 +357,8 @@
     {
       "type": "CommentLine",
       "value": "   it('Should build an stripe component', () => {",
-      "start": 168,
-      "end": 219,
+      "start": 176,
+      "end": 227,
       "loc": {
         "start": {
           "line": 9,
@@ -373,8 +373,8 @@
     {
       "type": "CommentLine",
       "value": "     return Harness.testCreate(StripeComponent, comp1);",
-      "start": 220,
-      "end": 277,
+      "start": 229,
+      "end": 286,
       "loc": {
         "start": {
           "line": 10,
@@ -389,8 +389,8 @@
     {
       "type": "CommentLine",
       "value": "   });",
-      "start": 278,
-      "end": 286,
+      "start": 288,
+      "end": 296,
       "loc": {
         "start": {
           "line": 11,
@@ -405,8 +405,8 @@
     {
       "type": "CommentLine",
       "value": " });",
-      "start": 287,
-      "end": 293,
+      "start": 298,
+      "end": 304,
       "loc": {
         "start": {
           "line": 12,
@@ -568,8 +568,8 @@
         "updateContext": null
       },
       "value": "import",
-      "start": 48,
-      "end": 54,
+      "start": 49,
+      "end": 55,
       "loc": {
         "start": {
           "line": 2,
@@ -594,8 +594,8 @@
         "binop": null
       },
       "value": "StripeComponent",
-      "start": 55,
-      "end": 70,
+      "start": 56,
+      "end": 71,
       "loc": {
         "start": {
           "line": 2,
@@ -620,8 +620,8 @@
         "binop": null
       },
       "value": "from",
-      "start": 71,
-      "end": 75,
+      "start": 72,
+      "end": 76,
       "loc": {
         "start": {
           "line": 2,
@@ -647,8 +647,8 @@
         "updateContext": null
       },
       "value": "./Stripe",
-      "start": 76,
-      "end": 86,
+      "start": 77,
+      "end": 87,
       "loc": {
         "start": {
           "line": 2,
@@ -673,8 +673,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 86,
-      "end": 87,
+      "start": 87,
+      "end": 88,
       "loc": {
         "start": {
           "line": 2,
@@ -701,8 +701,8 @@
         "updateContext": null
       },
       "value": "import",
-      "start": 89,
-      "end": 95,
+      "start": 92,
+      "end": 98,
       "loc": {
         "start": {
           "line": 4,
@@ -726,8 +726,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 96,
-      "end": 97,
+      "start": 99,
+      "end": 100,
       "loc": {
         "start": {
           "line": 4,
@@ -752,8 +752,8 @@
         "binop": null
       },
       "value": "comp1",
-      "start": 100,
-      "end": 105,
+      "start": 104,
+      "end": 109,
       "loc": {
         "start": {
           "line": 5,
@@ -777,8 +777,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 106,
-      "end": 107,
+      "start": 111,
+      "end": 112,
       "loc": {
         "start": {
           "line": 6,
@@ -803,8 +803,8 @@
         "binop": null
       },
       "value": "from",
-      "start": 108,
-      "end": 112,
+      "start": 113,
+      "end": 117,
       "loc": {
         "start": {
           "line": 6,
@@ -830,8 +830,8 @@
         "updateContext": null
       },
       "value": "./fixtures",
-      "start": 113,
-      "end": 125,
+      "start": 118,
+      "end": 130,
       "loc": {
         "start": {
           "line": 6,
@@ -856,8 +856,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 125,
-      "end": 126,
+      "start": 130,
+      "end": 131,
       "loc": {
         "start": {
           "line": 6,
@@ -872,8 +872,8 @@
     {
       "type": "CommentLine",
       "value": " describe('Stripe Component', () => {",
-      "start": 128,
-      "end": 167,
+      "start": 135,
+      "end": 174,
       "loc": {
         "start": {
           "line": 8,
@@ -888,8 +888,8 @@
     {
       "type": "CommentLine",
       "value": "   it('Should build an stripe component', () => {",
-      "start": 168,
-      "end": 219,
+      "start": 176,
+      "end": 227,
       "loc": {
         "start": {
           "line": 9,
@@ -904,8 +904,8 @@
     {
       "type": "CommentLine",
       "value": "     return Harness.testCreate(StripeComponent, comp1);",
-      "start": 220,
-      "end": 277,
+      "start": 229,
+      "end": 286,
       "loc": {
         "start": {
           "line": 10,
@@ -920,8 +920,8 @@
     {
       "type": "CommentLine",
       "value": "   });",
-      "start": 278,
-      "end": 286,
+      "start": 288,
+      "end": 296,
       "loc": {
         "start": {
           "line": 11,
@@ -936,8 +936,8 @@
     {
       "type": "CommentLine",
       "value": " });",
-      "start": 287,
-      "end": 293,
+      "start": 298,
+      "end": 304,
       "loc": {
         "start": {
           "line": 12,
@@ -962,8 +962,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 294,
-      "end": 294,
+      "start": 306,
+      "end": 306,
       "loc": {
         "start": {
           "line": 13,
