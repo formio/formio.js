@@ -32,18 +32,6 @@ export default [
     label: 'Allow Spellcheck'
   },
   {
-    weight: 416,
-    type: 'checkbox',
-    input: true,
-    key: 'allowTables',
-    defaultValue: true,
-    label: 'Allow working with tables',
-    tooltip: 'This allows to create tables in quill editor and also to copy paste tables from word.',
-    conditional: {
-      json: { '===': [{ var: 'data.editor' }, 'quill'] }
-    }
-  },
-  {
     type: 'select',
     input: true,
     key: 'editor',
