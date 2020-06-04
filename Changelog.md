@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.9
+### Fixed
+ - PDF 008: Fixed to correctly set the default value of CheckboxAsRadio
+ - FJS- 978: Ensure that the RefreshOn will always fire correctly when many changes are occuring.
+ - FJS-967: fixed word counter calculates words with digits as 2 words
+ - FJS-359: Fix onblur validation
+ - FJS 965: fixed builder error when empty array is set as dataGrid default value
+ - FJS-785: Fix (NestedForm is not shown when modalEdit)
+ - Update File.js for S3 image uploads. #2885
+
 ## 4.10.0-rc.8
 ### Changed
  - Updated @formio/bootstrap3@2.6.1
