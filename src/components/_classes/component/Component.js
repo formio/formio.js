@@ -347,6 +347,7 @@ export default class Component extends Element {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
+    let changes = [];
     let lastChanged = null;
     let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
@@ -363,13 +364,17 @@ export default class Component extends Element {
         args[0] = lastChanged.flags;
       }
       lastChanged = null;
-      return this.onChange(...args);
+      args[3] = changes;
+      const retVal = this.onChange(...args);
+      changes = [];
+      return retVal;
     }, 100);
     this.triggerChange = (...args) => {
       if (args[1]) {
         // Make sure that during the debounce that we always track lastChanged component, even if they
         // don't provide one later.
         lastChanged = args[1];
+        changes.push(lastChanged);
       }
       if (this.root) {
         this.root.changing = true;
@@ -1079,17 +1084,16 @@ export default class Component extends Element {
     }
   }
 
-  checkRefreshOn(changed) {
+  checkRefreshOn(changes) {
+    changes = changes || [];
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
-        refreshOn.forEach(refreshData => {
-          this.checkRefresh(refreshData, changed);
-        });
+        refreshOn.forEach(refreshData => changes.forEach(changed => this.checkRefresh(refreshData, changed)));
       }
       else {
-        this.checkRefresh(refreshOn, changed);
+        changes.forEach(changed => this.checkRefresh(refreshOn, changed));
       }
     }
   }
@@ -2553,7 +2557,7 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changed);
+    this.checkRefreshOn(flags.changes);
     if (flags.noCheck) {
       return true;
     }

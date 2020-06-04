@@ -1259,7 +1259,7 @@ export default class Webform extends NestedDataComponent {
    * @param changed
    * @param flags
    */
-  onChange(flags, changed, modified) {
+  onChange(flags, changed, modified, changes) {
     flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
@@ -1270,6 +1270,7 @@ export default class Webform extends NestedDataComponent {
     super.onChange(flags, true);
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
+    flags.changes = changes;
 
     if (modified && this.pristine) {
       this.pristine = false;
