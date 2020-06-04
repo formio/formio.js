@@ -602,9 +602,9 @@ export default class FileComponent extends Field {
         webViewCamera.getPicture((success) =&gt; {
           window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
               fileEntry.file((file) =&gt; {
-                var reader = new FileReader();
-                reader.onloadend = function() {
-                  var blob = new Blob([new Uint8Array(this.result)], { type: file.type });
+                const reader = new FileReader();
+                reader.onloadend = (evt) =&gt; {
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
                   this.upload([blob]);
                 };
@@ -626,9 +626,9 @@ export default class FileComponent extends Field {
         webViewCamera.getPicture((success) =&gt; {
           window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
               fileEntry.file((file) =&gt; {
-                var reader = new FileReader();
-                reader.onloadend = function() {
-                  var blob = new Blob([new Uint8Array(this.result)], { type: file.type });
+                const reader = new FileReader();
+                reader.onloadend = (evt) =&gt; {
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
                   this.upload([blob]);
                 };

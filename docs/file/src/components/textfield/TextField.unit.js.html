@@ -247,7 +247,8 @@ import NativePromise from &apos;native-promise-only&apos;;
 import {
   comp1,
   comp2,
-  comp4
+  comp4,
+  comp5
 } from &apos;./fixtures&apos;;
 
 describe(&apos;TextField Component&apos;, () =&gt; {
@@ -292,6 +293,36 @@ describe(&apos;TextField Component&apos;, () =&gt; {
       return Harness.testInvalid(component, &apos;test&apos;, &apos;firstName&apos;, &apos;First Name must have at least 2 words.&apos;).then(() =&gt; component);
     }).then((component) =&gt; {
       return Harness.testValid(component, &apos;te st&apos;).then(() =&gt; component);
+    });
+  });
+
+  it(&apos;Should correctly calculate remaining words&apos;, (done) =&gt; {
+    Harness.testCreate(TextFieldComponent, comp5).then((component) =&gt; {
+      const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
+      const element = component.refs.input[0];
+
+      element.value = &apos;paper format A4&apos;;
+      element.dispatchEvent(inputEvent);
+
+      setTimeout(()=&gt;{
+        assert.equal(component.refs.wordcount[0].textContent, &apos;2 words remaining.&apos;);
+
+        element.value = &apos;Hey, guys! We are here!!&apos;;
+        element.dispatchEvent(inputEvent);
+
+        setTimeout(()=&gt;{
+          assert.equal(component.refs.wordcount[0].textContent, &apos;0 words remaining.&apos;);
+
+          element.value = &apos; Some   test   text  111 &apos;;
+          element.dispatchEvent(inputEvent);
+
+          setTimeout(()=&gt;{
+            assert.equal(component.refs.wordcount[0].textContent, &apos;1 words remaining.&apos;);
+
+            done();
+          }, 300);
+        }, 275);
+      }, 250);
     });
   });
 

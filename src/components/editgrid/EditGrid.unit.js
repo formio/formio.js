@@ -2,7 +2,7 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp3, comp4 } from './fixtures';
+import { comp1, comp4 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';

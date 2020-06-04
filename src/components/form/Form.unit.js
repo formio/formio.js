@@ -1,11 +1,14 @@
 import Harness from '../../../test/harness';
 import FormComponent from './Form';
 import { expect } from 'chai';
+import assert from 'power-assert';
 
 import {
   comp1,
   comp3
 } from './fixtures';
+import Webform from '../../Webform';
+import formModalEdit from './fixtures/formModalEdit';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {
@@ -126,6 +129,18 @@ describe('Form Component', () => {
         .catch(done);
     });
   });
+
+  describe('Modal Edit', () => {
+    it('Should render preview when modalEdit', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(formModalEdit).then(() => {
+        const preview = form.element.querySelector('[ref="openModal"]');
+        assert(preview, 'Should contain element to open a modal window');
+        done();
+      }).catch(done);
+    });
+  });
 });
 
 describe('Wizard Component', () => {
@@ -140,3 +155,4 @@ describe('Wizard Component', () => {
     });
   });
 });
+

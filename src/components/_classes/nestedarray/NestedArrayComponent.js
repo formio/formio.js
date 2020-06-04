@@ -36,17 +36,17 @@ export default class NestedArrayComponent extends NestedDataComponent {
     return this.checkRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
   }
 
-  checkRows(method, data, opts, defaultValue) {
+  checkRows(method, data, opts, defaultValue, silentCheck) {
     return this.iteratableRows.reduce(
-      (valid, row) => this.checkRow(method, data, opts, row.data, row.components) && valid,
+      (valid, row) => this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid,
       defaultValue,
     );
   }
 
-  checkRow(method, data, opts, row, components) {
+  checkRow(method, data, opts, row, components, silentCheck) {
     return _.reduce(
       components,
-      (valid, component) => component[method](data, opts, row) && valid,
+      (valid, component) => component[method](data, opts, row, silentCheck) && valid,
       true,
     );
   }
@@ -87,7 +87,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       if (component.component.key === key) {
         possibleComp = component;
         if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
+          comp = component.getComponent(remainingPath, fn, originalPath);
         }
         else if (fn) {
           fn(component, components);
