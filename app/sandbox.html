@@ -116,6 +116,7 @@ lib: sandbox
   </div>
 </div>
 <script type="text/javascript">
+  var originalFormio = Formio;
   var state = {
     formioVersion: 'default',
     form: {
@@ -285,10 +286,15 @@ lib: sandbox
   function setFormioVersion(version) {
     state.formioVersion = version;
     localStorage.setItem('formioVersion', version);
+    var loading = document.getElementById('formio-loading');
     if (version === 'default') {
+      Formio = originalFormio;
+      loading.style.display = 'none';
+      setTimeout(() => {
+        document.dispatchEvent(new Event('formioChange'));
+      }, 100);
       return;
     }
-    var loading = document.getElementById('formio-loading');
     loading.style.display = 'block';
     // See if this version is available in cdn. This file is small so it shouldn't take long to test.
     fetch('https://cdn.form.io/formiojs/' + version + '/formio.form.css')
