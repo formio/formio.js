@@ -166,10 +166,8 @@ describe('Util Tests', () => {
     });
 
     it('should not include `htmlelement` components when `includeAll` is not provided', () => {
-      let numComps = 0;
       let htmlComponentsAmount = 0;
       utils.eachComponent(components5, (component) => {
-        numComps++;
         if (component.type === 'htmlelement') {
           htmlComponentsAmount++;
         }
@@ -178,10 +176,8 @@ describe('Util Tests', () => {
     });
 
     it('should include `htmlelement` components when `includeAll` is provided', () => {
-      let numComps = 0;
       let htmlComponentsAmount = 0;
       utils.eachComponent(components5, (component) => {
-        numComps++;
         if (component.type === 'htmlelement') {
           htmlComponentsAmount++;
         }
@@ -190,10 +186,8 @@ describe('Util Tests', () => {
     });
 
     it('should not include `content` components when `includeAll` is not provided', () => {
-      let numComps = 0;
       let contentComponentsAmount = 0;
       utils.eachComponent(components5, (component) => {
-        numComps++;
         if (component.type === 'content') {
           contentComponentsAmount++;
         }
@@ -202,10 +196,8 @@ describe('Util Tests', () => {
     });
 
     it('should include `content` components when `includeAll` is provided', () => {
-      let numComps = 0;
       let contentComponentsAmount = 0;
       utils.eachComponent(components5, (component) => {
-        numComps++;
         if (component.type === 'content') {
           contentComponentsAmount++;
         }

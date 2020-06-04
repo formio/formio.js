@@ -892,6 +892,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
         else if (editRow) {
           this.checkRow(&apos;checkData&apos;, null, {
+            ...flags,
             changed,
           }, editRow.data, editRow.components);
         }

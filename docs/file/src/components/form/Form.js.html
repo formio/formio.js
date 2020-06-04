@@ -240,6 +240,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import Component from &apos;../_classes/component/Component&apos;;
+import ComponentModal from &apos;../_classes/componentModal/ComponentModal&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import {
@@ -471,6 +472,11 @@ export default class FormComponent extends Component {
             if (!this.valueChanged &amp;&amp; this.dataValue.state !== &apos;submitted&apos;) {
               this.setDefaultValue();
             }
+          }
+          if (!this.builderMode &amp;&amp; this.component.modalEdit) {
+            const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+            this.componentModal = new ComponentModal(this, element, modalShouldBeOpened);
+            this.setOpenModalElement();
           }
         });
       });

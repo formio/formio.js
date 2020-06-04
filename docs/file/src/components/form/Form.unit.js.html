@@ -241,11 +241,14 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import FormComponent from &apos;./Form&apos;;
 import { expect } from &apos;chai&apos;;
+import assert from &apos;power-assert&apos;;
 
 import {
   comp1,
   comp3
 } from &apos;./fixtures&apos;;
+import Webform from &apos;../../Webform&apos;;
+import formModalEdit from &apos;./fixtures/formModalEdit&apos;;
 
 describe(&apos;Form Component&apos;, () =&gt; {
   it(&apos;Should build a form component&apos;, () =&gt; {
@@ -366,6 +369,18 @@ describe(&apos;Form Component&apos;, () =&gt; {
         .catch(done);
     });
   });
+
+  describe(&apos;Modal Edit&apos;, () =&gt; {
+    it(&apos;Should render preview when modalEdit&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(formModalEdit).then(() =&gt; {
+        const preview = form.element.querySelector(&apos;[ref=&quot;openModal&quot;]&apos;);
+        assert(preview, &apos;Should contain element to open a modal window&apos;);
+        done();
+      }).catch(done);
+    });
+  });
 });
 
 describe(&apos;Wizard Component&apos;, () =&gt; {
@@ -380,6 +395,7 @@ describe(&apos;Wizard Component&apos;, () =&gt; {
     });
   });
 });
+
 </code></pre>
 
 </div>

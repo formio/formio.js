@@ -87,7 +87,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       if (component.component.key === key) {
         possibleComp = component;
         if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
+          comp = component.getComponent(remainingPath, fn, originalPath);
         }
         else if (fn) {
           fn(component, components);

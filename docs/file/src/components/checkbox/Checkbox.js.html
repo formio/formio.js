@@ -270,7 +270,9 @@ export default class CheckBoxComponent extends Field {
   }
 
   get defaultValue() {
-    return this.component.name ? &apos;&apos; : (this.component.defaultValue || false).toString() === &apos;true&apos;;
+    const { name } = this.component;
+
+    return name ? (this.component[name] || this.emptyValue) : (this.component.defaultValue || false).toString() === &apos;true&apos;;
   }
 
   get labelClass() {
@@ -336,7 +338,7 @@ export default class CheckBoxComponent extends Field {
   }
 
   get emptyValue() {
-    return false;
+    return this.component.inputType === &apos;radio&apos; ? null : false;
   }
 
   isEmpty(value = this.dataValue) {
