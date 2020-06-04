@@ -510,7 +510,8 @@ export default class FormComponent extends Component {
         this.subForm.formio &&
         _.isEmpty(submission.data)
       ) {
-        const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+        const formUrl = submission.form ? `${this.subForm.formio.formsUrl}/${submission.form}` : this.formSrc;
+        const submissionUrl = `${formUrl}/submission/${submission._id}`;
         this.subForm.setUrl(submissionUrl, this.options);
         this.subForm.loadSubmission();
       }
