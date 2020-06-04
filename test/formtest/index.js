@@ -13,6 +13,7 @@ const uniqueApiKeysSameLevel = require('./uniqueApiKeysSameLevel.json');
 const validationOnBlur = require('./validationOnBlur.json');
 const calculateValueWithManualOverride = require('./calculateValueWithManualOverride.json');
 const displayAsModalEditGrid = require('./displayAsModalEditGrid.json');
+const formWithAdvancedLogic = require('./advancedLogicForm.json');
 
 module.exports = {
   advanced,
@@ -29,5 +30,6 @@ module.exports = {
   uniqueApiKeysSameLevel,
   validationOnBlur,
   calculateValueWithManualOverride,
-  displayAsModalEditGrid
+  displayAsModalEditGrid,
+  formWithAdvancedLogic
 };
