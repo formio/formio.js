@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
+import ComponentModal from '../_classes/componentModal/ComponentModal';
 import EventEmitter from 'eventemitter2';
 import NativePromise from 'native-promise-only';
 import {
@@ -231,6 +232,11 @@ export default class FormComponent extends Component {
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
             }
+          }
+          if (!this.builderMode && this.component.modalEdit) {
+            const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+            this.componentModal = new ComponentModal(this, element, modalShouldBeOpened);
+            this.setOpenModalElement();
           }
         });
       });
