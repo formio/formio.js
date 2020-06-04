@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.10
+### Fixed
+ - Datagrid with default of zero rows breaks builder and add way of not adding a first row.
+
 ## 4.10.0-rc.9
 ### Fixed
  - PDF 008: Fixed to correctly set the default value of CheckboxAsRadio
