@@ -251,6 +251,7 @@ import round from &apos;lodash/round&apos;;
 import chunk from &apos;lodash/chunk&apos;;
 import pad from &apos;lodash/pad&apos;;
 import { compare, applyPatch } from &apos;fast-json-patch&apos;;
+import _ from &apos;lodash&apos;;
 
 /**
  * Determine if a component is a layout component or not.
@@ -712,7 +713,7 @@ export function getValue(submission, key) {
   const search = (data) =&gt; {
     if (isPlainObject(data)) {
       if (has(data, key)) {
-        return data[key];
+        return _.get(data, key);
       }
 
       let value = null;

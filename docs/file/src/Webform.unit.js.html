@@ -252,12 +252,30 @@ import {
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
+  formWithAdvancedLogic
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
 describe(&apos;Webform tests&apos;, () =&gt; {
+  it(&apos;Should disable field applying advanced logic if dot is used inside component key&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithLogic = new Webform(formElement);
+
+    formWithLogic.setForm(formWithAdvancedLogic).then(() =&gt; {
+      assert.equal(formWithLogic.components[1].disabled, false);
+
+      Harness.clickElement(formWithLogic, formWithLogic.element.querySelector(&apos;[name=&quot;data[requestedCovers.HOUSECONTENT_JEWELRY]&quot;]&apos;));
+
+      setTimeout(() =&gt; {
+        assert.equal(formWithLogic.components[1].disabled, true);
+        done();
+      }, 500);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   let formWithCalculatedValue;
 
   it(&apos;Should calculate the field value after validation errors appeared on submit&apos;, function(done) {

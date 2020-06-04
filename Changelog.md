@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS 965: fixed builder error when empty array is set as dataGrid default value
  - FJS-785: Fix (NestedForm is not shown when modalEdit)
  - Update File.js for S3 image uploads. #2885
+ - FJS 948: Fixed component key with dot breaks advanced logic
 
 ## 4.10.0-rc.8
 ### Changed
