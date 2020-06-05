@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class MinWordsQuickRule extends QuickRule {
@@ -32,12 +34,15 @@ export class MinWordsQuickRule extends QuickRule {
       minWords,
     } = input;
 
-    const wordsVariableKey = 'words';
-    const wordsCountVariableKey = 'wordsCount';
-    const conditionKey = `minWords${minWords}`;
+    const wordsVariableName = 'Words';
+    const wordsVariableKey = _.camelCase(wordsVariableName);
+    const wordsCountVariableName = 'Words Count';
+    const wordsCountVariableKey = _.camelCase(wordsCountVariableName);
+    const conditionName = `Min Words ${minWords}`;
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addVariable({
-      name: 'Words',
+      name: wordsVariableName,
       key: wordsVariableKey,
       valueSource: 'thisComponentValue',
       transform: {
@@ -54,7 +59,7 @@ export class MinWordsQuickRule extends QuickRule {
     });
 
     helper.addVariable({
-      name: 'Words Count',
+      name: wordsCountVariableName,
       key: wordsCountVariableKey,
       valueSource: 'variable',
       variableInput: wordsVariableKey,
@@ -64,7 +69,7 @@ export class MinWordsQuickRule extends QuickRule {
     });
 
     helper.addCondition({
-      name: `Min Words ${minWords}`,
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [

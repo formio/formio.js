@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class RequiredQuickRule extends QuickRule {
@@ -10,10 +12,11 @@ export class RequiredQuickRule extends QuickRule {
   }
 
   addRule(helper) {
-    const conditionKey = 'required';
+    const conditionName = 'Required';
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addCondition({
-      name: 'Required',
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [
