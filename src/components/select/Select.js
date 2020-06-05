@@ -1130,8 +1130,9 @@ export default class SelectComponent extends Field {
 
       number() {
         const numberValue = Number(this.value);
+        const isEquivalent = value.toString() === numberValue.toString();
 
-        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !=='') {
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !=='' && isEquivalent) {
           this.value = numberValue;
         }
 
