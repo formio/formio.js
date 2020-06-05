@@ -7,13 +7,13 @@ import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
-import TableModule from 'quill-table';
 import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.3';
+const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
@@ -1905,43 +1905,45 @@ export default class Component extends Element {
     // Lazy load the quill library.
     return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
       .then(() => {
-        if (!element.parentNode) {
-          return NativePromise.reject();
-        }
-        Quill.register('modules/table', TableModule);
-        this.quill = new Quill(element, settings);
-
-        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        const txtArea = document.createElement('textarea');
-        txtArea.setAttribute('class', 'quill-source-code');
-        this.quill.addContainer('ql-custom').appendChild(txtArea);
-        const qlSource = element.parentNode.querySelector('.ql-source');
-        if (qlSource) {
-          this.addEventListener(qlSource, 'click', (event) => {
-            event.preventDefault();
-            if (txtArea.style.display === 'inherit') {
-              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+        return Formio.requireLibrary('quill-table', 'Quill', QUILL_TABLE_URL, true)
+          .then(() => {
+            if (!element.parentNode) {
+              return NativePromise.reject();
             }
-            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+            this.quill = new Quill(element, settings);
+
+            /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+            const txtArea = document.createElement('textarea');
+            txtArea.setAttribute('class', 'quill-source-code');
+            this.quill.addContainer('ql-custom').appendChild(txtArea);
+            const qlSource = element.parentNode.querySelector('.ql-source');
+            if (qlSource) {
+              this.addEventListener(qlSource, 'click', (event) => {
+                event.preventDefault();
+                if (txtArea.style.display === 'inherit') {
+                  this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+                }
+                txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+              });
+            }
+            /** END CODEBLOCK **/
+
+            // Make sure to select cursor when they click on the element.
+            this.addEventListener(element, 'click', () => this.quill.focus());
+
+            // Allows users to skip toolbar items when tabbing though form
+            const elm = document.querySelectorAll('.ql-formats > button');
+            for (let i = 0; i < elm.length; i++) {
+              elm[i].setAttribute('tabindex', '-1');
+            }
+
+            this.quill.on('text-change', () => {
+              txtArea.value = this.quill.root.innerHTML;
+              onChange(txtArea);
+            });
+
+            return this.quill;
           });
-        }
-        /** END CODEBLOCK **/
-
-        // Make sure to select cursor when they click on the element.
-        this.addEventListener(element, 'click', () => this.quill.focus());
-
-        // Allows users to skip toolbar items when tabbing though form
-        const elm = document.querySelectorAll('.ql-formats > button');
-        for (let i = 0; i < elm.length; i++) {
-          elm[i].setAttribute('tabindex', '-1');
-        }
-
-        this.quill.on('text-change', () => {
-          txtArea.value = this.quill.root.innerHTML;
-          onChange(txtArea);
-        });
-
-        return this.quill;
       });
   }
 
