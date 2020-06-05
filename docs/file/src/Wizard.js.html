@@ -769,14 +769,14 @@ export default class Wizard extends Webform {
     }
   }
 
-  setForm(form) {
+  setForm(form, flags) {
     if (!form) {
       return;
     }
     this.wizard = form;
     this.component.components = form.components || [];
     this.setComponentSchema();
-    return super.setForm(form);
+    return super.setForm(form, flags);
   }
 
   setValue(submission, flags = {}) {
