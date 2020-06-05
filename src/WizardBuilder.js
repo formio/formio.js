@@ -105,7 +105,7 @@ export default class WizardBuilder extends WebformBuilder {
   get schema() {
     _.assign(this.currentPage, this.webform._form.components[0]);
     const webform = new Webform(this.options);
-    webform.form = this._form;
+    webform.setForm(this._form, { noEmit: true });
     return webform.schema;
   }
 
