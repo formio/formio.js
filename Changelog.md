@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - FOR-2683: Fix (Select): made values such as "01", "02", etc. not be converted to 1, 2
+ - FJS-986: Fix (WizardBuilder): prevented emitting change in the schema getter
 
 ## 4.10.0-rc.10
 ### Fixed
