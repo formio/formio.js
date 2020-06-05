@@ -586,14 +586,14 @@ const EditFormUtils = {
             label: 'Add',
             input: true,
             action: 'custom',
-            custom({ form, instance }) {
+            custom({ form }) {
               const helper = new QuickRulesHelper(form.componentEditForm, {});
               const quickRuleInstance = new QuickRule({});
               const inputContainer = form.getComponent(name);
               const input = inputContainer.dataValue;
 
               quickRuleInstance.addRule(helper, input);
-              instance.parent.resetValue();
+              form.resetValue();
             },
           }),
         },
