@@ -184,9 +184,11 @@ export class ComponentByPathValueSource extends ValueSource {
         [`${indexType}Index`]: indexInput,
       } = pathPart;
 
+      const lastIndexExists = _.isNumber(lastIndex);
+
       const getNextContext = (prevContext) => {
         const nextContext = prevContext.getComponent(component);
-        return (_.isNumber(lastIndex) && _.isArray(nextContext))
+        return (lastIndexExists && _.isArray(nextContext))
           ? nextContext[lastIndex]
           : nextContext;
       };
@@ -195,11 +197,11 @@ export class ComponentByPathValueSource extends ValueSource {
         ? context.flatMap((contextElement) => getNextContext(contextElement))
         : getNextContext(context);
 
-      if (_.isNumber(lastIndex)) {
+      pathForRowIndex = `${pathForRowIndex ? `${pathForRowIndex}${lastIndexExists ? `[${lastIndex}]` : ''}.` : ''}${component}`;
+
+      if (lastIndexExists) {
         lastIndex = null;
       }
-
-      pathForRowIndex = `${pathForRowIndex ? `${pathForRowIndex}.` : ''}${component}`;
 
       if (indexType) {
         const IndexType = indexTypes[indexType];
