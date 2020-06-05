@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.11
+### Changed
+ - Using Quill 2.0.0-dev so that we can have tables capability.
+
+### Fixed
+ - FOR-2683: Fix (Select): made values such as "01", "02", etc. not be converted to 1, 2
+
 ## 4.10.0-rc.10
 ### Fixed
  - Datagrid with default of zero rows breaks builder and add way of not adding a first row.
