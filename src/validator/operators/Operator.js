@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import { BaseCalulatableEntity } from '../BaseCalculatableEntity';
+import { BaseCalculatableEntity } from '../BaseCalculatableEntity';
 
-export class Operator extends BaseCalulatableEntity {
+export class Operator extends BaseCalculatableEntity {
   static get hasComplementaryOperator() {
     return false;
   }
