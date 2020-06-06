@@ -123,7 +123,7 @@ export default class DateTimeComponent extends Input {
   }
 
   get widget() {
-    const widget = this.component.widget ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    const widget = this.component.widget ? new Widgets.widgets[this.component.widget.type](this.component.widget, this.component): null;
     return widget;
   }
 
