@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class MinQuickRule extends QuickRule {
@@ -32,10 +34,11 @@ export class MinQuickRule extends QuickRule {
       min,
     } = input;
 
-    const conditionKey = `min${min}`;
+    const conditionName = `Min ${min}`;
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addCondition({
-      name: `Min ${min}`,
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [

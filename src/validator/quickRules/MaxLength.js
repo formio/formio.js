@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class MaxLengthQuickRule extends QuickRule {
@@ -32,11 +34,13 @@ export class MaxLengthQuickRule extends QuickRule {
       maxLength,
     } = input;
 
-    const variableKey = 'length';
-    const conditionKey = `maxLength${maxLength}`;
+    const variableName = 'Length';
+    const variableKey = _.camelCase(variableName);
+    const conditionName = `Max Length ${maxLength}`;
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addVariable({
-      name: 'Length',
+      name: variableName,
       key: variableKey,
       valueSource: 'thisComponentValue',
       transform: {
@@ -45,7 +49,7 @@ export class MaxLengthQuickRule extends QuickRule {
     });
 
     helper.addCondition({
-      name: `Max Length ${maxLength}`,
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class BetweenQuickRule extends QuickRule {
@@ -42,10 +44,11 @@ export class BetweenQuickRule extends QuickRule {
       to,
     } = input;
 
-    const conditionKey = `between${from}And${to}`;
+    const conditionName = `Between ${from} And ${to}`;
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addCondition({
-      name: `Between ${from} And ${to}`,
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [

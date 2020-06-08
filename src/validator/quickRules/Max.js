@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class MaxQuickRule extends QuickRule {
@@ -32,10 +34,11 @@ export class MaxQuickRule extends QuickRule {
       max,
     } = input;
 
-    const conditionKey = `max${max}`;
+    const conditionName = `Max ${max}`;
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addCondition({
-      name: `Max ${max}`,
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [

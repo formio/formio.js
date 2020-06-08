@@ -546,7 +546,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
     });
 
-    return result.length > 0 ? result : null;
+    return result;
   }
 
   toggleGroup(element, index) {

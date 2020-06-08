@@ -1,6 +1,6 @@
-import { BaseCalulatableEntity } from '../BaseCalculatableEntity';
+import { BaseCalculatableEntity } from '../BaseCalculatableEntity';
 
-export class Transformer extends BaseCalulatableEntity {
+export class Transformer extends BaseCalculatableEntity {
   static get lazyValueEvaluation() {
     return false;
   }
