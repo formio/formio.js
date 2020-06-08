@@ -383,7 +383,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const rowIndex = this.editRows.length;
     const editRow = {
-      components: this.lazyComponentsInstantiation ? [] : this.createRowComponents(data, rowIndex),
+      components: this.createRowComponents(data, rowIndex),
       data,
       state: EditRowState.New,
       backup: null,
