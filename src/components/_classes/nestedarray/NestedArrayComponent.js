@@ -93,7 +93,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       }
     });
 
-    return result.length > 0 ? result : null;
+    return result;
   }
 
   everyComponent(fn, rowIndex, options) {

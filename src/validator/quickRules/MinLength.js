@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class MinLengthQuickRule extends QuickRule {
@@ -32,11 +34,13 @@ export class MinLengthQuickRule extends QuickRule {
       minLength,
     } = input;
 
-    const variableKey = 'length';
-    const conditionKey = `minLength${minLength}`;
+    const variableName = 'Length';
+    const variableKey = _.camelCase(variableName);
+    const conditionName = `Min Length ${minLength}`;
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addVariable({
-      name: 'Length',
+      name: variableName,
       key: variableKey,
       valueSource: 'thisComponentValue',
       transform: {
@@ -45,7 +49,7 @@ export class MinLengthQuickRule extends QuickRule {
     });
 
     helper.addCondition({
-      name: `Min Length ${minLength}`,
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [

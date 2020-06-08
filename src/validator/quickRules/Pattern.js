@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { QuickRule } from './QuickRule';
 
 export class PatternRule extends QuickRule {
@@ -32,10 +34,11 @@ export class PatternRule extends QuickRule {
       pattern,
     } = input;
 
-    const conditionKey = `pattern${pattern}`;
+    const conditionName = `Match Pattern ${pattern}`;
+    const conditionKey = _.camelCase(conditionName);
 
     helper.addCondition({
-      name: `Match Pattern ${pattern}`,
+      name: conditionName,
       key: conditionKey,
       conjunction: 'and',
       parts: [

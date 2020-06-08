@@ -5,9 +5,13 @@ import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers';
 import {
+  Abstract as ValidatorAbstract,
+  Conjunctions,
   Operators,
+  QuickRules,
   Rules,
   Transformers,
+  ValueSources,
 } from './validator';
 import Formio from './Formio';
 import Form from './Form';
@@ -54,14 +58,23 @@ const registerPlugin = (plugin) => {
       case 'builders':
         Builders.addBuilders(plugin.builders);
         break;
+      case 'conjunctions':
+        Conjunctions.addConjunctions(plugin.conjunctions);
+        break;
       case 'operators':
         Operators.addOperators(plugin.operators);
+        break;
+      case 'quickRules':
+        QuickRules.addQuickRules(plugin.quickRules);
         break;
       case 'rules':
         Rules.addRules(plugin.rules);
         break;
       case 'transformers':
         Transformers.addTransformers(plugin.transformers);
+        break;
+      case 'valueSources':
+        ValueSources.addValueSources(plugin.valueSources);
         break;
       default:
         console.log('Unknown plugin option', key);
@@ -85,7 +98,7 @@ Formio.use = (...plugins) => {
   });
 };
 
-Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
+Formio.loadModules = (path = `${Formio.getApiUrl()}/externalModules.js`, name = 'externalModules') => {
   Formio.requireLibrary(name, name, path, true)
     .then((modules) => {
       Formio.use(modules);
@@ -100,9 +113,32 @@ Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
+Formio.Conjunctions = Conjunctions;
+Formio.Operators = Operators;
+Formio.QuickRules = QuickRules;
+Formio.Rules = Rules;
+Formio.Transformers = Transformers;
+Formio.ValueSources = ValueSources;
+Formio.ValidatorAbstract = ValidatorAbstract;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
 
 // Export the components.
-export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio };
+export {
+  Components,
+  Templates,
+  Builders,
+  Utils,
+  Form,
+  Displays,
+  Providers,
+  Conjunctions,
+  Operators,
+  QuickRules,
+  Rules,
+  Transformers,
+  ValueSources,
+  ValidatorAbstract,
+  Formio,
+};

@@ -1,6 +1,6 @@
 import { BaseEntity } from './BaseEntity';
 
-export class BaseCalulatableEntity extends BaseEntity {
+export class BaseCalculatableEntity extends BaseEntity {
   static get arguments() {
     return [];
   }
