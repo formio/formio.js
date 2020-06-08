@@ -201,6 +201,14 @@ const Harness = {
     }
     return element ? element.dispatchEvent(clickEvent) : null;
   },
+  dispatchEvent(eventType, element, query, beforeDispatch) {
+    const event = new Event(eventType);
+    const el = element.querySelector(query);
+    assert(el, 'Element is not found');
+    beforeDispatch && beforeDispatch(el);
+    el.dispatchEvent(event);
+    return el;
+  },
   testElements(component, query, number) {
     const elements = component.element.querySelectorAll(query);
     if (number !== undefined) {
