@@ -2409,10 +2409,16 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    const { hidden, clearOnHide } = this.component;
+    const {
+      hidden,
+      clearOnHide,
+      calculateValue,
+      calculateValueVariable,
+    } = this.component;
+    const hasCalculationLogic = Boolean(calculateValue || calculateValueVariable);
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (!this.component.calculateValue || shouldBeCleared || this.builderMode || this.previewMode) {
+    if (!hasCalculationLogic || shouldBeCleared || this.builderMode || this.previewMode) {
       return false;
     }
 
@@ -2429,9 +2435,9 @@ export default class Component extends Element {
     }
 
     // Calculate the new value.
-    const calculatedValue = this.component.calculateValueVariable
-      ? this.calculateVariable(this.component.calculateValueVariable)
-      : this.evaluate(this.component.calculateValue, {
+    const calculatedValue = calculateValueVariable
+      ? this.calculateVariable(calculateValueVariable)
+      : this.evaluate(calculateValue, {
         value: dataValue,
         data,
         row: row || this.data
