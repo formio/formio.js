@@ -85,6 +85,9 @@ export default class FileComponent extends Field {
   }
 
   loadImage(fileInfo) {
+    if (this.component.privateDownload) {
+      fileInfo.private = true;
+    }
     return this.fileService.downloadFile(fileInfo).then((result) => result.url);
   }
 
