@@ -12,13 +12,31 @@ import {
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
-  formWithAdvancedLogic
+  formWithAdvancedLogic,
+  formWithPatternValidation
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  it('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
+    const formElement = document.createElement('div');
+    const formWithPattern = new Webform(formElement);
+
+    formWithPattern.setForm(formWithPatternValidation).then(() => {
+    Harness.clickElement(formWithPattern, formWithPattern.element.querySelector('[name="data[submit]"]'));
+
+    setTimeout(() => {
+      assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
+      assert.equal(formWithPattern.errors[0].messages.length, 1);
+      assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
+      done();
+    }, 500);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should disable field applying advanced logic if dot is used inside component key', function(done) {
     const formElement = document.createElement('div');
     const formWithLogic = new Webform(formElement);
