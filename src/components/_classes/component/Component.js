@@ -1249,7 +1249,7 @@ export default class Component extends Element {
     return this.itemValue(value);
   }
 
-  createModal(element, attr) {
+  createModal(element, attr, confirm) {
     const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));
 
@@ -1276,8 +1276,18 @@ export default class Component extends Element {
       dialog.close();
     };
 
-    this.addEventListener(dialog.refs.dialogOverlay, 'click', close);
-    this.addEventListener(dialog.refs.dialogClose, 'click', close);
+    const handleCloseClick = (e) => {
+      if (confirm) {
+        confirm().then(() => close(e))
+        .catch(() => {});
+      }
+      else {
+        close(e);
+      }
+    };
+
+    this.addEventListener(dialog.refs.dialogOverlay, 'click', handleCloseClick);
+    this.addEventListener(dialog.refs.dialogClose, 'click', handleCloseClick);
 
     return dialog;
   }
