@@ -262,12 +262,12 @@ export default class Input extends Multivalue {
     } : this.component.widget;
 
     // Make sure we have a widget.
-    if (!Widgets.hasOwnProperty(settings.type)) {
+    if (!Widgets.widgets.hasOwnProperty(settings.type)) {
       return null;
     }
 
     // Create the widget.
-    const widget = new Widgets[settings.type](settings, this.component);
+    const widget = new Widgets.widgets[settings.type](settings, this.component);
     widget.on('update', () => this.updateValue(widget.getValue(), {
       modified: true
     }, index), true);
