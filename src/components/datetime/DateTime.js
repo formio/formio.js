@@ -93,7 +93,7 @@ export default class DateTimeComponent extends Input {
       language: this.options.language,
       useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),
       allowInput: _.get(this.component, 'allowInput', true),
-      mode: this.component.multiple ? 'multiple' : 'single',
+      mode: 'single',
       enableTime: _.get(this.component, 'enableTime', true),
       noCalendar: !_.get(this.component, 'enableDate', true),
       format: this.component.format,

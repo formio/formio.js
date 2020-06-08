@@ -370,6 +370,9 @@ export default class PDFBuilder extends WebformBuilder {
         this.removeEventListener(el, 'dragend');
         this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
         this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+        this.addEventListener(el, 'drag', (e) => {
+          e.target.style.cursor = 'none';
+        });
       });
     });
   }
@@ -404,8 +407,8 @@ export default class PDFBuilder extends WebformBuilder {
   onDragEnd(e) {
     // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
     // reflect absolute positioning if accessed after the target element is hidden
-    const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
-    const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
+    const layerX = this.dropEvent ? this.dropEvent.layerX : null;
+    const layerY = this.dropEvent ? this.dropEvent.layerY : null;
     const WIDTH = 100;
     const HEIGHT = 20;
     // Always disable the dropzone on drag end
@@ -432,8 +435,8 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.component.components.push(schema);
 
     schema.overlay = {
-      top: offsetY - this.itemOffsetY + HEIGHT,
-      left: offsetX - this.itemOffsetX,
+      top: layerY - this.itemOffsetY + HEIGHT,
+      left: layerX - this.itemOffsetX,
       width: WIDTH,
       height: HEIGHT
     };
@@ -445,6 +448,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
+    e.target.style.cursor = 'default';
   }
 
   highlightInvalidComponents() {

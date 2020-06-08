@@ -11,6 +11,7 @@ import round from 'lodash/round';
 import chunk from 'lodash/chunk';
 import pad from 'lodash/pad';
 import { compare, applyPatch } from 'fast-json-patch';
+import _ from 'lodash';
 
 /**
  * Determine if a component is a layout component or not.
@@ -66,7 +67,10 @@ export function eachComponent(components, fn, includeAll, path, parent) {
       delete component.parent.rows;
     }
 
-    if (includeAll || component.tree || (!hasColumns && !hasRows && !hasComps)) {
+    // there's no need to add other layout components here because we expect that those would either have columns, rows or components
+    const layoutTypes = ['htmlelement', 'content'];
+    const isLayoutComponent = hasColumns || hasRows || hasComps || layoutTypes.indexOf(component.type) > -1;
+    if (includeAll || component.tree || !isLayoutComponent) {
       noRecurse = fn(component, newPath);
     }
 
@@ -469,7 +473,7 @@ export function getValue(submission, key) {
   const search = (data) => {
     if (isPlainObject(data)) {
       if (has(data, key)) {
-        return data[key];
+        return _.get(data, key);
       }
 
       let value = null;

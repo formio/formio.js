@@ -77,6 +77,10 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
+    // Ensure we have one and only one row in builder mode.
+    if (this.builderMode) {
+      return [{}];
+    }
     const value = super.defaultValue;
     let defaultValue;
 
@@ -406,7 +410,7 @@ export default class DataGridComponent extends NestedArrayComponent {
    * @param dirty
    * @return {*}
    */
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
 
@@ -415,11 +419,11 @@ export default class DataGridComponent extends NestedArrayComponent {
       return true;
     }
 
-    if (!this.checkComponentValidity(data, dirty, row)) {
+    if (!this.checkComponentValidity(data, dirty, row, { silentCheck })) {
       return false;
     }
 
-    return this.checkRows('checkValidity', data, dirty, true);
+    return this.checkRows('checkValidity', data, dirty, true, silentCheck);
   }
 
   checkColumns(data, flags = {}) {
@@ -488,7 +492,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Make sure we always have at least one row.
     // NOTE: Removing this will break "Public Configurations" in portal. ;)
-    if (value && !value.length) {
+    if (value && !value.length && !this.component.noFirstRow) {
       value.push({});
     }
 

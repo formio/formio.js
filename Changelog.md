@@ -4,6 +4,60 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.10.0-rc.11
+### Changed
+ - Using Quill 2.0.0-dev so that we can have tables capability.
+
+### Fixed
+ - FOR-2683: Fix (Select): made values such as "01", "02", etc. not be converted to 1, 2
+ - FJS-986: Fix (WizardBuilder): prevented emitting change in the schema getter
+
+## 4.10.0-rc.10
+### Fixed
+ - Datagrid with default of zero rows breaks builder and add way of not adding a first row.
+
+## 4.10.0-rc.9
+### Fixed
+ - PDF 008: Fixed to correctly set the default value of CheckboxAsRadio
+ - FJS- 978: Ensure that the RefreshOn will always fire correctly when many changes are occuring.
+ - FJS-967: fixed word counter calculates words with digits as 2 words
+ - FJS-359: Fix onblur validation
+ - FJS 965: fixed builder error when empty array is set as dataGrid default value
+ - FJS-785: Fix (NestedForm is not shown when modalEdit)
+ - Update File.js for S3 image uploads. #2885
+ - FJS 948: Fixed component key with dot breaks advanced logic
+
+## 4.10.0-rc.8
+### Changed
+ - Updated @formio/bootstrap3@2.6.1
+ - Updated @formio/semantic@2.4.1
+
+## 4.10.0-rc.7
+### Added
+ - Modal edit grid alerts: #2860
+ - Row drafts for Edit Grid. #2862
+ - Send auth token with logout request. #2864
+ - PDF-70: pdf builder improvements
+
+### Fixed
+ - FJS- 979: fixed address google maps not showing search results in IE11
+ - FJS-968: `eachComponent` including `htmlelement` and `content` components when `includeAll` is not provided
+ - PDF-59: Fixed redirection after hitting the pdf submit button
+ - PDF-41: Removed red asterisk from readOnly mode and submission as PDF
+ - FJS-704: Address Refactor Issues
+ - Fix missing promise return in deleted method of Formio.js: #2855
+ - FJS-968: Fixed `eachComponent` including `htmlelement` components when `includeAll` is not provided
+ - Fix for Select component Add Resource: #2859
+ - FJS-976: fixed nested form show default value after submission
+ - S3 file uploads for Ionic. #2874
+ - Fix (Modal Edit): added isOpen to open modal window again after it was redrawn. #2866
+ - PDF-43: Fixed an issue of disability to drag components over on Firefox
+ - FJS-476: fixed multiple dateTime not override initial value when editing but add it to the end of the field
+
+## 4.10.0-rc.6
+### Changed
+ - Upgrade @formio/bootstrap3 to 2.6.0
+
 ## 4.10.0-rc.5
 ### Added
  - FIN 025 - Added html element into pdf builder.

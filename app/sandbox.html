@@ -1,0 +1,528 @@
+---
+title: Sandbox
+layout: default
+fluid: true
+section: sandbox
+weight: 30
+lib: sandbox
+---
+<div class="row">
+  <div class="col-sm-4">
+    <label for="formio-versions">Load Sandbox</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="load" placeholder="Enter a sandbox id">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" id="load-button">Load Sandbox</button>
+      </span>
+      <div class="input-group-append" id="loading" style="display: none;">
+        <span class="btn btn-secondary">
+          <i class="fa fa-refresh fa-spin"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <label for="formio-versions">Save Sandbox</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="save" placeholder="Enter a name">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" id="save-button">Save Sandbox</button>
+      </span>
+      <div class="input-group-append" id="saving" style="display: none;">
+        <span class="btn btn-secondary">
+          <i class="fa fa-refresh fa-spin"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <label for="formio-versions">Select One of Your Sandboxes</label>
+    <select class="form-control" id="sandboxes">
+      <option value="default">- None -</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="" id="alert" style="margin-top: 20px;"></div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-sm-8">
+    <label for="formio-versions">formio.js version</label>
+    <div class="input-group">
+      <select class="form-control" id="formio-versions">
+        <option value="default">Default</option>
+      </select>
+      <div class="input-group-append" id="formio-loading">
+        <span class="btn btn-secondary">
+          <i class="fa fa-refresh fa-spin"></i>
+        </span>
+      </div>
+    </div>
+    <label for="form-url" style="margin-top: 10px;">Load Form Url</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="form-url">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" id="form-load">Load</button>
+      </span>
+      <div class="input-group-append" id="form-loading" style="display: none;">
+        <span class="btn btn-secondary">
+          <i class="fa fa-refresh fa-spin"></i>
+        </span>
+      </div>
+    </div>
+    <label for="submission-url" style="margin-top: 10px;">Load Submission Url</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="submission-url">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" id="submission-load">Load</button>
+      </span>
+      <div class="input-group-append" id="submission-loading" style="display: none;">
+        <span class="btn btn-secondary">
+          <i class="fa fa-refresh fa-spin"></i>
+        </span>
+      </div>
+    </div>
+    <br />
+    <button class="btn btn-danger" id="reset">Reset</button>
+  </div>
+  <div class="col-sm-4">
+    <h3 class="text-center text-muted">Options JSON</h3>
+    <div id="options-json" style="height: 250px"></div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-sm-8">
+    <h3 class="text-center text-muted">Form Builder</h3>
+    <div id="builder"></div>
+  </div>
+  <div class="col-sm-4">
+    <h3 class="text-center text-muted">Form JSON</h3>
+    <div id="form-json" style="height: 500px"></div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-sm-8">
+    <h3 class="text-center text-muted">Form Rendered</h3>
+    <div id="form"></div>
+  </div>
+  <div class="col-sm-4">
+    <h3 class="text-center text-muted">Submission JSON</h3>
+    <div id="submission-json" style="height: 500px"></div>
+  </div>
+</div>
+<script type="text/javascript">
+  var originalFormio = Formio;
+  var state = {
+    formioVersion: 'default',
+    form: {
+      display: 'form',
+      components: [],
+    },
+    submission: {
+      data: {}
+    },
+    options: {},
+  };
+
+  try {
+    state.formioVersion = localStorage.getItem('formioVersion') || state.formioVersion;
+  }
+  catch (err) {
+    console.error(err);
+  }
+
+  try {
+    state.form = JSON.parse(localStorage.getItem('form')) || state.form;
+  }
+  catch (err) {
+    console.error(err);
+  }
+
+  try {
+    state.submission = JSON.parse(localStorage.getItem('submission')) || state.submission;
+  }
+  catch (err) {
+    console.error(err);
+  }
+
+  try {
+    state.options = JSON.parse(localStorage.getItem('options')) || state.options;
+  }
+  catch (err) {
+    console.error(err);
+  }
+
+  function loadScript(url, callback){
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+
+    if (script.readyState){  //IE
+      script.onreadystatechange = function(){
+        if (script.readyState == "loaded" ||
+          script.readyState == "complete"){
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    }
+    else {  //Others
+      script.onload = function(){
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  }
+
+  fetch('https://cdn.form.io/formiojs/versions.json')
+    .then(function(response) {
+      response.json().then(function(versions) {
+        var formioVersions = document.getElementById('formio-versions');
+        versions.forEach(function(version, index) {
+          // Only include recent test builds.
+          if ((index < 10 || version.indexOf('-') === -1) && version[0] === "4") {
+            var option = document.createElement('option');
+            option.text = version;
+            if (version === state.formioVersion) {
+              option.selected = true;
+            }
+            formioVersions.add(option);
+          }
+        });
+
+        formioVersions.onchange = function() {
+          setFormioVersion(formioVersions.value);
+        };
+      });
+    });
+
+  var sandboxSelect = document.getElementById('sandboxes');
+  JSON.parse(localStorage.getItem('sandboxes') || '[]').reverse().forEach(function(sandbox) {
+    var option = document.createElement('option');
+    option.text = sandbox.name + ' (' + sandbox._id + ')';
+    option.value = sandbox._id;
+    sandboxSelect.add(option);
+  });
+  sandboxSelect.onchange = function() {
+    if (sandboxSelect.value !== 'default') {
+      loadSandbox(sandboxSelect.value);
+      sandboxSelect.value = 'default'
+    }
+  };
+
+  // Start init.
+  setFormioVersion(state.formioVersion);
+
+  var builder;
+  var renderer;
+  var formEditor = ace.edit("form-json");
+  formEditor.session.setMode("ace/mode/json");
+  formEditor.getSession().setTabSize(2);
+  formEditor.getSession().setUseWrapMode(true);
+  formEditor.setValue(JSON.stringify(state.form, null, 2));
+  formEditor.clearSelection();
+  var submissionEditor = ace.edit("submission-json");
+  submissionEditor.session.setMode("ace/mode/json");
+  submissionEditor.getSession().setTabSize(2);
+  submissionEditor.getSession().setUseWrapMode(true);
+  submissionEditor.setValue(JSON.stringify(state.submission, null, 2));
+  submissionEditor.clearSelection();
+  var optionsEditor = ace.edit("options-json");
+  optionsEditor.session.setMode("ace/mode/json");
+  optionsEditor.getSession().setTabSize(2);
+  optionsEditor.getSession().setUseWrapMode(true);
+  optionsEditor.setValue(JSON.stringify(state.options, null, 2));
+  optionsEditor.clearSelection();
+  var noEditorUpdate = false;
+  var noSubmissionUpdate = false;
+
+  function setAlert(message, type) {
+    var alert = document.getElementById('alert');
+    alert.className = '';
+    alert.classList.add('alert');
+    alert.classList.add('alert-' + type);
+    alert.style.display = 'block';
+    alert.innerText = message;
+  }
+
+  function initBuilder(form) {
+    if (builder) {
+      builder.instance.destroy();
+    }
+    builder = new Formio.FormBuilder(document.getElementById("builder"), form, _.cloneDeep(state.options));
+
+    builder.instance.ready.then(function() {
+      builder.instance.on('change', function(event, flags) {
+        if (!flags) {
+          setForm(builder.instance.schema, 'builder');
+        }
+      });
+    })
+  }
+
+  function initRenderer(form) {
+    if (renderer) {
+      renderer.destroy();
+    }
+    Formio.createForm(document.getElementById("form"), form, _.cloneDeep(state.options))
+      .then(function(self) {
+        renderer = self;
+        renderer.submission = state.submission;
+        renderer.on('change', function(event, flags) {
+          if (flags && !flags.fromSubmission) {
+            setSubmission(renderer.submission, 'renderer');
+          }
+        });
+        renderer.onAny(onEvent);
+      });
+  }
+
+  function setFormioVersion(version) {
+    state.formioVersion = version;
+    localStorage.setItem('formioVersion', version);
+    var loading = document.getElementById('formio-loading');
+    if (version === 'default') {
+      Formio = originalFormio;
+      loading.style.display = 'none';
+      setTimeout(() => {
+        document.dispatchEvent(new Event('formioChange'));
+      }, 100);
+      return;
+    }
+    loading.style.display = 'block';
+    // See if this version is available in cdn. This file is small so it shouldn't take long to test.
+    fetch('https://cdn.form.io/formiojs/' + version + '/formio.form.css')
+      .then(function(response) {
+        var url;
+        if (response.status === 200) {
+          url = 'https://cdn.form.io/formiojs/' + version + '/formio.full.js';
+        }
+        else {
+          url = 'https://unpkg.com/formiojs@' + version + '/dist/formio.full.js'
+        }
+        loadScript(url, function() {
+          if (!Formio.version) {
+            Formio.version = version;
+          }
+          loading.style.display = 'none';
+          document.dispatchEvent(new Event('formioChange'));
+        })
+      });
+
+  }
+
+  function setForm(form, from) {
+    console.log('setForm', form, from);
+    localStorage.setItem('form', JSON.stringify(form));
+    state.form = form;
+    if (builder && from !== 'builder') {
+      initBuilder(form);
+    }
+    if (renderer && from !== 'renderer') {
+      initRenderer(_.cloneDeep(form));
+    }
+    if (formEditor && from !== 'editor') {
+      // Form editor will trigger a change event on setValue. We need to ignore it but there is no way so set an
+      // ignore period where we won't change once the form is changed.
+      noEditorUpdate = true;
+      formEditor.session.setValue(JSON.stringify(form, null, 2));
+      formEditor.clearSelection();
+      setTimeout(function() {
+        noEditorUpdate = false;
+      }, 700);
+    }
+  }
+
+  function setSubmission(submission, from) {
+    console.log('setSubmission', submission, from);
+    localStorage.setItem('submission', JSON.stringify(submission));
+    if (renderer && from !== 'renderer') {
+      renderer.submission = submission;
+    }
+    if (submissionEditor && from !== 'editor') {
+      // Submission editor will trigger a change event on setValue. We need to ignore it but there is no way so set an
+      // ignore period where we won't change once the submission is changed.
+      noSubmissionUpdate = true;
+      submissionEditor.session.setValue(JSON.stringify(submission, null, 2));
+      submissionEditor.clearSelection();
+      setTimeout(function() {
+        noSubmissionUpdate = false;
+      }, 700);
+    }
+  }
+
+  function setOptions(options, from) {
+    console.log('setOptions', options, from);
+    localStorage.setItem('options', JSON.stringify(options));
+    state.options = options;
+    initBuilder(state.form);
+    initRenderer(state.form);
+  }
+
+  function onEvent(event, arg1, arg2, arg3) {
+    // console.log(event, arg1, arg2, arg3);
+  }
+
+  // Editor changes with each keystroke. Need to debounce.
+  formEditor.on('change', _.debounce(function() {
+    if (!noEditorUpdate) {
+      try {
+        setForm(JSON.parse(formEditor.getValue()), 'editor');
+      }
+      catch (err) {
+        console.error(err);
+      }
+    }
+  }, 500));
+
+  // Editor changes with each keystroke. Need to debounce.
+  submissionEditor.on('change', _.debounce(function() {
+    if (!noSubmissionUpdate) {
+      try {
+        setSubmission(JSON.parse(submissionEditor.getValue()), 'editor');
+      }
+      catch (err) {
+        console.error(err);
+      }
+    }
+  }, 500));
+
+  // Editor changes with each keystroke. Need to debounce.
+  optionsEditor.on('change', _.debounce(function() {
+    try {
+      setOptions(JSON.parse(optionsEditor.getValue()));
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }, 500));
+
+  document.addEventListener('formioChange', function() {
+    initBuilder(state.form);
+    initRenderer(state.form);
+  });
+
+  document.getElementById('reset').addEventListener('click', reset);
+  function reset() {
+    setOptions({}, 'reset');
+    state.submission = { data: {}};
+    setForm({display: 'form', components: []}, 'reset');
+    setSubmission({data: {}}, 'reset');
+  }
+
+  document.getElementById('form-load').addEventListener('click', loadForm);
+  function loadForm() {
+    var loading = document.getElementById('form-loading');
+    loading.style.display = 'block';
+    try {
+      fetch(document.getElementById('form-url').value)
+        .then(function(response) {
+          return response.json().then(function(form) {
+            setForm(form);
+            loading.style.display = 'none';
+          });
+        })
+        .catch(function(err) {
+          loading.style.display = 'none';
+        });
+    }
+    catch (err) {
+      loading.style.display = 'none';
+    }
+  }
+
+  document.getElementById('submission-load').addEventListener('click', loadSubmission);
+  function loadSubmission() {
+    var loading = document.getElementById('submission-loading');
+    loading.style.display = 'block';
+    try {
+      fetch(document.getElementById('submission-url').value)
+        .then(function(response) {
+          return response.json().then(function(submission) {
+            setSubmission(submission);
+            loading.style.display = 'none';
+          });
+        })
+        .catch(function(err) {
+          loading.style.display = 'none';
+        });
+    }
+    catch (err) {
+      loading.style.display = 'none';
+    }
+  }
+
+  document.getElementById('save-button').addEventListener('click', saveSandbox);
+  function saveSandbox() {
+    if (!document.getElementById('save').value) {
+      return;
+    }
+    fetch('https://formiodata.form.io/sandboxdata/submission', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: {
+          name: document.getElementById('save').value,
+          formioVersion: state.formioVersion,
+          form: state.form,
+          submission: state.submission,
+          options: state.options,
+        }
+      })
+    })
+      .then(function(response) {
+        if (response.status === 201) {
+          document.getElementById('save').value = '';
+          return response.json()
+            .then(function(sandbox) {
+              // Save off the name and id in localstorage so this person can find it again.
+              var sandboxes = JSON.parse(localStorage.getItem('sandboxes') || '[]');
+              sandboxes.push({
+                _id: sandbox._id,
+                name: sandbox.data.name,
+              });
+              localStorage.setItem('sandboxes', JSON.stringify(sandboxes));
+
+              var option = document.createElement('option');
+              option.text = sandbox.data.name + ' (' + sandbox._id + ')';
+              option.value = sandbox._id;
+              sandboxSelect.add(option);
+
+              setAlert('Sandbox Saved. You can send this sandbox id to support or another developer: ' + sandbox._id, 'success');
+            });
+        }
+        else {
+          // Show error here.
+        }
+      });
+  }
+
+  document.getElementById('load-button').addEventListener('click', function() {
+    loadSandbox(document.getElementById('load').value)
+      .then(function () {
+        document.getElementById('load').value = '';
+      });
+  });
+  function loadSandbox(id) {
+    return fetch('https://formiodata.form.io/sandboxdata/submission/' + id)
+      .then(function(response) {
+        if (response.status === 200) {
+          return response.json().then(function(sandbox) {
+            setFormioVersion(sandbox.data.formioVersion);
+            setForm(sandbox.data.form);
+            setSubmission(sandbox.data.submission);
+            setOptions(sandbox.data.options);
+            setAlert('Successfully loaded sandbox: ' + id, 'info');
+          });
+        }
+      });
+  }
+</script>

@@ -50,9 +50,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -249,6 +247,7 @@ const components = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/component
 const components2 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components2.json&apos;));
 const components3 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components3.json&apos;));
 const components4 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components4.json&apos;));
+const components5 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/components5.json&apos;));
 const submission1 = JSON.parse(fs.readFileSync(&apos;src/utils/fixtures/submission1.json&apos;));
 
 describe(&apos;Util Tests&apos;, () =&gt; {
@@ -404,6 +403,46 @@ describe(&apos;Util Tests&apos;, () =&gt; {
       }, true);
       expect(numLayout).to.be.equal(3);
       expect(numComps).to.be.equal(4);
+    });
+
+    it(&apos;should not include `htmlelement` components when `includeAll` is not provided&apos;, () =&gt; {
+      let htmlComponentsAmount = 0;
+      utils.eachComponent(components5, (component) =&gt; {
+        if (component.type === &apos;htmlelement&apos;) {
+          htmlComponentsAmount++;
+        }
+      });
+      expect(htmlComponentsAmount).to.be.equal(0);
+    });
+
+    it(&apos;should include `htmlelement` components when `includeAll` is provided&apos;, () =&gt; {
+      let htmlComponentsAmount = 0;
+      utils.eachComponent(components5, (component) =&gt; {
+        if (component.type === &apos;htmlelement&apos;) {
+          htmlComponentsAmount++;
+        }
+      }, true);
+      expect(htmlComponentsAmount).to.be.equal(1);
+    });
+
+    it(&apos;should not include `content` components when `includeAll` is not provided&apos;, () =&gt; {
+      let contentComponentsAmount = 0;
+      utils.eachComponent(components5, (component) =&gt; {
+        if (component.type === &apos;content&apos;) {
+          contentComponentsAmount++;
+        }
+      });
+      expect(contentComponentsAmount).to.be.equal(0);
+    });
+
+    it(&apos;should include `content` components when `includeAll` is provided&apos;, () =&gt; {
+      let contentComponentsAmount = 0;
+      utils.eachComponent(components5, (component) =&gt; {
+        if (component.type === &apos;content&apos;) {
+          contentComponentsAmount++;
+        }
+      }, true);
+      expect(contentComponentsAmount).to.be.equal(1);
     });
   });
 

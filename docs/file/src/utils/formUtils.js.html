@@ -50,9 +50,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -253,6 +251,7 @@ import round from &apos;lodash/round&apos;;
 import chunk from &apos;lodash/chunk&apos;;
 import pad from &apos;lodash/pad&apos;;
 import { compare, applyPatch } from &apos;fast-json-patch&apos;;
+import _ from &apos;lodash&apos;;
 
 /**
  * Determine if a component is a layout component or not.
@@ -308,7 +307,10 @@ export function eachComponent(components, fn, includeAll, path, parent) {
       delete component.parent.rows;
     }
 
-    if (includeAll || component.tree || (!hasColumns &amp;&amp; !hasRows &amp;&amp; !hasComps)) {
+    // there&apos;s no need to add other layout components here because we expect that those would either have columns, rows or components
+    const layoutTypes = [&apos;htmlelement&apos;, &apos;content&apos;];
+    const isLayoutComponent = hasColumns || hasRows || hasComps || layoutTypes.indexOf(component.type) &gt; -1;
+    if (includeAll || component.tree || !isLayoutComponent) {
       noRecurse = fn(component, newPath);
     }
 
@@ -711,7 +713,7 @@ export function getValue(submission, key) {
   const search = (data) =&gt; {
     if (isPlainObject(data)) {
       if (has(data, key)) {
-        return data[key];
+        return _.get(data, key);
       }
 
       let value = null;

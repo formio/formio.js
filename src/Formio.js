@@ -224,7 +224,7 @@ export default class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (!this[_id]) {
-      NativePromise.reject('Nothing to delete');
+      return NativePromise.reject('Nothing to delete');
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], 'delete', null, opts);
@@ -1246,11 +1246,14 @@ export default class Formio {
   static logout(formio, options) {
     options = options || {};
     options.formio = formio;
-    Formio.setToken(null, options);
-    Formio.setUser(null, options);
-    Formio.clearCache();
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
-    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
+    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
+      .then(function(result) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        return result;
+      });
   }
 
   static pageQuery() {

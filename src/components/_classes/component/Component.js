@@ -12,7 +12,8 @@ import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
-const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
+const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.3';
+const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
@@ -347,6 +348,7 @@ export default class Component extends Element {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
+    let changes = [];
     let lastChanged = null;
     let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
@@ -363,13 +365,17 @@ export default class Component extends Element {
         args[0] = lastChanged.flags;
       }
       lastChanged = null;
-      return this.onChange(...args);
+      args[3] = changes;
+      const retVal = this.onChange(...args);
+      changes = [];
+      return retVal;
     }, 100);
     this.triggerChange = (...args) => {
       if (args[1]) {
         // Make sure that during the debounce that we always track lastChanged component, even if they
         // don't provide one later.
         lastChanged = args[1];
+        changes.push(lastChanged);
       }
       if (this.root) {
         this.root.changing = true;
@@ -455,7 +461,12 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required)) {
+    const isPDFReadOnlyMode = this.parent &&
+      this.parent.form &&
+      (this.parent.form.display === 'pdf') &&
+      this.options.readOnly;
+
+    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
       label.className += ' field-required';
     }
     if (label.hidden) {
@@ -968,7 +979,8 @@ export default class Component extends Element {
 
   attach(element) {
     if (!this.builderMode && this.component.modalEdit) {
-      this.componentModal = new ComponentModal(this, element);
+      const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened);
       this.setOpenModalElement();
     }
 
@@ -1073,17 +1085,16 @@ export default class Component extends Element {
     }
   }
 
-  checkRefreshOn(changed) {
+  checkRefreshOn(changes) {
+    changes = changes || [];
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
-        refreshOn.forEach(refreshData => {
-          this.checkRefresh(refreshData, changed);
-        });
+        refreshOn.forEach(refreshData => changes.forEach(changed => this.checkRefresh(refreshData, changed)));
       }
       else {
-        this.checkRefresh(refreshOn, changed);
+        changes.forEach(changed => this.checkRefresh(refreshOn, changed));
       }
     }
   }
@@ -1168,7 +1179,7 @@ export default class Component extends Element {
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        const widget = this.refs.input[index] && this.refs.input[index].widge;
+        const widget = this.refs.input[index] && this.refs.input[index].widget;
         if (widget) {
           values.push(widget.getValueAsString(val, options));
         }
@@ -1905,7 +1916,12 @@ export default class Component extends Element {
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
     settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, 'editors.quill.settings', {}), settings);
-
+    settings = {
+      ...settings,
+      modules: {
+        table: true
+      }
+    };
     // Lazy load the quill css.
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
@@ -1914,42 +1930,45 @@ export default class Component extends Element {
     // Lazy load the quill library.
     return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
       .then(() => {
-        if (!element.parentNode) {
-          return NativePromise.reject();
-        }
-        this.quill = new Quill(element, settings);
-
-        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        const txtArea = document.createElement('textarea');
-        txtArea.setAttribute('class', 'quill-source-code');
-        this.quill.addContainer('ql-custom').appendChild(txtArea);
-        const qlSource = element.parentNode.querySelector('.ql-source');
-        if (qlSource) {
-          this.addEventListener(qlSource, 'click', (event) => {
-            event.preventDefault();
-            if (txtArea.style.display === 'inherit') {
-              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+        return Formio.requireLibrary('quill-table', 'Quill', QUILL_TABLE_URL, true)
+          .then(() => {
+            if (!element.parentNode) {
+              return NativePromise.reject();
             }
-            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+            this.quill = new Quill(element, settings);
+
+            /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+            const txtArea = document.createElement('textarea');
+            txtArea.setAttribute('class', 'quill-source-code');
+            this.quill.addContainer('ql-custom').appendChild(txtArea);
+            const qlSource = element.parentNode.querySelector('.ql-source');
+            if (qlSource) {
+              this.addEventListener(qlSource, 'click', (event) => {
+                event.preventDefault();
+                if (txtArea.style.display === 'inherit') {
+                  this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+                }
+                txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+              });
+            }
+            /** END CODEBLOCK **/
+
+            // Make sure to select cursor when they click on the element.
+            this.addEventListener(element, 'click', () => this.quill.focus());
+
+            // Allows users to skip toolbar items when tabbing though form
+            const elm = document.querySelectorAll('.ql-formats > button');
+            for (let i = 0; i < elm.length; i++) {
+              elm[i].setAttribute('tabindex', '-1');
+            }
+
+            this.quill.on('text-change', () => {
+              txtArea.value = this.quill.root.innerHTML;
+              onChange(txtArea);
+            });
+
+            return this.quill;
           });
-        }
-        /** END CODEBLOCK **/
-
-        // Make sure to select cursor when they click on the element.
-        this.addEventListener(element, 'click', () => this.quill.focus());
-
-        // Allows users to skip toolbar items when tabbing though form
-        const elm = document.querySelectorAll('.ql-formats > button');
-        for (let i = 0; i < elm.length; i++) {
-          elm[i].setAttribute('tabindex', '-1');
-        }
-
-        this.quill.on('text-change', () => {
-          txtArea.value = this.quill.root.innerHTML;
-          onChange(txtArea);
-        });
-
-        return this.quill;
       });
   }
 
@@ -2506,7 +2525,7 @@ export default class Component extends Element {
 
   setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && !silentCheck && (dirty || !this.pristine)) {
+    if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
@@ -2562,7 +2581,7 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changed);
+    this.checkRefreshOn(flags.changes);
     if (flags.noCheck) {
       return true;
     }
@@ -2682,7 +2701,7 @@ export default class Component extends Element {
         external: !!external,
       };
       this.emit('componentError', this.error);
-      this.addMessages(messages, dirty, this.refs.input);
+      this.addMessages(messages, dirty, inputRefs);
       if (inputRefs) {
         this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
       }
@@ -2841,6 +2860,13 @@ export default class Component extends Element {
     }
   }
 
+  getRelativePath(path) {
+    const keyPart = `.${this.key}`;
+    const thisPath = this.isInputComponent ? this.path
+                                           : this.path.slice(0).replace(keyPart, '');
+    return path.replace(thisPath, '');
+  }
+
   clear() {
     this.detach();
     this.empty(this.getElement());
@@ -2929,6 +2955,9 @@ export default class Component extends Element {
   }
 
   focus() {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
     if (this.refs.input && this.refs.input[0]) {
       this.refs.input[0].focus();
     }

@@ -201,8 +201,12 @@ export default class WebformBuilder extends Component {
       component.loadRefs(element, {
         [`${component.key}-container`]: 'single',
       });
-      component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
 
+      const dataGridContainer = component.refs[`${component.key}-container`];
+
+      if (dataGridContainer) {
+        component.attachComponents(dataGridContainer.parentNode, [], component.component.components);
+      }
       // Need to set up horizontal rearrangement of fields.
     };
 
@@ -498,7 +502,7 @@ export default class WebformBuilder extends Component {
     }
 
     // Some components are their own namespace.
-    if (['container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
+    if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
       return component.key;
     }
 

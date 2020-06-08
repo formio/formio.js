@@ -675,15 +675,15 @@ export default class Webform extends NestedDataComponent {
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
       const resolveForm = (flags) => {
-        this.onChange();
-        this.formReadyResolve(flags);
+        this.onChange(flags);
+        this.formReadyResolve();
       };
 
       if (flags && flags.validateOnInit) {
         resolveForm(flags);
       }
       else {
-        setTimeout(resolveForm, 0);
+        setTimeout(() => resolveForm(flags), 0);
       }
 
       return this.formReady;
@@ -1324,7 +1324,7 @@ export default class Webform extends NestedDataComponent {
    * @param changed
    * @param flags
    */
-  onChange(flags, changed, modified) {
+  onChange(flags, changed, modified, changes) {
     flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
@@ -1335,6 +1335,7 @@ export default class Webform extends NestedDataComponent {
     super.onChange(flags, true);
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
+    flags.changes = changes;
 
     if (modified && this.pristine) {
       this.pristine = false;

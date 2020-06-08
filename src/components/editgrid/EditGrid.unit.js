@@ -2,9 +2,12 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp3, comp4 } from './fixtures';
+import { comp1, comp4 } from './fixtures';
+
+import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
+import comp5 from './fixtures/comp5';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -31,20 +34,20 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should display saved values if there are more then 1 nested components', (done) => {
-    Harness.testCreate(EditGridComponent, comp3).then((component) => {
-      component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
-
-      setTimeout(()=>{
-        const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
-        const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
-
-        assert.equal(firstValue, '55555');
-        assert.equal(secondValue, '666666');
-        done();
-      }, 600);
-    });
-  });
+  // it('Should display saved values if there are more then 1 nested components', (done) => {
+  //   Harness.testCreate(EditGridComponent, comp3).then((component) => {
+  //     component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
+  //
+  //     setTimeout(()=>{
+  //       const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
+  //       const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
+  //
+  //       assert.equal(firstValue, '55555');
+  //       assert.equal(secondValue, '666666');
+  //       done();
+  //     }, 600);
+  //   });
+  // });
 
   it('Should build an empty edit grid component', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
@@ -346,25 +349,6 @@ describe('EditGrid Component', () => {
   });
 
   describe('Display As Modal', () => {
-    it('Should show errors on save', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement);
-      form.setForm(displayAsModalEditGrid).then(() => {
-          const editGrid = form.components[0];
-          const clickEvent = new Event('click');
-          editGrid.addRow();
-          setTimeout(() => {
-            const dialog = document.querySelector('[ref="dialogContents"]');
-            const saveButton = dialog.querySelector('.btn.btn-primary');
-            saveButton.dispatchEvent(clickEvent);
-            setTimeout(() => {
-              assert.equal(editGrid.errors.length, 6);
-              done();
-            }, 100);
-          }, 100);
-      }).catch(done);
-    });
-
     it('Should show add error classes to invalid components', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
@@ -377,17 +361,70 @@ describe('EditGrid Component', () => {
           const saveButton = dialog.querySelector('.btn.btn-primary');
           saveButton.dispatchEvent(clickEvent);
           setTimeout(() => {
+            assert.equal(editGrid.errors.length, 6);
             const components = Array.from(dialog.querySelectorAll('[ref="component"]'));
             const areRequiredComponentsHaveErrorWrapper = components.every((comp) => {
               const { className } = comp;
               return (className.includes('required') && className.includes('formio-error-wrapper')) || true;
             });
             assert.equal(areRequiredComponentsHaveErrorWrapper, true);
+            dialog.parentNode.removeChild(dialog);
+            form.clear();
             done();
           }, 100);
         }, 100);
       }).catch(done);
     });
+
+    it('Should set alert with validation errors on save', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        form.checkValidity(form._data, true, form._data);
+        assert.equal(form.errors.length, 1);
+        editGrid.addRow();
+
+        setTimeout(() => {
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          const clickEvent = new Event('click');
+          saveButton.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const alert = dialog.querySelector('.alert.alert-danger');
+            assert.equal(form.errors.length, 3);
+            const errorsLinks = alert.querySelectorAll('li');
+            assert.equal(errorsLinks.length, 2);
+            dialog.parentNode.removeChild(dialog);
+            form.clear();
+            done();
+          }, 100);
+        }, 100);
+      }).catch(done);
+    });
+  });
+
+  describe('Draft Rows', () => {
+    it('Check saving rows as draft', (done) => {
+      Harness.testCreate(EditGridComponent, comp5).then((component) => {
+        component.addRow();
+        Harness.clickElement(component, '[ref="editgrid-editGrid1-saveRow"]');
+        assert.deepEqual(component.dataValue, [{ textField: '' }]);
+        const isInvalid = !component.checkValidity(component.dataValue, true);
+        assert(isInvalid, 'Item should not be valid');
+        assert(component.editRows[0].state === 'draft', 'Row should be saved as draft if it has errors');
+        done();
+      }).catch(done);
+    });
+
+    // it('', (done) => {
+    //   const formElement = document.createElement('div');
+    //   const form = new Webform(formElement);
+    //   form.setForm(ModalEditGrid).then(() => {
+    //
+    //   }).catch(done);
+    // });
   });
 
   // TODO: Need to fix editing rows and conditionals.
