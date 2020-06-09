@@ -255,7 +255,6 @@ const CKEDITOR = &apos;https://cdn.form.io/ckeditor/16.0.0/ckeditor.js&apos;;
 const QUILL_URL = &apos;https://cdn.quilljs.com/2.0.0-dev.3&apos;;
 const QUILL_TABLE_URL = &apos;https://cdn.form.io/quill/quill-table.js&apos;;
 const ACE_URL = &apos;https://cdn.form.io/ace/1.4.10/ace.js&apos;;
-const TINYMCE_URL = &apos;https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js&apos;;
 
 /**
  * This is the Component class
@@ -2114,9 +2113,6 @@ export default class Component extends Element {
           ]
         }
       },
-      tiny: {
-        theme: &apos;silver&apos;
-      },
       default: {}
     };
   }
@@ -2214,20 +2210,6 @@ export default class Component extends Element {
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on(&apos;change&apos;, () =&gt; onChange(editor.getValue()));
         return editor;
-      });
-  }
-
-  addTiny(element, settings, onChange) {
-    return Formio.requireLibrary(&apos;tinymce&apos;, &apos;tinymce&apos;, TINYMCE_URL.replace(&apos;no-api-key&apos;, settings.tinyApiKey), true)
-      .then((editor) =&gt; {
-        return editor.init({
-          ...settings,
-          target: element,
-          // eslint-disable-next-line camelcase
-          init_instance_callback: (editor) =&gt; {
-            editor.on(&apos;Change&apos;, () =&gt; onChange(editor.getContent()));
-          },
-        });
       });
   }
 

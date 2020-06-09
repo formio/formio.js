@@ -4272,12 +4272,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/component/component.js~component#addtiny",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-method-addTiny",
-    "src/components/_classes/component/Component.js~Component#addTiny",
-    "method"
-  ],
-  [
     "src/components/_classes/component/component.js~component#allowdata",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-allowData",
     "src/components/_classes/component/Component.js~Component#allowData",

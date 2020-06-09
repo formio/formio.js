@@ -1358,7 +1358,7 @@ export function getArrayFromComponentPath(pathStr) {
   }
   return pathStr.replace(/[[\]]/g, &apos;.&apos;)
     .replace(/\.\./g, &apos;.&apos;)
-    .replace(/\.(?!.)|(?&lt;!.)\./g, &apos;&apos;)
+    .replace(/(^\.)|(\.$)/g, &apos;&apos;)
     .split(&apos;.&apos;)
     .map(part =&gt; _.defaultTo(_.toNumber(part), part));
 }
