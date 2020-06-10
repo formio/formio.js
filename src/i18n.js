@@ -53,6 +53,7 @@ export default {
         saveDraftInstanceError: 'Cannot save draft because there is no formio instance.',
         saveDraftAuthError: 'Cannot save draft unless a user is authenticated.',
         restoreDraftInstanceError: 'Cannot restore draft because there is no formio instance.',
+        time: 'Invalid time'
       }
     }
   }

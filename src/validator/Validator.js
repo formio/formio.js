@@ -754,6 +754,18 @@ class ValidationChecker {
           }
         }
       },
+      time: {
+        key: 'validate.time',
+        messageText: 'Invalid time',
+        message(component) {
+          return component.t(component.errorMessage(this.validators.time.messageText), {
+            field: component.errorLabel
+          });
+        },
+        check(component, setting, value, data, index) {
+          return moment(value, component.component.format).isValid();
+        }
+      },
     };
   }
 

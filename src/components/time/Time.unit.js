@@ -1,11 +1,11 @@
 import Harness from '../../../test/harness';
 import assert from 'power-assert';
 import TimeComponent from './Time';
-import { timeForm } from './fixtures';
-
 import {
   comp1,
-  comp2
+  comp2,
+  timeForm2,
+  timeForm,
 } from './fixtures';
 import Webform from '../../Webform';
 
@@ -60,5 +60,20 @@ describe('Time Component', () => {
         }, 600);
       }, 500);
     });
+  });
+
+  it('Should be invalid if time is not real', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(timeForm2).then(() => {
+      const component = form.components[0];
+      // eslint-disable-next-line no-debugger
+      debugger;
+      Harness.setInputValue(component, 'data[time]', '89:19');
+      setTimeout(() => {
+        assert.equal(component.error.message, 'Invalid time', 'Should have an error');
+        done();
+      }, 650);
+    }).catch(done);
   });
 });
