@@ -1,0 +1,175 @@
+declare var _default: ({
+    weight: number;
+    type: string;
+    input: boolean;
+    key: string;
+    label: string;
+    placeholder: string;
+    tooltip: string;
+    defaultValue: string;
+    onChange: (context: any) => void;
+    dataSrc: string;
+    data: {
+        values: {
+            label: string;
+            value: string;
+        }[];
+    };
+    conditional: {
+        json: {
+            '===': (string | {
+                var: string;
+            })[];
+            '!=='?: undefined;
+        };
+    };
+    refreshOn?: undefined;
+    clearOnHide?: undefined;
+    calculateValue?: undefined;
+    rows?: undefined;
+    editor?: undefined;
+    as?: undefined;
+    reorder?: undefined;
+    components?: undefined;
+} | {
+    weight: number;
+    type: string;
+    key: string;
+    label: string;
+    refreshOn: string;
+    clearOnHide: boolean;
+    calculateValue: (context: any) => any;
+    input: boolean;
+    rows: number;
+    editor: string;
+    as: string;
+    conditional: {
+        json: {
+            '!==': (string | {
+                var: string;
+            })[];
+            '==='?: undefined;
+        };
+    };
+    placeholder?: undefined;
+    tooltip?: undefined;
+    defaultValue?: undefined;
+    onChange?: undefined;
+    dataSrc?: undefined;
+    data?: undefined;
+    reorder?: undefined;
+    components?: undefined;
+} | {
+    weight: number;
+    type: string;
+    input: boolean;
+    key: string;
+    label: string;
+    tooltip: string;
+    customConditional(context: any): boolean;
+    placeholder?: undefined;
+    defaultValue?: undefined;
+    onChange?: undefined;
+    dataSrc?: undefined;
+    data?: undefined;
+    conditional?: undefined;
+    refreshOn?: undefined;
+    clearOnHide?: undefined;
+    calculateValue?: undefined;
+    rows?: undefined;
+    editor?: undefined;
+    as?: undefined;
+    reorder?: undefined;
+    components?: undefined;
+} | {
+    weight: number;
+    type: string;
+    input: boolean;
+    key: string;
+    label: string;
+    placeholder?: undefined;
+    tooltip?: undefined;
+    defaultValue?: undefined;
+    onChange?: undefined;
+    dataSrc?: undefined;
+    data?: undefined;
+    conditional?: undefined;
+    refreshOn?: undefined;
+    clearOnHide?: undefined;
+    calculateValue?: undefined;
+    rows?: undefined;
+    editor?: undefined;
+    as?: undefined;
+    reorder?: undefined;
+    components?: undefined;
+} | {
+    weight: number;
+    type: string;
+    input: boolean;
+    key: string;
+    defaultValue: boolean;
+    label: string;
+    placeholder?: undefined;
+    tooltip?: undefined;
+    onChange?: undefined;
+    dataSrc?: undefined;
+    data?: undefined;
+    conditional?: undefined;
+    refreshOn?: undefined;
+    clearOnHide?: undefined;
+    calculateValue?: undefined;
+    rows?: undefined;
+    editor?: undefined;
+    as?: undefined;
+    reorder?: undefined;
+    components?: undefined;
+} | {
+    weight: number;
+    type: string;
+    input: boolean;
+    key: string;
+    label: string;
+    customConditional(context: any): boolean;
+    reorder: boolean;
+    components: {
+        type: string;
+        key: string;
+        label: string;
+        input: boolean;
+    }[];
+    placeholder?: undefined;
+    tooltip?: undefined;
+    defaultValue?: undefined;
+    onChange?: undefined;
+    dataSrc?: undefined;
+    data?: undefined;
+    conditional?: undefined;
+    refreshOn?: undefined;
+    clearOnHide?: undefined;
+    calculateValue?: undefined;
+    rows?: undefined;
+    editor?: undefined;
+    as?: undefined;
+} | {
+    weight: number;
+    type: string;
+    label: string;
+    tooltip: string;
+    key: string;
+    input: boolean;
+    placeholder?: undefined;
+    defaultValue?: undefined;
+    onChange?: undefined;
+    dataSrc?: undefined;
+    data?: undefined;
+    conditional?: undefined;
+    refreshOn?: undefined;
+    clearOnHide?: undefined;
+    calculateValue?: undefined;
+    rows?: undefined;
+    editor?: undefined;
+    as?: undefined;
+    reorder?: undefined;
+    components?: undefined;
+})[];
+export default _default;

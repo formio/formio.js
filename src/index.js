@@ -1,3 +1,14 @@
-// DO NOT SAY "export *"!!! This messes up the umd for dist builds.
-export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio } from './formio.form';
-export FormBuilder from './FormBuilder';
+import AllComponents from './components';
+import Builders from './builders/Builders';
+import Components from './components/Components';
+import Displays from './displays/Displays';
+import Templates from './templates/Templates';
+import Providers from './providers';
+import Utils from './utils';
+export {
+  Builders, Components, Displays, Providers, Templates, Utils
+}
+export * from './Form';
+export * from './FormBuilder';
+export * from './Formio';
+export * from './validator';

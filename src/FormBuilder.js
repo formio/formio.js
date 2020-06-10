@@ -2,7 +2,7 @@ import Formio from './Formio';
 import Builders from './builders';
 import Form from './Form';
 
-export default class FormBuilder extends Form {
+export class FormBuilder extends Form {
   static options = {};
   constructor(element, form, options) {
     form = form || {};

@@ -15,7 +15,7 @@ import {
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue, delay } from '../../../utils/utils';
-import Element from '../../../Element';
+import Base from '../base/Base';
 import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
@@ -26,7 +26,7 @@ const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.j
  * This is the Component class
  which all elements within the FormioForm derive from.
  */
-export default class Component extends Element {
+export default class Component extends Base {
   static schema(...sources) {
     return _.merge({
       /**

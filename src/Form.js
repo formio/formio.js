@@ -1,11 +1,11 @@
-import Element from './Element';
+import Base from './components/_classes/base/Base';
 import Formio from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
 
-export default class Form extends Element {
+export class Form extends Base {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
    *

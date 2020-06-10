@@ -1,5 +1,5 @@
 import Harness from '../../../test/harness';
-import EventEmitter from '../../EventEmitter';
+import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import assert from 'power-assert';
 
 describe('TextField Builder', () => {

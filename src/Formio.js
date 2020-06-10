@@ -4,7 +4,7 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
-import EventEmitter from './EventEmitter';
+import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import cookies from 'browser-cookies';
 import Providers from './providers';
 import _intersection from 'lodash/intersection';
@@ -40,7 +40,7 @@ function cloneResponse(response) {
  *
  *   let formio = new Formio('https://examples.form.io/example');
  */
-export default class Formio {
+export class Formio {
   /* eslint-disable max-statements */
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import EventEmitter from '../../EventEmitter';
+import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import i18next from 'i18next';
 import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
