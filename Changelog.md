@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.0-rc.13
+#### Added
+ - FJS-985: Feat (EditGrid Modal): added confirm dialog before closing modal row
+ - Add time validation for Time component.
+
+#### Fixed
+ - FJS-957: fixed pattern validation error appeared for empty value
+ - Fix(TextArea): update convert function parameter for Quill editor.
+ 
+### Changed
+ - Upgrade ejs-loader@0.5.0
+
 ### 4.10.0-rc.12
 ### Added
  - Private download check for image load.

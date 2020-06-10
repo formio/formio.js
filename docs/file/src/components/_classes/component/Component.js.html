@@ -1488,7 +1488,7 @@ export default class Component extends Element {
     return this.itemValue(value);
   }
 
-  createModal(element, attr) {
+  createModal(element, attr, confirm) {
     const dialog = this.ce(&apos;div&apos;, attr || {});
     this.setContent(dialog, this.renderTemplate(&apos;dialog&apos;));
 
@@ -1515,8 +1515,18 @@ export default class Component extends Element {
       dialog.close();
     };
 
-    this.addEventListener(dialog.refs.dialogOverlay, &apos;click&apos;, close);
-    this.addEventListener(dialog.refs.dialogClose, &apos;click&apos;, close);
+    const handleCloseClick = (e) =&gt; {
+      if (confirm) {
+        confirm().then(() =&gt; close(e))
+        .catch(() =&gt; {});
+      }
+      else {
+        close(e);
+      }
+    };
+
+    this.addEventListener(dialog.refs.dialogOverlay, &apos;click&apos;, handleCloseClick);
+    this.addEventListener(dialog.refs.dialogClose, &apos;click&apos;, handleCloseClick);
 
     return dialog;
   }

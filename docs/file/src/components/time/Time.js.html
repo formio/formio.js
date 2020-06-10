@@ -263,6 +263,13 @@ export default class TimeComponent extends TextFieldComponent {
     this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
 
+  init() {
+    super.init();
+    if (this.component.inputType === &apos;text&apos;) {
+      this.validators.push(&apos;time&apos;);
+    }
+  }
+
   static get builderInfo() {
     return {
       title: &apos;Time&apos;,

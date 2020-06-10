@@ -241,11 +241,11 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import assert from &apos;power-assert&apos;;
 import TimeComponent from &apos;./Time&apos;;
-import { timeForm } from &apos;./fixtures&apos;;
-
 import {
   comp1,
-  comp2
+  comp2,
+  timeForm2,
+  timeForm,
 } from &apos;./fixtures&apos;;
 import Webform from &apos;../../Webform&apos;;
 
@@ -300,6 +300,21 @@ describe(&apos;Time Component&apos;, () =&gt; {
         }, 600);
       }, 500);
     });
+  });
+
+  it(&apos;Should be invalid if time is not real&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm(timeForm2).then(() =&gt; {
+      const component = form.components[0];
+      // eslint-disable-next-line no-debugger
+      debugger;
+      Harness.setInputValue(component, &apos;data[time]&apos;, &apos;89:19&apos;);
+      setTimeout(() =&gt; {
+        assert.equal(component.error.message, &apos;Invalid time&apos;, &apos;Should have an error&apos;);
+        done();
+      }, 650);
+    }).catch(done);
   });
 });
 </code></pre>

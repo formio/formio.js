@@ -8658,6 +8658,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#defaultdialogtemplate",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-defaultDialogTemplate",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#defaultDialogTemplate",
+    "member"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#defaultschema",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-defaultSchema",
     "src/components/editgrid/EditGrid.js~EditGridComponent#defaultSchema",
@@ -8823,6 +8829,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#setvalue",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-setValue",
     "src/components/editgrid/EditGrid.js~EditGridComponent#setValue",
+    "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#showdialog",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-showDialog",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#showDialog",
     "method"
   ],
   [
@@ -12612,6 +12624,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/time/time.js~timecomponent#init",
+    "class/src/components/time/Time.js~TimeComponent.html#instance-method-init",
+    "src/components/time/Time.js~TimeComponent#init",
+    "method"
+  ],
+  [
     "src/components/time/time.js~timecomponent#inputinfo",
     "class/src/components/time/Time.js~TimeComponent.html#instance-get-inputInfo",
     "src/components/time/Time.js~TimeComponent#inputInfo",
@@ -12717,6 +12735,12 @@ window.esdocSearchIndex = [
     "src/components/time/fixtures/timeform.js",
     "file/src/components/time/fixtures/timeForm.js.html",
     "src/components/time/fixtures/timeForm.js",
+    "file"
+  ],
+  [
+    "src/components/time/fixtures/timeform2.js",
+    "file/src/components/time/fixtures/timeForm2.js.html",
+    "src/components/time/fixtures/timeForm2.js",
     "file"
   ],
   [
@@ -15291,6 +15315,12 @@ window.esdocSearchIndex = [
     "src/validator/rules/select.js",
     "file/src/validator/rules/Select.js.html",
     "src/validator/rules/Select.js",
+    "file"
+  ],
+  [
+    "src/validator/rules/time.js",
+    "file/src/validator/rules/Time.js.html",
+    "src/validator/rules/Time.js",
     "file"
   ],
   [
