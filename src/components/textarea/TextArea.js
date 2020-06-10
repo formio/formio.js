@@ -170,7 +170,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
             let dataValue = this.dataValue;
             dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
+            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
             editorReady(quill);
             return quill;
           }).catch(err => console.warn(err));
