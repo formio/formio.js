@@ -8,6 +8,7 @@ import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
 import comp5 from './fixtures/comp5';
+import comp6 from './fixtures/comp6';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -368,8 +369,7 @@ describe('EditGrid Component', () => {
               return (className.includes('required') && className.includes('formio-error-wrapper')) || true;
             });
             assert.equal(areRequiredComponentsHaveErrorWrapper, true);
-            dialog.parentNode.removeChild(dialog);
-            form.clear();
+            document.body.innerHTML = '';
             done();
           }, 100);
         }, 100);
@@ -396,11 +396,41 @@ describe('EditGrid Component', () => {
             assert.equal(form.errors.length, 3);
             const errorsLinks = alert.querySelectorAll('li');
             assert.equal(errorsLinks.length, 2);
-            dialog.parentNode.removeChild(dialog);
-            form.clear();
+            document.body.innerHTML = '';
             done();
           }, 100);
         }, 100);
+      }).catch(done);
+    });
+
+    it('Confirmation dialog', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() => {
+        const component = form.components[0];
+        component.addRow();
+        const dialog = document.querySelector('[ref="dialogContents"]');
+        Harness.dispatchEvent('input', dialog, '[name="data[editGrid][0][textField]"]', (el) => el.value = '12');
+        Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+        const confirmationDialog = document.querySelector('[ref="confirmationDialog"]');
+        assert(confirmationDialog, 'Should open a confirmation dialog when trying to close');
+        Harness.dispatchEvent('click', confirmationDialog, '[ref="dialogCancelButton"]');
+        setTimeout(() => {
+          assert.equal(component.editRows[0].data.textField, '12', 'Data should not be cleared');
+
+          Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+          setTimeout(() => {
+            const confirmationDialog2 = document.querySelector('[ref="confirmationDialog"]');
+            assert(confirmationDialog2, 'Should open again a conformation dialog');
+            // eslint-disable-next-line no-debugger
+            debugger;
+            Harness.dispatchEvent('click', confirmationDialog2, '[ref="dialogYesButton"]');
+            setTimeout(() => {
+              assert.equal(component.editRows.length, 0, 'Data should be cleared');
+              done();
+            }, 250);
+          }, 250);
+        }, 250);
       }).catch(done);
     });
   });

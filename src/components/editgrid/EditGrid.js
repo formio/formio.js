@@ -485,7 +485,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   showDialog() {
-    const wrapper = this.ce('div');
+    const wrapper = this.ce('div', { ref: 'confirmationDialog' });
     const dialogContent =this.component.dialogTemplate || this.defaultDialogTemplate;
 
     wrapper.innerHTML = dialogContent;
