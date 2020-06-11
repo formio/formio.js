@@ -1,4 +1,4 @@
-export default class InputWidget extends Element {
+export default class InputWidget extends Base {
     static get defaultSettings(): {
         type: string;
     };
@@ -18,4 +18,4 @@ export default class InputWidget extends Element {
     addSuffix(): any;
     setValue(value: any): void;
 }
-import Element from "../Element";
+import Base from "../components/_classes/base/Base";

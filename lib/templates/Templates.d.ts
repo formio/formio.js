@@ -1,4 +1,4 @@
-export default class Templates {
+export class Templates {
     static get templates(): any;
     static addTemplate(name: any, template: any): void;
     static extendTemplate(name: any, template: any): void;

@@ -1,2 +1,1 @@
-export default Providers;
-import Providers from "./Providers";
+export * from "./Providers";

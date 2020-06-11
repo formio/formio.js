@@ -1,4 +1,4 @@
-export default class Providers {
+export class Providers {
     static providers: {
         address: {
             [x: string]: typeof import("./address/CustomAddressProvider").CustomAddressProvider;

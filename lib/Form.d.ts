@@ -1,4 +1,4 @@
-export class Form extends Element {
+export class Form extends Base {
     static embed(embed: any): any;
     /**
      * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
@@ -85,4 +85,4 @@ export class Form extends Element {
     render(): any;
     attach(element: any): any;
 }
-import Element from "./Element";
+import Base from "./components/_classes/base/Base";

@@ -169,6 +169,5 @@ export namespace Formio {
 }
 declare const fetch: any;
 declare const Headers: any;
-import Providers from "./providers";
-import EventEmitter from "./EventEmitter";
+import { EventEmitter2 as EventEmitter } from "eventemitter2";
 export {};

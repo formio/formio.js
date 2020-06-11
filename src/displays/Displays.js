@@ -3,7 +3,7 @@ import pdf from './pdf/PDF';
 import webform from './webform/Webform';
 import wizard from './wizard/Wizard';
 
-export default class Displays {
+export class Displays {
   static displays = {
     pdf,
     webform,

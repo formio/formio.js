@@ -1,4 +1,4 @@
-export default class Builders {
+export class Builders {
     static builders: {
         pdf: typeof pdf;
         webform: typeof webform;

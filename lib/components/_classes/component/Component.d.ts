@@ -2,7 +2,7 @@
  * This is the Component class
  which all elements within the FormioForm derive from.
  */
-declare class Component extends Element {
+declare class Component extends Base {
     static schema(...sources: any[]): any;
     /**
      * Provides a table view for this component. Override if you wish to do something different than using getView
@@ -797,5 +797,5 @@ declare namespace Component {
     export function libraryReady(name: any): any;
 }
 export default Component;
-import Element from "../../../Element";
+import Base from "../base/Base";
 import ComponentModal from "../componentModal/ComponentModal";

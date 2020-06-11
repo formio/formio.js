@@ -1,2 +1,2 @@
-export default FormioUtils;
-import * as FormioUtils from "./utils";
+export { Utils };
+import * as Utils from "./utils";

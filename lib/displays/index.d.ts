@@ -1,2 +1,1 @@
-export default Displays;
-import Displays from "./Displays";
+export * from "./Displays";

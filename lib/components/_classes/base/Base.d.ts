@@ -1,7 +1,7 @@
 /**
  * The root component for all elements within the Form.io renderer.
  */
-export default class Element {
+export default class Base {
     constructor(options: any);
     /**
      * The options for this component.
@@ -26,7 +26,7 @@ export default class Element {
      * @type {EventEmitter}
      */
     events: EventEmitter;
-    defaultMask: any[];
+    defaultMask: any;
     /**
      * Register for a new event within this component.
      *
@@ -84,14 +84,14 @@ export default class Element {
      * @param persistent
      *   If this listener should persist beyond "destroy" commands.
      */
-    addEventListener(obj: any, type: any, func: any, persistent: any): Element;
+    addEventListener(obj: any, type: any, func: any, persistent: any): Base;
     /**
      * Remove an event listener from the object.
      *
      * @param obj
      * @param type
      */
-    removeEventListener(obj: any, type: any, func?: any): Element;
+    removeEventListener(obj: any, type: any, func?: any): Base;
     removeEventListeners(): void;
     removeAllEvents(includeExternal: any): void;
     /**
@@ -104,21 +104,21 @@ export default class Element {
      * @param element
      * @param container
      */
-    appendTo(element: any, container: any): Element;
+    appendTo(element: any, container: any): Base;
     /**
      * Prepend an HTML DOM element to a container.
      *
      * @param {HTMLElement} element - The DOM element to prepend.
      * @param {HTMLElement} container - The DOM element that is the container of the element getting prepended.
      */
-    prependTo(element: HTMLElement, container: HTMLElement): Element;
+    prependTo(element: HTMLElement, container: HTMLElement): Base;
     /**
      * Removes an HTML DOM element from its bounding container.
      *
      * @param {HTMLElement} element - The element to remove.
      * @param {HTMLElement} container - The DOM element that is the container of the element to remove.
      */
-    removeChildFrom(element: HTMLElement, container: HTMLElement): Element;
+    removeChildFrom(element: HTMLElement, container: HTMLElement): Base;
     /**
      * Alias for document.createElement.
      *
@@ -134,7 +134,7 @@ export default class Element {
      *
      * @param child
      */
-    appendChild(element: any, child: any): Element;
+    appendChild(element: any, child: any): Base;
     /**
      * Creates a new input mask placeholder.
      * @param {HTMLElement} mask - The input mask.
@@ -182,7 +182,7 @@ export default class Element {
      * @param className
      *   The name of the class to add.
      */
-    addClass(element: any, className: any): Element;
+    addClass(element: any, className: any): Base;
     /**
      * Remove a class from a DOM element.
      *
@@ -191,7 +191,7 @@ export default class Element {
      * @param className
      *   The name of the class that is to be removed.
      */
-    removeClass(element: any, className: any): Element;
+    removeClass(element: any, className: any): Base;
     /**
      * Empty's an HTML DOM element.
      *
@@ -229,4 +229,4 @@ export default class Element {
      */
     hook(...args: any[]): any;
 }
-import EventEmitter from "./EventEmitter";
+import { EventEmitter2 as EventEmitter } from "eventemitter2";

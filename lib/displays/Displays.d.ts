@@ -1,4 +1,4 @@
-export default class Displays {
+export class Displays {
     static displays: {
         pdf: typeof pdf;
         webform: typeof webform;
