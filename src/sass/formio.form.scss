@@ -256,6 +256,13 @@ td > .form-group {
   padding: 0;
 }
 
+.choices__item.choices__item--selectable {
+  white-space: nowrap;
+  overflow: hidden;
+  width: calc(100% - 30px);
+  text-overflow: ellipsis;
+}
+
 .choices__input {
   padding: 2px;
 }
@@ -1193,7 +1200,7 @@ div[data-oembed-url] {
 
 //show textarea submission in read-only mode and PDF view with initial line and space formatting
 div[read-only="true"] {
-  .formio-component-textarea { 
+  .formio-component-textarea {
     div[ref="input"] {
       white-space: pre-wrap;
     }
