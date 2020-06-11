@@ -1,4 +1,3 @@
-'use strict';
 const gulp = require('gulp');
 const insert = require('gulp-insert');
 const rename = require('gulp-rename');

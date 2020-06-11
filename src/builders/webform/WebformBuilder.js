@@ -1,4 +1,4 @@
-import Webform from '../../displays/webform/Webform';
+import {Webform} from '../../displays/webform/Webform';
 import Component from '../../components/_classes/component/Component';
 // Import from "dist" because it would require and "global" would not be defined in Angular apps.
 import dragula from 'dragula/dist/dragula';

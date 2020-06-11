@@ -7,7 +7,7 @@ import WebformBuilder from '../webform/WebformBuilder';
 import { getElementRect, fastCloneDeep } from '../../utils/utils';
 import { eachComponent } from '../../utils/formUtils';
 import BuilderUtils from '../../utils/builder';
-import PDF from '../../displays/pdf/PDF';
+import {PDF} from '../../displays/pdf/PDF';
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });

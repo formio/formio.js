@@ -1,6 +1,6 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
-import Webform from '../webform/Webform';
+import {Webform} from '../webform/Webform';
 import {Formio} from '../../Formio';
 import {
   fastCloneDeep,
@@ -9,7 +9,7 @@ import {
   uniqueKey
 } from '../../utils/utils';
 
-export default class Wizard extends Webform {
+export class Wizard extends Webform {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.

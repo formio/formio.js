@@ -1,4 +1,3 @@
-'use strict';
 import NestedComponent from './NestedComponent';
 import Harness from '../../../../test/harness';
 import assert from 'power-assert';

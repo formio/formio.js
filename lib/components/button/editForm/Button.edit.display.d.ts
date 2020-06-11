@@ -16,7 +16,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -41,7 +40,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -68,7 +66,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -95,7 +92,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -122,7 +118,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -149,7 +144,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -181,7 +175,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -208,7 +201,6 @@ declare var _default: ({
     addAnother?: undefined;
     components?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -228,7 +220,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 } | {
     type: string;
@@ -274,7 +265,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     valueProperty?: undefined;
-    customDefaultValue?: undefined;
     template?: undefined;
 })[];
 export default _default;

@@ -1,4 +1,4 @@
-export default class PDF extends Webform {
+export class PDF extends Webform {
     constructor(element: any, options: any);
     submitButton: any;
     iframeReady: any;
@@ -16,4 +16,4 @@ export default class PDF extends Webform {
     postMessage(message: any): void;
     checkSubmitButtonHiddenness(): boolean;
 }
-import Webform from "../webform/Webform";
+import { Webform } from "../webform/Webform";

@@ -37,7 +37,6 @@ declare var _default: ({
         tooltip?: undefined;
         dataSrc?: undefined;
         valueProperty?: undefined;
-        customDefaultValue?: undefined;
         template?: undefined;
         data?: undefined;
     } | {
@@ -58,7 +57,6 @@ declare var _default: ({
         tooltip?: undefined;
         dataSrc?: undefined;
         valueProperty?: undefined;
-        customDefaultValue?: undefined;
         template?: undefined;
         data?: undefined;
     } | {

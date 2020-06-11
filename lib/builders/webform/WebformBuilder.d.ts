@@ -99,4 +99,4 @@ export default class WebformBuilder extends Component {
     updateBuilderGroup(name: any, group: any): void;
 }
 import Component from "../../components/_classes/component/Component";
-import Webform from "../../displays/webform/Webform";
+import { Webform } from "../../displays/webform/Webform";

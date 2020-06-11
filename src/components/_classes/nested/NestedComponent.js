@@ -1,4 +1,3 @@
-'use strict';
 import _ from 'lodash';
 import Field from '../field/Field';
 import {Components} from '../../Components';

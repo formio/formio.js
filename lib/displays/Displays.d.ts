@@ -1,18 +1,18 @@
 export class Displays {
     static displays: {
-        pdf: typeof pdf;
-        webform: typeof webform;
-        wizard: typeof wizard;
+        pdf: typeof PDF;
+        webform: typeof Webform;
+        wizard: typeof Wizard;
     };
     static addDisplay(name: any, display: any): void;
     static addDisplays(displays: any): void;
     static getDisplay(name: any): any;
     static getDisplays(): {
-        pdf: typeof pdf;
-        webform: typeof webform;
-        wizard: typeof wizard;
+        pdf: typeof PDF;
+        webform: typeof Webform;
+        wizard: typeof Wizard;
     };
 }
-import pdf from "./pdf/PDF";
-import webform from "./webform/Webform";
-import wizard from "./wizard/Wizard";
+import { PDF } from "./pdf/PDF";
+import { Webform } from "./webform/Webform";
+import { Wizard } from "./wizard/Wizard";

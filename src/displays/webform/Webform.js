@@ -47,7 +47,7 @@ function getOptions(options) {
 /**
  * Renders a Form.io form within the webpage.
  */
-export default class Webform extends NestedDataComponent {
+export class Webform extends NestedDataComponent {
   /**
    * Creates a new Form instance.
    *

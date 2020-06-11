@@ -1,6 +1,9 @@
 import {Formio} from './Formio';
 import {Builders} from './builders';
 import {Form} from './Form';
+import {Components} from './components';
+import builderComponents from './components/builder';
+Components.setComponents(builderComponents);
 
 export class FormBuilder extends Form {
   static options = {};

@@ -1,4 +1,3 @@
-'use strict';
 import assert from 'power-assert';
 import { expect } from 'chai';
 import Component from './Component';

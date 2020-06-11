@@ -1,7 +1,7 @@
 /**
  * Renders a Form.io form within the webpage.
  */
-declare class Webform extends NestedDataComponent {
+export class Webform extends NestedDataComponent {
     /**
      * Creates a new Form instance.
      *
@@ -365,12 +365,11 @@ declare class Webform extends NestedDataComponent {
     triggerRecaptcha(): void;
     _nosubmit: any;
 }
-declare namespace Webform {
+export namespace Webform {
     export const setBaseUrl: any;
     export const setApiUrl: any;
     export const setAppUrl: any;
 }
-export default Webform;
 import NestedDataComponent from "../../components/_classes/nesteddata/NestedDataComponent";
 declare namespace Formio {
     export const forms: {};
@@ -378,3 +377,4 @@ declare namespace Formio {
 }
 import { Formio } from "../../Formio";
 import { Components } from "../../components/Components";
+export {};

@@ -10,7 +10,6 @@ declare var _default: {
             placeholder?: undefined;
             tooltip?: undefined;
             input?: undefined;
-            customDefaultValue?: undefined;
         } | {
             type: string;
             label: string;

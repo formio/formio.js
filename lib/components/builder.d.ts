@@ -115,7 +115,7 @@ declare namespace Components {
         export { WellForm as editForm };
     }
 }
-import { Components } from "./Components";
+import Components from "./form";
 import AddressForm from "./address/Address.form";
 import ButtonForm from "./button/Button.form";
 import CheckboxForm from "./checkbox/Checkbox.form";

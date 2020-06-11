@@ -582,6 +582,7 @@ export default class Component extends Base {
   }
 
   get builderMode() {
+    debugger;
     return this.options.attachMode === 'builder';
   }
 

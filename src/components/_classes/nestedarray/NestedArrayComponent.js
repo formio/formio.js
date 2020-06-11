@@ -1,7 +1,4 @@
-'use strict';
-
 import _ from 'lodash';
-
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
 

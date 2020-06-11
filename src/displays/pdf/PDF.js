@@ -1,9 +1,9 @@
 import NativePromise from 'native-promise-only';
 import {Formio} from '../../Formio';
-import Webform from '../webform/Webform';
+import {Webform} from '../webform/Webform';
 import { fastCloneDeep, eachComponent } from '../../utils/utils';
 
-export default class PDF extends Webform {
+export class PDF extends Webform {
   constructor(element, options) {
     super(element, options);
     this.components = [];

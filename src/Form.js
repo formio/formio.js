@@ -4,6 +4,9 @@ import {Displays} from './displays';
 import {Templates} from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
+import {Components} from './components';
+import formComponents from './components/form';
+Components.setComponents(formComponents);
 
 export class Form extends Base {
   /**

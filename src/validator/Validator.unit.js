@@ -1,5 +1,4 @@
-// 'use strict';
-// import Validator from './Validator';
+// // import Validator from './Validator';
 // import Component from '../components/_classes/component/Component';
 // import assert from 'power-assert';
 
