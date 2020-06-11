@@ -13,9 +13,9 @@
     "test": "mocha --require ts-node/register --reporter spec './{,!(node_modules)/**/}*.spec.ts'",
     "watch": "tsc -w",
     "styles": "npm run styles-form && npm run styles-builder && npm run styles-full",
-    "styles-form": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.form.scss ./dist/formio.form.css",
-    "styles-builder": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.builder.scss ./dist/formio.builder.css",
-    "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css",
+    "styles-form": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.form.scss ./dist/formio.form.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.form.scss ./dist/formio.form.min.css",
+    "styles-builder": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.builder.scss ./dist/formio.builder.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.builder.scss ./dist/formio.builder.min.css",
+    "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.full.scss ./dist/formio.full.min.css",
     "build": "tsc && gulp templates && webpack && webpack --config webpack.prod.js && npm run styles",
     "lint": "tslint -p .",
     "prepublish1": "npm run build"
