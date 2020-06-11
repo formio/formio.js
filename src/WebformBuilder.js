@@ -1048,6 +1048,7 @@ export default class WebformBuilder extends Component {
         }
       });
       const originalComp = comp.component;
+      const originalComponentSchema = parentComponent.schema.components[index];
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
@@ -1066,7 +1067,8 @@ export default class WebformBuilder extends Component {
           parentComponent.schema,
           path,
           index,
-          isNew
+          isNew,
+          originalComponentSchema
         );
         this.emit('change', this.form);
         this.highlightInvalidComponents();
