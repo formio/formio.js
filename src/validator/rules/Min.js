@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
-const Rule = require('./Rule');
-
+import {Rule} from './Rule';
 export class Min extends Rule {
   defaultMessage = '{{field}} cannot be less than {{settings.limit}}.';
 

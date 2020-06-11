@@ -1,11 +1,11 @@
-import bootsrap from './bootstrap';
+import bootstrap from './bootstrap';
 import _ from 'lodash';
 
 export class Templates {
   static get templates() {
     if (!Templates._templates) {
       Templates._templates = {
-        bootsrap
+        bootstrap
       };
     }
     return Templates._templates;

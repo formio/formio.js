@@ -6,8 +6,7 @@ const { fetch, Headers, Request } = fetchPonyfill({
 });
 import _ from 'lodash';
 
-const Rule = require('./Rule');
-
+import {Rule} from './Rule';
 export class Select extends Rule {
   defaultMessage = '{{field}} contains an invalid selection';
 

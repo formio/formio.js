@@ -1,5 +1,4 @@
-const Rule = require('./Rule');
-
+import {Rule} from './Rule';
 export class Pattern extends Rule {
   defaultMessage = '{{field}} does not match the pattern {{settings.pattern}}';
 

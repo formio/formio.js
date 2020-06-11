@@ -1,5 +1,4 @@
-const Rule = require('./Rule');
-
+import {Rule} from './Rule';
 export class MaxLength extends Rule {
   defaultMessage = '{{field}} must have no more than {{- settings.length}} characters.';
 

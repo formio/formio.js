@@ -1,4 +1,5 @@
-export class Custom {
+export class Custom extends Rule {
+    constructor(component: any, settings: any, config: any);
     defaultMessage: string;
-    check(value: any, data: any, row: any, index: any): any;
 }
+import { Rule } from "./Rule";

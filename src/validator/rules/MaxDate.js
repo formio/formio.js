@@ -2,8 +2,7 @@ import { getDateSetting } from '../../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
 
-const Rule = require('./Rule');
-
+import {Rule} from './Rule';
 export class MaxDate extends Rule {
   defaultMessage = '{{field}} should not contain date after {{settings.dateLimit}}';
 

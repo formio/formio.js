@@ -1,4 +1,5 @@
-export class MinLength {
+export class MinLength extends Rule {
+    constructor(component: any, settings: any, config: any);
     defaultMessage: string;
-    check(value: any): boolean;
 }
+import { Rule } from "./Rule";

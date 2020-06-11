@@ -1,4 +1,5 @@
-export class Select {
+export class Select extends Rule {
+    constructor(component: any, settings: any, config: any);
     defaultMessage: string;
-    check(value: any, data: any, row: any, async: any): any;
 }
+import { Rule } from "./Rule";

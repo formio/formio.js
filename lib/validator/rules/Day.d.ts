@@ -1,4 +1,5 @@
-export class Day {
+export class Day extends Rule {
+    constructor(component: any, settings: any, config: any);
     defaultMessage: string;
-    check(value: any): boolean;
 }
+import { Rule } from "./Rule";

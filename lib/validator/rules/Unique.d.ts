@@ -1,4 +1,5 @@
-export class Unique {
+export class Unique extends Rule {
+    constructor(component: any, settings: any, config: any);
     defaultMessage: string;
-    check(value: any): any;
 }
+import { Rule } from "./Rule";

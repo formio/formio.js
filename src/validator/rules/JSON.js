@@ -1,5 +1,4 @@
-const Rule = require('./Rule');
-
+import {Rule} from './Rule';
 export class JSON extends Rule {
   defaultMessage = '{{error}}';
 

@@ -1,5 +1,4 @@
-const Rule = require('./Rule');
-
+import {Rule} from './Rule';
 export class Email extends Rule {
   defaultMessage = '{{field}} must be a valid email.';
 
