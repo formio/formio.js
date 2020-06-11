@@ -2385,6 +2385,11 @@ export default class Component extends Element {
       row: row || this.data
     }, 'value') || this.emptyValue;
 
+    // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
+    if (flags.isReordered && allowOverride) {
+      this.calculatedValue = calculatedValue;
+    }
+
     const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
     const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
 
