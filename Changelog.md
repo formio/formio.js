@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.0
+#### Fixed
+ - FJS-996: fixed components key uniquifying
+ - FJS-892: Fix (WebformBuilder): forms are not merged correctly during handling a conflict
+ - Fixed typeo of Flatpickr name in settings.
+ - FJS-998: Fixed losing overridden value when reordering dataGrid rows
+
+#### Added
+ - Tests for EditGrid dialog confirmation.
+
 ### 4.10.0-rc.13
 #### Added
  - FJS-985: Feat (EditGrid Modal): added confirm dialog before closing modal row
