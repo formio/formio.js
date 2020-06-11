@@ -1,47 +1,47 @@
-const custom = require('./Custom');
-const date = require('./Date');
-const day = require('./Day');
-const email = require('./Email');
-const json = require('./JSON');
-const mask = require('./Mask');
-const max = require('./Max');
-const maxDate = require('./MaxDate');
-const maxLength = require('./MaxLength');
-const maxWords = require('./MaxWords');
-const maxYear = require('./MaxYear');
-const min = require('./Min');
-const minDate = require('./MinDate');
-const minLength = require('./MinLength');
-const minWords = require('./MinWords');
-const minYear = require('./MinYear');
-const pattern = require('./Pattern');
-const required = require('./Required');
-const select = require('./Select');
-const unique = require('./Unique');
-const url = require('./Url');
+import { Custom } from './Custom';
+import { DateRule } from './Date';
+import { Day } from './Day';
+import { Email } from './Email';
+import { JSON } from './JSON';
+import { Mask } from './Mask';
+import { Max } from './Max';
+import { MaxDate } from './MaxDate';
+import { MaxLength } from './MaxLength';
+import { MaxWords } from './MaxWords';
+import { MaxYear } from './MaxYear';
+import { Min } from './Min';
+import { MinDate } from './MinDate';
+import { MinLength } from './MinLength';
+import { MinWords } from './MinWords';
+import { MinYear } from './MinYear';
+import { Pattern } from './Pattern';
+import { Required } from './Required';
+import { Select } from './Select';
+import { Unique } from './Unique';
+import { Url } from './Url';
 
 const rules = {
-  custom,
-  date,
-  day,
-  email,
-  json,
-  mask,
-  max,
-  maxDate,
-  maxLength,
-  maxWords,
-  maxYear,
-  min,
-  minDate,
-  minLength,
-  minWords,
-  minYear,
-  pattern,
-  required,
-  select,
-  unique,
-  url,
+  custom: Custom,
+  date: DateRule,
+  day: Day,
+  email: Email,
+  json: JSON,
+  mask: Mask,
+  max: Max,
+  maxDate: MaxDate,
+  maxLength: MaxLength,
+  maxWords: MaxWords,
+  maxYear: MaxYear,
+  min: Min,
+  minDate: MinDate,
+  minLength: MinLength,
+  minWords: MinWords,
+  minYear: MinYear,
+  pattern: Pattern,
+  required: Required,
+  select: Select,
+  unique: Unique,
+  url: Url,
 };
 
 export class Rules {

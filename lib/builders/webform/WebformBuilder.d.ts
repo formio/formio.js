@@ -72,7 +72,6 @@ export default class WebformBuilder extends Component {
      * @return {boolean}
      */
     saveComponent(component: any, parent: any, isNew: any, original: any): boolean;
-    getAdditionalPages(): void;
     editBuildingForm(isJsonEdit: any): void;
     editForm: Webform;
     componentEdit: HTMLElement;

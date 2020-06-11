@@ -20,6 +20,8 @@ module.exports = {
     "rules": {
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/adjacent-overload-signatures": "off",
+      "@typescript-eslint/no-this-alias": "off",
+      "@typescript-eslint/no-empty-function": "off",
       "max-len": [
         "off",
         {
@@ -31,6 +33,7 @@ module.exports = {
       "max-statements": [2, 40],
       "max-depth": [2, 10],
       "no-console": "off",
+      "no-setter-return": "off",
       "no-prototype-builtins": "off",
       "prefer-const": "error",
       "prefer-template": "error",

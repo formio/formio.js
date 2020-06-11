@@ -3,5 +3,5 @@ export class Rule {
     component: any;
     settings: any;
     config: any;
-    check(): void;
+    check(): boolean;
 }

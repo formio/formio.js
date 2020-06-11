@@ -11,6 +11,8 @@ import {
   getStringFromComponentPath
 } from '../../utils/utils';
 import { eachComponent } from '../../utils/formUtils';
+import i18nDefaults from './i18n';
+let i18n = i18nDefaults;
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -80,7 +82,6 @@ export class Webform extends NestedDataComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('./i18n').default;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {

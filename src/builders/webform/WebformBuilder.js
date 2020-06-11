@@ -1157,10 +1157,6 @@ export default class WebformBuilder extends Component {
     return NativePromise.resolve();
   }
 
-  getAdditionalPages() {
-
-  }
-
   editBuildingForm(isJsonEdit) {
     if (this.dialog) {
       this.dialog.close();

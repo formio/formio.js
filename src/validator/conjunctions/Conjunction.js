@@ -9,7 +9,7 @@ export class Conjunction extends BaseEntity {
     return false;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   execute(conditionParts) {
     throw new Error('Method #execute() is abstract.');
   }

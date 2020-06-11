@@ -5,12 +5,12 @@ export class QuickRule extends BaseEntity {
     return 0;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static getEditForm(options) {
     return null;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addRule(input) {
     throw new Error('Method #addRule() is abstract.');
   }

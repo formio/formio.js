@@ -1,4 +1,17 @@
-import { Form } from '../Form';
+import { Formio } from '../Formio';
+import { Templates } from '../templates';
+import { Components } from '../components';
+import { Providers } from '../providers';
+import { Displays } from '../displays';
+import { Builders } from '../builders';
+import {
+  Conjunctions,
+  Operators,
+  QuickRules,
+  Rules,
+  Transformers,
+  ValueSources
+} from '../validator';
 
 const registerPlugin = (plugin) => {
   // Sanity check.

@@ -9,7 +9,7 @@ export class Transformer extends BaseCalculatableEntity {
     return false;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   transform(value, args, opts) {
     throw new Error('Method #transform() is abstract.');
   }

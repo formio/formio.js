@@ -18,7 +18,7 @@
     "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.full.scss ./dist/formio.full.min.css",
     "build": "tsc && gulp templates && webpack && npm run styles",
     "lint": "eslint src --fix",
-    "prepublish1": "npm run build"
+    "prepublish": "npm run build"
   },
   "pre-commit": [
     "lint",

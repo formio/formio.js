@@ -6,6 +6,6 @@ export class Rule {
   }
 
   check() {
-
+    return false;
   }
 }
