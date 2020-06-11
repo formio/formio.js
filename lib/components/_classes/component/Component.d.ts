@@ -194,7 +194,7 @@ declare class Component extends Base {
     get labelPosition(): any;
     get labelWidth(): any;
     get labelMargin(): any;
-    get isAdvancedLabel(): boolean;
+    get isAdvancedLabel(): any;
     get labelPositions(): any;
     get skipInEmail(): boolean;
     rightDirection(direction: any): boolean;

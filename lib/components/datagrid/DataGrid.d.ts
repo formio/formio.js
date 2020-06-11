@@ -37,8 +37,8 @@ export default class DataGridComponent extends NestedArrayComponent {
     setStaticValue(n: any): void;
     hasExtraColumn(): boolean;
     hasRemoveButtons(): boolean;
-    hasTopSubmit(): boolean;
-    hasBottomSubmit(): boolean;
+    hasTopSubmit(): any;
+    hasBottomSubmit(): any;
     get canAddColumn(): boolean;
     getRows(): {}[];
     getColumns(): any;

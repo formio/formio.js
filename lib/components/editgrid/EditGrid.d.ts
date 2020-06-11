@@ -25,7 +25,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     hasRemoveButtons(): boolean;
     get lazyComponentsInstantiation(): any;
     editRows: any;
-    isOpen(editRow: any): boolean;
+    isOpen(editRow: any): any;
     renderRow(row: any, rowIndex: any): any;
     addRow(data?: {}): {
         components: any;
