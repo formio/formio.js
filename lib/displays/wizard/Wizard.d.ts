@@ -49,10 +49,4 @@ export class Wizard extends Webform {
     hasButton(name: any, nextPage: any): any;
     pageId(page: any): any;
 }
-export namespace Wizard {
-    export const setBaseUrl: typeof Formio.setBaseUrl;
-    export const setApiUrl: typeof Formio.setApiUrl;
-    export const setAppUrl: typeof Formio.setAppUrl;
-}
 import { Webform } from "../webform/Webform";
-import { Formio } from "../../Formio";

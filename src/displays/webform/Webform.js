@@ -4,7 +4,6 @@ import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import i18next from 'i18next';
 import {Formio} from '../../Formio';
 import NativePromise from 'native-promise-only';
-import {Components} from '../../components/Components';
 import NestedDataComponent from '../../components/_classes/nesteddata/NestedDataComponent';
 import {
   fastCloneDeep,
@@ -15,9 +14,6 @@ import { eachComponent } from '../../utils/formUtils';
 
 // Initialize the available forms.
 Formio.forms = {};
-
-// Allow people to register components.
-Formio.registerComponent = Components.setComponent;
 
 function getIconSet(icons) {
   if (icons === 'fontawesome') {
@@ -1535,7 +1531,3 @@ export class Webform extends NestedDataComponent {
     return this._nosubmit || false;
   }
 }
-
-Webform.setBaseUrl = Formio.setBaseUrl;
-Webform.setApiUrl = Formio.setApiUrl;
-Webform.setAppUrl = Formio.setAppUrl;

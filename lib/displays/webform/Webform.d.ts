@@ -365,16 +365,9 @@ export class Webform extends NestedDataComponent {
     triggerRecaptcha(): void;
     _nosubmit: any;
 }
-export namespace Webform {
-    export const setBaseUrl: any;
-    export const setApiUrl: any;
-    export const setAppUrl: any;
-}
 import NestedDataComponent from "../../components/_classes/nesteddata/NestedDataComponent";
 declare namespace Formio {
     export const forms: {};
-    export const registerComponent: typeof Components.setComponent;
 }
 import { Formio } from "../../Formio";
-import { Components } from "../../components/Components";
 export {};

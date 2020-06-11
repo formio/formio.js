@@ -1,14 +1,16 @@
 const path = require('path');
 
 module.exports = {
-  entry: path.join(path.resolve(__dirname, 'lib'), 'index.js'),
+  entry: {
+    formio: path.join(path.resolve(__dirname, 'lib'), 'index.js'),
+    embed: './embed.js',
+  },
   output: {
     library: 'Formio',
     libraryTarget: 'umd',
-    libraryExport: 'default',
     path: path.resolve(__dirname, 'dist'),
-    filename: 'formio.js',
+    filename: '[name].js',
   },
-  mode: 'development',
+  mode: 'production',
   performance: { hints: false },
 };

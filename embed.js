@@ -1,17 +1,16 @@
-/*global Formio*/
+import {loadModules, Form} from './lib';
 const scripts = document.getElementsByTagName('script');
 let thisScript = null;
 let i = scripts.length;
 while (i--) {
-  if (scripts[i].src && (scripts[i].src.indexOf('formio.embed') !== -1)) {
+  if (scripts[i].src && (scripts[i].src.indexOf('embed') !== -1)) {
     thisScript = scripts[i];
     break;
   }
 }
 
 if (thisScript) {
-  const Form = require('./formio.form').Form;
-  Formio.loadModules();
+  loadModules();
   const query = {};
   let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
   scriptSrc.pop();
@@ -22,7 +21,9 @@ if (thisScript) {
   });
   query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
   Form.embed(query).then((instance) => {
-    Formio.events.emit('formEmbedded', instance);
+    if (Formio && Formio.events) {
+      Formio.events.emit('formEmbedded', instance);
+    }
     instance.on('submit', (submission) => {
       let returnUrl = query.return || query.redirect;
 

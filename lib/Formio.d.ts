@@ -53,7 +53,6 @@ export class Formio {
     static ssoInit(type: any, options: any): any;
     static requireLibrary(name: any, property: any, src: any, polling: any): any;
     static libraryReady(name: any): any;
-    static addToGlobal(global: any): void;
     constructor(path: any, options?: {});
     base: any;
     projectsUrl: any;

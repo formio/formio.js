@@ -1,22 +1,5 @@
-import AllComponents from './components';
-import Builders from './builders/Builders';
-import Components from './components/Components';
-import Displays from './displays/Displays';
-import Templates from './templates/Templates';
-import Providers from './providers';
-import {
-  Abstract as ValidatorAbstract,
-  Conjunctions,
-  Operators,
-  QuickRules,
-  Rules,
-  Transformers,
-  ValueSources,
-} from './validator';
-import Formio from './Formio';
-import Form from './Form';
-import Utils from './utils';
-Components.setComponents(AllComponents);
+import { Form } from '../Form';
+
 const registerPlugin = (plugin) => {
   // Sanity check.
   if (typeof plugin !== 'object') {
@@ -81,13 +64,14 @@ const registerPlugin = (plugin) => {
     }
   }
 };
+
 /**
  * Allows passing in plugins as multiple arguments or an array of plugins.
  *
  * Formio.plugins(plugin1, plugin2, etc);
  * Formio.plugins([plugin1, plugin2, etc]);
  */
-Formio.use = (...plugins) => {
+export default function (...plugins) {
   plugins.forEach((plugin) => {
     if (Array.isArray(plugin)) {
       plugin.forEach(p => registerPlugin(p));
@@ -96,49 +80,4 @@ Formio.use = (...plugins) => {
       registerPlugin(plugin);
     }
   });
-};
-
-Formio.loadModules = (path = `${Formio.getApiUrl()}/externalModules.js`, name = 'externalModules') => {
-  Formio.requireLibrary(name, name, path, true)
-    .then((modules) => {
-      Formio.use(modules);
-    });
-};
-
-// This is needed to maintain correct imports using the "dist" file.
-Formio.Components = Components;
-Formio.Templates = Templates;
-Formio.Builders = Builders;
-Formio.Utils = Utils;
-Formio.Form = Form;
-Formio.Displays = Displays;
-Formio.Providers = Providers;
-Formio.Conjunctions = Conjunctions;
-Formio.Operators = Operators;
-Formio.QuickRules = QuickRules;
-Formio.Rules = Rules;
-Formio.Transformers = Transformers;
-Formio.ValueSources = ValueSources;
-Formio.ValidatorAbstract = ValidatorAbstract;
-
-// This is strange, but is needed for "premium" components to import correctly.
-Formio.Formio = Formio;
-
-// Export the components.
-export {
-  Components,
-  Templates,
-  Builders,
-  Utils,
-  Form,
-  Displays,
-  Providers,
-  Conjunctions,
-  Operators,
-  QuickRules,
-  Rules,
-  Transformers,
-  ValueSources,
-  ValidatorAbstract,
-  Formio,
-};
+}

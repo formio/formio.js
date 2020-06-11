@@ -16,7 +16,7 @@
     "styles-form": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.form.scss ./dist/formio.form.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.form.scss ./dist/formio.form.min.css",
     "styles-builder": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.builder.scss ./dist/formio.builder.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.builder.scss ./dist/formio.builder.min.css",
     "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.full.scss ./dist/formio.full.min.css",
-    "build": "tsc && gulp templates && webpack && webpack --config webpack.prod.js && npm run styles",
+    "build": "tsc && gulp templates && webpack && npm run styles",
     "lint": "tslint -p .",
     "prepublish1": "npm run build"
   },
@@ -80,6 +80,10 @@
     "bootstrap": "^4.5.0",
     "bootswatch": "^4.5.0",
     "font-awesome": "^4.7.0",
+    "gulp": "^4.0.2",
+    "gulp-insert": "^0.5.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-template": "^5.0.0",
     "mocha": "^7.2.0",
     "node-sass": "^4.14.1",
     "node-sass-package-importer": "^5.3.2",
@@ -87,6 +91,7 @@
     "sinon": "^9.0.2",
     "tslint": "^6.1.2",
     "typescript": "^3.9.5",
-    "webpack": "^4.43.0"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   }
 }
