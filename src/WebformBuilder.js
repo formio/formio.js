@@ -7,7 +7,7 @@ import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import Formio from './Formio';
 import { fastCloneDeep, bootstrapVersion } from './utils/utils';
-import { eachComponent, getComponent } from './utils/formUtils';
+import { eachComponent, getComponent, findComponent, removeComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import Templates from './templates/Templates';
@@ -894,13 +894,14 @@ export default class WebformBuilder extends Component {
       remove = window.confirm(this.t(message));
     }
     if (!original) {
-      original = parent.formioContainer.find((comp) => comp.key === component.key);
+      original = getComponent(parent.formioContainer, component.key, true);
     }
     const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
-    if (remove && index !== -1) {
+    const isOriginalInside = !parent.formioContainer.find((comp) => comp.id === component.id);
+    if (remove && (index !== -1 || isOriginalInside)) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
       if (parent.formioContainer) {
-        parent.formioContainer.splice(index, 1);
+        findComponent(parent.formioContainer, original.key, null, (comp, path) => removeComponent(parent.formioContainer, path));
       }
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
