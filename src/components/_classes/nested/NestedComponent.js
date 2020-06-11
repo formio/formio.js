@@ -1,7 +1,7 @@
 'use strict';
 import _ from 'lodash';
 import Field from '../field/Field';
-import Components from '../../Components';
+import {Components} from '../../Components';
 import NativePromise from 'native-promise-only';
 import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';
 

@@ -1,6 +1,6 @@
 const Rule = require('./Rule');
 
-module.exports = class MinYear extends Rule {
+export class MinYear extends Rule {
    defaultMessage = '{{field}} should not contain year less than {{minYear}}';
 
   check(value) {

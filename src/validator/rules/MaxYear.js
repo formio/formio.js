@@ -1,6 +1,6 @@
 const Rule = require('./Rule');
 
-module.exports = class MaxYear extends Rule {
+export class MaxYear extends Rule {
   defaultMessage = '{{field}} should not contain year greater than {{maxYear}}';
 
   check(value) {

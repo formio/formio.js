@@ -1,6 +1,6 @@
 const Rule = require('./Rule');
 
-module.exports = class MinWords extends Rule {
+export class MinWords extends Rule {
   defaultMessage = '{{field}} must have at least {{- settings.length}} words.';
 
   check(value) {

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
-import Formio from '../../Formio';
+import {Formio} from '../../Formio';
 
 import WebformBuilder from '../webform/WebformBuilder';
 import { getElementRect, fastCloneDeep } from '../../utils/utils';

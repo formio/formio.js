@@ -1,6 +1,6 @@
 const Rule = require('./Rule');
 
-module.exports = class Url extends Rule {
+export class Url extends Rule {
   defaultMessage = '{{field}} must be a valid url.';
 
   check(value) {

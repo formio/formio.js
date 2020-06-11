@@ -1,6 +1,6 @@
 const Rule = require('./Rule');
 
-module.exports = class Custom extends Rule {
+export class Custom extends Rule {
   defaultMessage = '{{error}}';
 
   check(value, data, row, index) {

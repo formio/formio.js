@@ -26,7 +26,7 @@ export default class Base {
      * @type {EventEmitter}
      */
     events: EventEmitter;
-    defaultMask: any;
+    defaultMask: any[];
     /**
      * Register for a new event within this component.
      *
@@ -44,14 +44,14 @@ export default class Base {
      * @param {string} event - The event you wish to register the handler for.
      * @param {function} cb - The callback handler to handle this event.
      */
-    on(event: string, cb: Function, internal: any, once?: boolean): import("eventemitter2").Listener | EventEmitter;
+    on(event: string, cb: Function, internal: any, once?: boolean): EventEmitter | import("eventemitter2").Listener;
     /**
      * Register for a new single-fire event within this component.
      *
      * @param {string} event - The event you wish to register the handler for.
      * @param {function} cb - The callback handler to handle this event.
      */
-    once(event: string, cb: Function, internal: any): import("eventemitter2").Listener | EventEmitter;
+    once(event: string, cb: Function, internal: any): EventEmitter | import("eventemitter2").Listener;
     /**
      * Allow catching any event.
      *

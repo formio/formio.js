@@ -1,6 +1,6 @@
 const Rule = require('./Rule');
 
-module.exports = class DateRule extends Rule {
+export class DateRule extends Rule {
   defaultMessage = '{{field}} is not a valid date.';
 
   check(value) {

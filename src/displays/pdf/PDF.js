@@ -1,5 +1,5 @@
 import NativePromise from 'native-promise-only';
-import Formio from '../../Formio';
+import {Formio} from '../../Formio';
 import Webform from '../webform/Webform';
 import { fastCloneDeep, eachComponent } from '../../utils/utils';
 

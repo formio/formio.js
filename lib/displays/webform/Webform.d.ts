@@ -39,7 +39,7 @@ declare class Webform extends NestedDataComponent {
      * The Formio instance for this form.
      * @type {Formio}
      */
-    formio: any;
+    formio: Formio;
     /**
      * The loader HTML element.
      * @type {HTMLElement}
@@ -372,3 +372,9 @@ declare namespace Webform {
 }
 export default Webform;
 import NestedDataComponent from "../../components/_classes/nesteddata/NestedDataComponent";
+declare namespace Formio {
+    export const forms: {};
+    export const registerComponent: typeof Components.setComponent;
+}
+import { Formio } from "../../Formio";
+import { Components } from "../../components/Components";

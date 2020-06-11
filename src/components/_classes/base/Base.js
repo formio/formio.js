@@ -1,6 +1,6 @@
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
-import Formio from './Formio';
-import * as FormioUtils from './utils/utils';
+import {Formio} from '../../../Formio';
+import * as FormioUtils from '../../../utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';

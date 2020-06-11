@@ -1,6 +1,6 @@
 const Rule = require('./Rule');
 
-module.exports = class Pattern extends Rule {
+export class Pattern extends Rule {
   defaultMessage = '{{field}} does not match the pattern {{settings.pattern}}';
 
   check(value) {

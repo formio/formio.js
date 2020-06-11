@@ -50,9 +50,10 @@ declare class Wizard extends Webform {
     pageId(page: any): any;
 }
 declare namespace Wizard {
-    export const setBaseUrl: any;
-    export const setApiUrl: any;
-    export const setAppUrl: any;
+    export const setBaseUrl: typeof Formio.setBaseUrl;
+    export const setApiUrl: typeof Formio.setApiUrl;
+    export const setAppUrl: typeof Formio.setAppUrl;
 }
 export default Wizard;
 import Webform from "../webform/Webform";
+import { Formio } from "../../Formio";

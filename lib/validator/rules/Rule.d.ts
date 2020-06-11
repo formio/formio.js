@@ -1,5 +1,4 @@
-export = Rule;
-declare class Rule {
+export class Rule {
     constructor(component: any, settings: any, config: any);
     component: any;
     settings: any;

@@ -4,7 +4,7 @@ import NativePromise from 'native-promise-only';
 
 const Rule = require('./Rule');
 
-module.exports = class Unique extends Rule {
+export class Unique extends Rule {
   defaultMessage = '{{field}} must be unique';
 
   check(value) {

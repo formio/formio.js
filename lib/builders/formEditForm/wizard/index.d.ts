@@ -1,4 +1,2 @@
-declare function _default(...extend: any[]): {
-    components: any;
-};
+declare function _default(...extend: any[]): any;
 export default _default;

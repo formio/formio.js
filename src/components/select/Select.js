@@ -1,8 +1,8 @@
 import Choices from '../../utils/ChoicesWrapper';
 import _ from 'lodash';
-import Formio from '../../Formio';
+import {Formio} from '../../Formio';
 import Field from '../_classes/field/Field';
-import Form from '../../Form';
+import {Form} from '../../Form';
 import NativePromise from 'native-promise-only';
 
 export default class SelectComponent extends Field {

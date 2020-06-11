@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import WebformEditConditions from './Webform.edit.conditions';
 import WebformEditVariables from './Webform.edit.variables';
-import EditFormUtils from '../../components/_classes/component/editForm/utils';
+import EditFormUtils from '../../../components/_classes/component/editForm/utils';
 
 export default (...extend) => {
   const components = _.cloneDeep([

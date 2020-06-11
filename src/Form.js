@@ -1,7 +1,7 @@
 import Base from './components/_classes/base/Base';
-import Formio from './Formio';
-import Displays from './displays';
-import templates from './templates';
+import {Formio} from './Formio';
+import {Displays} from './displays';
+import {Templates} from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
 
@@ -255,7 +255,7 @@ export class Form extends Base {
 
     // Add temporary loader.
     const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
-    const loader = templates[template].loader || templates.bootstrap.loader;
+    const loader = Templates.templates[template].loader || Templates.templates.bootstrap.loader;
     this.setContent(this.element, loader.form);
 
     return this.render().then(html => {

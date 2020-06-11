@@ -1,8 +1,4 @@
-export = MinYear;
-declare const MinYear_base: {
-    new (component: any, settings: any, config: any): import("./Rule");
-};
-declare class MinYear extends MinYear_base {
-    constructor(component: any, settings: any, config: any);
+export class MinYear {
     defaultMessage: string;
+    check(value: any): boolean;
 }

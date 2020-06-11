@@ -1,4 +1,4 @@
-module.exports = class Rule {
+export class Rule {
   constructor(component, settings, config) {
     this.component = component;
     this.settings = settings;

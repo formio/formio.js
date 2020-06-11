@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Input from '../_classes/input/Input';
-import FormioUtils from '../../utils';
+import {Utils as FormioUtils} from '../../utils';
 import Widgets from '../../widgets';
 export default class DateTimeComponent extends Input {
   static schema(...extend) {

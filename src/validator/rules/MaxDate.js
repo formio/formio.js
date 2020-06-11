@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 const Rule = require('./Rule');
 
-module.exports = class MaxDate extends Rule {
+export class MaxDate extends Rule {
   defaultMessage = '{{field}} should not contain date after {{settings.dateLimit}}';
 
   check(value) {
