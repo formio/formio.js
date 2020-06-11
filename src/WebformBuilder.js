@@ -1187,8 +1187,12 @@ export default class WebformBuilder extends Component {
             }
 
             if (this.form) {
+              let formComponents = this.findNamespaceRoot(parent.formioComponent.component);
+              // excluding component which key uniqueness is to be checked to prevent the comparing of the same keys
+              formComponents = formComponents.filter(comp => editFormOptions.editComponent.id !== comp.id);
+
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), event.data);
+              BuilderUtils.uniquify(formComponents, event.data);
             }
           }
         }
