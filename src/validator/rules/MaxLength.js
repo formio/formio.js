@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class MaxLength extends Rule {
   defaultMessage = '{{field}} must have no more than {{- settings.length}} characters.';
 
@@ -9,4 +9,4 @@ export class MaxLength extends Rule {
     }
     return (value.length <= maxLength);
   }
-};
+}

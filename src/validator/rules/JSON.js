@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class JSON extends Rule {
   defaultMessage = '{{error}}';
 
@@ -22,4 +22,4 @@ export class JSON extends Rule {
 
     return valid;
   }
-};
+}

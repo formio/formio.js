@@ -2,7 +2,7 @@ import { getDateSetting } from '../../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
 
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class MaxDate extends Rule {
   defaultMessage = '{{field}} should not contain date after {{settings.dateLimit}}';
 
@@ -28,4 +28,4 @@ export class MaxDate extends Rule {
 
     return date.isBefore(maxDate) || date.isSame(maxDate);
   }
-};
+}

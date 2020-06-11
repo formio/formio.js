@@ -1,10 +1,10 @@
 import Base from './components/_classes/base/Base';
-import {Formio} from './Formio';
-import {Displays} from './displays';
-import {Templates} from './templates';
+import { Formio } from './Formio';
+import { Displays } from './displays';
+import { Templates } from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
-import {Components} from './components';
+import { Components } from './components';
 import formComponents from './components/form';
 Components.setComponents(formComponents);
 
@@ -88,7 +88,7 @@ export class Form extends Base {
    * @return {*}
    */
   set form(formParam) {
-    return this.setForm(formParam);
+    this.setForm(formParam);
   }
 
   errorForm(err) {

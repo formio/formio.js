@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 
 export class Custom extends Rule {
   defaultMessage = '{{error}}';
@@ -24,4 +24,4 @@ export class Custom extends Rule {
 
     return valid;
   }
-};
+}

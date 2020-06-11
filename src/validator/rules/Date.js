@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 
 export class DateRule extends Rule {
   defaultMessage = '{{field}} is not a valid date.';
@@ -15,4 +15,4 @@ export class DateRule extends Rule {
     }
     return value.toString() !== 'Invalid Date';
   }
-};
+}

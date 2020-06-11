@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class MinYear extends Rule {
    defaultMessage = '{{field}} should not contain year less than {{minYear}}';
 
@@ -13,4 +13,4 @@ export class MinYear extends Rule {
 
     return +year >= +minYear;
   }
-};
+}

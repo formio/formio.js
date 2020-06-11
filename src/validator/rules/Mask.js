@@ -1,6 +1,6 @@
 import { getInputMask, matchInputMask } from '../../utils/utils';
 
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class Mask extends Rule {
   defaultMessage = '{{field}} does not match the mask.';
 
@@ -22,4 +22,4 @@ export class Mask extends Rule {
     }
     return true;
   }
-};
+}

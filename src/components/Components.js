@@ -38,7 +38,7 @@ export class Components {
       comp = new Components.components['nested'](component, options, data);
     }
     else {
-      comp = new Component(component, options, data);
+      comp = new Components.components['component'](component, options, data);
     }
     return comp;
   }

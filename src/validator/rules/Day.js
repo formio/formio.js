@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class Day extends Rule {
   defaultMessage = '{{field}} is not a valid day.';
 
@@ -54,4 +54,4 @@ export class Day extends Rule {
       }
     }
   }
-};
+}

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import i18next from 'i18next';
-import {Formio} from '../../Formio';
+import { Formio } from '../../Formio';
 import NativePromise from 'native-promise-only';
 import NestedDataComponent from '../../components/_classes/nesteddata/NestedDataComponent';
 import {

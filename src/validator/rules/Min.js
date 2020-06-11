@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class Min extends Rule {
   defaultMessage = '{{field}} cannot be less than {{settings.limit}}.';
 
@@ -11,4 +11,4 @@ export class Min extends Rule {
     }
     return parseFloat(value) >= min;
   }
-};
+}

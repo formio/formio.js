@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class Max extends Rule {
   defaultMessage = '{{field}} cannot be greater than {{settings.limit}}.';
 
@@ -11,4 +11,4 @@ export class Max extends Rule {
     }
     return parseFloat(value) <= max;
   }
-};
+}

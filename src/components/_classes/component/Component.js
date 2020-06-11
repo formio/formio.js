@@ -4,7 +4,7 @@ import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import {Formio} from '../../../Formio';
+import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import {
   Conjunctions,
@@ -13,7 +13,7 @@ import {
   ValueSources,
 } from '../../../validator';
 import Validator from '../../../validator/Validator';
-import {Templates} from '../../../templates/Templates';
+import { Templates } from '../../../templates/Templates';
 import { fastCloneDeep, boolValue, delay } from '../../../utils/utils';
 import Base from '../base/Base';
 import ComponentModal from '../componentModal/ComponentModal';

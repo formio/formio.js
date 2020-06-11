@@ -3,7 +3,7 @@ import createForm from './createForm';
 import embedForm from './embedForm';
 import loadModules from './loadModules';
 import use from './use';
-import {Formio} from '../Formio';
+import { Formio } from '../Formio';
 
 const { setBaseUrl, setApiUrl, setAppUrl, version } = Formio;
 export {

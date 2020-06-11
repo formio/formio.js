@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class MinWords extends Rule {
   defaultMessage = '{{field}} must have at least {{- settings.length}} words.';
 
@@ -9,4 +9,4 @@ export class MinWords extends Rule {
     }
     return (value.trim().split(/\s+/).length >= minWords);
   }
-};
+}

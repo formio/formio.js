@@ -2,7 +2,7 @@ import { escapeRegExCharacters } from '../../utils/utils';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class Unique extends Rule {
   defaultMessage = '{{field}} must be unique';
 
@@ -68,4 +68,4 @@ export class Unique extends Rule {
       });
     }).catch(() => false);
   }
-};
+}

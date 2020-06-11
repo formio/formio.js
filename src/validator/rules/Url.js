@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class Url extends Rule {
   defaultMessage = '{{field}} must be a valid url.';
 
@@ -11,4 +11,4 @@ export class Url extends Rule {
     // Allow urls to be valid if the component is pristine and no value is provided.
     return !value || re.test(value);
   }
-};
+}

@@ -8,4 +8,4 @@ export class Rule {
   check() {
 
   }
-};
+}

@@ -6,7 +6,7 @@ import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import cookies from 'browser-cookies';
-import {Providers} from './providers';
+import { Providers } from './providers';
 import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -984,7 +984,7 @@ export class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken = token || '';
+    Formio.tokens.formioToken = token || '';
   }
 
   static setToken(token = '', opts) {
@@ -1137,7 +1137,9 @@ export class Formio {
     Formio.cache = {};
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   static noop() {}
+
   static identity(value) {
     return value;
   }

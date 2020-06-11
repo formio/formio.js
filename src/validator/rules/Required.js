@@ -1,4 +1,4 @@
-import {Rule} from './Rule';
+import { Rule } from './Rule';
 export class Required extends Rule {
   defaultMessage = '{{field}} is required';
 
@@ -7,4 +7,4 @@ export class Required extends Rule {
 
     return !this.component.isValueHidden() && !this.component.isEmpty(value);
   }
-};
+}

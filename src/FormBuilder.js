@@ -1,7 +1,7 @@
-import {Formio} from './Formio';
-import {Builders} from './builders';
-import {Form} from './Form';
-import {Components} from './components';
+import { Formio } from './Formio';
+import { Builders } from './builders';
+import { Form } from './Form';
+import { Components } from './components';
 import builderComponents from './components/builder';
 Components.setComponents(builderComponents);
 
