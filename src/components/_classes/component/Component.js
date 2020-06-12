@@ -2635,31 +2635,41 @@ export default class Component extends Element {
       return false;
     }
 
+    const {
+      presetArguments,
+    } = Operator;
+
     const operatorInstance = new Operator(updatedContext);
 
     return operatorInstance.execute(
-      _.mapValues(args, ({
-        valueSource,
-        [`${valueSource}Input`]: input,
-      }) => {
-        const evaluationContext = {
+      _.mapValues(
+        {
+          ...presetArguments,
+          ...args,
+        },
+        ({
           valueSource,
-          input,
-          context: updatedContext,
-        };
-        const evaluator = ({
-          valueSource = evaluationContext.valueSource,
-          input = evaluationContext.input,
-          context = evaluationContext.context,
-        } = evaluationContext) => this.calculateValueDefinition(
-          valueSource,
-          input,
-          context,
-        );
-        evaluator.evaluationContext = evaluationContext;
+          [`${valueSource}Input`]: input,
+        }) => {
+          const evaluationContext = {
+            valueSource,
+            input,
+            context: updatedContext,
+          };
+          const evaluator = ({
+            valueSource = evaluationContext.valueSource,
+            input = evaluationContext.input,
+            context = evaluationContext.context,
+          } = evaluationContext) => this.calculateValueDefinition(
+            valueSource,
+            input,
+            context,
+          );
+          evaluator.evaluationContext = evaluationContext;
 
-        return Operator.lazyArgsEvaluation ? evaluator : evaluator();
-      }),
+          return Operator.lazyArgsEvaluation ? evaluator : evaluator();
+        },
+      ),
       options,
     );
   }
@@ -2751,32 +2761,42 @@ export default class Component extends Element {
       return valueEvaluator();
     }
 
+    const {
+      presetArguments,
+    } = Transformer;
+
     const transformerInstance = new Transformer(updatedContext);
 
     return transformerInstance.transform(
       (Transformer.lazyValueEvaluation ? valueEvaluator : valueEvaluator()),
-      _.mapValues(args, ({
-        valueSource,
-        [`${valueSource}Input`]: input,
-      }) => {
-        const evaluationContext = {
+      _.mapValues(
+        {
+          ...presetArguments,
+          ...args,
+        },
+        ({
           valueSource,
-          input,
-          context: updatedContext,
-        };
-        const evaluator = ({
-          valueSource = evaluationContext.valueSource,
-          input = evaluationContext.input,
-          context = evaluationContext.context,
-        } = evaluationContext) => this.calculateValueDefinition(
-          valueSource,
-          input,
-          context,
-        );
-        evaluator.evaluationContext = evaluationContext;
+          [`${valueSource}Input`]: input,
+        }) => {
+          const evaluationContext = {
+            valueSource,
+            input,
+            context: updatedContext,
+          };
+          const evaluator = ({
+            valueSource = evaluationContext.valueSource,
+            input = evaluationContext.input,
+            context = evaluationContext.context,
+          } = evaluationContext) => this.calculateValueDefinition(
+            valueSource,
+            input,
+            context,
+          );
+          evaluator.evaluationContext = evaluationContext;
 
-        return Transformer.lazyArgsEvaluation ? evaluator : evaluator();
-      }),
+          return Transformer.lazyArgsEvaluation ? evaluator : evaluator();
+        },
+      ),
       options,
     );
   }

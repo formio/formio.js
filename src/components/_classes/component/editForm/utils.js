@@ -384,6 +384,7 @@ const EditFormUtils = {
     title,
     name,
     arguments: transformerArguments,
+    presetArguments = {},
     optionsEditForm,
   }, {
     customConditions = null,
@@ -402,31 +403,35 @@ const EditFormUtils = {
       },
     };
 
+    const presetArgumentKeys = Object.keys(presetArguments);
+
     return (
-    (transformerArguments && transformerArguments.length)
-      ? (
-        [
-          {
-            label: `${title} Transform Arguments`,
-            key: `${name}Arguments`,
-            type: 'container',
-            input: true,
-            components: transformerArguments.map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
-              customConditions,
-              customVariables,
-              excludeValueSources,
-              excludeVariables: [
-                (key, { instance }) => (key === instance?.parent?.parent?.parent?.data?.key),
-                (key, { instance }) => (key === instance?.parent?.parent?.parent?.parent?.data?.key),
-                (key, { instance }) => (key === instance?.parent?.parent?.parent?.parent?.parent?.data?.key),
-                ...excludeVariables,
-              ],
-            })),
-            conditional,
-          },
-        ]
-      )
-      : []
+      (transformerArguments && transformerArguments.length)
+        ? (
+          [
+            {
+              label: `${title} Transform Arguments`,
+              key: `${name}Arguments`,
+              type: 'container',
+              input: true,
+              components: transformerArguments
+                .filter(({ key }) => !presetArgumentKeys.includes(key))
+                .map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
+                  customConditions,
+                  customVariables,
+                  excludeValueSources,
+                  excludeVariables: [
+                    (key, { instance }) => (key === instance?.parent?.parent?.parent?.data?.key),
+                    (key, { instance }) => (key === instance?.parent?.parent?.parent?.parent?.data?.key),
+                    (key, { instance }) => (key === instance?.parent?.parent?.parent?.parent?.parent?.data?.key),
+                    ...excludeVariables,
+                  ],
+                })),
+              conditional,
+            },
+          ]
+        )
+        : []
     )
     .concat(
       (optionsEditForm && optionsEditForm.length)
@@ -457,6 +462,7 @@ const EditFormUtils = {
     title,
     name,
     arguments: operatorArguments,
+    presetArguments = {},
     optionsEditForm,
   }, {
     customConditions = null,
@@ -475,6 +481,8 @@ const EditFormUtils = {
       },
     };
 
+    const presetArgumentKeys = Object.keys(presetArguments);
+
     return ([
       {
         label: title,
@@ -489,16 +497,18 @@ const EditFormUtils = {
             input: false,
             collapsible: true,
             collapsed: false,
-            components: operatorArguments.map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
-              customConditions,
-              customVariables,
-              excludeConditions: [
-                (key, { instance }) => (key === instance.parent.parent.parent.parent.parent.data.key),
-                (key, { instance }) => (key === instance.parent.parent.parent.parent.parent.parent.data.key),
-                ...excludeConditions,
-              ],
-              excludeValueSources,
-            })),
+            components: operatorArguments
+              .filter(({ key }) => !presetArgumentKeys.includes(key))
+              .map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
+                customConditions,
+                customVariables,
+                excludeConditions: [
+                  (key, { instance }) => (key === instance.parent.parent.parent.parent.parent.data.key),
+                  (key, { instance }) => (key === instance.parent.parent.parent.parent.parent.parent.data.key),
+                  ...excludeConditions,
+                ],
+                excludeValueSources,
+              })),
           },
         ],
         conditional,

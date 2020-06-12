@@ -5,6 +5,10 @@ export class BaseCalculatableEntity extends BaseEntity {
     return [];
   }
 
+  static get presetArguments() {
+    return {};
+  }
+
   static get optionsEditForm() {
     return [];
   }
