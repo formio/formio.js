@@ -2393,12 +2393,18 @@ export default class Component extends Element {
     const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
     const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
 
+    const normCurr = this.normalizeValue(currentCalculatedValue);
+    const normNew = this.normalizeValue(newCalculatedValue);
+
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
       allowOverride &&
       this.calculatedValue &&
       !_.isEqual(dataValue, currentCalculatedValue) &&
       _.isEqual(newCalculatedValue, currentCalculatedValue)) {
+      return false;
+    }
+    if (_.isEqual(normCurr, normNew)) {
       return false;
     }
 
@@ -2424,7 +2430,7 @@ export default class Component extends Element {
 
     // Set the new value.
     const changed = this.setValue(calculatedValue, flags);
-    this.calculatedValue = this.dataValue;
+    this.calculatedValue = calculatedValue;
     return changed;
   }
 
