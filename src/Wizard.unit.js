@@ -3,8 +3,31 @@ import Wizard from './Wizard';
 import assert from 'power-assert';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
 import wizard1 from '../test/forms/wizardValidationOnNextBtn';
+import wizard2 from '../test/forms/wizardWithEditGrid';
 
 describe('Wizard tests', () => {
+  it('Should display editGrid submission data in readOnly mode', (done) => {
+    const formElement = document.createElement('div');
+    const wizardForm = new Wizard(formElement, { readOnly: true });
+    wizardForm.setForm(wizard2).then(() => {
+      wizardForm.setValue({ data:{ editGrid:[{ textField: '111' }], number: 222 } });
+      setTimeout(() => {
+        assert.equal(wizardForm.element.querySelector('[name="data[number]"]').value, '222');
+
+        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][1]);
+
+        setTimeout(() => {
+          assert.equal(wizardForm.page, 1);
+
+          const ditGridRowValue = wizardForm.element.querySelector('[ref = "editgrid-editGrid-row"]').querySelector('.col-sm-2').textContent.trim();
+          assert.equal(ditGridRowValue, '111');
+          done();
+        }, 300);
+      }, 100);
+    })
+    .catch((err) => done(err));
+  });
+
   let wizardForm = null;
   it('Should set components errors if they are after page was changed with navigation', (done) => {
       const formElement = document.createElement('div');
