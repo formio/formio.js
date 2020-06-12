@@ -5,6 +5,14 @@ export class BaseCalculatableEntity extends BaseEntity {
     return [];
   }
 
+  static get lazyArgsEvaluation() {
+    return false;
+  }
+
+  static get presetArguments() {
+    return {};
+  }
+
   static get optionsEditForm() {
     return [];
   }

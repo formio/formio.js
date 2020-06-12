@@ -17,6 +17,7 @@ import { ListValueSource } from './List';
 import { NumberValueSource } from './Number';
 import { ParentItemIndexesValueSource } from './ParentItemIndexes';
 import { ParentItemsValueSource } from './ParentItems';
+import { RangeValueSource } from './Range';
 import { RegExpValueSource } from './RegExp';
 import { SourceComponentValueSource } from './SourceComponent';
 import { SourceComponentRowValueSource } from './SourceComponentRow';
@@ -28,6 +29,7 @@ import { ThisComponentRowValueSource } from './ThisComponentRow';
 import { ThisComponentRowIndexValueSource } from './ThisComponentRowIndex';
 import { ThisComponentValueValueSource } from './ThisComponentValue';
 import { TimeValueSource } from './Time';
+import { ValuesValueSource } from './Values';
 import { VariableValueSource } from './Variable';
 
 const valueSources = [
@@ -50,6 +52,7 @@ const valueSources = [
   NumberValueSource,
   ParentItemIndexesValueSource,
   ParentItemsValueSource,
+  RangeValueSource,
   RegExpValueSource,
   SourceComponentValueSource,
   SourceComponentRowValueSource,
@@ -61,6 +64,7 @@ const valueSources = [
   ThisComponentRowIndexValueSource,
   ThisComponentValueValueSource,
   TimeValueSource,
+  ValuesValueSource,
   VariableValueSource,
 ].reduce((result, valueSource) => ({
   ...result,

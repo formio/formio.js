@@ -23,6 +23,11 @@ export class DateLessThanOperator extends Operator {
         key: 'right',
         required: true,
       },
+      {
+        name: 'Granularity',
+        key: 'granularity',
+        required: false,
+      },
     ];
   }
 
@@ -30,8 +35,9 @@ export class DateLessThanOperator extends Operator {
     const {
       left,
       right,
+      granularity = 'millisecond',
     } = args;
 
-    return moment(left).isBefore(right);
+    return moment(left).isBefore(right, granularity);
   }
 }

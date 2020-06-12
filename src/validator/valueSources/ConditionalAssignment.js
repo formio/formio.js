@@ -1,3 +1,5 @@
+import { ListValueSource } from './List';
+import { RangeValueSource } from './Range';
 import { ValueSource } from './ValueSource';
 
 export class ConditionalAssignmentValueSource extends ValueSource {
@@ -85,6 +87,8 @@ export class ConditionalAssignmentValueSource extends ValueSource {
             ...excludeValueSources,
             // Exclude current valueSource to prevent infinite recursion.
             ConditionalAssignmentValueSource.name,
+            ListValueSource.name,
+            RangeValueSource.name,
           ],
           excludeVariables,
         }),

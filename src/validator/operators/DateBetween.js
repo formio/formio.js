@@ -32,6 +32,11 @@ export class DateBetweenOperator extends Operator {
         key: 'to',
         required: false,
       },
+      {
+        name: 'Granularity',
+        key: 'granularity',
+        required: false,
+      },
     ];
   }
 
@@ -75,12 +80,13 @@ export class DateBetweenOperator extends Operator {
       value,
       from,
       to,
+      granularity = 'millisecond',
     } = args;
     const {
       excludeFrom = false,
       excludeTo = false,
     } = opts;
 
-    return moment(value).isBetween(from, to, null, `${excludeFrom ? '(' : '['}${excludeTo ? ')' : ']'}`);
+    return moment(value).isBetween(from, to, granularity, `${excludeFrom ? '(' : '['}${excludeTo ? ')' : ']'}`);
   }
 }
