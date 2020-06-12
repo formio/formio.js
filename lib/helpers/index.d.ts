@@ -1,0 +1,11 @@
+import createBuilder from "./createBuilder";
+import createForm from "./createForm";
+import embedForm from "./embedForm";
+import loadModules from "./loadModules";
+import use from "./use";
+export const setBaseUrl: typeof Formio.setBaseUrl;
+export const setApiUrl: typeof Formio.setApiUrl;
+export const setAppUrl: typeof Formio.setAppUrl;
+export const version: string;
+import { Formio } from "../Formio";
+export { createBuilder, createForm, embedForm, loadModules, use };

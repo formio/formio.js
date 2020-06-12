@@ -4,16 +4,15 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
-import EventEmitter from './EventEmitter';
+import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import cookies from 'browser-cookies';
-import Providers from './providers';
+import { Providers } from './providers';
 import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
 import jwtDecode from 'jwt-decode';
-import './polyfills';
 
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
@@ -40,7 +39,7 @@ function cloneResponse(response) {
  *
  *   let formio = new Formio('https://examples.form.io/example');
  */
-export default class Formio {
+export class Formio {
   /* eslint-disable max-statements */
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
@@ -985,7 +984,7 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken = token || '';
+    Formio.tokens.formioToken = token || '';
   }
 
   static setToken(token = '', opts) {
@@ -1138,7 +1137,9 @@ export default class Formio {
     Formio.cache = {};
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   static noop() {}
+
   static identity(value) {
     return value;
   }
@@ -1458,12 +1459,6 @@ export default class Formio {
 
     return NativePromise.reject(`${name} library was not required.`);
   }
-
-  static addToGlobal(global) {
-    if (typeof global === 'object' && !global.Formio) {
-      global.Formio = Formio;
-    }
-  }
 }
 
 // Define all the static properties.
@@ -1483,10 +1478,3 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
-
-if (typeof global !== 'undefined') {
-  Formio.addToGlobal(global);
-}
-if (typeof window !== 'undefined') {
-  Formio.addToGlobal(window);
-}

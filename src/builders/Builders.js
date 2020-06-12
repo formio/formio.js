@@ -4,7 +4,7 @@ import pdf from './pdf/PDFBuilder';
 import webform from './webform/WebformBuilder';
 import wizard from './wizard/WizardBuilder';
 
-export default class Builders {
+export class Builders {
   static builders = {
     pdf,
     webform,

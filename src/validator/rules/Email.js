@@ -1,6 +1,5 @@
-const Rule = require('./Rule');
-
-module.exports = class Email extends Rule {
+import { Rule } from './Rule';
+export class Email extends Rule {
   defaultMessage = '{{field}} must be a valid email.';
 
   check(value) {
@@ -16,4 +15,4 @@ module.exports = class Email extends Rule {
     // Allow emails to be valid if the component is pristine and no value is provided.
     return re.test(value);
   }
-};
+}

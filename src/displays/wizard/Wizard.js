@@ -1,7 +1,6 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
-import Webform from '../webform/Webform';
-import Formio from '../../Formio';
+import { Webform } from '../webform/Webform';
 import {
   fastCloneDeep,
   checkCondition,
@@ -9,7 +8,7 @@ import {
   uniqueKey
 } from '../../utils/utils';
 
-export default class Wizard extends Webform {
+export class Wizard extends Webform {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.
@@ -668,7 +667,3 @@ export default class Wizard extends Webform {
     return super.focusOnComponent(key);
   }
 }
-
-Wizard.setBaseUrl = Formio.setBaseUrl;
-Wizard.setApiUrl = Formio.setApiUrl;
-Wizard.setAppUrl = Formio.setAppUrl;

@@ -1,8 +1,11 @@
-import Formio from './Formio';
-import Builders from './builders';
-import Form from './Form';
+import { Formio } from './Formio';
+import { Builders } from './builders';
+import { Form } from './Form';
+import { Components } from './components';
+import builderComponents from './components/builder';
+Components.setComponents(builderComponents);
 
-export default class FormBuilder extends Form {
+export class FormBuilder extends Form {
   static options = {};
   constructor(element, form, options) {
     form = form || {};
@@ -24,18 +27,3 @@ export default class FormBuilder extends Form {
     }
   }
 }
-
-/**
- * Factory that creates a new form builder based on the form parameter.
- *
- * @param element {HMTLElement} - The HTML Element to add this form to.
- * @param form {string|Object} - The src of the form, or a form object.
- * @param options {Object} - The options to create this form.
- *
- * @return {Promise} - When the form is instance is ready.
- */
-Formio.builder = (...args) => {
-  return (new FormBuilder(...args)).ready;
-};
-
-Formio.FormBuilder = FormBuilder;

@@ -1,10 +1,9 @@
 import _ from 'lodash';
 import moment from 'moment';
-import EventEmitter from '../../EventEmitter';
+import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import i18next from 'i18next';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 import NativePromise from 'native-promise-only';
-import Components from '../../components/Components';
 import NestedDataComponent from '../../components/_classes/nesteddata/NestedDataComponent';
 import {
   fastCloneDeep,
@@ -12,12 +11,11 @@ import {
   getStringFromComponentPath
 } from '../../utils/utils';
 import { eachComponent } from '../../utils/formUtils';
+import i18nDefaults from './i18n';
+let i18n = i18nDefaults;
 
 // Initialize the available forms.
 Formio.forms = {};
-
-// Allow people to register components.
-Formio.registerComponent = Components.setComponent;
 
 function getIconSet(icons) {
   if (icons === 'fontawesome') {
@@ -47,7 +45,7 @@ function getOptions(options) {
 /**
  * Renders a Form.io form within the webpage.
  */
-export default class Webform extends NestedDataComponent {
+export class Webform extends NestedDataComponent {
   /**
    * Creates a new Form instance.
    *
@@ -84,7 +82,6 @@ export default class Webform extends NestedDataComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('./i18n').default;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
@@ -1535,7 +1532,3 @@ export default class Webform extends NestedDataComponent {
     return this._nosubmit || false;
   }
 }
-
-Webform.setBaseUrl = Formio.setBaseUrl;
-Webform.setApiUrl = Formio.setApiUrl;
-Webform.setAppUrl = Formio.setAppUrl;

@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 import WebformBuilder from '../webform/WebformBuilder';
 import { getElementRect, fastCloneDeep } from '../../utils/utils';
 import { eachComponent } from '../../utils/formUtils';
 import BuilderUtils from '../../utils/builder';
-import PDF from '../../displays/pdf/PDF';
+import { PDF } from '../../displays/pdf/PDF';
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -141,6 +141,7 @@ export default class PDFBuilder extends WebformBuilder {
       }
 
       if (this.refs.fileDrop) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const element = this;
         this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
           this.className = 'fileSelector fileDragOver';

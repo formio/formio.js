@@ -5,12 +5,12 @@ export class ValueSource extends BaseEntity {
     return 0;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static getInputEditForm(options) {
     return null;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getValue(input) {
     throw new Error('Method #getValue() is abstract.');
   }

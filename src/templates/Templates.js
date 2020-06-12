@@ -1,10 +1,12 @@
-import templates from './index';
+import bootstrap from './bootstrap';
 import _ from 'lodash';
 
-export default class Templates {
+export class Templates {
   static get templates() {
     if (!Templates._templates) {
-      Templates._templates = templates;
+      Templates._templates = {
+        bootstrap
+      };
     }
     return Templates._templates;
   }

@@ -1,18 +1,18 @@
-import Webform from '../../displays/webform/Webform';
+import { Webform } from '../../displays/webform/Webform';
 import Component from '../../components/_classes/component/Component';
 // Import from "dist" because it would require and "global" would not be defined in Angular apps.
 import dragula from 'dragula/dist/dragula';
 import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
-import Components from '../../components/Components';
-import Formio from '../../Formio';
+import { Components } from '../../components/Components';
+import { Formio } from '../../Formio';
 import { bootstrapVersion, fastCloneDeep } from '../../utils/utils';
 import { eachComponent, getComponent } from '../../utils/formUtils';
 import BuilderUtils from '../../utils/builder';
 import _ from 'lodash';
-import Templates from '../../templates/Templates';
+import { Templates } from '../../templates/Templates';
 require('../../components/builder');
-import { FormEditForms } from '../../formEditForm';
+import FormEditForms from './editForm';
 
 const nestedDataComponents = ['container', 'datagrid', 'editgrid'];
 const arrayDataComponents = ['datagrid', 'editgrid'];
@@ -1157,10 +1157,6 @@ export default class WebformBuilder extends Component {
     return NativePromise.resolve();
   }
 
-  getAdditionalPages() {
-
-  }
-
   editBuildingForm(isJsonEdit) {
     if (this.dialog) {
       this.dialog.close();
@@ -1204,7 +1200,7 @@ export default class WebformBuilder extends Component {
           tooltip: 'Edit the JSON for this component.'
         }
       ]
-    } : FormEditForms.getFormEditForm(this.form.display || 'form')();
+    } : FormEditForms;
 
     const form = _.cloneDeep(this.form);
 

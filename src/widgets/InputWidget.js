@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import Element from '../Element';
+import Base from '../components/_classes/base/Base';
 import NativePromise from 'native-promise-only';
-export default class InputWidget extends Element {
+export default class InputWidget extends Base {
   static get defaultSettings() {
     return {
       type: 'input'

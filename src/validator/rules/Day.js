@@ -1,6 +1,5 @@
-const Rule = require('./Rule');
-
-module.exports = class Day extends Rule {
+import { Rule } from './Rule';
+export class Day extends Rule {
   defaultMessage = '{{field}} is not a valid day.';
 
   check(value) {
@@ -55,4 +54,4 @@ module.exports = class Day extends Rule {
       }
     }
   }
-};
+}

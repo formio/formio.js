@@ -1,6 +1,6 @@
-const Rule = require('./Rule');
+import { Rule } from './Rule';
 
-module.exports = class Custom extends Rule {
+export class Custom extends Rule {
   defaultMessage = '{{error}}';
 
   check(value, data, row, index) {
@@ -24,4 +24,4 @@ module.exports = class Custom extends Rule {
 
     return valid;
   }
-};
+}

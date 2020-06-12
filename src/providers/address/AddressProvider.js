@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 export class AddressProvider {
   static get name() {
@@ -39,7 +39,7 @@ export class AddressProvider {
     return _.merge({}, this.options, options);
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getRequestUrl(options = {}) {
     throw new Error('Method AddressProvider#getRequestUrl(options) is abstract.');
   }

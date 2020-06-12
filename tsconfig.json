@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "allowJs": true,
+    "preserveConstEnums": true,
+    "rootDir": "src",
+    "outDir": "lib",
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "declaration": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "lib": [
+      "es2015",
+      "dom"
+    ]
+  },
+  "include": [
+    "src/*.ts",
+    "src/*.js",
+    "src/*.ejs",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.ejs"
+  ],
+  "exclude": [
+    "src/**/fixtures/*.js",
+    "src/**/*.spec.js",
+    "src/**/*.unit.js",
+    "src/**/*.spec.ts",
+    "src/**/*.unit.ts"
+  ]
+}

@@ -4,7 +4,7 @@ import address from './address';
 import auth from './auth';
 import storage from './storage';
 
-export default class Providers {
+export class Providers {
   static providers = {
     address,
     auth,

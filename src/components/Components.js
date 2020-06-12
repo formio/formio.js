@@ -1,6 +1,6 @@
-import Component from './_classes/component/Component';
 import _ from 'lodash';
-export default class Components {
+
+export class Components {
   static get components() {
     if (!Components._components) {
       Components._components = {};
@@ -9,14 +9,6 @@ export default class Components {
   }
 
   static setComponents(comps) {
-    // Set the tableView method on BaseComponent.
-    if (comps.base) {
-      // Implement the tableView method.
-      comps.base.tableView = function(value, options) {
-        const comp = Components.create(options.component, options.options || {}, options.data || {}, true);
-        return comp.getView(value);
-      };
-    }
     _.assign(Components.components, comps);
   }
 
@@ -46,7 +38,7 @@ export default class Components {
       comp = new Components.components['nested'](component, options, data);
     }
     else {
-      comp = new Component(component, options, data);
+      comp = new Components.components['component'](component, options, data);
     }
     return comp;
   }

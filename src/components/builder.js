@@ -1,4 +1,4 @@
-import Components from '.';
+import Components from './form';
 import AddressForm from './address/Address.form';
 import ButtonForm from './button/Button.form';
 import CheckboxForm from './checkbox/Checkbox.form';

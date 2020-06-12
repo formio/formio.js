@@ -1,6 +1,5 @@
-const Rule = require('./Rule');
-
-module.exports = class Required extends Rule {
+import { Rule } from './Rule';
+export class Required extends Rule {
   defaultMessage = '{{field}} is required';
 
   check(value) {
@@ -8,4 +7,4 @@ module.exports = class Required extends Rule {
 
     return !this.component.isValueHidden() && !this.component.isEmpty(value);
   }
-};
+}

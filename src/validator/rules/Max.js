@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
-const Rule = require('./Rule');
-
-module.exports = class Max extends Rule {
+import { Rule } from './Rule';
+export class Max extends Rule {
   defaultMessage = '{{field}} cannot be greater than {{settings.limit}}.';
 
   check(value) {
@@ -12,4 +11,4 @@ module.exports = class Max extends Rule {
     }
     return parseFloat(value) <= max;
   }
-};
+}

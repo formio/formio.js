@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import Webform from '../../displays/webform/Webform';
+import { Webform } from '../../displays/webform/Webform';
 import BuilderUtils from '../../utils/builder';
 
 import WebformBuilder from '../webform/WebformBuilder';

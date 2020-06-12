@@ -1,4 +1,3 @@
-'use strict';
 import NestedArrayComponent from './NestedArrayComponent';
 import Harness from '../../../../test/harness';
 

@@ -1,6 +1,5 @@
-const Rule = require('./Rule');
-
-module.exports = class MinLength extends Rule {
+import { Rule } from './Rule';
+export class MinLength extends Rule {
   defaultMessage = '{{field}} must have no more than {{- settings.length}} characters.';
 
   check(value) {
@@ -10,4 +9,4 @@ module.exports = class MinLength extends Rule {
     }
     return (value.length >= minLength);
   }
-};
+}

@@ -1,6 +1,5 @@
-const Rule = require('./Rule');
-
-module.exports = class MaxWords extends Rule {
+import { Rule } from './Rule';
+export class MaxWords extends Rule {
   defaultMessage = '{{field}} must have no more than {{- settings.length}} words.';
 
   check(value) {
@@ -10,4 +9,4 @@ module.exports = class MaxWords extends Rule {
     }
     return (value.trim().split(/\s+/).length <= maxWords);
   }
-};
+}

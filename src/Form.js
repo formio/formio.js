@@ -1,11 +1,14 @@
-import Element from './Element';
-import Formio from './Formio';
-import Displays from './displays';
-import templates from './templates';
+import Base from './components/_classes/base/Base';
+import { Formio } from './Formio';
+import { Displays } from './displays';
+import { Templates } from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
+import { Components } from './components';
+import formComponents from './components/form';
+Components.setComponents(formComponents);
 
-export default class Form extends Element {
+export class Form extends Base {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
    *
@@ -85,7 +88,7 @@ export default class Form extends Element {
    * @return {*}
    */
   set form(formParam) {
-    return this.setForm(formParam);
+    this.setForm(formParam);
   }
 
   errorForm(err) {
@@ -255,7 +258,7 @@ export default class Form extends Element {
 
     // Add temporary loader.
     const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
-    const loader = templates[template].loader || templates.bootstrap.loader;
+    const loader = Templates.templates[template].loader || Templates.templates.bootstrap.loader;
     this.setContent(this.element, loader.form);
 
     return this.render().then(html => {
@@ -291,21 +294,3 @@ export default class Form extends Element {
       });
   }
 }
-
-// Allow simple embedding.
-Formio.embedForm = (embed) => Form.embed(embed);
-
-/**
- * Factory that creates a new form based on the form parameters.
- *
- * @param element {HMTLElement} - The HTML Element to add this form to.
- * @param form {string|Object} - The src of the form, or a form object.
- * @param options {Object} - The options to create this form.
- *
- * @return {Promise} - When the form is instance is ready.
- */
-Formio.createForm = (...args) => {
-  return (new Form(...args)).ready;
-};
-
-Formio.Form = Form;
