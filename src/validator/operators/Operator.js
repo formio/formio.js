@@ -60,10 +60,6 @@ export class Operator extends BaseCalculatableEntity {
     return ParentClass._complementaryOperator;
   }
 
-  static get lazyArgsEvaluation() {
-    return false;
-  }
-
   // eslint-disable-next-line no-unused-vars
   execute(args, opts) {
     throw new Error('Method #transform() is abstract.');

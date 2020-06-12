@@ -5,10 +5,6 @@ export class Transformer extends BaseCalculatableEntity {
     return false;
   }
 
-  static get lazyArgsEvaluation() {
-    return false;
-  }
-
   // eslint-disable-next-line no-unused-vars
   transform(value, args, opts) {
     throw new Error('Method #transform() is abstract.');
