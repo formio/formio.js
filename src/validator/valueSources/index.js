@@ -17,6 +17,7 @@ import { ListValueSource } from './List';
 import { NumberValueSource } from './Number';
 import { ParentItemIndexesValueSource } from './ParentItemIndexes';
 import { ParentItemsValueSource } from './ParentItems';
+import { RangeValueSource } from './Range';
 import { RegExpValueSource } from './RegExp';
 import { SourceComponentValueSource } from './SourceComponent';
 import { SourceComponentRowValueSource } from './SourceComponentRow';
@@ -50,6 +51,7 @@ const valueSources = [
   NumberValueSource,
   ParentItemIndexesValueSource,
   ParentItemsValueSource,
+  RangeValueSource,
   RegExpValueSource,
   SourceComponentValueSource,
   SourceComponentRowValueSource,
