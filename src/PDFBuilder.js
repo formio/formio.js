@@ -191,7 +191,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   afterAttach() {
-    this.on('saveComponent', (schema, component) => {
+    this.on('saveComponent', (component) => {
       this.webform.postMessage({ name: 'updateElement', data: component });
     });
     this.on('removeComponent', (component) => {
