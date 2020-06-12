@@ -1048,7 +1048,8 @@ export default class WebformBuilder extends Component {
         }
       });
       const originalComp = comp.component;
-      const originalComponentSchema = parentComponent.schema.components[index];
+      const originalComponentSchema = comp.schema;
+
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
