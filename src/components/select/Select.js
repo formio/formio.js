@@ -539,8 +539,16 @@ export default class SelectComponent extends Field {
     }, 'values');
   }
 
+  getVariableItems() {
+    return this.calculateVariable(this.component.data.variable);
+  }
+
   updateCustomItems() {
     this.setItems(this.getCustomItems() || []);
+  }
+
+  updateVariableItems() {
+    this.setItems(this.getVariableItems() || []);
   }
 
   refresh() {
@@ -717,7 +725,11 @@ export default class SelectComponent extends Field {
             });
           };
         }
+        break;
       }
+      case 'variable':
+        this.updateVariableItems();
+        break;
     }
   }
   /* eslint-enable max-statements */
@@ -998,6 +1010,9 @@ export default class SelectComponent extends Field {
   update() {
     if (this.component.dataSrc === 'custom') {
       this.updateCustomItems();
+    }
+    else if (this.component.dataSrc === 'variable') {
+      this.updateVariableItems();
     }
 
     // Activate the control.
@@ -1383,19 +1398,24 @@ export default class SelectComponent extends Field {
       });
     }
 
-    if (['values', 'custom'].includes(this.component.dataSrc)) {
+    if (['values', 'custom', 'variable'].includes(this.component.dataSrc)) {
       const {
         items,
         valueProperty,
-      } = this.component.dataSrc === 'values'
+      } = (this.component.dataSrc === 'values')
         ? {
           items: this.getNormalizedValues(),
           valueProperty: 'value',
         }
-        : {
-          items: this.getCustomItems(),
-          valueProperty: this.valueProperty,
-        };
+        : (this.component.dataSrc === 'custom')
+          ? {
+            items: this.getCustomItems(),
+            valueProperty: this.valueProperty,
+          }
+          : {
+            items: this.getVariableItems(),
+            valueProperty: this.valueProperty,
+          };
 
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
