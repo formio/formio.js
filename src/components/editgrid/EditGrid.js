@@ -60,7 +60,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     return `<div class="row">
   {% instance.eachComponent(function(component) { %}
     <div class="col-sm-2">
-      {{ component.getView(getRowComponentValue(component)) }}
+      {{ component.getView(component.dataValue) }}
     </div>
   {% }, rowIndex) %}
   {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
@@ -352,9 +352,6 @@ export default class EditGridComponent extends NestedArrayComponent {
           rowIndex,
           components: this.component.components,
           flattenedComponents,
-          getRowComponentValue: (component) => {
-            return component.dataValue || _.get(this.dataValue[component.rowIndex], component.key);
-          },
           getView: (component, data) => {
             const instance = flattenedComponents[component.key];
             let view = instance ? instance.getView(data || instance.dataValue) : '';
@@ -382,6 +379,10 @@ export default class EditGridComponent extends NestedArrayComponent {
         return false;
       }
     });
+  }
+
+  restoreComponentsContext() {
+    return;
   }
 
   flattenComponents(rowIndex) {
