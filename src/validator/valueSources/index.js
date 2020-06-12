@@ -29,6 +29,7 @@ import { ThisComponentRowValueSource } from './ThisComponentRow';
 import { ThisComponentRowIndexValueSource } from './ThisComponentRowIndex';
 import { ThisComponentValueValueSource } from './ThisComponentValue';
 import { TimeValueSource } from './Time';
+import { ValuesValueSource } from './Values';
 import { VariableValueSource } from './Variable';
 
 const valueSources = [
@@ -63,6 +64,7 @@ const valueSources = [
   ThisComponentRowIndexValueSource,
   ThisComponentValueValueSource,
   TimeValueSource,
+  ValuesValueSource,
   VariableValueSource,
 ].reduce((result, valueSource) => ({
   ...result,
