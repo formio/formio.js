@@ -2094,17 +2094,17 @@ export default class Component extends Element {
       !this.key ||
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
-      return value;
+      return;
     }
     if ((value !== null) && (value !== undefined)) {
       value = this.hook('setDataValue', value, this.key, this._data);
     }
     if ((value === null) || (value === undefined)) {
       this.unset();
-      return value;
+      return;
     }
     _.set(this._data, this.key, value);
-    return value;
+    return;
   }
 
   /**
