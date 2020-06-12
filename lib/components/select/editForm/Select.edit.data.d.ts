@@ -427,6 +427,52 @@ declare var _default: ({
     requireDecimal?: undefined;
     encrypted?: undefined;
 } | {
+    key: string;
+    weight: number;
+    tooltip: string;
+    conditional: {
+        json: {
+            '===': (string | {
+                var: string;
+            })[];
+            in?: undefined;
+            and?: undefined;
+        };
+    };
+    type: string;
+    input: boolean;
+    label: string;
+    dataSrc: string;
+    groupProperty: string;
+    data: {
+        custom(args: any): any;
+    };
+    valueProperty: string;
+    template: string;
+    defaultValue?: undefined;
+    as?: undefined;
+    editor?: undefined;
+    placeholder?: undefined;
+    components?: undefined;
+    reorder?: undefined;
+    authenticate?: undefined;
+    clearOnHide?: undefined;
+    lazyLoad?: undefined;
+    description?: undefined;
+    skipMerge?: undefined;
+    refreshOn?: undefined;
+    onChange?: undefined;
+    rows?: undefined;
+    allowCalculateOverride?: undefined;
+    calculateValue?: undefined;
+    mask?: undefined;
+    tableView?: undefined;
+    alwaysEnabled?: undefined;
+    validate?: undefined;
+    delimiter?: undefined;
+    requireDecimal?: undefined;
+    encrypted?: undefined;
+} | {
     type: string;
     input: boolean;
     label: string;

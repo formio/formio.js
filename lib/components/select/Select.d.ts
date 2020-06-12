@@ -60,7 +60,9 @@ export default class SelectComponent extends Field {
      */
     get requestHeaders(): any;
     getCustomItems(): any;
+    getVariableItems(): any;
     updateCustomItems(): void;
+    updateVariableItems(): void;
     get additionalResourcesAvailable(): any;
     addPlaceholder(): void;
     /**
