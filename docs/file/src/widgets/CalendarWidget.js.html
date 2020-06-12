@@ -344,6 +344,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.wasDefaultValueChanged = false;
     this.settings.defaultValue = &apos;&apos;;
+    this.settings.manualInputValue = &apos;&apos;;
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () =&gt; this.emit(&apos;update&apos;);
@@ -353,6 +354,11 @@ export default class CalendarWidget extends InputWidget {
         this.calendar._input.value = this.settings.defaultValue;
         this.settings.wasDefaultValueChanged = false;
       }
+
+      if (this.settings.allowInput) {
+        this.calendar._input.value = this.settings.manualInputValue;
+      }
+
       if (this.calendar) {
         this.emit(&apos;blur&apos;);
       }
@@ -374,6 +380,10 @@ export default class CalendarWidget extends InputWidget {
       // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
       this.calendar.altInput.addEventListener(&apos;input&apos;, (event) =&gt; {
+        if (this.settings.allowInput) {
+          this.settings.manualInputValue = event.target.value;
+        }
+
         if (event.target.value === &apos;&apos; &amp;&amp; this.calendar.selectedDates.length &gt; 0) {
           this.settings.wasDefaultValueChanged = true;
           this.settings.defaultValue = event.target.value;

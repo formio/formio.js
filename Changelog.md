@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.1
+#### Fixed
+ - FJS-997: Fixed dateTime manual input.
+ - FJS-1004: Fix (WebformBuilder): components inside Columns are not able to save
+ - FJS-999: Fix (SelectBoxes): not able to manually override calculated value
+
 ### 4.10.0
 #### Fixed
  - FJS-996: fixed components key uniquifying
