@@ -23,6 +23,11 @@ export class DateGreaterThanOrEqualOperator extends Operator {
         key: 'right',
         required: true,
       },
+      {
+        name: 'Granularity',
+        key: 'granularity',
+        required: false,
+      },
     ];
   }
 
@@ -30,8 +35,9 @@ export class DateGreaterThanOrEqualOperator extends Operator {
     const {
       left,
       right,
+      granularity = 'millisecond',
     } = args;
 
-    return moment(left).isSameOrAfter(right);
+    return moment(left).isSameOrAfter(right, granularity);
   }
 }

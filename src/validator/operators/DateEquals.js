@@ -27,6 +27,11 @@ export class DateEqualsOperator extends Operator {
         key: 'right',
         required: true,
       },
+      {
+        name: 'Granularity',
+        key: 'granularity',
+        required: false,
+      },
     ];
   }
 
@@ -34,8 +39,9 @@ export class DateEqualsOperator extends Operator {
     const {
       left,
       right,
+      granularity = 'millisecond',
     } = args;
 
-    return moment(left).isSame(right);
+    return moment(left).isSame(right, granularity);
   }
 }
