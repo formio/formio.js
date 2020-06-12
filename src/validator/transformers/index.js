@@ -11,6 +11,8 @@ import { AddSecondsTransformer } from './AddSeconds';
 import { AddWeeksTransformer } from './AddWeeks';
 import { AddYearsTransformer } from './AddYears';
 import { AtIndexTransformer } from './AtIndex';
+import { CamelCaseTransformer } from './CamelCase';
+import { CapitalizeTransformer } from './Capitalize';
 import { CloneTransformer } from './Clone';
 import { CloneDeepTransformer } from './CloneDeep';
 import { ConcatTransformer } from './Concat';
@@ -54,8 +56,11 @@ import { GetYearTransformer } from './GetYear';
 import { GetYearsBetweenTransformer } from './GetYearsBetween';
 import { IdentityTransformer } from './Identity';
 import { JoinTransformer } from './Join';
+import { KebabCaseTransformer } from './KebabCase';
 import { LastTransformer } from './Last';
 import { LengthTransformer } from './Length';
+import { LowerCaseTransformer } from './LowerCase';
+import { LowerFirstTransformer } from './LowerFirst';
 import { MapTransformer } from './Map';
 import { MaxTransformer } from './Max';
 import { MaxDateTransformer } from './MaxDate';
@@ -100,7 +105,9 @@ import { SetWeekOfYearTransformer } from './SetWeekOfYear';
 import { SetWeekYearTransformer } from './SetWeekYear';
 import { SetYearTransformer } from './SetYear';
 import { SliceTransformer } from './Slice';
+import { SnakeCaseTransformer } from './SnakeCase';
 import { SplitTransformer } from './Split';
+import { StartCaseTransformer } from './StartCase';
 import { SubtractTransformer } from './Subtract';
 import { SubtractDateComponentTransformer } from './SubtractDateComponent';
 import { SubtractDaysTransformer } from './SubtractDays';
@@ -112,7 +119,11 @@ import { SubtractQuartersTransformer } from './SubtractQuarters';
 import { SubtractSecondsTransformer } from './SubtractSeconds';
 import { SubtractWeeksTransformer } from './SubtractWeeks';
 import { SubtractYearsTransformer } from './SubtractYears';
+import { ToLowerTransformer } from './ToLower';
 import { ToNumberTransformer } from './ToNumber';
+import { ToUpperTransformer } from './ToUpper';
+import { UpperCaseTransformer } from './UpperCase';
+import { UpperFirstTransformer } from './UpperFirst';
 
 const transformers = [
   AbsTransformer,
@@ -128,6 +139,8 @@ const transformers = [
   AddWeeksTransformer,
   AddYearsTransformer,
   AtIndexTransformer,
+  CamelCaseTransformer,
+  CapitalizeTransformer,
   CloneTransformer,
   CloneDeepTransformer,
   ConcatTransformer,
@@ -171,8 +184,11 @@ const transformers = [
   GetYearsBetweenTransformer,
   IdentityTransformer,
   JoinTransformer,
+  KebabCaseTransformer,
   LastTransformer,
   LengthTransformer,
+  LowerCaseTransformer,
+  LowerFirstTransformer,
   MapTransformer,
   MaxTransformer,
   MaxDateTransformer,
@@ -217,7 +233,9 @@ const transformers = [
   SetWeekYearTransformer,
   SetYearTransformer,
   SliceTransformer,
+  SnakeCaseTransformer,
   SplitTransformer,
+  StartCaseTransformer,
   SubtractTransformer,
   SubtractDateComponentTransformer,
   SubtractDaysTransformer,
@@ -229,7 +247,11 @@ const transformers = [
   SubtractSecondsTransformer,
   SubtractWeeksTransformer,
   SubtractYearsTransformer,
+  ToLowerTransformer,
   ToNumberTransformer,
+  ToUpperTransformer,
+  UpperCaseTransformer,
+  UpperFirstTransformer,
 ].reduce((result, transformer) => ({
   ...result,
   [transformer.name]: transformer,
