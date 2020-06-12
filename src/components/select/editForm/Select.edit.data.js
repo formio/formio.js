@@ -187,6 +187,10 @@ export default [
     ...EditFormUtils.variableSelector(),
     key: 'data.variable',
     weight: 10,
+    tooltip: 'The variable to be used with this field.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'variable'] },
+    },
   },
   {
     type: 'textfield',
