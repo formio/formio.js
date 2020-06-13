@@ -382,7 +382,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   restoreComponentsContext() {
-    return;
+    this.getComponents().forEach((component) => component.data = this.dataValue[component.rowIndex]);
   }
 
   flattenComponents(rowIndex) {
