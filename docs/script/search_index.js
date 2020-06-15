@@ -8784,6 +8784,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#restorecomponentscontext",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreComponentsContext",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreComponentsContext",
+    "method"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#restorerowcontext",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreRowContext",
     "src/components/editgrid/EditGrid.js~EditGridComponent#restoreRowContext",

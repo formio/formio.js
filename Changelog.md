@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.3-rc.1
+#### Fixed
+ - FJS-997: Fixed dateTime manual overriding
+ - Fixing issue where the PDFBuilder is not sending the correct schema to the pdf. #2928
+ - FJS-885: Render hidden component without dataValue
+ - FJS-1005: Fixed editGrid data display inside wizard in readOnly mode
+ - PDF 10: Search and removal of the component on all nesting levels
+ 
+#### Changed
+ - Refactor validateOnInit flag logic
+
 ### 4.10.2
 #### Fixed
  - Reverted FJS-997: Fixed dateTime manual input.

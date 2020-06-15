@@ -906,17 +906,10 @@ export default class Webform extends NestedDataComponent {
       this.emit(&apos;formLoad&apos;, form);
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
-      const resolveForm = (flags) =&gt; {
-        this.onChange(flags);
-        this.formReadyResolve();
-      };
-
-      if (flags &amp;&amp; flags.validateOnInit) {
-        resolveForm(flags);
-      }
-      else {
-        setTimeout(() =&gt; resolveForm(flags), 0);
-      }
+      setTimeout(() =&gt; {
+        this.onChange();
+        this.formReadyResolve(flags);
+      }, 0);
 
       return this.formReady;
     });
@@ -1101,9 +1094,8 @@ export default class Webform extends NestedDataComponent {
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
-    submission.data = submission.data
-      ? { ...this.data, ...submission.data }
-      : this.data;
+
+    submission.data = this.data;
     this._submission = submission;
     return changed;
   }

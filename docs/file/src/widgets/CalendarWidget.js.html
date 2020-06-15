@@ -344,11 +344,33 @@ export default class CalendarWidget extends InputWidget {
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.wasDefaultValueChanged = false;
     this.settings.defaultValue = &apos;&apos;;
+    this.settings.manualInputValue = &apos;&apos;;
+    this.settings.isManuallyOverriddenValue = false;
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
-    this.settings.onChange = () =&gt; this.emit(&apos;update&apos;);
+    this.settings.onChange = () =&gt; {
+      if (this.settings.allowInput) {
+        if (this.settings.isManuallyOverriddenValue &amp;&amp; this.settings.enableTime) {
+          this.calendar._input.value = this.settings.manualInputValue;
+        }
+        else {
+          this.settings.manualInputValue = &apos;&apos;;
+        }
+
+        this.settings.isManuallyOverriddenValue = false;
+      }
+
+      this.emit(&apos;update&apos;);
+    };
+
     this.settings.onClose = () =&gt; {
       this.closedOn = Date.now();
+
+      if (this.settings.allowInput &amp;&amp; this.settings.enableTime) {
+        this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;
+        this.settings.isManuallyOverriddenValue = false;
+      }
+
       if (this.settings.wasDefaultValueChanged) {
         this.calendar._input.value = this.settings.defaultValue;
         this.settings.wasDefaultValueChanged = false;
@@ -374,6 +396,11 @@ export default class CalendarWidget extends InputWidget {
       // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
       this.calendar.altInput.addEventListener(&apos;input&apos;, (event) =&gt; {
+        if (this.settings.allowInput) {
+          this.settings.manualInputValue = event.target.value;
+          this.settings.isManuallyOverriddenValue = true;
+        }
+
         if (event.target.value === &apos;&apos; &amp;&amp; this.calendar.selectedDates.length &gt; 0) {
           this.settings.wasDefaultValueChanged = true;
           this.settings.defaultValue = event.target.value;
