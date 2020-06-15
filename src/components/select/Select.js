@@ -116,11 +116,11 @@ export default class SelectComponent extends Field {
       else {
         firstValue = firstItem;
       }
-      if (typeof firstValue === 'object' || !firstValue) {
-        return {};
+      if (firstValue && typeof firstValue === 'string') {
+        return '';
       }
       else {
-        return '';
+        return {};
       }
     }
     if (this.valueProperty) {
