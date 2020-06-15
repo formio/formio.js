@@ -106,6 +106,23 @@ export default class SelectComponent extends Field {
     if (this.component.multiple) {
       return [];
     }
+    // if select has JSON data source type, we are defining if empty value would be an object or a string by checking JSON's first item
+    if (this.component.dataSrc === 'json' && this.component.data.json) {
+      const firstItem = this.component.data.json[0];
+      let firstValue;
+      if (this.valueProperty) {
+        firstValue = _.get(firstItem, this.valueProperty);
+      }
+      else {
+        firstValue = firstItem;
+      }
+      if (typeof firstValue === 'object' || !firstValue) {
+        return {};
+      }
+      else {
+        return '';
+      }
+    }
     if (this.valueProperty) {
       return '';
     }
