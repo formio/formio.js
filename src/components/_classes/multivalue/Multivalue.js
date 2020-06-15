@@ -41,7 +41,13 @@ export default class Multivalue extends Field {
   render() {
     // If single value field.
     if (!this.useWrapper()) {
-      return super.render(`<div ref="element">${this.renderElement(this.dataValue)}</div>`);
+      return super.render(
+        `<div ref="element">
+          ${this.renderElement(
+            this.component.type !== 'hidden' ? this.dataValue : ''
+          )}
+        </div>`
+      );
     }
 
     // Make sure dataValue is in the correct array format.
