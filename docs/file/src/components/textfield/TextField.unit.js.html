@@ -50,9 +50,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -249,7 +247,8 @@ import NativePromise from &apos;native-promise-only&apos;;
 import {
   comp1,
   comp2,
-  comp4
+  comp4,
+  comp5
 } from &apos;./fixtures&apos;;
 
 describe(&apos;TextField Component&apos;, () =&gt; {
@@ -294,6 +293,36 @@ describe(&apos;TextField Component&apos;, () =&gt; {
       return Harness.testInvalid(component, &apos;test&apos;, &apos;firstName&apos;, &apos;First Name must have at least 2 words.&apos;).then(() =&gt; component);
     }).then((component) =&gt; {
       return Harness.testValid(component, &apos;te st&apos;).then(() =&gt; component);
+    });
+  });
+
+  it(&apos;Should correctly calculate remaining words&apos;, (done) =&gt; {
+    Harness.testCreate(TextFieldComponent, comp5).then((component) =&gt; {
+      const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
+      const element = component.refs.input[0];
+
+      element.value = &apos;paper format A4&apos;;
+      element.dispatchEvent(inputEvent);
+
+      setTimeout(()=&gt;{
+        assert.equal(component.refs.wordcount[0].textContent, &apos;2 words remaining.&apos;);
+
+        element.value = &apos;Hey, guys! We are here!!&apos;;
+        element.dispatchEvent(inputEvent);
+
+        setTimeout(()=&gt;{
+          assert.equal(component.refs.wordcount[0].textContent, &apos;0 words remaining.&apos;);
+
+          element.value = &apos; Some   test   text  111 &apos;;
+          element.dispatchEvent(inputEvent);
+
+          setTimeout(()=&gt;{
+            assert.equal(component.refs.wordcount[0].textContent, &apos;1 words remaining.&apos;);
+
+            done();
+          }, 300);
+        }, 275);
+      }, 250);
     });
   });
 

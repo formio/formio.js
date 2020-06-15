@@ -3,14 +3,17 @@ import _ from 'lodash';
 export default class ComponentModal {
   static render(component, data, topLevel) {
     const children = component.renderTemplate('component', data, topLevel);
+    const isOpened = this;
 
     return component.renderTemplate('componentModal', {
       ...data,
       children,
+      isOpened
     });
   }
 
-  constructor(component, modal) {
+  constructor(component, modal, isOpened) {
+    this.isOpened = isOpened;
     this.component = component;
     this.modal = modal;
     this.currentValue = this.component.dataValue;
@@ -41,6 +44,10 @@ export default class ComponentModal {
     this.component.setContent(this.refs.openModalWrapper, template);
     this.loadRefs();
     this.setEventListeners();
+    if (this.isOpened) {
+      this.refs.modalWrapper.classList.add('formio-dialog-disabled-animation');
+      this.openModal();
+    }
   }
 
   loadRefs() {
@@ -72,6 +79,11 @@ export default class ComponentModal {
 
   openModalHandler(event) {
     event.preventDefault();
+    this.openModal();
+  }
+
+  openModal() {
+    this.isOpened = true;
     this.refs.modalWrapper.classList.remove('component-rendering-hidden');
   }
 
@@ -84,7 +96,9 @@ export default class ComponentModal {
   }
 
   closeModal() {
+    this.refs.modalWrapper.classList.remove('formio-dialog-disabled-animation');
     this.refs.modalWrapper.classList.add('component-rendering-hidden');
+    this.isOpened = false;
     this.updateView();
   }
 

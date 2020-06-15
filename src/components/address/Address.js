@@ -161,11 +161,11 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get mode() {
-    return this.manualModeEnabled
-      ? this.dataValue
-        ? this.dataValue.mode
-        : this.dataValue
-      : AddressComponentMode.Autocomplete;
+    if (!this.manualModeEnabled) {
+      return AddressComponentMode.Autocomplete;
+    }
+
+    return this.dataValue?.mode ?? AddressComponentMode.Autocomplete;
   }
 
   set mode(value) {
@@ -183,7 +183,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get manualModeEnabled() {
-    return Boolean(this.component.enableManualMode);
+    return !this.isMultiple && Boolean(this.component.enableManualMode);
   }
 
   restoreComponentsContext() {
@@ -195,17 +195,29 @@ export default class AddressComponent extends ContainerComponent {
     });
   }
 
+  get isMultiple() {
+    return Boolean(this.component.multiple);
+  }
+
   get address() {
+    if (this.isMultiple) {
+      return _.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+    }
+    // Manual mode is not implementing for multiple value
     return (this.manualModeEnabled && this.dataValue) ? this.dataValue.address : this.dataValue;
   }
 
   set address(value) {
-    if (this.manualModeEnabled) {
+    if (this.manualModeEnabled && !this.isMultiple) {
       this.dataValue.address = value;
     }
     else {
       this.dataValue = value;
     }
+  }
+
+  get defaultValue() {
+    return this.isMultiple ? [this.emptyValue] : this.emptyValue;
   }
 
   get defaultSchema() {
@@ -251,6 +263,14 @@ export default class AddressComponent extends ContainerComponent {
     return 'searchInput';
   }
 
+  static get addRowButtonRef() {
+    return 'addButton';
+  }
+
+  static get removeRowButtonRef() {
+    return 'removeRow';
+  }
+
   get modeSwitcher() {
     return this.refs
       ? (this.refs[AddressComponent.modeSwitcherRef] || null)
@@ -266,6 +286,18 @@ export default class AddressComponent extends ContainerComponent {
   get searchInput() {
     return this.refs
       ? (this.refs[AddressComponent.searchInputRef] || null)
+      : null;
+  }
+
+  get addRowButton() {
+    return this.refs
+      ? (this.refs[AddressComponent.addRowButtonRef] || null)
+      : null;
+  }
+
+  get removeRowButton() {
+    return this.refs
+      ? (this.refs[AddressComponent.removeRowButtonRef] || null)
       : null;
   }
 
@@ -295,9 +327,25 @@ export default class AddressComponent extends ContainerComponent {
     return 'address';
   }
 
-  render() {
-    return super.render(this.renderTemplate(this.templateName, {
-      children: (this.builderMode || this.manualModeEnabled) ? this.renderComponents() : '',
+  get gridTemplateName() {
+    return 'multiValueTable';
+  }
+
+  get rowTemplateName() {
+    return 'multiValueRow';
+  }
+
+  get hasChildren() {
+    return !this.isMultiple && (this.builderMode || this.manualModeEnabled);
+  }
+
+  get addAnother() {
+    return this.t(this.component.addAnother || 'Add Another');
+  }
+
+  renderElement(value) {
+    return this.renderTemplate(this.templateName, {
+      children: this.hasChildren ? this.renderComponents() : '',
       nestedKey: this.nestedKey,
       inputAttributes: this.searchInputAttributes,
       ref: {
@@ -305,12 +353,41 @@ export default class AddressComponent extends ContainerComponent {
         removeValueIcon: AddressComponent.removeValueIconRef,
         searchInput: AddressComponent.searchInputRef,
       },
-      displayValue: this.getDisplayValue(),
+      displayValue: this.getDisplayValue(value),
       mode: {
         autocomplete: this.autocompleteMode,
         manual: this.manualMode,
       },
-    }));
+    });
+  }
+
+  renderRow(value, index) {
+    return this.renderTemplate(this.rowTemplateName, {
+      index,
+      disabled: this.disabled,
+      element: `${this.renderElement(value, index)}`,
+    });
+  }
+
+  renderGrid() {
+    return this.renderTemplate(this.gridTemplateName, {
+      rows: this.address.map(this.renderRow.bind(this)).join(''),
+      disabled: this.disabled,
+      addAnother: this.addAnother,
+    });
+  }
+
+  render() {
+    if (this.isMultiple) {
+      return super.render(this.renderGrid());
+    }
+
+    return super.render(this.renderElement());
+  }
+
+  addRow() {
+    this.address = this.address.concat(this.emptyValue);
+    super.redraw();
   }
 
   attach(element) {
@@ -327,57 +404,81 @@ export default class AddressComponent extends ContainerComponent {
     }
 
     this.loadRefs(element, {
+      [AddressComponent.addRowButtonRef]: 'single',
       [AddressComponent.modeSwitcherRef]: 'single',
-      [AddressComponent.removeValueIconRef]: 'single',
-      [AddressComponent.searchInputRef]: 'single',
+      [AddressComponent.removeRowButtonRef]: 'multiple',
+      [AddressComponent.removeValueIconRef]: 'multiple',
+      [AddressComponent.searchInputRef]: 'multiple',
     });
 
-    if (!this.builderMode && this.searchInput && this.provider) {
-      autocompleter({
-        input: this.searchInput,
-        debounceWaitMs: 300,
-        fetch: (text, update) => {
-          const query = text;
-          this.provider.search(query).then(update);
-        },
-        render: (address) => {
-          const div = this.ce('div');
-          div.textContent = this.getDisplayValue(address);
-          return div;
-        },
-        onSelect: (address) => {
-          this.address = address;
-          this.triggerChange({
-            modified: true,
-          });
+    this.searchInput.forEach((element, index) => {
+      if (!this.builderMode && element && this.provider) {
+        autocompleter({
+          input: element,
+          debounceWaitMs: 300,
+          fetch: (text, update) => {
+            const query = text;
+            this.provider.search(query).then(update);
+          },
+          render: (address) => {
+            const div = this.ce('div');
+            div.textContent = this.getDisplayValue(address);
+            return div;
+          },
+          onSelect: (address) => {
+            if (this.isMultiple) {
+              this.address[index] = address;
+              this.address = [...this.address];
+            }
+            else {
+              this.address = address;
+            }
 
-          if (this.searchInput) {
-            this.searchInput.value = this.getDisplayValue();
+            this.triggerChange({
+              modified: true,
+            });
+
+            if (element) {
+              element.value = this.getDisplayValue(this.address[index]);
+            }
+
+            this.updateRemoveIcon(index);
+          },
+        });
+
+        this.addEventListener(element, 'blur', () => {
+          if (!element) {
+            return;
           }
-          this.updateRemoveIcon();
-        },
-      });
 
-      this.addEventListener(this.searchInput, 'blur', () => {
-        if (!this.searchInput) {
-          return;
-        }
+          if (element.value) {
+            element.value = this.getDisplayValue(this.address[index]);
+          }
+        });
 
-        if (this.searchInput.value) {
-          this.searchInput.value = this.getDisplayValue();
-        }
-      });
+        this.addEventListener(element, 'keyup', () => {
+          if (!element) {
+            return;
+          }
 
-      this.addEventListener(this.searchInput, 'keyup', () => {
-        if (!this.searchInput) {
-          return;
-        }
-
-        if (!this.searchInput.value) {
-          this.clearAddress();
-        }
+          if (!element.value) {
+            this.clearAddress(element, index);
+          }
+        });
+      }
+    });
+    if (this.addRowButton) {
+      this.addEventListener(this.addRowButton, 'click', event => {
+        event.preventDefault();
+        this.addRow();
       });
     }
+    this.removeRowButton.forEach((removeRowButton, index) => {
+      this.addEventListener(removeRowButton, 'click', event => {
+        event.preventDefault();
+        this.removeValue(index);
+      });
+    });
 
     if (this.modeSwitcher) {
       this.addEventListener(this.modeSwitcher, 'change', () => {
@@ -404,19 +505,25 @@ export default class AddressComponent extends ContainerComponent {
       });
     }
 
-    if (!this.builderMode && this.removeValueIcon) {
-      this.updateRemoveIcon();
+    if (!this.builderMode) {
+      this.removeValueIcon.forEach((removeValueIcon, index) => {
+        this.updateRemoveIcon(index);
 
-      const removeValueHandler = () => {
-        this.clearAddress();
-        this.focus();
-      };
+        const removeValueHandler = () => {
+          const searchInput = this.searchInput?.[index];
+          this.clearAddress(searchInput, index);
 
-      this.addEventListener(this.removeValueIcon, 'click', removeValueHandler);
-      this.addEventListener(this.removeValueIcon, 'keydown', ({ key }) => {
-        if (key === 'Enter') {
-          removeValueHandler();
-        }
+          if (searchInput) {
+            searchInput.focus();
+          }
+        };
+
+        this.addEventListener(removeValueIcon, 'click', removeValueHandler);
+        this.addEventListener(removeValueIcon, 'keydown', ({ key }) => {
+          if (key === 'Enter') {
+            removeValueHandler();
+          }
+        });
       });
     }
 
@@ -440,16 +547,21 @@ export default class AddressComponent extends ContainerComponent {
       });
   }
 
-  clearAddress() {
+  clearAddress(element, index) {
     if (!this.isEmpty()) {
       this.triggerChange();
     }
 
-    this.dataValue = this.emptyValue;
-    if (this.searchInput) {
-      this.searchInput.value = '';
+    if (this.address?.[index]) {
+      this.address[index] = this.emptyValue;
     }
-    this.updateRemoveIcon();
+    else {
+      this.address = this.emptyValue;
+    }
+    if (element) {
+      element.value = '';
+    }
+    this.updateRemoveIcon(index);
   }
 
   getDisplayValue(value = this.address) {
@@ -460,16 +572,17 @@ export default class AddressComponent extends ContainerComponent {
 
   validateMultiple() {
     // Address component can't be multivalue.
-    return false;
+    return this.isMultiple;
   }
 
-  updateRemoveIcon() {
-    if (this.removeValueIcon) {
-      if (this.isEmpty() || this.disabled) {
-        this.addClass(this.removeValueIcon, RemoveValueIconHiddenClass);
+  updateRemoveIcon(index) {
+    const removeValueIcon = this.removeValueIcon?.[index];
+    if (removeValueIcon) {
+      if (this.isEmpty(this.address[index]) || this.disabled) {
+        this.addClass(removeValueIcon, RemoveValueIconHiddenClass);
       }
       else {
-        this.removeClass(this.removeValueIcon, RemoveValueIconHiddenClass);
+        this.removeClass(removeValueIcon, RemoveValueIconHiddenClass);
       }
     }
   }
@@ -519,8 +632,8 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   focus() {
-    if (this.searchInput) {
-      this.searchInput.focus();
+    if (this.searchInput && this.searchInput[0]) {
+      this.searchInput[0].focus();
     }
   }
 }

@@ -1118,6 +1118,7 @@ export function getArrayFromComponentPath(pathStr) {
   }
   return pathStr.replace(/[[\]]/g, '.')
     .replace(/\.\./g, '.')
+    .replace(/(^\.)|(\.$)/g, '')
     .split('.')
     .map(part => _.defaultTo(_.toNumber(part), part));
 }

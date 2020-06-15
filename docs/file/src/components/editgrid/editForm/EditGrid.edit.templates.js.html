@@ -50,9 +50,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -266,7 +264,9 @@ export default [
     as: &apos;handlebars&apos;,
     input: true,
     placeholder: &apos;/*** Lodash Template Code ***/&apos;,
-    description: &apos;Two available variables. &quot;row&quot; is an object of one row\&apos;s data and &quot;components&quot; is the array of components in the grid. To add click events, add the classes &quot;editRow&quot; and &quot;removeRow&quot; to elements.&apos;,
+    description: &apos;Three available variables. &quot;row&quot; is an object of one row\&apos;s data, &quot;components&quot;&apos; +
+      &apos; is the array of components in the grid and &quot;state&quot; is current row\&apos;s state (can be &quot;draft&quot; or &quot;saved&quot;).&apos; +
+      &apos; To add click events, add the classes &quot;editRow&quot; and &quot;removeRow&quot; to elements.&apos;,
     tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render each row of the Edit grid.&apos;,
     customConditional() {
       return !Evaluator.noeval;

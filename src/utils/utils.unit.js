@@ -7,6 +7,7 @@ const components = JSON.parse(fs.readFileSync('src/utils/fixtures/components.jso
 const components2 = JSON.parse(fs.readFileSync('src/utils/fixtures/components2.json'));
 const components3 = JSON.parse(fs.readFileSync('src/utils/fixtures/components3.json'));
 const components4 = JSON.parse(fs.readFileSync('src/utils/fixtures/components4.json'));
+const components5 = JSON.parse(fs.readFileSync('src/utils/fixtures/components5.json'));
 const submission1 = JSON.parse(fs.readFileSync('src/utils/fixtures/submission1.json'));
 
 describe('Util Tests', () => {
@@ -162,6 +163,46 @@ describe('Util Tests', () => {
       }, true);
       expect(numLayout).to.be.equal(3);
       expect(numComps).to.be.equal(4);
+    });
+
+    it('should not include `htmlelement` components when `includeAll` is not provided', () => {
+      let htmlComponentsAmount = 0;
+      utils.eachComponent(components5, (component) => {
+        if (component.type === 'htmlelement') {
+          htmlComponentsAmount++;
+        }
+      });
+      expect(htmlComponentsAmount).to.be.equal(0);
+    });
+
+    it('should include `htmlelement` components when `includeAll` is provided', () => {
+      let htmlComponentsAmount = 0;
+      utils.eachComponent(components5, (component) => {
+        if (component.type === 'htmlelement') {
+          htmlComponentsAmount++;
+        }
+      }, true);
+      expect(htmlComponentsAmount).to.be.equal(1);
+    });
+
+    it('should not include `content` components when `includeAll` is not provided', () => {
+      let contentComponentsAmount = 0;
+      utils.eachComponent(components5, (component) => {
+        if (component.type === 'content') {
+          contentComponentsAmount++;
+        }
+      });
+      expect(contentComponentsAmount).to.be.equal(0);
+    });
+
+    it('should include `content` components when `includeAll` is provided', () => {
+      let contentComponentsAmount = 0;
+      utils.eachComponent(components5, (component) => {
+        if (component.type === 'content') {
+          contentComponentsAmount++;
+        }
+      }, true);
+      expect(contentComponentsAmount).to.be.equal(1);
     });
   });
 

@@ -3,6 +3,7 @@ import Builders from './builders/Builders';
 import Components from './components/Components';
 import Displays from './displays/Displays';
 import Templates from './templates/Templates';
+import Widgets from './widgets/Widgets';
 import Providers from './providers';
 import Rules from './validator/Rules';
 import Formio from './Formio';
@@ -53,6 +54,9 @@ const registerPlugin = (plugin) => {
       case 'rules':
         Rules.addRules(plugin.rules);
         break;
+      case 'widgets':
+        Widgets.addWidgets(plugin.widgets);
+        break;
       default:
         console.log('Unknown plugin option', key);
     }
@@ -90,9 +94,10 @@ Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
+Formio.Widgets = Widgets;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
 
 // Export the components.
-export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio };
+export { Builders, Components, Displays, Widgets, Providers, Templates, Utils, Form, Formio };
