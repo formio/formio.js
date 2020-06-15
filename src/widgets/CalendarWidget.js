@@ -107,9 +107,9 @@ export default class CalendarWidget extends InputWidget {
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () => this.emit('update');
-    this.settings.onOpen = () => callbacks.onOpen && callbacks.onOpen();
+    this.settings.onOpen = () => (callbacks && callbacks.onOpen) && callbacks.onOpen();
     this.settings.onClose = () => {
-      callbacks.onClose && callbacks.onClose();
+      (callbacks && callbacks.onClose) && callbacks.onClose();
       this.closedOn = Date.now();
       if (this.settings.wasDefaultValueChanged) {
         this.calendar._input.value = this.settings.defaultValue;
