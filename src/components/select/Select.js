@@ -885,6 +885,13 @@ export default class SelectComponent extends Field {
           }
         });
       }
+
+      this.addEventListener(input, 'choice', () => {
+        if (this.component.multiple && this.component.dataSrc === 'resource' && this.isFromSearch) {
+          this.triggerUpdate();
+        }
+        this.isFromSearch = false;
+      });
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
