@@ -6,4 +6,3 @@ export * from './formio';
 export * from './templates';
 export * from './displays';
 export * from './utils';
-export * from './widgets';
