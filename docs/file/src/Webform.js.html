@@ -907,8 +907,8 @@ export default class Webform extends NestedDataComponent {
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
       setTimeout(() =&gt; {
-        this.onChange();
-        this.formReadyResolve(flags);
+        this.onChange(flags);
+        this.formReadyResolve();
       }, 0);
 
       return this.formReady;

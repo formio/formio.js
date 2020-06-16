@@ -346,6 +346,23 @@ export default class SelectComponent extends Field {
     if (this.component.multiple) {
       return [];
     }
+    // if select has JSON data source type, we are defining if empty value would be an object or a string by checking JSON&apos;s first item
+    if (this.component.dataSrc === &apos;json&apos; &amp;&amp; this.component.data.json) {
+      const firstItem = this.component.data.json[0];
+      let firstValue;
+      if (this.valueProperty) {
+        firstValue = _.get(firstItem, this.valueProperty);
+      }
+      else {
+        firstValue = firstItem;
+      }
+      if (firstValue &amp;&amp; typeof firstValue === &apos;string&apos;) {
+        return &apos;&apos;;
+      }
+      else {
+        return {};
+      }
+    }
     if (this.valueProperty) {
       return &apos;&apos;;
     }
@@ -1125,6 +1142,13 @@ export default class SelectComponent extends Field {
           }
         });
       }
+
+      this.addEventListener(input, &apos;choice&apos;, () =&gt; {
+        if (this.component.multiple &amp;&amp; this.component.dataSrc === &apos;resource&apos; &amp;&amp; this.isFromSearch) {
+          this.triggerUpdate();
+        }
+        this.isFromSearch = false;
+      });
       this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
     }

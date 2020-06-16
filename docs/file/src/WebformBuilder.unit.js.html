@@ -242,54 +242,62 @@
 
 import Harness from &apos;../test/harness&apos;;
 import WebformBuilder from &apos;./WebformBuilder&apos;;
-import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel } from &apos;../test/formtest&apos;;
+import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from &apos;../test/formtest&apos;;
 
 describe(&apos;WebformBuilder tests&apos;, () =&gt; {
   before((done) =&gt; Harness.builderBefore(done));
-  after(() =&gt; Harness.builderAfter());
+  afterEach(() =&gt; Harness.getBuilder().setForm({ display: &apos;form&apos;, components: [] }));
+  after((done) =&gt; Harness.builderAfter(done));
   it(&apos;Should create a new form builder class&apos;, (done) =&gt; {
-    const builder = Harness.buildComponent(&apos;textfield&apos;);
+    const builder = Harness.getBuilder();
     assert(builder instanceof WebformBuilder, &apos;Builder must be an instance of FormioFormBuilder&apos;);
     done();
   });
+
   it(&apos;Should not show unique API error when components with same keys are inside and outside of the Data component&apos;, (done) =&gt; {
-    const builder = Harness.buildComponent(&apos;textfield&apos;);
+    const builder = Harness.getBuilder();
     builder.webform.setForm(uniqueApiKeys).then(() =&gt; {
       builder.highlightInvalidComponents();
-      builder.webform.getComponent(&apos;textField&apos;, component =&gt; {
-        assert.equal(component.errors.length, 0);
-        done();
-      });
-    }).catch(done)
-      .finally(() =&gt; {
-        builder.form = { components: [] };
-      });
+      const component = builder.webform.getComponent([&apos;textField&apos;]);
+      assert.equal(component.errors.length, 0);
+      done();
+    }).catch(done);
   });
+
   it(&apos;Should show unique API error when components inside and outside of the Layout component have same keys&apos;, (done) =&gt; {
-    const builder = Harness.buildComponent(&apos;textfield&apos;);
+    const builder = Harness.getBuilder();
     builder.webform.setForm(uniqueApiKeysLayout).then(() =&gt; {
       builder.highlightInvalidComponents();
-      builder.webform.getComponent(&apos;textField&apos;, component =&gt; {
-        assert.equal(component.errors.length, 1);
-        done();
-      });
-    }).catch(done)
-      .finally(() =&gt; {
-      builder.form = { components: [] };
-    });
+      const component = builder.webform.getComponent([&apos;textField&apos;]);
+      assert.equal(component.errors.length, 1);
+      done();
+    }).catch(done);
   });
+
+  it(&apos;Should allow add components&apos;, function(done) {
+    const builder = Harness.getBuilder();
+    builder.setForm(columnsForm).then(() =&gt; {
+      const column1 = builder.webform.element.querySelector(&apos;[ref=&quot;columns-container&quot;]&apos;);
+      Harness.buildComponent(&apos;textfield&apos;, column1);
+      setTimeout(() =&gt; {
+        Harness.saveComponent();
+        setTimeout(() =&gt; {
+          const columns = builder.webform.getComponent(&apos;columns&apos;);
+          assert.equal(columns.columns[0].length, 1);
+          done();
+        }, 150);
+      }, 150);
+    }).catch(done);
+  });
+
   it(&apos;Should show unique API error when components on the same level have same keys&apos;, (done) =&gt; {
-    const builder = Harness.buildComponent(&apos;textfield&apos;);
+    const builder = Harness.getBuilder();
     builder.webform.setForm(uniqueApiKeysSameLevel).then(() =&gt; {
       builder.highlightInvalidComponents();
-      builder.webform.getComponent(&apos;textField&apos;, component =&gt; {
-        assert.equal(component.errors.length, 1);
-        done();
-      });
-    }).catch(done)
-      .finally(() =&gt; {
-      builder.form = { components: [] };
-    });
+      const component = builder.webform.getComponent([&apos;textField&apos;]);
+      assert.equal(component.errors.length, 1);
+      done();
+    }).catch(done);
   });
 });
 </code></pre>

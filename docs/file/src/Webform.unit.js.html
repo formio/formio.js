@@ -253,7 +253,8 @@ import {
   validationOnBlur,
   calculateValueWithManualOverride,
   formWithAdvancedLogic,
-  formWithPatternValidation
+  formWithPatternValidation,
+  calculatedSelectboxes,
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
@@ -1297,6 +1298,33 @@ describe(&apos;Webform tests&apos;, () =&gt; {
               });
               done();
             }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it(&apos;Should allow to change value.&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(calculatedSelectboxes).then(() =&gt; {
+        const radio = form.getComponent([&apos;radio&apos;]);
+        radio.setValue(&apos;a&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(radio.dataValue, &apos;a&apos;);
+          const selectBoxes = form.getComponent([&apos;selectBoxes&apos;]);
+          assert.equal(selectBoxes.dataValue[&apos;a&apos;], true, &apos;Should calculate value and set it to &quot;a&quot;&apos;);
+          selectBoxes.setValue({
+            &apos;a&apos;: true,
+            &apos;b&apos;: true,
+            &apos;c&apos;: false
+          });
+          setTimeout(() =&gt; {
+            assert.deepEqual(selectBoxes.dataValue, {
+              &apos;a&apos;: true,
+              &apos;b&apos;: true,
+              &apos;c&apos;: false
+            }, &apos;Should change the value&apos;);
+            done();
           }, 250);
         }, 250);
       }).catch(done);

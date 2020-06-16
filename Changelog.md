@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.10.3-rc.2
 #### Fixed
+ - FJS-817: fixed options display after selecting searched value in multiple select with resource
+ - Fix (Element): methods for adding and removing classes caused error for angular FormControl
+ - FJS-1012: fixed wizard infinite loop in builder mode
  - FJS-1011: Fixed select component with JSON data source always having empty object as default value in submission
+
+#### Added
+ - Selecboxes & builder tests
 
 ### 4.10.3-rc.1
 #### Fixed
