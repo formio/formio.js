@@ -169,9 +169,11 @@ export default class ButtonComponent extends Field {
     }
 
     this.on('change', (value, flags) => {
-      const isValid = (flags && flags.noValidate) ?
-        (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true) :
-        value.isValid;
+      let isValid = value.isValid;
+      if (flags && flags.noValidate) {
+        isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
+        flags.rootValidity = isValid;
+      }
       this.loading = false;
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
