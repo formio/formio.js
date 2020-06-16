@@ -49,7 +49,7 @@ export default [
           return _.omit(existWidget, 'language');
         }
         else if (type) {
-          return _.omit(Widgets.widgets[type].defaultSettings, 'language');
+          return _.omit(Widgets[type].defaultSettings, 'language');
         }
       }
       return context.data.widget;
