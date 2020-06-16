@@ -556,7 +556,7 @@ export default class Wizard extends Webform {
     const currentPage = this.currentPage;
     if (name === 'previous') {
       const show = firstNonNil([
-        _.get(currentPage, 'buttonSettings.previous'),
+        _.get(currentPage, 'component.buttonSettings.previous'),
         this.options.buttonSettings.showPrevious
       ]);
       return (this.getPreviousPage() > -1) && show;
@@ -564,20 +564,20 @@ export default class Wizard extends Webform {
     nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
     if (name === 'next') {
       const show = firstNonNil([
-        _.get(currentPage, 'buttonSettings.next'),
+        _.get(currentPage, 'component.buttonSettings.next'),
         this.options.buttonSettings.showNext
       ]);
       return (nextPage !== null) && (nextPage !== -1) && show;
     }
     if (name === 'cancel') {
       return firstNonNil([
-        _.get(currentPage, 'buttonSettings.cancel'),
+        _.get(currentPage, 'component.buttonSettings.cancel'),
         this.options.buttonSettings.showCancel
       ]);
     }
     if (name === 'submit') {
       const show = firstNonNil([
-        _.get(currentPage, 'buttonSettings.submit'),
+        _.get(currentPage, 'component.buttonSettings.submit'),
         this.options.buttonSettings.showSubmit
       ]);
       return show && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
