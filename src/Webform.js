@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
+import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
@@ -634,6 +635,12 @@ export default class Webform extends NestedDataComponent {
     // Allow the form to provide component overrides.
     if (form && form.settings && form.settings.components) {
       this.options.components = form.settings.components;
+    }
+
+    if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
+      this.ready.then(() => {
+        this.setAlert('alert alert-danger', 'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.');
+      });
     }
 
     // See if they pass a module, and evaluate it if so.
