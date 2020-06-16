@@ -15,7 +15,8 @@ const calculateValueWithManualOverride = require('./calculateValueWithManualOver
 const displayAsModalEditGrid = require('./displayAsModalEditGrid.json');
 const formWithAdvancedLogic = require('./advancedLogicForm.json');
 const formWithPatternValidation = require('./patternValidation.json');
-
+const calculatedSelectboxes = require('./calculatedSelectboxes.json');
+const columnsForm = require('./columnsForm.json');
 
 module.exports = {
   advanced,
@@ -34,5 +35,7 @@ module.exports = {
   calculateValueWithManualOverride,
   displayAsModalEditGrid,
   formWithAdvancedLogic,
-  formWithPatternValidation
+  formWithPatternValidation,
+  calculatedSelectboxes,
+  columnsForm,
 };

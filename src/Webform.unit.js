@@ -13,7 +13,8 @@ import {
   validationOnBlur,
   calculateValueWithManualOverride,
   formWithAdvancedLogic,
-  formWithPatternValidation
+  formWithPatternValidation,
+  calculatedSelectboxes,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -1057,6 +1058,33 @@ describe('Webform tests', () => {
               });
               done();
             }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it('Should allow to change value.', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(calculatedSelectboxes).then(() => {
+        const radio = form.getComponent(['radio']);
+        radio.setValue('a');
+        setTimeout(() => {
+          assert.equal(radio.dataValue, 'a');
+          const selectBoxes = form.getComponent(['selectBoxes']);
+          assert.equal(selectBoxes.dataValue['a'], true, 'Should calculate value and set it to "a"');
+          selectBoxes.setValue({
+            'a': true,
+            'b': true,
+            'c': false
+          });
+          setTimeout(() => {
+            assert.deepEqual(selectBoxes.dataValue, {
+              'a': true,
+              'b': true,
+              'c': false
+            }, 'Should change the value');
+            done();
           }, 250);
         }, 250);
       }).catch(done);
