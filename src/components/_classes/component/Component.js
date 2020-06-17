@@ -2379,12 +2379,15 @@ export default class Component extends Element {
     }
 
     // Calculate the new value.
-    var calculatedValue = this.evaluate(this.component.calculateValue, {
+    let calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
       data,
       row: row || this.data
     }, 'value');
-    if (calculatedValue === undefined || calculatedValue === null) calculatedValue = this.emptyValue;
+
+    if (_.isNil(calculatedValue)) {
+      calculatedValue = this.emptyValue;
+    }
 
     // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
     if (flags.isReordered && allowOverride) {

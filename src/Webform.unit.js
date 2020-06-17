@@ -15,6 +15,7 @@ import {
   formWithAdvancedLogic,
   formWithPatternValidation,
   calculatedSelectboxes,
+  calculateZeroValue,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -737,6 +738,34 @@ describe('Webform tests', () => {
         }
       }, 0, done);
     });
+  });
+
+  it('Should set calculated value correctly', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement);
+    form.setForm(calculateZeroValue).then(() => {
+      const a = form.components[0];
+      const b = form.components[1];
+      const sum = form.components[2];
+
+      a.setValue(10);
+      b.setValue(5);
+      setTimeout(() => {
+        assert.equal(a.dataValue, 10);
+        assert.equal(b.dataValue, 5);
+        assert.equal(sum.dataValue, 15);
+
+        a.setValue('0');
+        b.setValue('0');
+        setTimeout(() => {
+          assert.equal(a.dataValue, 0);
+          assert.equal(b.dataValue,0);
+          assert.equal(sum.dataValue, 0);
+
+          done();
+        }, 250);
+      }, 250);
+    }).catch(done);
   });
 
   describe('set/get nosubmit', () => {
