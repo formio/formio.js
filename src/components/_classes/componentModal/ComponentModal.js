@@ -110,6 +110,7 @@ export default class ComponentModal {
     event.preventDefault();
     this.closeModal();
     this.component.setValue(this.currentValue, { resetValue: true });
+    this.component.redraw();
   }
 
   showDialog() {
