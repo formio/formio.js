@@ -363,6 +363,10 @@ export function setActionProperty(component, action, result, row, data, instance
  * @returns {string}
  */
 export function unescapeHTML(str) {
+  if (!global.window) {
+    return str;
+  }
+
   const doc = new global.window.DOMParser().parseFromString(str, 'text/html');
   return doc.documentElement.textContent;
 }
