@@ -1044,7 +1044,7 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       let comp = null;
       parentComponent.getComponents().forEach((component) => {
-        if (component.key === original.key) {
+        if (component.component.key === original.key) {
           comp = component;
         }
       });
