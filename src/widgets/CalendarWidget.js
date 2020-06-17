@@ -80,7 +80,7 @@ export default class CalendarWidget extends InputWidget {
     return false;
   }
 
-  attach(input, callbacks) {
+  attach(input) {
     const superAttach = super.attach(input);
     if (input && !input.getAttribute('placeholder')) {
       input.setAttribute('placeholder', this.settings.format);
@@ -108,9 +108,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.isManuallyOverriddenValue = false;
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
-    this.settings.onOpen = () => (callbacks && callbacks.onOpen) && callbacks.onOpen();
     this.settings.onChange = () => {
-      (callbacks && callbacks.onClose) && callbacks.onClose();
       if (this.settings.allowInput) {
         if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
           this.calendar._input.value = this.settings.manualInputValue;
@@ -124,8 +122,9 @@ export default class CalendarWidget extends InputWidget {
 
       this.emit('update');
     };
-
+    this.settings.onOpen = () => this.hooks('onCalendarOpen');
     this.settings.onClose = () => {
+      this.hooks('onCalendarClose');
       this.closedOn = Date.now();
 
       if (this.settings.allowInput && this.settings.enableTime) {
