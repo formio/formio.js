@@ -44,143 +44,143 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 595,
+        "lineNumber": 596,
         "line": "  /**"
       },
       {
-        "lineNumber": 596,
+        "lineNumber": 597,
         "line": "   * Sets the JSON schema for the form to be rendered."
       },
       {
-        "lineNumber": 597,
-        "line": "   *"
-      },
-      {
         "lineNumber": 598,
-        "line": "   * @example"
+        "line": "   *"
       },
       {
         "lineNumber": 599,
-        "line": "   * import Webform from 'formiojs/Webform';"
+        "line": "   * @example"
       },
       {
         "lineNumber": 600,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 601,
-        "line": "   * form.setForm({"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 602,
-        "line": "   *   components: ["
+        "line": "   * form.setForm({"
       },
       {
         "lineNumber": 603,
-        "line": "   *     {"
+        "line": "   *   components: ["
       },
       {
         "lineNumber": 604,
-        "line": "   *       type: 'textfield',"
+        "line": "   *     {"
       },
       {
         "lineNumber": 605,
-        "line": "   *       key: 'firstName',"
-      },
-      {
-        "lineNumber": 606,
-        "line": "   *       label: 'First Name',"
-      },
-      {
-        "lineNumber": 607,
-        "line": "   *       placeholder: 'Enter your first name.',"
-      },
-      {
-        "lineNumber": 608,
-        "line": "   *       input: true"
-      },
-      {
-        "lineNumber": 609,
-        "line": "   *     },"
-      },
-      {
-        "lineNumber": 610,
-        "line": "   *     {"
-      },
-      {
-        "lineNumber": 611,
         "line": "   *       type: 'textfield',"
       },
       {
-        "lineNumber": 612,
-        "line": "   *       key: 'lastName',"
+        "lineNumber": 606,
+        "line": "   *       key: 'firstName',"
       },
       {
-        "lineNumber": 613,
-        "line": "   *       label: 'Last Name',"
+        "lineNumber": 607,
+        "line": "   *       label: 'First Name',"
       },
       {
-        "lineNumber": 614,
-        "line": "   *       placeholder: 'Enter your last name',"
+        "lineNumber": 608,
+        "line": "   *       placeholder: 'Enter your first name.',"
       },
       {
-        "lineNumber": 615,
+        "lineNumber": 609,
         "line": "   *       input: true"
       },
       {
-        "lineNumber": 616,
+        "lineNumber": 610,
         "line": "   *     },"
       },
       {
-        "lineNumber": 617,
+        "lineNumber": 611,
         "line": "   *     {"
       },
       {
+        "lineNumber": 612,
+        "line": "   *       type: 'textfield',"
+      },
+      {
+        "lineNumber": 613,
+        "line": "   *       key: 'lastName',"
+      },
+      {
+        "lineNumber": 614,
+        "line": "   *       label: 'Last Name',"
+      },
+      {
+        "lineNumber": 615,
+        "line": "   *       placeholder: 'Enter your last name',"
+      },
+      {
+        "lineNumber": 616,
+        "line": "   *       input: true"
+      },
+      {
+        "lineNumber": 617,
+        "line": "   *     },"
+      },
+      {
         "lineNumber": 618,
-        "line": "   *       type: 'button',"
+        "line": "   *     {"
       },
       {
         "lineNumber": 619,
-        "line": "   *       action: 'submit',"
+        "line": "   *       type: 'button',"
       },
       {
         "lineNumber": 620,
-        "line": "   *       label: 'Submit',"
+        "line": "   *       action: 'submit',"
       },
       {
         "lineNumber": 621,
-        "line": "   *       theme: 'primary'"
+        "line": "   *       label: 'Submit',"
       },
       {
         "lineNumber": 622,
-        "line": "   *     }"
+        "line": "   *       theme: 'primary'"
       },
       {
         "lineNumber": 623,
-        "line": "   *   ]"
+        "line": "   *     }"
       },
       {
         "lineNumber": 624,
-        "line": "   * });"
+        "line": "   *   ]"
       },
       {
         "lineNumber": 625,
-        "line": "   *"
+        "line": "   * });"
       },
       {
         "lineNumber": 626,
-        "line": "   * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema."
+        "line": "   *"
       },
       {
         "lineNumber": 627,
-        "line": "   * @returns {*}"
+        "line": "   * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema."
       },
       {
         "lineNumber": 628,
-        "line": "   */"
+        "line": "   * @returns {*}"
       },
       {
         "lineNumber": 629,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 630,
         "line": "  setForm(form, flags) {"
       }
     ],
@@ -197,27 +197,27 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 788,
+        "lineNumber": 795,
         "line": "  /**"
       },
       {
-        "lineNumber": 789,
+        "lineNumber": 796,
         "line": "   * Restores a draft submission based on the user who is authenticated."
       },
       {
-        "lineNumber": 790,
+        "lineNumber": 797,
         "line": "   *"
       },
       {
-        "lineNumber": 791,
+        "lineNumber": 798,
         "line": "   * @param {userId} - The user id where we need to restore the draft from."
       },
       {
-        "lineNumber": 792,
+        "lineNumber": 799,
         "line": "   */"
       },
       {
-        "lineNumber": 793,
+        "lineNumber": 800,
         "line": "  restoreDraft(userId) {"
       }
     ],
@@ -233,31 +233,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1100,
+        "lineNumber": 1107,
         "line": "  /**"
       },
       {
-        "lineNumber": 1101,
+        "lineNumber": 1108,
         "line": "   * Show the errors of this form within the alert dialog."
       },
       {
-        "lineNumber": 1102,
+        "lineNumber": 1109,
         "line": "   *"
       },
       {
-        "lineNumber": 1103,
+        "lineNumber": 1110,
         "line": "   * @param {Object} error - An optional additional error to display along with the component errors."
       },
       {
-        "lineNumber": 1104,
+        "lineNumber": 1111,
         "line": "   * @returns {*}"
       },
       {
-        "lineNumber": 1105,
+        "lineNumber": 1112,
         "line": "   */"
       },
       {
-        "lineNumber": 1106,
+        "lineNumber": 1113,
         "line": "  showErrors(error, triggerEvent) {"
       }
     ],
@@ -274,31 +274,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1247,
+        "lineNumber": 1254,
         "line": "  /**"
       },
       {
-        "lineNumber": 1248,
+        "lineNumber": 1255,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 1249,
+        "lineNumber": 1256,
         "line": "   *"
       },
       {
-        "lineNumber": 1250,
+        "lineNumber": 1257,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 1251,
+        "lineNumber": 1258,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1252,
+        "lineNumber": 1259,
         "line": "   */"
       },
       {
-        "lineNumber": 1253,
+        "lineNumber": 1260,
         "line": "  onChange(flags, changed, modified, changes) {"
       }
     ],
@@ -318,87 +318,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1439,
+        "lineNumber": 1446,
         "line": "  /**"
       },
       {
-        "lineNumber": 1440,
+        "lineNumber": 1447,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1441,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1442,
-        "line": "   * @example"
-      },
-      {
-        "lineNumber": 1443,
-        "line": "   * import Webform from 'formiojs/Webform';"
-      },
-      {
-        "lineNumber": 1444,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
-      },
-      {
-        "lineNumber": 1445,
-        "line": "   * form.src = 'https://examples.form.io/example';"
-      },
-      {
-        "lineNumber": 1446,
-        "line": "   * form.submission = {data: {"
-      },
-      {
-        "lineNumber": 1447,
-        "line": "   *   firstName: 'Joe',"
-      },
-      {
         "lineNumber": 1448,
-        "line": "   *   lastName: 'Smith',"
+        "line": "   *"
       },
       {
         "lineNumber": 1449,
-        "line": "   *   email: 'joe@example.com'"
+        "line": "   * @example"
       },
       {
         "lineNumber": 1450,
-        "line": "   * }};"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 1451,
-        "line": "   * form.submit().then((submission) => {"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 1452,
-        "line": "   *   console.log(submission);"
+        "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
         "lineNumber": 1453,
-        "line": "   * });"
+        "line": "   * form.submission = {data: {"
       },
       {
         "lineNumber": 1454,
-        "line": "   *"
+        "line": "   *   firstName: 'Joe',"
       },
       {
         "lineNumber": 1455,
-        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+        "line": "   *   lastName: 'Smith',"
       },
       {
         "lineNumber": 1456,
-        "line": "   *"
+        "line": "   *   email: 'joe@example.com'"
       },
       {
         "lineNumber": 1457,
-        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+        "line": "   * }};"
       },
       {
         "lineNumber": 1458,
-        "line": "   */"
+        "line": "   * form.submit().then((submission) => {"
       },
       {
         "lineNumber": 1459,
+        "line": "   *   console.log(submission);"
+      },
+      {
+        "lineNumber": 1460,
+        "line": "   * });"
+      },
+      {
+        "lineNumber": 1461,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1462,
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+      },
+      {
+        "lineNumber": 1463,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1464,
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+      },
+      {
+        "lineNumber": 1465,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1466,
         "line": "  submit(before, options) {"
       }
     ],
@@ -964,31 +964,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2436,
+        "lineNumber": 2437,
         "line": "  /**"
       },
       {
-        "lineNumber": 2437,
+        "lineNumber": 2438,
         "line": "   * Performs calculations in this component plus any child components."
       },
       {
-        "lineNumber": 2438,
+        "lineNumber": 2439,
         "line": "   *"
       },
       {
-        "lineNumber": 2439,
+        "lineNumber": 2440,
         "line": "   * @param args"
       },
       {
-        "lineNumber": 2440,
+        "lineNumber": 2441,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 2441,
+        "lineNumber": 2442,
         "line": "   */"
       },
       {
-        "lineNumber": 2442,
+        "lineNumber": 2443,
         "line": "  calculateValue(data, flags, row) {"
       }
     ],
@@ -1006,35 +1006,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2477,
+        "lineNumber": 2478,
         "line": "  /**"
       },
       {
-        "lineNumber": 2478,
+        "lineNumber": 2479,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2479,
+        "lineNumber": 2480,
         "line": "   *"
       },
       {
-        "lineNumber": 2480,
+        "lineNumber": 2481,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2481,
+        "lineNumber": 2482,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2482,
+        "lineNumber": 2483,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2483,
+        "lineNumber": 2484,
         "line": "   */"
       },
       {
-        "lineNumber": 2484,
+        "lineNumber": 2485,
         "line": "  invalidMessage(data, dirty, ignoreCondition, row) {"
       }
     ],
@@ -1054,39 +1054,39 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2524,
+        "lineNumber": 2525,
         "line": "  /**"
       },
       {
-        "lineNumber": 2525,
+        "lineNumber": 2526,
         "line": "   * Checks the validity of this component and sets the error message if it is invalid."
       },
       {
-        "lineNumber": 2526,
+        "lineNumber": 2527,
         "line": "   *"
       },
       {
-        "lineNumber": 2527,
+        "lineNumber": 2528,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2528,
+        "lineNumber": 2529,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2529,
+        "lineNumber": 2530,
         "line": "   * @param row"
       },
       {
-        "lineNumber": 2530,
+        "lineNumber": 2531,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 2531,
+        "lineNumber": 2532,
         "line": "   */"
       },
       {
-        "lineNumber": 2532,
+        "lineNumber": 2533,
         "line": "  checkComponentValidity(data, dirty, row, options = {}) {"
       }
     ],
@@ -1107,43 +1107,43 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2558,
+        "lineNumber": 2559,
         "line": "  /**"
       },
       {
-        "lineNumber": 2559,
+        "lineNumber": 2560,
         "line": "   * Check the conditions, calculations, and validity of a single component and triggers an update if"
       },
       {
-        "lineNumber": 2560,
+        "lineNumber": 2561,
         "line": "   * something changed."
       },
       {
-        "lineNumber": 2561,
-        "line": "   *"
-      },
-      {
         "lineNumber": 2562,
-        "line": "   * @param data - The root data of the change event."
+        "line": "   *"
       },
       {
         "lineNumber": 2563,
-        "line": "   * @param flags - The flags from this change event."
+        "line": "   * @param data - The root data of the change event."
       },
       {
         "lineNumber": 2564,
-        "line": "   *"
+        "line": "   * @param flags - The flags from this change event."
       },
       {
         "lineNumber": 2565,
-        "line": "   * @return boolean - If component is valid or not."
+        "line": "   *"
       },
       {
         "lineNumber": 2566,
-        "line": "   */"
+        "line": "   * @return boolean - If component is valid or not."
       },
       {
         "lineNumber": 2567,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 2568,
         "line": "  checkData(data, flags, row) {"
       }
     ],

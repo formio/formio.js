@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.3-rc.4
+#### Fixed
+ - Allow non-truthy computed values (e.g. zero). #2945
+ - Fix (Wizard): display panel navigation buttons according to page options. #2934
+ - Add text overflow for long select items. #2911
+ - FJS-1009: Fixes an issue when a confirmation dialog is shown even if no values within the editing row were changed
+ - FJS-1002: Fixes an issue when components comparing by getter and property
+
+#### Added
+ - Add schema warning so that future schemas can be versioned. #2944
+
 ### 4.10.3-rc.3
 #### Fixed
  - Fixing a performance issue where a lot of buttons makes the form slow.

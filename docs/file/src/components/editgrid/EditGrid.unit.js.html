@@ -242,13 +242,11 @@
 
 import Harness from &apos;../../../test/harness&apos;;
 import EditGridComponent from &apos;./EditGrid&apos;;
-import { comp1, comp4 } from &apos;./fixtures&apos;;
+import { comp1, comp4, comp5, comp6 } from &apos;./fixtures&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
 import Webform from &apos;../../Webform&apos;;
 import { displayAsModalEditGrid } from &apos;../../../test/formtest&apos;;
-import comp5 from &apos;./fixtures/comp5&apos;;
-import comp6 from &apos;./fixtures/comp6&apos;;
 
 describe(&apos;EditGrid Component&apos;, () =&gt; {
   it(&apos;Should set correct values in dataMap inside editGrid and allow aditing them&apos;, (done) =&gt; {
@@ -671,6 +669,26 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
             }, 250);
           }, 250);
         }, 250);
+      }).catch(done);
+    });
+
+    it(&apos;Confirmation dialog shouldn\&apos;t occure if no values within the row are changed&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() =&gt; {
+        const component = form.components[0];
+        component.setValue([
+          { textField: &apos;v1&apos; }
+        ]);
+        setTimeout(() =&gt; {
+          component.editRow(0);
+          const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+          Harness.dispatchEvent(&apos;click&apos;, dialog, &apos;[ref=&quot;dialogClose&quot;]&apos;);
+          const confirmationDialog = document.querySelector(&apos;[ref=&quot;confirmationDialog&quot;]&apos;);
+          assert(!confirmationDialog, &apos;Shouldn\&apos;t open a confirmation dialog when no values were changed&apos;);
+          assert.equal(component.editRows[0].data.textField, &apos;v1&apos;, &apos;Data shouldn\&apos;t be changed&apos;);
+          done();
+        }, 150);
       }).catch(done);
     });
   });

@@ -240,6 +240,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Webform.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import moment from &apos;moment&apos;;
+import compareVersions from &apos;compare-versions&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import i18next from &apos;i18next&apos;;
 import Formio from &apos;./Formio&apos;;
@@ -874,6 +875,12 @@ export default class Webform extends NestedDataComponent {
     // Allow the form to provide component overrides.
     if (form &amp;&amp; form.settings &amp;&amp; form.settings.components) {
       this.options.components = form.settings.components;
+    }
+
+    if (&apos;schema&apos; in form &amp;&amp; compareVersions(form.schema, &apos;1.x&apos;) &gt; 0) {
+      this.ready.then(() =&gt; {
+        this.setAlert(&apos;alert alert-danger&apos;, &apos;Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.&apos;);
+      });
     }
 
     // See if they pass a module, and evaluate it if so.
