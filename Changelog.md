@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.3-rc.5
+#### Changed
+ - Reverted #2916: It was breaking removing components.
+ 
+#### Added
+ - VPAT-394/391 Added callbacks to further extension in VPAT
+ 
+#### Fixed
+ - Fix/validation error messages contain html chars. #2953
+ - Fix calculated value
+
 ### 4.10.3-rc.4
 #### Fixed
  - Allow non-truthy computed values (e.g. zero). #2945

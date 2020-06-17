@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -255,6 +256,7 @@ import {
   formWithAdvancedLogic,
   formWithPatternValidation,
   calculatedSelectboxes,
+  calculateZeroValue,
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
@@ -977,6 +979,34 @@ describe(&apos;Webform tests&apos;, () =&gt; {
         }
       }, 0, done);
     });
+  });
+
+  it(&apos;Should set calculated value correctly&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement);
+    form.setForm(calculateZeroValue).then(() =&gt; {
+      const a = form.components[0];
+      const b = form.components[1];
+      const sum = form.components[2];
+
+      a.setValue(10);
+      b.setValue(5);
+      setTimeout(() =&gt; {
+        assert.equal(a.dataValue, 10);
+        assert.equal(b.dataValue, 5);
+        assert.equal(sum.dataValue, 15);
+
+        a.setValue(&apos;0&apos;);
+        b.setValue(&apos;0&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(a.dataValue, 0);
+          assert.equal(b.dataValue,0);
+          assert.equal(sum.dataValue, 0);
+
+          done();
+        }, 250);
+      }, 250);
+    }).catch(done);
   });
 
   describe(&apos;set/get nosubmit&apos;, () =&gt; {

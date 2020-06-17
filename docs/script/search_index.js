@@ -1188,6 +1188,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~unescapehtml",
+    "function/index.html#static-function-unescapeHTML",
+    "<span>unescapeHTML</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~unfold",
     "function/index.html#static-function-unfold",
     "<span>unfold</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",

@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -247,7 +248,7 @@ import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
 import Formio from &apos;./Formio&apos;;
 import { fastCloneDeep, bootstrapVersion } from &apos;./utils/utils&apos;;
-import { eachComponent, getComponent, findComponent, removeComponent } from &apos;./utils/formUtils&apos;;
+import { eachComponent, getComponent } from &apos;./utils/formUtils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import _ from &apos;lodash&apos;;
 import Templates from &apos;./templates/Templates&apos;;
@@ -1134,14 +1135,13 @@ export default class WebformBuilder extends Component {
       remove = window.confirm(this.t(message));
     }
     if (!original) {
-      original = getComponent(parent.formioContainer, component.key, true);
+      original = parent.formioContainer.find((comp) =&gt; comp.key === component.key);
     }
     const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
-    const isOriginalInside = !parent.formioContainer.find((comp) =&gt; comp.id === component.id);
-    if (remove &amp;&amp; (index !== -1 || isOriginalInside)) {
+    if (remove &amp;&amp; index !== -1) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
       if (parent.formioContainer) {
-        findComponent(parent.formioContainer, original.key, null, (comp, path) =&gt; removeComponent(parent.formioContainer, path));
+        parent.formioContainer.splice(index, 1);
       }
       else if (parent.formioComponent &amp;&amp; parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
