@@ -897,11 +897,13 @@ export default class WebformBuilder extends Component {
       original = getComponent(parent.formioContainer, component.key, true);
     }
     const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
-    const isOriginalInside = !parent.formioContainer.find((comp) => comp.id === component.id);
+    const isOriginalInside = index === -1 && !parent.formioContainer.find((comp) => comp.id === component.id);
     if (remove && (index !== -1 || isOriginalInside)) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
       if (parent.formioContainer) {
-        findComponent(parent.formioContainer, original.key, null, (comp, path) => removeComponent(parent.formioContainer, path));
+        isOriginalInside
+          ? findComponent(parent.formioContainer, original.key, null, (comp, path) => removeComponent(parent.formioContainer, path))
+          : parent.formioContainer.splice(index, 1);
       }
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
