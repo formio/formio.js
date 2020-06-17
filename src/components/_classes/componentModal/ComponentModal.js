@@ -12,11 +12,11 @@ export default class ComponentModal {
     });
   }
 
-  constructor(component, modal, isOpened) {
+  constructor(component, modal, isOpened, currentValue) {
     this.isOpened = isOpened;
     this.component = component;
     this.modal = modal;
-    this.currentValue = this.component.dataValue;
+    this.currentValue = _.clone(currentValue);
     this.dataLoaded = false;
     this.init();
   }
@@ -34,7 +34,7 @@ export default class ComponentModal {
       return;
     }
 
-    this.currentValue = value;
+    this.currentValue = _.clone(value);
     this.dataLoaded = true;
     this.updateView();
   }
@@ -65,6 +65,11 @@ export default class ComponentModal {
   setEventListeners() {
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
     this.component.addEventListener(this.refs.modalOverlay, 'click', this.showDialog.bind(this));
+    this.component.addEventListener(this.refs.modalOverlay, 'click', () => {
+     if (!_.isEqual(this.component.getValue(), this.currentValue)) {
+      this.showDialog();
+     }
+    });
     this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalHandler.bind(this));
     this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalValueHandler.bind(this));
   }
@@ -141,7 +146,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = this.component.dataValue;
+    this.currentValue = _.clone(this.component.dataValue);
     this.closeModal();
   }
 }
