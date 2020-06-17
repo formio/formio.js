@@ -2,13 +2,11 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp4 } from './fixtures';
+import { comp1, comp4, comp5, comp6 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
-import comp5 from './fixtures/comp5';
-import comp6 from './fixtures/comp6';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -431,6 +429,26 @@ describe('EditGrid Component', () => {
             }, 250);
           }, 250);
         }, 250);
+      }).catch(done);
+    });
+
+    it('Confirmation dialog shouldn\'t occure if no values within the row are changed', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() => {
+        const component = form.components[0];
+        component.setValue([
+          { textField: 'v1' }
+        ]);
+        setTimeout(() => {
+          component.editRow(0);
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+          const confirmationDialog = document.querySelector('[ref="confirmationDialog"]');
+          assert(!confirmationDialog, 'Shouldn\'t open a confirmation dialog when no values were changed');
+          assert.equal(component.editRows[0].data.textField, 'v1', 'Data shouldn\'t be changed');
+          done();
+        }, 150);
       }).catch(done);
     });
   });
