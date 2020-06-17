@@ -6,7 +6,7 @@ import {
   getDateSetting,
   escapeRegExCharacters,
   interpolate,
-  convertFormatToMoment, getArrayFromComponentPath
+  convertFormatToMoment, getArrayFromComponentPath, unescapeHTML
 } from '../utils/utils';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
@@ -814,7 +814,7 @@ class ValidationChecker {
 
     const processResult = result => {
       return result ? {
-        message: _.get(result, 'message', result),
+        message: unescapeHTML(_.get(result, 'message', result)),
         level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
         path: getArrayFromComponentPath(component.path || ''),
         context: {
