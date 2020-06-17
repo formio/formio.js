@@ -122,8 +122,9 @@ export default class CalendarWidget extends InputWidget {
 
       this.emit('update');
     };
-
+    this.settings.onOpen = () => this.hooks('onCalendarOpen');
     this.settings.onClose = () => {
+      this.hooks('onCalendarClose');
       this.closedOn = Date.now();
 
       if (this.settings.allowInput && this.settings.enableTime) {
