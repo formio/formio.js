@@ -64,7 +64,6 @@ export default class ComponentModal {
 
   setEventListeners() {
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
-    this.component.addEventListener(this.refs.modalOverlay, 'click', this.showDialog.bind(this));
     this.component.addEventListener(this.refs.modalOverlay, 'click', () => {
      if (!_.isEqual(this.component.getValue(), this.currentValue)) {
       this.showDialog();
