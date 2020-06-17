@@ -4,7 +4,7 @@
 {% if (ctx.component.prefix) { %}
 <div class="input-group-prepend" ref="prefix">
   <span class="input-group-text">
-    {{ctx.component.prefix}}
+    {{ ctx.t(ctx.component.prefix) }}
   </span>
 </div>
 {% } %}
@@ -28,7 +28,7 @@
 {% if (ctx.component.suffix) { %}
 <div class="input-group-append" ref="suffix">
   <span class="input-group-text">
-    {{ctx.component.suffix}}
+    {{ ctx.t(ctx.component.suffix) }}
   </span>
 </div>
 {% } %}
