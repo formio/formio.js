@@ -552,37 +552,27 @@ export default class Wizard extends Webform {
     ]);
   }
 
-  hasButton(name, nextPage) {
-    const currentPage = this.currentPage;
-    if (name === 'previous') {
-      const show = firstNonNil([
-        _.get(currentPage, 'component.buttonSettings.previous'),
-        this.options.buttonSettings.showPrevious
-      ]);
-      return (this.getPreviousPage() > -1) && show;
+  hasButton(name, nextPage = this.getNextPage()) {
+    // get page options with global options as default values
+    const {
+      previous = this.options.buttonSettings.showPrevious,
+      cancel = this.options.buttonSettings.showCancel,
+      submit = this.options.buttonSettings.showSubmit,
+      next = this.options.buttonSettings.showNext
+    } = _.get(this.currentPage, 'component.buttonSettings');
+
+    switch (name) {
+      case 'previous':
+        return previous && (this.getPreviousPage() > -1);
+      case 'next':
+        return next && (nextPage !== null) && (nextPage !== -1);
+      case 'cancel':
+        return cancel;
+      case 'submit':
+        return submit && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
+      default:
+        return true;
     }
-    nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
-    if (name === 'next') {
-      const show = firstNonNil([
-        _.get(currentPage, 'component.buttonSettings.next'),
-        this.options.buttonSettings.showNext
-      ]);
-      return (nextPage !== null) && (nextPage !== -1) && show;
-    }
-    if (name === 'cancel') {
-      return firstNonNil([
-        _.get(currentPage, 'component.buttonSettings.cancel'),
-        this.options.buttonSettings.showCancel
-      ]);
-    }
-    if (name === 'submit') {
-      const show = firstNonNil([
-        _.get(currentPage, 'component.buttonSettings.submit'),
-        this.options.buttonSettings.showSubmit
-      ]);
-      return show && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
-    }
-    return true;
   }
 
   pageId(page) {
