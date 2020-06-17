@@ -109,8 +109,8 @@ export default class ComponentModal {
 
   closeModalHandler(event) {
     event.preventDefault();
-    this.component.setValue(this.currentValue);
     this.closeModal();
+    this.component.setValue(this.currentValue, { resetValue: true });
   }
 
   showDialog() {
