@@ -559,7 +559,7 @@ export default class Wizard extends Webform {
       cancel = this.options.buttonSettings.showCancel,
       submit = this.options.buttonSettings.showSubmit,
       next = this.options.buttonSettings.showNext
-    } = _.get(this.currentPage, 'component.buttonSettings');
+    } = _.get(this.currentPage, 'component.buttonSettings', {});
 
     switch (name) {
       case 'previous':
