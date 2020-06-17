@@ -454,7 +454,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.willBeSaved = false;
     const { components } = editRow;
     modalContent.innerHTML = this.renderComponents(components);
-    const dialog = this.component.modal ? this.createModal(modalContent, {}, () => this.showDialog()) : undefined;
+    const dialog = this.component.modal ? this.createModal(modalContent, {}, () => this.showDialog(rowIndex)) : undefined;
     if (this.alert) {
       this.alert.clear();
       this.alert = null;
@@ -488,7 +488,12 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.attachComponents(modalContent, components);
   }
 
-  showDialog() {
+  showDialog(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+    if (_.isEqual(editRow.backup, editRow.data)) {
+      return NativePromise.resolve();
+    }
+
     const wrapper = this.ce('div', { ref: 'confirmationDialog' });
     const dialogContent =this.component.dialogTemplate || this.defaultDialogTemplate;
 
