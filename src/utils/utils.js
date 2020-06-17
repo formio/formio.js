@@ -358,6 +358,16 @@ export function setActionProperty(component, action, result, row, data, instance
 }
 
 /**
+ * Unescape HTML characters like &lt, &gt, &amp and etc.
+ * @param str
+ * @returns {string}
+ */
+export function unescapeHTML(str) {
+  const doc = new DOMParser().parseFromString(str, 'text/html');
+  return doc.documentElement.textContent;
+}
+
+/**
  * Make a filename guaranteed to be unique.
  * @param name
  * @param template
