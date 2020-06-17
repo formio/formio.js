@@ -17,6 +17,7 @@ const formWithAdvancedLogic = require('./advancedLogicForm.json');
 const formWithPatternValidation = require('./patternValidation.json');
 const calculatedSelectboxes = require('./calculatedSelectboxes.json');
 const columnsForm = require('./columnsForm.json');
+const calculateZeroValue = require('./calculateZeroValue.json');
 
 module.exports = {
   advanced,
@@ -38,4 +39,5 @@ module.exports = {
   formWithPatternValidation,
   calculatedSelectboxes,
   columnsForm,
+  calculateZeroValue,
 };
