@@ -16,7 +16,7 @@ export default class ComponentModal {
     this.isOpened = isOpened;
     this.component = component;
     this.modal = modal;
-    this.currentValue = _.clone(currentValue);
+    this.currentValue = _.cloneDeep(currentValue);
     this.dataLoaded = false;
     this.init();
   }
@@ -34,7 +34,7 @@ export default class ComponentModal {
       return;
     }
 
-    this.currentValue = _.clone(value);
+    this.currentValue = _.cloneDeep(value);
     this.dataLoaded = true;
     this.updateView();
   }
@@ -65,12 +65,25 @@ export default class ComponentModal {
   setEventListeners() {
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
     this.component.addEventListener(this.refs.modalOverlay, 'click', () => {
-     if (!_.isEqual(this.component.getValue(), this.currentValue)) {
-      this.showDialog();
-     }
+      if (this.isValueChanged() && !this.component.disabled) {
+        this.showDialog();
+      }
     });
     this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalHandler.bind(this));
     this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalValueHandler.bind(this));
+  }
+
+  isValueChanged() {
+    let componentValue = this.component.getValue();
+    let currentValue = this.currentValue;
+
+    //excluding metadata comparison for components that have it in dataValue (for ex. nested forms)
+    if (componentValue && componentValue.data && componentValue.metadata) {
+      componentValue = this.component.getValue().data;
+      currentValue = this.currentValue.data;
+    }
+
+    return !_.isEqual(componentValue, currentValue);
   }
 
   setOpenEventListener() {
@@ -109,8 +122,10 @@ export default class ComponentModal {
   closeModalHandler(event) {
     event.preventDefault();
     this.closeModal();
-    this.component.setValue(this.currentValue, { resetValue: true });
-    this.component.redraw();
+    if (!this.component.disabled) {
+      this.component.setValue(this.currentValue, { resetValue: true });
+      this.component.redraw();
+    }
   }
 
   showDialog() {
@@ -146,7 +161,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = _.clone(this.component.dataValue);
+    this.currentValue = _.cloneDeep(this.component.dataValue);
     this.closeModal();
   }
 }
