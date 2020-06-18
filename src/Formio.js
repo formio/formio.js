@@ -1253,6 +1253,12 @@ export default class Formio {
         Formio.setUser(null, options);
         Formio.clearCache();
         return result;
+      })
+      .catch(function(err) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        throw err;
       });
   }
 
