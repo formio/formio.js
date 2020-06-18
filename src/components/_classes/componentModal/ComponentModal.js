@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { fastCloneDeep } from '../../../utils/utils';
 
 export default class ComponentModal {
   static render(component, data, topLevel) {
@@ -16,7 +17,7 @@ export default class ComponentModal {
     this.isOpened = isOpened;
     this.component = component;
     this.modal = modal;
-    this.currentValue = _.cloneDeep(currentValue);
+    this.currentValue = fastCloneDeep(currentValue);
     this.dataLoaded = false;
     this.init();
   }
@@ -34,7 +35,7 @@ export default class ComponentModal {
       return;
     }
 
-    this.currentValue = _.cloneDeep(value);
+    this.currentValue = fastCloneDeep(value);
     this.dataLoaded = true;
     this.updateView();
   }
@@ -161,7 +162,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = _.cloneDeep(this.component.dataValue);
+    this.currentValue = fastCloneDeep(this.component.dataValue);
     this.closeModal();
   }
 }
