@@ -600,11 +600,13 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   saveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
     if (this.options.readOnly) {
+      editRow.state = EditRowState.Saved;
       return;
     }
 
-    const editRow = this.editRows[rowIndex];
     const isRowValid = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
