@@ -51,7 +51,6 @@ class ChoicesWrapper extends Choices {
 
     this._onTabKey = this._onTabKey.bind(this);
     this.isDirectionUsing = false;
-    this.shouldOpenDropDown = true;
   }
 
   _handleButtonAction(activeItems, element) {
@@ -68,7 +67,6 @@ class ChoicesWrapper extends Choices {
       return;
     }
 
-    this.shouldOpenDropDown = true;
     super._handleButtonAction(activeItems, element);
   }
 
@@ -184,11 +182,6 @@ class ChoicesWrapper extends Choices {
   }
 
   showDropdown(...args) {
-    if (!this.shouldOpenDropDown) {
-      this.shouldOpenDropDown = true;
-      return;
-    }
-
     super.showDropdown(...args);
   }
 
