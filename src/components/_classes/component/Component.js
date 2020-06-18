@@ -2577,7 +2577,7 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data, flags, row);
+    const calcChanged = this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
     if (flags.noValidate && !flags.validateOnInit) {
       return true;
@@ -2589,6 +2589,13 @@ export default class Component extends Element {
       !this.options.preview &&
       !this.isEmpty(this.defaultValue) &&
       this.isEqual(this.defaultValue, this.dataValue);
+
+    // We want to always validate calculated values...
+    //  .. unless they haven't recently changed, and are NaN, which is frequently the case when the form is empty.
+    if (this.calculatedValue !== undefined && !(Number.isNaN(this.calculatedValue) && !calcChanged)) {
+      // debugger;
+      isDirty = true;
+    }
 
     // We need to set dirty if they explicitly set noValidate to false.
     if (this.options.alwaysDirty || flags.dirty) {
