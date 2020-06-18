@@ -770,6 +770,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
     let rowsValid = true;
     let rowsEditing = false;
     this.editRows.forEach((editRow) => {
