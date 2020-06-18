@@ -68,7 +68,6 @@ class ChoicesWrapper extends Choices {
       return;
     }
 
-    this.shouldOpenDropDown = false;
     super._handleButtonAction(activeItems, element);
   }
 
