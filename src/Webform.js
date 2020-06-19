@@ -280,11 +280,11 @@ export default class Webform extends NestedDataComponent {
   set language(lang) {
     return new NativePromise((resolve, reject) => {
       this.options.language = lang;
-      if (i18next.language === lang) {
+      if (this.i18next.language === lang) {
         return resolve();
       }
       try {
-        i18next.changeLanguage(lang, (err) => {
+        this.i18next.changeLanguage(lang, (err) => {
           if (err) {
             return reject(err);
           }
@@ -308,7 +308,7 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    i18next.addResourceBundle(code, 'translation', lang, true, true);
+    this.i18next.addResourceBundle(code, 'translation', lang, true, true);
     if (active) {
       this.language = code;
     }
@@ -319,19 +319,19 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   localize() {
-    if (i18next.initialized) {
-      return NativePromise.resolve(i18next);
+    if (this.i18next.initialized) {
+      return NativePromise.resolve(this.i18next);
     }
-    i18next.initialized = true;
+    this.i18next.initialized = true;
     return new NativePromise((resolve, reject) => {
       try {
-        i18next.init(this.options.i18n, (err) => {
+        this.i18next.init(this.options.i18n, (err) => {
           // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = i18next.language.split(';')[0];
+          this.options.language = this.i18next.language.split(';')[0];
           if (err) {
             return reject(err);
           }
-          resolve(i18next);
+          resolve(this.i18next);
         });
       }
       catch (err) {
