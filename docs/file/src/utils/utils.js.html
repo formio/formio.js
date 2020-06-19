@@ -604,11 +604,11 @@ export function setActionProperty(component, action, result, row, data, instance
  * @returns {string}
  */
 export function unescapeHTML(str) {
-  if (!global.window) {
+  if (typeof window === &apos;undefined&apos;) {
     return str;
   }
 
-  const doc = new global.window.DOMParser().parseFromString(str, &apos;text/html&apos;);
+  const doc = new window.DOMParser().parseFromString(str, &apos;text/html&apos;);
   return doc.documentElement.textContent;
 }
 

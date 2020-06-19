@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.4
+#### Fixed
+ - Issue with angular-formio throwing an error saying "global" is not defined.
+
 ### 4.10.3
 #### Changed
  - No changes.
