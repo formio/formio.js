@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.3
+#### Changed
+ - No changes.
+
 ### 4.10.3-rc.6
 #### Fixed
  - FJS-1019: fixed dateTime calendar opening problem
