@@ -60,7 +60,7 @@ describe('DataGrid Component', () => {
         const dataGridInputField = component.element.querySelector('[name="data[dataGrid][0][number]"]');
 
         dataGridInputField.value = 55555;
-         //input value in dataGrid filed inside modal edit window
+        //input value in dataGrid field inside modal edit window
         dataGridInputField.dispatchEvent(inputEvent);
 
         setTimeout(() => {
@@ -77,7 +77,7 @@ describe('DataGrid Component', () => {
 
             const clickEvent = new Event('click');
             const btnForCleaningValues = document.querySelector('[ref="dialogYesButton"]');
-            //click on 'yes, delet it' button inside alert window
+            //click on 'yes, delete it' button inside alert window
             btnForCleaningValues.dispatchEvent(clickEvent);
 
             setTimeout(() => {
