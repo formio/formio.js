@@ -935,14 +935,13 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    const template = this.getModalPreviewTemplate();
-    this.componentModal.setOpenModalElement(template);
+    this.componentModal.setOpenModalElement(this.getModalPreviewTemplate());
   }
 
   getModalPreviewTemplate() {
-    return `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || this.t('Click to set value')}</button>`;
+    return this.renderTemplate('modalPreview', {
+      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+    });
   }
 
   build(element) {
@@ -952,6 +951,10 @@ export default class Component extends Element {
     return this.attach(element);
   }
 
+  get hasModalSaveButton() {
+    return true;
+  }
+
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
@@ -959,6 +962,7 @@ export default class Component extends Element {
     if (!this.builderMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
+        showSaveButton: this.hasModalSaveButton,
         id: this.id,
         classes: this.className,
         styles: this.customStyle,
@@ -1438,7 +1442,7 @@ export default class Component extends Element {
       // Return a non-resolving promise.
       return NativePromise.resolve();
     }
-    this.clear();
+    this.detach();
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
