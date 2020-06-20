@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { fastCloneDeep } from '../../../utils/utils';
 
 export default class ComponentModal {
   static render(component, data, topLevel) {
@@ -12,11 +13,11 @@ export default class ComponentModal {
     });
   }
 
-  constructor(component, modal, isOpened) {
+  constructor(component, modal, isOpened, currentValue) {
     this.isOpened = isOpened;
     this.component = component;
     this.modal = modal;
-    this.currentValue = this.component.dataValue;
+    this.currentValue = fastCloneDeep(currentValue);
     this.dataLoaded = false;
     this.init();
   }
@@ -34,7 +35,7 @@ export default class ComponentModal {
       return;
     }
 
-    this.currentValue = value;
+    this.currentValue = fastCloneDeep(value);
     this.dataLoaded = true;
     this.updateView();
   }
@@ -64,9 +65,26 @@ export default class ComponentModal {
 
   setEventListeners() {
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
-    this.component.addEventListener(this.refs.modalOverlay, 'click', this.showDialog.bind(this));
+    this.component.addEventListener(this.refs.modalOverlay, 'click', () => {
+      if (this.isValueChanged() && !this.component.disabled) {
+        this.showDialog();
+      }
+    });
     this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalHandler.bind(this));
     this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalValueHandler.bind(this));
+  }
+
+  isValueChanged() {
+    let componentValue = this.component.getValue();
+    let currentValue = this.currentValue;
+
+    //excluding metadata comparison for components that have it in dataValue (for ex. nested forms)
+    if (componentValue && componentValue.data && componentValue.metadata) {
+      componentValue = this.component.getValue().data;
+      currentValue = this.currentValue.data;
+    }
+
+    return !_.isEqual(componentValue, currentValue);
   }
 
   setOpenEventListener() {
@@ -104,14 +122,17 @@ export default class ComponentModal {
 
   closeModalHandler(event) {
     event.preventDefault();
-    this.component.setValue(this.currentValue);
     this.closeModal();
+    if (!this.component.disabled) {
+      this.component.setValue(this.currentValue, { resetValue: true });
+      this.component.redraw();
+    }
   }
 
   showDialog() {
     const wrapper = this.component.ce('div');
     const dialogContent = `
-      <h3 ref="dialogHeader">${this.component.t('Do you want to clear data?')}</h3>
+      <h3 ref="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
       <div style="display:flex; justify-content: flex-end;">
         <button ref="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
         <button ref="dialogYesButton" class="btn btn-primary">${this.component.t('Yes, delete it')}</button>
@@ -141,7 +162,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = this.component.dataValue;
+    this.currentValue = fastCloneDeep(this.component.dataValue);
     this.closeModal();
   }
 }
