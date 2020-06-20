@@ -17,12 +17,34 @@ import {
   formWithPatternValidation,
   calculatedSelectboxes,
   calculateZeroValue,
+  formWithConditionalLogic
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  it(`Should show field only in container where radio component has 'yes' value when containers contain radio 
+  components with the same key`, function(done) {
+    const formElement = document.createElement('div');
+    const formWithCondition = new Webform(formElement);
+
+    formWithCondition.setForm(formWithConditionalLogic).then(() => {
+      Harness.clickElement(formWithCondition, formWithCondition.element.querySelector('.formio-component-container1').querySelector('[value="yes"]'));
+
+      setTimeout(() => {
+        const conditionalFieldInContainer1 = formWithCondition.element.querySelector('[name="data[container1][textField]"]');
+        const conditionalFieldInContainer2 = formWithCondition.element.querySelector('[name="data[container2][textField]"]');
+
+        assert.equal(!!conditionalFieldInContainer1, true);
+        assert.equal(!!conditionalFieldInContainer2, false);
+
+        done();
+      }, 400);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
     const formElement = document.createElement('div');
     const formWithPattern = new Webform(formElement);

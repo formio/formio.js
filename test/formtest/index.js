@@ -14,6 +14,7 @@ const validationOnBlur = require('./validationOnBlur.json');
 const calculateValueWithManualOverride = require('./calculateValueWithManualOverride.json');
 const displayAsModalEditGrid = require('./displayAsModalEditGrid.json');
 const formWithAdvancedLogic = require('./advancedLogicForm.json');
+const formWithConditionalLogic = require('./conditionalLogicForm.json');
 const formWithPatternValidation = require('./patternValidation.json');
 const calculatedSelectboxes = require('./calculatedSelectboxes.json');
 const columnsForm = require('./columnsForm.json');
@@ -40,4 +41,5 @@ module.exports = {
   calculatedSelectboxes,
   columnsForm,
   calculateZeroValue,
+  formWithConditionalLogic
 };
