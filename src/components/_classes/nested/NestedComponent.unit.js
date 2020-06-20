@@ -4,7 +4,7 @@ import Harness from '../../../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 import { expect } from 'chai';
-import { comp1, comp2 } from './fixtures';
+import { comp1, comp2, comp3 } from './fixtures';
 import { nestedForm } from '../../../../test/fixtures';
 import _map from 'lodash/map';
 import Webform from '../../../Webform';
@@ -304,6 +304,28 @@ describe('NestedComponent class', () => {
           done();
         })
         .catch(done);
+    });
+  });
+
+  describe('render value as String', () => {
+    it('Should render a Select\'s value template', (done) => {
+      Harness.testCreate(NestedComponent, comp3)
+      .then((nested) => {
+        const editGrid = nested.components[0];
+        editGrid.addRow();
+        editGrid.editRows[0].components[0].setValue(2);
+        setTimeout(() => {
+          editGrid.saveRow(0);
+          setTimeout(() => {
+            assert.equal(editGrid.dataValue[0].select, 2);
+            const rowContent = editGrid.element.querySelector('[ref="editgrid-editGrid-row"] .row .col-sm-2 span');
+            assert(rowContent);
+            assert.equal(rowContent.textContent, 'Banana');
+            done();
+          }, 250);
+        }, 250);
+      })
+      .catch(done);
     });
   });
 });
