@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 import each from 'lodash/each';
+import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
@@ -16,12 +17,34 @@ import {
   formWithPatternValidation,
   calculatedSelectboxes,
   calculateZeroValue,
+  formWithConditionalLogic
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  it(`Should show field only in container where radio component has 'yes' value when containers contain radio 
+  components with the same key`, function(done) {
+    const formElement = document.createElement('div');
+    const formWithCondition = new Webform(formElement);
+
+    formWithCondition.setForm(formWithConditionalLogic).then(() => {
+      Harness.clickElement(formWithCondition, formWithCondition.element.querySelector('.formio-component-container1').querySelector('[value="yes"]'));
+
+      setTimeout(() => {
+        const conditionalFieldInContainer1 = formWithCondition.element.querySelector('[name="data[container1][textField]"]');
+        const conditionalFieldInContainer2 = formWithCondition.element.querySelector('[name="data[container2][textField]"]');
+
+        assert.equal(!!conditionalFieldInContainer1, true);
+        assert.equal(!!conditionalFieldInContainer2, false);
+
+        done();
+      }, 400);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
     const formElement = document.createElement('div');
     const formWithPattern = new Webform(formElement);
@@ -395,6 +418,44 @@ describe('Webform tests', () => {
     simpleForm.submit().then((submission) => {
       assert.deepEqual(submission.data, { name: 'noname' });
       done();
+    });
+  });
+
+  it('Should not mutate the global i18next if it gets an instance', async function() {
+    await i18next.init({ lng: 'en' });
+    const instance = i18next.createInstance();
+
+    const formElement = document.createElement('div');
+    const translateForm = new Webform(formElement, {
+      template: 'bootstrap3',
+      language: 'es',
+      i18next: instance,
+      i18n: {
+        es: {
+          'Default Label': 'Spanish Label'
+        }
+      }
+    });
+
+    return translateForm.setForm({
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    }).then(() => {
+      assert.equal(i18next.language, 'en');
+      assert.equal(translateForm.i18next.language, 'es');
+      assert.equal(translateForm.i18next, instance);
+
+      const label = formElement.querySelector('.control-label');
+      assert.equal(label.innerHTML.trim(), 'Spanish Label');
     });
   });
 

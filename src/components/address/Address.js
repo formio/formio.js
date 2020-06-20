@@ -439,7 +439,7 @@ export default class AddressComponent extends ContainerComponent {
             });
 
             if (element) {
-              element.value = this.getDisplayValue(this.address[index]);
+              element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
             }
 
             this.updateRemoveIcon(index);
@@ -452,7 +452,7 @@ export default class AddressComponent extends ContainerComponent {
           }
 
           if (element.value) {
-            element.value = this.getDisplayValue(this.address[index]);
+            element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
           }
         });
 
@@ -571,14 +571,14 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   validateMultiple() {
-    // Address component can't be multivalue.
     return this.isMultiple;
   }
 
   updateRemoveIcon(index) {
     const removeValueIcon = this.removeValueIcon?.[index];
     if (removeValueIcon) {
-      if (this.isEmpty(this.address[index]) || this.disabled) {
+      const value = this.isMultiple ? this.address[index] : this.address;
+      if (this.isEmpty(value) || this.disabled) {
         this.addClass(removeValueIcon, RemoveValueIconHiddenClass);
       }
       else {

@@ -976,7 +976,7 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken ? Formio.tokens.formioToken : '';
+    return Formio.tokens.formioToken || '';
   }
 
   // Needed to maintain reverse compatability...
@@ -985,22 +985,18 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken = token || '';
+    Formio.tokens.formioToken = token || '';
   }
 
   static setToken(token = '', opts) {
     token = token || '';
     opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
-    var tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
+    const tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
+
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
 
-    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] === token) {
-      return;
-    }
-
-    Formio.tokens[tokenName] = token;
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1008,20 +1004,27 @@ export default class Formio {
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(tokenName);
+        localStorage.removeItem(tokenName);
       }
       catch (err) {
-        return cookies.erase(tokenName, { path: '/' });
+        cookies.erase(tokenName, { path: '/' });
+      }
+      return Promise.resolve(null);
+    }
+
+    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] !== token) {
+      // Update the modified token value
+      Formio.tokens[tokenName] = token;
+      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+      try {
+        localStorage.setItem(tokenName, token);
+      }
+      catch (err) {
+        cookies.set(tokenName, token, { path: '/' });
       }
     }
-    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
-    try {
-      localStorage.setItem(tokenName, token);
-    }
-    catch (err) {
-      cookies.set(tokenName, token, { path: '/' });
-    }
-    return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null
+    // Return or updates the current user
+    return Formio.currentUser(opts.formio, opts);
   }
 
   static getToken(options) {
@@ -1253,6 +1256,12 @@ export default class Formio {
         Formio.setUser(null, options);
         Formio.clearCache();
         return result;
+      })
+      .catch(function(err) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        throw err;
       });
   }
 

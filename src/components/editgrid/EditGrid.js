@@ -600,11 +600,13 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   saveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
     if (this.options.readOnly) {
+      editRow.state = EditRowState.Saved;
       return;
     }
 
-    const editRow = this.editRows[rowIndex];
     const isRowValid = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
@@ -770,6 +772,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
     let rowsValid = true;
     let rowsEditing = false;
     this.editRows.forEach((editRow) => {
@@ -842,7 +848,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);
     this.checkData();
-    if (changed) {
+    if (changed || flags.resetValue) {
       this.rebuild();
     }
     return changed;
