@@ -79,7 +79,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
         component.key &&
         !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
         (
-          ['datagrid', 'container', 'editgrid'].includes(component.type) ||
+          ['datagrid', 'container', 'editgrid', 'address'].includes(component.type) ||
           component.tree
         )
       ) {
