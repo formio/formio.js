@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 import each from 'lodash/each';
+import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
@@ -395,6 +396,44 @@ describe('Webform tests', () => {
     simpleForm.submit().then((submission) => {
       assert.deepEqual(submission.data, { name: 'noname' });
       done();
+    });
+  });
+
+  it('Should not mutate the global i18next if it gets an instance', async function() {
+    await i18next.init({ lng: 'en' });
+    const instance = i18next.createInstance();
+
+    const formElement = document.createElement('div');
+    const translateForm = new Webform(formElement, {
+      template: 'bootstrap3',
+      language: 'es',
+      i18next: instance,
+      i18n: {
+        es: {
+          'Default Label': 'Spanish Label'
+        }
+      }
+    });
+
+    return translateForm.setForm({
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    }).then(() => {
+      assert.equal(i18next.language, 'en');
+      assert.equal(translateForm.i18next.language, 'es');
+      assert.equal(translateForm.i18next, instance);
+
+      const label = formElement.querySelector('.control-label');
+      assert.equal(label.innerHTML.trim(), 'Spanish Label');
     });
   });
 
