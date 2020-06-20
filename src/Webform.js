@@ -959,7 +959,11 @@ export default class Webform extends NestedDataComponent {
   }
 
   getClassName() {
-    return 'formio-form';
+    let classes = 'formio-form';
+    if (this.options.readOnly) {
+      classes += ' formio-read-only';
+    }
+    return classes;
   }
 
   render() {
