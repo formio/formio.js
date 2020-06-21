@@ -128,7 +128,7 @@ export default class PDFBuilder extends WebformBuilder {
         'hiddenFileInputElement': 'single',
         'uploadError': 'single',
       });
-      this.addEventListener(this.refs['pdf-upload-button'], 'click',(event) => {
+      this.addEventListener(this.refs['pdf-upload-button'], 'click', (event) => {
         event.preventDefault();
       });
 
@@ -293,7 +293,7 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.width
         };
 
-        if (!this.options.noNewEdit) {
+        if (!this.options.noNewEdit && !component.component.noNewModal) {
           this.editComponent(component.component, this.webform.iframeElement);
         }
         this.emit('updateComponent', component.component);
@@ -369,7 +369,7 @@ export default class PDFBuilder extends WebformBuilder {
         this.removeEventListener(el, 'dragstart');
         this.removeEventListener(el, 'dragend');
         this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
-        this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+        this.addEventListener(el, 'dragend', this.onDragEnd.bind(this), true);
         this.addEventListener(el, 'drag', (e) => {
           e.target.style.cursor = 'none';
         });
@@ -384,7 +384,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     const iframeRect = getElementRect(this.webform.refs.iframeContainer);
     this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';
-    this.refs.iframeDropzone.style.width  = iframeRect && iframeRect.width  ? `${iframeRect.width }px` : '100%';
+    this.refs.iframeDropzone.style.width = iframeRect && iframeRect.width ? `${iframeRect.width}px` : '100%';
   }
 
   onDragStart(e) {
@@ -444,7 +444,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: 'addElement', data: schema });
 
-    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit);
+    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit && !schema.noNewModal);
 
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
