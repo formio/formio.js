@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.5-rc.2
+#### Fixed
+ - FJS-1021: fixed the issue where it is possible to override calculated value when 'Allow manual override' setting is not set
+ - FJS-1014: Fixed an issue where Required fields are validating when form is initialized when using a form in FormManager
+ - Fix select dropdown does not open on first click after value clear
+
 ### 4.10.5-rc.1
 #### Changed
  - added consistent return for setToken #2958

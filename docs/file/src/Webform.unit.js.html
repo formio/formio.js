@@ -258,13 +258,52 @@ import {
   formWithPatternValidation,
   calculatedSelectboxes,
   calculateZeroValue,
-  formWithConditionalLogic
+  formWithConditionalLogic,
+  formWithCalculatedValueWithoutOverriding
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
 describe(&apos;Webform tests&apos;, () =&gt; {
+  it(&apos;Should not override calculated value&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithCalculatedAmount = new Webform(formElement);
+
+    formWithCalculatedAmount.setForm(formWithCalculatedValueWithoutOverriding).then(() =&gt; {
+      const inputEvent = new Event(&apos;input&apos;);
+
+      const amountInput1 = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[amount1]&quot;]&apos;);
+      const amountInput2 = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[amount2]&quot;]&apos;);
+
+      amountInput1.value = 6;
+      amountInput2.value = 4;
+
+      amountInput1.dispatchEvent(inputEvent);
+      amountInput2.dispatchEvent(inputEvent);
+
+      setTimeout(() =&gt; {
+        const totalAmountInput = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[currency]&quot;]&apos;);
+        //checking if the value was calculated correctly
+        assert.equal(totalAmountInput.value, &apos;$10.00&apos;);
+
+        const inputEvent = new Event(&apos;input&apos;);
+        //trying to override calculated value
+        totalAmountInput.value =  55;
+        totalAmountInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          const totalAmountInput = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[currency]&quot;]&apos;);
+          //checking if the value was overridden
+          assert.equal(totalAmountInput.value, &apos;$10.00&apos;);
+
+          done();
+        }, 400);
+      }, 300);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(`Should show field only in container where radio component has &apos;yes&apos; value when containers contain radio 
   components with the same key`, function(done) {
     const formElement = document.createElement(&apos;div&apos;);

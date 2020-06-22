@@ -984,7 +984,7 @@ export default class Webform extends NestedDataComponent {
   setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
-      fromSubmission: true,
+      fromSubmission: _.has(flags, &apos;fromSubmission&apos;) ? flags.fromSubmission : true,
     };
     return this.onSubmission = this.formReady.then(
       (resolveFlags) =&gt; {

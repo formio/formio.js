@@ -15102,6 +15102,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/utils/choiceswrapper.js~choiceswrapper#_onenterkey",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onEnterKey",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onEnterKey",
+    "method"
+  ],
+  [
     "src/utils/choiceswrapper.js~choiceswrapper#_onkeydown",
     "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onKeyDown",
     "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onKeyDown",
