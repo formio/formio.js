@@ -359,7 +359,7 @@ export default class ButtonComponent extends Field {
         this.disabled = true;
       }, true);
       this.on(&apos;submitDone&apos;, (message) =&gt; {
-        const resultMessage = message || this.t(&apos;complete&apos;);
+        const resultMessage = _.isString(message) ? message : this.t(&apos;complete&apos;);
         this.loading = false;
         this.disabled = false;
         this.addClass(this.refs.button, &apos;btn-success submit-success&apos;);
@@ -369,7 +369,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on(&apos;submitError&apos;, (message) =&gt; {
-        const resultMessage = message || this.t(this.errorMessage(&apos;error&apos;));
+        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage(&apos;error&apos;));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
