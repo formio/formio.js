@@ -23,12 +23,5 @@ export default class Input extends Multivalue {
     updateValueAt(value: any, flags: any, index: any): void;
     parseValue(value: any): any;
     formatValue(value: any): any;
-    getWidget(index: any): any;
-    /**
-     * Creates an instance of a widget for this component.
-     *
-     * @return {null}
-     */
-    createWidget(index: any): null;
 }
 import Multivalue from "../multivalue/Multivalue";

@@ -331,10 +331,7 @@ describe('Webform tests', () => {
           "tableView": true,
           "type": "textfield",
           "input": true,
-          "key": "name",
-          "widget": {
-            "type": ""
-          }
+          "key": "name"
         },
         {
           "label": "Age",

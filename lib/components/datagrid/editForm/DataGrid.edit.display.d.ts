@@ -7,7 +7,6 @@ declare var _default: ({
     weight?: undefined;
     input?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     placeholder?: undefined;
     editor?: undefined;
     as?: undefined;
@@ -68,7 +67,6 @@ declare var _default: ({
     };
     ignore?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     dataSrc?: undefined;
     defaultValue?: undefined;
     data?: undefined;
@@ -91,7 +89,6 @@ declare var _default: ({
     ignore?: undefined;
     tooltip?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     placeholder?: undefined;
     editor?: undefined;
     as?: undefined;
@@ -120,7 +117,6 @@ declare var _default: ({
     customConditional(context: any): boolean;
     ignore?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     editor?: undefined;
     as?: undefined;
     wysiwyg?: undefined;
@@ -155,7 +151,6 @@ declare var _default: ({
     customConditional(context: any): boolean;
     ignore?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     placeholder?: undefined;
     editor?: undefined;
     as?: undefined;
@@ -179,7 +174,6 @@ declare var _default: ({
     input: boolean;
     ignore?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     placeholder?: undefined;
     editor?: undefined;
     as?: undefined;
@@ -220,9 +214,6 @@ declare var _default: ({
         type: string;
         input: boolean;
         key: string;
-        widget: {
-            type: string;
-        };
         row: string;
         mask?: undefined;
     } | {
@@ -237,7 +228,6 @@ declare var _default: ({
         allowMultipleMasks?: undefined;
         showWordCount?: undefined;
         showCharCount?: undefined;
-        widget?: undefined;
     })[];
     weight: number;
     conditional: {
@@ -248,7 +238,6 @@ declare var _default: ({
     ignore?: undefined;
     tooltip?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     placeholder?: undefined;
     editor?: undefined;
     as?: undefined;
@@ -270,7 +259,6 @@ declare var _default: ({
     ignore?: undefined;
     tooltip?: undefined;
     clearOnHide?: undefined;
-    calculateValue?: undefined;
     placeholder?: undefined;
     editor?: undefined;
     as?: undefined;

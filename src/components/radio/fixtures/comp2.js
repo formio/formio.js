@@ -72,7 +72,6 @@ export default {
     'multiple': false,
     'unique': false,
     'refreshOn': '',
-    'widget': null,
     'validateOn': 'change',
     'showCharCount': false,
     'showWordCount': false,

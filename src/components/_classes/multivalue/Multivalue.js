@@ -108,9 +108,6 @@ export default class Multivalue extends Field {
         if (input.mask) {
           input.mask.destroy();
         }
-        if (input.widget) {
-          input.widget.destroy();
-        }
       });
     }
     if (this.refs.mask && this.refs.mask.length) {

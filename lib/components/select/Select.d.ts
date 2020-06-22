@@ -58,7 +58,7 @@ export default class SelectComponent extends Field {
     /**
      * Get the request headers for this select dropdown.
      */
-    get requestHeaders(): any;
+    get requestHeaders(): Headers;
     getCustomItems(): any;
     getVariableItems(): any;
     updateCustomItems(): void;

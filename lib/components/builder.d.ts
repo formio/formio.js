@@ -69,9 +69,6 @@ declare namespace Components {
     export namespace recaptcha {
         export { ReCaptchaForm as editForm };
     }
-    export namespace resource {
-        export { ResourceForm as editForm };
-    }
     export namespace select {
         export { SelectForm as editForm };
     }
@@ -139,7 +136,6 @@ import PasswordForm from "./password/Password.form";
 import PhoneNumberForm from "./phonenumber/PhoneNumber.form";
 import RadioForm from "./radio/Radio.form";
 import ReCaptchaForm from "./recaptcha/ReCaptcha.form";
-import ResourceForm from "./resource/Resource.form";
 import SelectForm from "./select/Select.form";
 import SelectboxesForm from "./selectboxes/SelectBoxes.form";
 import SignatureForm from "./signature/Signature.form";

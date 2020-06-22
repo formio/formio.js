@@ -30,7 +30,6 @@ declare var _default: {
     phoneNumber: typeof PhoneNumberComponent;
     radio: typeof RadioComponent;
     recaptcha: typeof ReCaptchaComponent;
-    resource: typeof ResourceComponent;
     select: typeof SelectComponent;
     selectboxes: typeof SelectBoxesComponent;
     signature: typeof SignatureComponent;
@@ -77,7 +76,6 @@ import PasswordComponent from "./password/Password";
 import PhoneNumberComponent from "./phonenumber/PhoneNumber";
 import RadioComponent from "./radio/Radio";
 import ReCaptchaComponent from "./recaptcha/ReCaptcha";
-import ResourceComponent from "./resource/Resource";
 import SelectComponent from "./select/Select";
 import SelectBoxesComponent from "./selectboxes/SelectBoxes";
 import SignatureComponent from "./signature/Signature";

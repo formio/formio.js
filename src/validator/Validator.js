@@ -38,12 +38,6 @@ class ValidationChecker {
             return true;
           }
 
-          const isCalendar = component.validators.some(validator => validator === 'calendar');
-
-          if (!value && isCalendar && component.widget.enteredDate) {
-            return !this.validators.calendar.check.call(this, component, setting, value);
-          }
-
           return !component.isEmpty(value);
         }
       },
@@ -721,11 +715,11 @@ class ValidationChecker {
         },
         check(component, setting, value, data, index) {
           this.validators.calendar.messageText = '';
-          const widget = component.getWidget(index);
-          if (!widget) {
+          const calendar = component.calendars[index];
+          if (!calendar) {
             return true;
           }
-          const { settings, enteredDate } = widget;
+          const { settings, enteredDate } = calendar;
           const { minDate, maxDate, format } = settings;
           const momentFormat = [convertFormatToMoment(format)];
 
@@ -748,7 +742,7 @@ class ValidationChecker {
               return false;
             }
             else {
-              widget.enteredDate = '';
+              calendar.enteredDate = '';
               return true;
             }
           }

@@ -60,6 +60,7 @@ export class Form extends Base {
     };
     setForm(formParam: any): any;
     _form: any;
+    prepareForm(form: any): any;
     getSubmission(formio: any): any;
     /**
      * Changes the display of the form.

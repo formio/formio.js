@@ -58,9 +58,6 @@ export default {
           customDefaultValue: '',
           calculateValue: '',
           calculateServer: false,
-          widget: {
-            type: 'input'
-          },
           attributes: {},
           validateOn: 'change',
           conditional: {
@@ -114,7 +111,6 @@ export default {
       customDefaultValue: '',
       calculateValue: '',
       calculateServer: false,
-      widget: null,
       attributes: {},
       validateOn: 'change',
       validate: {
@@ -180,9 +176,6 @@ export default {
       customDefaultValue: '',
       calculateValue: '',
       calculateServer: false,
-      widget: {
-        type: 'input'
-      },
       attributes: {},
       validateOn: 'change',
       validate: {

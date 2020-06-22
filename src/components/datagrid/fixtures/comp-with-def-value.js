@@ -24,9 +24,6 @@ export default {
       'type': 'textfield',
       'input': true,
       'key': 'name',
-      'widget': {
-        'type': ''
-      },
       'row': '0-0'
     },
     {

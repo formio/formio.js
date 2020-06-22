@@ -6,6 +6,9 @@ import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
 import { Components } from './components';
 import formComponents from './components/form';
+import { update } from './schema';
+import compareVersions from 'compare-versions';
+
 Components.setComponents(formComponents);
 
 export class Form extends Base {
@@ -137,7 +140,7 @@ export class Form extends Base {
               this.instance = this.instance || this.create(form.display);
               this.instance.url = formParam;
               this.instance.nosubmit = false;
-              this._form = this.instance.form = form;
+              this._form = this.instance.form = this.prepareForm(form);
               if (submission) {
                 this.instance.submission = submission;
               }
@@ -150,7 +153,7 @@ export class Form extends Base {
     }
     else {
       this.instance = this.instance || this.create(formParam.display);
-      this._form = this.instance.form = formParam;
+      this._form = this.instance.form = this.prepareForm(formParam);
       result = this.instance.ready;
     }
 
@@ -159,6 +162,17 @@ export class Form extends Base {
       this.element = this.instance.element;
       return this.instance;
     });
+  }
+
+  prepareForm(form) {
+    if ('schema' in form && compareVersions(form.schema, '2.x') > 0) {
+      this.instance.ready.then(() => {
+        this.instance.setAlert('alert alert-danger', 'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.');
+      });
+    }
+    const result = update(form);
+    console.log(result);
+    return result;
   }
 
   getSubmission(formio) {

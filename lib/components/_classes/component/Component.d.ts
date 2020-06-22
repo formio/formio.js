@@ -238,7 +238,6 @@ declare class Component extends Base {
      * @return {HTMLElement} - The created element.
      */
     renderString(template: any, data: any): HTMLElement;
-    performInputMapping(input: any): any;
     getBrowserLanguage(): any;
     /**
      * Called before a next and previous page is triggered allowing the components
@@ -299,13 +298,6 @@ declare class Component extends Base {
     get viewOnly(): any;
     createViewOnlyElement(): any;
     get defaultViewOnlyValue(): string;
-    /**
-     * Uses the widget to determine the output string.
-     *
-     * @param value
-     * @return {*}
-     */
-    getWidgetValueAsString(value: any, options: any): any;
     getValueAsString(value: any, options: any): any;
     getView(value: any, options: any): any;
     updateItems(...args: any[]): void;

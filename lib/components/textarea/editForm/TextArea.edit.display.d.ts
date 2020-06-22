@@ -16,7 +16,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -36,7 +35,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     weight: number;
@@ -56,7 +54,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -81,7 +78,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -110,7 +106,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -139,7 +134,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -170,7 +164,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -202,7 +195,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -231,7 +223,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -260,7 +251,6 @@ declare var _default: ({
     valueProperty?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -289,7 +279,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -324,7 +313,6 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -360,7 +348,6 @@ declare var _default: ({
     rows?: undefined;
     editor?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
     components?: undefined;
 } | {
     type: string;
@@ -427,6 +414,5 @@ declare var _default: ({
     editor?: undefined;
     clearOnHide?: undefined;
     as?: undefined;
-    customDefaultValue?: undefined;
 })[];
 export default _default;

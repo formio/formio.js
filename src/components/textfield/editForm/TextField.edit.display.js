@@ -1,69 +1,6 @@
 import _ from 'lodash';
 
-import Widgets from '../../../widgets';
-
 export default [
-  {
-    weight: 400,
-    type: 'select',
-    input: true,
-    key: 'widget.type',
-    label: 'Widget',
-    placeholder: 'Select a widget',
-    tooltip: 'The widget is the display UI used to input the value of the field.',
-    defaultValue: 'input',
-    onChange: (context) => {
-      context.data.widget = _.pick(context.data.widget, 'type');
-    },
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Input Field', value: 'input' },
-        { label: 'Calendar Picker', value: 'calendar' },
-      ],
-    },
-    conditional: {
-      json: { '===': [{ var: 'data.type' }, 'textfield'] },
-    },
-  },
-  {
-    weight: 405,
-    type: 'textarea',
-    key: 'widget',
-    label: 'Widget Settings',
-    refreshOn: 'wiget.type',
-    clearOnHide: false,
-    // Deleted clearOnHide and refreshOn to make possible to change exist widget settings.
-    calculateValue: (context) => {
-      const { calculatedValue } = context.instance;
-      const { type } = context.data.widget;
-
-      if (
-        _.isEmpty(_.omit(context.data.widget, 'type')) ||
-        _.isEmpty(_.omit(calculatedValue, 'type'))
-      ) {
-        if (calculatedValue && !calculatedValue.type) {
-          return context.data.widget;
-        }
-
-        const existWidget = context.instance._currentForm.options.editComponent.widget;
-        if (existWidget && !_.isEmpty(_.omit(existWidget, 'type')) && type === existWidget.type) {
-          return _.omit(existWidget, 'language');
-        }
-        else if (type) {
-          return _.omit(Widgets[type].defaultSettings, 'language');
-        }
-      }
-      return context.data.widget;
-    },
-    input: true,
-    rows: 5,
-    editor: 'ace',
-    as: 'json',
-    conditional: {
-      json: { '!==': [{ var: 'data.widget.type' }, 'input'] },
-    },
-  },
   {
     weight: 410,
     type: 'textfield',
