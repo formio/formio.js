@@ -1043,11 +1043,13 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       let comp = null;
       parentComponent.getComponents().forEach((component) => {
-        if (component.key === original.key) {
+        if (component.component.key === original.key) {
           comp = component;
         }
       });
       const originalComp = comp.component;
+      const originalComponentSchema = comp.schema;
+
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
@@ -1066,7 +1068,8 @@ export default class WebformBuilder extends Component {
           parentComponent.schema,
           path,
           index,
-          isNew
+          isNew,
+          originalComponentSchema
         );
         this.emit('change', this.form);
         this.highlightInvalidComponents();
@@ -1187,8 +1190,12 @@ export default class WebformBuilder extends Component {
             }
 
             if (this.form) {
+              let formComponents = this.findNamespaceRoot(parent.formioComponent.component);
+              // excluding component which key uniqueness is to be checked to prevent the comparing of the same keys
+              formComponents = formComponents.filter(comp => editFormOptions.editComponent.id !== comp.id);
+
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), event.data);
+              BuilderUtils.uniquify(formComponents, event.data);
             }
           }
         }

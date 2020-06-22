@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -284,21 +285,9 @@ export default [
         { label: &apos;ACE&apos;, value: &apos;ace&apos; },
         { label: &apos;CKEditor&apos;, value: &apos;ckeditor&apos; },
         { label: &apos;Quill&apos;, value: &apos;quill&apos; },
-        { label: &apos;TinyMCE&apos;, value: &apos;tiny&apos; },
       ]
     },
     weight: 415
-  },
-  {
-    type: &apos;textfield&apos;,
-    input: true,
-    key: &apos;tinyApiKey&apos;,
-    label: &apos;TinyMCE Api Key&apos;,
-    weight: 415.2,
-    placeholder: &apos;If you have a TinyMCE APi Key, enter it here.&apos;,
-    conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.editor&apos; }, &apos;tiny&apos;] }
-    }
   },
   {
     type: &apos;checkbox&apos;,
@@ -496,10 +485,6 @@ export default [
           { &apos;===&apos;: [
             { var: &apos;data.editor&apos; },
             &apos;quill&apos;
-          ] },
-          { &apos;===&apos;: [
-            { var: &apos;data.editor&apos; },
-            &apos;tiny&apos;
           ] },
         ]
       }

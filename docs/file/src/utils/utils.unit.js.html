@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -1054,6 +1055,11 @@ describe(&apos;Util Tests&apos;, () =&gt; {
       catch (error) {
         done(error);
       }
+    });
+
+    it(&apos;Should return string without HTML characters&apos;, () =&gt; {
+      const unescapedString = utils.unescapeHTML(&apos;&amp;lt;p&amp;gt;ampersand &amp;amp; &amp;#34;quotes&amp;#34; test&amp;lt;&amp;#47;p&amp;gt;&apos;);
+      expect(unescapedString).to.equal(&apos;&lt;p&gt;ampersand &amp; &quot;quotes&quot; test&lt;/p&gt;&apos;);
     });
   });
 });

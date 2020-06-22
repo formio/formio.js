@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -240,6 +241,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Webform.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import moment from &apos;moment&apos;;
+import compareVersions from &apos;compare-versions&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import i18next from &apos;i18next&apos;;
 import Formio from &apos;./Formio&apos;;
@@ -520,11 +522,11 @@ export default class Webform extends NestedDataComponent {
   set language(lang) {
     return new NativePromise((resolve, reject) =&gt; {
       this.options.language = lang;
-      if (i18next.language === lang) {
+      if (this.i18next.language === lang) {
         return resolve();
       }
       try {
-        i18next.changeLanguage(lang, (err) =&gt; {
+        this.i18next.changeLanguage(lang, (err) =&gt; {
           if (err) {
             return reject(err);
           }
@@ -548,7 +550,7 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    i18next.addResourceBundle(code, &apos;translation&apos;, lang, true, true);
+    this.i18next.addResourceBundle(code, &apos;translation&apos;, lang, true, true);
     if (active) {
       this.language = code;
     }
@@ -559,19 +561,19 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   localize() {
-    if (i18next.initialized) {
-      return NativePromise.resolve(i18next);
+    if (this.i18next.initialized) {
+      return NativePromise.resolve(this.i18next);
     }
-    i18next.initialized = true;
+    this.i18next.initialized = true;
     return new NativePromise((resolve, reject) =&gt; {
       try {
-        i18next.init(this.options.i18n, (err) =&gt; {
+        this.i18next.init(this.options.i18n, (err) =&gt; {
           // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = i18next.language.split(&apos;;&apos;)[0];
+          this.options.language = this.i18next.language.split(&apos;;&apos;)[0];
           if (err) {
             return reject(err);
           }
-          resolve(i18next);
+          resolve(this.i18next);
         });
       }
       catch (err) {
@@ -876,6 +878,12 @@ export default class Webform extends NestedDataComponent {
       this.options.components = form.settings.components;
     }
 
+    if (&apos;schema&apos; in form &amp;&amp; compareVersions(form.schema, &apos;1.x&apos;) &gt; 0) {
+      this.ready.then(() =&gt; {
+        this.setAlert(&apos;alert alert-danger&apos;, &apos;Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.&apos;);
+      });
+    }
+
     // See if they pass a module, and evaluate it if so.
     if (form &amp;&amp; form.module) {
       let formModule = null;
@@ -906,17 +914,10 @@ export default class Webform extends NestedDataComponent {
       this.emit(&apos;formLoad&apos;, form);
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
-      const resolveForm = (flags) =&gt; {
+      setTimeout(() =&gt; {
         this.onChange(flags);
         this.formReadyResolve();
-      };
-
-      if (flags &amp;&amp; flags.validateOnInit) {
-        resolveForm(flags);
-      }
-      else {
-        setTimeout(() =&gt; resolveForm(flags), 0);
-      }
+      }, 0);
 
       return this.formReady;
     });
@@ -983,7 +984,7 @@ export default class Webform extends NestedDataComponent {
   setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
-      fromSubmission: true,
+      fromSubmission: _.has(flags, &apos;fromSubmission&apos;) ? flags.fromSubmission : true,
     };
     return this.onSubmission = this.formReady.then(
       (resolveFlags) =&gt; {
@@ -1101,9 +1102,8 @@ export default class Webform extends NestedDataComponent {
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
-    submission.data = submission.data
-      ? { ...this.data, ...submission.data }
-      : this.data;
+
+    submission.data = this.data;
     this._submission = submission;
     return changed;
   }
@@ -1200,7 +1200,11 @@ export default class Webform extends NestedDataComponent {
   }
 
   getClassName() {
-    return &apos;formio-form&apos;;
+    let classes = &apos;formio-form&apos;;
+    if (this.options.readOnly) {
+      classes += &apos; formio-read-only&apos;;
+    }
+    return classes;
   }
 
   render() {

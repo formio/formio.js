@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -242,12 +243,11 @@
 
 import Harness from &apos;../../../test/harness&apos;;
 import EditGridComponent from &apos;./EditGrid&apos;;
-import { comp1, comp4 } from &apos;./fixtures&apos;;
+import { comp1, comp4, comp3, comp5, comp6 } from &apos;./fixtures&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
 import Webform from &apos;../../Webform&apos;;
 import { displayAsModalEditGrid } from &apos;../../../test/formtest&apos;;
-import comp5 from &apos;./fixtures/comp5&apos;;
 
 describe(&apos;EditGrid Component&apos;, () =&gt; {
   it(&apos;Should set correct values in dataMap inside editGrid and allow aditing them&apos;, (done) =&gt; {
@@ -274,20 +274,20 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
     });
   });
 
-  // it(&apos;Should display saved values if there are more then 1 nested components&apos;, (done) =&gt; {
-  //   Harness.testCreate(EditGridComponent, comp3).then((component) =&gt; {
-  //     component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
-  //
-  //     setTimeout(()=&gt;{
-  //       const firstValue = component.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;)[0].querySelector(&apos;.col-sm-2&apos;).textContent.trim();
-  //       const secondValue = component.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;)[1].querySelector(&apos;.col-sm-2&apos;).textContent.trim();
-  //
-  //       assert.equal(firstValue, &apos;55555&apos;);
-  //       assert.equal(secondValue, &apos;666666&apos;);
-  //       done();
-  //     }, 600);
-  //   });
-  // });
+  it(&apos;Should display saved values if there are more then 1 nested components&apos;, (done) =&gt; {
+    Harness.testCreate(EditGridComponent, comp3).then((component) =&gt; {
+      component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
+
+      setTimeout(()=&gt;{
+        const firstValue = component.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;)[0].querySelector(&apos;.col-sm-2&apos;).textContent.trim();
+        const secondValue = component.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;)[1].querySelector(&apos;.col-sm-2&apos;).textContent.trim();
+
+        assert.equal(firstValue, &apos;[Complex Data]&apos;);
+        assert.equal(secondValue, &apos;[Complex Data]&apos;);
+        done();
+      }, 600);
+    });
+  });
 
   it(&apos;Should build an empty edit grid component&apos;, () =&gt; {
     return Harness.testCreate(EditGridComponent, comp1).then((component) =&gt; {
@@ -608,8 +608,7 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
               return (className.includes(&apos;required&apos;) &amp;&amp; className.includes(&apos;formio-error-wrapper&apos;)) || true;
             });
             assert.equal(areRequiredComponentsHaveErrorWrapper, true);
-            dialog.parentNode.removeChild(dialog);
-            form.clear();
+            document.body.innerHTML = &apos;&apos;;
             done();
           }, 100);
         }, 100);
@@ -636,11 +635,61 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
             assert.equal(form.errors.length, 3);
             const errorsLinks = alert.querySelectorAll(&apos;li&apos;);
             assert.equal(errorsLinks.length, 2);
-            dialog.parentNode.removeChild(dialog);
-            form.clear();
+            document.body.innerHTML = &apos;&apos;;
             done();
           }, 100);
         }, 100);
+      }).catch(done);
+    });
+
+    it(&apos;Confirmation dialog&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() =&gt; {
+        const component = form.components[0];
+        component.addRow();
+        const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+        Harness.dispatchEvent(&apos;input&apos;, dialog, &apos;[name=&quot;data[editGrid][0][textField]&quot;]&apos;, (el) =&gt; el.value = &apos;12&apos;);
+        Harness.dispatchEvent(&apos;click&apos;, dialog, &apos;[ref=&quot;dialogClose&quot;]&apos;);
+        const confirmationDialog = document.querySelector(&apos;[ref=&quot;confirmationDialog&quot;]&apos;);
+        assert(confirmationDialog, &apos;Should open a confirmation dialog when trying to close&apos;);
+        Harness.dispatchEvent(&apos;click&apos;, confirmationDialog, &apos;[ref=&quot;dialogCancelButton&quot;]&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(component.editRows[0].data.textField, &apos;12&apos;, &apos;Data should not be cleared&apos;);
+
+          Harness.dispatchEvent(&apos;click&apos;, dialog, &apos;[ref=&quot;dialogClose&quot;]&apos;);
+          setTimeout(() =&gt; {
+            const confirmationDialog2 = document.querySelector(&apos;[ref=&quot;confirmationDialog&quot;]&apos;);
+            assert(confirmationDialog2, &apos;Should open again a conformation dialog&apos;);
+            // eslint-disable-next-line no-debugger
+            debugger;
+            Harness.dispatchEvent(&apos;click&apos;, confirmationDialog2, &apos;[ref=&quot;dialogYesButton&quot;]&apos;);
+            setTimeout(() =&gt; {
+              assert.equal(component.editRows.length, 0, &apos;Data should be cleared&apos;);
+              done();
+            }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it(&apos;Confirmation dialog shouldn\&apos;t occure if no values within the row are changed&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() =&gt; {
+        const component = form.components[0];
+        component.setValue([
+          { textField: &apos;v1&apos; }
+        ]);
+        setTimeout(() =&gt; {
+          component.editRow(0);
+          const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+          Harness.dispatchEvent(&apos;click&apos;, dialog, &apos;[ref=&quot;dialogClose&quot;]&apos;);
+          const confirmationDialog = document.querySelector(&apos;[ref=&quot;confirmationDialog&quot;]&apos;);
+          assert(!confirmationDialog, &apos;Shouldn\&apos;t open a confirmation dialog when no values were changed&apos;);
+          assert.equal(component.editRows[0].data.textField, &apos;v1&apos;, &apos;Data shouldn\&apos;t be changed&apos;);
+          done();
+        }, 150);
       }).catch(done);
     });
   });

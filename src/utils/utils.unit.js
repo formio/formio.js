@@ -815,5 +815,10 @@ describe('Util Tests', () => {
         done(error);
       }
     });
+
+    it('Should return string without HTML characters', () => {
+      const unescapedString = utils.unescapeHTML('&lt;p&gt;ampersand &amp; &#34;quotes&#34; test&lt;&#47;p&gt;');
+      expect(unescapedString).to.equal('<p>ampersand & "quotes" test</p>');
+    });
   });
 });

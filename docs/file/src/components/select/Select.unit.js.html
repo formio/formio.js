@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -469,6 +470,57 @@ describe(&apos;Select Component&apos;, () =&gt; {
       assert.deepEqual(component.dataValue, &apos;&apos;);
       component.setValue(&apos;red&apos;);
       assert.equal(component.dataValue, &apos;red&apos;);
+    });
+  });
+
+  it(&apos;should remove selected item&apos;, () =&gt; {
+    return Harness.testCreate(SelectComponent, comp1).then((component) =&gt; {
+      assert.deepEqual(component.dataValue, &apos;&apos;);
+      component.setValue(&apos;red&apos;);
+      assert.equal(component.dataValue, &apos;red&apos;);
+
+      const element = component.element.getElementsByClassName(&apos;choices__button&apos;)[0];
+      component.choices._handleButtonAction(component.choices._store.activeItems, element);
+
+      assert.equal(component.dataValue, &apos;&apos;);
+    });
+  });
+
+  it(&apos;should open dropdown after item has been removed&apos;, () =&gt; {
+    global.requestAnimationFrame = cb =&gt; cb();
+    window.matchMedia = window.matchMedia || function() {
+      return {
+        matches : false,
+        addListener : function() {},
+        removeListener: function() {}
+      };
+    };
+
+    return Harness.testCreate(SelectComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;red&apos;);
+
+      const element = component.element.getElementsByClassName(&apos;choices__button&apos;)[0];
+      component.choices._handleButtonAction(component.choices._store.activeItems, element);
+
+      component.choices.showDropdown(true);
+
+      assert.equal(component.choices.dropdown.isActive, true);
+    });
+  });
+
+  it(&apos;should keep dropdown closed after item has been removed by keypress&apos;, () =&gt; {
+    return Harness.testCreate(SelectComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;red&apos;);
+
+      const element = component.element.querySelector(&apos;.choices__button&apos;);
+      const ke = new KeyboardEvent(&apos;keydown&apos;, {
+        bubbles: true, cancelable: true, keyCode: 13
+      });
+
+      element.dispatchEvent(ke);
+
+      assert.equal(component.dataValue, &apos;&apos;);
+      assert.equal(component.choices.dropdown.isActive, false);
     });
   });
 

@@ -6,7 +6,7 @@ import {
   getDateSetting,
   escapeRegExCharacters,
   interpolate,
-  convertFormatToMoment, getArrayFromComponentPath
+  convertFormatToMoment, getArrayFromComponentPath, unescapeHTML
 } from '../utils/utils';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
@@ -535,6 +535,8 @@ class ValidationChecker {
           }));
         },
         check(component, setting, value) {
+          if (component.isEmpty(value)) return true;
+
           const pattern = setting;
           if (!pattern) {
             return true;
@@ -754,6 +756,18 @@ class ValidationChecker {
           }
         }
       },
+      time: {
+        key: 'validate.time',
+        messageText: 'Invalid time',
+        message(component) {
+          return component.t(component.errorMessage(this.validators.time.messageText), {
+            field: component.errorLabel
+          });
+        },
+        check(component, setting, value, data, index) {
+          return moment(value, component.component.format).isValid();
+        }
+      },
     };
   }
 
@@ -800,7 +814,7 @@ class ValidationChecker {
 
     const processResult = result => {
       return result ? {
-        message: _.get(result, 'message', result),
+        message: unescapeHTML(_.get(result, 'message', result)),
         level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
         path: getArrayFromComponentPath(component.path || ''),
         context: {

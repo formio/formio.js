@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -792,37 +793,27 @@ export default class Wizard extends Webform {
     ]);
   }
 
-  hasButton(name, nextPage) {
-    const currentPage = this.currentPage;
-    if (name === &apos;previous&apos;) {
-      const show = firstNonNil([
-        _.get(currentPage, &apos;buttonSettings.previous&apos;),
-        this.options.buttonSettings.showPrevious
-      ]);
-      return (this.getPreviousPage() &gt; -1) &amp;&amp; show;
+  hasButton(name, nextPage = this.getNextPage()) {
+    // get page options with global options as default values
+    const {
+      previous = this.options.buttonSettings.showPrevious,
+      cancel = this.options.buttonSettings.showCancel,
+      submit = this.options.buttonSettings.showSubmit,
+      next = this.options.buttonSettings.showNext
+    } = _.get(this.currentPage, &apos;component.buttonSettings&apos;, {});
+
+    switch (name) {
+      case &apos;previous&apos;:
+        return previous &amp;&amp; (this.getPreviousPage() &gt; -1);
+      case &apos;next&apos;:
+        return next &amp;&amp; (nextPage !== null) &amp;&amp; (nextPage !== -1);
+      case &apos;cancel&apos;:
+        return cancel;
+      case &apos;submit&apos;:
+        return submit &amp;&amp; !this.options.readOnly &amp;&amp; ((nextPage === null) || (this.page === (this.pages.length - 1)));
+      default:
+        return true;
     }
-    nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
-    if (name === &apos;next&apos;) {
-      const show = firstNonNil([
-        _.get(currentPage, &apos;buttonSettings.next&apos;),
-        this.options.buttonSettings.showNext
-      ]);
-      return (nextPage !== null) &amp;&amp; (nextPage !== -1) &amp;&amp; show;
-    }
-    if (name === &apos;cancel&apos;) {
-      return firstNonNil([
-        _.get(currentPage, &apos;buttonSettings.cancel&apos;),
-        this.options.buttonSettings.showCancel
-      ]);
-    }
-    if (name === &apos;submit&apos;) {
-      const show = firstNonNil([
-        _.get(currentPage, &apos;buttonSettings.submit&apos;),
-        this.options.buttonSettings.showSubmit
-      ]);
-      return show &amp;&amp; !this.options.readOnly &amp;&amp; ((nextPage === null) || (this.page === (this.pages.length - 1)));
-    }
-    return true;
   }
 
   pageId(page) {

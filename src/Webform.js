@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
+import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
@@ -288,11 +289,11 @@ export default class Webform extends NestedDataComponent {
   set language(lang) {
     return new NativePromise((resolve, reject) => {
       this.options.language = lang;
-      if (i18next.language === lang) {
+      if (this.i18next.language === lang) {
         return resolve();
       }
       try {
-        i18next.changeLanguage(lang, (err) => {
+        this.i18next.changeLanguage(lang, (err) => {
           if (err) {
             return reject(err);
           }
@@ -316,7 +317,7 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    i18next.addResourceBundle(code, 'translation', lang, true, true);
+    this.i18next.addResourceBundle(code, 'translation', lang, true, true);
     if (active) {
       this.language = code;
     }
@@ -327,19 +328,19 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   localize() {
-    if (i18next.initialized) {
-      return NativePromise.resolve(i18next);
+    if (this.i18next.initialized) {
+      return NativePromise.resolve(this.i18next);
     }
-    i18next.initialized = true;
+    this.i18next.initialized = true;
     return new NativePromise((resolve, reject) => {
       try {
-        i18next.init(this.options.i18n, (err) => {
+        this.i18next.init(this.options.i18n, (err) => {
           // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = i18next.language.split(';')[0];
+          this.options.language = this.i18next.language.split(';')[0];
           if (err) {
             return reject(err);
           }
-          resolve(i18next);
+          resolve(this.i18next);
         });
       }
       catch (err) {
@@ -644,6 +645,12 @@ export default class Webform extends NestedDataComponent {
       this.options.components = form.settings.components;
     }
 
+    if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
+      this.ready.then(() => {
+        this.setAlert('alert alert-danger', 'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.');
+      });
+    }
+
     // See if they pass a module, and evaluate it if so.
     if (form && form.module) {
       let formModule = null;
@@ -674,17 +681,10 @@ export default class Webform extends NestedDataComponent {
       this.emit('formLoad', form);
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
-      const resolveForm = (flags) => {
+      setTimeout(() => {
         this.onChange(flags);
         this.formReadyResolve();
-      };
-
-      if (flags && flags.validateOnInit) {
-        resolveForm(flags);
-      }
-      else {
-        setTimeout(() => resolveForm(flags), 0);
-      }
+      }, 0);
 
       return this.formReady;
     });
@@ -751,7 +751,7 @@ export default class Webform extends NestedDataComponent {
   setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
-      fromSubmission: true,
+      fromSubmission: _.has(flags, 'fromSubmission') ? flags.fromSubmission : true,
     };
     return this.onSubmission = this.formReady.then(
       (resolveFlags) => {
@@ -869,9 +869,8 @@ export default class Webform extends NestedDataComponent {
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
-    submission.data = submission.data
-      ? { ...this.data, ...submission.data }
-      : this.data;
+
+    submission.data = this.data;
     this._submission = submission;
     return changed;
   }
@@ -968,7 +967,11 @@ export default class Webform extends NestedDataComponent {
   }
 
   getClassName() {
-    return 'formio-form';
+    let classes = 'formio-form';
+    if (this.options.readOnly) {
+      classes += ' formio-read-only';
+    }
+    return classes;
   }
 
   render() {

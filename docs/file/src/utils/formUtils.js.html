@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -319,7 +320,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
         component.key &amp;&amp;
         ![&apos;panel&apos;, &apos;table&apos;, &apos;well&apos;, &apos;columns&apos;, &apos;fieldset&apos;, &apos;tabs&apos;, &apos;form&apos;].includes(component.type) &amp;&amp;
         (
-          [&apos;datagrid&apos;, &apos;container&apos;, &apos;editgrid&apos;].includes(component.type) ||
+          [&apos;datagrid&apos;, &apos;container&apos;, &apos;editgrid&apos;, &apos;address&apos;].includes(component.type) ||
           component.tree
         )
       ) {

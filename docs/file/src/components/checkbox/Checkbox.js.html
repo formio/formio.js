@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -314,7 +315,7 @@ export default class CheckBoxComponent extends Field {
   render() {
     return super.render(this.renderTemplate(&apos;checkbox&apos;, {
       input: this.inputInfo,
-      checked: this.dataValue,
+      checked: this.checked,
       tooltip: this.interpolate(this.t(this.component.tooltip) || &apos;&apos;).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;)
     }));
   }
@@ -364,6 +365,13 @@ export default class CheckBoxComponent extends Field {
     else {
       return (value === &apos;&apos;) ? this.dataValue : !!value;
     }
+  }
+
+  get checked() {
+    if (this.component.name) {
+      return (this.dataValue === this.component.value);
+    }
+    return !!this.dataValue;
   }
 
   setCheckedState(value) {

@@ -170,7 +170,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
             let dataValue = this.dataValue;
             dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
+            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
             editorReady(quill);
             return quill;
           }).catch(err => console.warn(err));
@@ -196,19 +196,6 @@ export default class TextAreaComponent extends TextFieldComponent {
               editorReady(editor);
               return editor;
             });
-          break;
-        case 'tiny':
-          if (!settings) {
-            settings = {};
-          }
-          settings.mode = this.component.as || 'javascript';
-          this.addTiny(element, settings, (newValue) => this.updateEditorValue(newValue))
-            .then((tiny) => {
-              this.editors[index] = tiny;
-              tiny.setContent(this.setConvertedValue(this.dataValue));
-              editorReady(tiny);
-              return tiny;
-            }).catch(err => console.warn(err));
           break;
         default:
           super.attachElement(element, index);
@@ -318,9 +305,6 @@ export default class TextAreaComponent extends TextFieldComponent {
               break;
             case 'ckeditor':
               editor.data.set(this.setConvertedValue(value, index));
-              break;
-            case 'tiny':
-              editor.setContent(this.setConvertedValue(value));
               break;
           }
         }

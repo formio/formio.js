@@ -2,12 +2,11 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp4 } from './fixtures';
+import { comp1, comp4, comp3, comp5, comp6 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
-import comp5 from './fixtures/comp5';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -34,20 +33,20 @@ describe('EditGrid Component', () => {
     });
   });
 
-  // it('Should display saved values if there are more then 1 nested components', (done) => {
-  //   Harness.testCreate(EditGridComponent, comp3).then((component) => {
-  //     component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
-  //
-  //     setTimeout(()=>{
-  //       const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
-  //       const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
-  //
-  //       assert.equal(firstValue, '55555');
-  //       assert.equal(secondValue, '666666');
-  //       done();
-  //     }, 600);
-  //   });
-  // });
+  it('Should display saved values if there are more then 1 nested components', (done) => {
+    Harness.testCreate(EditGridComponent, comp3).then((component) => {
+      component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
+
+      setTimeout(()=>{
+        const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
+        const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
+
+        assert.equal(firstValue, '[Complex Data]');
+        assert.equal(secondValue, '[Complex Data]');
+        done();
+      }, 600);
+    });
+  });
 
   it('Should build an empty edit grid component', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
@@ -368,8 +367,7 @@ describe('EditGrid Component', () => {
               return (className.includes('required') && className.includes('formio-error-wrapper')) || true;
             });
             assert.equal(areRequiredComponentsHaveErrorWrapper, true);
-            dialog.parentNode.removeChild(dialog);
-            form.clear();
+            document.body.innerHTML = '';
             done();
           }, 100);
         }, 100);
@@ -396,11 +394,61 @@ describe('EditGrid Component', () => {
             assert.equal(form.errors.length, 3);
             const errorsLinks = alert.querySelectorAll('li');
             assert.equal(errorsLinks.length, 2);
-            dialog.parentNode.removeChild(dialog);
-            form.clear();
+            document.body.innerHTML = '';
             done();
           }, 100);
         }, 100);
+      }).catch(done);
+    });
+
+    it('Confirmation dialog', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() => {
+        const component = form.components[0];
+        component.addRow();
+        const dialog = document.querySelector('[ref="dialogContents"]');
+        Harness.dispatchEvent('input', dialog, '[name="data[editGrid][0][textField]"]', (el) => el.value = '12');
+        Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+        const confirmationDialog = document.querySelector('[ref="confirmationDialog"]');
+        assert(confirmationDialog, 'Should open a confirmation dialog when trying to close');
+        Harness.dispatchEvent('click', confirmationDialog, '[ref="dialogCancelButton"]');
+        setTimeout(() => {
+          assert.equal(component.editRows[0].data.textField, '12', 'Data should not be cleared');
+
+          Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+          setTimeout(() => {
+            const confirmationDialog2 = document.querySelector('[ref="confirmationDialog"]');
+            assert(confirmationDialog2, 'Should open again a conformation dialog');
+            // eslint-disable-next-line no-debugger
+            debugger;
+            Harness.dispatchEvent('click', confirmationDialog2, '[ref="dialogYesButton"]');
+            setTimeout(() => {
+              assert.equal(component.editRows.length, 0, 'Data should be cleared');
+              done();
+            }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it('Confirmation dialog shouldn\'t occure if no values within the row are changed', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() => {
+        const component = form.components[0];
+        component.setValue([
+          { textField: 'v1' }
+        ]);
+        setTimeout(() => {
+          component.editRow(0);
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+          const confirmationDialog = document.querySelector('[ref="confirmationDialog"]');
+          assert(!confirmationDialog, 'Shouldn\'t open a confirmation dialog when no values were changed');
+          assert.equal(component.editRows[0].data.textField, 'v1', 'Data shouldn\'t be changed');
+          done();
+        }, 150);
       }).catch(done);
     });
   });

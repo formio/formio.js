@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -2489,6 +2490,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-hasModalSaveButton">hasModalSaveButton</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-hasSetValue">hasSetValue</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -3363,7 +3392,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-wysiwygDefault">wysiwygDefault</a></span></span><span class="code" data-ice="signature">: {&quot;quill&quot;: <span>*</span>, &quot;ace&quot;: <span>*</span>, &quot;ckeditor&quot;: <span>*</span>, &quot;tiny&quot;: <span>*</span>, &quot;default&quot;: <span>*</span>}</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-wysiwygDefault">wysiwygDefault</a></span></span><span class="code" data-ice="signature">: {&quot;quill&quot;: <span>*</span>, &quot;ace&quot;: <span>*</span>, &quot;ckeditor&quot;: <span>*</span>, &quot;default&quot;: <span>*</span>}</span>
         </p>
       </div>
       <div>
@@ -4616,34 +4645,6 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-addTiny">addTiny</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, settings: <span>*</span>, onChange: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-append">append</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>)</span>
         </p>
       </div>
@@ -5442,7 +5443,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-createModal">createModal</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, attr: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-createModal">createModal</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, attr: <span>*</span>, confirm: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5869,7 +5870,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getModalPreviewTemplate">getModalPreviewTemplate</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getModalPreviewTemplate">getModalPreviewTemplate</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -8081,7 +8082,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1152">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1155">source</a></span></span>
     </span>
   </h3>
 
@@ -8210,7 +8211,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1159">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1162">source</a></span></span>
     </span>
   </h3>
 
@@ -8339,7 +8340,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1108">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1111">source</a></span></span>
     </span>
   </h3>
 
@@ -8597,7 +8598,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1143">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1146">source</a></span></span>
     </span>
   </h3>
 
@@ -8958,7 +8959,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1303">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1310">source</a></span></span>
     </span>
   </h3>
 
@@ -9029,7 +9030,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1330">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1337">source</a></span></span>
     </span>
   </h3>
 
@@ -9279,7 +9280,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1254">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1261">source</a></span></span>
     </span>
   </h3>
 
@@ -9422,7 +9423,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1323">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1330">source</a></span></span>
     </span>
   </h3>
 
@@ -9525,7 +9526,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1080">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1083">source</a></span></span>
     </span>
   </h3>
 
@@ -9890,7 +9891,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1295">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1302">source</a></span></span>
     </span>
   </h3>
 
@@ -10004,7 +10005,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1316">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1323">source</a></span></span>
     </span>
   </h3>
 
@@ -10203,7 +10204,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1267">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1274">source</a></span></span>
     </span>
   </h3>
 
@@ -10747,7 +10748,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1341">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1348">source</a></span></span>
     </span>
   </h3>
 
