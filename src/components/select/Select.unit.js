@@ -267,6 +267,22 @@ describe('Select Component', () => {
     });
   });
 
+  it('should keep dropdown closed after item has been removed by keypress', () => {
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      component.setValue('red');
+
+      const element = component.element.querySelector('.choices__button');
+      const ke = new KeyboardEvent('keydown', {
+        bubbles: true, cancelable: true, keyCode: 13
+      });
+
+      element.dispatchEvent(ke);
+
+      assert.equal(component.dataValue, '');
+      assert.equal(component.choices.dropdown.isActive, false);
+    });
+  });
+
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
