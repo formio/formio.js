@@ -5,7 +5,6 @@ export default class ComponentModal {
   static render(component, data, topLevel) {
     const children = component.renderTemplate('component', data, topLevel);
     const isOpened = this;
-
     return component.renderTemplate('componentModal', {
       ...data,
       children,
@@ -13,10 +12,10 @@ export default class ComponentModal {
     });
   }
 
-  constructor(component, modal, isOpened, currentValue) {
+  constructor(component, element, isOpened, currentValue) {
     this.isOpened = isOpened;
     this.component = component;
-    this.modal = modal;
+    this.element = element;
     this.currentValue = fastCloneDeep(currentValue);
     this.dataLoaded = false;
     this.init();
@@ -27,6 +26,16 @@ export default class ComponentModal {
   }
 
   init() {
+    this.openModalListener = this.openModalHandler.bind(this);
+    this.showDialogListener = () => {
+      if (this.isValueChanged() && !this.component.disabled) {
+        this.showDialog();
+      }
+    };
+    this.closeModalListener = this.closeModalHandler.bind(this);
+    this.saveModalListener = this.saveModalValueHandler.bind(this);
+    this.closeDialogListener = this.closeDialog.bind(this);
+    this.saveDialogListener = this.saveDialog.bind(this);
     this.loadRefs();
   }
 
@@ -51,8 +60,8 @@ export default class ComponentModal {
     }
   }
 
-  loadRefs() {
-    this.component.loadRefs(this.modal, {
+  get templateRefs() {
+    return {
       modalOverlay: 'single',
       modalContents: 'single',
       modalClose: 'single',
@@ -60,18 +69,26 @@ export default class ComponentModal {
       openModal: 'single',
       modalSave: 'single',
       modalWrapper: 'single',
-    });
+    };
+  }
+
+  loadRefs() {
+    this.component.loadRefs(this.element, this.templateRefs);
+  }
+
+  removeEventListeners() {
+    this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
+    this.component.removeEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
+    this.component.removeEventListener(this.refs.modalClose, 'click', this.closeModalListener);
+    this.component.removeEventListener(this.refs.modalSave, 'click', this.saveModalListener);
   }
 
   setEventListeners() {
-    this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
-    this.component.addEventListener(this.refs.modalOverlay, 'click', () => {
-      if (this.isValueChanged() && !this.component.disabled) {
-        this.showDialog();
-      }
-    });
-    this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalHandler.bind(this));
-    this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalValueHandler.bind(this));
+    this.removeEventListeners();
+    this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
+    this.component.addEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
+    this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalListener);
+    this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalListener);
   }
 
   isValueChanged() {
@@ -88,11 +105,11 @@ export default class ComponentModal {
   }
 
   setOpenEventListener() {
-    this.component.loadRefs(this.modal, {
+    this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
+    this.component.loadRefs(this.element, {
       'openModal': 'single',
     });
-
-    this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
+    this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
   }
 
   openModalHandler(event) {
@@ -100,9 +117,22 @@ export default class ComponentModal {
     this.openModal();
   }
 
+  positionOverElement() {
+    // Position the modal just over the element on the page.
+    const elementOffset = this.element.getBoundingClientRect().top;
+    const modalHeight = this.refs.modalContents.getBoundingClientRect().height;
+    let modalTop = elementOffset - modalHeight - 10;
+    modalTop = modalTop > 0 ? modalTop : 10;
+    this.refs.modalWrapper.style.paddingTop = `${modalTop}px`;
+  }
+
   openModal() {
     this.isOpened = true;
     this.refs.modalWrapper.classList.remove('component-rendering-hidden');
+    if (this.component.component.type === 'signature') {
+      // Position signature modals just above the signature button.
+      this.positionOverElement();
+    }
   }
 
   updateView() {
@@ -130,7 +160,7 @@ export default class ComponentModal {
   }
 
   showDialog() {
-    const wrapper = this.component.ce('div');
+    this.dialogElement = this.component.ce('div');
     const dialogContent = `
       <h3 ref="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
       <div style="display:flex; justify-content: flex-end;">
@@ -139,25 +169,29 @@ export default class ComponentModal {
       </div>
     `;
 
-    wrapper.innerHTML = dialogContent;
-    wrapper.refs = {};
-    this.component.loadRefs.call(wrapper, wrapper, {
+    this.dialogElement.innerHTML = dialogContent;
+    this.dialogElement.refs = {};
+    this.component.loadRefs.call(this.dialogElement, this.dialogElement, {
       dialogHeader: 'single',
       dialogCancelButton: 'single',
       dialogYesButton: 'single',
     });
 
-    const dialog = this.component.createModal(wrapper);
-    const close = (event) => {
-      event.preventDefault();
-      dialog.close();
-    };
+    this.dialog = this.component.createModal(this.dialogElement);
+    this.component.addEventListener(this.dialogElement.refs.dialogYesButton, 'click', this.saveDialogListener);
+    this.component.addEventListener(this.dialogElement.refs.dialogCancelButton, 'click', this.closeDialogListener);
+  }
 
-    this.component.addEventListener(wrapper.refs.dialogYesButton, 'click', (event) => {
-      close(event);
-      this.closeModalHandler(event);
-    });
-    this.component.addEventListener(wrapper.refs.dialogCancelButton, 'click', close);
+  closeDialog(event) {
+    event.preventDefault();
+    this.dialog.close();
+    this.component.removeEventListener(this.dialogElement.refs.dialogYesButton, 'click', this.saveDialogListener);
+    this.component.removeEventListener(this.dialogElement.refs.dialogCancelButton, 'click', this.closeDialogListener);
+  }
+
+  saveDialog(event) {
+    this.closeDialog(event);
+    this.closeModalHandler(event);
   }
 
   saveModalValueHandler(event) {
