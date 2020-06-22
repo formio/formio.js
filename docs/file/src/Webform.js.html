@@ -522,11 +522,11 @@ export default class Webform extends NestedDataComponent {
   set language(lang) {
     return new NativePromise((resolve, reject) =&gt; {
       this.options.language = lang;
-      if (i18next.language === lang) {
+      if (this.i18next.language === lang) {
         return resolve();
       }
       try {
-        i18next.changeLanguage(lang, (err) =&gt; {
+        this.i18next.changeLanguage(lang, (err) =&gt; {
           if (err) {
             return reject(err);
           }
@@ -550,7 +550,7 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    i18next.addResourceBundle(code, &apos;translation&apos;, lang, true, true);
+    this.i18next.addResourceBundle(code, &apos;translation&apos;, lang, true, true);
     if (active) {
       this.language = code;
     }
@@ -561,19 +561,19 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   localize() {
-    if (i18next.initialized) {
-      return NativePromise.resolve(i18next);
+    if (this.i18next.initialized) {
+      return NativePromise.resolve(this.i18next);
     }
-    i18next.initialized = true;
+    this.i18next.initialized = true;
     return new NativePromise((resolve, reject) =&gt; {
       try {
-        i18next.init(this.options.i18n, (err) =&gt; {
+        this.i18next.init(this.options.i18n, (err) =&gt; {
           // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = i18next.language.split(&apos;;&apos;)[0];
+          this.options.language = this.i18next.language.split(&apos;;&apos;)[0];
           if (err) {
             return reject(err);
           }
-          resolve(i18next);
+          resolve(this.i18next);
         });
       }
       catch (err) {
@@ -1200,7 +1200,11 @@ export default class Webform extends NestedDataComponent {
   }
 
   getClassName() {
-    return &apos;formio-form&apos;;
+    let classes = &apos;formio-form&apos;;
+    if (this.options.readOnly) {
+      classes += &apos; formio-read-only&apos;;
+    }
+    return classes;
   }
 
   render() {

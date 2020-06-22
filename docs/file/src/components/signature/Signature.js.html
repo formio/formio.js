@@ -389,25 +389,16 @@ export default class SignatureComponent extends Input {
     });
   }
 
-  setOpenModalElement() {
-    let template;
-    if (this.dataValue) {
-      template = this.getModalPreviewTemplate();
-    }
-    else {
-      template = `
-        &lt;label class=&quot;control-label&quot;&gt;${this.component.label}&lt;/label&gt;&lt;br&gt;
-        &lt;button lang=&apos;en&apos; class=&apos;btn btn-light btn-md open-modal-button&apos; ref=&apos;openModal&apos;&gt;Click to Sign&lt;/button&gt;
-      `;
-    }
-    this.componentModal.setOpenModalElement(template);
+  get hasModalSaveButton() {
+    return false;
   }
 
   getModalPreviewTemplate() {
-    return `
-      &lt;label class=&quot;control-label&quot;&gt;${this.component.label}&lt;/label&gt;&lt;br&gt;
-      &lt;img src=${this.dataValue} ref=&apos;openModal&apos; /&gt;
-    `;
+    return this.renderTemplate(&apos;modalPreview&apos;, {
+      previewText: this.dataValue ?
+        `&lt;img src=${this.dataValue} ref=&apos;openModal&apos; style=&quot;width: 100%;height: 100%;&quot; /&gt;` :
+        this.t(&apos;Click to Sign&apos;)
+    });
   }
 
   attach(element) {

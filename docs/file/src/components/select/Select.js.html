@@ -1598,17 +1598,33 @@ export default class SelectComponent extends Field {
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
-    if (this.isBooleanOrNumber(value)) {
-      value = value.toString();
-    }
-
-    if (Array.isArray(value) &amp;&amp; value.some(item =&gt; this.isBooleanOrNumber(item))) {
-      value = value.map(item =&gt; {
-        if (this.isBooleanOrNumber(item)) {
-          item = item.toString();
+    const convertToString = (data, valueProperty) =&gt; {
+      if (valueProperty) {
+        if (Array.isArray(data)) {
+          data.forEach((item) =&gt; item[valueProperty] = item[valueProperty].toString());
         }
-      });
-    }
+        else {
+          data[valueProperty] = data[valueProperty].toString();
+        }
+        return data;
+      }
+
+      if (this.isBooleanOrNumber(data)) {
+        data = data.toString();
+      }
+
+      if (Array.isArray(data) &amp;&amp; data.some(item =&gt; this.isBooleanOrNumber(item))) {
+        data = data.map(item =&gt; {
+          if (this.isBooleanOrNumber(item)) {
+            item = item.toString();
+          }
+        });
+      }
+
+      return data;
+    };
+
+    value = convertToString(value);
 
     if ([&apos;values&apos;, &apos;custom&apos;].includes(this.component.dataSrc)) {
       const {
@@ -1616,11 +1632,11 @@ export default class SelectComponent extends Field {
         valueProperty,
       } = this.component.dataSrc === &apos;values&apos;
         ? {
-          items: this.getNormalizedValues(),
+          items: convertToString(this.getNormalizedValues(), &apos;value&apos;),
           valueProperty: &apos;value&apos;,
         }
         : {
-          items: this.getCustomItems(),
+          items: convertToString(this.getCustomItems(), this.valueProperty),
           valueProperty: this.valueProperty,
         };
 

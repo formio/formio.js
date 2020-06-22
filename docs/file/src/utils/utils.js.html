@@ -1290,7 +1290,7 @@ export function getContextComponents(context) {
     if (component.key !== context.data.key) {
       values.push({
         label: `${component.label || component.key} (${path})`,
-        value: component.key,
+        value: path,
       });
     }
   });
