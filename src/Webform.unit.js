@@ -187,6 +187,42 @@ describe('Webform tests', () => {
     }).catch(done);
   });
 
+  it('Should translate form errors in alerts', () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+      language: 'es',
+      i18n: {
+        es: {
+          alertMessage: '{{message}}',
+          required: '{{field}} es obligatorio'
+        }
+      }
+    });
+
+    return form.setForm({
+      components: [
+        {
+          type: 'textfield',
+          label: 'Field Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {
+            required: true
+          }
+        }
+      ]
+    })
+      .then(() => form.submit())
+      .catch(() => {
+        // console.warn('nooo:', error)
+      })
+      .then(() => {
+        const ref = formElement.querySelector('[ref="errorRef"]');
+        assert.equal(ref.textContent, 'Field Label es obligatorio');
+      });
+  });
+
   it('Should translate a form after instantiate', done => {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement, {
