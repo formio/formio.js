@@ -2413,7 +2413,8 @@ export default class Component extends Element {
       _.isEqual(newCalculatedValue, currentCalculatedValue)) {
       return false;
     }
-    if (_.isEqual(normCurr, normNew)) {
+
+    if (_.isEqual(normCurr, normNew) && allowOverride) {
       return false;
     }
 

@@ -17,13 +17,52 @@ import {
   formWithPatternValidation,
   calculatedSelectboxes,
   calculateZeroValue,
-  formWithConditionalLogic
+  formWithConditionalLogic,
+  formWithCalculatedValueWithoutOverriding
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  it('Should not override calculated value', function(done) {
+    const formElement = document.createElement('div');
+    const formWithCalculatedAmount = new Webform(formElement);
+
+    formWithCalculatedAmount.setForm(formWithCalculatedValueWithoutOverriding).then(() => {
+      const inputEvent = new Event('input');
+
+      const amountInput1 = formWithCalculatedAmount.element.querySelector('[name="data[amount1]"]');
+      const amountInput2 = formWithCalculatedAmount.element.querySelector('[name="data[amount2]"]');
+
+      amountInput1.value = 6;
+      amountInput2.value = 4;
+
+      amountInput1.dispatchEvent(inputEvent);
+      amountInput2.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name="data[currency]"]');
+        //checking if the value was calculated correctly
+        assert.equal(totalAmountInput.value, '$10.00');
+
+        const inputEvent = new Event('input');
+        //trying to override calculated value
+        totalAmountInput.value =  55;
+        totalAmountInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name="data[currency]"]');
+          //checking if the value was overridden
+          assert.equal(totalAmountInput.value, '$10.00');
+
+          done();
+        }, 400);
+      }, 300);
+    })
+    .catch((err) => done(err));
+  });
+
   it(`Should show field only in container where radio component has 'yes' value when containers contain radio 
   components with the same key`, function(done) {
     const formElement = document.createElement('div');
