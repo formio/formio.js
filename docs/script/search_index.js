@@ -834,6 +834,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~convertstringtohtmlelement",
+    "function/index.html#static-function-convertStringToHTMLElement",
+    "<span>convertStringToHTMLElement</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~currenttimezone",
     "function/index.html#static-function-currentTimezone",
     "<span>currentTimezone</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",

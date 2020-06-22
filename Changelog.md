@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.5-rc.3
+#### Fixed
+ - FJS-909: fixed dateTime renders suffix/prefix as string if form is saved in next/edge
+ - Issue where the login token would not get set during login.
+
 ### 4.10.5-rc.2
 #### Fixed
  - FJS-1021: fixed the issue where it is possible to override calculated value when 'Allow manual override' setting is not set

@@ -185,6 +185,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
@@ -240,7 +241,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/input/Input.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Multivalue from &apos;../multivalue/Multivalue&apos;;
-import { delay } from &apos;../../../utils/utils&apos;;
+import { delay, convertStringToHTMLElement } from &apos;../../../utils/utils&apos;;
 import Widgets from &apos;../../../widgets&apos;;
 import _ from &apos;lodash&apos;;
 
@@ -352,7 +353,8 @@ export default class Input extends Multivalue {
         content: &apos;&apos;
       }).trim();
       if (this.component.prefix !== calendarIcon) {
-        this.component.suffix = calendarIcon;
+        // converting string to HTML markup to render correctly DateTime component in portal.form.io
+        this.component.suffix = convertStringToHTMLElement(calendarIcon, &apos;[ref=&quot;icon&quot;]&apos;);
       }
     }
 
