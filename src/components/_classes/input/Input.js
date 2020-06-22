@@ -1,5 +1,5 @@
 import Multivalue from '../multivalue/Multivalue';
-import { delay } from '../../../utils/utils';
+import { delay, convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
 import _ from 'lodash';
 
@@ -111,7 +111,8 @@ export default class Input extends Multivalue {
         content: ''
       }).trim();
       if (this.component.prefix !== calendarIcon) {
-        this.component.suffix = calendarIcon;
+        // converting string to HTML markup to render correctly DateTime component in portal.form.io
+        this.component.suffix = convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
       }
     }
 

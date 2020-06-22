@@ -372,6 +372,18 @@ export function unescapeHTML(str) {
 }
 
 /**
+ * Make HTML element from string
+ * @param str
+ * @param selector
+ * @returns {HTMLElement}
+ */
+
+export function convertStringToHTMLElement(str, selector) {
+  const doc = new window.DOMParser().parseFromString(str, 'text/html');
+  return doc.body.querySelector(selector);
+}
+
+/**
  * Make a filename guaranteed to be unique.
  * @param name
  * @param template
