@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.5-rc.1
+#### Changed
+ - added consistent return for setToken #2958
+ - Extending the component modal and more PDF features. #2974
+ - Make it logout even if server request fails. #2967
+ - Use this.i18next instance instead of imported module. #2972
+ - Upgrade @babel/cli@7.10.3, @babel/core@7.10.3, @babel/plugin-proposal-optional-chaining@7.10.3, @babel/preset-env@7.10.3, @babel/register@7.10.3, fetch-mock@9.10.2, i18next@19.5.1, moment@2.27.0, eslint@7.3.0
+
+#### Fixed
+ - FJS-704: Address Refactor Issues
+ - Enable localization of field prefix and suffix. #2959
+ - Fixes an issue when a Select's value is not rendered inside EditGrid. #2960
+ - FJS-1009: fixed modal dialog window and modal edit window behavior
+ - FJS-995: fixed validation error in editGrid inside another editGrid in readOnly mode if the row is open
+ - FJS-994: fixed status change in readOnly when using EditGrid in dasplayAsModal mode
+ - FJS-923: fixed conditional logic not working correctly for components with the same keys
+ - Fixing issue where checkbox would show wrong checked for Checkbox as Radio input.
+
 ### 4.10.4
 #### Fixed
  - Issue with angular-formio throwing an error saying "global" is not defined.
