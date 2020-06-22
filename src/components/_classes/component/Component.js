@@ -695,20 +695,14 @@ export default class Component extends Element {
    * @param {string} text - The i18n identifier.
    * @param {Object} params - The i18n parameters to use for translation.
    */
-  t(text, params) {
+  t(text, params = {}, ...args) {
     if (!text) {
       return '';
     }
-    params = params || {};
     params.data = this.rootValue;
     params.row = this.data;
     params.component = this.component;
-    params.nsSeparator = '::';
-    params.keySeparator = '.|.';
-    params.pluralSeparator = '._.';
-    params.contextSeparator = '._.';
-    const translated = this.i18next.t(text, params);
-    return translated || text;
+    return super.t(text, params, ...args);
   }
 
   labelIsHidden() {
