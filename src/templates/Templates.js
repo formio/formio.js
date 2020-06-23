@@ -1,5 +1,6 @@
 import templates from './index';
 import _ from 'lodash';
+import Formio from '../module';
 
 export default class Templates {
   static get templates() {
@@ -49,3 +50,16 @@ export default class Templates {
     return Templates._framework;
   }
 }
+
+// Add a plugin type for templates.
+Formio.addPluginType('templates', (plugin) => {
+  const current = plugin.framework || Templates.framework || 'bootstrap';
+  for (const framework of Object.keys(plugin.templates)) {
+    Templates.extendTemplate(framework, plugin.templates[framework]);
+  }
+  if (plugin.templates[current]) {
+    Templates.current = plugin.templates[current];
+  }
+});
+
+Formio.addPluginType('framework', (plugin) => (Templates.framework = plugin.framework));

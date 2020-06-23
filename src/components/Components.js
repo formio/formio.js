@@ -1,3 +1,4 @@
+import Formio from '../module';
 import Component from './_classes/component/Component';
 import _ from 'lodash';
 export default class Components {
@@ -51,3 +52,5 @@ export default class Components {
     return comp;
   }
 }
+
+Formio.addPluginType('components', (plugin) => Components.setComponents(plugin.components));

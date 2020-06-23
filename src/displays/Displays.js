@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Formio from '../module';
 import pdf from '../PDF';
 import webform from '../Webform';
 import wizard from '../Wizard';
@@ -26,3 +27,5 @@ export default class Displays {
     return Displays.displays;
   }
 }
+
+Formio.addPluginType('displays', (plugin) => Displays.addDisplays(plugin.displays));

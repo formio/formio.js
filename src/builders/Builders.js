@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Formio from '../module';
 import pdf from '../PDFBuilder';
 import webform from '../WebformBuilder';
 import wizard from '../WizardBuilder';
@@ -26,3 +27,5 @@ export default class Builders {
     return Builders.builders;
   }
 }
+
+Formio.addPluginType('builders', (plugin) => Builders.addBuilders(plugin.builders));

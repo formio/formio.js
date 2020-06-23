@@ -1,3 +1,4 @@
+import Formio from '../module';
 import rules from './rules/index';
 
 export default class Rules {
@@ -19,3 +20,5 @@ export default class Rules {
     return Rules.rules;
   }
 }
+
+Formio.addPluginType('rules', (plugin) => Rules.addRules(plugin.rules));
