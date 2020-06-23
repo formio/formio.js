@@ -187,6 +187,15 @@ describe('Webform tests', () => {
     }).catch(done);
   });
 
+  it('Should treat double colons as i18next namespace separators', () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    const str = 'Test: this is only a test';
+    assert.equal(form.t(str), str);
+    assert.equal(form.t(`Namespace::${str}`), str);
+  });
+
   it('Should translate form errors in alerts', () => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
