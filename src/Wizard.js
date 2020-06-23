@@ -591,8 +591,8 @@ export default class Wizard extends Webform {
     }
   }
 
-  onChange(flags, changed, modified) {
-    super.onChange(flags, changed, modified);
+  onChange(flags, changed, modified, changes) {
+    super.onChange(flags, changed, modified, changes);
     if (this.alert && !this.submitted) {
       this.checkValidity(this.submission.data, false, this.submission.data, true);
       this.showErrors([], true);
