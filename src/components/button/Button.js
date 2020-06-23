@@ -390,6 +390,7 @@ export default class ButtonComponent extends Field {
           let requestPromise = Promise.resolve();
           if (('oauth' in this.root.form.config) && this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
+            params.redirectURI = window.location.origin;
             requestPromise = this.root.formio.makeRequest('oauth', `${this.root.formio.projectUrl}/oauth2`, 'POST', params);
           }
           else {
