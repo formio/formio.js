@@ -517,8 +517,8 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
-  refresh() {
-    if (this.component.clearOnRefresh) {
+  refresh(value, { instance }) {
+    if (this.component.clearOnRefresh && !instance.pristine) {
       this.setValue(this.emptyValue);
     }
 
