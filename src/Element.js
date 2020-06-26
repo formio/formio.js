@@ -176,6 +176,9 @@ export default class Element {
    * @param type
    */
   removeEventListener(obj, type, func = null) {
+    if (!obj) {
+      return this;
+    }
     const indexes = [];
     this.eventHandlers.forEach((handler, index) => {
       if (
