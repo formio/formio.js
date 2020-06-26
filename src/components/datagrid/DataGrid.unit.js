@@ -14,7 +14,7 @@ import {
 } from './fixtures';
 
 describe('DataGrid Component', () => {
-  it('Should not show alert message in modal edit when clicking on modal overlay and value was not changed', (done) => {
+  it('Should not show alert message in modal edit and close modal window when clicking on modal overlay and value was not changed', (done) => {
     Harness.testCreate(DataGridComponent, comp4).then((component) => {
       const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
       assert.equal(!!hiddenModalWindow, true);
@@ -34,8 +34,12 @@ describe('DataGrid Component', () => {
 
         setTimeout(() => {
           const dialogWindowHeader = document.querySelector('[ref="dialogHeader"]');
+          //checking if there is dialog window
           assert.equal( !!dialogWindowHeader, false);
 
+          const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
+          //checking if the modal window was closed
+          assert.equal(!!hiddenModalWindow, true);
           done();
         }, 300);
       }, 200);
