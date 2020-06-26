@@ -78,7 +78,8 @@ export default class CurrencyComponent extends NumberComponent {
     const inputHandler = ({ target: { value } }) => {
       input.mask.textMaskInputElement.update(value);
       if (value === '.' && input.prevValue) {
-        this.setSelectionRange(input, input.value.length - 1);
+        const caretPosition = input.value.length - 1;
+        input.setSelectionRange(caretPosition, caretPosition);
       }
       input.prevValue = input.value;
     };

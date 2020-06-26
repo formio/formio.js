@@ -150,22 +150,6 @@ export default class Input extends Multivalue {
     }
   }
 
-  setSelectionRange(input, start, end = start) {
-    // Modern browsers
-    if (input.setSelectionRange) {
-      input.focus();
-      input.setSelectionRange(start, end);
-    }
-    // IE8 and below
-    else if (input.createTextRange) {
-      var range = input.createTextRange();
-      range.collapse(true);
-      range.moveEnd('character', end);
-      range.moveStart('character', start);
-      range.select();
-    }
-  }
-
   updateValueAt(value, flags, index) {
     flags = flags || {};
     if (_.get(this.component, 'showWordCount', false)) {
