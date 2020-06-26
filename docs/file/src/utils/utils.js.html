@@ -605,7 +605,7 @@ export function setActionProperty(component, action, result, row, data, instance
  * @returns {string}
  */
 export function unescapeHTML(str) {
-  if (typeof window === &apos;undefined&apos;) {
+  if (typeof window === &apos;undefined&apos; || !(&apos;DOMParser&apos; in window)) {
     return str;
   }
 
