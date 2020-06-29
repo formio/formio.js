@@ -795,14 +795,16 @@ export default class EditGridComponent extends NestedArrayComponent {
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &= rowValid;
-      if (!rowValid) {
-      this.addClass(this.refs[`editgrid-${this.component.key}-row`][index], 'formio-error-wrapper row-invalid');
+      const rowContainer = this.refs[`editgrid-${this.component.key}-row`][index];
+      this.removeClass(rowContainer, 'formio-error-wrapper');
+      if (!rowValid && this.component.modal && this.component.rowDrafts) {
+        this.addClass(rowContainer, dirty ? 'formio-error-wrapper':'' );
       }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
-    if (!rowsValid) {
+    if (!rowsValid || (!this.pristine && this.errors.length && this.component.modal && this.component.rowDrafts)) {
       this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
