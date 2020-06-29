@@ -926,7 +926,11 @@ export default class Component extends Element {
   loadRefs(element, refs) {
     for (const ref in refs) {
       if (refs[ref] === 'single') {
-        this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
+        let selector = `[ref="${ref}"]`;
+        if (ref === 'messageContainer') {
+          selector = `:scope > [ref="${ref}"]`;
+        }
+        this.refs[ref] = element.querySelector(selector);
       }
       else {
         this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
