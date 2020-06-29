@@ -767,12 +767,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    if (!valid) {
-      editRow.errors = this.errors.filter((err) => !errorsSnapshot.includes(err));
-    }
-    else {
-      editRow.errors = null;
-    }
+    editRow.errors = !valid ? this.errors.filter((err) => !errorsSnapshot.includes(err)) : null;
+
     return !!valid;
   }
 
@@ -819,7 +815,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
 
     if (!rowsValid) {
-      this.setCustomValidity('Please correct rows before proceeding.', dirty);
+      this.setCustomValidity('Please correct invalid rows before proceeding.', dirty);
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
