@@ -486,11 +486,13 @@ export default class EditGridComponent extends NestedArrayComponent {
     }, this.component.saveRow || 'Save'));
 
     return this.attachComponents(modalContent, components).then(() => {
-      this.validateRow(editRow, false);
-      if (editRow.errors && !!editRow.errors.length) {
-        this.alert.showErrors(editRow.errors, false);
+      if (this.isModalDraft()) {
+        this.validateRow(editRow, false);
+        if (editRow.errors && !!editRow.errors.length) {
+          this.alert.showErrors(editRow.errors, false);
+        }
       }
-  });
+    });
   }
 
   showDialog(rowIndex) {
@@ -726,14 +728,21 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  hasOpenRows() {
+    return this.editRows.some(row => this.isOpen(row));
+  }
+
+  isModalDraft() {
+    return this.component.modal && this.component.rowDrafts;
+  }
+
   validateRow(editRow, dirty) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
 
-    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft && !this.pristine  && !this.root.pristine)) {
+    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft && !this.pristine && !this.root.pristine && !this.hasOpenRows())) {
       editRow.components.forEach(comp => {
-        const isModalDraftOpen = this.isOpen(editRow) && this.component.modal && this.component.rowDrafts;
-        if (!isModalDraftOpen) {
+        if (!this.isModalDraft()) {
           comp.setPristine(!dirty);
         }
 
@@ -795,12 +804,14 @@ export default class EditGridComponent extends NestedArrayComponent {
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &= rowValid;
-      if (this.component.modal && this.component.rowDrafts) {
+      if (this.isModalDraft()) {
       const rowContainer = this.refs[`editgrid-${this.component.key}-row`][index];
-      this.removeClass(rowContainer, 'formio-error-wrapper');
-      this.removeClass(rowContainer, 'row-invalid');
-      if (!rowValid) {
-        this.addClass(rowContainer, dirty ? 'formio-error-wrapper row-invalid':'row-invalid' );
+      if (rowContainer) {
+        const errorContainer = rowContainer.querySelector('.editgrid-row-error');
+
+        if (!rowValid ) {
+          errorContainer.textContent = 'Invalid row. Please correct it or delete.';
+        }
       }
     }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
