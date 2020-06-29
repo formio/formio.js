@@ -730,7 +730,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     let valid = true;
     const errorsSnapshot = [...this.errors];
 
-    if (editRow.state === EditRowState.Editing || dirty) {
+    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft && !this.pristine  && !this.root.pristine)) {
       editRow.components.forEach(comp => {
         const isModalDraftOpen = this.isOpen(editRow) && this.component.modal && this.component.rowDrafts;
         if (!isModalDraftOpen) {
@@ -795,16 +795,19 @@ export default class EditGridComponent extends NestedArrayComponent {
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &= rowValid;
+      if (this.component.modal && this.component.rowDrafts) {
       const rowContainer = this.refs[`editgrid-${this.component.key}-row`][index];
       this.removeClass(rowContainer, 'formio-error-wrapper');
-      if (!rowValid && this.component.modal && this.component.rowDrafts) {
-        this.addClass(rowContainer, dirty ? 'formio-error-wrapper':'' );
+      this.removeClass(rowContainer, 'row-invalid');
+      if (!rowValid) {
+        this.addClass(rowContainer, dirty ? 'formio-error-wrapper row-invalid':'row-invalid' );
       }
+    }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
-    if (!rowsValid || (!this.pristine && this.errors.length && this.component.modal && this.component.rowDrafts)) {
+    if (!rowsValid) {
       this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
