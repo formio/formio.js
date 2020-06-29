@@ -485,7 +485,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       },
     }, this.component.saveRow || 'Save'));
 
-    return this.attachComponents(modalContent, components);
+    return this.attachComponents(modalContent, components).then(() => {
+      this.validateRow(editRow, false);
+      if (editRow.errors && !!editRow.errors.length) {
+        this.alert.showErrors(editRow.errors, false);
+      }
+  });
   }
 
   showDialog(rowIndex) {
@@ -727,7 +732,11 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (editRow.state === EditRowState.Editing || dirty) {
       editRow.components.forEach(comp => {
-        comp.setPristine(!dirty);
+        const isModalDraftOpen = this.isOpen(editRow) && this.component.modal && this.component.rowDrafts;
+        if (!isModalDraftOpen) {
+          comp.setPristine(!dirty);
+        }
+
         valid &= comp.checkValidity(null, dirty, editRow.data);
       });
     }
@@ -751,6 +760,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (!valid) {
       editRow.errors = this.errors.filter((err) => !errorsSnapshot.includes(err));
+    }
+    else {
+      editRow.errors = null;
     }
     return !!valid;
   }
@@ -778,12 +790,14 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     let rowsValid = true;
     let rowsEditing = false;
-    this.editRows.forEach((editRow) => {
+    this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &= rowValid;
-
+      if (!rowValid) {
+      this.addClass(this.refs[`editgrid-${this.component.key}-row`][index], 'formio-error-wrapper row-invalid');
+      }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
