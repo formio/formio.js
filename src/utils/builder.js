@@ -30,9 +30,10 @@ export default {
       const newKey = uniqueKey(formKeys, component.key);
       if (newKey !== component.key) {
         component.key = newKey;
-        formKeys[newKey] = true;
         changed = true;
       }
+
+      formKeys[newKey] = true;
 
       if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
         return true;

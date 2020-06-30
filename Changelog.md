@@ -4,6 +4,133 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.5-rc.2
+#### Fixed
+ - FJS-1021: fixed the issue where it is possible to override calculated value when 'Allow manual override' setting is not set
+ - FJS-1014: Fixed an issue where Required fields are validating when form is initialized when using a form in FormManager
+ - Fix select dropdown does not open on first click after value clear
+ - Fix (Button): message under button displayed as [object Object]. #2982
+
+### 4.10.5-rc.1
+#### Changed
+ - added consistent return for setToken #2958
+ - Extending the component modal and more PDF features. #2974
+ - Make it logout even if server request fails. #2967
+ - Use this.i18next instance instead of imported module. #2972
+ - Upgrade @babel/cli@7.10.3, @babel/core@7.10.3, @babel/plugin-proposal-optional-chaining@7.10.3, @babel/preset-env@7.10.3, @babel/register@7.10.3, fetch-mock@9.10.2, i18next@19.5.1, moment@2.27.0, eslint@7.3.0
+
+#### Fixed
+ - FJS-704: Address Refactor Issues
+ - Enable localization of field prefix and suffix. #2959
+ - Fixes an issue when a Select's value is not rendered inside EditGrid. #2960
+ - FJS-1009: fixed modal dialog window and modal edit window behavior
+ - FJS-995: fixed validation error in editGrid inside another editGrid in readOnly mode if the row is open
+ - FJS-994: fixed status change in readOnly when using EditGrid in dasplayAsModal mode
+ - FJS-923: fixed conditional logic not working correctly for components with the same keys
+ - Fixing issue where checkbox would show wrong checked for Checkbox as Radio input.
+
+### 4.10.4
+#### Fixed
+ - Issue with angular-formio throwing an error saying "global" is not defined.
+
+### 4.10.3
+#### Changed
+ - No changes.
+
+### 4.10.3-rc.6
+#### Fixed
+ - FJS-1019: fixed dateTime calendar opening problem
+
+### 4.10.3-rc.5
+#### Changed
+ - Reverted #2916: It was breaking removing components.
+ 
+#### Added
+ - VPAT-394/391 Added callbacks to further extension in VPAT
+ 
+#### Fixed
+ - Fix/validation error messages contain html chars. #2953
+ - Fix calculated value
+
+### 4.10.3-rc.4
+#### Fixed
+ - Allow non-truthy computed values (e.g. zero). #2945
+ - Fix (Wizard): display panel navigation buttons according to page options. #2934
+ - Add text overflow for long select items. #2911
+ - FJS-1009: Fixes an issue when a confirmation dialog is shown even if no values within the editing row were changed
+ - FJS-1002: Fixes an issue when components comparing by getter and property
+
+#### Added
+ - Add schema warning so that future schemas can be versioned. #2944
+
+### 4.10.3-rc.3
+#### Fixed
+ - Fixing a performance issue where a lot of buttons makes the form slow.
+
+### 4.10.3-rc.2
+#### Fixed
+ - FJS-817: fixed options display after selecting searched value in multiple select with resource
+ - Fix (Element): methods for adding and removing classes caused error for angular FormControl
+ - FJS-1012: fixed wizard infinite loop in builder mode
+ - FJS-1011: Fixed select component with JSON data source always having empty object as default value in submission
+
+#### Added
+ - Selecboxes & builder tests
+
+### 4.10.3-rc.1
+#### Fixed
+ - FJS-997: Fixed dateTime manual overriding
+ - Fixing issue where the PDFBuilder is not sending the correct schema to the pdf. #2928
+ - FJS-885: Render hidden component without dataValue
+ - FJS-1005: Fixed editGrid data display inside wizard in readOnly mode
+ - PDF 10: Search and removal of the component on all nesting levels
+ 
+#### Changed
+ - Refactor validateOnInit flag logic
+
+### 4.10.2
+#### Fixed
+ - Reverted FJS-997: Fixed dateTime manual input.
+
+### 4.10.1
+#### Fixed
+ - FJS-997: Fixed dateTime manual input.
+ - FJS-1004: Fix (WebformBuilder): components inside Columns are not able to save
+ - FJS-999: Fix (SelectBoxes): not able to manually override calculated value
+
+### 4.10.0
+#### Fixed
+ - FJS-996: fixed components key uniquifying
+ - FJS-892: Fix (WebformBuilder): forms are not merged correctly during handling a conflict
+ - Fixed typeo of Flatpickr name in settings.
+ - FJS-998: Fixed losing overridden value when reordering dataGrid rows
+
+#### Added
+ - Tests for EditGrid dialog confirmation.
+
+### 4.10.0-rc.13
+#### Added
+ - FJS-985: Feat (EditGrid Modal): added confirm dialog before closing modal row
+ - Add time validation for Time component.
+
+#### Fixed
+ - FJS-957: fixed pattern validation error appeared for empty value
+ - Fix(TextArea): update convert function parameter for Quill editor.
+ 
+### Changed
+ - Upgrade ejs-loader@0.5.0
+
+### 4.10.0-rc.12
+### Added
+ - Private download check for image load.
+
+### Fixed
+ - Regex in Safari and Firefox.
+ - Modal edit css moved to form css.
+
+### Removed
+ - TinyMCE support which was never intended to be pulled in.
+
 ## 4.10.0-rc.11
 ### Changed
  - Using Quill 2.0.0-dev so that we can have tables capability.

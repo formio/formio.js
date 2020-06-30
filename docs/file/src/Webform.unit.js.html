@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -243,6 +244,7 @@ import { expect } from &apos;chai&apos;;
 import sinon from &apos;sinon&apos;;
 import _ from &apos;lodash&apos;;
 import each from &apos;lodash/each&apos;;
+import i18next from &apos;i18next&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
@@ -252,13 +254,94 @@ import {
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
-  formWithAdvancedLogic
+  formWithAdvancedLogic,
+  formWithPatternValidation,
+  calculatedSelectboxes,
+  calculateZeroValue,
+  formWithConditionalLogic,
+  formWithCalculatedValueWithoutOverriding
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
 describe(&apos;Webform tests&apos;, () =&gt; {
+  it(&apos;Should not override calculated value&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithCalculatedAmount = new Webform(formElement);
+
+    formWithCalculatedAmount.setForm(formWithCalculatedValueWithoutOverriding).then(() =&gt; {
+      const inputEvent = new Event(&apos;input&apos;);
+
+      const amountInput1 = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[amount1]&quot;]&apos;);
+      const amountInput2 = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[amount2]&quot;]&apos;);
+
+      amountInput1.value = 6;
+      amountInput2.value = 4;
+
+      amountInput1.dispatchEvent(inputEvent);
+      amountInput2.dispatchEvent(inputEvent);
+
+      setTimeout(() =&gt; {
+        const totalAmountInput = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[currency]&quot;]&apos;);
+        //checking if the value was calculated correctly
+        assert.equal(totalAmountInput.value, &apos;$10.00&apos;);
+
+        const inputEvent = new Event(&apos;input&apos;);
+        //trying to override calculated value
+        totalAmountInput.value =  55;
+        totalAmountInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          const totalAmountInput = formWithCalculatedAmount.element.querySelector(&apos;[name=&quot;data[currency]&quot;]&apos;);
+          //checking if the value was overridden
+          assert.equal(totalAmountInput.value, &apos;$10.00&apos;);
+
+          done();
+        }, 400);
+      }, 300);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(`Should show field only in container where radio component has &apos;yes&apos; value when containers contain radio 
+  components with the same key`, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithCondition = new Webform(formElement);
+
+    formWithCondition.setForm(formWithConditionalLogic).then(() =&gt; {
+      Harness.clickElement(formWithCondition, formWithCondition.element.querySelector(&apos;.formio-component-container1&apos;).querySelector(&apos;[value=&quot;yes&quot;]&apos;));
+
+      setTimeout(() =&gt; {
+        const conditionalFieldInContainer1 = formWithCondition.element.querySelector(&apos;[name=&quot;data[container1][textField]&quot;]&apos;);
+        const conditionalFieldInContainer2 = formWithCondition.element.querySelector(&apos;[name=&quot;data[container2][textField]&quot;]&apos;);
+
+        assert.equal(!!conditionalFieldInContainer1, true);
+        assert.equal(!!conditionalFieldInContainer2, false);
+
+        done();
+      }, 400);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should show only &quot;required field&quot; error when submitting empty required field with pattern validation&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithPattern = new Webform(formElement);
+
+    formWithPattern.setForm(formWithPatternValidation).then(() =&gt; {
+    Harness.clickElement(formWithPattern, formWithPattern.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;));
+
+    setTimeout(() =&gt; {
+      assert.equal(formWithPattern.element.querySelector(&apos;.formio-component-textField&apos;).querySelectorAll(&apos;.error&apos;).length, 1);
+      assert.equal(formWithPattern.errors[0].messages.length, 1);
+      assert.equal(formWithPattern.errors[0].messages[0].message, &apos;Text Field is required&apos;);
+      done();
+    }, 500);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should disable field applying advanced logic if dot is used inside component key&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithLogic = new Webform(formElement);
@@ -618,6 +701,44 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should not mutate the global i18next if it gets an instance&apos;, async function() {
+    await i18next.init({ lng: &apos;en&apos; });
+    const instance = i18next.createInstance();
+
+    const formElement = document.createElement(&apos;div&apos;);
+    const translateForm = new Webform(formElement, {
+      template: &apos;bootstrap3&apos;,
+      language: &apos;es&apos;,
+      i18next: instance,
+      i18n: {
+        es: {
+          &apos;Default Label&apos;: &apos;Spanish Label&apos;
+        }
+      }
+    });
+
+    return translateForm.setForm({
+      title: &apos;Translate Form&apos;,
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          label: &apos;Default Label&apos;,
+          key: &apos;myfield&apos;,
+          input: true,
+          inputType: &apos;text&apos;,
+          validate: {}
+        }
+      ]
+    }).then(() =&gt; {
+      assert.equal(i18next.language, &apos;en&apos;);
+      assert.equal(translateForm.i18next.language, &apos;es&apos;);
+      assert.equal(translateForm.i18next, instance);
+
+      const label = formElement.querySelector(&apos;.control-label&apos;);
+      assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
+    });
+  });
+
   it(&apos;Should keep components valid if they are pristine&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
@@ -960,6 +1081,34 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should set calculated value correctly&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement);
+    form.setForm(calculateZeroValue).then(() =&gt; {
+      const a = form.components[0];
+      const b = form.components[1];
+      const sum = form.components[2];
+
+      a.setValue(10);
+      b.setValue(5);
+      setTimeout(() =&gt; {
+        assert.equal(a.dataValue, 10);
+        assert.equal(b.dataValue, 5);
+        assert.equal(sum.dataValue, 15);
+
+        a.setValue(&apos;0&apos;);
+        b.setValue(&apos;0&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(a.dataValue, 0);
+          assert.equal(b.dataValue,0);
+          assert.equal(sum.dataValue, 0);
+
+          done();
+        }, 250);
+      }, 250);
+    }).catch(done);
+  });
+
   describe(&apos;set/get nosubmit&apos;, () =&gt; {
     it(&apos;should set/get nosubmit flag and emit nosubmit event&apos;, () =&gt; {
       const form = new Webform(null, {});
@@ -1279,6 +1428,33 @@ describe(&apos;Webform tests&apos;, () =&gt; {
               });
               done();
             }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it(&apos;Should allow to change value.&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(calculatedSelectboxes).then(() =&gt; {
+        const radio = form.getComponent([&apos;radio&apos;]);
+        radio.setValue(&apos;a&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(radio.dataValue, &apos;a&apos;);
+          const selectBoxes = form.getComponent([&apos;selectBoxes&apos;]);
+          assert.equal(selectBoxes.dataValue[&apos;a&apos;], true, &apos;Should calculate value and set it to &quot;a&quot;&apos;);
+          selectBoxes.setValue({
+            &apos;a&apos;: true,
+            &apos;b&apos;: true,
+            &apos;c&apos;: false
+          });
+          setTimeout(() =&gt; {
+            assert.deepEqual(selectBoxes.dataValue, {
+              &apos;a&apos;: true,
+              &apos;b&apos;: true,
+              &apos;c&apos;: false
+            }, &apos;Should change the value&apos;);
+            done();
           }, 250);
         }, 250);
       }).catch(done);

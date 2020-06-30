@@ -435,7 +435,7 @@ export default class Element {
    *   The name of the class to add.
    */
   addClass(element, className) {
-    if (!element) {
+    if (!element || !(element instanceof HTMLElement)) {
       return this;
     }
     // Allow templates to intercept.
@@ -456,7 +456,7 @@ export default class Element {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
-    if (!element || !className) {
+    if (!element || !className || !(element instanceof HTMLElement)) {
       return this;
     }
     // Allow templates to intercept.

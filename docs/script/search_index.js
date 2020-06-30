@@ -1188,6 +1188,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~unescapehtml",
+    "function/index.html#static-function-unescapeHTML",
+    "<span>unescapeHTML</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~unfold",
     "function/index.html#static-function-unfold",
     "<span>unfold</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -4272,12 +4278,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/component/component.js~component#addtiny",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-method-addTiny",
-    "src/components/_classes/component/Component.js~Component#addTiny",
-    "method"
-  ],
-  [
     "src/components/_classes/component/component.js~component#allowdata",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-allowData",
     "src/components/_classes/component/Component.js~Component#allowData",
@@ -4791,6 +4791,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#hasinput",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-hasInput",
     "src/components/_classes/component/Component.js~Component#hasInput",
+    "member"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#hasmodalsavebutton",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-hasModalSaveButton",
+    "src/components/_classes/component/Component.js~Component#hasModalSaveButton",
     "member"
   ],
   [
@@ -5574,6 +5580,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#closedialog",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-closeDialog",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#closeDialog",
+    "method"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#closedialoglistener",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-closeDialogListener",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#closeDialogListener",
+    "member"
+  ],
+  [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#closemodal",
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-closeModal",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#closeModal",
@@ -5584,6 +5602,12 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-closeModalHandler",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#closeModalHandler",
     "method"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#closemodallistener",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-closeModalListener",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#closeModalListener",
+    "member"
   ],
   [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#component",
@@ -5610,6 +5634,24 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#dialog",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-dialog",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#dialog",
+    "member"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#dialogelement",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-dialogElement",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#dialogElement",
+    "member"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#element",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-element",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#element",
+    "member"
+  ],
+  [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#init",
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-init",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#init",
@@ -5622,16 +5664,16 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#isvaluechanged",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-isValueChanged",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#isValueChanged",
+    "method"
+  ],
+  [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#loadrefs",
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-loadRefs",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#loadRefs",
     "method"
-  ],
-  [
-    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#modal",
-    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-modal",
-    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#modal",
-    "member"
   ],
   [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#openmodal",
@@ -5646,15 +5688,51 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#openmodallistener",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-openModalListener",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#openModalListener",
+    "member"
+  ],
+  [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#openmodaltemplate",
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-openModalTemplate",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#openModalTemplate",
     "member"
   ],
   [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#positionoverelement",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-positionOverElement",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#positionOverElement",
+    "method"
+  ],
+  [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#refs",
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-get-refs",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#refs",
+    "member"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#removeeventlisteners",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-removeEventListeners",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#removeEventListeners",
+    "method"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#savedialog",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-saveDialog",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#saveDialog",
+    "method"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#savedialoglistener",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-saveDialogListener",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#saveDialogListener",
+    "member"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#savemodallistener",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-saveModalListener",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#saveModalListener",
     "member"
   ],
   [
@@ -5692,6 +5770,18 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-method-showDialog",
     "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#showDialog",
     "method"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#showdialoglistener",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-member-showDialogListener",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#showDialogListener",
+    "member"
+  ],
+  [
+    "src/components/_classes/componentmodal/componentmodal.js~componentmodal#templaterefs",
+    "class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html#instance-get-templateRefs",
+    "src/components/_classes/componentModal/ComponentModal.js~ComponentModal#templateRefs",
+    "member"
   ],
   [
     "src/components/_classes/componentmodal/componentmodal.js~componentmodal#updateview",
@@ -6462,6 +6552,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/_classes/nested/fixtures/comp3.js",
+    "file/src/components/_classes/nested/fixtures/comp3.js.html",
+    "src/components/_classes/nested/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/_classes/nested/fixtures/index.js",
     "file/src/components/_classes/nested/fixtures/index.js.html",
     "src/components/_classes/nested/fixtures/index.js",
@@ -6748,6 +6844,12 @@ window.esdocSearchIndex = [
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-attach",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#attach",
     "method"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#checked",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-checked",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#checked",
+    "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#defaultschema",
@@ -7788,6 +7890,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp4.js",
+    "file/src/components/datagrid/fixtures/comp4.js.html",
+    "src/components/datagrid/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/index.js",
     "file/src/components/datagrid/fixtures/index.js.html",
     "src/components/datagrid/fixtures/index.js",
@@ -8664,6 +8772,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#defaultdialogtemplate",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-defaultDialogTemplate",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#defaultDialogTemplate",
+    "member"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#defaultschema",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-defaultSchema",
     "src/components/editgrid/EditGrid.js~EditGridComponent#defaultSchema",
@@ -8784,6 +8898,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#restorecomponentscontext",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreComponentsContext",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreComponentsContext",
+    "method"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#restorerowcontext",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreRowContext",
     "src/components/editgrid/EditGrid.js~EditGridComponent#restoreRowContext",
@@ -8829,6 +8949,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#setvalue",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-setValue",
     "src/components/editgrid/EditGrid.js~EditGridComponent#setValue",
+    "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#showdialog",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-showDialog",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#showDialog",
     "method"
   ],
   [
@@ -8937,6 +9063,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp5.js",
     "file/src/components/editgrid/fixtures/comp5.js.html",
     "src/components/editgrid/fixtures/comp5.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp6.js",
+    "file/src/components/editgrid/fixtures/comp6.js.html",
+    "src/components/editgrid/fixtures/comp6.js",
     "file"
   ],
   [
@@ -11580,6 +11712,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/signature/signature.js~signaturecomponent#hasmodalsavebutton",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-get-hasModalSaveButton",
+    "src/components/signature/Signature.js~SignatureComponent#hasModalSaveButton",
+    "member"
+  ],
+  [
     "src/components/signature/signature.js~signaturecomponent#init",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-init",
     "src/components/signature/Signature.js~SignatureComponent#init",
@@ -11614,12 +11752,6 @@ window.esdocSearchIndex = [
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-scale",
     "src/components/signature/Signature.js~SignatureComponent#scale",
     "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#setopenmodalelement",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-setOpenModalElement",
-    "src/components/signature/Signature.js~SignatureComponent#setOpenModalElement",
-    "method"
   ],
   [
     "src/components/signature/signature.js~signaturecomponent#setvalue",
@@ -12618,6 +12750,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/time/time.js~timecomponent#init",
+    "class/src/components/time/Time.js~TimeComponent.html#instance-method-init",
+    "src/components/time/Time.js~TimeComponent#init",
+    "method"
+  ],
+  [
     "src/components/time/time.js~timecomponent#inputinfo",
     "class/src/components/time/Time.js~TimeComponent.html#instance-get-inputInfo",
     "src/components/time/Time.js~TimeComponent#inputInfo",
@@ -12723,6 +12861,12 @@ window.esdocSearchIndex = [
     "src/components/time/fixtures/timeform.js",
     "file/src/components/time/fixtures/timeForm.js.html",
     "src/components/time/fixtures/timeForm.js",
+    "file"
+  ],
+  [
+    "src/components/time/fixtures/timeform2.js",
+    "file/src/components/time/fixtures/timeForm2.js.html",
+    "src/components/time/fixtures/timeForm2.js",
     "file"
   ],
   [
@@ -14784,6 +14928,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/templates/bootstrap/modalpreview/index.js",
+    "file/src/templates/bootstrap/modalPreview/index.js.html",
+    "src/templates/bootstrap/modalPreview/index.js",
+    "file"
+  ],
+  [
     "src/templates/bootstrap/modaldialog/index.js",
     "file/src/templates/bootstrap/modaldialog/index.js.html",
     "src/templates/bootstrap/modaldialog/index.js",
@@ -14949,6 +15099,12 @@ window.esdocSearchIndex = [
     "src/utils/choiceswrapper.js~choiceswrapper#_ondirectionkey",
     "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onDirectionKey",
     "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onDirectionKey",
+    "method"
+  ],
+  [
+    "src/utils/choiceswrapper.js~choiceswrapper#_onenterkey",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onEnterKey",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onEnterKey",
     "method"
   ],
   [
@@ -15297,6 +15453,12 @@ window.esdocSearchIndex = [
     "src/validator/rules/select.js",
     "file/src/validator/rules/Select.js.html",
     "src/validator/rules/Select.js",
+    "file"
+  ],
+  [
+    "src/validator/rules/time.js",
+    "file/src/validator/rules/Time.js.html",
+    "src/validator/rules/Time.js",
     "file"
   ],
   [

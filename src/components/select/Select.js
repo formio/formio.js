@@ -106,6 +106,23 @@ export default class SelectComponent extends Field {
     if (this.component.multiple) {
       return [];
     }
+    // if select has JSON data source type, we are defining if empty value would be an object or a string by checking JSON's first item
+    if (this.component.dataSrc === 'json' && this.component.data.json) {
+      const firstItem = this.component.data.json[0];
+      let firstValue;
+      if (this.valueProperty) {
+        firstValue = _.get(firstItem, this.valueProperty);
+      }
+      else {
+        firstValue = firstItem;
+      }
+      if (firstValue && typeof firstValue === 'string') {
+        return '';
+      }
+      else {
+        return {};
+      }
+    }
     if (this.valueProperty) {
       return '';
     }
@@ -885,6 +902,13 @@ export default class SelectComponent extends Field {
           }
         });
       }
+
+      this.addEventListener(input, 'choice', () => {
+        if (this.component.multiple && this.component.dataSrc === 'resource' && this.isFromSearch) {
+          this.triggerUpdate();
+        }
+        this.isFromSearch = false;
+      });
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
@@ -1333,17 +1357,33 @@ export default class SelectComponent extends Field {
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
-    if (this.isBooleanOrNumber(value)) {
-      value = value.toString();
-    }
-
-    if (Array.isArray(value) && value.some(item => this.isBooleanOrNumber(item))) {
-      value = value.map(item => {
-        if (this.isBooleanOrNumber(item)) {
-          item = item.toString();
+    const convertToString = (data, valueProperty) => {
+      if (valueProperty) {
+        if (Array.isArray(data)) {
+          data.forEach((item) => item[valueProperty] = item[valueProperty].toString());
         }
-      });
-    }
+        else {
+          data[valueProperty] = data[valueProperty].toString();
+        }
+        return data;
+      }
+
+      if (this.isBooleanOrNumber(data)) {
+        data = data.toString();
+      }
+
+      if (Array.isArray(data) && data.some(item => this.isBooleanOrNumber(item))) {
+        data = data.map(item => {
+          if (this.isBooleanOrNumber(item)) {
+            item = item.toString();
+          }
+        });
+      }
+
+      return data;
+    };
+
+    value = convertToString(value);
 
     if (['values', 'custom'].includes(this.component.dataSrc)) {
       const {
@@ -1351,11 +1391,11 @@ export default class SelectComponent extends Field {
         valueProperty,
       } = this.component.dataSrc === 'values'
         ? {
-          items: this.getNormalizedValues(),
+          items: convertToString(this.getNormalizedValues(), 'value'),
           valueProperty: 'value',
         }
         : {
-          items: this.getCustomItems(),
+          items: convertToString(this.getCustomItems(), this.valueProperty),
           valueProperty: this.valueProperty,
         };
 

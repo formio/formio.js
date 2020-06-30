@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -239,7 +240,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editgrid/EditGrid.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-
+import NativePromise from &apos;native-promise-only&apos;;
 import NestedArrayComponent from &apos;../_classes/nestedarray/NestedArrayComponent&apos;;
 import Component from &apos;../_classes/component/Component&apos;;
 import Alert from &apos;../alert/Alert&apos;;
@@ -314,6 +315,16 @@ export default class EditGridComponent extends NestedArrayComponent {
     &lt;/div&gt;
   {% } %}
 &lt;/div&gt;`;
+  }
+
+  get defaultDialogTemplate() {
+    return  `
+    &lt;h3 ref=&quot;dialogHeader&quot;&gt;${this.t(&apos;Do you want to clear data?&apos;)}&lt;/h3&gt;
+    &lt;div style=&quot;display:flex; justify-content: flex-end;&quot;&gt;
+      &lt;button ref=&quot;dialogCancelButton&quot; class=&quot;btn btn-secondary&quot;&gt;${this.t(&apos;Cancel&apos;)}&lt;/button&gt;
+      &lt;button ref=&quot;dialogYesButton&quot; class=&quot;btn btn-primary&quot;&gt;${this.t(&apos;Yes, delete it&apos;)}&lt;/button&gt;
+    &lt;/div&gt;
+  `;
   }
 
   get defaultSchema() {
@@ -611,6 +622,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  restoreComponentsContext() {
+    this.getComponents().forEach((component) =&gt; component.data = this.dataValue[component.rowIndex]);
+  }
+
   flattenComponents(rowIndex) {
     const result = {};
 
@@ -680,7 +695,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.willBeSaved = false;
     const { components } = editRow;
     modalContent.innerHTML = this.renderComponents(components);
-    const dialog = this.component.modal ? this.createModal(modalContent) : undefined;
+    const dialog = this.component.modal ? this.createModal(modalContent, {}, () =&gt; this.showDialog(rowIndex)) : undefined;
     if (this.alert) {
       this.alert.clear();
       this.alert = null;
@@ -712,6 +727,45 @@ export default class EditGridComponent extends NestedArrayComponent {
     }, this.component.saveRow || &apos;Save&apos;));
 
     return this.attachComponents(modalContent, components);
+  }
+
+  showDialog(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+    if (_.isEqual(editRow.backup, editRow.data)) {
+      return NativePromise.resolve();
+    }
+
+    const wrapper = this.ce(&apos;div&apos;, { ref: &apos;confirmationDialog&apos; });
+    const dialogContent =this.component.dialogTemplate || this.defaultDialogTemplate;
+
+    wrapper.innerHTML = dialogContent;
+    wrapper.refs = {};
+    this.loadRefs.call(wrapper, wrapper, {
+      dialogHeader: &apos;single&apos;,
+      dialogCancelButton: &apos;single&apos;,
+      dialogYesButton: &apos;single&apos;,
+    });
+
+    const dialog = this.createModal(wrapper);
+    const close = (event) =&gt; {
+      event.preventDefault();
+      dialog.close();
+    };
+    let dialogResult;
+
+    const promise = new NativePromise((resolve, reject) =&gt; {
+      dialogResult = { resolve, reject };
+    });
+
+    this.addEventListener(wrapper.refs.dialogYesButton, &apos;click&apos;, (event) =&gt; {
+      close(event);
+      dialogResult.resolve();
+    });
+    this.addEventListener(wrapper.refs.dialogCancelButton, &apos;click&apos;, (event) =&gt; {
+      close(event);
+      dialogResult.reject();
+    });
+    return promise;
   }
 
   editRow(rowIndex) {
@@ -787,11 +841,13 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   saveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
     if (this.options.readOnly) {
+      editRow.state = EditRowState.Saved;
       return;
     }
 
-    const editRow = this.editRows[rowIndex];
     const isRowValid = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
@@ -957,6 +1013,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
     let rowsValid = true;
     let rowsEditing = false;
     this.editRows.forEach((editRow) =&gt; {
@@ -1029,7 +1089,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);
     this.checkData();
-    if (changed) {
+    if (changed || flags.resetValue) {
       this.rebuild();
     }
     return changed;

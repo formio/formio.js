@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -248,11 +249,95 @@ import {
   comp1,
   comp2,
   comp3,
+  comp4,
   withDefValue,
   withRowGroupsAndDefValue,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DataGrid Component&apos;, () =&gt; {
+  it(&apos;Should not show alert message in modal edit when clicking on modal overlay and value was not changed&apos;, (done) =&gt; {
+    Harness.testCreate(DataGridComponent, comp4).then((component) =&gt; {
+      const hiddenModalWindow = component.element.querySelector(&apos;.component-rendering-hidden&apos;);
+      assert.equal(!!hiddenModalWindow, true);
+
+      const clickEvent = new Event(&apos;click&apos;);
+      const openModalElement = component.refs.openModal;
+
+      openModalElement.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(!!component.element.querySelector(&apos;.component-rendering-hidden&apos;), false);
+
+        const clickEvent = new Event(&apos;click&apos;);
+        const modalOverlay = component.refs.modalOverlay;
+
+        modalOverlay.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          const dialogWindowHeader = document.querySelector(&apos;[ref=&quot;dialogHeader&quot;]&apos;);
+          assert.equal( !!dialogWindowHeader, false);
+
+          done();
+        }, 300);
+      }, 200);
+    });
+  });
+
+  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed, 
+    and clear values when pushing &apos;yes, delete it&apos; in alert container`, (done) =&gt; {
+    Harness.testCreate(DataGridComponent, comp4).then((component) =&gt; {
+      const hiddenModalWindow = component.element.querySelector(&apos;.component-rendering-hidden&apos;);
+      assert.equal(!!hiddenModalWindow, true);
+
+      const clickEvent = new Event(&apos;click&apos;);
+      const openModalElement = component.refs.openModal;
+      //open modal edit window
+      openModalElement.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(!!component.element.querySelector(&apos;.component-rendering-hidden&apos;), false);
+
+        const inputEvent = new Event(&apos;input&apos;);
+        const dataGridInputField = component.element.querySelector(&apos;[name=&quot;data[dataGrid][0][number]&quot;]&apos;);
+
+        dataGridInputField.value = 55555;
+        //input value in dataGrid field inside modal edit window
+        dataGridInputField.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal( component.element.querySelector(&apos;[name=&quot;data[dataGrid][0][number]&quot;]&apos;).value, &apos;55555&apos;);
+
+          const clickEvent = new Event(&apos;click&apos;);
+          const modalOverlay = component.refs.modalOverlay;
+          //click outside modal edit window
+          modalOverlay.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            const dialogWindowHeader = document.querySelector(&apos;[ref=&quot;dialogHeader&quot;]&apos;);
+            assert.equal( !!dialogWindowHeader, true);
+
+            const clickEvent = new Event(&apos;click&apos;);
+            const btnForCleaningValues = document.querySelector(&apos;[ref=&quot;dialogYesButton&quot;]&apos;);
+            //click on &apos;yes, delete it&apos; button inside alert window
+            btnForCleaningValues.dispatchEvent(clickEvent);
+
+            setTimeout(() =&gt; {
+              const clickEvent = new Event(&apos;click&apos;);
+              const openModalElement = component.refs.openModal;
+              //open edit modal window again
+              openModalElement.dispatchEvent(clickEvent);
+
+              setTimeout(() =&gt; {
+                assert.equal( component.element.querySelector(&apos;[name=&quot;data[dataGrid][0][number]&quot;]&apos;).value, &apos;&apos;);
+                done();
+              }, 350);
+            }, 300);
+          }, 250);
+        }, 200);
+      }, 150);
+    });
+  });
+
   it(&apos;Should build a data grid component&apos;, () =&gt; {
     return Harness.testCreate(DataGridComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 3);

@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -1283,11 +1284,13 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       let comp = null;
       parentComponent.getComponents().forEach((component) =&gt; {
-        if (component.key === original.key) {
+        if (component.component.key === original.key) {
           comp = component;
         }
       });
       const originalComp = comp.component;
+      const originalComponentSchema = comp.schema;
+
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
@@ -1306,7 +1309,8 @@ export default class WebformBuilder extends Component {
           parentComponent.schema,
           path,
           index,
-          isNew
+          isNew,
+          originalComponentSchema
         );
         this.emit(&apos;change&apos;, this.form);
         this.highlightInvalidComponents();
@@ -1427,8 +1431,12 @@ export default class WebformBuilder extends Component {
             }
 
             if (this.form) {
+              let formComponents = this.findNamespaceRoot(parent.formioComponent.component);
+              // excluding component which key uniqueness is to be checked to prevent the comparing of the same keys
+              formComponents = formComponents.filter(comp =&gt; editFormOptions.editComponent.id !== comp.id);
+
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), event.data);
+              BuilderUtils.uniquify(formComponents, event.data);
             }
           }
         }

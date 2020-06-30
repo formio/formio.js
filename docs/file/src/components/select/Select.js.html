@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -345,6 +346,23 @@ export default class SelectComponent extends Field {
   get emptyValue() {
     if (this.component.multiple) {
       return [];
+    }
+    // if select has JSON data source type, we are defining if empty value would be an object or a string by checking JSON&apos;s first item
+    if (this.component.dataSrc === &apos;json&apos; &amp;&amp; this.component.data.json) {
+      const firstItem = this.component.data.json[0];
+      let firstValue;
+      if (this.valueProperty) {
+        firstValue = _.get(firstItem, this.valueProperty);
+      }
+      else {
+        firstValue = firstItem;
+      }
+      if (firstValue &amp;&amp; typeof firstValue === &apos;string&apos;) {
+        return &apos;&apos;;
+      }
+      else {
+        return {};
+      }
     }
     if (this.valueProperty) {
       return &apos;&apos;;
@@ -1125,6 +1143,13 @@ export default class SelectComponent extends Field {
           }
         });
       }
+
+      this.addEventListener(input, &apos;choice&apos;, () =&gt; {
+        if (this.component.multiple &amp;&amp; this.component.dataSrc === &apos;resource&apos; &amp;&amp; this.isFromSearch) {
+          this.triggerUpdate();
+        }
+        this.isFromSearch = false;
+      });
       this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
     }
@@ -1573,17 +1598,33 @@ export default class SelectComponent extends Field {
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
-    if (this.isBooleanOrNumber(value)) {
-      value = value.toString();
-    }
-
-    if (Array.isArray(value) &amp;&amp; value.some(item =&gt; this.isBooleanOrNumber(item))) {
-      value = value.map(item =&gt; {
-        if (this.isBooleanOrNumber(item)) {
-          item = item.toString();
+    const convertToString = (data, valueProperty) =&gt; {
+      if (valueProperty) {
+        if (Array.isArray(data)) {
+          data.forEach((item) =&gt; item[valueProperty] = item[valueProperty].toString());
         }
-      });
-    }
+        else {
+          data[valueProperty] = data[valueProperty].toString();
+        }
+        return data;
+      }
+
+      if (this.isBooleanOrNumber(data)) {
+        data = data.toString();
+      }
+
+      if (Array.isArray(data) &amp;&amp; data.some(item =&gt; this.isBooleanOrNumber(item))) {
+        data = data.map(item =&gt; {
+          if (this.isBooleanOrNumber(item)) {
+            item = item.toString();
+          }
+        });
+      }
+
+      return data;
+    };
+
+    value = convertToString(value);
 
     if ([&apos;values&apos;, &apos;custom&apos;].includes(this.component.dataSrc)) {
       const {
@@ -1591,11 +1632,11 @@ export default class SelectComponent extends Field {
         valueProperty,
       } = this.component.dataSrc === &apos;values&apos;
         ? {
-          items: this.getNormalizedValues(),
+          items: convertToString(this.getNormalizedValues(), &apos;value&apos;),
           valueProperty: &apos;value&apos;,
         }
         : {
-          items: this.getCustomItems(),
+          items: convertToString(this.getCustomItems(), this.valueProperty),
           valueProperty: this.valueProperty,
         };
 

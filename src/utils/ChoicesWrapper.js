@@ -68,8 +68,15 @@ class ChoicesWrapper extends Choices {
       return;
     }
 
-    this.shouldOpenDropDown = false;
     super._handleButtonAction(activeItems, element);
+  }
+
+  _onEnterKey(args) {
+    // Prevent dropdown form opening when removeItemButton was pressed using 'Enter' on keyboard
+    if (args.event.target.className === 'choices__button') {
+      this.shouldOpenDropDown = false;
+    }
+    super._onEnterKey(args);
   }
 
   _onDirectionKey(...args) {

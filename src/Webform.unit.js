@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 import each from 'lodash/each';
+import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
@@ -12,13 +13,94 @@ import {
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
-  formWithAdvancedLogic
+  formWithAdvancedLogic,
+  formWithPatternValidation,
+  calculatedSelectboxes,
+  calculateZeroValue,
+  formWithConditionalLogic,
+  formWithCalculatedValueWithoutOverriding
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  it('Should not override calculated value', function(done) {
+    const formElement = document.createElement('div');
+    const formWithCalculatedAmount = new Webform(formElement);
+
+    formWithCalculatedAmount.setForm(formWithCalculatedValueWithoutOverriding).then(() => {
+      const inputEvent = new Event('input');
+
+      const amountInput1 = formWithCalculatedAmount.element.querySelector('[name="data[amount1]"]');
+      const amountInput2 = formWithCalculatedAmount.element.querySelector('[name="data[amount2]"]');
+
+      amountInput1.value = 6;
+      amountInput2.value = 4;
+
+      amountInput1.dispatchEvent(inputEvent);
+      amountInput2.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name="data[currency]"]');
+        //checking if the value was calculated correctly
+        assert.equal(totalAmountInput.value, '$10.00');
+
+        const inputEvent = new Event('input');
+        //trying to override calculated value
+        totalAmountInput.value =  55;
+        totalAmountInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name="data[currency]"]');
+          //checking if the value was overridden
+          assert.equal(totalAmountInput.value, '$10.00');
+
+          done();
+        }, 400);
+      }, 300);
+    })
+    .catch((err) => done(err));
+  });
+
+  it(`Should show field only in container where radio component has 'yes' value when containers contain radio 
+  components with the same key`, function(done) {
+    const formElement = document.createElement('div');
+    const formWithCondition = new Webform(formElement);
+
+    formWithCondition.setForm(formWithConditionalLogic).then(() => {
+      Harness.clickElement(formWithCondition, formWithCondition.element.querySelector('.formio-component-container1').querySelector('[value="yes"]'));
+
+      setTimeout(() => {
+        const conditionalFieldInContainer1 = formWithCondition.element.querySelector('[name="data[container1][textField]"]');
+        const conditionalFieldInContainer2 = formWithCondition.element.querySelector('[name="data[container2][textField]"]');
+
+        assert.equal(!!conditionalFieldInContainer1, true);
+        assert.equal(!!conditionalFieldInContainer2, false);
+
+        done();
+      }, 400);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
+    const formElement = document.createElement('div');
+    const formWithPattern = new Webform(formElement);
+
+    formWithPattern.setForm(formWithPatternValidation).then(() => {
+    Harness.clickElement(formWithPattern, formWithPattern.element.querySelector('[name="data[submit]"]'));
+
+    setTimeout(() => {
+      assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
+      assert.equal(formWithPattern.errors[0].messages.length, 1);
+      assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
+      done();
+    }, 500);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should disable field applying advanced logic if dot is used inside component key', function(done) {
     const formElement = document.createElement('div');
     const formWithLogic = new Webform(formElement);
@@ -378,6 +460,44 @@ describe('Webform tests', () => {
     });
   });
 
+  it('Should not mutate the global i18next if it gets an instance', async function() {
+    await i18next.init({ lng: 'en' });
+    const instance = i18next.createInstance();
+
+    const formElement = document.createElement('div');
+    const translateForm = new Webform(formElement, {
+      template: 'bootstrap3',
+      language: 'es',
+      i18next: instance,
+      i18n: {
+        es: {
+          'Default Label': 'Spanish Label'
+        }
+      }
+    });
+
+    return translateForm.setForm({
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    }).then(() => {
+      assert.equal(i18next.language, 'en');
+      assert.equal(translateForm.i18next.language, 'es');
+      assert.equal(translateForm.i18next, instance);
+
+      const label = formElement.querySelector('.control-label');
+      assert.equal(label.innerHTML.trim(), 'Spanish Label');
+    });
+  });
+
   it('Should keep components valid if they are pristine', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
@@ -720,6 +840,34 @@ describe('Webform tests', () => {
     });
   });
 
+  it('Should set calculated value correctly', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement);
+    form.setForm(calculateZeroValue).then(() => {
+      const a = form.components[0];
+      const b = form.components[1];
+      const sum = form.components[2];
+
+      a.setValue(10);
+      b.setValue(5);
+      setTimeout(() => {
+        assert.equal(a.dataValue, 10);
+        assert.equal(b.dataValue, 5);
+        assert.equal(sum.dataValue, 15);
+
+        a.setValue('0');
+        b.setValue('0');
+        setTimeout(() => {
+          assert.equal(a.dataValue, 0);
+          assert.equal(b.dataValue,0);
+          assert.equal(sum.dataValue, 0);
+
+          done();
+        }, 250);
+      }, 250);
+    }).catch(done);
+  });
+
   describe('set/get nosubmit', () => {
     it('should set/get nosubmit flag and emit nosubmit event', () => {
       const form = new Webform(null, {});
@@ -1039,6 +1187,33 @@ describe('Webform tests', () => {
               });
               done();
             }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it('Should allow to change value.', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(calculatedSelectboxes).then(() => {
+        const radio = form.getComponent(['radio']);
+        radio.setValue('a');
+        setTimeout(() => {
+          assert.equal(radio.dataValue, 'a');
+          const selectBoxes = form.getComponent(['selectBoxes']);
+          assert.equal(selectBoxes.dataValue['a'], true, 'Should calculate value and set it to "a"');
+          selectBoxes.setValue({
+            'a': true,
+            'b': true,
+            'c': false
+          });
+          setTimeout(() => {
+            assert.deepEqual(selectBoxes.dataValue, {
+              'a': true,
+              'b': true,
+              'c': false
+            }, 'Should change the value');
+            done();
           }, 250);
         }, 250);
       }).catch(done);

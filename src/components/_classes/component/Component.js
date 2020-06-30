@@ -15,7 +15,6 @@ const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
-const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
  * This is the Component class
@@ -936,14 +935,13 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    const template = this.getModalPreviewTemplate();
-    this.componentModal.setOpenModalElement(template);
+    this.componentModal.setOpenModalElement(this.getModalPreviewTemplate());
   }
 
   getModalPreviewTemplate() {
-    return `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || this.t('Click to set value')}</button>`;
+    return this.renderTemplate('modalPreview', {
+      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+    });
   }
 
   build(element) {
@@ -953,6 +951,10 @@ export default class Component extends Element {
     return this.attach(element);
   }
 
+  get hasModalSaveButton() {
+    return true;
+  }
+
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
@@ -960,6 +962,7 @@ export default class Component extends Element {
     if (!this.builderMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
+        showSaveButton: this.hasModalSaveButton,
         id: this.id,
         classes: this.className,
         styles: this.customStyle,
@@ -980,7 +983,8 @@ export default class Component extends Element {
   attach(element) {
     if (!this.builderMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
-      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened);
+      const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
+      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
       this.setOpenModalElement();
     }
 
@@ -1249,7 +1253,7 @@ export default class Component extends Element {
     return this.itemValue(value);
   }
 
-  createModal(element, attr) {
+  createModal(element, attr, confirm) {
     const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));
 
@@ -1276,8 +1280,18 @@ export default class Component extends Element {
       dialog.close();
     };
 
-    this.addEventListener(dialog.refs.dialogOverlay, 'click', close);
-    this.addEventListener(dialog.refs.dialogClose, 'click', close);
+    const handleCloseClick = (e) => {
+      if (confirm) {
+        confirm().then(() => close(e))
+        .catch(() => {});
+      }
+      else {
+        close(e);
+      }
+    };
+
+    this.addEventListener(dialog.refs.dialogOverlay, 'click', handleCloseClick);
+    this.addEventListener(dialog.refs.dialogClose, 'click', handleCloseClick);
 
     return dialog;
   }
@@ -1429,7 +1443,7 @@ export default class Component extends Element {
       // Return a non-resolving promise.
       return NativePromise.resolve();
     }
-    this.clear();
+    this.detach();
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
@@ -1889,9 +1903,6 @@ export default class Component extends Element {
           ]
         }
       },
-      tiny: {
-        theme: 'silver'
-      },
       default: {}
     };
   }
@@ -1989,20 +2000,6 @@ export default class Component extends Element {
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
-      });
-  }
-
-  addTiny(element, settings, onChange) {
-    return Formio.requireLibrary('tinymce', 'tinymce', TINYMCE_URL.replace('no-api-key', settings.tinyApiKey), true)
-      .then((editor) => {
-        return editor.init({
-          ...settings,
-          target: element,
-          // eslint-disable-next-line camelcase
-          init_instance_callback: (editor) => {
-            editor.on('Change', () => onChange(editor.getContent()));
-          },
-        });
       });
   }
 
@@ -2402,14 +2399,26 @@ export default class Component extends Element {
     }
 
     // Calculate the new value.
-    const calculatedValue = this.evaluate(this.component.calculateValue, {
+    let calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
       data,
       row: row || this.data
-    }, 'value') || this.emptyValue;
+    }, 'value');
+
+    if (_.isNil(calculatedValue)) {
+      calculatedValue = this.emptyValue;
+    }
+
+    // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
+    if (flags.isReordered && allowOverride) {
+      this.calculatedValue = calculatedValue;
+    }
 
     const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
     const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
+
+    const normCurr = this.normalizeValue(currentCalculatedValue);
+    const normNew = this.normalizeValue(newCalculatedValue);
 
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
@@ -2417,6 +2426,10 @@ export default class Component extends Element {
       this.calculatedValue &&
       !_.isEqual(dataValue, currentCalculatedValue) &&
       _.isEqual(newCalculatedValue, currentCalculatedValue)) {
+      return false;
+    }
+
+    if (_.isEqual(normCurr, normNew) && allowOverride) {
       return false;
     }
 
@@ -2442,7 +2455,7 @@ export default class Component extends Element {
 
     // Set the new value.
     const changed = this.setValue(calculatedValue, flags);
-    this.calculatedValue = this.dataValue;
+    this.calculatedValue = calculatedValue;
     return changed;
   }
 
@@ -2587,7 +2600,7 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    if (flags.noValidate) {
+    if (flags.noValidate && !flags.validateOnInit) {
       return true;
     }
 

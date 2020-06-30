@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -261,17 +262,21 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
-    this.on(&apos;iframe-getIframePositions&apos;, () =&gt; {
-      const iframeBoundingClientRect = document.querySelector(&apos;iframe&apos;).getBoundingClientRect();
-      this.postMessage({
-        name: &apos;iframePositions&apos;,
-        data: {
-          iframe: {
-            top: iframeBoundingClientRect.top
-          },
-          scrollY: window.scrollY || window.pageYOffset
-        }
-      });
+    this.on(&apos;iframe-getIframePositions&apos;, (query) =&gt; {
+      const iframe = document.getElementById(`iframe-${query.formId}`);
+      if (iframe) {
+        const iframeBoundingClientRect = iframe.getBoundingClientRect();
+        this.postMessage({
+          name: &apos;iframePositions&apos;,
+          data: {
+            formId: query.formId,
+            iframe: {
+              top: iframeBoundingClientRect.top
+            },
+            scrollY: window.scrollY || window.pageYOffset
+          }
+        });
+      }
     });
 
     // Trigger when this form is ready.

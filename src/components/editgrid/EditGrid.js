@@ -1,5 +1,5 @@
 import _ from 'lodash';
-
+import NativePromise from 'native-promise-only';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
@@ -74,6 +74,16 @@ export default class EditGridComponent extends NestedArrayComponent {
     </div>
   {% } %}
 </div>`;
+  }
+
+  get defaultDialogTemplate() {
+    return  `
+    <h3 ref="dialogHeader">${this.t('Do you want to clear data?')}</h3>
+    <div style="display:flex; justify-content: flex-end;">
+      <button ref="dialogCancelButton" class="btn btn-secondary">${this.t('Cancel')}</button>
+      <button ref="dialogYesButton" class="btn btn-primary">${this.t('Yes, delete it')}</button>
+    </div>
+  `;
   }
 
   get defaultSchema() {
@@ -371,6 +381,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  restoreComponentsContext() {
+    this.getComponents().forEach((component) => component.data = this.dataValue[component.rowIndex]);
+  }
+
   flattenComponents(rowIndex) {
     const result = {};
 
@@ -440,7 +454,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.willBeSaved = false;
     const { components } = editRow;
     modalContent.innerHTML = this.renderComponents(components);
-    const dialog = this.component.modal ? this.createModal(modalContent) : undefined;
+    const dialog = this.component.modal ? this.createModal(modalContent, {}, () => this.showDialog(rowIndex)) : undefined;
     if (this.alert) {
       this.alert.clear();
       this.alert = null;
@@ -472,6 +486,45 @@ export default class EditGridComponent extends NestedArrayComponent {
     }, this.component.saveRow || 'Save'));
 
     return this.attachComponents(modalContent, components);
+  }
+
+  showDialog(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+    if (_.isEqual(editRow.backup, editRow.data)) {
+      return NativePromise.resolve();
+    }
+
+    const wrapper = this.ce('div', { ref: 'confirmationDialog' });
+    const dialogContent =this.component.dialogTemplate || this.defaultDialogTemplate;
+
+    wrapper.innerHTML = dialogContent;
+    wrapper.refs = {};
+    this.loadRefs.call(wrapper, wrapper, {
+      dialogHeader: 'single',
+      dialogCancelButton: 'single',
+      dialogYesButton: 'single',
+    });
+
+    const dialog = this.createModal(wrapper);
+    const close = (event) => {
+      event.preventDefault();
+      dialog.close();
+    };
+    let dialogResult;
+
+    const promise = new NativePromise((resolve, reject) => {
+      dialogResult = { resolve, reject };
+    });
+
+    this.addEventListener(wrapper.refs.dialogYesButton, 'click', (event) => {
+      close(event);
+      dialogResult.resolve();
+    });
+    this.addEventListener(wrapper.refs.dialogCancelButton, 'click', (event) => {
+      close(event);
+      dialogResult.reject();
+    });
+    return promise;
   }
 
   editRow(rowIndex) {
@@ -547,11 +600,13 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   saveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
     if (this.options.readOnly) {
+      editRow.state = EditRowState.Saved;
       return;
     }
 
-    const editRow = this.editRows[rowIndex];
     const isRowValid = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
@@ -717,6 +772,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
     let rowsValid = true;
     let rowsEditing = false;
     this.editRows.forEach((editRow) => {
@@ -789,7 +848,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);
     this.checkData();
-    if (changed) {
+    if (changed || flags.resetValue) {
       this.rebuild();
     }
     return changed;

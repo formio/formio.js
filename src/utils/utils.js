@@ -358,6 +358,20 @@ export function setActionProperty(component, action, result, row, data, instance
 }
 
 /**
+ * Unescape HTML characters like &lt, &gt, &amp and etc.
+ * @param str
+ * @returns {string}
+ */
+export function unescapeHTML(str) {
+  if (typeof window === 'undefined') {
+    return str;
+  }
+
+  const doc = new window.DOMParser().parseFromString(str, 'text/html');
+  return doc.documentElement.textContent;
+}
+
+/**
  * Make a filename guaranteed to be unique.
  * @param name
  * @param template
@@ -1035,7 +1049,7 @@ export function getContextComponents(context) {
     if (component.key !== context.data.key) {
       values.push({
         label: `${component.label || component.key} (${path})`,
-        value: component.key,
+        value: path,
       });
     }
   });

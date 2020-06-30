@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -1216,7 +1217,7 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken ? Formio.tokens.formioToken : &apos;&apos;;
+    return Formio.tokens.formioToken || &apos;&apos;;
   }
 
   // Needed to maintain reverse compatability...
@@ -1225,19 +1226,16 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken = token || &apos;&apos;;
+    Formio.tokens.formioToken = token || &apos;&apos;;
   }
 
   static setToken(token = &apos;&apos;, opts) {
     token = token || &apos;&apos;;
     opts = (typeof opts === &apos;string&apos;) ? { namespace: opts } : opts || {};
-    var tokenName = `${opts.namespace || Formio.namespace || &apos;formio&apos;}Token`;
+    const tokenName = `${opts.namespace || Formio.namespace || &apos;formio&apos;}Token`;
+
     if (!Formio.tokens) {
       Formio.tokens = {};
-    }
-
-    if (Formio.tokens[tokenName] &amp;&amp; Formio.tokens[tokenName] === token) {
-      return;
     }
 
     Formio.tokens[tokenName] = token;
@@ -1248,20 +1246,25 @@ export default class Formio {
       }
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(tokenName);
+        localStorage.removeItem(tokenName);
       }
       catch (err) {
-        return cookies.erase(tokenName, { path: &apos;/&apos; });
+        cookies.erase(tokenName, { path: &apos;/&apos; });
+      }
+      return Promise.resolve(null);
+    }
+
+    if (Formio.tokens[tokenName] !== token) {
+      // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
+      try {
+        localStorage.setItem(tokenName, token);
+      }
+      catch (err) {
+        cookies.set(tokenName, token, { path: &apos;/&apos; });
       }
     }
-    // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
-    try {
-      localStorage.setItem(tokenName, token);
-    }
-    catch (err) {
-      cookies.set(tokenName, token, { path: &apos;/&apos; });
-    }
-    return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null
+    // Return or updates the current user
+    return Formio.currentUser(opts.formio, opts);
   }
 
   static getToken(options) {
@@ -1493,6 +1496,12 @@ export default class Formio {
         Formio.setUser(null, options);
         Formio.clearCache();
         return result;
+      })
+      .catch(function(err) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        throw err;
       });
   }
 

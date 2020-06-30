@@ -118,7 +118,7 @@ export default class ButtonComponent extends Field {
         this.disabled = true;
       }, true);
       this.on('submitDone', (message) => {
-        const resultMessage = message || this.t('complete');
+        const resultMessage = _.isString(message) ? message : this.t('complete');
         this.loading = false;
         this.disabled = false;
         this.addClass(this.refs.button, 'btn-success submit-success');
@@ -128,7 +128,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        const resultMessage = message || this.t(this.errorMessage('error'));
+        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('error'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -169,16 +169,16 @@ export default class ButtonComponent extends Field {
     }
 
     this.on('change', (value, flags) => {
-      const isValid = !(flags && flags.noValidate)
-        ? (this.root
-            ? this.root.checkValidity(this.root.data, null, null, true)
-            : true)
-        : value.isValid;
+      let isValid = value.isValid;
+      if (flags && flags.noValidate) {
+        isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
+        flags.rootValidity = isValid;
+      }
       this.loading = false;
-      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && isValid);
+      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
       if (onChange) {
-        onChange(value, !isValid);
+        onChange(value, isValid);
       }
     }, true);
 

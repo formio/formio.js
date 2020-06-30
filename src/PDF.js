@@ -21,17 +21,21 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
-    this.on('iframe-getIframePositions', () => {
-      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
-      this.postMessage({
-        name: 'iframePositions',
-        data: {
-          iframe: {
-            top: iframeBoundingClientRect.top
-          },
-          scrollY: window.scrollY || window.pageYOffset
-        }
-      });
+    this.on('iframe-getIframePositions', (query) => {
+      const iframe = document.getElementById(`iframe-${query.formId}`);
+      if (iframe) {
+        const iframeBoundingClientRect = iframe.getBoundingClientRect();
+        this.postMessage({
+          name: 'iframePositions',
+          data: {
+            formId: query.formId,
+            iframe: {
+              top: iframeBoundingClientRect.top
+            },
+            scrollY: window.scrollY || window.pageYOffset
+          }
+        });
+      }
     });
 
     // Trigger when this form is ready.

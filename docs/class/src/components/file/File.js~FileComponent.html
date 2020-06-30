@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -2300,6 +2301,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-hasModalSaveButton">hasModalSaveButton</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-hasSetValue">hasSetValue</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -3174,7 +3203,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-wysiwygDefault">wysiwygDefault</a></span></span><span class="code" data-ice="signature">: {&quot;quill&quot;: <span>*</span>, &quot;ace&quot;: <span>*</span>, &quot;ckeditor&quot;: <span>*</span>, &quot;tiny&quot;: <span>*</span>, &quot;default&quot;: <span>*</span>}</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-wysiwygDefault">wysiwygDefault</a></span></span><span class="code" data-ice="signature">: {&quot;quill&quot;: <span>*</span>, &quot;ace&quot;: <span>*</span>, &quot;ckeditor&quot;: <span>*</span>, &quot;default&quot;: <span>*</span>}</span>
         </p>
       </div>
       <div>
@@ -4427,34 +4456,6 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-addTiny">addTiny</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, settings: <span>*</span>, onChange: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-append">append</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>)</span>
         </p>
       </div>
@@ -5253,7 +5254,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-createModal">createModal</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, attr: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-createModal">createModal</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, attr: <span>*</span>, confirm: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5680,7 +5681,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getModalPreviewTemplate">getModalPreviewTemplate</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getModalPreviewTemplate">getModalPreviewTemplate</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -7913,7 +7914,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber255">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber258">source</a></span></span>
     </span>
   </h3>
 
@@ -7956,7 +7957,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber232">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber235">source</a></span></span>
     </span>
   </h3>
 
@@ -7999,7 +8000,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber243">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber246">source</a></span></span>
     </span>
   </h3>
 
@@ -8042,7 +8043,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber307">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber310">source</a></span></span>
     </span>
   </h3>
 
@@ -8129,7 +8130,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber627">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber630">source</a></span></span>
     </span>
   </h3>
 
@@ -8216,7 +8217,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber107">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber110">source</a></span></span>
     </span>
   </h3>
 
@@ -8259,7 +8260,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber91">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber94">source</a></span></span>
     </span>
   </h3>
 
@@ -8432,7 +8433,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber112">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber115">source</a></span></span>
     </span>
   </h3>
 
@@ -8475,7 +8476,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber251">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber254">source</a></span></span>
     </span>
   </h3>
 
@@ -8604,7 +8605,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber247">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber250">source</a></span></span>
     </span>
   </h3>
 
@@ -8647,7 +8648,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber159">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber162">source</a></span></span>
     </span>
   </h3>
 
@@ -8692,7 +8693,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber233">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber236">source</a></span></span>
     </span>
   </h3>
 
@@ -8738,7 +8739,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber285">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber288">source</a></span></span>
     </span>
   </h3>
 
@@ -8809,7 +8810,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber206">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber209">source</a></span></span>
     </span>
   </h3>
 
@@ -8881,7 +8882,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber269">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber272">source</a></span></span>
     </span>
   </h3>
 
@@ -8940,7 +8941,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber676">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber679">source</a></span></span>
     </span>
   </h3>
 
@@ -8983,7 +8984,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber454">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber457">source</a></span></span>
     </span>
   </h3>
 
@@ -9078,7 +9079,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber670">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber673">source</a></span></span>
     </span>
   </h3>
 
@@ -9121,7 +9122,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber644">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber647">source</a></span></span>
     </span>
   </h3>
 
@@ -9192,7 +9193,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber145">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber148">source</a></span></span>
     </span>
   </h3>
 
@@ -9263,7 +9264,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber103">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber106">source</a></span></span>
     </span>
   </h3>
 
@@ -9319,7 +9320,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber95">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber98">source</a></span></span>
     </span>
   </h3>
 
@@ -9390,7 +9391,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber129">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber132">source</a></span></span>
     </span>
   </h3>
 
@@ -9461,7 +9462,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber461">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber464">source</a></span></span>
     </span>
   </h3>
 
@@ -9646,7 +9647,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber119">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber122">source</a></span></span>
     </span>
   </h3>
 
@@ -9701,7 +9702,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber156">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber159">source</a></span></span>
     </span>
   </h3>
 
@@ -9744,7 +9745,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber181">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber184">source</a></span></span>
     </span>
   </h3>
 
@@ -9787,7 +9788,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber141">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber144">source</a></span></span>
     </span>
   </h3>
 
@@ -9846,7 +9847,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber188">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber191">source</a></span></span>
     </span>
   </h3>
 
@@ -9889,7 +9890,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber500">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber503">source</a></span></span>
     </span>
   </h3>
 
@@ -9960,7 +9961,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber554">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber557">source</a></span></span>
     </span>
   </h3>
 
@@ -10019,7 +10020,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber550">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber553">source</a></span></span>
     </span>
   </h3>
 
@@ -10096,7 +10097,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber546">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber549">source</a></span></span>
     </span>
   </h3>
 
@@ -10173,7 +10174,7 @@ protected.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber527">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber530">source</a></span></span>
     </span>
   </h3>
 

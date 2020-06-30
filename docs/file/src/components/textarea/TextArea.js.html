@@ -218,6 +218,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -410,7 +411,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
             let dataValue = this.dataValue;
             dataValue = (this.component.multiple &amp;&amp; Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
+            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
             editorReady(quill);
             return quill;
           }).catch(err =&gt; console.warn(err));
@@ -436,19 +437,6 @@ export default class TextAreaComponent extends TextFieldComponent {
               editorReady(editor);
               return editor;
             });
-          break;
-        case &apos;tiny&apos;:
-          if (!settings) {
-            settings = {};
-          }
-          settings.mode = this.component.as || &apos;javascript&apos;;
-          this.addTiny(element, settings, (newValue) =&gt; this.updateEditorValue(newValue))
-            .then((tiny) =&gt; {
-              this.editors[index] = tiny;
-              tiny.setContent(this.setConvertedValue(this.dataValue));
-              editorReady(tiny);
-              return tiny;
-            }).catch(err =&gt; console.warn(err));
           break;
         default:
           super.attachElement(element, index);
@@ -558,9 +546,6 @@ export default class TextAreaComponent extends TextFieldComponent {
               break;
             case &apos;ckeditor&apos;:
               editor.data.set(this.setConvertedValue(value, index));
-              break;
-            case &apos;tiny&apos;:
-              editor.setContent(this.setConvertedValue(value));
               break;
           }
         }
