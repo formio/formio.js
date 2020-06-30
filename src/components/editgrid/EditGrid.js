@@ -496,6 +496,9 @@ export default class EditGridComponent extends NestedArrayComponent {
           editRow.willBeSaved = true;
           dialog.close();
           this.saveRow(rowIndex);
+          if (this.component.rowDrafts) {
+            editRow.components.forEach(comp => comp.setPristine(this.pristine));
+          }
         }
         else {
           this.alert.showErrors(editRow.errors, false);
