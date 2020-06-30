@@ -305,13 +305,15 @@ export default class EditGridComponent extends NestedArrayComponent {
             className: 'editRow',
             event: 'click',
             action: () => {
-              this.editRow(rowIndex);
-              if (this.component.rowDrafts) {
-                this.validateRow(editRow, false);
-                if (this.component.modal && editRow.errors && !!editRow.errors.length ) {
-                  this.alert.showErrors(editRow.errors, false);
+              this.editRow(rowIndex).then(()=> {
+                if (this.component.rowDrafts) {
+                  this.validateRow(editRow, false);
+
+                  if (this.component.modal && editRow.errors && !!editRow.errors.length ) {
+                    this.alert.showErrors(editRow.errors, false);
+                  }
                 }
-              }
+              });
             },
           },
         ].forEach(({
