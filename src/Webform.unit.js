@@ -18,13 +18,88 @@ import {
   calculatedSelectboxes,
   calculateZeroValue,
   formWithConditionalLogic,
-  formWithCalculatedValueWithoutOverriding
+  formWithCalculatedValueWithoutOverriding,
+  formWithEditGridModalDrafts
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  it('Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDraftModals = new Webform(formElement);
+
+    formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() => {
+      const clickEvent = new Event('click');
+      const inputEvent = new Event('input');
+
+      const addRowBtn =  formWithDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
+      //click to open row in modal view
+      addRowBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const rowModal = document.querySelector('.formio-dialog-content');
+        //checking if row modal was openned
+        assert.equal(!!rowModal, true);
+
+        const textFieldInput = rowModal.querySelector('[name="data[editGrid][0][textField]"]');
+        textFieldInput.value = 'test';
+        //input value in one of required row fields
+        textFieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          //checking if the value was set inside the field
+          assert.equal(textFieldInput.value, 'test');
+
+          const saveModalBtn = rowModal.querySelector('.btn-primary');
+          //clicking save button to save row draft
+          saveModalBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const editGridRows = formWithDraftModals.element.querySelectorAll( '[ref="editgrid-editGrid-row"]');
+            //checking if the editGrid row was created
+            assert.equal(editGridRows.length, 1);
+
+            const submitBtn =  formWithDraftModals.element.querySelector('[name="data[submit]"');
+            //pushing submit button to trigger validation
+            submitBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              //checking the number of appeared errors
+              assert.equal(formWithDraftModals.errors.length, 2);
+
+              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent;
+              const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error').textContent;
+              //checking if right errors were shown in right places
+              assert.equal(rowError, 'Invalid row. Please correct it or delete.');
+              assert.equal(editGridError, 'Please correct invalid rows before proceeding.');
+
+              const rowEditBtn = editGridRows[0].querySelector('.editRow');
+              //open row modal again to check if there are errors
+              rowEditBtn.dispatchEvent(clickEvent);
+
+              setTimeout(() => {
+                const rowModalAfterValidation = document.querySelector('.formio-dialog-content');
+
+                const alertWithErrorText = rowModalAfterValidation.querySelector('.alert-danger');
+                //checking if alert with errors list appeared inside the modal
+                assert.equal(!!alertWithErrorText, true);
+
+                const numberComponent = rowModalAfterValidation.querySelector('.formio-component-number');
+                const numberComponentError = numberComponent.querySelector('.error').textContent;
+                //checking if error was shown for empty required field
+                assert.equal(numberComponentError, 'Number is required');
+
+                done();
+              }, 350);
+            }, 300);
+          }, 200);
+        }, 150);
+      }, 100);
+    }).catch((err) => done(err));
+  });
+
   it('Should not override calculated value', function(done) {
     const formElement = document.createElement('div');
     const formWithCalculatedAmount = new Webform(formElement);

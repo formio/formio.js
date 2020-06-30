@@ -20,6 +20,7 @@ const formWithCalculatedValueWithoutOverriding = require('./calculatedValueForm.
 const calculatedSelectboxes = require('./calculatedSelectboxes.json');
 const columnsForm = require('./columnsForm.json');
 const calculateZeroValue = require('./calculateZeroValue.json');
+const formWithEditGridModalDrafts = require('./editGridModalDraftsTest.json');
 
 module.exports = {
   advanced,
@@ -43,5 +44,6 @@ module.exports = {
   columnsForm,
   calculateZeroValue,
   formWithConditionalLogic,
-  formWithCalculatedValueWithoutOverriding
+  formWithCalculatedValueWithoutOverriding,
+  formWithEditGridModalDrafts
 };
