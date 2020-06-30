@@ -496,9 +496,6 @@ export default class EditGridComponent extends NestedArrayComponent {
           editRow.willBeSaved = true;
           dialog.close();
           this.saveRow(rowIndex);
-          if (this.component.rowDrafts) {
-            editRow.components.forEach(comp => comp.setPristine(this.pristine));
-          }
         }
         else {
           this.alert.showErrors(editRow.errors, false);
@@ -666,6 +663,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.updateValue();
     this.triggerChange();
+    if (this.component.rowDrafts) {
+      editRow.components.forEach(comp => comp.setPristine(this.pristine));
+    }
     this.checkValidity(null, true);
     this.redraw();
 
@@ -820,7 +820,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
       const rowRefs = this.refs[`editgrid-${this.component.key}-row`];
 
-      if (this.component.rowDrafts && rowRefs) {
+      if (rowRefs) {
         const rowContainer = rowRefs[index];
 
         if (rowContainer) {
