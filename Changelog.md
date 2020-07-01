@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.5
+#### Changed
+ - Pinning core-js to 3.5.0 to resolve IE11 issues.
+
 ### 4.10.5-rc.5
 #### Fixed
  - Fixes an issue where component was not found in few cases with deep nesting
