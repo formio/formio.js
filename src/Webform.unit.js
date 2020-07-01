@@ -18,13 +18,34 @@ import {
   calculatedSelectboxes,
   calculateZeroValue,
   formWithConditionalLogic,
-  formWithCalculatedValueWithoutOverriding
+  formWithCalculatedValueWithoutOverriding,
+  formWithTimeComponent
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
+  it('Should submit form with empty time field when time field is not required', function(done) {
+    const formElement = document.createElement('div');
+    const formWithTime = new Webform(formElement);
+
+    formWithTime.setForm(formWithTimeComponent).then(() => {
+      const clickEvent = new Event('click');
+      const submitBtn = formWithTime.element.querySelector('[name="data[submit]"]');
+
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(formWithTime.errors.length, 0);
+        assert.equal(formWithTime.data.submit, true);
+
+        done();
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should not override calculated value', function(done) {
     const formElement = document.createElement('div');
     const formWithCalculatedAmount = new Webform(formElement);
