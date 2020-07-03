@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.10.5
+#### Changed
+ - Pinning core-js to 3.5.0 to resolve IE11 issues.
+
+### 4.10.5-rc.5
+#### Fixed
+ - Fixes an issue where component was not found in few cases with deep nesting
+ - Pin core-js version to 3.6.1 to fix IE11
+ - FJS-994: prevent changing state in readOnly when use editRow btn to view submissions in the modal
+ - FJS-1009: added modal window closing on click out of the modal in readOnly and when value was not changed
+ - FJS-1023: Clear on refresh is clearing populated data on form load for select component
+ - Fix domparser crashing server.
+
 ### 4.10.5-rc.4
 #### Fixed
  - FJS-1017-A: fixed dataSource not fetching data inside wizard

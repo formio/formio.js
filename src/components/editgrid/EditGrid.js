@@ -534,7 +534,11 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
     editRow.prevState = editRow.state;
-    editRow.state = EditRowState.Editing;
+
+    if (!this.options.readOnly) {
+      editRow.state = EditRowState.Editing;
+    }
+
     const dataSnapshot = fastCloneDeep(editRow.data);
 
     if (this.inlineEditMode) {
@@ -603,7 +607,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     const editRow = this.editRows[rowIndex];
 
     if (this.options.readOnly) {
-      editRow.state = EditRowState.Saved;
       return;
     }
 

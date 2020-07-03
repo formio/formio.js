@@ -1077,7 +1077,7 @@ export default class Component extends Element {
       return;
     }
     if (refreshData === 'data') {
-      this.refresh(this.data, flags);
+      this.refresh(this.data, changed, flags);
     }
     else if (
       (changePath && changePath === refreshData) && changed && changed.instance &&
@@ -1085,7 +1085,7 @@ export default class Component extends Element {
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
     ) {
-      this.refresh(changed.value, flags);
+      this.refresh(changed.value, changed, flags);
     }
   }
 

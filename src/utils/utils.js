@@ -363,7 +363,7 @@ export function setActionProperty(component, action, result, row, data, instance
  * @returns {string}
  */
 export function unescapeHTML(str) {
-  if (typeof window === 'undefined') {
+  if (typeof window === 'undefined' || !('DOMParser' in window)) {
     return str;
   }
 
