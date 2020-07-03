@@ -179,6 +179,16 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.type = 'editgrid';
   }
 
+  loadRefs(element, refs) {
+    super.loadRefs(element, refs);
+
+    const massageContainerRef = 'messageContainer';
+
+    if (refs[`${ massageContainerRef }`] === 'single') {
+      this.refs[`${ massageContainerRef }`] = element.querySelector(`:scope > [ref="${ massageContainerRef }"]`);
+    }
+  }
+
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
@@ -294,7 +304,17 @@ export default class EditGridComponent extends NestedArrayComponent {
           {
             className: 'editRow',
             event: 'click',
-            action: () => this.editRow(rowIndex),
+            action: () => {
+              this.editRow(rowIndex).then(()=> {
+                if (this.component.rowDrafts) {
+                  this.validateRow(editRow, false);
+
+                  if (this.component.modal && editRow.errors && !!editRow.errors.length ) {
+                    this.alert.showErrors(editRow.errors, false);
+                  }
+                }
+              });
+            },
           },
         ].forEach(({
           className,
@@ -594,13 +614,19 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.data = editRow.backup;
         editRow.backup = null;
         this.restoreRowContext(editRow);
-        this.clearErrors(rowIndex);
+        if (!this.component.rowDrafts) {
+          this.clearErrors(rowIndex);
+        }
         break;
       }
     }
 
     this.checkValidity(null, true);
     this.redraw();
+
+    if (this.component.rowDrafts) {
+      this.checkValidity(this.data, false);
+    }
   }
 
   saveRow(rowIndex) {
@@ -642,6 +668,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.updateValue();
     this.triggerChange();
+    if (this.component.rowDrafts) {
+      editRow.components.forEach(comp => comp.setPristine(this.pristine));
+    }
     this.checkValidity(null, true);
     this.redraw();
 
@@ -724,13 +753,20 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  hasOpenRows() {
+    return this.editRows.some(row => this.isOpen(row));
+  }
+
   validateRow(editRow, dirty) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
 
-    if (editRow.state === EditRowState.Editing || dirty) {
+    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft && !this.pristine && !this.root.pristine && !this.hasOpenRows())) {
       editRow.components.forEach(comp => {
-        comp.setPristine(!dirty);
+        if (!this.component.rowDrafts) {
+          comp.setPristine(!dirty);
+        }
+
         valid &= comp.checkValidity(null, dirty, editRow.data);
       });
     }
@@ -752,9 +788,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    if (!valid) {
-      editRow.errors = this.errors.filter((err) => !errorsSnapshot.includes(err));
-    }
+    editRow.errors = !valid ? this.errors.filter((err) => !errorsSnapshot.includes(err)) : null;
+
     return !!valid;
   }
 
@@ -781,18 +816,32 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     let rowsValid = true;
     let rowsEditing = false;
-    this.editRows.forEach((editRow) => {
+
+    this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &= rowValid;
 
+      const rowRefs = this.refs[`editgrid-${this.component.key}-row`];
+
+      if (rowRefs) {
+        const rowContainer = rowRefs[index];
+
+        if (rowContainer) {
+          const errorContainer = rowContainer.querySelector('.editgrid-row-error');
+
+          if (!rowValid ) {
+            errorContainer.textContent = 'Invalid row. Please correct it or delete.';
+          }
+        }
+      }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
     if (!rowsValid) {
-      this.setCustomValidity('Please correct rows before proceeding.', dirty);
+      this.setCustomValidity('Please correct invalid rows before proceeding.', dirty);
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
