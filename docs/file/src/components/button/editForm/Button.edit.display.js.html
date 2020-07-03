@@ -277,6 +277,25 @@ export default [
     },
   },
   {
+    type: &apos;select&apos;,
+    key: &apos;oauthProvider&apos;,
+    label: &apos;OAuth Provider&apos;,
+    input: true,
+    dataSrc: &apos;values&apos;,
+    weight: 111,
+    tooltip: &apos;The oauth provider to use to log in (8.x server only).&apos;,
+    data: {
+      values: [
+        { label: &apos;OpenID&apos;, value: &apos;openid&apos; },
+        { label: &apos;Github&apos;, value: &apos;github&apos; },
+        { label: &apos;Google&apos;, value: &apos;google&apos; },
+      ],
+    },
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;oauth&apos;] },
+    },
+  },
+  {
     type: &apos;textfield&apos;,
     label: &apos;Save in state&apos;,
     key: &apos;state&apos;,

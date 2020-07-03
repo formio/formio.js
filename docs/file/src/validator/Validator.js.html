@@ -1006,7 +1006,8 @@ class ValidationChecker {
             field: component.errorLabel
           });
         },
-        check(component, setting, value, data, index) {
+        check(component, setting, value) {
+          if (component.isEmpty(value)) return true;
           return moment(value, component.component.format).isValid();
         }
       },

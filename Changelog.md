@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.0-rc.1
+#### Fixed
+ - FJS-1025: fixed validation error when submitting time with empty value 
+ - Fixes an issue where values are not always set to the quill editor
+ - FJS-1022: fixed editGrid not showing errors in specific row if 'display as modal' and row drafts are enabled
+ - FJS-1017-C: fixed dataSource dependent data display in readOnly and edit mode
+
+#### Changed
+ - Improve the way oauth works to work with new server provider.
+ - VPAT-498 Changed flatpickr to be lazy-loaded and removed dependencies
+ - Localize alert messages, simplify t() methods
+
 ### 4.10.5
 #### Changed
  - Pinning core-js to 3.5.0 to resolve IE11 issues.

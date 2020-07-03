@@ -26,6 +26,7 @@ import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
 // import { APIMock } from '../test/APIMock';
 
+/* eslint-disable max-statements */
 describe('Webform tests', () => {
   it('Should submit form with empty time field when time field is not required', function(done) {
     const formElement = document.createElement('div');
@@ -46,7 +47,7 @@ describe('Webform tests', () => {
     })
     .catch((err) => done(err));
   });
-  
+
   it('Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn', function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement);
@@ -159,7 +160,7 @@ describe('Webform tests', () => {
     .catch((err) => done(err));
   });
 
-  it(`Should show field only in container where radio component has 'yes' value when containers contain radio 
+  it(`Should show field only in container where radio component has 'yes' value when containers contain radio
   components with the same key`, function(done) {
     const formElement = document.createElement('div');
     const formWithCondition = new Webform(formElement);
@@ -1461,3 +1462,4 @@ describe('Webform tests', () => {
 //     b: 'six'
 //   }, done));
 // });
+/* eslint-enable max-statements */

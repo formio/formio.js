@@ -260,13 +260,110 @@ import {
   calculatedSelectboxes,
   calculateZeroValue,
   formWithConditionalLogic,
-  formWithCalculatedValueWithoutOverriding
+  formWithCalculatedValueWithoutOverriding,
+  formWithTimeComponent,
+  formWithEditGridModalDrafts
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
 // import { APIMock } from &apos;../test/APIMock&apos;;
 
+/* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, () =&gt; {
+  it(&apos;Should submit form with empty time field when time field is not required&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithTime = new Webform(formElement);
+
+    formWithTime.setForm(formWithTimeComponent).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = formWithTime.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
+
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(formWithTime.errors.length, 0);
+        assert.equal(formWithTime.data.submit, true);
+
+        done();
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithDraftModals = new Webform(formElement);
+
+    formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+      const inputEvent = new Event(&apos;input&apos;);
+
+      const addRowBtn =  formWithDraftModals.element.querySelector( &apos;[ref=&quot;editgrid-editGrid-addRow&quot;]&apos;);
+      //click to open row in modal view
+      addRowBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        const rowModal = document.querySelector(&apos;.formio-dialog-content&apos;);
+        //checking if row modal was openned
+        assert.equal(!!rowModal, true);
+
+        const textFieldInput = rowModal.querySelector(&apos;[name=&quot;data[editGrid][0][textField]&quot;]&apos;);
+        textFieldInput.value = &apos;test&apos;;
+        //input value in one of required row fields
+        textFieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          //checking if the value was set inside the field
+          assert.equal(textFieldInput.value, &apos;test&apos;);
+
+          const saveModalBtn = rowModal.querySelector(&apos;.btn-primary&apos;);
+          //clicking save button to save row draft
+          saveModalBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            const editGridRows = formWithDraftModals.element.querySelectorAll( &apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;);
+            //checking if the editGrid row was created
+            assert.equal(editGridRows.length, 1);
+
+            const submitBtn =  formWithDraftModals.element.querySelector(&apos;[name=&quot;data[submit]&quot;&apos;);
+            //pushing submit button to trigger validation
+            submitBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() =&gt; {
+              //checking the number of appeared errors
+              assert.equal(formWithDraftModals.errors.length, 2);
+
+              const rowError = formWithDraftModals.element.querySelector(&apos;.editgrid-row-error&apos;).textContent;
+              const editGridError = formWithDraftModals.element.querySelector(&apos;[ref=&quot;messageContainer&quot;]&apos;).querySelector(&apos;.error&apos;).textContent;
+              //checking if right errors were shown in right places
+              assert.equal(rowError, &apos;Invalid row. Please correct it or delete.&apos;);
+              assert.equal(editGridError, &apos;Please correct invalid rows before proceeding.&apos;);
+
+              const rowEditBtn = editGridRows[0].querySelector(&apos;.editRow&apos;);
+              //open row modal again to check if there are errors
+              rowEditBtn.dispatchEvent(clickEvent);
+
+              setTimeout(() =&gt; {
+                const rowModalAfterValidation = document.querySelector(&apos;.formio-dialog-content&apos;);
+
+                const alertWithErrorText = rowModalAfterValidation.querySelector(&apos;.alert-danger&apos;);
+                //checking if alert with errors list appeared inside the modal
+                assert.equal(!!alertWithErrorText, true);
+
+                const numberComponent = rowModalAfterValidation.querySelector(&apos;.formio-component-number&apos;);
+                const numberComponentError = numberComponent.querySelector(&apos;.error&apos;).textContent;
+                //checking if error was shown for empty required field
+                assert.equal(numberComponentError, &apos;Number is required&apos;);
+
+                done();
+              }, 350);
+            }, 300);
+          }, 200);
+        }, 150);
+      }, 100);
+    }).catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should not override calculated value&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithCalculatedAmount = new Webform(formElement);
@@ -305,7 +402,7 @@ describe(&apos;Webform tests&apos;, () =&gt; {
     .catch((err) =&gt; done(err));
   });
 
-  it(`Should show field only in container where radio component has &apos;yes&apos; value when containers contain radio 
+  it(`Should show field only in container where radio component has &apos;yes&apos; value when containers contain radio
   components with the same key`, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithCondition = new Webform(formElement);
@@ -337,6 +434,7 @@ describe(&apos;Webform tests&apos;, () =&gt; {
       assert.equal(formWithPattern.element.querySelector(&apos;.formio-component-textField&apos;).querySelectorAll(&apos;.error&apos;).length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, &apos;Text Field is required&apos;);
+      assert.equal(formWithPattern.element.querySelector(&apos;[ref=&quot;errorRef&quot;]&apos;).textContent, &apos;Text Field: Text Field is required&apos;);
       done();
     }, 500);
     })
@@ -488,6 +586,51 @@ describe(&apos;Webform tests&apos;, () =&gt; {
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
       done();
     }).catch(done);
+  });
+
+  it(&apos;Should treat double colons as i18next namespace separators&apos;, () =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    const str = &apos;Test: this is only a test&apos;;
+    assert.equal(form.t(str), str);
+    assert.equal(form.t(`Namespace::${str}`), str);
+  });
+
+  it(&apos;Should translate form errors in alerts&apos;, () =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, {
+      language: &apos;es&apos;,
+      i18n: {
+        es: {
+          alertMessage: &apos;{{message}}&apos;,
+          required: &apos;{{field}} es obligatorio&apos;
+        }
+      }
+    });
+
+    return form.setForm({
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          label: &apos;Field Label&apos;,
+          key: &apos;myfield&apos;,
+          input: true,
+          inputType: &apos;text&apos;,
+          validate: {
+            required: true
+          }
+        }
+      ]
+    })
+      .then(() =&gt; form.submit())
+      .catch(() =&gt; {
+        // console.warn(&apos;nooo:&apos;, error)
+      })
+      .then(() =&gt; {
+        const ref = formElement.querySelector(&apos;[ref=&quot;errorRef&quot;]&apos;);
+        assert.equal(ref.textContent, &apos;Field Label es obligatorio&apos;);
+      });
   });
 
   it(&apos;Should translate a form after instantiate&apos;, done =&gt; {
@@ -1561,6 +1704,7 @@ describe(&apos;Webform tests&apos;, () =&gt; {
 //     b: &apos;six&apos;
 //   }, done));
 // });
+/* eslint-enable max-statements */
 </code></pre>
 
 </div>

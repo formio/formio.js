@@ -247,6 +247,7 @@ module.exports = class Time extends Rule {
    defaultMessage = &apos;{{field}} must contain valid time&apos;;
 
   check(value) {
+    if (this.component.isEmpty(value)) return true;
     return moment(value, this.component.component.format).isValid();
   }
 };
