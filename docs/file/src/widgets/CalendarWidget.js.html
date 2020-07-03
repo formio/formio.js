@@ -240,7 +240,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/widgets/CalendarWidget.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;../Formio&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Flatpickr from &apos;flatpickr&apos;;
 import InputWidget from &apos;./InputWidget&apos;;
 import {
   convertFormatToFlatpickr,
@@ -260,7 +260,6 @@ import moment from &apos;moment&apos;;
 import _ from &apos;lodash&apos;;
 const DEFAULT_FORMAT = &apos;yyyy-MM-dd hh:mm a&apos;;
 const ISO_8601_FORMAT = &apos;yyyy-MM-ddTHH:mm:ssZ&apos;;
-const CDN_URL = &apos;https://cdn.form.io/&apos;;
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */
@@ -383,59 +382,49 @@ export default class CalendarWidget extends InputWidget {
         this.emit(&apos;blur&apos;);
       }
     };
+    this.settings.formatDate = (date, format) =&gt; {
+      // Only format this if this is the altFormat and the form is readOnly.
+      if (this.settings.readOnly &amp;&amp; (format === this.settings.altFormat)) {
+        if (this.settings.saveAs === &apos;text&apos; || !this.settings.enableTime || this.loadZones()) {
+          return Flatpickr.formatDate(date, format);
+        }
 
-    Formio.requireLibrary(&apos;flatpickr-css&apos;, &apos;flatpickr-css&apos;, [
-      { type: &apos;styles&apos;, src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
-    ], true);
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
+      }
 
-    return superAttach
-      .then(() =&gt; {
-        return Formio.requireLibrary(&apos;flatpickr&apos;, &apos;flatpickr&apos;, `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
-          .then((Flatpickr) =&gt; {
-            this.settings.formatDate = (date, format) =&gt; {
-              // Only format this if this is the altFormat and the form is readOnly.
-              if (this.settings.readOnly &amp;&amp; (format === this.settings.altFormat)) {
-                if (this.settings.saveAs === &apos;text&apos; || !this.settings.enableTime || this.loadZones()) {
-                  return Flatpickr.formatDate(date, format);
-                }
+      return Flatpickr.formatDate(date, format);
+    };
 
-                return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
-              }
+    if (this._input) {
+      // Create a new flatpickr.
+      this.calendar = new Flatpickr(this._input, this.settings);
+      this.calendar.altInput.addEventListener(&apos;input&apos;, (event) =&gt; {
+        if (this.settings.allowInput) {
+          this.settings.manualInputValue = event.target.value;
+          this.settings.isManuallyOverriddenValue = true;
+        }
 
-              return Flatpickr.formatDate(date, format);
-            };
-
-            if (this._input) {
-              // Create a new flatpickr.
-              this.calendar = new Flatpickr(this._input, this.settings);
-              this.calendar.altInput.addEventListener(&apos;input&apos;, (event) =&gt; {
-                if (this.settings.allowInput) {
-                  this.settings.manualInputValue = event.target.value;
-                  this.settings.isManuallyOverriddenValue = true;
-                }
-
-                if (event.target.value === &apos;&apos; &amp;&amp; this.calendar.selectedDates.length &gt; 0) {
-                  this.settings.wasDefaultValueChanged = true;
-                  this.settings.defaultValue = event.target.value;
-                  this.calendar.clear();
-                }
-                else {
-                  this.settings.wasDefaultValueChanged = false;
-                }
-              });
-
-              if (!this.settings.readOnly) {
-                // Enforce the input mask of the format.
-                this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
-              }
-
-              // Make sure we commit the value after a blur event occurs.
-              this.addEventListener(this.calendar._input, &apos;blur&apos;, () =&gt;
-                this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
-              );
-            }
-          });
+        if (event.target.value === &apos;&apos; &amp;&amp; this.calendar.selectedDates.length &gt; 0) {
+          this.settings.wasDefaultValueChanged = true;
+          this.settings.defaultValue = event.target.value;
+          this.calendar.clear();
+        }
+        else {
+          this.settings.wasDefaultValueChanged = false;
+        }
       });
+
+      if (!this.settings.readOnly) {
+        // Enforce the input mask of the format.
+        this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+      }
+
+      // Make sure we commit the value after a blur event occurs.
+      this.addEventListener(this.calendar._input, &apos;blur&apos;, () =&gt;
+        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
+      );
+    }
+    return superAttach;
   }
 
   get disableWeekends() {
@@ -537,10 +526,6 @@ export default class CalendarWidget extends InputWidget {
 
   get dateFormat() {
     return _.get(this.settings, &apos;format&apos;, DEFAULT_FORMAT);
-  }
-
-  get flatpickrType() {
-    return &apos;flatpickr&apos;;
   }
 
   /**

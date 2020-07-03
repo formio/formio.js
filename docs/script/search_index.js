@@ -15600,12 +15600,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/widgets/calendarwidget.js~calendarwidget#flatpickrtype",
-    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-flatpickrType",
-    "src/widgets/CalendarWidget.js~CalendarWidget#flatpickrType",
-    "member"
-  ],
-  [
     "src/widgets/calendarwidget.js~calendarwidget#getdatevalue",
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getDateValue",
     "src/widgets/CalendarWidget.js~CalendarWidget#getDateValue",

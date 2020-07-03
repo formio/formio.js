@@ -27,7 +27,8 @@ import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import { APIMock } from '../test/APIMock';
 
 /* eslint-disable max-statements */
-describe('Webform tests', () => {
+describe('Webform tests', function() {
+  this.retries(3);
   it('Should submit form with empty time field when time field is not required', function(done) {
     const formElement = document.createElement('div');
     const formWithTime = new Webform(formElement);

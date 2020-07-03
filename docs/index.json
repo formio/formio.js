@@ -8384,7 +8384,7 @@
     "__docId__": 440,
     "kind": "file",
     "name": "src/Webform.unit.js",
-    "content": "import assert from 'power-assert';\nimport { expect } from 'chai';\nimport sinon from 'sinon';\nimport _ from 'lodash';\nimport each from 'lodash/each';\nimport i18next from 'i18next';\nimport Harness from '../test/harness';\nimport FormTests from '../test/forms';\nimport Webform from './Webform';\nimport {\n  settingErrors,\n  clearOnHide,\n  manualOverride,\n  validationOnBlur,\n  calculateValueWithManualOverride,\n  formWithAdvancedLogic,\n  formWithPatternValidation,\n  calculatedSelectboxes,\n  calculateZeroValue,\n  formWithConditionalLogic,\n  formWithCalculatedValueWithoutOverriding,\n  formWithTimeComponent,\n  formWithEditGridModalDrafts\n} from '../test/formtest';\nimport DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';\n// import Formio from './Formio';\n// import { APIMock } from '../test/APIMock';\n\n/* eslint-disable max-statements */\ndescribe('Webform tests', () => {\n  it('Should submit form with empty time field when time field is not required', function(done) {\n    const formElement = document.createElement('div');\n    const formWithTime = new Webform(formElement);\n\n    formWithTime.setForm(formWithTimeComponent).then(() => {\n      const clickEvent = new Event('click');\n      const submitBtn = formWithTime.element.querySelector('[name=\"data[submit]\"]');\n\n      submitBtn.dispatchEvent(clickEvent);\n\n      setTimeout(() => {\n        assert.equal(formWithTime.errors.length, 0);\n        assert.equal(formWithTime.data.submit, true);\n\n        done();\n      }, 200);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn', function(done) {\n    const formElement = document.createElement('div');\n    const formWithDraftModals = new Webform(formElement);\n\n    formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() => {\n      const clickEvent = new Event('click');\n      const inputEvent = new Event('input');\n\n      const addRowBtn =  formWithDraftModals.element.querySelector( '[ref=\"editgrid-editGrid-addRow\"]');\n      //click to open row in modal view\n      addRowBtn.dispatchEvent(clickEvent);\n\n      setTimeout(() => {\n        const rowModal = document.querySelector('.formio-dialog-content');\n        //checking if row modal was openned\n        assert.equal(!!rowModal, true);\n\n        const textFieldInput = rowModal.querySelector('[name=\"data[editGrid][0][textField]\"]');\n        textFieldInput.value = 'test';\n        //input value in one of required row fields\n        textFieldInput.dispatchEvent(inputEvent);\n\n        setTimeout(() => {\n          //checking if the value was set inside the field\n          assert.equal(textFieldInput.value, 'test');\n\n          const saveModalBtn = rowModal.querySelector('.btn-primary');\n          //clicking save button to save row draft\n          saveModalBtn.dispatchEvent(clickEvent);\n\n          setTimeout(() => {\n            const editGridRows = formWithDraftModals.element.querySelectorAll( '[ref=\"editgrid-editGrid-row\"]');\n            //checking if the editGrid row was created\n            assert.equal(editGridRows.length, 1);\n\n            const submitBtn =  formWithDraftModals.element.querySelector('[name=\"data[submit]\"');\n            //pushing submit button to trigger validation\n            submitBtn.dispatchEvent(clickEvent);\n\n            setTimeout(() => {\n              //checking the number of appeared errors\n              assert.equal(formWithDraftModals.errors.length, 2);\n\n              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent;\n              const editGridError = formWithDraftModals.element.querySelector('[ref=\"messageContainer\"]').querySelector('.error').textContent;\n              //checking if right errors were shown in right places\n              assert.equal(rowError, 'Invalid row. Please correct it or delete.');\n              assert.equal(editGridError, 'Please correct invalid rows before proceeding.');\n\n              const rowEditBtn = editGridRows[0].querySelector('.editRow');\n              //open row modal again to check if there are errors\n              rowEditBtn.dispatchEvent(clickEvent);\n\n              setTimeout(() => {\n                const rowModalAfterValidation = document.querySelector('.formio-dialog-content');\n\n                const alertWithErrorText = rowModalAfterValidation.querySelector('.alert-danger');\n                //checking if alert with errors list appeared inside the modal\n                assert.equal(!!alertWithErrorText, true);\n\n                const numberComponent = rowModalAfterValidation.querySelector('.formio-component-number');\n                const numberComponentError = numberComponent.querySelector('.error').textContent;\n                //checking if error was shown for empty required field\n                assert.equal(numberComponentError, 'Number is required');\n\n                done();\n              }, 350);\n            }, 300);\n          }, 200);\n        }, 150);\n      }, 100);\n    }).catch((err) => done(err));\n  });\n\n  it('Should not override calculated value', function(done) {\n    const formElement = document.createElement('div');\n    const formWithCalculatedAmount = new Webform(formElement);\n\n    formWithCalculatedAmount.setForm(formWithCalculatedValueWithoutOverriding).then(() => {\n      const inputEvent = new Event('input');\n\n      const amountInput1 = formWithCalculatedAmount.element.querySelector('[name=\"data[amount1]\"]');\n      const amountInput2 = formWithCalculatedAmount.element.querySelector('[name=\"data[amount2]\"]');\n\n      amountInput1.value = 6;\n      amountInput2.value = 4;\n\n      amountInput1.dispatchEvent(inputEvent);\n      amountInput2.dispatchEvent(inputEvent);\n\n      setTimeout(() => {\n        const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name=\"data[currency]\"]');\n        //checking if the value was calculated correctly\n        assert.equal(totalAmountInput.value, '$10.00');\n\n        const inputEvent = new Event('input');\n        //trying to override calculated value\n        totalAmountInput.value =  55;\n        totalAmountInput.dispatchEvent(inputEvent);\n\n        setTimeout(() => {\n          const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name=\"data[currency]\"]');\n          //checking if the value was overridden\n          assert.equal(totalAmountInput.value, '$10.00');\n\n          done();\n        }, 400);\n      }, 300);\n    })\n    .catch((err) => done(err));\n  });\n\n  it(`Should show field only in container where radio component has 'yes' value when containers contain radio\n  components with the same key`, function(done) {\n    const formElement = document.createElement('div');\n    const formWithCondition = new Webform(formElement);\n\n    formWithCondition.setForm(formWithConditionalLogic).then(() => {\n      Harness.clickElement(formWithCondition, formWithCondition.element.querySelector('.formio-component-container1').querySelector('[value=\"yes\"]'));\n\n      setTimeout(() => {\n        const conditionalFieldInContainer1 = formWithCondition.element.querySelector('[name=\"data[container1][textField]\"]');\n        const conditionalFieldInContainer2 = formWithCondition.element.querySelector('[name=\"data[container2][textField]\"]');\n\n        assert.equal(!!conditionalFieldInContainer1, true);\n        assert.equal(!!conditionalFieldInContainer2, false);\n\n        done();\n      }, 400);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should show only \"required field\" error when submitting empty required field with pattern validation', function(done) {\n    const formElement = document.createElement('div');\n    const formWithPattern = new Webform(formElement);\n\n    formWithPattern.setForm(formWithPatternValidation).then(() => {\n    Harness.clickElement(formWithPattern, formWithPattern.element.querySelector('[name=\"data[submit]\"]'));\n\n    setTimeout(() => {\n      assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);\n      assert.equal(formWithPattern.errors[0].messages.length, 1);\n      assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');\n      assert.equal(formWithPattern.element.querySelector('[ref=\"errorRef\"]').textContent, 'Text Field: Text Field is required');\n      done();\n    }, 500);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should disable field applying advanced logic if dot is used inside component key', function(done) {\n    const formElement = document.createElement('div');\n    const formWithLogic = new Webform(formElement);\n\n    formWithLogic.setForm(formWithAdvancedLogic).then(() => {\n      assert.equal(formWithLogic.components[1].disabled, false);\n\n      Harness.clickElement(formWithLogic, formWithLogic.element.querySelector('[name=\"data[requestedCovers.HOUSECONTENT_JEWELRY]\"]'));\n\n      setTimeout(() => {\n        assert.equal(formWithLogic.components[1].disabled, true);\n        done();\n      }, 500);\n    })\n    .catch((err) => done(err));\n  });\n\n  let formWithCalculatedValue;\n\n  it('Should calculate the field value after validation errors appeared on submit', function(done) {\n    const formElement = document.createElement('div');\n    formWithCalculatedValue = new Webform(formElement);\n    formWithCalculatedValue.setForm(manualOverride).then(() => {\n      Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);\n      setTimeout(() => {\n        const inputEvent = new Event('input');\n        const input1 = formWithCalculatedValue.components[0].refs.input[0];\n\n          input1.value =  55;\n          input1.dispatchEvent(inputEvent);\n\n        setTimeout(() => {\n          const input2 = formElement.querySelector('input[name=\"data[number2]\"]');\n          assert.equal(input2.value, '55');\n          assert.equal(input1.value, 55);\n          done();\n        }, 250);\n      }, 250);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should calculate the value when editing set values with possibility of manual override', function(done) {\n    const formElement = document.createElement('div');\n    formWithCalculatedValue = new Webform(formElement);\n    formWithCalculatedValue.setForm(manualOverride).then(() => {\n      formWithCalculatedValue.setSubmission({\n        data:{\n          number1: 66,\n          number2:66\n        }\n      }).then(()=>{\n        setTimeout(()=>{\n          const input1 = formElement.querySelector('input[name=\"data[number1]\"]');\n          const input2 = formElement.querySelector('input[name=\"data[number2]\"]');\n\n          assert.equal(input2.value, '66');\n          assert.equal(input1.value, 66);\n\n          const inputEvent = new Event('input');\n\n          input1.value =  `${input1.value}` + '78';\n          input1.dispatchEvent(inputEvent);\n\n          setTimeout(() => {\n            assert.equal(input2.value, '6678');\n            assert.equal(input1.value, 6678);\n            //set a number as calculated value\n            formWithCalculatedValue.components[1].calculatedValue = 6678;\n            //change the value\n            input1.value =  +(`${input1.value}` + '90');\n            input1.dispatchEvent(inputEvent);\n\n            setTimeout(() => {\n              assert.equal(input2.value, '667890');\n              assert.equal(input1.value, 667890);\n              done();\n            }, 250);\n          }, 250);\n        }, 900);\n      });\n    });\n  });\n\n  let simpleForm = null;\n  it('Should create a simple form', (done) => {\n    const formElement = document.createElement('div');\n    simpleForm = new Webform(formElement);\n    simpleForm.setForm({\n      title: 'Simple Form',\n      components: [\n        {\n          type: 'textfield',\n          key: 'firstName',\n          input: true\n        },\n        {\n          type: 'textfield',\n          key: 'lastName',\n          input: true\n        }\n      ]\n    }).then(() => {\n      Harness.testElements(simpleForm, 'input[type=\"text\"]', 2);\n      Harness.testElements(simpleForm, 'input[name=\"data[firstName]\"]', 1);\n      Harness.testElements(simpleForm, 'input[name=\"data[lastName]\"]', 1);\n      done();\n    }).catch(done);\n  });\n\n  it('Should set a submission to the form.', () => {\n    Harness.testSubmission(simpleForm, { data: {\n      firstName: 'Joe',\n      lastName: 'Smith'\n    } });\n  });\n\n  it('Should translate a form from options', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      language: 'es',\n      i18n: {\n        es: {\n          'Default Label': 'Spanish Label'\n        }\n      }\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should treat double colons as i18next namespace separators', () => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement);\n\n    const str = 'Test: this is only a test';\n    assert.equal(form.t(str), str);\n    assert.equal(form.t(`Namespace::${str}`), str);\n  });\n\n  it('Should translate form errors in alerts', () => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, {\n      language: 'es',\n      i18n: {\n        es: {\n          alertMessage: '{{message}}',\n          required: '{{field}} es obligatorio'\n        }\n      }\n    });\n\n    return form.setForm({\n      components: [\n        {\n          type: 'textfield',\n          label: 'Field Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {\n            required: true\n          }\n        }\n      ]\n    })\n      .then(() => form.submit())\n      .catch(() => {\n        // console.warn('nooo:', error)\n      })\n      .then(() => {\n        const ref = formElement.querySelector('[ref=\"errorRef\"]');\n        assert.equal(ref.textContent, 'Field Label es obligatorio');\n      });\n  });\n\n  it('Should translate a form after instantiate', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      i18n: {\n        es: {\n          'Default Label': 'Spanish Label'\n        }\n      }\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      translateForm.language = 'es';\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should add a translation after instantiate', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      i18n: {\n        language: 'es',\n        es: {\n          'Default Label': 'Spanish Label'\n        },\n        fr: {\n          'Default Label': 'French Label'\n        }\n      }\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      translateForm.language = 'fr';\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'French Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should switch a translation after instantiate', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      translateForm.addLanguage('es', { 'Default Label': 'Spanish Label' }, true);\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should keep translation after redraw', done => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, {\n      template: 'bootstrap3',\n    });\n    const schema = {\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    };\n\n    try {\n      form.setForm(schema)\n        .then(() => {\n          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, true);\n          return form.language = 'ru';\n        }, done)\n        .then(() => {\n          expect(form.options.language).to.equal('ru');\n          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');\n          form.redraw();\n          expect(form.options.language).to.equal('ru');\n          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');\n          done();\n        }, done)\n        .catch(done);\n    }\n    catch (error) {\n      done(error);\n    }\n  });\n\n  it('Should fire languageChanged event when language is set', done => {\n    let isLanguageChangedEventFired = false;\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, {\n      template: 'bootstrap3',\n    });\n    const schema = {\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    };\n\n    try {\n      form.setForm(schema)\n        .then(() => {\n          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, false);\n          form.on('languageChanged', () => {\n            isLanguageChangedEventFired = true;\n          });\n          return form.language = 'ru';\n        }, done)\n        .then(() => {\n          assert(isLanguageChangedEventFired);\n          done();\n        }, done)\n        .catch(done);\n    }\n    catch (error) {\n      done(error);\n    }\n  });\n\n  it('When submitted should strip fields with persistent: client-only from submission', done => {\n    const formElement = document.createElement('div');\n    simpleForm = new Webform(formElement);\n    /* eslint-disable quotes */\n    simpleForm.setForm({\n      title: 'Simple Form',\n      components: [\n        {\n          \"label\": \"Name\",\n          \"allowMultipleMasks\": false,\n          \"showWordCount\": false,\n          \"showCharCount\": false,\n          \"tableView\": true,\n          \"type\": \"textfield\",\n          \"input\": true,\n          \"key\": \"name\",\n          \"widget\": {\n            \"type\": \"\"\n          }\n        },\n        {\n          \"label\": \"Age\",\n          \"persistent\": \"client-only\",\n          \"mask\": false,\n          \"tableView\": true,\n          \"type\": \"number\",\n          \"input\": true,\n          \"key\": \"age\"\n        }\n      ]\n    });\n    /* eslint-enable quotes */\n\n    Harness.testSubmission(simpleForm, {\n      data: { name: 'noname', age: '1' }\n    });\n\n    simpleForm.submit().then((submission) => {\n      assert.deepEqual(submission.data, { name: 'noname' });\n      done();\n    });\n  });\n\n  it('Should not mutate the global i18next if it gets an instance', async function() {\n    await i18next.init({ lng: 'en' });\n    const instance = i18next.createInstance();\n\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      language: 'es',\n      i18next: instance,\n      i18n: {\n        es: {\n          'Default Label': 'Spanish Label'\n        }\n      }\n    });\n\n    return translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      assert.equal(i18next.language, 'en');\n      assert.equal(translateForm.i18next.language, 'es');\n      assert.equal(translateForm.i18next, instance);\n\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n    });\n  });\n\n  it('Should keep components valid if they are pristine', (done) => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n    form.setForm(settingErrors).then(() => {\n      const inputEvent = new Event('input', { bubbles: true, cancelable: true });\n      const input = form.element.querySelector('input[name=\"data[textField]\"]');\n      for (let i = 0; i < 50; i++) {\n        input.value += i;\n        input.dispatchEvent(inputEvent);\n      }\n\n      setTimeout(() => {\n        assert.equal(form.errors.length, 0);\n        Harness.setInputValue(form, 'data[textField]', '');\n        setTimeout(() => {\n          assert.equal(form.errors.length, 1);\n          done();\n        }, 250);\n      }, 250);\n    }).catch(done);\n  });\n\n  it('Should delete value of hidden component if clearOnHide is turned on', function(done) {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n    form.setForm(clearOnHide).then(() => {\n      const visibleData = {\n        data: {\n          visible: 'yes',\n          clearOnHideField: 'some text',\n          submit: false\n        },\n        metadata: {}\n      };\n\n      const hiddenData = {\n        data: {\n          visible: 'no',\n          submit: false\n        }\n      };\n      const inputEvent = new Event('input', { bubbles: true, cancelable: true });\n      const textField = form.element.querySelector('input[name=\"data[clearOnHideField]\"]');\n      textField.value = 'some text';\n      textField.dispatchEvent(inputEvent);\n      this.timeout(1000);\n      setTimeout(() => {\n        assert.deepEqual(form.data, visibleData.data);\n        Harness.setInputValue(form, 'data[visible]', 'no');\n\n        setTimeout(() => {\n          assert.deepEqual(form.data, hiddenData.data);\n          done();\n        }, 250);\n      }, 250);\n    });\n  });\n\n  const formElement = document.createElement('div');\n  const checkForErrors = function(form, flags = {}, submission, numErrors, done) {\n    form.setSubmission(submission, flags).then(() => {\n      setTimeout(() => {\n        const errors = formElement.querySelectorAll('.formio-error-wrapper');\n        expect(errors.length).to.equal(numErrors);\n        expect(form.errors.length).to.equal(numErrors);\n        done();\n      }, 100);\n    }).catch(done);\n  };\n\n  it('Should not fire validations when fields are either protected or not persistent.', (done) => {\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      {\n        title: 'protected and persistent',\n        components: [\n          {\n            type: 'textfield',\n            label: 'A',\n            key: 'a',\n            validate: {\n              required: true\n            }\n          },\n          {\n            type: 'textfield',\n            label: 'B',\n            key: 'b',\n            protected: true,\n            validate: {\n              required: true\n            }\n          }\n        ],\n      }).then(() => {\n        checkForErrors(form, {}, {}, 0, () => {\n          checkForErrors(form, {}, {\n            data: {\n              a: 'Testing',\n              b: ''\n            }\n          }, 1, () => {\n            checkForErrors(form, {}, {\n              _id: '123123123',\n              data: {\n                a: 'Testing',\n                b: ''\n              }\n            }, 0, done);\n          });\n        });\n    });\n  });\n\n  it('Should not fire validation on init.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }).then(() => {\n        checkForErrors(form, {}, {}, 0, done);\n    });\n  });\n\n  it('Should validation on init when alwaysDirty flag is set.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement, {\n      language: 'en',\n      template: 'bootstrap3',\n      alwaysDirty: true\n    });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }).then(() => {\n      checkForErrors(form, {}, {}, 2, done);\n    });\n  });\n\n  it('Should validation on init when dirty flag is set.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement, {\n      language: 'en',\n      template: 'bootstrap3'\n    });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }).then(() => {\n      checkForErrors(form, {\n        dirty: true\n      }, {}, 2, done);\n    });\n  });\n\n  it('Should not show any errors on setSubmission when providing an empty data object', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {}, {}, 0, done);\n    });\n  });\n\n  it('Should not show errors when providing empty data object with data set.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {}, { data: {} }, 0, done);\n    });\n  });\n\n  it('Should show errors on setSubmission when providing explicit data values.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {}, {\n        data:{\n          number: 2,\n          textArea: ''\n        }\n      }, 2, done);\n    });\n  });\n\n  it('Should not show errors on setSubmission with noValidate:TRUE', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {\n        noValidate:true\n      }, {\n        data:{\n          number: 2,\n          textArea: ''\n        }\n      }, 0, done);\n    });\n  });\n\n  it('Should set calculated value correctly', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement);\n    form.setForm(calculateZeroValue).then(() => {\n      const a = form.components[0];\n      const b = form.components[1];\n      const sum = form.components[2];\n\n      a.setValue(10);\n      b.setValue(5);\n      setTimeout(() => {\n        assert.equal(a.dataValue, 10);\n        assert.equal(b.dataValue, 5);\n        assert.equal(sum.dataValue, 15);\n\n        a.setValue('0');\n        b.setValue('0');\n        setTimeout(() => {\n          assert.equal(a.dataValue, 0);\n          assert.equal(b.dataValue,0);\n          assert.equal(sum.dataValue, 0);\n\n          done();\n        }, 250);\n      }, 250);\n    }).catch(done);\n  });\n\n  describe('set/get nosubmit', () => {\n    it('should set/get nosubmit flag and emit nosubmit event', () => {\n      const form = new Webform(null, {});\n      const emit = sinon.spy(form, 'emit');\n      expect(form.nosubmit).to.be.false;\n      form.nosubmit = true;\n      expect(form.nosubmit).to.be.true;\n      expect(emit.callCount).to.equal(1);\n      expect(emit.args[0]).to.deep.equal(['nosubmit', true]);\n      form.nosubmit = false;\n      expect(form.nosubmit).to.be.false;\n      expect(emit.callCount).to.equal(2);\n      expect(emit.args[1]).to.deep.equal(['nosubmit', false]);\n    });\n  });\n\n  describe('getValue and setValue', () => {\n    it('should setValue and getValue', (done) => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm({\n        components: [\n          {\n            type: 'textfield',\n            key: 'a'\n          },\n          {\n            type: 'container',\n            key: 'b',\n            components: [\n              {\n                type: 'datagrid',\n                key: 'c',\n                components: [\n                  {\n                    type: 'textfield',\n                    key: 'd'\n                  },\n                  {\n                    type: 'textfield',\n                    key: 'e'\n                  },\n                  {\n                    type: 'editgrid',\n                    key: 'f',\n                    components: [\n                      {\n                        type: 'textfield',\n                        key: 'g'\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }).then(() => {\n        let count = 0;\n        const onChange = form.onChange;\n        form.onChange = function(...args) {\n          count++;\n          return onChange.apply(form, args);\n        };\n\n        // Ensure that it says it changes.\n        assert.equal(form.setValue({\n          a: 'a',\n          b: {\n            c: [\n              { d: 'd1', e: 'e1', f: [{ g: 'g1' }] },\n              { d: 'd2', e: 'e2', f: [{ g: 'g2' }] },\n            ]\n          }\n        }), true);\n\n        setTimeout(() => {\n          // It should have only updated once.\n          assert.equal(count, 1);\n          done();\n        }, 500);\n      });\n    });\n  });\n\n  describe('ReadOnly Form', () => {\n    it('Should apply conditionals when in readOnly mode.', (done) => {\n      done = _.once(done);\n      const Conditions = require('../test/forms/conditions').default;\n      const formElement = document.createElement('div');\n      const form = new Webform(formElement, {\n        readOnly: true,\n        language: 'en',\n        template: 'bootstrap3'\n      });\n      form.setForm(Conditions.form).then(() => {\n        Harness.testConditionals(form, {\n          data: {\n            typeShow: 'Show',\n            typeMe: 'Me',\n            typeThe: 'The',\n            typeMonkey: 'Monkey!'\n          }\n        }, [], (error) => {\n          form.destroy();\n          if (error) {\n            throw new Error(error);\n          }\n          done();\n        });\n      });\n    });\n  });\n\n  describe('Validate onBlur', () => {\n    it('Should keep component valid onChange', (done) => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(validationOnBlur).then(() => {\n        const field = form.components[0];\n        const field2 = form.components[1];\n        const fieldInput = field.refs.input[0];\n\n        Harness.setInputValue(field, 'data[textField]', '12');\n\n        setTimeout(() => {\n          assert(!field.error, 'Should be valid while changing');\n          const blurEvent = new Event('blur');\n          fieldInput.dispatchEvent(blurEvent);\n\n          setTimeout(() => {\n            assert(field.error, 'Should set error aftre component was blured');\n            Harness.setInputValue(field2, 'data[textField1]', 'ab');\n\n            setTimeout(() => {\n              assert(field.error, 'Should keep error when editing another component');\n              done();\n            }, 250);\n          }, 250);\n        }, 250);\n      }).catch(done);\n    });\n\n    it('Should keep components inside DataGrid valid onChange', (done) => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(DataGridOnBlurValidation).then(() => {\n        const component = form.components[0];\n        Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');\n        const textField = component.iteratableRows[0].components.textField;\n        setTimeout(() => {\n          assert.equal(textField.error, '', 'Should stay valid on input');\n          const blur = new Event('blur', { bubbles: true, cancelable: true });\n          const input = textField.refs.input[0];\n          input.dispatchEvent(blur);\n          textField.element.dispatchEvent(blur);\n            setTimeout(() => {\n              assert(textField.error, 'Should be validated after blur');\n              done();\n            }, 250);\n        }, 250);\n      }).catch(done);\n    });\n  });\n\n  describe('Reset values', () => {\n    it('Should reset all values correctly.', () => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      return form.setForm(\n        {\n          components: [\n            {\n              type: 'textfield',\n              key: 'firstName',\n              label: 'First Name',\n              placeholder: 'Enter your first name.',\n              input: true,\n              tooltip: 'Enter your <strong>First Name</strong>',\n              description: 'Enter your <strong>First Name</strong>'\n            },\n            {\n              type: 'textfield',\n              key: 'lastName',\n              label: 'Last Name',\n              placeholder: 'Enter your last name',\n              input: true,\n              tooltip: 'Enter your <strong>Last Name</strong>',\n              description: 'Enter your <strong>Last Name</strong>'\n            },\n            {\n              type: 'select',\n              label: 'Favorite Things',\n              key: 'favoriteThings',\n              placeholder: 'These are a few of your favorite things...',\n              data: {\n                values: [\n                  {\n                    value: 'raindropsOnRoses',\n                    label: 'Raindrops on roses'\n                  },\n                  {\n                    value: 'whiskersOnKittens',\n                    label: 'Whiskers on Kittens'\n                  },\n                  {\n                    value: 'brightCopperKettles',\n                    label: 'Bright Copper Kettles'\n                  },\n                  {\n                    value: 'warmWoolenMittens',\n                    label: 'Warm Woolen Mittens'\n                  }\n                ]\n              },\n              dataSrc: 'values',\n              template: '<span>{{ item.label }}</span>',\n              multiple: true,\n              input: true\n            },\n            {\n              type: 'number',\n              key: 'number',\n              label: 'Number',\n              input: true\n            },\n            {\n              type: 'button',\n              action: 'submit',\n              label: 'Submit',\n              theme: 'primary'\n            }\n          ]\n        }\n      ).then(() => {\n        form.setSubmission({\n          data: {\n            firstName: 'Joe',\n            lastName: 'Bob',\n            favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],\n            number: 233\n          }\n        }).then(() => {\n          expect(form.submission).to.deep.equal({\n            data: {\n              firstName: 'Joe',\n              lastName: 'Bob',\n              favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],\n              number: 233,\n              submit: false\n            }\n          });\n          form.setSubmission({ data: {} }).then(() => {\n            expect(form.submission).to.deep.equal({\n              data: {\n                firstName: '',\n                lastName: '',\n                favoriteThings: [],\n                submit: false\n              }\n            });\n          });\n        });\n      });\n    });\n  });\n\n  describe('Calculate Value with allowed manual override', () => {\n    it('Should reset all values correctly.', (done) => {\n      const formElement = document.createElement('div');\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(calculateValueWithManualOverride).then(() => {\n        const dataGrid = form.getComponent('dataGrid');\n        dataGrid.setValue([{ label: 'yes' }, { label: 'no' }]);\n        setTimeout(() => {\n          expect(form.submission).to.deep.equal({\n            data: {\n              dataGrid: [\n                { label: 'yes', value: 'yes' },\n                { label: 'no', value: 'no' },\n              ],\n              checkbox: false,\n              submit: false\n            },\n            metadata: {}\n          });\n          const row1Value = form.getComponent(['dataGrid', 0, 'value']);\n          const row2Value = form.getComponent(['dataGrid', 1, 'value']);\n          row1Value.setValue('y');\n          row2Value.setValue('n');\n\n          setTimeout(() => {\n            expect(form.submission).to.deep.equal({\n              data: {\n                dataGrid: [\n                  { label: 'yes', value: 'y' },\n                  { label: 'no', value: 'n' },\n                ],\n                checkbox: false,\n                submit: false\n              },\n              metadata: {}\n            });\n            const row1Label = form.getComponent(['dataGrid', 0, 'label']);\n            row1Label.setValue('yes2');\n            setTimeout(() => {\n              expect(form.submission).to.deep.equal({\n                data: {\n                  dataGrid: [\n                    { label: 'yes2', value: 'yes2' },\n                    { label: 'no', value: 'n' },\n                  ],\n                  checkbox: false,\n                  submit: false\n                },\n                metadata: {}\n              });\n              done();\n            }, 250);\n          }, 250);\n        }, 250);\n      }).catch(done);\n    });\n\n    it('Should allow to change value.', (done) => {\n      const formElement = document.createElement('div');\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(calculatedSelectboxes).then(() => {\n        const radio = form.getComponent(['radio']);\n        radio.setValue('a');\n        setTimeout(() => {\n          assert.equal(radio.dataValue, 'a');\n          const selectBoxes = form.getComponent(['selectBoxes']);\n          assert.equal(selectBoxes.dataValue['a'], true, 'Should calculate value and set it to \"a\"');\n          selectBoxes.setValue({\n            'a': true,\n            'b': true,\n            'c': false\n          });\n          setTimeout(() => {\n            assert.deepEqual(selectBoxes.dataValue, {\n              'a': true,\n              'b': true,\n              'c': false\n            }, 'Should change the value');\n            done();\n          }, 250);\n        }, 250);\n      }).catch(done);\n    });\n  });\n\n  each(FormTests, (formTest) => {\n    describe(formTest.title || '', () => {\n      each(formTest.tests, (formTestTest, title) => {\n        it(title, () => {\n          const formElement = document.createElement('div');\n          const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n          return form.setForm(formTest.form).then(() => {\n            formTestTest(form, (error) => {\n              form.destroy();\n              if (error) {\n                throw new Error(error);\n              }\n            });\n          });\n        });\n      });\n    });\n  });\n});\n\n// describe('Test the saveDraft and restoreDraft feature', () => {\n//   APIMock.submission('https://savedraft.form.io/myform', {\n//     components: [\n//       {\n//         type: 'textfield',\n//         key: 'a',\n//         label: 'A'\n//       },\n//       {\n//         type: 'textfield',\n//         key: 'b',\n//         label: 'B'\n//       }\n//     ]\n//   });\n//\n//   const saveDraft = function(user, draft, newData, done) {\n//     const formElement = document.createElement('div');\n//     const form = new Webform(formElement, {\n//       saveDraft: true,\n//       saveDraftThrottle: false\n//     });\n//     form.src = 'https://savedraft.form.io/myform';\n//     Formio.setUser(user);\n//     form.on('restoreDraft', (existing) => {\n//       assert.deepEqual(existing ? existing.data : null, draft);\n//       form.setSubmission({ data: newData }, { modified: true });\n//     });\n//     form.on('saveDraft', (saved) => {\n//       // Make sure the modified class was added to the components.\n//       const a = form.getComponent('a');\n//       const b = form.getComponent('b');\n//       assert.equal(a.hasClass(a.getElement(), 'formio-modified'), true);\n//       assert.equal(b.hasClass(b.getElement(), 'formio-modified'), true);\n//       assert.deepEqual(saved.data, newData);\n//       form.draftEnabled = false;\n//       done();\n//     });\n//     form.formReady.then(() => {\n//       assert.equal(form.savingDraft, true);\n//     });\n//   };\n//\n//   it('Should allow a user to start a save draft session.', (done) => saveDraft({\n//     _id: '1234',\n//     data: {\n//       firstName: 'Joe',\n//       lastName: 'Smith'\n//     }\n//   }, null, {\n//     a: 'one',\n//     b: 'two'\n//   }, done));\n//\n//   it('Should allow a different user to start a new draft session', (done) => saveDraft({\n//     _id: '2468',\n//     data: {\n//       firstName: 'Sally',\n//       lastName: 'Thompson'\n//     }\n//   }, null, {\n//     a: 'three',\n//     b: 'four'\n//   }, done));\n//\n//   it('Should restore a users existing draft', (done) => saveDraft({\n//     _id: '1234',\n//     data: {\n//       firstName: 'Joe',\n//       lastName: 'Smith'\n//     }\n//   }, {\n//     a: 'one',\n//     b: 'two'\n//   }, {\n//     a: 'five',\n//     b: 'six'\n//   }, done));\n// });\n/* eslint-enable max-statements */\n",
+    "content": "import assert from 'power-assert';\nimport { expect } from 'chai';\nimport sinon from 'sinon';\nimport _ from 'lodash';\nimport each from 'lodash/each';\nimport i18next from 'i18next';\nimport Harness from '../test/harness';\nimport FormTests from '../test/forms';\nimport Webform from './Webform';\nimport {\n  settingErrors,\n  clearOnHide,\n  manualOverride,\n  validationOnBlur,\n  calculateValueWithManualOverride,\n  formWithAdvancedLogic,\n  formWithPatternValidation,\n  calculatedSelectboxes,\n  calculateZeroValue,\n  formWithConditionalLogic,\n  formWithCalculatedValueWithoutOverriding,\n  formWithTimeComponent,\n  formWithEditGridModalDrafts\n} from '../test/formtest';\nimport DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';\n// import Formio from './Formio';\n// import { APIMock } from '../test/APIMock';\n\n/* eslint-disable max-statements */\ndescribe('Webform tests', function() {\n  this.retries(3);\n  it('Should submit form with empty time field when time field is not required', function(done) {\n    const formElement = document.createElement('div');\n    const formWithTime = new Webform(formElement);\n\n    formWithTime.setForm(formWithTimeComponent).then(() => {\n      const clickEvent = new Event('click');\n      const submitBtn = formWithTime.element.querySelector('[name=\"data[submit]\"]');\n\n      submitBtn.dispatchEvent(clickEvent);\n\n      setTimeout(() => {\n        assert.equal(formWithTime.errors.length, 0);\n        assert.equal(formWithTime.data.submit, true);\n\n        done();\n      }, 200);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn', function(done) {\n    const formElement = document.createElement('div');\n    const formWithDraftModals = new Webform(formElement);\n\n    formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() => {\n      const clickEvent = new Event('click');\n      const inputEvent = new Event('input');\n\n      const addRowBtn =  formWithDraftModals.element.querySelector( '[ref=\"editgrid-editGrid-addRow\"]');\n      //click to open row in modal view\n      addRowBtn.dispatchEvent(clickEvent);\n\n      setTimeout(() => {\n        const rowModal = document.querySelector('.formio-dialog-content');\n        //checking if row modal was openned\n        assert.equal(!!rowModal, true);\n\n        const textFieldInput = rowModal.querySelector('[name=\"data[editGrid][0][textField]\"]');\n        textFieldInput.value = 'test';\n        //input value in one of required row fields\n        textFieldInput.dispatchEvent(inputEvent);\n\n        setTimeout(() => {\n          //checking if the value was set inside the field\n          assert.equal(textFieldInput.value, 'test');\n\n          const saveModalBtn = rowModal.querySelector('.btn-primary');\n          //clicking save button to save row draft\n          saveModalBtn.dispatchEvent(clickEvent);\n\n          setTimeout(() => {\n            const editGridRows = formWithDraftModals.element.querySelectorAll( '[ref=\"editgrid-editGrid-row\"]');\n            //checking if the editGrid row was created\n            assert.equal(editGridRows.length, 1);\n\n            const submitBtn =  formWithDraftModals.element.querySelector('[name=\"data[submit]\"');\n            //pushing submit button to trigger validation\n            submitBtn.dispatchEvent(clickEvent);\n\n            setTimeout(() => {\n              //checking the number of appeared errors\n              assert.equal(formWithDraftModals.errors.length, 2);\n\n              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent;\n              const editGridError = formWithDraftModals.element.querySelector('[ref=\"messageContainer\"]').querySelector('.error').textContent;\n              //checking if right errors were shown in right places\n              assert.equal(rowError, 'Invalid row. Please correct it or delete.');\n              assert.equal(editGridError, 'Please correct invalid rows before proceeding.');\n\n              const rowEditBtn = editGridRows[0].querySelector('.editRow');\n              //open row modal again to check if there are errors\n              rowEditBtn.dispatchEvent(clickEvent);\n\n              setTimeout(() => {\n                const rowModalAfterValidation = document.querySelector('.formio-dialog-content');\n\n                const alertWithErrorText = rowModalAfterValidation.querySelector('.alert-danger');\n                //checking if alert with errors list appeared inside the modal\n                assert.equal(!!alertWithErrorText, true);\n\n                const numberComponent = rowModalAfterValidation.querySelector('.formio-component-number');\n                const numberComponentError = numberComponent.querySelector('.error').textContent;\n                //checking if error was shown for empty required field\n                assert.equal(numberComponentError, 'Number is required');\n\n                done();\n              }, 350);\n            }, 300);\n          }, 200);\n        }, 150);\n      }, 100);\n    }).catch((err) => done(err));\n  });\n\n  it('Should not override calculated value', function(done) {\n    const formElement = document.createElement('div');\n    const formWithCalculatedAmount = new Webform(formElement);\n\n    formWithCalculatedAmount.setForm(formWithCalculatedValueWithoutOverriding).then(() => {\n      const inputEvent = new Event('input');\n\n      const amountInput1 = formWithCalculatedAmount.element.querySelector('[name=\"data[amount1]\"]');\n      const amountInput2 = formWithCalculatedAmount.element.querySelector('[name=\"data[amount2]\"]');\n\n      amountInput1.value = 6;\n      amountInput2.value = 4;\n\n      amountInput1.dispatchEvent(inputEvent);\n      amountInput2.dispatchEvent(inputEvent);\n\n      setTimeout(() => {\n        const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name=\"data[currency]\"]');\n        //checking if the value was calculated correctly\n        assert.equal(totalAmountInput.value, '$10.00');\n\n        const inputEvent = new Event('input');\n        //trying to override calculated value\n        totalAmountInput.value =  55;\n        totalAmountInput.dispatchEvent(inputEvent);\n\n        setTimeout(() => {\n          const totalAmountInput = formWithCalculatedAmount.element.querySelector('[name=\"data[currency]\"]');\n          //checking if the value was overridden\n          assert.equal(totalAmountInput.value, '$10.00');\n\n          done();\n        }, 400);\n      }, 300);\n    })\n    .catch((err) => done(err));\n  });\n\n  it(`Should show field only in container where radio component has 'yes' value when containers contain radio\n  components with the same key`, function(done) {\n    const formElement = document.createElement('div');\n    const formWithCondition = new Webform(formElement);\n\n    formWithCondition.setForm(formWithConditionalLogic).then(() => {\n      Harness.clickElement(formWithCondition, formWithCondition.element.querySelector('.formio-component-container1').querySelector('[value=\"yes\"]'));\n\n      setTimeout(() => {\n        const conditionalFieldInContainer1 = formWithCondition.element.querySelector('[name=\"data[container1][textField]\"]');\n        const conditionalFieldInContainer2 = formWithCondition.element.querySelector('[name=\"data[container2][textField]\"]');\n\n        assert.equal(!!conditionalFieldInContainer1, true);\n        assert.equal(!!conditionalFieldInContainer2, false);\n\n        done();\n      }, 400);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should show only \"required field\" error when submitting empty required field with pattern validation', function(done) {\n    const formElement = document.createElement('div');\n    const formWithPattern = new Webform(formElement);\n\n    formWithPattern.setForm(formWithPatternValidation).then(() => {\n    Harness.clickElement(formWithPattern, formWithPattern.element.querySelector('[name=\"data[submit]\"]'));\n\n    setTimeout(() => {\n      assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);\n      assert.equal(formWithPattern.errors[0].messages.length, 1);\n      assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');\n      assert.equal(formWithPattern.element.querySelector('[ref=\"errorRef\"]').textContent, 'Text Field: Text Field is required');\n      done();\n    }, 500);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should disable field applying advanced logic if dot is used inside component key', function(done) {\n    const formElement = document.createElement('div');\n    const formWithLogic = new Webform(formElement);\n\n    formWithLogic.setForm(formWithAdvancedLogic).then(() => {\n      assert.equal(formWithLogic.components[1].disabled, false);\n\n      Harness.clickElement(formWithLogic, formWithLogic.element.querySelector('[name=\"data[requestedCovers.HOUSECONTENT_JEWELRY]\"]'));\n\n      setTimeout(() => {\n        assert.equal(formWithLogic.components[1].disabled, true);\n        done();\n      }, 500);\n    })\n    .catch((err) => done(err));\n  });\n\n  let formWithCalculatedValue;\n\n  it('Should calculate the field value after validation errors appeared on submit', function(done) {\n    const formElement = document.createElement('div');\n    formWithCalculatedValue = new Webform(formElement);\n    formWithCalculatedValue.setForm(manualOverride).then(() => {\n      Harness.clickElement(formWithCalculatedValue, formWithCalculatedValue.components[2].refs.button);\n      setTimeout(() => {\n        const inputEvent = new Event('input');\n        const input1 = formWithCalculatedValue.components[0].refs.input[0];\n\n          input1.value =  55;\n          input1.dispatchEvent(inputEvent);\n\n        setTimeout(() => {\n          const input2 = formElement.querySelector('input[name=\"data[number2]\"]');\n          assert.equal(input2.value, '55');\n          assert.equal(input1.value, 55);\n          done();\n        }, 250);\n      }, 250);\n    })\n    .catch((err) => done(err));\n  });\n\n  it('Should calculate the value when editing set values with possibility of manual override', function(done) {\n    const formElement = document.createElement('div');\n    formWithCalculatedValue = new Webform(formElement);\n    formWithCalculatedValue.setForm(manualOverride).then(() => {\n      formWithCalculatedValue.setSubmission({\n        data:{\n          number1: 66,\n          number2:66\n        }\n      }).then(()=>{\n        setTimeout(()=>{\n          const input1 = formElement.querySelector('input[name=\"data[number1]\"]');\n          const input2 = formElement.querySelector('input[name=\"data[number2]\"]');\n\n          assert.equal(input2.value, '66');\n          assert.equal(input1.value, 66);\n\n          const inputEvent = new Event('input');\n\n          input1.value =  `${input1.value}` + '78';\n          input1.dispatchEvent(inputEvent);\n\n          setTimeout(() => {\n            assert.equal(input2.value, '6678');\n            assert.equal(input1.value, 6678);\n            //set a number as calculated value\n            formWithCalculatedValue.components[1].calculatedValue = 6678;\n            //change the value\n            input1.value =  +(`${input1.value}` + '90');\n            input1.dispatchEvent(inputEvent);\n\n            setTimeout(() => {\n              assert.equal(input2.value, '667890');\n              assert.equal(input1.value, 667890);\n              done();\n            }, 250);\n          }, 250);\n        }, 900);\n      });\n    });\n  });\n\n  let simpleForm = null;\n  it('Should create a simple form', (done) => {\n    const formElement = document.createElement('div');\n    simpleForm = new Webform(formElement);\n    simpleForm.setForm({\n      title: 'Simple Form',\n      components: [\n        {\n          type: 'textfield',\n          key: 'firstName',\n          input: true\n        },\n        {\n          type: 'textfield',\n          key: 'lastName',\n          input: true\n        }\n      ]\n    }).then(() => {\n      Harness.testElements(simpleForm, 'input[type=\"text\"]', 2);\n      Harness.testElements(simpleForm, 'input[name=\"data[firstName]\"]', 1);\n      Harness.testElements(simpleForm, 'input[name=\"data[lastName]\"]', 1);\n      done();\n    }).catch(done);\n  });\n\n  it('Should set a submission to the form.', () => {\n    Harness.testSubmission(simpleForm, { data: {\n      firstName: 'Joe',\n      lastName: 'Smith'\n    } });\n  });\n\n  it('Should translate a form from options', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      language: 'es',\n      i18n: {\n        es: {\n          'Default Label': 'Spanish Label'\n        }\n      }\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should treat double colons as i18next namespace separators', () => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement);\n\n    const str = 'Test: this is only a test';\n    assert.equal(form.t(str), str);\n    assert.equal(form.t(`Namespace::${str}`), str);\n  });\n\n  it('Should translate form errors in alerts', () => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, {\n      language: 'es',\n      i18n: {\n        es: {\n          alertMessage: '{{message}}',\n          required: '{{field}} es obligatorio'\n        }\n      }\n    });\n\n    return form.setForm({\n      components: [\n        {\n          type: 'textfield',\n          label: 'Field Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {\n            required: true\n          }\n        }\n      ]\n    })\n      .then(() => form.submit())\n      .catch(() => {\n        // console.warn('nooo:', error)\n      })\n      .then(() => {\n        const ref = formElement.querySelector('[ref=\"errorRef\"]');\n        assert.equal(ref.textContent, 'Field Label es obligatorio');\n      });\n  });\n\n  it('Should translate a form after instantiate', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      i18n: {\n        es: {\n          'Default Label': 'Spanish Label'\n        }\n      }\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      translateForm.language = 'es';\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should add a translation after instantiate', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      i18n: {\n        language: 'es',\n        es: {\n          'Default Label': 'Spanish Label'\n        },\n        fr: {\n          'Default Label': 'French Label'\n        }\n      }\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      translateForm.language = 'fr';\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'French Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should switch a translation after instantiate', done => {\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n    });\n    translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      translateForm.addLanguage('es', { 'Default Label': 'Spanish Label' }, true);\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n      done();\n    }).catch(done);\n  });\n\n  it('Should keep translation after redraw', done => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, {\n      template: 'bootstrap3',\n    });\n    const schema = {\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    };\n\n    try {\n      form.setForm(schema)\n        .then(() => {\n          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, true);\n          return form.language = 'ru';\n        }, done)\n        .then(() => {\n          expect(form.options.language).to.equal('ru');\n          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');\n          form.redraw();\n          expect(form.options.language).to.equal('ru');\n          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');\n          done();\n        }, done)\n        .catch(done);\n    }\n    catch (error) {\n      done(error);\n    }\n  });\n\n  it('Should fire languageChanged event when language is set', done => {\n    let isLanguageChangedEventFired = false;\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, {\n      template: 'bootstrap3',\n    });\n    const schema = {\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    };\n\n    try {\n      form.setForm(schema)\n        .then(() => {\n          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, false);\n          form.on('languageChanged', () => {\n            isLanguageChangedEventFired = true;\n          });\n          return form.language = 'ru';\n        }, done)\n        .then(() => {\n          assert(isLanguageChangedEventFired);\n          done();\n        }, done)\n        .catch(done);\n    }\n    catch (error) {\n      done(error);\n    }\n  });\n\n  it('When submitted should strip fields with persistent: client-only from submission', done => {\n    const formElement = document.createElement('div');\n    simpleForm = new Webform(formElement);\n    /* eslint-disable quotes */\n    simpleForm.setForm({\n      title: 'Simple Form',\n      components: [\n        {\n          \"label\": \"Name\",\n          \"allowMultipleMasks\": false,\n          \"showWordCount\": false,\n          \"showCharCount\": false,\n          \"tableView\": true,\n          \"type\": \"textfield\",\n          \"input\": true,\n          \"key\": \"name\",\n          \"widget\": {\n            \"type\": \"\"\n          }\n        },\n        {\n          \"label\": \"Age\",\n          \"persistent\": \"client-only\",\n          \"mask\": false,\n          \"tableView\": true,\n          \"type\": \"number\",\n          \"input\": true,\n          \"key\": \"age\"\n        }\n      ]\n    });\n    /* eslint-enable quotes */\n\n    Harness.testSubmission(simpleForm, {\n      data: { name: 'noname', age: '1' }\n    });\n\n    simpleForm.submit().then((submission) => {\n      assert.deepEqual(submission.data, { name: 'noname' });\n      done();\n    });\n  });\n\n  it('Should not mutate the global i18next if it gets an instance', async function() {\n    await i18next.init({ lng: 'en' });\n    const instance = i18next.createInstance();\n\n    const formElement = document.createElement('div');\n    const translateForm = new Webform(formElement, {\n      template: 'bootstrap3',\n      language: 'es',\n      i18next: instance,\n      i18n: {\n        es: {\n          'Default Label': 'Spanish Label'\n        }\n      }\n    });\n\n    return translateForm.setForm({\n      title: 'Translate Form',\n      components: [\n        {\n          type: 'textfield',\n          label: 'Default Label',\n          key: 'myfield',\n          input: true,\n          inputType: 'text',\n          validate: {}\n        }\n      ]\n    }).then(() => {\n      assert.equal(i18next.language, 'en');\n      assert.equal(translateForm.i18next.language, 'es');\n      assert.equal(translateForm.i18next, instance);\n\n      const label = formElement.querySelector('.control-label');\n      assert.equal(label.innerHTML.trim(), 'Spanish Label');\n    });\n  });\n\n  it('Should keep components valid if they are pristine', (done) => {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n    form.setForm(settingErrors).then(() => {\n      const inputEvent = new Event('input', { bubbles: true, cancelable: true });\n      const input = form.element.querySelector('input[name=\"data[textField]\"]');\n      for (let i = 0; i < 50; i++) {\n        input.value += i;\n        input.dispatchEvent(inputEvent);\n      }\n\n      setTimeout(() => {\n        assert.equal(form.errors.length, 0);\n        Harness.setInputValue(form, 'data[textField]', '');\n        setTimeout(() => {\n          assert.equal(form.errors.length, 1);\n          done();\n        }, 250);\n      }, 250);\n    }).catch(done);\n  });\n\n  it('Should delete value of hidden component if clearOnHide is turned on', function(done) {\n    const formElement = document.createElement('div');\n    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n    form.setForm(clearOnHide).then(() => {\n      const visibleData = {\n        data: {\n          visible: 'yes',\n          clearOnHideField: 'some text',\n          submit: false\n        },\n        metadata: {}\n      };\n\n      const hiddenData = {\n        data: {\n          visible: 'no',\n          submit: false\n        }\n      };\n      const inputEvent = new Event('input', { bubbles: true, cancelable: true });\n      const textField = form.element.querySelector('input[name=\"data[clearOnHideField]\"]');\n      textField.value = 'some text';\n      textField.dispatchEvent(inputEvent);\n      this.timeout(1000);\n      setTimeout(() => {\n        assert.deepEqual(form.data, visibleData.data);\n        Harness.setInputValue(form, 'data[visible]', 'no');\n\n        setTimeout(() => {\n          assert.deepEqual(form.data, hiddenData.data);\n          done();\n        }, 250);\n      }, 250);\n    });\n  });\n\n  const formElement = document.createElement('div');\n  const checkForErrors = function(form, flags = {}, submission, numErrors, done) {\n    form.setSubmission(submission, flags).then(() => {\n      setTimeout(() => {\n        const errors = formElement.querySelectorAll('.formio-error-wrapper');\n        expect(errors.length).to.equal(numErrors);\n        expect(form.errors.length).to.equal(numErrors);\n        done();\n      }, 100);\n    }).catch(done);\n  };\n\n  it('Should not fire validations when fields are either protected or not persistent.', (done) => {\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      {\n        title: 'protected and persistent',\n        components: [\n          {\n            type: 'textfield',\n            label: 'A',\n            key: 'a',\n            validate: {\n              required: true\n            }\n          },\n          {\n            type: 'textfield',\n            label: 'B',\n            key: 'b',\n            protected: true,\n            validate: {\n              required: true\n            }\n          }\n        ],\n      }).then(() => {\n        checkForErrors(form, {}, {}, 0, () => {\n          checkForErrors(form, {}, {\n            data: {\n              a: 'Testing',\n              b: ''\n            }\n          }, 1, () => {\n            checkForErrors(form, {}, {\n              _id: '123123123',\n              data: {\n                a: 'Testing',\n                b: ''\n              }\n            }, 0, done);\n          });\n        });\n    });\n  });\n\n  it('Should not fire validation on init.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }).then(() => {\n        checkForErrors(form, {}, {}, 0, done);\n    });\n  });\n\n  it('Should validation on init when alwaysDirty flag is set.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement, {\n      language: 'en',\n      template: 'bootstrap3',\n      alwaysDirty: true\n    });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }).then(() => {\n      checkForErrors(form, {}, {}, 2, done);\n    });\n  });\n\n  it('Should validation on init when dirty flag is set.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement, {\n      language: 'en',\n      template: 'bootstrap3'\n    });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }).then(() => {\n      checkForErrors(form, {\n        dirty: true\n      }, {}, 2, done);\n    });\n  });\n\n  it('Should not show any errors on setSubmission when providing an empty data object', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {}, {}, 0, done);\n    });\n  });\n\n  it('Should not show errors when providing empty data object with data set.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {}, { data: {} }, 0, done);\n    });\n  });\n\n  it('Should show errors on setSubmission when providing explicit data values.', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {}, {\n        data:{\n          number: 2,\n          textArea: ''\n        }\n      }, 2, done);\n    });\n  });\n\n  it('Should not show errors on setSubmission with noValidate:TRUE', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });\n    form.setForm(\n      { title: 'noValidation flag',\n        components: [{\n          label: 'Number',\n          validate: {\n            required: true,\n            min: 5\n          },\n          key: 'number',\n          type: 'number',\n          input: true\n        }, {\n          label: 'Text Area',\n          validate: {\n            required: true,\n            minLength: 10\n          },\n          key: 'textArea',\n          type: 'textarea',\n          input: true\n        }],\n      }\n    ).then(() => {\n      checkForErrors(form, {\n        noValidate:true\n      }, {\n        data:{\n          number: 2,\n          textArea: ''\n        }\n      }, 0, done);\n    });\n  });\n\n  it('Should set calculated value correctly', (done) => {\n    formElement.innerHTML = '';\n    const form = new Webform(formElement);\n    form.setForm(calculateZeroValue).then(() => {\n      const a = form.components[0];\n      const b = form.components[1];\n      const sum = form.components[2];\n\n      a.setValue(10);\n      b.setValue(5);\n      setTimeout(() => {\n        assert.equal(a.dataValue, 10);\n        assert.equal(b.dataValue, 5);\n        assert.equal(sum.dataValue, 15);\n\n        a.setValue('0');\n        b.setValue('0');\n        setTimeout(() => {\n          assert.equal(a.dataValue, 0);\n          assert.equal(b.dataValue,0);\n          assert.equal(sum.dataValue, 0);\n\n          done();\n        }, 250);\n      }, 250);\n    }).catch(done);\n  });\n\n  describe('set/get nosubmit', () => {\n    it('should set/get nosubmit flag and emit nosubmit event', () => {\n      const form = new Webform(null, {});\n      const emit = sinon.spy(form, 'emit');\n      expect(form.nosubmit).to.be.false;\n      form.nosubmit = true;\n      expect(form.nosubmit).to.be.true;\n      expect(emit.callCount).to.equal(1);\n      expect(emit.args[0]).to.deep.equal(['nosubmit', true]);\n      form.nosubmit = false;\n      expect(form.nosubmit).to.be.false;\n      expect(emit.callCount).to.equal(2);\n      expect(emit.args[1]).to.deep.equal(['nosubmit', false]);\n    });\n  });\n\n  describe('getValue and setValue', () => {\n    it('should setValue and getValue', (done) => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm({\n        components: [\n          {\n            type: 'textfield',\n            key: 'a'\n          },\n          {\n            type: 'container',\n            key: 'b',\n            components: [\n              {\n                type: 'datagrid',\n                key: 'c',\n                components: [\n                  {\n                    type: 'textfield',\n                    key: 'd'\n                  },\n                  {\n                    type: 'textfield',\n                    key: 'e'\n                  },\n                  {\n                    type: 'editgrid',\n                    key: 'f',\n                    components: [\n                      {\n                        type: 'textfield',\n                        key: 'g'\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }).then(() => {\n        let count = 0;\n        const onChange = form.onChange;\n        form.onChange = function(...args) {\n          count++;\n          return onChange.apply(form, args);\n        };\n\n        // Ensure that it says it changes.\n        assert.equal(form.setValue({\n          a: 'a',\n          b: {\n            c: [\n              { d: 'd1', e: 'e1', f: [{ g: 'g1' }] },\n              { d: 'd2', e: 'e2', f: [{ g: 'g2' }] },\n            ]\n          }\n        }), true);\n\n        setTimeout(() => {\n          // It should have only updated once.\n          assert.equal(count, 1);\n          done();\n        }, 500);\n      });\n    });\n  });\n\n  describe('ReadOnly Form', () => {\n    it('Should apply conditionals when in readOnly mode.', (done) => {\n      done = _.once(done);\n      const Conditions = require('../test/forms/conditions').default;\n      const formElement = document.createElement('div');\n      const form = new Webform(formElement, {\n        readOnly: true,\n        language: 'en',\n        template: 'bootstrap3'\n      });\n      form.setForm(Conditions.form).then(() => {\n        Harness.testConditionals(form, {\n          data: {\n            typeShow: 'Show',\n            typeMe: 'Me',\n            typeThe: 'The',\n            typeMonkey: 'Monkey!'\n          }\n        }, [], (error) => {\n          form.destroy();\n          if (error) {\n            throw new Error(error);\n          }\n          done();\n        });\n      });\n    });\n  });\n\n  describe('Validate onBlur', () => {\n    it('Should keep component valid onChange', (done) => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(validationOnBlur).then(() => {\n        const field = form.components[0];\n        const field2 = form.components[1];\n        const fieldInput = field.refs.input[0];\n\n        Harness.setInputValue(field, 'data[textField]', '12');\n\n        setTimeout(() => {\n          assert(!field.error, 'Should be valid while changing');\n          const blurEvent = new Event('blur');\n          fieldInput.dispatchEvent(blurEvent);\n\n          setTimeout(() => {\n            assert(field.error, 'Should set error aftre component was blured');\n            Harness.setInputValue(field2, 'data[textField1]', 'ab');\n\n            setTimeout(() => {\n              assert(field.error, 'Should keep error when editing another component');\n              done();\n            }, 250);\n          }, 250);\n        }, 250);\n      }).catch(done);\n    });\n\n    it('Should keep components inside DataGrid valid onChange', (done) => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(DataGridOnBlurValidation).then(() => {\n        const component = form.components[0];\n        Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');\n        const textField = component.iteratableRows[0].components.textField;\n        setTimeout(() => {\n          assert.equal(textField.error, '', 'Should stay valid on input');\n          const blur = new Event('blur', { bubbles: true, cancelable: true });\n          const input = textField.refs.input[0];\n          input.dispatchEvent(blur);\n          textField.element.dispatchEvent(blur);\n            setTimeout(() => {\n              assert(textField.error, 'Should be validated after blur');\n              done();\n            }, 250);\n        }, 250);\n      }).catch(done);\n    });\n  });\n\n  describe('Reset values', () => {\n    it('Should reset all values correctly.', () => {\n      formElement.innerHTML = '';\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      return form.setForm(\n        {\n          components: [\n            {\n              type: 'textfield',\n              key: 'firstName',\n              label: 'First Name',\n              placeholder: 'Enter your first name.',\n              input: true,\n              tooltip: 'Enter your <strong>First Name</strong>',\n              description: 'Enter your <strong>First Name</strong>'\n            },\n            {\n              type: 'textfield',\n              key: 'lastName',\n              label: 'Last Name',\n              placeholder: 'Enter your last name',\n              input: true,\n              tooltip: 'Enter your <strong>Last Name</strong>',\n              description: 'Enter your <strong>Last Name</strong>'\n            },\n            {\n              type: 'select',\n              label: 'Favorite Things',\n              key: 'favoriteThings',\n              placeholder: 'These are a few of your favorite things...',\n              data: {\n                values: [\n                  {\n                    value: 'raindropsOnRoses',\n                    label: 'Raindrops on roses'\n                  },\n                  {\n                    value: 'whiskersOnKittens',\n                    label: 'Whiskers on Kittens'\n                  },\n                  {\n                    value: 'brightCopperKettles',\n                    label: 'Bright Copper Kettles'\n                  },\n                  {\n                    value: 'warmWoolenMittens',\n                    label: 'Warm Woolen Mittens'\n                  }\n                ]\n              },\n              dataSrc: 'values',\n              template: '<span>{{ item.label }}</span>',\n              multiple: true,\n              input: true\n            },\n            {\n              type: 'number',\n              key: 'number',\n              label: 'Number',\n              input: true\n            },\n            {\n              type: 'button',\n              action: 'submit',\n              label: 'Submit',\n              theme: 'primary'\n            }\n          ]\n        }\n      ).then(() => {\n        form.setSubmission({\n          data: {\n            firstName: 'Joe',\n            lastName: 'Bob',\n            favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],\n            number: 233\n          }\n        }).then(() => {\n          expect(form.submission).to.deep.equal({\n            data: {\n              firstName: 'Joe',\n              lastName: 'Bob',\n              favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],\n              number: 233,\n              submit: false\n            }\n          });\n          form.setSubmission({ data: {} }).then(() => {\n            expect(form.submission).to.deep.equal({\n              data: {\n                firstName: '',\n                lastName: '',\n                favoriteThings: [],\n                submit: false\n              }\n            });\n          });\n        });\n      });\n    });\n  });\n\n  describe('Calculate Value with allowed manual override', () => {\n    it('Should reset all values correctly.', (done) => {\n      const formElement = document.createElement('div');\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(calculateValueWithManualOverride).then(() => {\n        const dataGrid = form.getComponent('dataGrid');\n        dataGrid.setValue([{ label: 'yes' }, { label: 'no' }]);\n        setTimeout(() => {\n          expect(form.submission).to.deep.equal({\n            data: {\n              dataGrid: [\n                { label: 'yes', value: 'yes' },\n                { label: 'no', value: 'no' },\n              ],\n              checkbox: false,\n              submit: false\n            },\n            metadata: {}\n          });\n          const row1Value = form.getComponent(['dataGrid', 0, 'value']);\n          const row2Value = form.getComponent(['dataGrid', 1, 'value']);\n          row1Value.setValue('y');\n          row2Value.setValue('n');\n\n          setTimeout(() => {\n            expect(form.submission).to.deep.equal({\n              data: {\n                dataGrid: [\n                  { label: 'yes', value: 'y' },\n                  { label: 'no', value: 'n' },\n                ],\n                checkbox: false,\n                submit: false\n              },\n              metadata: {}\n            });\n            const row1Label = form.getComponent(['dataGrid', 0, 'label']);\n            row1Label.setValue('yes2');\n            setTimeout(() => {\n              expect(form.submission).to.deep.equal({\n                data: {\n                  dataGrid: [\n                    { label: 'yes2', value: 'yes2' },\n                    { label: 'no', value: 'n' },\n                  ],\n                  checkbox: false,\n                  submit: false\n                },\n                metadata: {}\n              });\n              done();\n            }, 250);\n          }, 250);\n        }, 250);\n      }).catch(done);\n    });\n\n    it('Should allow to change value.', (done) => {\n      const formElement = document.createElement('div');\n      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n      form.setForm(calculatedSelectboxes).then(() => {\n        const radio = form.getComponent(['radio']);\n        radio.setValue('a');\n        setTimeout(() => {\n          assert.equal(radio.dataValue, 'a');\n          const selectBoxes = form.getComponent(['selectBoxes']);\n          assert.equal(selectBoxes.dataValue['a'], true, 'Should calculate value and set it to \"a\"');\n          selectBoxes.setValue({\n            'a': true,\n            'b': true,\n            'c': false\n          });\n          setTimeout(() => {\n            assert.deepEqual(selectBoxes.dataValue, {\n              'a': true,\n              'b': true,\n              'c': false\n            }, 'Should change the value');\n            done();\n          }, 250);\n        }, 250);\n      }).catch(done);\n    });\n  });\n\n  each(FormTests, (formTest) => {\n    describe(formTest.title || '', () => {\n      each(formTest.tests, (formTestTest, title) => {\n        it(title, () => {\n          const formElement = document.createElement('div');\n          const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });\n          return form.setForm(formTest.form).then(() => {\n            formTestTest(form, (error) => {\n              form.destroy();\n              if (error) {\n                throw new Error(error);\n              }\n            });\n          });\n        });\n      });\n    });\n  });\n});\n\n// describe('Test the saveDraft and restoreDraft feature', () => {\n//   APIMock.submission('https://savedraft.form.io/myform', {\n//     components: [\n//       {\n//         type: 'textfield',\n//         key: 'a',\n//         label: 'A'\n//       },\n//       {\n//         type: 'textfield',\n//         key: 'b',\n//         label: 'B'\n//       }\n//     ]\n//   });\n//\n//   const saveDraft = function(user, draft, newData, done) {\n//     const formElement = document.createElement('div');\n//     const form = new Webform(formElement, {\n//       saveDraft: true,\n//       saveDraftThrottle: false\n//     });\n//     form.src = 'https://savedraft.form.io/myform';\n//     Formio.setUser(user);\n//     form.on('restoreDraft', (existing) => {\n//       assert.deepEqual(existing ? existing.data : null, draft);\n//       form.setSubmission({ data: newData }, { modified: true });\n//     });\n//     form.on('saveDraft', (saved) => {\n//       // Make sure the modified class was added to the components.\n//       const a = form.getComponent('a');\n//       const b = form.getComponent('b');\n//       assert.equal(a.hasClass(a.getElement(), 'formio-modified'), true);\n//       assert.equal(b.hasClass(b.getElement(), 'formio-modified'), true);\n//       assert.deepEqual(saved.data, newData);\n//       form.draftEnabled = false;\n//       done();\n//     });\n//     form.formReady.then(() => {\n//       assert.equal(form.savingDraft, true);\n//     });\n//   };\n//\n//   it('Should allow a user to start a save draft session.', (done) => saveDraft({\n//     _id: '1234',\n//     data: {\n//       firstName: 'Joe',\n//       lastName: 'Smith'\n//     }\n//   }, null, {\n//     a: 'one',\n//     b: 'two'\n//   }, done));\n//\n//   it('Should allow a different user to start a new draft session', (done) => saveDraft({\n//     _id: '2468',\n//     data: {\n//       firstName: 'Sally',\n//       lastName: 'Thompson'\n//     }\n//   }, null, {\n//     a: 'three',\n//     b: 'four'\n//   }, done));\n//\n//   it('Should restore a users existing draft', (done) => saveDraft({\n//     _id: '1234',\n//     data: {\n//       firstName: 'Joe',\n//       lastName: 'Smith'\n//     }\n//   }, {\n//     a: 'one',\n//     b: 'two'\n//   }, {\n//     a: 'five',\n//     b: 'six'\n//   }, done));\n// });\n/* eslint-enable max-statements */\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/Webform.unit.js",
     "access": "public",
@@ -9639,7 +9639,7 @@
     "__docId__": 501,
     "kind": "file",
     "name": "src/WebformBuilder.unit.js",
-    "content": "import assert from 'power-assert';\n\nimport Harness from '../test/harness';\nimport WebformBuilder from './WebformBuilder';\nimport { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from '../test/formtest';\n\ndescribe('WebformBuilder tests', () => {\n  before((done) => Harness.builderBefore(done));\n  afterEach(() => Harness.getBuilder().setForm({ display: 'form', components: [] }));\n  after((done) => Harness.builderAfter(done));\n  it('Should create a new form builder class', (done) => {\n    const builder = Harness.getBuilder();\n    assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');\n    done();\n  });\n\n  it('Should not show unique API error when components with same keys are inside and outside of the Data component', (done) => {\n    const builder = Harness.getBuilder();\n    builder.webform.setForm(uniqueApiKeys).then(() => {\n      builder.highlightInvalidComponents();\n      const component = builder.webform.getComponent(['textField']);\n      assert.equal(component.errors.length, 0);\n      done();\n    }).catch(done);\n  });\n\n  it('Should show unique API error when components inside and outside of the Layout component have same keys', (done) => {\n    const builder = Harness.getBuilder();\n    builder.webform.setForm(uniqueApiKeysLayout).then(() => {\n      builder.highlightInvalidComponents();\n      const component = builder.webform.getComponent(['textField']);\n      assert.equal(component.errors.length, 1);\n      done();\n    }).catch(done);\n  });\n\n  it('Should allow add components', function(done) {\n    const builder = Harness.getBuilder();\n    builder.setForm(columnsForm).then(() => {\n      const column1 = builder.webform.element.querySelector('[ref=\"columns-container\"]');\n      Harness.buildComponent('textfield', column1);\n      setTimeout(() => {\n        Harness.saveComponent();\n        setTimeout(() => {\n          const columns = builder.webform.getComponent('columns');\n          assert.equal(columns.columns[0].length, 1);\n          done();\n        }, 150);\n      }, 150);\n    }).catch(done);\n  });\n\n  it('Should show unique API error when components on the same level have same keys', (done) => {\n    const builder = Harness.getBuilder();\n    builder.webform.setForm(uniqueApiKeysSameLevel).then(() => {\n      builder.highlightInvalidComponents();\n      const component = builder.webform.getComponent(['textField']);\n      assert.equal(component.errors.length, 1);\n      done();\n    }).catch(done);\n  });\n});\n",
+    "content": "import assert from 'power-assert';\n\nimport Harness from '../test/harness';\nimport WebformBuilder from './WebformBuilder';\nimport { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from '../test/formtest';\n\ndescribe('WebformBuilder tests', function() {\n  this.retries(3);\n  before((done) => Harness.builderBefore(done));\n  afterEach(() => Harness.getBuilder().setForm({ display: 'form', components: [] }));\n  after((done) => Harness.builderAfter(done));\n  it('Should create a new form builder class', (done) => {\n    const builder = Harness.getBuilder();\n    assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');\n    done();\n  });\n\n  it('Should not show unique API error when components with same keys are inside and outside of the Data component', (done) => {\n    const builder = Harness.getBuilder();\n    builder.webform.setForm(uniqueApiKeys).then(() => {\n      builder.highlightInvalidComponents();\n      const component = builder.webform.getComponent(['textField']);\n      assert.equal(component.errors.length, 0);\n      done();\n    }).catch(done);\n  });\n\n  it('Should show unique API error when components inside and outside of the Layout component have same keys', (done) => {\n    const builder = Harness.getBuilder();\n    builder.webform.setForm(uniqueApiKeysLayout).then(() => {\n      builder.highlightInvalidComponents();\n      const component = builder.webform.getComponent(['textField']);\n      assert.equal(component.errors.length, 1);\n      done();\n    }).catch(done);\n  });\n\n  it('Should allow add components', function(done) {\n    const builder = Harness.getBuilder();\n    builder.setForm(columnsForm).then(() => {\n      const column1 = builder.webform.element.querySelector('[ref=\"columns-container\"]');\n      Harness.buildComponent('textfield', column1);\n      setTimeout(() => {\n        Harness.saveComponent();\n        setTimeout(() => {\n          const columns = builder.webform.getComponent('columns');\n          assert.equal(columns.columns[0].length, 1);\n          done();\n        }, 150);\n      }, 150);\n    }).catch(done);\n  });\n\n  it('Should show unique API error when components on the same level have same keys', (done) => {\n    const builder = Harness.getBuilder();\n    builder.webform.setForm(uniqueApiKeysSameLevel).then(() => {\n      builder.highlightInvalidComponents();\n      const component = builder.webform.getComponent(['textField']);\n      assert.equal(component.errors.length, 1);\n      done();\n    }).catch(done);\n  });\n});\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/WebformBuilder.unit.js",
     "access": "public",
@@ -58261,7 +58261,7 @@
     "__docId__": 3038,
     "kind": "file",
     "name": "src/widgets/CalendarWidget.js",
-    "content": "import Formio from '../Formio';\nimport InputWidget from './InputWidget';\nimport {\n  convertFormatToFlatpickr,\n  convertFormatToMask,\n  convertFormatToMoment,\n  currentTimezone,\n  formatDate,\n  formatOffset,\n  getDateSetting,\n  getLocaleDateFormatInfo,\n  momentDate,\n  zonesLoaded,\n  shouldLoadZones,\n  loadZones\n} from '../utils/utils';\nimport moment from 'moment';\nimport _ from 'lodash';\nconst DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';\nconst ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';\nconst CDN_URL = 'https://cdn.form.io/';\n\nexport default class CalendarWidget extends InputWidget {\n  /* eslint-disable camelcase */\n  static get defaultSettings() {\n    return {\n      type: 'calendar',\n      altInput: true,\n      allowInput: true,\n      clickOpens: true,\n      enableDate: true,\n      enableTime: true,\n      mode: 'single',\n      noCalendar: false,\n      format: DEFAULT_FORMAT,\n      dateFormat: ISO_8601_FORMAT,\n      useLocaleSettings: false,\n      language: 'us-en',\n      hourIncrement: 1,\n      minuteIncrement: 5,\n      time_24hr: false,\n      saveAs: 'date',\n      displayInTimezone: '',\n      timezone: '',\n      disable: [],\n      minDate: '',\n      maxDate: ''\n    };\n  }\n  /* eslint-enable camelcase */\n\n  constructor(settings, component) {\n    super(settings, component);\n    // Change the format to map to the settings.\n    if (this.settings.noCalendar) {\n      this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.settings.enableTime) {\n      this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (this.settings.time_24hr) {\n      this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n  }\n\n  /**\n   * Load the timezones.\n   *\n   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.\n   */\n  loadZones() {\n    const timezone = this.timezone;\n    if (!zonesLoaded() && shouldLoadZones(timezone)) {\n      loadZones(timezone).then(() => this.emit('redraw'));\n\n      // Return zones are loading.\n      return true;\n    }\n\n    // Zones are already loaded.\n    return false;\n  }\n\n  attach(input) {\n    const superAttach = super.attach(input);\n    if (input && !input.getAttribute('placeholder')) {\n      input.setAttribute('placeholder', this.settings.format);\n    }\n\n    const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);\n    this.defaultFormat = {\n      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',\n      time: 'G:i K'\n    };\n\n    this.closedOn = 0;\n    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;\n\n    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);\n    this.settings.minDate = getDateSetting(this.settings.minDate);\n    this.settings.disable = this.disabledDates;\n    this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';\n    this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';\n    this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';\n    this.settings.maxDate = getDateSetting(this.settings.maxDate);\n    this.settings.wasDefaultValueChanged = false;\n    this.settings.defaultValue = '';\n    this.settings.manualInputValue = '';\n    this.settings.isManuallyOverriddenValue = false;\n    this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);\n    this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);\n    this.settings.onChange = () => {\n      if (this.settings.allowInput) {\n        if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {\n          this.calendar._input.value = this.settings.manualInputValue;\n        }\n        else {\n          this.settings.manualInputValue = '';\n        }\n\n        this.settings.isManuallyOverriddenValue = false;\n      }\n\n      this.emit('update');\n    };\n    this.settings.onOpen = () => this.hook('onCalendarOpen');\n    this.settings.onClose = () => {\n      this.hook('onCalendarClose');\n      this.closedOn = Date.now();\n\n      if (this.settings.allowInput && this.settings.enableTime) {\n        this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;\n        this.settings.isManuallyOverriddenValue = false;\n      }\n\n      if (this.settings.wasDefaultValueChanged) {\n        this.calendar._input.value = this.settings.defaultValue;\n        this.settings.wasDefaultValueChanged = false;\n      }\n      if (this.calendar) {\n        this.emit('blur');\n      }\n    };\n\n    Formio.requireLibrary('flatpickr-css', 'flatpickr-css', [\n      { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }\n    ], true);\n\n    return superAttach\n      .then(() => {\n        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)\n          .then((Flatpickr) => {\n            this.settings.formatDate = (date, format) => {\n              // Only format this if this is the altFormat and the form is readOnly.\n              if (this.settings.readOnly && (format === this.settings.altFormat)) {\n                if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {\n                  return Flatpickr.formatDate(date, format);\n                }\n\n                return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);\n              }\n\n              return Flatpickr.formatDate(date, format);\n            };\n\n            if (this._input) {\n              // Create a new flatpickr.\n              this.calendar = new Flatpickr(this._input, this.settings);\n              this.calendar.altInput.addEventListener('input', (event) => {\n                if (this.settings.allowInput) {\n                  this.settings.manualInputValue = event.target.value;\n                  this.settings.isManuallyOverriddenValue = true;\n                }\n\n                if (event.target.value === '' && this.calendar.selectedDates.length > 0) {\n                  this.settings.wasDefaultValueChanged = true;\n                  this.settings.defaultValue = event.target.value;\n                  this.calendar.clear();\n                }\n                else {\n                  this.settings.wasDefaultValueChanged = false;\n                }\n              });\n\n              if (!this.settings.readOnly) {\n                // Enforce the input mask of the format.\n                this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));\n              }\n\n              // Make sure we commit the value after a blur event occurs.\n              this.addEventListener(this.calendar._input, 'blur', () =>\n                this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)\n              );\n            }\n          });\n      });\n  }\n\n  get disableWeekends() {\n    return function(date) {\n      return (date.getDay() === 0 || date.getDay() === 6);\n    };\n  }\n\n  get disableWeekdays() {\n    return (date) => !this.disableWeekends(date);\n  }\n\n  get disableFunction() {\n    return (date) => this.evaluate(`return ${this.settings.disableFunction}`, {\n      date\n    });\n  }\n\n  get timezone() {\n    if (this.settings.timezone) {\n      return this.settings.timezone;\n    }\n    if (this.settings.displayInTimezone === 'submission' && this.settings.submissionTimezone) {\n      return this.settings.submissionTimezone;\n    }\n    if (this.settings.displayInTimezone === 'utc') {\n      return 'UTC';\n    }\n\n    // Return current timezone if none are provided.\n    return currentTimezone();\n  }\n\n  get defaultSettings() {\n    return CalendarWidget.defaultSettings;\n  }\n\n  addSuffix(suffix) {\n    this.addEventListener(suffix, 'click', () => {\n      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {\n        this.calendar.open();\n      }\n    });\n    return suffix;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    if (this.calendar) {\n      if (disabled) {\n        this.calendar._input.setAttribute('disabled', 'disabled');\n      }\n      else {\n        this.calendar._input.removeAttribute('disabled');\n      }\n      this.calendar.close();\n      this.calendar.redraw();\n    }\n  }\n\n  get input() {\n    return this.calendar ? this.calendar.altInput : null;\n  }\n\n  get disabledDates() {\n    if (this.settings.disabledDates) {\n      const disabledDates = this.settings.disabledDates.split(',');\n      return disabledDates.map((item) => {\n        const dateMask = /\\d{4}-\\d{2}-\\d{2}/g;\n        const dates = item.match(dateMask);\n        if (dates.length) {\n          return dates.length === 1 ?  item.match(dateMask)[0] : {\n            from: item.match(dateMask)[0],\n            to: item.match(dateMask)[1],\n          };\n        }\n      });\n    }\n    return [];\n  }\n\n  get localeFormat() {\n    let format = '';\n\n    if (this.settings.enableDate) {\n      format += this.defaultFormat.date;\n    }\n\n    if (this.settings.enableTime) {\n      format += this.defaultFormat.time;\n    }\n\n    return format;\n  }\n\n  get dateTimeFormat() {\n    return this.settings.useLocaleSettings ? this.localeFormat : convertFormatToFlatpickr(this.dateFormat);\n  }\n\n  get dateFormat() {\n    return _.get(this.settings, 'format', DEFAULT_FORMAT);\n  }\n\n  get flatpickrType() {\n    return 'flatpickr';\n  }\n\n  /**\n   * Return the date value.\n   *\n   * @param date\n   * @param format\n   * @return {string}\n   */\n  getDateValue(date, format) {\n    return moment(date).format(convertFormatToMoment(format));\n  }\n\n  /**\n   * Return the value of the selected date.\n   *\n   * @return {*}\n   */\n  getValue() {\n    // Standard output format.\n    if (!this.calendar) {\n      return super.getValue();\n    }\n\n    // Get the selected dates from the calendar widget.\n    const dates = this.calendar.selectedDates;\n    if (!dates || !dates.length) {\n      return super.getValue();\n    }\n\n    if (!(dates[0] instanceof Date)) {\n      return 'Invalid Date';\n    }\n\n    return this.getDateValue(dates[0], this.valueFormat);\n  }\n\n  /**\n   * Set the selected date value.\n   *\n   * @param value\n   */\n  setValue(value) {\n    if (!this.calendar) {\n      return super.setValue(value);\n    }\n    if (value) {\n      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {\n        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);\n      }\n      else {\n        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);\n      }\n    }\n    else {\n      this.calendar.clear(false);\n    }\n  }\n\n  getValueAsString(value, format) {\n    format = format || this.dateFormat;\n    if (this.settings.saveAs === 'text') {\n      return this.getDateValue(value, format);\n    }\n\n    return formatDate(value, format, this.timezone);\n  }\n\n  validationValue(value) {\n    if (typeof value === 'string') {\n      return new Date(value);\n    }\n    return value.map(val => new Date(val));\n  }\n\n  destroy() {\n    super.destroy();\n    if (this.calendar) {\n      this.calendar.destroy();\n    }\n  }\n}\n",
+    "content": "import Flatpickr from 'flatpickr';\nimport InputWidget from './InputWidget';\nimport {\n  convertFormatToFlatpickr,\n  convertFormatToMask,\n  convertFormatToMoment,\n  currentTimezone,\n  formatDate,\n  formatOffset,\n  getDateSetting,\n  getLocaleDateFormatInfo,\n  momentDate,\n  zonesLoaded,\n  shouldLoadZones,\n  loadZones\n} from '../utils/utils';\nimport moment from 'moment';\nimport _ from 'lodash';\nconst DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';\nconst ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';\n\nexport default class CalendarWidget extends InputWidget {\n  /* eslint-disable camelcase */\n  static get defaultSettings() {\n    return {\n      type: 'calendar',\n      altInput: true,\n      allowInput: true,\n      clickOpens: true,\n      enableDate: true,\n      enableTime: true,\n      mode: 'single',\n      noCalendar: false,\n      format: DEFAULT_FORMAT,\n      dateFormat: ISO_8601_FORMAT,\n      useLocaleSettings: false,\n      language: 'us-en',\n      hourIncrement: 1,\n      minuteIncrement: 5,\n      time_24hr: false,\n      saveAs: 'date',\n      displayInTimezone: '',\n      timezone: '',\n      disable: [],\n      minDate: '',\n      maxDate: ''\n    };\n  }\n  /* eslint-enable camelcase */\n\n  constructor(settings, component) {\n    super(settings, component);\n    // Change the format to map to the settings.\n    if (this.settings.noCalendar) {\n      this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.settings.enableTime) {\n      this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (this.settings.time_24hr) {\n      this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n  }\n\n  /**\n   * Load the timezones.\n   *\n   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.\n   */\n  loadZones() {\n    const timezone = this.timezone;\n    if (!zonesLoaded() && shouldLoadZones(timezone)) {\n      loadZones(timezone).then(() => this.emit('redraw'));\n\n      // Return zones are loading.\n      return true;\n    }\n\n    // Zones are already loaded.\n    return false;\n  }\n\n  attach(input) {\n    const superAttach = super.attach(input);\n    if (input && !input.getAttribute('placeholder')) {\n      input.setAttribute('placeholder', this.settings.format);\n    }\n\n    const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);\n    this.defaultFormat = {\n      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',\n      time: 'G:i K'\n    };\n\n    this.closedOn = 0;\n    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;\n\n    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);\n    this.settings.minDate = getDateSetting(this.settings.minDate);\n    this.settings.disable = this.disabledDates;\n    this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';\n    this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';\n    this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';\n    this.settings.maxDate = getDateSetting(this.settings.maxDate);\n    this.settings.wasDefaultValueChanged = false;\n    this.settings.defaultValue = '';\n    this.settings.manualInputValue = '';\n    this.settings.isManuallyOverriddenValue = false;\n    this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);\n    this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);\n    this.settings.onChange = () => {\n      if (this.settings.allowInput) {\n        if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {\n          this.calendar._input.value = this.settings.manualInputValue;\n        }\n        else {\n          this.settings.manualInputValue = '';\n        }\n\n        this.settings.isManuallyOverriddenValue = false;\n      }\n\n      this.emit('update');\n    };\n    this.settings.onOpen = () => this.hook('onCalendarOpen');\n    this.settings.onClose = () => {\n      this.hook('onCalendarClose');\n      this.closedOn = Date.now();\n\n      if (this.settings.allowInput && this.settings.enableTime) {\n        this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;\n        this.settings.isManuallyOverriddenValue = false;\n      }\n\n      if (this.settings.wasDefaultValueChanged) {\n        this.calendar._input.value = this.settings.defaultValue;\n        this.settings.wasDefaultValueChanged = false;\n      }\n      if (this.calendar) {\n        this.emit('blur');\n      }\n    };\n    this.settings.formatDate = (date, format) => {\n      // Only format this if this is the altFormat and the form is readOnly.\n      if (this.settings.readOnly && (format === this.settings.altFormat)) {\n        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {\n          return Flatpickr.formatDate(date, format);\n        }\n\n        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);\n      }\n\n      return Flatpickr.formatDate(date, format);\n    };\n\n    if (this._input) {\n      // Create a new flatpickr.\n      this.calendar = new Flatpickr(this._input, this.settings);\n      this.calendar.altInput.addEventListener('input', (event) => {\n        if (this.settings.allowInput) {\n          this.settings.manualInputValue = event.target.value;\n          this.settings.isManuallyOverriddenValue = true;\n        }\n\n        if (event.target.value === '' && this.calendar.selectedDates.length > 0) {\n          this.settings.wasDefaultValueChanged = true;\n          this.settings.defaultValue = event.target.value;\n          this.calendar.clear();\n        }\n        else {\n          this.settings.wasDefaultValueChanged = false;\n        }\n      });\n\n      if (!this.settings.readOnly) {\n        // Enforce the input mask of the format.\n        this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));\n      }\n\n      // Make sure we commit the value after a blur event occurs.\n      this.addEventListener(this.calendar._input, 'blur', () =>\n        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)\n      );\n    }\n    return superAttach;\n  }\n\n  get disableWeekends() {\n    return function(date) {\n      return (date.getDay() === 0 || date.getDay() === 6);\n    };\n  }\n\n  get disableWeekdays() {\n    return (date) => !this.disableWeekends(date);\n  }\n\n  get disableFunction() {\n    return (date) => this.evaluate(`return ${this.settings.disableFunction}`, {\n      date\n    });\n  }\n\n  get timezone() {\n    if (this.settings.timezone) {\n      return this.settings.timezone;\n    }\n    if (this.settings.displayInTimezone === 'submission' && this.settings.submissionTimezone) {\n      return this.settings.submissionTimezone;\n    }\n    if (this.settings.displayInTimezone === 'utc') {\n      return 'UTC';\n    }\n\n    // Return current timezone if none are provided.\n    return currentTimezone();\n  }\n\n  get defaultSettings() {\n    return CalendarWidget.defaultSettings;\n  }\n\n  addSuffix(suffix) {\n    this.addEventListener(suffix, 'click', () => {\n      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {\n        this.calendar.open();\n      }\n    });\n    return suffix;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    if (this.calendar) {\n      if (disabled) {\n        this.calendar._input.setAttribute('disabled', 'disabled');\n      }\n      else {\n        this.calendar._input.removeAttribute('disabled');\n      }\n      this.calendar.close();\n      this.calendar.redraw();\n    }\n  }\n\n  get input() {\n    return this.calendar ? this.calendar.altInput : null;\n  }\n\n  get disabledDates() {\n    if (this.settings.disabledDates) {\n      const disabledDates = this.settings.disabledDates.split(',');\n      return disabledDates.map((item) => {\n        const dateMask = /\\d{4}-\\d{2}-\\d{2}/g;\n        const dates = item.match(dateMask);\n        if (dates.length) {\n          return dates.length === 1 ?  item.match(dateMask)[0] : {\n            from: item.match(dateMask)[0],\n            to: item.match(dateMask)[1],\n          };\n        }\n      });\n    }\n    return [];\n  }\n\n  get localeFormat() {\n    let format = '';\n\n    if (this.settings.enableDate) {\n      format += this.defaultFormat.date;\n    }\n\n    if (this.settings.enableTime) {\n      format += this.defaultFormat.time;\n    }\n\n    return format;\n  }\n\n  get dateTimeFormat() {\n    return this.settings.useLocaleSettings ? this.localeFormat : convertFormatToFlatpickr(this.dateFormat);\n  }\n\n  get dateFormat() {\n    return _.get(this.settings, 'format', DEFAULT_FORMAT);\n  }\n\n  /**\n   * Return the date value.\n   *\n   * @param date\n   * @param format\n   * @return {string}\n   */\n  getDateValue(date, format) {\n    return moment(date).format(convertFormatToMoment(format));\n  }\n\n  /**\n   * Return the value of the selected date.\n   *\n   * @return {*}\n   */\n  getValue() {\n    // Standard output format.\n    if (!this.calendar) {\n      return super.getValue();\n    }\n\n    // Get the selected dates from the calendar widget.\n    const dates = this.calendar.selectedDates;\n    if (!dates || !dates.length) {\n      return super.getValue();\n    }\n\n    if (!(dates[0] instanceof Date)) {\n      return 'Invalid Date';\n    }\n\n    return this.getDateValue(dates[0], this.valueFormat);\n  }\n\n  /**\n   * Set the selected date value.\n   *\n   * @param value\n   */\n  setValue(value) {\n    if (!this.calendar) {\n      return super.setValue(value);\n    }\n    if (value) {\n      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {\n        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);\n      }\n      else {\n        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);\n      }\n    }\n    else {\n      this.calendar.clear(false);\n    }\n  }\n\n  getValueAsString(value, format) {\n    format = format || this.dateFormat;\n    if (this.settings.saveAs === 'text') {\n      return this.getDateValue(value, format);\n    }\n\n    return formatDate(value, format, this.timezone);\n  }\n\n  validationValue(value) {\n    if (typeof value === 'string') {\n      return new Date(value);\n    }\n    return value.map(val => new Date(val));\n  }\n\n  destroy() {\n    super.destroy();\n    if (this.calendar) {\n      this.calendar.destroy();\n    }\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/widgets/CalendarWidget.js",
     "access": "public",
@@ -58312,27 +58312,6 @@
   },
   {
     "__docId__": 3041,
-    "kind": "variable",
-    "name": "CDN_URL",
-    "memberof": "src/widgets/CalendarWidget.js",
-    "static": true,
-    "longname": "src/widgets/CalendarWidget.js~CDN_URL",
-    "access": "public",
-    "export": false,
-    "importPath": "formiojs/src/widgets/CalendarWidget.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "ignore": true
-  },
-  {
-    "__docId__": 3042,
     "kind": "class",
     "name": "CalendarWidget",
     "memberof": "src/widgets/CalendarWidget.js",
@@ -58343,7 +58322,7 @@
     "importPath": "formiojs/src/widgets/CalendarWidget.js",
     "importStyle": "CalendarWidget",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 22,
     "undocument": true,
     "interface": false,
     "extends": [
@@ -58351,7 +58330,7 @@
     ]
   },
   {
-    "__docId__": 3043,
+    "__docId__": 3042,
     "kind": "get",
     "name": "defaultSettings",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58361,7 +58340,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget.defaultSettings",
     "access": "public",
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -58370,7 +58349,7 @@
     }
   },
   {
-    "__docId__": 3044,
+    "__docId__": 3043,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58380,11 +58359,11 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 51,
     "undocument": true
   },
   {
-    "__docId__": 3045,
+    "__docId__": 3044,
     "kind": "method",
     "name": "loadZones",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58394,7 +58373,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#loadZones",
     "access": "public",
     "description": "Load the timezones.",
-    "lineNumber": 71,
+    "lineNumber": 70,
     "return": {
       "nullable": null,
       "types": [
@@ -58406,7 +58385,7 @@
     "params": []
   },
   {
-    "__docId__": 3046,
+    "__docId__": 3045,
     "kind": "method",
     "name": "attach",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58416,7 +58395,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 83,
     "undocument": true,
     "params": [
       {
@@ -58433,7 +58412,7 @@
     }
   },
   {
-    "__docId__": 3047,
+    "__docId__": 3046,
     "kind": "member",
     "name": "defaultFormat",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58441,7 +58420,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 91,
+    "lineNumber": 90,
     "undocument": true,
     "type": {
       "types": [
@@ -58450,7 +58429,7 @@
     }
   },
   {
-    "__docId__": 3048,
+    "__docId__": 3047,
     "kind": "member",
     "name": "closedOn",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58458,7 +58437,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#closedOn",
     "access": "public",
     "description": null,
-    "lineNumber": 96,
+    "lineNumber": 95,
     "undocument": true,
     "type": {
       "types": [
@@ -58467,7 +58446,7 @@
     }
   },
   {
-    "__docId__": 3049,
+    "__docId__": 3048,
     "kind": "member",
     "name": "valueFormat",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58475,7 +58454,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#valueFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 97,
+    "lineNumber": 96,
     "undocument": true,
     "type": {
       "types": [
@@ -58484,7 +58463,7 @@
     }
   },
   {
-    "__docId__": 3050,
+    "__docId__": 3049,
     "kind": "member",
     "name": "valueMomentFormat",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58492,7 +58471,24 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#valueMomentFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 99,
+    "lineNumber": 98,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 3051,
+    "kind": "member",
+    "name": "calendar",
+    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
+    "static": false,
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#calendar",
+    "access": "public",
+    "description": null,
+    "lineNumber": 158,
     "undocument": true,
     "type": {
       "types": [
@@ -58502,14 +58498,16 @@
   },
   {
     "__docId__": 3052,
-    "kind": "member",
-    "name": "calendar",
+    "kind": "get",
+    "name": "disableWeekends",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
+    "generator": false,
+    "async": false,
     "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#calendar",
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekends",
     "access": "public",
     "description": null,
-    "lineNumber": 168,
+    "lineNumber": 188,
     "undocument": true,
     "type": {
       "types": [
@@ -58520,15 +58518,15 @@
   {
     "__docId__": 3053,
     "kind": "get",
-    "name": "disableWeekends",
+    "name": "disableWeekdays",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekends",
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekdays",
     "access": "public",
     "description": null,
-    "lineNumber": 199,
+    "lineNumber": 194,
     "undocument": true,
     "type": {
       "types": [
@@ -58539,15 +58537,15 @@
   {
     "__docId__": 3054,
     "kind": "get",
-    "name": "disableWeekdays",
+    "name": "disableFunction",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekdays",
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disableFunction",
     "access": "public",
     "description": null,
-    "lineNumber": 205,
+    "lineNumber": 198,
     "undocument": true,
     "type": {
       "types": [
@@ -58558,15 +58556,15 @@
   {
     "__docId__": 3055,
     "kind": "get",
-    "name": "disableFunction",
+    "name": "timezone",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disableFunction",
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#timezone",
     "access": "public",
     "description": null,
-    "lineNumber": 209,
+    "lineNumber": 204,
     "undocument": true,
     "type": {
       "types": [
@@ -58577,15 +58575,15 @@
   {
     "__docId__": 3056,
     "kind": "get",
-    "name": "timezone",
+    "name": "defaultSettings",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#timezone",
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultSettings",
     "access": "public",
     "description": null,
-    "lineNumber": 215,
+    "lineNumber": 219,
     "undocument": true,
     "type": {
       "types": [
@@ -58595,25 +58593,6 @@
   },
   {
     "__docId__": 3057,
-    "kind": "get",
-    "name": "defaultSettings",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultSettings",
-    "access": "public",
-    "description": null,
-    "lineNumber": 230,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 3058,
     "kind": "method",
     "name": "addSuffix",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58623,7 +58602,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#addSuffix",
     "access": "public",
     "description": null,
-    "lineNumber": 234,
+    "lineNumber": 223,
     "undocument": true,
     "params": [
       {
@@ -58640,7 +58619,7 @@
     }
   },
   {
-    "__docId__": 3059,
+    "__docId__": 3058,
     "kind": "set",
     "name": "disabled",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58650,11 +58629,11 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disabled",
     "access": "public",
     "description": null,
-    "lineNumber": 243,
+    "lineNumber": 232,
     "undocument": true
   },
   {
-    "__docId__": 3060,
+    "__docId__": 3059,
     "kind": "get",
     "name": "input",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58664,7 +58643,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#input",
     "access": "public",
     "description": null,
-    "lineNumber": 257,
+    "lineNumber": 246,
     "undocument": true,
     "type": {
       "types": [
@@ -58673,7 +58652,7 @@
     }
   },
   {
-    "__docId__": 3061,
+    "__docId__": 3060,
     "kind": "get",
     "name": "disabledDates",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58683,7 +58662,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disabledDates",
     "access": "public",
     "description": null,
-    "lineNumber": 261,
+    "lineNumber": 250,
     "undocument": true,
     "type": {
       "types": [
@@ -58692,7 +58671,7 @@
     }
   },
   {
-    "__docId__": 3062,
+    "__docId__": 3061,
     "kind": "get",
     "name": "localeFormat",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58702,7 +58681,26 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#localeFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 278,
+    "lineNumber": 267,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 3062,
+    "kind": "get",
+    "name": "dateTimeFormat",
+    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateTimeFormat",
+    "access": "public",
+    "description": null,
+    "lineNumber": 281,
     "undocument": true,
     "type": {
       "types": [
@@ -58713,15 +58711,15 @@
   {
     "__docId__": 3063,
     "kind": "get",
-    "name": "dateTimeFormat",
+    "name": "dateFormat",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateTimeFormat",
+    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 292,
+    "lineNumber": 285,
     "undocument": true,
     "type": {
       "types": [
@@ -58731,44 +58729,6 @@
   },
   {
     "__docId__": 3064,
-    "kind": "get",
-    "name": "dateFormat",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateFormat",
-    "access": "public",
-    "description": null,
-    "lineNumber": 296,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 3065,
-    "kind": "get",
-    "name": "flatpickrType",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#flatpickrType",
-    "access": "public",
-    "description": null,
-    "lineNumber": 300,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 3066,
     "kind": "method",
     "name": "getDateValue",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58778,7 +58738,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getDateValue",
     "access": "public",
     "description": "Return the date value.",
-    "lineNumber": 311,
+    "lineNumber": 296,
     "params": [
       {
         "nullable": null,
@@ -58811,7 +58771,7 @@
     }
   },
   {
-    "__docId__": 3067,
+    "__docId__": 3065,
     "kind": "method",
     "name": "getValue",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58821,7 +58781,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getValue",
     "access": "public",
     "description": "Return the value of the selected date.",
-    "lineNumber": 320,
+    "lineNumber": 305,
     "return": {
       "nullable": null,
       "types": [
@@ -58833,7 +58793,7 @@
     "params": []
   },
   {
-    "__docId__": 3068,
+    "__docId__": 3066,
     "kind": "method",
     "name": "setValue",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58843,7 +58803,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#setValue",
     "access": "public",
     "description": "Set the selected date value.",
-    "lineNumber": 344,
+    "lineNumber": 329,
     "params": [
       {
         "nullable": null,
@@ -58863,7 +58823,7 @@
     }
   },
   {
-    "__docId__": 3069,
+    "__docId__": 3067,
     "kind": "method",
     "name": "getValueAsString",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58873,7 +58833,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getValueAsString",
     "access": "public",
     "description": null,
-    "lineNumber": 361,
+    "lineNumber": 346,
     "undocument": true,
     "params": [
       {
@@ -58896,7 +58856,7 @@
     }
   },
   {
-    "__docId__": 3070,
+    "__docId__": 3068,
     "kind": "method",
     "name": "validationValue",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58906,7 +58866,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#validationValue",
     "access": "public",
     "description": null,
-    "lineNumber": 370,
+    "lineNumber": 355,
     "undocument": true,
     "params": [
       {
@@ -58923,7 +58883,7 @@
     }
   },
   {
-    "__docId__": 3071,
+    "__docId__": 3069,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
@@ -58933,13 +58893,13 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 377,
+    "lineNumber": 362,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 3072,
+    "__docId__": 3070,
     "kind": "file",
     "name": "src/widgets/InputWidget.js",
     "content": "import _ from 'lodash';\nimport Element from '../Element';\nimport NativePromise from 'native-promise-only';\nexport default class InputWidget extends Element {\n  static get defaultSettings() {\n    return {\n      type: 'input'\n    };\n  }\n\n  constructor(settings, component) {\n    super(settings);\n    this.namespace = 'formio.widget';\n    this.component = component || {};\n    this.settings = _.merge({}, this.defaultSettings, settings || {});\n  }\n\n  attach(input) {\n    this._input = input;\n    return NativePromise.resolve();\n  }\n\n  get defaultSettings() {\n    return {};\n  }\n\n  set disabled(disabled) {\n    if (disabled) {\n      this._input.setAttribute('disabled', 'disabled');\n    }\n    else {\n      this._input.removeAttribute('disabled');\n    }\n  }\n\n  get input() {\n    return this._input;\n  }\n\n  getValue() {\n    return this._input.value;\n  }\n\n  getValueAsString(value) {\n    return value;\n  }\n\n  validationValue(value) {\n    return value;\n  }\n\n  addPrefix() {\n    return null;\n  }\n\n  addSuffix() {\n    return null;\n  }\n\n  setValue(value) {\n    this._input.value = value;\n  }\n}\n",
@@ -58950,7 +58910,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 3073,
+    "__docId__": 3071,
     "kind": "class",
     "name": "InputWidget",
     "memberof": "src/widgets/InputWidget.js",
@@ -58969,7 +58929,7 @@
     ]
   },
   {
-    "__docId__": 3074,
+    "__docId__": 3072,
     "kind": "get",
     "name": "defaultSettings",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -58988,7 +58948,7 @@
     }
   },
   {
-    "__docId__": 3075,
+    "__docId__": 3073,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59002,7 +58962,7 @@
     "undocument": true
   },
   {
-    "__docId__": 3076,
+    "__docId__": 3074,
     "kind": "member",
     "name": "namespace",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59019,7 +58979,7 @@
     }
   },
   {
-    "__docId__": 3077,
+    "__docId__": 3075,
     "kind": "member",
     "name": "component",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59036,7 +58996,7 @@
     }
   },
   {
-    "__docId__": 3078,
+    "__docId__": 3076,
     "kind": "member",
     "name": "settings",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59053,7 +59013,7 @@
     }
   },
   {
-    "__docId__": 3079,
+    "__docId__": 3077,
     "kind": "method",
     "name": "attach",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59080,7 +59040,7 @@
     }
   },
   {
-    "__docId__": 3080,
+    "__docId__": 3078,
     "kind": "member",
     "name": "_input",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59097,7 +59057,7 @@
     }
   },
   {
-    "__docId__": 3081,
+    "__docId__": 3079,
     "kind": "get",
     "name": "defaultSettings",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59116,7 +59076,7 @@
     }
   },
   {
-    "__docId__": 3082,
+    "__docId__": 3080,
     "kind": "set",
     "name": "disabled",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59130,7 +59090,7 @@
     "undocument": true
   },
   {
-    "__docId__": 3083,
+    "__docId__": 3081,
     "kind": "get",
     "name": "input",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59149,7 +59109,7 @@
     }
   },
   {
-    "__docId__": 3084,
+    "__docId__": 3082,
     "kind": "method",
     "name": "getValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59169,7 +59129,7 @@
     }
   },
   {
-    "__docId__": 3085,
+    "__docId__": 3083,
     "kind": "method",
     "name": "getValueAsString",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59196,7 +59156,7 @@
     }
   },
   {
-    "__docId__": 3086,
+    "__docId__": 3084,
     "kind": "method",
     "name": "validationValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59223,7 +59183,7 @@
     }
   },
   {
-    "__docId__": 3087,
+    "__docId__": 3085,
     "kind": "method",
     "name": "addPrefix",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59243,7 +59203,7 @@
     }
   },
   {
-    "__docId__": 3088,
+    "__docId__": 3086,
     "kind": "method",
     "name": "addSuffix",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59263,7 +59223,7 @@
     }
   },
   {
-    "__docId__": 3089,
+    "__docId__": 3087,
     "kind": "method",
     "name": "setValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -59286,7 +59246,7 @@
     "return": null
   },
   {
-    "__docId__": 3090,
+    "__docId__": 3088,
     "kind": "file",
     "name": "src/widgets/index.js",
     "content": "import InputWidget from './InputWidget';\nimport CalendarWidget from './CalendarWidget';\nexport default {\n  input: InputWidget,\n  calendar: CalendarWidget\n};\n",
@@ -59306,7 +59266,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.11.0-rc.1\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.6.2\",\n    \"@formio/semantic\": \"^2.4.2\",\n    \"autocompleter\": \"^6.0.3\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^9.0.1\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.6.5\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.1\",\n    \"dompurify\": \"^2.0.12\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^6.4.3\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"i18next\": \"^19.5.4\",\n    \"idb\": \"^5.0.4\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^2.2.0\",\n    \"lodash\": \"^4.17.15\",\n    \"moment\": \"^2.27.0\",\n    \"moment-timezone\": \"^0.5.31\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.2.0\",\n    \"vanilla-picker\": \"^2.10.1\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.10.4\",\n    \"@babel/core\": \"^7.10.4\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.10.4\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.10.4\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.10.4\",\n    \"@babel/polyfill\": \"^7.10.4\",\n    \"@babel/preset-env\": \"^7.10.4\",\n    \"@babel/register\": \"^7.10.4\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.1.0\",\n    \"bootstrap\": \"^4.5.0\",\n    \"bootswatch\": \"^4.5.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.6\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^4.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.3.1\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.10.3\",\n    \"file-loader\": \"^6.0.0\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.2.2\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^5.1.0\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^1.1.0\",\n    \"mocha\": \"^8.0.1\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.1\",\n    \"sinon\": \"^9.0.2\",\n    \"webpack\": \"^4.43.0\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.11.0-rc.1\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.6.2\",\n    \"@formio/semantic\": \"^2.4.2\",\n    \"autocompleter\": \"^6.0.3\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^9.0.1\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.6.5\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.1\",\n    \"dompurify\": \"2.0.11\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^6.4.3\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.3\",\n    \"i18next\": \"^19.5.1\",\n    \"idb\": \"^5.0.4\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^2.2.0\",\n    \"lodash\": \"^4.17.15\",\n    \"moment\": \"^2.27.0\",\n    \"moment-timezone\": \"^0.5.31\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.2.0\",\n    \"vanilla-picker\": \"^2.10.1\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.10.4\",\n    \"@babel/core\": \"^7.10.4\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.10.4\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.10.4\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.10.4\",\n    \"@babel/polyfill\": \"^7.10.4\",\n    \"@babel/preset-env\": \"^7.10.4\",\n    \"@babel/register\": \"^7.10.4\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.1.0\",\n    \"bootstrap\": \"^4.5.0\",\n    \"bootswatch\": \"^4.5.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.6\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^4.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.3.1\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.10.3\",\n    \"file-loader\": \"^6.0.0\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.2.2\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^5.1.0\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^1.1.0\",\n    \"mocha\": \"^8.0.1\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.1\",\n    \"sinon\": \"^9.0.2\",\n    \"webpack\": \"^4.43.0\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,
