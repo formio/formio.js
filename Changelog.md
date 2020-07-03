@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
  - Improve the way oauth works to work with new server provider.
- - VPAT-498 Changed flatpickr to be lazy-loaded and removed dependencies
  - Localize alert messages, simplify t() methods
 
 ### 4.10.5
