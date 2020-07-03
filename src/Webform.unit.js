@@ -95,6 +95,7 @@ describe('Webform tests', () => {
       assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
+      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent, 'Text Field: Text Field is required');
       done();
     }, 500);
     })
@@ -246,6 +247,51 @@ describe('Webform tests', () => {
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);
+  });
+
+  it('Should treat double colons as i18next namespace separators', () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    const str = 'Test: this is only a test';
+    assert.equal(form.t(str), str);
+    assert.equal(form.t(`Namespace::${str}`), str);
+  });
+
+  it('Should translate form errors in alerts', () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+      language: 'es',
+      i18n: {
+        es: {
+          alertMessage: '{{message}}',
+          required: '{{field}} es obligatorio'
+        }
+      }
+    });
+
+    return form.setForm({
+      components: [
+        {
+          type: 'textfield',
+          label: 'Field Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {
+            required: true
+          }
+        }
+      ]
+    })
+      .then(() => form.submit())
+      .catch(() => {
+        // console.warn('nooo:', error)
+      })
+      .then(() => {
+        const ref = formElement.querySelector('[ref="errorRef"]');
+        assert.equal(ref.textContent, 'Field Label es obligatorio');
+      });
   });
 
   it('Should translate a form after instantiate', done => {
