@@ -296,11 +296,14 @@ export default class TextAreaComponent extends TextFieldComponent {
               if (this.component.isUploadEnabled) {
                 this.setAsyncConvertedValue(value)
                   .then(result => {
-                    editor.setContents(editor.clipboard.convert(result));
+                    const content = editor.clipboard.convert({ html: result });
+                    editor.setContents(content);
                   });
               }
               else {
-                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
+                const convertedValue = this.setConvertedValue(value, index);
+                const content = editor.clipboard.convert({ html: convertedValue });
+                editor.setContents(content);
               }
               break;
             case 'ckeditor':
