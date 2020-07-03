@@ -1064,14 +1064,14 @@ export default class Component extends Element {
     }
   }
 
-  checkRefresh(refreshData, changed) {
+  checkRefresh(refreshData, changed, flags) {
     const changePath = _.get(changed, 'instance.path', false);
     // Don't let components change themselves.
     if (changePath && this.path === changePath) {
       return;
     }
     if (refreshData === 'data') {
-      this.refresh(this.data);
+      this.refresh(this.data, changed, flags);
     }
     else if (
       (changePath && changePath === refreshData) && changed && changed.instance &&
@@ -1079,20 +1079,20 @@ export default class Component extends Element {
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
     ) {
-      this.refresh(changed.value, changed);
+      this.refresh(changed.value, changed, flags);
     }
   }
 
-  checkRefreshOn(changes) {
+  checkRefreshOn(changes, flags) {
     changes = changes || [];
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
-        refreshOn.forEach(refreshData => changes.forEach(changed => this.checkRefresh(refreshData, changed)));
+        refreshOn.forEach(refreshData => changes.forEach(changed => this.checkRefresh(refreshData, changed, flags)));
       }
       else {
-        changes.forEach(changed => this.checkRefresh(refreshOn, changed));
+        changes.forEach(changed => this.checkRefresh(refreshOn, changed, flags));
       }
     }
   }
@@ -2412,9 +2412,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission &&
-      allowOverride &&
-      currentCalculatedValue !== this.dataValue) {
+    if (flags.fromSubmission) {
       this.calculatedValue = calculatedValue;
       return false;
     }
@@ -2431,9 +2429,8 @@ export default class Component extends Element {
       this.calculatedValue = calculatedValue;
       return true;
     }
-
     // Set the new value.
-    const changed = this.setValue(calculatedValue, flags);
+    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
     return changed;
   }
@@ -2573,7 +2570,8 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changes);
+    this.checkRefreshOn(flags.changes, flags);
+
     if (flags.noCheck) {
       return true;
     }
