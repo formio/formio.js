@@ -242,7 +242,6 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/PDFBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
-import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import Formio from &apos;./Formio&apos;;
 
 import WebformBuilder from &apos;./WebformBuilder&apos;;
@@ -250,9 +249,6 @@ import { fastCloneDeep, getElementRect } from &apos;./utils/utils&apos;;
 import { eachComponent } from &apos;./utils/formUtils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import PDF from &apos;./PDF&apos;;
-const { fetch, Headers } = fetchPonyfill({
-  Promise: NativePromise
-});
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
@@ -317,18 +313,6 @@ export default class PDFBuilder extends WebformBuilder {
     return this.options.projectUrl || Formio.getProjectUrl();
   }
 
-  // 888      d8b  .d888                                    888
-  // 888      Y8P d88P&quot;                                     888
-  // 888          888                                       888
-  // 888      888 888888 .d88b.   .d8888b 888  888  .d8888b 888  .d88b.
-  // 888      888 888   d8P  Y8b d88P&quot;    888  888 d88P&quot;    888 d8P  Y8b
-  // 888      888 888   88888888 888      888  888 888      888 88888888
-  // 888      888 888   Y8b.     Y88b.    Y88b 888 Y88b.    888 Y8b.
-  // 88888888 888 888    &quot;Y8888   &quot;Y8888P  &quot;Y88888  &quot;Y8888P 888  &quot;Y8888
-  //                                           888
-  //                                      Y8b d88P
-  //                                       &quot;Y88P&quot;
-
   init() {
     this.options.attachMode = &apos;builder&apos;;
     this.webform = this.webform || this.createForm(this.options);
@@ -369,6 +353,9 @@ export default class PDFBuilder extends WebformBuilder {
         &apos;fileBrowse&apos;: &apos;single&apos;,
         &apos;hiddenFileInputElement&apos;: &apos;single&apos;,
         &apos;uploadError&apos;: &apos;single&apos;,
+        &apos;uploadProgress&apos;: &apos;single&apos;,
+        &apos;uploadProgressWrapper&apos;: &apos;single&apos;,
+        &apos;dragDropText&apos;: &apos;single&apos;
       });
       this.addEventListener(this.refs[&apos;pdf-upload-button&apos;], &apos;click&apos;,(event) =&gt; {
         event.preventDefault();
@@ -446,40 +433,30 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   upload(file) {
-    const headers = new Headers({
-      &apos;Accept&apos;: &apos;application/json, text/plain, */*&apos;,
-      &apos;x-jwt-token&apos;: Formio.getToken(),
-    });
-
-    const formData = new FormData();
-    formData.append(&apos;file&apos;, file);
-
-    fetch(`${this.projectUrl}/upload`, {
-      method: &apos;POST&apos;,
-      headers,
-      body: formData
-    })
-      .then((response) =&gt; {
-        if (response.status !== 201) {
-          response.text().then((info) =&gt; {
-            this.setUploadError(`${response.statusText} - ${info}`);
-          });
-        }
-        else {
-          response.json().then((data) =&gt; {
-            _.set(this.webform.form, &apos;settings.pdf&apos;, {
-              id: data.file,
-              src: `${data.filesServer}${data.path}`
-            });
-            this.emit(&apos;pdfUploaded&apos;, data);
-            // Now that the settings are set, redraw to show the builder.
-            this.redraw();
-          });
-        }
+    const formio = new Formio(this.projectUrl);
+    this.refs.dragDropText.style.display = &apos;none&apos;;
+    this.refs.uploadProgressWrapper.style.display = &apos;inherit&apos;;
+    formio.uploadFile(&apos;url&apos;, file, file, &apos;&apos;, (event) =&gt; {
+      const progress = Math.floor((event.loaded / event.total) * 100);
+      this.refs.uploadProgress.style.width = `${progress}%`;
+      if (progress &gt; 98) {
+        this.refs.uploadProgress.innerHTML = this.t(&apos;Converting PDF. Please wait.&apos;);
+      }
+      else {
+        this.refs.uploadProgress.innerHTML = `${this.t(&apos;Uploading&apos;)} ${progress}%`;
+      }
+    }, `${this.projectUrl}/upload`, {}, &apos;file&apos;)
+      .then((result) =&gt; {
+        _.set(this.webform.form, &apos;settings.pdf&apos;, {
+          id: result.data.file,
+          src: `${result.data.filesServer}${result.data.path}`
+        });
+        this.refs.dragDropText.style.display = &apos;inherit&apos;;
+        this.refs.uploadProgressWrapper.style.display = &apos;none&apos;;
+        this.emit(&apos;pdfUploaded&apos;, result.data);
+        this.redraw();
       })
-      .catch(() =&gt; {
-        this.setUploadError(&apos;Upload failed.&apos;);
-      });
+      .catch((err) =&gt; this.setUploadError(err));
   }
 
   setUploadError(message) {

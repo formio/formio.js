@@ -435,6 +435,7 @@ export default class PDF extends Webform {
 
   setForm(form) {
     if (this.builderMode &amp;&amp; this.form.components) {
+      this._form = form;
       this.postMessage({ name: &apos;form&apos;, data: this.form });
       return NativePromise.resolve();
     }
@@ -466,7 +467,6 @@ export default class PDF extends Webform {
   }
 
   setSubmission(submission) {
-    submission.readOnly = !!this.options.readOnly;
     return super.setSubmission(submission).then(() =&gt; {
       if (this.formio) {
         this.formio.getDownloadUrl().then((url) =&gt; {

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.0-rc.2
+#### Fixed
+ - Some anomalies with PDFBuilder when used with angular-formio.
+
+#### Added
+ - Progress bar to the PDF Upload.
+
 ### 4.11.0-rc.1
 #### Fixed
  - FJS-1025: fixed validation error when submitting time with empty value 
