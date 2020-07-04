@@ -841,7 +841,8 @@ export default class WebformBuilder extends Component {
     }
 
     if (this.webform) {
-      const shouldRebuild = !this.webform.form.components;
+      const shouldRebuild = !this.webform.form.components ||
+        (form.components.length !== this.webform.form.components.length);
       return this.webform.setForm(form).then(() => {
         if (this.refs.form) {
           this.builderHeight = this.refs.form.offsetHeight;
