@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import fetchPonyfill from 'fetch-ponyfill';
 import Formio from './Formio';
 
 import WebformBuilder from './WebformBuilder';
@@ -8,9 +7,6 @@ import { fastCloneDeep, getElementRect } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
-const { fetch, Headers } = fetchPonyfill({
-  Promise: NativePromise
-});
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
@@ -75,18 +71,6 @@ export default class PDFBuilder extends WebformBuilder {
     return this.options.projectUrl || Formio.getProjectUrl();
   }
 
-  // 888      d8b  .d888                                    888
-  // 888      Y8P d88P"                                     888
-  // 888          888                                       888
-  // 888      888 888888 .d88b.   .d8888b 888  888  .d8888b 888  .d88b.
-  // 888      888 888   d8P  Y8b d88P"    888  888 d88P"    888 d8P  Y8b
-  // 888      888 888   88888888 888      888  888 888      888 88888888
-  // 888      888 888   Y8b.     Y88b.    Y88b 888 Y88b.    888 Y8b.
-  // 88888888 888 888    "Y8888   "Y8888P  "Y88888  "Y8888P 888  "Y8888
-  //                                           888
-  //                                      Y8b d88P
-  //                                       "Y88P"
-
   init() {
     this.options.attachMode = 'builder';
     this.webform = this.webform || this.createForm(this.options);
@@ -127,6 +111,9 @@ export default class PDFBuilder extends WebformBuilder {
         'fileBrowse': 'single',
         'hiddenFileInputElement': 'single',
         'uploadError': 'single',
+        'uploadProgress': 'single',
+        'uploadProgressWrapper': 'single',
+        'dragDropText': 'single'
       });
       this.addEventListener(this.refs['pdf-upload-button'], 'click',(event) => {
         event.preventDefault();
@@ -204,40 +191,30 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   upload(file) {
-    const headers = new Headers({
-      'Accept': 'application/json, text/plain, */*',
-      'x-jwt-token': Formio.getToken(),
-    });
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    fetch(`${this.projectUrl}/upload`, {
-      method: 'POST',
-      headers,
-      body: formData
-    })
-      .then((response) => {
-        if (response.status !== 201) {
-          response.text().then((info) => {
-            this.setUploadError(`${response.statusText} - ${info}`);
-          });
-        }
-        else {
-          response.json().then((data) => {
-            _.set(this.webform.form, 'settings.pdf', {
-              id: data.file,
-              src: `${data.filesServer}${data.path}`
-            });
-            this.emit('pdfUploaded', data);
-            // Now that the settings are set, redraw to show the builder.
-            this.redraw();
-          });
-        }
+    const formio = new Formio(this.projectUrl);
+    this.refs.dragDropText.style.display = 'none';
+    this.refs.uploadProgressWrapper.style.display = 'inherit';
+    formio.uploadFile('url', file, file, '', (event) => {
+      const progress = Math.floor((event.loaded / event.total) * 100);
+      this.refs.uploadProgress.style.width = `${progress}%`;
+      if (progress > 98) {
+        this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
+      }
+      else {
+        this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+      }
+    }, `${this.projectUrl}/upload`, {}, 'file')
+      .then((result) => {
+        _.set(this.webform.form, 'settings.pdf', {
+          id: result.data.file,
+          src: `${result.data.filesServer}${result.data.path}`
+        });
+        this.refs.dragDropText.style.display = 'inherit';
+        this.refs.uploadProgressWrapper.style.display = 'none';
+        this.emit('pdfUploaded', result.data);
+        this.redraw();
       })
-      .catch(() => {
-        this.setUploadError('Upload failed.');
-      });
+      .catch((err) => this.setUploadError(err));
   }
 
   setUploadError(message) {
