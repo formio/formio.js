@@ -17,9 +17,11 @@ const formWithAdvancedLogic = require('./advancedLogicForm.json');
 const formWithConditionalLogic = require('./conditionalLogicForm.json');
 const formWithPatternValidation = require('./patternValidation.json');
 const formWithCalculatedValueWithoutOverriding = require('./calculatedValueForm.json');
+const formWithTimeComponent = require('./formWithTimeComponent.json');
 const calculatedSelectboxes = require('./calculatedSelectboxes.json');
 const columnsForm = require('./columnsForm.json');
 const calculateZeroValue = require('./calculateZeroValue.json');
+const formWithEditGridModalDrafts = require('./editGridModalDraftsTest.json');
 
 module.exports = {
   advanced,
@@ -43,5 +45,7 @@ module.exports = {
   columnsForm,
   calculateZeroValue,
   formWithConditionalLogic,
-  formWithCalculatedValueWithoutOverriding
+  formWithCalculatedValueWithoutOverriding,
+  formWithTimeComponent,
+  formWithEditGridModalDrafts
 };

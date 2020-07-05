@@ -185,6 +185,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
@@ -340,6 +341,17 @@ export default class ButtonComponent extends Field {
     return className;
   }
 
+  get oauthConfig() {
+    if (&apos;oauth&apos; in this.root.form.config &amp;&amp; this.component.oauthProvider) {
+      return this.root.form.config.oauth[this.component.oauthProvider];
+    }
+    // Legacy oauth location.
+    if (this.component.oauth) {
+      return this.component.oauth;
+    }
+    return false;
+  }
+
   render() {
     if (this.viewOnly || this.options.hideButtons) {
       this._visible = false;
@@ -446,10 +458,10 @@ export default class ButtonComponent extends Field {
     }
 
     // If this is an OpenID Provider initiated login, perform the click event immediately
-    if ((this.component.action === &apos;oauth&apos;) &amp;&amp; this.component.oauth &amp;&amp; this.component.oauth.authURI) {
+    if ((this.component.action === &apos;oauth&apos;) &amp;&amp; this.oauthConfig &amp;&amp; !this.oauthConfig.error) {
       const iss = getUrlParameter(&apos;iss&apos;);
-      if (iss &amp;&amp; (this.component.oauth.authURI.indexOf(iss) === 0)) {
-        this.openOauth();
+      if (iss &amp;&amp; (this.oauthConfig.authURI.indexOf(iss) === 0)) {
+        this.openOauth(this.oauthConfig);
       }
     }
   }
@@ -550,30 +562,28 @@ export default class ButtonComponent extends Field {
         }
 
         // Display Alert if OAuth config is missing
-        if (!this.component.oauth) {
-          this.root.setAlert(&apos;danger&apos;, &apos;You must assign this button to an OAuth action before it will work.&apos;);
+        if (!this.oauthConfig) {
+          this.root.setAlert(&apos;danger&apos;, &apos;OAuth not configured. You must configure oauth for your project before it will work.&apos;);
           break;
         }
 
         // Display Alert if oAuth has an error is missing
-        if (this.component.oauth.error) {
-          this.root.setAlert(&apos;danger&apos;, `The Following Error Has Occured${this.component.oauth.error}`);
+        if (this.oauthConfig.error) {
+          this.root.setAlert(&apos;danger&apos;, `The Following Error Has Occured ${this.oauthConfig.error}`);
           break;
         }
 
-        this.openOauth(this.component.oauth);
+        this.openOauth(this.oauthConfig);
 
         break;
     }
   }
 
-  openOauth() {
+  openOauth(settings) {
     if (!this.root.formio) {
       console.warn(&apos;You must attach a Form API url to your form in order to use OAuth buttons.&apos;);
       return;
     }
-
-    const settings = this.component.oauth;
 
     /*eslint-disable camelcase */
     let params = {
@@ -618,12 +628,21 @@ export default class ButtonComponent extends Field {
             this.root.setAlert(&apos;danger&apos;, &apos;OAuth state does not match. Please try logging in again.&apos;);
             return;
           }
-          const submission = { data: {}, oauth: {} };
-          submission.oauth[settings.provider] = params;
-          submission.oauth[settings.provider].redirectURI = window.location.origin
-            || `${window.location.protocol}//${window.location.host}`;
-          this.root.formio.saveSubmission(submission)
-            .then((result) =&gt; {
+          // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
+          let requestPromise = Promise.resolve();
+          if ((&apos;oauth&apos; in this.root.form.config) &amp;&amp; this.root.form.config.oauth[this.component.oauthProvider]) {
+            params.provider = settings.provider;
+            params.redirectURI = window.location.origin;
+            requestPromise = this.root.formio.makeRequest(&apos;oauth&apos;, `${this.root.formio.projectUrl}/oauth2`, &apos;POST&apos;, params);
+          }
+          else {
+            const submission = { data: {}, oauth: {} };
+            submission.oauth[settings.provider] = params;
+            submission.oauth[settings.provider].redirectURI = window.location.origin
+              || `${window.location.protocol}//${window.location.host}`;
+            requestPromise = this.root.formio.saveSubmission(submission);
+          }
+          requestPromise.then((result) =&gt; {
               this.root.onSubmit(result, true);
             })
             .catch((err) =&gt; {

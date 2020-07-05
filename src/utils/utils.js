@@ -363,12 +363,24 @@ export function setActionProperty(component, action, result, row, data, instance
  * @returns {string}
  */
 export function unescapeHTML(str) {
-  if (typeof window === 'undefined') {
+  if (typeof window === 'undefined' || !('DOMParser' in window)) {
     return str;
   }
 
   const doc = new window.DOMParser().parseFromString(str, 'text/html');
   return doc.documentElement.textContent;
+}
+
+/**
+ * Make HTML element from string
+ * @param str
+ * @param selector
+ * @returns {HTMLElement}
+ */
+
+export function convertStringToHTMLElement(str, selector) {
+  const doc = new window.DOMParser().parseFromString(str, 'text/html');
+  return doc.body.querySelector(selector);
 }
 
 /**

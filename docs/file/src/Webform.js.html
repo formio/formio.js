@@ -185,6 +185,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
@@ -244,6 +245,7 @@ import moment from &apos;moment&apos;;
 import compareVersions from &apos;compare-versions&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import i18next from &apos;i18next&apos;;
+import i18nDefaults from &apos;./i18n&apos;;
 import Formio from &apos;./Formio&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
@@ -326,7 +328,7 @@ export default class Webform extends NestedDataComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require(&apos;./i18n&apos;).default;
+    let i18n = i18nDefaults;
     if (options &amp;&amp; options.i18n &amp;&amp; !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
@@ -1424,8 +1426,11 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages &amp;&amp; err.messages.length) {
-          const errLabel = this.t(err.component.label);
-          err.messages.forEach(({ message }, index) =&gt; createListItem(`${errLabel}. ${message}`, index));
+          const { component } = err;
+          err.messages.forEach(({ message }, index) =&gt; {
+            const text = this.t(&apos;alertMessage&apos;, { label: component.label, message });
+            createListItem(text, index);
+          });
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || &apos;&apos; : err;

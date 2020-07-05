@@ -205,8 +205,9 @@ export default class NestedComponent extends Field {
    * @return {Object} - The component that is located.
    */
   getComponent(path, fn, originalPath) {
+    originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
-    const pathStr = originalPath || getStringFromComponentPath(path);
+    const pathStr = originalPath;
     const [key, ...remainingPath] = path;
     let comp = null;
     let possibleComp = null;

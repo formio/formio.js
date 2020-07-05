@@ -185,6 +185,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
@@ -273,6 +274,25 @@ export default [
         { label: &apos;OAuth&apos;, value: &apos;oauth&apos; },
         { label: &apos;POST to URL&apos;, value: &apos;url&apos; },
       ],
+    },
+  },
+  {
+    type: &apos;select&apos;,
+    key: &apos;oauthProvider&apos;,
+    label: &apos;OAuth Provider&apos;,
+    input: true,
+    dataSrc: &apos;values&apos;,
+    weight: 111,
+    tooltip: &apos;The oauth provider to use to log in (8.x server only).&apos;,
+    data: {
+      values: [
+        { label: &apos;OpenID&apos;, value: &apos;openid&apos; },
+        { label: &apos;Github&apos;, value: &apos;github&apos; },
+        { label: &apos;Google&apos;, value: &apos;google&apos; },
+      ],
+    },
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;oauth&apos;] },
     },
   },
   {

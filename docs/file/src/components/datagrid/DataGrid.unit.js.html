@@ -185,6 +185,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
@@ -255,7 +256,7 @@ import {
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DataGrid Component&apos;, () =&gt; {
-  it(&apos;Should not show alert message in modal edit when clicking on modal overlay and value was not changed&apos;, (done) =&gt; {
+  it(&apos;Should not show alert message in modal edit and close modal window when clicking on modal overlay and value was not changed&apos;, (done) =&gt; {
     Harness.testCreate(DataGridComponent, comp4).then((component) =&gt; {
       const hiddenModalWindow = component.element.querySelector(&apos;.component-rendering-hidden&apos;);
       assert.equal(!!hiddenModalWindow, true);
@@ -275,8 +276,12 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
 
         setTimeout(() =&gt; {
           const dialogWindowHeader = document.querySelector(&apos;[ref=&quot;dialogHeader&quot;]&apos;);
+          //checking if there is dialog window
           assert.equal( !!dialogWindowHeader, false);
 
+          const hiddenModalWindow = component.element.querySelector(&apos;.component-rendering-hidden&apos;);
+          //checking if the modal window was closed
+          assert.equal(!!hiddenModalWindow, true);
           done();
         }, 300);
       }, 200);

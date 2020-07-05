@@ -3,6 +3,7 @@ import moment from 'moment';
 import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
+import i18nDefaults from './i18n';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
@@ -86,7 +87,7 @@ export default class Webform extends NestedDataComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('./i18n').default;
+    let i18n = i18nDefaults;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
@@ -1241,8 +1242,11 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages && err.messages.length) {
-          const errLabel = this.t(err.component.label);
-          err.messages.forEach(({ message }, index) => createListItem(`${errLabel}. ${message}`, index));
+          const { component } = err;
+          err.messages.forEach(({ message }, index) => {
+            const text = this.t('alertMessage', { label: component.label, message });
+            createListItem(text, index);
+          });
         }
         else if (err.messages && err.messages.length) {
             err.messages.forEach(({ message }) => {

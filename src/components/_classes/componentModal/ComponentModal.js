@@ -27,9 +27,12 @@ export default class ComponentModal {
 
   init() {
     this.openModalListener = this.openModalHandler.bind(this);
-    this.showDialogListener = () => {
+    this.showDialogListener = (event) => {
       if (this.isValueChanged() && !this.component.disabled) {
         this.showDialog();
+      }
+      else {
+        this.closeModalHandler(event);
       }
     };
     this.closeModalListener = this.closeModalHandler.bind(this);

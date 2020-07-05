@@ -185,6 +185,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
@@ -2199,7 +2200,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html#instance-method-refresh">refresh</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html#instance-method-refresh">refresh</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, objectPattern1: {&quot;instance&quot;: <span>*</span>})</span>
         </p>
       </div>
       <div>
@@ -5897,7 +5898,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkRefresh">checkRefresh</a></span></span><span class="code" data-ice="signature">(refreshData: <span>*</span>, changed: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkRefresh">checkRefresh</a></span></span><span class="code" data-ice="signature">(refreshData: <span>*</span>, changed: <span>*</span>, flags: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -5925,7 +5926,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkRefreshOn">checkRefreshOn</a></span></span><span class="code" data-ice="signature">(changes: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkRefreshOn">checkRefreshOn</a></span></span><span class="code" data-ice="signature">(changes: <span>*</span>, flags: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -12100,7 +12101,7 @@ protected.</p>
     
     
     
-    <span class="code" data-ice="name">refresh</span><span class="code" data-ice="signature">()</span>
+    <span class="code" data-ice="name">refresh</span><span class="code" data-ice="signature">(value: <span>*</span>, objectPattern1: {&quot;instance&quot;: <span>*</span>})</span>
     <span class="right-info">
       
       
@@ -12116,7 +12117,29 @@ protected.</p>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-refresh">Component#refresh</a></span></div>
 
-  <div data-ice="properties">
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">value</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">objectPattern1</td>
+      <td data-ice="type" class="code">{&quot;instance&quot;: <span>*</span>}</td>
+      <td data-ice="appendix"><ul><li>default: {&quot;instance&quot;:null}</li></ul></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
 </div>
 
   

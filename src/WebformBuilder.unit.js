@@ -4,7 +4,8 @@ import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from '../test/formtest';
 
-describe('WebformBuilder tests', () => {
+describe('WebformBuilder tests', function() {
+  this.retries(3);
   before((done) => Harness.builderBefore(done));
   afterEach(() => Harness.getBuilder().setForm({ display: 'form', components: [] }));
   after((done) => Harness.builderAfter(done));
