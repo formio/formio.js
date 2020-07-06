@@ -342,7 +342,7 @@ export default class ButtonComponent extends Field {
   }
 
   get oauthConfig() {
-    if (&apos;oauth&apos; in this.root.form.config &amp;&amp; this.component.oauthProvider) {
+    if (_.has(this, &apos;root.form.config.oauth&apos;) &amp;&amp; this.component.oauthProvider) {
       return this.root.form.config.oauth[this.component.oauthProvider];
     }
     // Legacy oauth location.
@@ -630,7 +630,7 @@ export default class ButtonComponent extends Field {
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
           let requestPromise = Promise.resolve();
-          if ((&apos;oauth&apos; in this.root.form.config) &amp;&amp; this.root.form.config.oauth[this.component.oauthProvider]) {
+          if (_.has(this, &apos;root.form.config.oauth&apos;) &amp;&amp; this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
             params.redirectURI = window.location.origin;
             requestPromise = this.root.formio.makeRequest(&apos;oauth&apos;, `${this.root.formio.projectUrl}/oauth2`, &apos;POST&apos;, params);
