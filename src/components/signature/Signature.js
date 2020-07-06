@@ -124,15 +124,15 @@ export default class SignatureComponent extends Input {
 
   changeCanvasDimensions(force, scale, sizeChanged) {
     const currentWidth = this.currentWidth;
-    const canvasSizeDifference = this.refs.canvas.offsetWidth - this.refs.canvas.width;
-    const expectedCanvasWidth = (currentWidth * this.scale) - canvasSizeDifference;
+    const canvasAddedWidth = this.refs.canvas.offsetWidth - this.refs.canvas.width;
+    const expectedCanvasWidth = (currentWidth * this.scale) - canvasAddedWidth;
 
     let isSizeChanged = sizeChanged || false;
 
     if (force || this.refs.padBody.clientWidth !== currentWidth || (this.refs.canvas.width !== expectedCanvasWidth && !this.options.readOnly)  ) {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.clientWidth;
-      this.refs.canvas.width = (this.currentWidth * this.scale) - canvasSizeDifference;
+      this.refs.canvas.width = (this.currentWidth * this.scale) - canvasAddedWidth;
       this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
       isSizeChanged = this.changeCanvasDimensions(force, scale, true);
     }
