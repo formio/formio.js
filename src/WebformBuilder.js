@@ -781,7 +781,7 @@ export default class WebformBuilder extends Component {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 
-    if (isNew && !this.options.noNewEdit && !info.noNewModal) {
+    if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
       this.editComponent(info, target, isNew);
     }
 
@@ -811,8 +811,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
-      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit && !info.noNewModal);
-      if (!isNew || this.options.noNewEdit || info.noNewModal) {
+      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit && !info.noNewEdit);
+      if (!isNew || this.options.noNewEdit || info.noNewEdit) {
         this.emit('change', this.form);
       }
     });

@@ -293,7 +293,7 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.width
         };
 
-        if (!this.options.noNewEdit && !component.component.noNewModal) {
+        if (!this.options.noNewEdit && !component.component.noNewEdit) {
           this.editComponent(component.component, this.webform.iframeElement);
         }
         this.emit('updateComponent', component.component);
@@ -444,7 +444,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: 'addElement', data: schema });
 
-    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit && !schema.noNewModal);
+    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit && !schema.noNewEdit);
 
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
