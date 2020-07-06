@@ -100,7 +100,7 @@ export default class ButtonComponent extends Field {
   }
 
   get oauthConfig() {
-    if ('oauth' in this.root.form.config && this.component.oauthProvider) {
+    if (_.has(this, 'root.form.config.oauth') && this.component.oauthProvider) {
       return this.root.form.config.oauth[this.component.oauthProvider];
     }
     // Legacy oauth location.
