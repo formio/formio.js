@@ -109,7 +109,7 @@ export default class SignatureComponent extends Input {
         if (this.refs.refresh) {
           this.refs.refresh.classList.add('disabled');
         }
-        if (this.refs.signatureImage) {
+        if (this.refs.signatureImage && this.dataValue) {
           this.refs.signatureImage.setAttribute('src', this.dataValue);
         }
       }
