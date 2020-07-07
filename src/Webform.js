@@ -1116,6 +1116,7 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
+  /* eslint-disable no-unused-vars */
   showErrors(error, triggerEvent, onChange) {
     this.loading = false;
     let errors = this.errors;
@@ -1205,6 +1206,7 @@ export default class Webform extends NestedDataComponent {
 
     return errors;
   }
+  /* eslint-enable no-unused-vars */
 
   /**
    * Called when the submission has completed, or if the submission needs to be sent to an external library.
