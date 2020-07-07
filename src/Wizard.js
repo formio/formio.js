@@ -595,7 +595,7 @@ export default class Wizard extends Webform {
     super.onChange(flags, changed, modified, changes);
     if (this.alert && !this.submitted) {
       this.checkValidity(this.submission.data, false, this.submission.data, true);
-      this.showErrors([], true);
+      this.showErrors([], true, true);
     }
 
     // If the pages change, need to redraw the header.
