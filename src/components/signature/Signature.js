@@ -129,7 +129,7 @@ export default class SignatureComponent extends Input {
 
     let isSizeChanged = sizeChanged || false;
 
-    if (force || this.refs.padBody.clientWidth !== currentWidth || (this.refs.canvas.width !== expectedCanvasWidth && !this.options.readOnly)  ) {
+    if (force || this.refs.padBody.clientWidth !== currentWidth || (this.refs.canvas.width !== expectedCanvasWidth && !this.disabled)  ) {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.clientWidth;
       this.refs.canvas.width = (this.currentWidth * this.scale) - canvasAddedWidth;
