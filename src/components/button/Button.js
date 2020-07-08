@@ -151,12 +151,14 @@ export default class ButtonComponent extends Field {
       }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
-        this.removeClass(this.refs.button, 'btn-danger submit-fail');
-        if (isValid && this.hasError) {
-          this.hasError = false;
-          this.setContent(this.refs.buttonMessage, '');
-          this.removeClass(this.refs.buttonMessageContainer, 'has-success');
-          this.removeClass(this.refs.buttonMessageContainer, 'has-error');
+        if (isValid) {
+          this.removeClass(this.refs.button, 'btn-danger submit-fail');
+          if (this.hasError) {
+            this.hasError = false;
+            this.setContent(this.refs.buttonMessage, '');
+            this.removeClass(this.refs.buttonMessageContainer, 'has-success');
+            this.removeClass(this.refs.buttonMessageContainer, 'has-error');
+          }
         }
       };
       onError = () => {
@@ -190,7 +192,7 @@ export default class ButtonComponent extends Field {
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
       //remove error classes only when form is valid
-      if (onChange && isValid) {
+      if (onChange) {
         onChange(value, isValid);
       }
     }, true);
