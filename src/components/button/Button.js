@@ -181,14 +181,16 @@ export default class ButtonComponent extends Field {
 
     this.on('change', (value, flags) => {
       let isValid = value.isValid;
-      if (flags && flags.noValidate) {
+      //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
+      if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
         isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
         flags.rootValidity = isValid;
       }
       this.loading = false;
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
-      if (onChange) {
+      //remove error classes only when form is valid
+      if (onChange && isValid) {
         onChange(value, isValid);
       }
     }, true);
