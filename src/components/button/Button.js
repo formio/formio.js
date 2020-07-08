@@ -191,7 +191,7 @@ export default class ButtonComponent extends Field {
       this.loading = false;
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
-      //remove error classes only when form is valid
+
       if (onChange) {
         onChange(value, isValid);
       }
