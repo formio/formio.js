@@ -20,7 +20,8 @@ import {
   formWithConditionalLogic,
   formWithCalculatedValueWithoutOverriding,
   formWithTimeComponent,
-  formWithEditGridModalDrafts
+  formWithEditGridModalDrafts,
+  formWithBlurValidationInsidePanel
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -29,6 +30,42 @@ import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should validate field on blur inside panel', function(done) {
+    const formElement = document.createElement('div');
+    const formWithBlurValidation = new Webform(formElement);
+
+    formWithBlurValidation.setForm(formWithBlurValidationInsidePanel).then(() => {
+      const inputEvent = new Event('input');
+      const focusEvent = new Event('focus');
+      const blurEvent = new Event('blur');
+      const fieldWithBlurValidation = formWithBlurValidation.element.querySelector('[name="data[textField]"]');
+
+      fieldWithBlurValidation.dispatchEvent(focusEvent);
+        'test'.split('').forEach(character => {
+          fieldWithBlurValidation.value = fieldWithBlurValidation.value + character;
+          fieldWithBlurValidation.dispatchEvent(inputEvent);
+      });
+
+      setTimeout(() => {
+        const validationErrorBeforeBlur = formWithBlurValidation.element.querySelector('.error');
+        assert.equal(!!validationErrorBeforeBlur, false);
+        assert.equal(formWithBlurValidation.data.textField, 'test');
+
+        fieldWithBlurValidation.dispatchEvent(blurEvent);
+
+        setTimeout(() => {
+          const validationErrorAfterBlur = formWithBlurValidation.element.querySelector('.error');
+
+          assert.equal(!!validationErrorAfterBlur, true);
+          assert.equal(validationErrorAfterBlur.textContent, 'Text Field must have at least 5 characters.');
+
+          done();
+        }, 350);
+      }, 300);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should submit form with empty time field when time field is not required', function(done) {
     const formElement = document.createElement('div');
     const formWithTime = new Webform(formElement);
