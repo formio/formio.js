@@ -1,4 +1,4 @@
-/* globals Quill, ClassicEditor */
+/* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
@@ -11,7 +11,6 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
-const CKEDITOR = 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
@@ -1891,15 +1890,28 @@ export default class Component extends Element {
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
     settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
-    return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
+    const isIEBrowser = FormioUtils.getIEBrowserVersion();
+    const url = isIEBrowser
+      ? 'https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js'
+      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
+
+    return Formio.requireLibrary('ckeditor', isIEBrowser ? 'CKEDITOR' : 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', url), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
         }
-        return ClassicEditor.create(element, settings).then(editor => {
-          editor.model.document.on('change', () => onChange(editor.data.get()));
-          return editor;
-        });
+        if (isIEBrowser) {
+          const elementNameAttr = this.component.key;
+          element.setAttribute('name', elementNameAttr);
+          const editor = CKEDITOR.replace(elementNameAttr);
+          return NativePromise.resolve(editor);
+        }
+        else {
+          return ClassicEditor.create(element, settings).then(editor => {
+            editor.model.document.on('change', () => onChange(editor.data.get()));
+            return editor;
+          });
+        }
       });
   }
 
