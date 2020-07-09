@@ -351,7 +351,7 @@ export default class SignatureComponent extends Input {
         if (this.refs.refresh) {
           this.refs.refresh.classList.add(&apos;disabled&apos;);
         }
-        if (this.refs.signatureImage) {
+        if (this.refs.signatureImage &amp;&amp; this.dataValue) {
           this.refs.signatureImage.setAttribute(&apos;src&apos;, this.dataValue);
         }
       }
@@ -364,12 +364,26 @@ export default class SignatureComponent extends Input {
     }
   }
 
-  checkSize(force, scale) {
-    if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
+  changeCanvasDimensions(force, scale, sizeChanged) {
+    const currentWidth = this.currentWidth;
+    const canvasAddedWidth = this.refs.canvas.offsetWidth - this.refs.canvas.width;
+    const expectedCanvasWidth = (currentWidth * this.scale) - canvasAddedWidth;
+
+    let isSizeChanged = sizeChanged || false;
+
+    if (force || this.refs.padBody.clientWidth !== currentWidth || (this.refs.canvas.width !== expectedCanvasWidth &amp;&amp; !this.disabled)  ) {
       this.scale = force ? scale : this.scale;
-      this.currentWidth = this.refs.padBody.offsetWidth;
-      this.refs.canvas.width = this.currentWidth * this.scale;
+      this.currentWidth = this.refs.padBody.clientWidth;
+      this.refs.canvas.width = (this.currentWidth * this.scale) - canvasAddedWidth;
       this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
+      isSizeChanged = this.changeCanvasDimensions(force, scale, true);
+    }
+
+    return isSizeChanged;
+  }
+
+  checkSize(force, scale) {
+    if (this.changeCanvasDimensions(force, scale)) {
       const ctx = this.refs.canvas.getContext(&apos;2d&apos;);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));

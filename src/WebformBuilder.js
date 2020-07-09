@@ -14,7 +14,7 @@ import Templates from './templates/Templates';
 require('./components/builder');
 
 export default class WebformBuilder extends Component {
-// eslint-disable-next-line max-statements
+  // eslint-disable-next-line max-statements
   constructor() {
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
@@ -326,7 +326,7 @@ export default class WebformBuilder extends Component {
             this.groups.resource = {
               title: resourceOptions ? resourceOptions.title : 'Existing Resource Fields',
               key: 'resource',
-              weight: resourceOptions ? resourceOptions.weight :  50,
+              weight: resourceOptions ? resourceOptions.weight : 50,
               subgroups: [],
               components: [],
               componentOrder: []
@@ -581,7 +581,7 @@ export default class WebformBuilder extends Component {
                   groupId === clickedParentId ||
                   groupIndex === index
                 )
-                ? 'inherit' : 'none';
+                  ? 'inherit' : 'none';
             });
           }, true);
         });
@@ -688,8 +688,8 @@ export default class WebformBuilder extends Component {
     let tabIndex = 0;
     switch (parent.type) {
       case 'table':
-        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key  === component.key)));
-        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key  === component.key)));
+        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key === component.key)));
+        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key === component.key)));
         path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         break;
       case 'columns':
@@ -697,7 +697,7 @@ export default class WebformBuilder extends Component {
         path = `columns[${columnIndex}].components`;
         break;
       case 'tabs':
-        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key  === component.key));
+        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key === component.key));
         path = `components[${tabIndex}].components`;
         break;
     }
@@ -781,7 +781,7 @@ export default class WebformBuilder extends Component {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 
-    if (isNew && !this.options.noNewEdit) {
+    if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
       this.editComponent(info, target, isNew);
     }
 
@@ -811,8 +811,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
-      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit);
-      if (!isNew || this.options.noNewEdit) {
+      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit && !info.noNewEdit);
+      if (!isNew || this.options.noNewEdit || info.noNewEdit) {
         this.emit('change', this.form);
       }
     });
@@ -918,14 +918,16 @@ export default class WebformBuilder extends Component {
   updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
-      this.preview.form = { components: [_.omit(component, [
-        'hidden',
-        'conditional',
-        'calculateValue',
-        'logic',
-        'autofocus',
-        'customConditional',
-      ])] };
+      this.preview.form = {
+        components: [_.omit(component, [
+          'hidden',
+          'conditional',
+          'calculateValue',
+          'logic',
+          'autofocus',
+          'customConditional',
+        ])]
+      };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
         this.setContent(previewElement, this.preview.render());
@@ -1062,7 +1064,7 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
+        const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
           originalComp,
@@ -1137,8 +1139,8 @@ export default class WebformBuilder extends Component {
         componentJson: instance.component
       },
     } : {
-      data: instance.component,
-    };
+        data: instance.component,
+      };
 
     if (this.preview) {
       this.preview.destroy();

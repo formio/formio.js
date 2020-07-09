@@ -11688,6 +11688,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/signature/signature.js~signaturecomponent#changecanvasdimensions",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-changeCanvasDimensions",
+    "src/components/signature/Signature.js~SignatureComponent#changeCanvasDimensions",
+    "method"
+  ],
+  [
     "src/components/signature/signature.js~signaturecomponent#checksize",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-checkSize",
     "src/components/signature/Signature.js~SignatureComponent#checkSize",

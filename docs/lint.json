@@ -233,37 +233,18 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1112,
-        "line": "  /**"
-      },
-      {
-        "lineNumber": 1113,
-        "line": "   * Show the errors of this form within the alert dialog."
-      },
-      {
-        "lineNumber": 1114,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1115,
-        "line": "   * @param {Object} error - An optional additional error to display along with the component errors."
-      },
-      {
-        "lineNumber": 1116,
-        "line": "   * @returns {*}"
-      },
-      {
-        "lineNumber": 1117,
-        "line": "   */"
-      },
-      {
         "lineNumber": 1118,
-        "line": "  showErrors(error, triggerEvent) {"
+        "line": "  /* eslint-disable no-unused-vars */"
+      },
+      {
+        "lineNumber": 1119,
+        "line": "  showErrors(error, triggerEvent, onChange) {"
       }
     ],
     "codeParams": [
       "error",
-      "triggerEvent"
+      "triggerEvent",
+      "onChange"
     ],
     "docParams": [
       "error"
@@ -274,31 +255,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1262,
+        "lineNumber": 1264,
         "line": "  /**"
       },
       {
-        "lineNumber": 1263,
+        "lineNumber": 1265,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 1264,
+        "lineNumber": 1266,
         "line": "   *"
       },
       {
-        "lineNumber": 1265,
+        "lineNumber": 1267,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 1266,
+        "lineNumber": 1268,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1267,
+        "lineNumber": 1269,
         "line": "   */"
       },
       {
-        "lineNumber": 1268,
+        "lineNumber": 1270,
         "line": "  onChange(flags, changed, modified, changes) {"
       }
     ],
@@ -318,72 +299,64 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1454,
+        "lineNumber": 1456,
         "line": "  /**"
       },
       {
-        "lineNumber": 1455,
+        "lineNumber": 1457,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1456,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1457,
-        "line": "   * @example"
-      },
-      {
         "lineNumber": 1458,
-        "line": "   * import Webform from 'formiojs/Webform';"
+        "line": "   *"
       },
       {
         "lineNumber": 1459,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
+        "line": "   * @example"
       },
       {
         "lineNumber": 1460,
-        "line": "   * form.src = 'https://examples.form.io/example';"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 1461,
-        "line": "   * form.submission = {data: {"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 1462,
-        "line": "   *   firstName: 'Joe',"
+        "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
         "lineNumber": 1463,
-        "line": "   *   lastName: 'Smith',"
+        "line": "   * form.submission = {data: {"
       },
       {
         "lineNumber": 1464,
-        "line": "   *   email: 'joe@example.com'"
+        "line": "   *   firstName: 'Joe',"
       },
       {
         "lineNumber": 1465,
-        "line": "   * }};"
+        "line": "   *   lastName: 'Smith',"
       },
       {
         "lineNumber": 1466,
-        "line": "   * form.submit().then((submission) => {"
+        "line": "   *   email: 'joe@example.com'"
       },
       {
         "lineNumber": 1467,
-        "line": "   *   console.log(submission);"
+        "line": "   * }};"
       },
       {
         "lineNumber": 1468,
-        "line": "   * });"
+        "line": "   * form.submit().then((submission) => {"
       },
       {
         "lineNumber": 1469,
-        "line": "   *"
+        "line": "   *   console.log(submission);"
       },
       {
         "lineNumber": 1470,
-        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+        "line": "   * });"
       },
       {
         "lineNumber": 1471,
@@ -391,14 +364,22 @@
       },
       {
         "lineNumber": 1472,
-        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
       },
       {
         "lineNumber": 1473,
-        "line": "   */"
+        "line": "   *"
       },
       {
         "lineNumber": 1474,
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+      },
+      {
+        "lineNumber": 1475,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1476,
         "line": "  submit(before, options) {"
       }
     ],
@@ -415,35 +396,35 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 1024,
+        "lineNumber": 1026,
         "line": "  /**"
       },
       {
-        "lineNumber": 1025,
+        "lineNumber": 1027,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 1026,
+        "lineNumber": 1028,
         "line": "   *"
       },
       {
-        "lineNumber": 1027,
+        "lineNumber": 1029,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 1028,
+        "lineNumber": 1030,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 1029,
+        "lineNumber": 1031,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 1030,
+        "lineNumber": 1032,
         "line": "   */"
       },
       {
-        "lineNumber": 1031,
+        "lineNumber": 1033,
         "line": "  saveComponent(component, parent, isNew, original) {"
       }
     ],

@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.0
+### No changes.  Released 4.11.0.
+
+### 4.11.0-rc.5
+#### Changed
+ - Added an option to showErrors that will pass an onChange flag to keep focus events from occuring in vpat.
+
+#### Fixed
+ - Fixed signature field dimensions inside data grid
+
+### 4.11.0-rc.4
+### Changed
+ - Upgrade CKEditor to v19.0.0
+ - Added ImageResize plugin to CKEditor.
+
+### 4.11.0-rc.3
+### Fixed
+ - Crashes with the OAuth buttons.
+ - Issues where wizards would clobber first page if the panels had the same keys.
+
 ### 4.11.0-rc.2
 #### Fixed
  - Some anomalies with PDFBuilder when used with angular-formio.

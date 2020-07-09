@@ -1153,7 +1153,8 @@ export default class Webform extends NestedDataComponent {
    * @param {string} messageClass - A specific class for the help message.
    * @returns {*}
    */
-  showErrors(error, triggerEvent, messageClass) {
+  /* eslint-disable no-unused-vars */
+  showErrors(error, triggerEvent, messageClass, onChange) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1270,6 +1271,7 @@ export default class Webform extends NestedDataComponent {
 
     return errors;
   }
+  /* eslint-enable no-unused-vars */
 
   /**
    * Called when the submission has completed, or if the submission needs to be sent to an external library.
