@@ -147,6 +147,10 @@ export default class SelectComponent extends Field {
     return super.shouldDisabled || this.parentDisabled;
   }
 
+  get lazyLoad() {
+    return (this.isSelectResource || this.isSelectURL) && this.component.lazyLoad;
+  }
+
   isEntireObjectDisplay() {
     return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
   }
@@ -556,7 +560,7 @@ export default class SelectComponent extends Field {
       this.setValue(this.emptyValue);
     }
 
-    if (this.component.lazyLoad) {
+    if (this.lazyLoad) {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
@@ -764,7 +768,7 @@ export default class SelectComponent extends Field {
   }
 
   get active() {
-    return !this.component.lazyLoad || this.activated || this.options.readOnly;
+    return !this.lazyLoad || this.activated || this.options.readOnly;
   }
 
   render() {
@@ -1120,7 +1124,7 @@ export default class SelectComponent extends Field {
     // If the widget isn't active.
     if (
       this.viewOnly || this.loading
-      || (!this.component.lazyLoad && !this.selectOptions.length)
+      || (!this.lazyLoad && !this.selectOptions.length)
       || !this.element
     ) {
       return this.dataValue;
@@ -1295,12 +1299,13 @@ export default class SelectComponent extends Field {
   }
 
   isInitApiCallNeeded(hasValue) {
-    return this.component.lazyLoad &&
-    !this.lazyLoadInit &&
-    !this.active &&
-    !this.selectOptions.length &&
-    hasValue &&
-    this.visible && (this.component.searchField || this.component.valueProperty);
+    return this.lazyLoad
+      && !this.lazyLoadInit
+      && !this.active
+      && !this.selectOptions.length
+      && hasValue
+      && this.visible
+      && (this.component.searchField || this.component.valueProperty);
   }
 
   setChoicesValue(value, hasPreviousValue) {
