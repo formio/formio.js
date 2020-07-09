@@ -11,7 +11,14 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
-const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.3';
+
+const isIEBrowser = FormioUtils.getIEBrowserVersion();
+const CKEDITOR_URL = isIEBrowser
+      ? 'https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js'
+      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
+const QUILL_URL = isIEBrowser
+  ? 'https://cdn.quilljs.com/1.3.7'
+  : 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 
@@ -1890,12 +1897,13 @@ export default class Component extends Element {
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
     settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
-    const isIEBrowser = FormioUtils.getIEBrowserVersion();
-    const url = isIEBrowser
-      ? 'https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js'
-      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
 
-    return Formio.requireLibrary('ckeditor', isIEBrowser ? 'CKEDITOR' : 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', url), true)
+    return Formio.requireLibrary(
+      'ckeditor',
+      isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
+      _.get(this.options, 'editors.ckeditor.src',
+      CKEDITOR_URL
+    ), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1937,7 +1945,7 @@ export default class Component extends Element {
             if (!element.parentNode) {
               return NativePromise.reject();
             }
-            this.quill = new Quill(element, settings);
+            this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
 
             /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
             const txtArea = document.createElement('textarea');
