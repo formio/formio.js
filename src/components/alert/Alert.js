@@ -168,6 +168,7 @@ export default class Alert {
 
   createErrorMessage(element, message, index, err) {
     const params = {
+      style: 'cursor: pointer',
       ref: 'messageRef',
       tabIndex: 0,
       'aria-label': `${message}. Click to navigate to the field with following error.`
@@ -188,10 +189,8 @@ export default class Alert {
 
   appendErrorToList(err, ul) {
     if (err?.messages?.length) {
-      const errLabel = this.parentComponent.t(err.component.label);
       err.messages.forEach(({ message }, index) => {
-        const messageWithLabel = `${errLabel}. ${message}`;
-        this.createMessage('error', ul, messageWithLabel, index, err);
+        this.createMessage('error', ul, message, index, err);
       });
     }
     else if (err) {
