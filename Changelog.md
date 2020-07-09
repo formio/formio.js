@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.0
+### No changes.  Released 4.11.0.
+
 ### 4.11.0-rc.5
 #### Changed
  - Added an option to showErrors that will pass an onChange flag to keep focus events from occuring in vpat.
