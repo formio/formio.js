@@ -1171,3 +1171,16 @@ export function round(number, precision) {
   }
   return number;
 }
+
+/**
+ * Check for Internet Explorer browser version
+ *
+ * @return {(number|null)}
+ */
+export function getIEBrowserVersion() {
+  if (typeof document === 'undefined' || !('documentMode' in document)) {
+    return null;
+  }
+
+  return document['documentMode'];
+}
