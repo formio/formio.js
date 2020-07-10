@@ -38,7 +38,7 @@ export default class Input extends Multivalue {
     }
 
     if (this.component.autocomplete) {
-      attr.autocomplete = this.t(this.component.autocomplete);
+      attr.autocomplete = this.component.autocomplete;
     }
 
     _.defaults(attr, this.component.attributes);
