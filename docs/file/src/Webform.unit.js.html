@@ -262,7 +262,8 @@ import {
   formWithConditionalLogic,
   formWithCalculatedValueWithoutOverriding,
   formWithTimeComponent,
-  formWithEditGridModalDrafts
+  formWithEditGridModalDrafts,
+  formWithBlurValidationInsidePanel
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
@@ -271,6 +272,42 @@ import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidatio
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+  it(&apos;Should validate field on blur inside panel&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithBlurValidation = new Webform(formElement);
+
+    formWithBlurValidation.setForm(formWithBlurValidationInsidePanel).then(() =&gt; {
+      const inputEvent = new Event(&apos;input&apos;);
+      const focusEvent = new Event(&apos;focus&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+      const fieldWithBlurValidation = formWithBlurValidation.element.querySelector(&apos;[name=&quot;data[textField]&quot;]&apos;);
+
+      fieldWithBlurValidation.dispatchEvent(focusEvent);
+        &apos;test&apos;.split(&apos;&apos;).forEach(character =&gt; {
+          fieldWithBlurValidation.value = fieldWithBlurValidation.value + character;
+          fieldWithBlurValidation.dispatchEvent(inputEvent);
+      });
+
+      setTimeout(() =&gt; {
+        const validationErrorBeforeBlur = formWithBlurValidation.element.querySelector(&apos;.error&apos;);
+        assert.equal(!!validationErrorBeforeBlur, false);
+        assert.equal(formWithBlurValidation.data.textField, &apos;test&apos;);
+
+        fieldWithBlurValidation.dispatchEvent(blurEvent);
+
+        setTimeout(() =&gt; {
+          const validationErrorAfterBlur = formWithBlurValidation.element.querySelector(&apos;.error&apos;);
+
+          assert.equal(!!validationErrorAfterBlur, true);
+          assert.equal(validationErrorAfterBlur.textContent, &apos;Text Field must have at least 5 characters.&apos;);
+
+          done();
+        }, 350);
+      }, 300);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should submit form with empty time field when time field is not required&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithTime = new Webform(formElement);

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.1-rc.1
+#### Fixed
+ - Problems with the PDF Builder where it would not update forms after they have been saved.
+ - FJS-1022: added cursor pointer for error messages inside alerts (for modal editGrid rows) and simplified message
+ - FJS-1043: fixed validation on blur inside a panel 
+ - FJS-1032: fixed an issue where btn checks validity when disableOnInvalid is not set and removes error classes when form is still invalid
+
 ### 4.11.0
 ### No changes.  Released 4.11.0.
 
