@@ -18,6 +18,7 @@
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
+  id="{{ctx.instance.id}}-{{ctx.component.key}}"
 >{{ctx.input.content}}</{{ctx.input.type}}>
 {% } %}
 {% if (ctx.component.editor || ctx.component.wysiwyg) { %}
