@@ -192,11 +192,6 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
-    if (this.builderMode && this.form.components) {
-      this._form = form;
-      this.postMessage({ name: 'form', data: this.form });
-      return NativePromise.resolve();
-    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -204,7 +199,7 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
-      this.postMessage({ name: 'form', data: form });
+      this.postMessage({ name: 'form', data: this.form });
     });
   }
 
