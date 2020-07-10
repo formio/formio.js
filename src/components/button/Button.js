@@ -151,12 +151,14 @@ export default class ButtonComponent extends Field {
       }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
-        this.removeClass(this.refs.button, 'btn-danger submit-fail');
-        if (isValid && this.hasError) {
-          this.hasError = false;
-          this.setContent(this.refs.buttonMessage, '');
-          this.removeClass(this.refs.buttonMessageContainer, 'has-success');
-          this.removeClass(this.refs.buttonMessageContainer, 'has-error');
+        if (isValid) {
+          this.removeClass(this.refs.button, 'btn-danger submit-fail');
+          if (this.hasError) {
+            this.hasError = false;
+            this.setContent(this.refs.buttonMessage, '');
+            this.removeClass(this.refs.buttonMessageContainer, 'has-success');
+            this.removeClass(this.refs.buttonMessageContainer, 'has-error');
+          }
         }
       };
       onError = () => {
@@ -181,13 +183,15 @@ export default class ButtonComponent extends Field {
 
     this.on('change', (value, flags) => {
       let isValid = value.isValid;
-      if (flags && flags.noValidate) {
+      //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
+      if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
         isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
         flags.rootValidity = isValid;
       }
       this.loading = false;
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
+
       if (onChange) {
         onChange(value, isValid);
       }

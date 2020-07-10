@@ -2406,12 +2406,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/pdf.js~pdf#_form",
-    "class/src/PDF.js~PDF.html#instance-member-_form",
-    "src/PDF.js~PDF#_form",
-    "member"
-  ],
-  [
     "src/pdf.js~pdf#attach",
     "class/src/PDF.js~PDF.html#instance-method-attach",
     "src/PDF.js~PDF#attach",
@@ -2622,6 +2616,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#getparentcontainer",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-getParentContainer",
+    "src/PDFBuilder.js~PDFBuilder#getParentContainer",
+    "method"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#haspdf",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-hasPDF",
     "src/PDFBuilder.js~PDFBuilder#hasPDF",
@@ -2817,6 +2817,12 @@ window.esdocSearchIndex = [
     "src/webform.js~webform#component",
     "class/src/Webform.js~Webform.html#instance-member-component",
     "src/Webform.js~Webform#component",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#componentcomponents",
+    "class/src/Webform.js~Webform.html#instance-get-componentComponents",
+    "src/Webform.js~Webform#componentComponents",
     "member"
   ],
   [

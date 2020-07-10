@@ -274,7 +274,7 @@ export default class PanelComponent extends NestedComponent {
     return PanelComponent.schema();
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity(&apos;&apos;);
       return true;
@@ -283,12 +283,12 @@ export default class PanelComponent extends NestedComponent {
     return this.getComponents().reduce(
       (check, comp) =&gt; {
         //change collapsed value only in case when the panel is collapsed to avoid additional redrawing that prevents validation messages
-        if (!comp.checkValidity(data, dirty, row) &amp;&amp; this.collapsed) {
+        if (!comp.checkValidity(data, dirty, row, silentCheck) &amp;&amp; this.collapsed) {
           this.collapsed = false;
         }
-        return comp.checkValidity(data, dirty, row) &amp;&amp; check;
+        return comp.checkValidity(data, dirty, row, silentCheck) &amp;&amp; check;
       },
-      super.checkValidity(data, dirty, row)
+      super.checkValidity(data, dirty, row, silentCheck)
     );
   }
 
