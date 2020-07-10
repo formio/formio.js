@@ -7,6 +7,7 @@ import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
+import Flatpickr from 'flatpickr';
 import {
   settingErrors,
   clearOnHide,

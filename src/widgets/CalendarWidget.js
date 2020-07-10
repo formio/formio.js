@@ -309,7 +309,7 @@ export default class CalendarWidget extends InputWidget {
   }
 
   get flatpickrType() {
-    return 'flatpickr-vpat';
+    return 'flatpickr';
   }
 
   /**
