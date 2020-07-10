@@ -301,6 +301,10 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
+  get componentComponents() {
+    return this.form.components;
+  }
+
   /**
    * Add a language for translations
    *

@@ -71,7 +71,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     const layoutTypes = ['htmlelement', 'content'];
     const isLayoutComponent = hasColumns || hasRows || hasComps || layoutTypes.indexOf(component.type) > -1;
     if (includeAll || component.tree || !isLayoutComponent) {
-      noRecurse = fn(component, newPath);
+      noRecurse = fn(component, newPath, components);
     }
 
     const subPath = () => {
@@ -247,7 +247,7 @@ export function findComponent(components, key, path, fn) {
 
     if (component.key === key) {
       //Final callback if the component is found
-      fn(component, newPath);
+      fn(component, newPath, components);
     }
   });
 }
