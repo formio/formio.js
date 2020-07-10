@@ -142,6 +142,7 @@ export default class Alert {
           this.eventListenersKeys.forEach(event => this.parentComponent.removeEventListener(el, event));
         });
       }
+      this.refs = {};
       this.parentComponent.removeChildFrom(this.alert, this.container);
       this.alert = null;
     }

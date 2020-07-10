@@ -311,6 +311,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
                   if (this.component.modal && editRow.errors && !!editRow.errors.length ) {
                     this.alert.showErrors(editRow.errors, false);
+                    editRow.alerts = true;
                   }
                 }
               });
@@ -501,9 +502,26 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
         else {
           this.alert.showErrors(editRow.errors, false);
+          editRow.alerts= true;
         }
       },
     }, this.component.saveRow || 'Save'));
+
+    this.on('componentChange', () => {
+      if (editRow.alerts) {
+        const isRowValid = this.validateRow(this.editRows[rowIndex], true);
+
+        if (this.alert) {
+          if (editRow.errors?.length && !isRowValid) {
+            this.alert.showErrors(editRow.errors,false);
+            editRow.alerts = true;
+          }
+          else {
+            this.alert.clear();
+          }
+        }
+      }
+    });
 
     return this.attachComponents(modalContent, components);
   }
@@ -673,6 +691,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     this.checkValidity(null, true);
     this.redraw();
+
+    if (editRow.alerts) {
+      editRow.alerts = false;
+    }
 
     return true;
   }
