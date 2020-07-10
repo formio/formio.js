@@ -14,7 +14,7 @@ import ComponentModal from '../componentModal/ComponentModal';
 
 const isIEBrowser = FormioUtils.getIEBrowserVersion();
 const CKEDITOR_URL = isIEBrowser
-      ? 'https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js'
+      ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
       : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
 const QUILL_URL = isIEBrowser
   ? 'https://cdn.quilljs.com/1.3.7'
@@ -1909,9 +1909,8 @@ export default class Component extends Element {
           return NativePromise.reject();
         }
         if (isIEBrowser) {
-          const elementNameAttr = this.component.key;
-          element.setAttribute('name', elementNameAttr);
-          const editor = CKEDITOR.replace(elementNameAttr);
+          const editor = CKEDITOR.replace(element);
+          editor.on('change', () => onChange(editor.getData()));
           return NativePromise.resolve(editor);
         }
         else {
