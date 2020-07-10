@@ -89,8 +89,8 @@ export default class Multivalue extends Field {
 
     const promises = [];
 
-    this.refs.input.forEach((element) => {
-      promises.push(this.attachElement.call(this, element));
+    this.refs.input.forEach((element, index) => {
+      promises.push(this.attachElement.call(this, element, index));
     });
 
     if (!this.component.multiple) {
