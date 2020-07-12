@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { IterateeTransformer } from './Iteratee';
 
 export class FlatMapTransformer extends IterateeTransformer {
@@ -14,6 +16,6 @@ export class FlatMapTransformer extends IterateeTransformer {
       iteratee,
     } = args;
 
-    return value?.flatMap?.(this.getIteratee(iteratee)) ?? null;
+    return _.flatMap(value, this.getIteratee(iteratee)) ?? null;
   }
 }

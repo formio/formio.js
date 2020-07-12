@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 import { IterateeTransformer } from './Iteratee';
 
-export class FindIndexTransformer extends IterateeTransformer {
+export class MapValuesTransformer extends IterateeTransformer {
   static get title() {
-    return 'Find Index';
+    return 'Map Values';
   }
 
   static get name() {
-    return 'findIndex';
+    return 'mapValues';
   }
 
   transform(value, args) {
@@ -16,6 +16,6 @@ export class FindIndexTransformer extends IterateeTransformer {
       iteratee,
     } = args;
 
-    return _.findIndex(value, this.getIteratee(iteratee)) ?? null;
+    return _.mapValues(value, this.getIteratee(iteratee)) ?? null;
   }
 }

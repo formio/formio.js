@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 import { IterateeTransformer } from './Iteratee';
 
-export class FindIndexTransformer extends IterateeTransformer {
+export class FindLastKeyTransformer extends IterateeTransformer {
   static get title() {
-    return 'Find Index';
+    return 'Find Last Key';
   }
 
   static get name() {
-    return 'findIndex';
+    return 'findLastKey';
   }
 
   transform(value, args) {
@@ -16,6 +16,6 @@ export class FindIndexTransformer extends IterateeTransformer {
       iteratee,
     } = args;
 
-    return _.findIndex(value, this.getIteratee(iteratee)) ?? null;
+    return _.findLastKey(value, this.getIteratee(iteratee)) ?? null;
   }
 }

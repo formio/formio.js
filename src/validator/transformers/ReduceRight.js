@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { BaseReduceTransformer } from './BaseReduce';
 
 export class ReduceRightTransformer extends BaseReduceTransformer {
@@ -15,6 +17,6 @@ export class ReduceRightTransformer extends BaseReduceTransformer {
       initialValue,
     } = args;
 
-    return value?.reduceRight?.(this.getReduceIteratee(iteratee), initialValue()) ?? null;
+    return _.reduceRight(value, this.getReduceIteratee(iteratee), initialValue()) ?? null;
   }
 }
