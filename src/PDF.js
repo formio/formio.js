@@ -51,7 +51,7 @@ export default class PDF extends Webform {
       label: 'Submit',
       key: 'submit',
       ref: 'button',
-      hidden: this.checkSubmitButtonHiddenness()
+      hidden: this.isSubmitButtonHidden()
     });
 
     return this.renderTemplate('pdf', {
@@ -246,13 +246,6 @@ export default class PDF extends Webform {
     });
   }
 
-  setAlert(type, message, classes) {
-    super.setAlert(type, message, classes);
-
-    const buttonTop = this.refs.button.offsetTop;
-    window.scrollTo(0, buttonTop);
-  }
-
   postMessage(message) {
     // If we get here before the iframeReady promise is set up, it's via the superclass constructor
     if (!this.iframeReady) {
@@ -304,7 +297,7 @@ export default class PDF extends Webform {
     super.showErrors(error, triggerEvent);
   }
 
-  checkSubmitButtonHiddenness() {
+  isSubmitButtonHidden() {
     let hidden = false;
     eachComponent(this.component.components, (component) => {
       if (
