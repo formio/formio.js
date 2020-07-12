@@ -92,6 +92,10 @@ export default class Input extends Multivalue {
     return maxWords - wordCount;
   }
 
+  getValueAttribute(value) {
+    return _.isObject(value) ? '' : value;
+  }
+
   renderElement(value, index) {
     // Double quotes cause the input value to close so replace them with html quote char.
     if (value && typeof value === 'string') {
@@ -99,6 +103,8 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
+    const formattedValue = this.formatValue(this.parseValue(value));
+    info.attr.value = this.getValueAttribute(formattedValue);
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
     }
