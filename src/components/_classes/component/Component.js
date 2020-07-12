@@ -1688,17 +1688,19 @@ export default class Component extends Base {
         }
         case 'value': {
           const oldValue = this.getValue();
-          const newValue = this.evaluate(
-            action.value,
-            {
-              value: _.clone(oldValue),
-              data,
-              row,
-              component: newComponent,
-              result,
-            },
-            'value',
-          );
+          const newValue = action.variable
+            ? this.calculateVariable(action.variable)
+            : this.evaluate(
+              action.value,
+              {
+                value: _.clone(oldValue),
+                data,
+                row,
+                component: newComponent,
+                result,
+              },
+              'value',
+            );
 
           if (!_.isEqual(oldValue, newValue)) {
             this.setValue(newValue);

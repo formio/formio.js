@@ -1,5 +1,7 @@
 import { getContextComponents } from '../../../../utils/utils';
 
+import EditFormUtils from './utils';
+
 export default [
   {
     weight: 0,
@@ -61,6 +63,10 @@ export default [
                     {
                       value: 'event',
                       label: 'Event',
+                    },
+                    {
+                      value: 'condition',
+                      label: 'Condition',
                     },
                   ],
                 },
@@ -151,6 +157,12 @@ export default [
                 tableView: false,
                 customConditional({ row }) {
                   return row.type === 'event';
+                },
+              },
+              {
+                ...EditFormUtils.conditionSelector(),
+                customConditional({ row }) {
+                  return row.type === 'condition';
                 },
               },
             ],
@@ -354,6 +366,12 @@ export default [
                 type: 'textarea',
                 tableView: false,
                 description: '"row", "data", "component", and "result" variables are available. Return the value.',
+                customConditional({ row }) {
+                  return row.type === 'value';
+                },
+              },
+              {
+                ...EditFormUtils.variableSelector(),
                 customConditional({ row }) {
                   return row.type === 'value';
                 },
