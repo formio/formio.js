@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.1-rc.2
+#### Fixed
+ - Adding for attributes to labels to support VPAT.
+ - Removed bad behavior of PDF forms where the page would jump as you correct errors.
+
 ### 4.11.1-rc.1
 #### Fixed
  - Problems with the PDF Builder where it would not update forms after they have been saved.

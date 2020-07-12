@@ -2412,12 +2412,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/pdf.js~pdf#checksubmitbuttonhiddenness",
-    "class/src/PDF.js~PDF.html#instance-method-checkSubmitButtonHiddenness",
-    "src/PDF.js~PDF#checkSubmitButtonHiddenness",
-    "method"
-  ],
-  [
     "src/pdf.js~pdf#clear",
     "class/src/PDF.js~PDF.html#instance-method-clear",
     "src/PDF.js~PDF#clear",
@@ -2490,6 +2484,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdf.js~pdf#issubmitbuttonhidden",
+    "class/src/PDF.js~PDF.html#instance-method-isSubmitButtonHidden",
+    "src/PDF.js~PDF#isSubmitButtonHidden",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#postmessage",
     "class/src/PDF.js~PDF.html#instance-method-postMessage",
     "src/PDF.js~PDF#postMessage",
@@ -2511,12 +2511,6 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#render",
     "class/src/PDF.js~PDF.html#instance-method-render",
     "src/PDF.js~PDF#render",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#setalert",
-    "class/src/PDF.js~PDF.html#instance-method-setAlert",
-    "src/PDF.js~PDF#setAlert",
     "method"
   ],
   [
