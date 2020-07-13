@@ -507,22 +507,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       },
     }, this.component.saveRow || 'Save'));
 
-    this.on('componentChange', () => {
-      if (editRow.alerts) {
-        const isRowValid = this.validateRow(this.editRows[rowIndex], true);
-
-        if (this.alert) {
-          if (editRow.errors?.length && !isRowValid) {
-            this.alert.showErrors(editRow.errors,false);
-            editRow.alerts = true;
-          }
-          else {
-            this.alert.clear();
-          }
-        }
-      }
-    });
-
     return this.attachComponents(modalContent, components);
   }
 
@@ -759,6 +743,13 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (this.inlineEditMode) {
           this.triggerRootChange(flags, changed, modified);
         }
+        else if (editRow?.alerts) {
+          this.checkData(null, {
+            ...flags,
+            changed,
+            rowIndex,
+          },   this.data);
+        }
         else if (editRow) {
           this.checkRow('checkData', null, {
             ...flags,
@@ -812,7 +803,23 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     editRow.errors = !valid ? this.errors.filter((err) => !errorsSnapshot.includes(err)) : null;
 
+    this.showRowErrorAlerts(editRow, !!valid);
+
     return !!valid;
+  }
+
+  showRowErrorAlerts(editRow, valid) {
+    if (editRow.alerts) {
+      if (this.alert) {
+        if (editRow.errors?.length && !valid) {
+          this.alert.showErrors(editRow.errors, false);
+          editRow.alerts = true;
+        }
+        else {
+          this.alert.clear();
+        }
+      }
+    }
   }
 
   checkValidity(data, dirty, row) {
@@ -841,7 +848,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(editRow, dirty);
+      const rowValid = this.validateRow(editRow, editRow.alerts || dirty);
 
       rowsValid &= rowValid;
 
