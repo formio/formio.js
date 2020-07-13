@@ -145,7 +145,7 @@ In addition to having a Form Renderer within this application, you can also use 
 ```html
 <html>
   <head>
-    <script src='https://unpkg.com/formiojs@latest/dist/formio.min.js'></script>
+    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
       var formio = new Formio('https://examples.form.io/example');
       formio.loadForm().then(function(form) {
