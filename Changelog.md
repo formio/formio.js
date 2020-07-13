@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
  - Downgrade core-js@3.5.0 to fix Select dropdown URL with IE11.
 
+#### Fixed
+ - FJS-1039: Fixed CKEditor and Quill editor for IE11
+
 ### 4.11.1-rc.2
 #### Fixed
  - Adding for attributes to labels to support VPAT.

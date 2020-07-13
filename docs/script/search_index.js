@@ -972,6 +972,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~getiebrowserversion",
+    "function/index.html#static-function-getIEBrowserVersion",
+    "<span>getIEBrowserVersion</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~getinputmask",
     "function/index.html#static-function-getInputMask",
     "<span>getInputMask</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
