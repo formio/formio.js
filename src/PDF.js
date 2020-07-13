@@ -51,7 +51,7 @@ export default class PDF extends Webform {
       label: 'Submit',
       key: 'submit',
       ref: 'button',
-      hidden: this.checkSubmitButtonHiddenness()
+      hidden: this.isSubmitButtonHidden()
     });
 
     return this.renderTemplate('pdf', {
@@ -192,11 +192,6 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
-    if (this.builderMode && this.form.components) {
-      this._form = form;
-      this.postMessage({ name: 'form', data: this.form });
-      return NativePromise.resolve();
-    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -204,7 +199,7 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
-      this.postMessage({ name: 'form', data: form });
+      this.postMessage({ name: 'form', data: this.form });
     });
   }
 
@@ -249,13 +244,6 @@ export default class PDF extends Webform {
         });
       }
     });
-  }
-
-  setAlert(type, message, classes) {
-    super.setAlert(type, message, classes);
-
-    const buttonTop = this.refs.button.offsetTop;
-    window.scrollTo(0, buttonTop);
   }
 
   postMessage(message) {
@@ -309,7 +297,7 @@ export default class PDF extends Webform {
     super.showErrors(error, triggerEvent);
   }
 
-  checkSubmitButtonHiddenness() {
+  isSubmitButtonHidden() {
     let hidden = false;
     eachComponent(this.component.components, (component) => {
       if (
