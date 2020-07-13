@@ -1,8 +1,8 @@
-/* global Quill */
+/* global Quill, CKEDITOR */
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import { uniqueName } from '../../utils/utils';
+import { uniqueName, getIEBrowserVersion } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -181,18 +181,29 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue))
             .then((editor) => {
               this.editors[index] = editor;
-              if (this.options.readOnly || this.component.disabled) {
-                editor.isReadOnly = true;
-              }
-              const numRows = parseInt(this.component.rows, 10);
-              if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-                // Default height is 21px with 10px margin + a 14px top margin.
-                const editorHeight = (numRows * 31) + 14;
-                editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-              }
               let dataValue = this.dataValue;
               dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-              editor.data.set(this.setConvertedValue(dataValue, index));
+              const value = this.setConvertedValue(dataValue, index);
+              const isReadOnly = this.options.readOnly || this.component.disabled;
+
+              if (getIEBrowserVersion()) {
+                editor.on('instanceReady', () => {
+                  editor.setReadOnly(isReadOnly);
+                  editor.setData(value);
+                });
+              }
+              else {
+                const numRows = parseInt(this.component.rows, 10);
+
+                if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+                  // Default height is 21px with 10px margin + a 14px top margin.
+                  const editorHeight = (numRows * 31) + 14;
+                  editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+                }
+                editor.isReadOnly = isReadOnly;
+                editor.data.set(value);
+              }
+
               editorReady(editor);
               return editor;
             });
