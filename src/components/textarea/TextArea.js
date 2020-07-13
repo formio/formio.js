@@ -1,4 +1,4 @@
-/* global Quill, CKEDITOR */
+/* global Quill */
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
