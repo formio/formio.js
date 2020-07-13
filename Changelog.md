@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.1-rc.3
+#### Changed
+ - Downgrade core-js@3.5.0 to fix Select dropdown URL with IE11.
+
 ### 4.11.1-rc.2
 #### Fixed
  - Adding for attributes to labels to support VPAT.
