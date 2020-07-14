@@ -1154,7 +1154,7 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   /* eslint-disable no-unused-vars */
-  showErrors(error, triggerEvent, messageClass, onChange) {
+  showErrors(error, triggerEvent, onChange, messageClass) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1245,14 +1245,9 @@ export default class Webform extends NestedDataComponent {
         if (err.messages && err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message }, index) => {
-            const text = this.t('alertMessage', { label: component.label, message });
-            createListItem(text, index);
-          });
-        }
-        else if (err.messages && err.messages.length) {
-            err.messages.forEach(({ message }) => {
             const additionalPeriod = message.charAt(message.length - 1) === '.' ? '' : '.';
-            createListItem(`${err.component.label}. ${message}${additionalPeriod} `);
+            const text = this.t('alertMessage', { label: component.label, message: `${message}${additionalPeriod}` });
+            createListItem(text, index);
           });
         }
         else if (err) {
