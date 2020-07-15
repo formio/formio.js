@@ -157,11 +157,11 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editors[index] = quill;
             if (this.component.isUploadEnabled) {
               const _this = this;
-              quill.getModule('toolbar').addHandler('image', function() {
+              quill.getModule('uploader').options.handler = function(...args) {
                 //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
                 //we also need current component instance as we use some fields and methods from it as well
-                _this.imageHandler.call(_this, this);
-              } );
+                _this.imageHandler.call(_this, this, ...args);
+              };
             }
             quill.root.spellcheck = this.component.spellcheck;
             if (this.options.readOnly || this.component.disabled) {
@@ -224,64 +224,51 @@ export default class TextAreaComponent extends TextFieldComponent {
     return attached;
   }
 
-  imageHandler(quillInstance) {
-    let fileInput = quillInstance.container.querySelector('input.ql-image[type=file]');
-    if (fileInput == null) {
-      fileInput = document.createElement('input');
-      fileInput.setAttribute('type', 'file');
-      fileInput.setAttribute('accept', 'image/*');
-      fileInput.classList.add('ql-image');
-      this.addEventListener(fileInput, 'change', () => {
-        const files = fileInput.files;
-        const range = quillInstance.quill.getSelection(true);
+  imageHandler(moduleInstance, range, files) {
+    const quillInstance = moduleInstance.quill;
 
-        if (!files || !files.length) {
-          console.warn('No files selected');
-          return;
-        }
-
-        quillInstance.quill.enable(false);
-        const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
-        let requestData;
-        this.fileService
-          .uploadFile(
-            uploadStorage,
-            files[0],
-            uniqueName(files[0].name),
-            uploadDir || '', //should pass empty string if undefined
-            null,
-            uploadUrl,
-            uploadOptions,
-            fileKey
-          )
-          .then(result => {
-            requestData = result;
-            return this.fileService.downloadFile(result);
-          })
-          .then(result => {
-            quillInstance.quill.enable(true);
-            const Delta = Quill.import('delta');
-            quillInstance.quill.updateContents(new Delta()
-                .retain(range.index)
-                .delete(range.length)
-                .insert(
-                  {
-                    image: result.url
-                  },
-                  {
-                    alt: JSON.stringify(requestData),
-                  })
-              , Quill.sources.USER);
-            fileInput.value = '';
-          }).catch(error => {
-          console.warn('Quill image upload failed');
-          console.warn(error);
-          quillInstance.quill.enable(true);
-        });
-      });
-      quillInstance.container.appendChild(fileInput);
+    if (!files || !files.length) {
+      console.warn('No files selected');
+      return;
     }
-    fileInput.click();
+
+    quillInstance.enable(false);
+    const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
+    let requestData;
+    this.fileService
+      .uploadFile(
+        uploadStorage,
+        files[0],
+        uniqueName(files[0].name),
+        uploadDir || '', //should pass empty string if undefined
+        null,
+        uploadUrl,
+        uploadOptions,
+        fileKey
+      )
+      .then(result => {
+        requestData = result;
+        return this.fileService.downloadFile(result);
+      })
+      .then(result => {
+        quillInstance.enable(true);
+        const Delta = Quill.import('delta');
+        quillInstance.updateContents(new Delta()
+            .retain(range.index)
+            .delete(range.length)
+            .insert(
+              {
+                image: result.url
+              },
+              {
+                alt: JSON.stringify(requestData),
+              })
+          , Quill.sources.USER);
+      }).catch(error => {
+      console.warn('Quill image upload failed');
+      console.warn(error);
+      quillInstance.enable(true);
+    });
   }
 
   get isPlain() {
@@ -389,7 +376,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (images.length) {
       return this.setImagesUrl(images)
         .then( () => {
-          value = htmlDoc.getElementsByTagName('body')[0].firstElementChild;
+          value = htmlDoc.getElementsByTagName('body')[0].innerHTML;
           return new XMLSerializer().serializeToString(value);
         });
     }
