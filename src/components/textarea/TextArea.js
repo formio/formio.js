@@ -2,7 +2,7 @@
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import { uniqueName } from '../../utils/utils';
+import { uniqueName, getIEBrowserVersion } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -13,6 +13,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       rows: 3,
       wysiwyg: false,
       editor: '',
+      fixedSize: true,
       inputFormat: 'html',
       validate: {
         minWords: '',
@@ -70,10 +71,6 @@ export default class TextAreaComponent extends TextFieldComponent {
         value
       });
     }
-    // Editors work better on divs.
-    if (this.component.editor || this.component.wysiwyg) {
-      return '<div ref="input"></div>';
-    }
 
     return this.renderTemplate('input', {
       input: info,
@@ -103,7 +100,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if ((!_.isEqual(newValue, dataValue)) && (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
         modified: !this.autoModified
-      });
+      }, index);
     }
     this.autoModified = false;
   }
@@ -173,7 +170,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
             let dataValue = this.dataValue;
             dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
+            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
             editorReady(quill);
             return quill;
           }).catch(err => console.warn(err));
@@ -184,34 +181,32 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue))
             .then((editor) => {
               this.editors[index] = editor;
-              if (this.options.readOnly || this.component.disabled) {
-                editor.isReadOnly = true;
-              }
-              const numRows = parseInt(this.component.rows, 10);
-              if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-                // Default height is 21px with 10px margin + a 14px top margin.
-                const editorHeight = (numRows * 31) + 14;
-                editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-              }
               let dataValue = this.dataValue;
               dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-              editor.data.set(this.setConvertedValue(dataValue, index));
+              const value = this.setConvertedValue(dataValue, index);
+              const isReadOnly = this.options.readOnly || this.component.disabled;
+
+              if (getIEBrowserVersion()) {
+                editor.on('instanceReady', () => {
+                  editor.setReadOnly(isReadOnly);
+                  editor.setData(value);
+                });
+              }
+              else {
+                const numRows = parseInt(this.component.rows, 10);
+
+                if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+                  // Default height is 21px with 10px margin + a 14px top margin.
+                  const editorHeight = (numRows * 31) + 14;
+                  editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+                }
+                editor.isReadOnly = isReadOnly;
+                editor.data.set(value);
+              }
+
               editorReady(editor);
               return editor;
             });
-          break;
-        case 'tiny':
-          if (!settings) {
-            settings = {};
-          }
-          settings.mode = this.component.as || 'javascript';
-          this.addTiny(element, settings, (newValue) => this.updateEditorValue(newValue))
-            .then((tiny) => {
-              this.editors[index] = tiny;
-              tiny.setContent(this.setConvertedValue(this.dataValue));
-              editorReady(tiny);
-              return tiny;
-            }).catch(err => console.warn(err));
           break;
         default:
           super.attachElement(element, index);
@@ -248,7 +243,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
         let requestData;
-        this.root.formio
+        this.fileService
           .uploadFile(
             uploadStorage,
             files[0],
@@ -261,7 +256,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           )
           .then(result => {
             requestData = result;
-            return this.root.formio.downloadFile(result);
+            return this.fileService.downloadFile(result);
           })
           .then(result => {
             quillInstance.quill.enable(true);
@@ -312,18 +307,18 @@ export default class TextAreaComponent extends TextFieldComponent {
               if (this.component.isUploadEnabled) {
                 this.setAsyncConvertedValue(value)
                   .then(result => {
-                    editor.setContents(editor.clipboard.convert(result));
+                    const content = editor.clipboard.convert({ html: result });
+                    editor.setContents(content);
                   });
               }
               else {
-                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
+                const convertedValue = this.setConvertedValue(value, index);
+                const content = editor.clipboard.convert({ html: convertedValue });
+                editor.setContents(content);
               }
               break;
             case 'ckeditor':
               editor.data.set(this.setConvertedValue(value, index));
-              break;
-            case 'tiny':
-              editor.setContent(this.setConvertedValue(value));
               break;
           }
         }
@@ -413,7 +408,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(error);
       }
 
-      return this.root.formio.downloadFile(requestData)
+      return this.fileService.downloadFile(requestData)
         .then((result) => {
           image.setAttribute('src', result.url);
         });

@@ -30,7 +30,9 @@ export default class CheckBoxComponent extends Field {
   }
 
   get defaultValue() {
-    return this.component.name ? '' : (this.component.defaultValue || false).toString() === 'true';
+    const { name } = this.component;
+
+    return name ? (this.component[name] || this.emptyValue) : (this.component.defaultValue || false).toString() === 'true';
   }
 
   get labelClass() {
@@ -72,7 +74,7 @@ export default class CheckBoxComponent extends Field {
   render() {
     return super.render(this.renderTemplate('checkbox', {
       input: this.inputInfo,
-      checked: this.dataValue,
+      checked: this.checked,
       tooltip: this.interpolate(this.t(this.component.tooltip) || '').replace(/(?:\r\n|\r|\n)/g, '<br />')
     }));
   }
@@ -96,7 +98,7 @@ export default class CheckBoxComponent extends Field {
   }
 
   get emptyValue() {
-    return false;
+    return this.component.inputType === 'radio' ? null : false;
   }
 
   isEmpty(value = this.dataValue) {
@@ -122,6 +124,13 @@ export default class CheckBoxComponent extends Field {
     else {
       return (value === '') ? this.dataValue : !!value;
     }
+  }
+
+  get checked() {
+    if (this.component.name) {
+      return (this.dataValue === this.component.value);
+    }
+    return !!this.dataValue;
   }
 
   setCheckedState(value) {

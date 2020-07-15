@@ -256,6 +256,13 @@ td > .form-group {
   padding: 0;
 }
 
+.choices__item.choices__item--selectable {
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 25px;
+  text-overflow: ellipsis;
+}
+
 .choices__input {
   padding: 2px;
 }
@@ -434,6 +441,14 @@ td > .form-group {
 html.formio-dialog-open,
 body.formio-dialog-open {
   overflow: hidden;
+}
+
+.formio-dialog .tab-content {
+  padding-top: 12px;
+}
+
+.formio-dialog-close {
+  z-index: 1000;
 }
 
 @-webkit-keyframes formio-dialog-flyin {
@@ -1019,6 +1034,14 @@ div[data-oembed-url] {
   text-align: left;
 }
 
+.formio-component-modal-wrapper-signature .open-modal-button {
+  text-align: center;
+  height: 100%;
+  font-size: 1.4em;
+  padding: 0;
+  margin: 0;
+}
+
 /* ckeditor5-image/theme/image.css */
 .formio-component-content .image {
   display: table;
@@ -1180,5 +1203,14 @@ div[data-oembed-url] {
 
   .component-rendering-hidden {
     visibility: hidden;
+  }
+}
+
+//show textarea submission in read-only mode and PDF view with initial line and space formatting
+div[read-only="true"] {
+  .formio-component-textarea {
+    div[ref="input"] {
+      white-space: pre-wrap;
+    }
   }
 }

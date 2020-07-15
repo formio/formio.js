@@ -4,16 +4,25 @@
 {% if (ctx.component.prefix) { %}
 <div class="input-group-prepend" ref="prefix">
   <span class="input-group-text">
-    {{ctx.component.prefix}}
+    {% if(ctx.component.prefix instanceof HTMLElement){ %}
+      {{ ctx.t(ctx.component.prefix.outerHTML) }}
+    {% } else{ %}
+      {{ ctx.t(ctx.component.prefix) }}
+    {% } %}
   </span>
 </div>
 {% } %}
+  {% if (!ctx.component.editor && !ctx.component.wysiwyg) { %}
 <{{ctx.input.type}}
   ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
 >{{ctx.input.content}}</{{ctx.input.type}}>
+{% } %}
+{% if (ctx.component.editor || ctx.component.wysiwyg) { %}
+<div ref="input"></div>
+{% } %}
 {% if (ctx.component.showCharCount) { %}
 <span class="text-muted pull-right" ref="charcount"></span>
 {% } %}
@@ -23,7 +32,11 @@
 {% if (ctx.component.suffix) { %}
 <div class="input-group-append" ref="suffix">
   <span class="input-group-text">
-    {{ctx.component.suffix}}
+    {% if(ctx.component.suffix instanceof HTMLElement){ %}
+      {{ ctx.t(ctx.component.suffix.outerHTML) }}
+    {% } else{ %}
+      {{ ctx.t(ctx.component.suffix) }}
+    {% } %}
   </span>
 </div>
 {% } %}

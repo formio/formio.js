@@ -10,10 +10,24 @@ import {
   comp2,
   multiSelect,
   multiSelectOptions,
-  comp4
+  comp4,
+  comp5,
+  comp6
 } from './fixtures';
 
 describe('Select Component', () => {
+  it('should not stringify select option value', function(done) {
+    Harness.testCreate(SelectComponent, comp6).then((component) => {
+      component.setValue({ value:'a', label:'A' });
+
+      assert.equal(component.choices._currentState.items[0].value.value, 'a');
+      assert.equal(typeof component.choices._currentState.items[0].value , 'object');
+      assert.equal(component.dataValue.value, 'a');
+      assert.equal(typeof component.dataValue , 'object');
+      done();
+    });
+  });
+
   it('should return string value for different value types', function(done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const stringValue = component.asString(true);
@@ -36,12 +50,24 @@ describe('Select Component', () => {
       const value3 = component.normalizeSingleValue('11test11test');
       const value4 = component.normalizeSingleValue('test11');
       const value5 = component.normalizeSingleValue('0');
+      const value6 = component.normalizeSingleValue('');
       assert.equal(typeof value, 'boolean');
       assert.equal(typeof value1, 'number');
       assert.equal(typeof value2, 'string');
       assert.equal(typeof value3, 'string');
       assert.equal(typeof value4, 'string');
       assert.equal(typeof value5, 'number');
+      assert.equal(typeof value6, 'string');
+      done();
+    });
+  });
+
+  it('should not stringify default empty values', function(done) {
+    Harness.testCreate(SelectComponent, comp4).then((component) => {
+      const value = component.normalizeSingleValue({});
+      const value1 = component.normalizeSingleValue([]);
+      assert.equal(typeof value, 'object');
+      assert.equal(typeof value1, 'object');
       done();
     });
   });
@@ -66,6 +92,64 @@ describe('Select Component', () => {
       assert.equal(value, true);
       assert.equal(value1, false);
       assert.equal(value2, true);
+      done();
+    });
+  });
+
+  it('1/2 should not display empty choice options if property value is not defined', function(done) {
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      component.setItems([{
+        'label': '111',
+        'value': '111'
+      }, {
+        'label': '222',
+        'value': '222'
+      }, {
+        'label': '333',
+        'value': '333'
+      }], false);
+      assert.equal(component.selectOptions.length, 0);
+      done();
+    });
+  });
+
+  it('2/2 should display choice option if property value is set', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      component.setItems([{
+        'label': '111',
+        'value': '111'
+      }, {
+        'label': '222',
+        'value': '222'
+      }, {
+        'label': '333',
+        'value': '333'
+      }], false);
+      assert.equal(component.selectOptions.length, 3);
+      done();
+    });
+  });
+
+  it('should have only unique dropdown options', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    comp5.uniqueOptions = true;
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      component.setItems([{
+        'label': 'Label 1',
+        'value': 'value1'
+      }, {
+        'label': 'Label 2',
+        'value': 'value2'
+      }, {
+        'label': 'Label 3',
+        'value': 'value3'
+      }, {
+        'label': 'Label 4',
+        'value': 'value3'
+      }], false);
+
+      assert.equal(component.selectOptions.length, 3);
       done();
     });
   });
@@ -145,6 +229,57 @@ describe('Select Component', () => {
       assert.deepEqual(component.dataValue, '');
       component.setValue('red');
       assert.equal(component.dataValue, 'red');
+    });
+  });
+
+  it('should remove selected item', () => {
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      assert.deepEqual(component.dataValue, '');
+      component.setValue('red');
+      assert.equal(component.dataValue, 'red');
+
+      const element = component.element.getElementsByClassName('choices__button')[0];
+      component.choices._handleButtonAction(component.choices._store.activeItems, element);
+
+      assert.equal(component.dataValue, '');
+    });
+  });
+
+  it('should open dropdown after item has been removed', () => {
+    global.requestAnimationFrame = cb => cb();
+    window.matchMedia = window.matchMedia || function() {
+      return {
+        matches : false,
+        addListener : function() {},
+        removeListener: function() {}
+      };
+    };
+
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      component.setValue('red');
+
+      const element = component.element.getElementsByClassName('choices__button')[0];
+      component.choices._handleButtonAction(component.choices._store.activeItems, element);
+
+      component.choices.showDropdown(true);
+
+      assert.equal(component.choices.dropdown.isActive, true);
+    });
+  });
+
+  it('should keep dropdown closed after item has been removed by keypress', () => {
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      component.setValue('red');
+
+      const element = component.element.querySelector('.choices__button');
+      const ke = new KeyboardEvent('keydown', {
+        bubbles: true, cancelable: true, keyCode: 13
+      });
+
+      element.dispatchEvent(ke);
+
+      assert.equal(component.dataValue, '');
+      assert.equal(component.choices.dropdown.isActive, false);
     });
   });
 

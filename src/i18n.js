@@ -1,8 +1,13 @@
 export default {
   lng: 'en',
+  nsSeparator: '::',
+  keySeparator: '.|.',
+  pluralSeparator: '._.',
+  contextSeparator: '._.',
   resources: {
     en: {
       translation: {
+        alertMessage: '{{label}}: {{message}}',
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
         submitError: 'Please check the form and correct all errors before submitting.',
@@ -48,7 +53,12 @@ export default {
         next: 'Next',
         previous: 'Previous',
         cancel: 'Cancel',
-        submit: 'Submit Form'
+        submit: 'Submit Form',
+        confirmCancel: 'Are you sure you want to cancel?',
+        saveDraftInstanceError: 'Cannot save draft because there is no formio instance.',
+        saveDraftAuthError: 'Cannot save draft unless a user is authenticated.',
+        restoreDraftInstanceError: 'Cannot restore draft because there is no formio instance.',
+        time: 'Invalid time'
       }
     }
   }

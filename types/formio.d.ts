@@ -85,7 +85,7 @@ export class Formio {
   downloadFile(file: any, options?: Object): any;
   canSubmit(): any;
   getUrlParts(url: any): any;
-  use(plugin: any): any;
+  static use(plugin: any): any;
   static getUrlParts(url: any, formio?: Formio): any;
   static serialize(obj: any, _interpolate: any): any;
   static getRequestArgs(formio: Formio, type: string, url: string, method?: string, data?: any, opts?: any): any;

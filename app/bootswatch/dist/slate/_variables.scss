@@ -1,4 +1,4 @@
-// Slate 4.3.1
+// Slate 4.5.0
 // Bootswatch
 
 //
@@ -82,6 +82,9 @@ $dropdown-link-color:               $body-color !default;
 $dropdown-link-hover-color:         $white !default;
 $dropdown-link-hover-bg:            $body-bg !default;
 
+$dropdown-link-active-color:        $dropdown-link-hover-color !default;
+$dropdown-link-active-bg:           $dropdown-link-hover-bg !default;
+
 // Navs
 
 $nav-tabs-border-color:             rgba($black, 0.6) !default;
@@ -129,6 +132,15 @@ $card-bg:                           lighten($body-bg, 5%) !default;
 // Popovers
 
 $popover-bg:                        lighten($body-bg, 5%) !default;
+
+// Toasts
+
+$toast-background-color:            lighten($body-bg, 5%) !default;
+$toast-border-color:                rgba(0,0,0,.2) !default;
+
+$toast-header-color:                $body-color !default;
+$toast-header-background-color:     $toast-background-color !default;
+$toast-header-border-color:         $toast-border-color !default;
 
 // Modals
 

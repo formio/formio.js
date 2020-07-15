@@ -1,15 +1,12 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import fetchPonyfill from 'fetch-ponyfill';
 import Formio from './Formio';
 
 import WebformBuilder from './WebformBuilder';
 import { fastCloneDeep, getElementRect } from './utils/utils';
+import { eachComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
-const { fetch, Headers } = fetchPonyfill({
-  Promise: NativePromise
-});
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
@@ -53,7 +50,8 @@ export default class PDFBuilder extends WebformBuilder {
           select: true,
           textarea: true,
           datetime: true,
-          file: true
+          file: true,
+          htmlelement: true,
         }
       },
       basic: false,
@@ -72,18 +70,6 @@ export default class PDFBuilder extends WebformBuilder {
   get projectUrl() {
     return this.options.projectUrl || Formio.getProjectUrl();
   }
-
-  // 888      d8b  .d888                                    888
-  // 888      Y8P d88P"                                     888
-  // 888          888                                       888
-  // 888      888 888888 .d88b.   .d8888b 888  888  .d8888b 888  .d88b.
-  // 888      888 888   d8P  Y8b d88P"    888  888 d88P"    888 d8P  Y8b
-  // 888      888 888   88888888 888      888  888 888      888 88888888
-  // 888      888 888   Y8b.     Y88b.    Y88b 888 Y88b.    888 Y8b.
-  // 88888888 888 888    "Y8888   "Y8888P  "Y88888  "Y8888P 888  "Y8888
-  //                                           888
-  //                                      Y8b d88P
-  //                                       "Y88P"
 
   init() {
     this.options.attachMode = 'builder';
@@ -125,8 +111,11 @@ export default class PDFBuilder extends WebformBuilder {
         'fileBrowse': 'single',
         'hiddenFileInputElement': 'single',
         'uploadError': 'single',
+        'uploadProgress': 'single',
+        'uploadProgressWrapper': 'single',
+        'dragDropText': 'single'
       });
-      this.addEventListener(this.refs['pdf-upload-button'], 'click',(event) => {
+      this.addEventListener(this.refs['pdf-upload-button'], 'click', (event) => {
         event.preventDefault();
       });
 
@@ -189,7 +178,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   afterAttach() {
-    this.on('saveComponent', (schema, component) => {
+    this.on('saveComponent', (component) => {
       this.webform.postMessage({ name: 'updateElement', data: component });
     });
     this.on('removeComponent', (component) => {
@@ -202,40 +191,30 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   upload(file) {
-    const headers = new Headers({
-      'Accept': 'application/json, text/plain, */*',
-      'x-jwt-token': Formio.getToken(),
-    });
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    fetch(`${this.projectUrl}/upload`, {
-      method: 'POST',
-      headers,
-      body: formData
-    })
-      .then((response) => {
-        if (response.status !== 201) {
-          response.text().then((info) => {
-            this.setUploadError(`${response.statusText} - ${info}`);
-          });
-        }
-        else {
-          response.json().then((data) => {
-            _.set(this.webform.form, 'settings.pdf', {
-              id: data.file,
-              src: `${data.filesServer}${data.path}`
-            });
-            this.emit('pdfUploaded', data);
-            // Now that the settings are set, redraw to show the builder.
-            this.redraw();
-          });
-        }
+    const formio = new Formio(this.projectUrl);
+    this.refs.dragDropText.style.display = 'none';
+    this.refs.uploadProgressWrapper.style.display = 'inherit';
+    formio.uploadFile('url', file, file, '', (event) => {
+      const progress = Math.floor((event.loaded / event.total) * 100);
+      this.refs.uploadProgress.style.width = `${progress}%`;
+      if (progress > 98) {
+        this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
+      }
+      else {
+        this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+      }
+    }, `${this.projectUrl}/upload`, {}, 'file')
+      .then((result) => {
+        _.set(this.webform.form, 'settings.pdf', {
+          id: result.data.file,
+          src: `${result.data.filesServer}${result.data.path}`
+        });
+        this.refs.dragDropText.style.display = 'inherit';
+        this.refs.uploadProgressWrapper.style.display = 'none';
+        this.emit('pdfUploaded', result.data);
+        this.redraw();
       })
-      .catch(() => {
-        this.setUploadError('Upload failed.');
-      });
+      .catch((err) => this.setUploadError(err));
   }
 
   setUploadError(message) {
@@ -260,9 +239,9 @@ export default class PDFBuilder extends WebformBuilder {
     return this.webform;
   }
 
-  destroy() {
-    super.destroy();
-    this.webform.destroy();
+  destroy(deleteFromGlobal) {
+    super.destroy(deleteFromGlobal);
+    this.webform.destroy(deleteFromGlobal);
   }
 
   // d8b 8888888888                                                                              888
@@ -273,11 +252,24 @@ export default class PDFBuilder extends WebformBuilder {
   // 888 888     888    .d888888 888  888  888 88888888      88888888 Y88  88P 88888888 888  888 888    "Y8888b.
   // 888 888     888    888  888 888  888  888 Y8b.          Y8b.      Y8bd8P  Y8b.     888  888 Y88b.       X88
   // 888 888     888    "Y888888 888  888  888  "Y8888        "Y8888    Y88P    "Y8888  888  888  "Y888  88888P'
+  getParentContainer(component) {
+    let container = [];
+    let originalComponent = null;
+    eachComponent(this.webform._form.components, (comp, path, components) => {
+      if (comp.id === component.component.id) {
+        container = components;
+        originalComponent = comp;
+        return true;
+      }
+    });
+    return {
+      formioComponent: component.parent,
+      formioContainer: container,
+      originalComponent
+    };
+  }
 
   initIframeEvents() {
-    if (!this.webform.iframeElement) {
-      return;
-    }
     this.webform.off('iframe-elementUpdate');
     this.webform.off('iframe-componentUpdate');
     this.webform.off('iframe-componentClick');
@@ -292,10 +284,10 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.width
         };
 
-        if (!this.options.noNewEdit) {
-          this.editComponent(component.component, this.webform.iframeElement);
+        if (!this.options.noNewEdit && !component.component.noNewEdit) {
+          this.editComponent(component.component, this.getParentContainer(component));
         }
-        this.emit('updateComponent', component);
+        this.emit('updateComponent', component.component);
       }
       return component;
     });
@@ -310,13 +302,7 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.overlay.height,
           width: schema.overlay.width
         };
-        this.emit('updateComponent', component);
-
-        const localComponent = _.find(this.form.components, { id: schema.id });
-        if (localComponent) {
-          localComponent.overlay = _.clone(component.component.overlay);
-        }
-
+        this.emit('updateComponent', component.component);
         this.emit('change', this.form);
       }
       return component;
@@ -325,7 +311,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.on('iframe-componentClick', schema => {
       const component = this.webform.getComponentById(schema.id);
       if (component) {
-        this.editComponent(component.component, this.webform.iframeElement);
+        this.editComponent(component.component, this.getParentContainer(component));
       }
     }, true);
   }
@@ -368,7 +354,10 @@ export default class PDFBuilder extends WebformBuilder {
         this.removeEventListener(el, 'dragstart');
         this.removeEventListener(el, 'dragend');
         this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
-        this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
+        this.addEventListener(el, 'dragend', this.onDragEnd.bind(this), true);
+        this.addEventListener(el, 'drag', (e) => {
+          e.target.style.cursor = 'none';
+        });
       });
     });
   }
@@ -380,10 +369,15 @@ export default class PDFBuilder extends WebformBuilder {
 
     const iframeRect = getElementRect(this.webform.refs.iframeContainer);
     this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';
-    this.refs.iframeDropzone.style.width  = iframeRect && iframeRect.width  ? `${iframeRect.width }px` : '100%';
+    this.refs.iframeDropzone.style.width = iframeRect && iframeRect.width ? `${iframeRect.width}px` : '100%';
   }
 
   onDragStart(e) {
+    // Taking the current offset of a dragged item relative to the cursor
+    const { offsetX = 0, offsetY = 0 } = e;
+    this.itemOffsetX = offsetX;
+    this.itemOffsetY = offsetY;
+
     e.dataTransfer.setData('text/html', null);
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
@@ -398,9 +392,10 @@ export default class PDFBuilder extends WebformBuilder {
   onDragEnd(e) {
     // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
     // reflect absolute positioning if accessed after the target element is hidden
-    const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
-    const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
-
+    const layerX = this.dropEvent ? this.dropEvent.layerX : null;
+    const layerY = this.dropEvent ? this.dropEvent.layerY : null;
+    const WIDTH = 100;
+    const HEIGHT = 20;
     // Always disable the dropzone on drag end
     this.removeClass(this.refs.iframeDropzone, 'enabled');
 
@@ -422,22 +417,53 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform.component], schema);
-
     this.webform.component.components.push(schema);
 
-    this.emit('addComponent', schema);
-
     schema.overlay = {
-      top: offsetY,
-      left: offsetX,
-      width: 100,
-      height: 20
+      top: layerY - this.itemOffsetY + HEIGHT,
+      left: layerX - this.itemOffsetX,
+      width: WIDTH,
+      height: HEIGHT
     };
 
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: 'addElement', data: schema });
 
+    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit && !schema.noNewEdit);
+
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
+    e.target.style.cursor = 'default';
+  }
+
+  highlightInvalidComponents() {
+    const repeatablePaths = this.findRepeatablePaths();
+
+    // update elements which path was duplicated if any pathes have been changed
+    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {
+      eachComponent(this.webform.getComponents(), (comp, path) => {
+        if (this.repeatablePaths.includes(path)) {
+          this.webform.postMessage({ name: 'updateElement', data: comp.component });
+        }
+      });
+
+      this.repeatablePaths = repeatablePaths;
+    }
+
+    if (!repeatablePaths.length) {
+      return;
+    }
+
+    eachComponent(this.webform.getComponents(), (comp, path) => {
+      if (this.repeatablePaths.includes(path)) {
+        this.webform.postMessage({
+          name: 'showBuilderErrors',
+          data: {
+            compId: comp.component.id,
+            errorMessage: `API Key is not unique: ${comp.key}`,
+          }
+        });
+      }
+    });
   }
 }
