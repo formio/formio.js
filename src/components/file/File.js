@@ -2,7 +2,6 @@ import Field from '../_classes/field/Field';
 import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
-import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
 
 let Camera;
@@ -86,6 +85,9 @@ export default class FileComponent extends Field {
   }
 
   loadImage(fileInfo) {
+    if (this.component.privateDownload) {
+      fileInfo.private = true;
+    }
     return this.fileService.downloadFile(fileInfo).then((result) => result.url);
   }
 
@@ -115,24 +117,6 @@ export default class FileComponent extends Field {
       Array.isArray(this.component.fileTypes) &&
       this.component.fileTypes.length !== 0 &&
       (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
-  }
-
-  get fileService() {
-    if (this.options.fileService) {
-      return this.options.fileService;
-    }
-    if (this.options.formio) {
-      return this.options.formio;
-    }
-    if (this.root && this.root.formio) {
-      return this.root.formio;
-    }
-    const formio = new Formio();
-    // If a form is loaded, then make sure to set the correct formUrl.
-    if (this.root && this.root._form && this.root._form._id) {
-      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
-    }
-    return formio;
   }
 
   render() {
@@ -381,7 +365,13 @@ export default class FileComponent extends Field {
         webViewCamera.getPicture((success) => {
           window.resolveLocalFileSystemURL(success, (fileEntry) => {
               fileEntry.file((file) => {
-                this.upload([file]);
+                const reader = new FileReader();
+                reader.onloadend = (evt) => {
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
+                  blob.name = file.name;
+                  this.upload([blob]);
+                };
+                reader.readAsArrayBuffer(file);
               });
             }
           );
@@ -399,7 +389,13 @@ export default class FileComponent extends Field {
         webViewCamera.getPicture((success) => {
           window.resolveLocalFileSystemURL(success, (fileEntry) => {
               fileEntry.file((file) => {
-                this.upload([file]);
+                const reader = new FileReader();
+                reader.onloadend = (evt) => {
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
+                  blob.name = file.name;
+                  this.upload([blob]);
+                };
+                reader.readAsArrayBuffer(file);
               });
             }
           );

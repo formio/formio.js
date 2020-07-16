@@ -409,6 +409,7 @@ export default class TreeComponent extends NestedComponent {
       root: this.treeRoot,
       component: this,
     });
+    this.redraw();
   }
 
   getValue() {

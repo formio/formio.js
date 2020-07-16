@@ -102,11 +102,40 @@ export default class CalendarWidget extends InputWidget {
     this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
     this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
+    this.settings.wasDefaultValueChanged = false;
+    this.settings.defaultValue = '';
+    this.settings.manualInputValue = '';
+    this.settings.isManuallyOverriddenValue = false;
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
-    this.settings.onChange = () => this.emit('update');
+    this.settings.onChange = () => {
+      if (this.settings.allowInput) {
+        if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
+          this.calendar._input.value = this.settings.manualInputValue;
+        }
+        else {
+          this.settings.manualInputValue = '';
+        }
+
+        this.settings.isManuallyOverriddenValue = false;
+      }
+
+      this.emit('update');
+    };
+    this.settings.onOpen = () => this.hook('onCalendarOpen');
     this.settings.onClose = () => {
+      this.hook('onCalendarClose');
       this.closedOn = Date.now();
+
+      if (this.settings.allowInput && this.settings.enableTime) {
+        this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;
+        this.settings.isManuallyOverriddenValue = false;
+      }
+
+      if (this.settings.wasDefaultValueChanged) {
+        this.calendar._input.value = this.settings.defaultValue;
+        this.settings.wasDefaultValueChanged = false;
+      }
       if (this.calendar) {
         this.emit('blur');
       }
@@ -114,7 +143,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (this.settings.saveAs === 'text' || this.loadZones()) {
+        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 
@@ -127,9 +156,26 @@ export default class CalendarWidget extends InputWidget {
     if (this._input) {
       // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
+      this.calendar.altInput.addEventListener('input', (event) => {
+        if (this.settings.allowInput) {
+          this.settings.manualInputValue = event.target.value;
+          this.settings.isManuallyOverriddenValue = true;
+        }
 
-      // Enforce the input mask of the format.
-      this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+        if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
+          this.settings.wasDefaultValueChanged = true;
+          this.settings.defaultValue = event.target.value;
+          this.calendar.clear();
+        }
+        else {
+          this.settings.wasDefaultValueChanged = false;
+        }
+      });
+
+      if (!this.settings.readOnly) {
+        // Enforce the input mask of the format.
+        this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+      }
 
       // Make sure we commit the value after a blur event occurs.
       this.addEventListener(this.calendar._input, 'blur', () =>

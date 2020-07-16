@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import Formio from './Formio';
 import Webform from './Webform';
-import { fastCloneDeep } from './utils/utils';
+import { fastCloneDeep, eachComponent } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
@@ -21,17 +21,21 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
-    this.on('iframe-getIframePositions', () => {
-      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
-      this.postMessage({
-        name: 'iframePositions',
-        data: {
-          iframe: {
-            top: iframeBoundingClientRect.top
-          },
-          scrollY: window.scrollY || window.pageYOffset
-        }
-      });
+    this.on('iframe-getIframePositions', (query) => {
+      const iframe = document.getElementById(`iframe-${query.formId}`);
+      if (iframe) {
+        const iframeBoundingClientRect = iframe.getBoundingClientRect();
+        this.postMessage({
+          name: 'iframePositions',
+          data: {
+            formId: query.formId,
+            iframe: {
+              top: iframeBoundingClientRect.top
+            },
+            scrollY: window.scrollY || window.pageYOffset
+          }
+        });
+      }
     });
 
     // Trigger when this form is ready.
@@ -48,7 +52,8 @@ export default class PDF extends Webform {
       internal: true,
       label: 'Submit',
       key: 'submit',
-      ref: 'button'
+      ref: 'button',
+      hidden: this.isSubmitButtonHidden()
     });
 
     return this.renderTemplate('pdf', {
@@ -65,6 +70,8 @@ export default class PDF extends Webform {
 
   rebuild() {
     if (this.builderMode && this.component.components) {
+      this.destroyComponents();
+      this.addComponents();
       return NativePromise.resolve();
     }
     this.postMessage({ name: 'redraw' });
@@ -213,10 +220,6 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
-    if (this.builderMode && this.form.components) {
-      this.postMessage({ name: 'form', data: this.form });
-      return NativePromise.resolve();
-    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -224,7 +227,7 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
-      this.postMessage({ name: 'form', data: form });
+      this.postMessage({ name: 'form', data: this.form });
     });
   }
 
@@ -245,7 +248,6 @@ export default class PDF extends Webform {
   }
 
   setSubmission(submission) {
-    submission.readOnly = !!this.options.readOnly;
     return super.setSubmission(submission).then(() => {
       if (this.formio) {
         this.formio.getDownloadUrl().then((url) => {
@@ -302,7 +304,7 @@ export default class PDF extends Webform {
   showErrors(error, triggerEvent) {
     const helpBlock = document.getElementById('submit-error');
 
-    if (!helpBlock) {
+    if (!helpBlock && this.errors.length) {
       const p = this.ce('p', { class: 'help-block' });
 
       this.setContent(p, this.t('submitError'));
@@ -320,11 +322,21 @@ export default class PDF extends Webform {
       helpBlock.remove();
     }
 
-    if (this.errors.length) {
-      this.focusOnComponent(this.errors[0].component.key);
-    }
-
     super.showErrors(error, triggerEvent);
+  }
+
+  isSubmitButtonHidden() {
+    let hidden = false;
+    eachComponent(this.component.components, (component) => {
+      if (
+        (component.type === 'button') &&
+        ((component.action === 'submit') || !component.action)
+      ) {
+        hidden = component.hidden || false;
+      }
+    });
+
+    return hidden;
   }
 }
 

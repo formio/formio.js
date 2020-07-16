@@ -1,10 +1,10 @@
-// Materia 4.3.1
+// Materia 4.5.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" !default;
+$web-font-path: "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" !default;
 @import url($web-font-path);
 
 // Effects =====================================================================
@@ -219,10 +219,6 @@ button {
 
 p {
   margin: 0 0 1em;
-}
-
-a {
-  transition: all 0.2s;
 }
 
 .text-secondary {

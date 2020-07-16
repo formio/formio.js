@@ -13,6 +13,7 @@ export default class TextFieldComponent extends Input {
       inputFormat: 'plain',
       inputMask: '',
       tableView: true,
+      spellcheck: true,
       validate: {
         minLength: '',
         maxLength: '',

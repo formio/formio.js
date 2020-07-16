@@ -1,4 +1,4 @@
-// Slate 4.3.1
+// Slate 4.5.0
 // Bootswatch
 
 
@@ -190,6 +190,12 @@
   &:not([disabled]):not(.disabled):active,
   &:not([disabled]):not(.disabled).active {
     @include btn-shadow-inverse($danger);
+  }
+}
+
+.btn-outline {
+  &-primary {
+    color: #fff;
   }
 }
 

@@ -7,13 +7,150 @@ import NumberComponent from './Number';
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4,
+  comp5
 } from './fixtures';
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
     return Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
+    });
+  });
+
+  it('Should format submissions for table view for French locale', () => {
+    return Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.11);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111);
+
+      assert.equal(value1, '1,00');
+      assert.equal(value2, '1,10');
+      assert.equal(value3, '1,11');
+      assert.equal(value4, '1 111,00');
+      assert.equal(value5, '1 111 111,00');
+      assert.equal(value6, '-11 111,00');
+    });
+  });
+
+  it('Should format sumbissions for table view for USA locale', () => {
+    return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.11);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111);
+
+      assert.equal(value1, '1.00');
+      assert.equal(value2, '1.10');
+      assert.equal(value3, '1.11');
+      assert.equal(value4, '1,111.00');
+      assert.equal(value5, '1,111,111.00');
+      assert.equal(value6, '-11,111.00');
+    });
+  });
+
+  it('Should format value on blur for USA locale', () => {
+   return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
+      component.root = {
+        onChange: ()=>{},
+        triggerChange: ()=>{},
+      };
+
+      const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
+      const valueElement = component.element.querySelector('[name="data[number]"]');
+
+      valueElement.value = 22222222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '22,222,222.00');
+
+      valueElement.value = 22222222.2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '22,222,222.20');
+
+      valueElement.value = 22222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '22,222.00');
+
+      valueElement.value = 2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '2.00');
+    });
+  });
+
+  it('Should format value on blur for French locale', (done) => {
+    Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
+      component.root = {
+        onChange: ()=>{},
+        triggerChange: ()=>{},
+      };
+
+      const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
+      const valueElement = component.element.querySelector('[name="data[number]"]');
+
+      valueElement.value = 22222222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '22 222 222,00');
+
+      valueElement.value = '22222222,2';
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '22 222 222,20');
+
+      valueElement.value = 22222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '22 222,00');
+
+      valueElement.value = 222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '222,00');
+
+      valueElement.value = 2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '2,00');
+
+      done();
+    });
+  });
+
+  it('Should not change entered value on blur if multiple value is set', (done) => {
+    Harness.testCreate(NumberComponent, comp5).then((component) => {
+      component.root = {
+        onChange: ()=>{},
+        triggerChange: ()=>{},
+      };
+      const blurEvent = new Event('blur');
+      const clickEvent = new Event('click');
+      const addBtn = component.refs.addButton[0];
+
+      addBtn.dispatchEvent(clickEvent);
+
+      const firstValueElement = component.element.querySelectorAll('[name="data[number]"]')[0];
+      const secondValueElement = component.element.querySelectorAll('[name="data[number]"]')[1];
+
+      component.setValue([111,222]);
+
+      firstValueElement.dispatchEvent(blurEvent);
+      secondValueElement.dispatchEvent(blurEvent);
+
+      assert.equal(component.dataValue[0], component.getValue()[0]);
+      assert.equal(component.dataValue[1], component.getValue()[1]);
+      done();
     });
   });
 
@@ -27,6 +164,42 @@ describe('Number Component', () => {
       Harness.testSetInput(component, -123456789.123456789, -123456789.123, '-123,456,789.123');
       Harness.testSetInput(component, '123456789.123456789', 123456789.123, '123,456,789.123');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.123, '-123,456,789.123');
+    });
+  });
+
+  it('Should format submissions for table view for French locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, '1');
+      assert.equal(value2, '1,1');
+      assert.equal(value3, '1,1111111');
+      assert.equal(value4, '1 111');
+      assert.equal(value5, '1 111 111');
+      assert.equal(value6, '-11 111,1111');
+    });
+  });
+
+  it('Should format sumissions for table view for USA locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, '1');
+      assert.equal(value2, '1.1');
+      assert.equal(value3, '1.1111111');
+      assert.equal(value4, '1,111');
+      assert.equal(value5, '1,111,111');
+      assert.equal(value6, '-11,111.1111');
     });
   });
 

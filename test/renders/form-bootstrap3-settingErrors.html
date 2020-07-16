@@ -21,20 +21,20 @@
               </div>
               <div class="panel-body" ref="nested-panel1">
                 <div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField  required" ref="component">
-                  <label class="control-label  field-required">
+                  <label class="control-label  field-required" for="textField-textField">
                     Text Field - Panel
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" value=""></input>
+                    <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="textField-textField"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
                 <div id="number" class="form-group has-feedback formio-component formio-component-number formio-component-number  required" ref="component">
-                  <label class="control-label  field-required">
+                  <label class="control-label  field-required" for="number-number">
                     Number
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value=""></input>
+                    <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value="" id="number-number"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
@@ -46,7 +46,7 @@
     col-md-pull-0
   " ref="column-columns">
                     <div id="selectColumn" class="form-group has-feedback formio-component formio-component-select formio-component-selectColumn  required" ref="component">
-                      <label class="control-label  field-required">
+                      <label class="control-label  field-required" for="selectColumn-selectColumn">
                         Select - Column
                       </label>
                       <select ref="selectContainer" name="data[selectColumn]" type="text" class="form-control" lang="en"></select>
@@ -84,7 +84,7 @@
               </legend>
               <div class="fieldset-body" ref="nested-fi">
                 <div id="radioFieldSet" class="form-group has-feedback formio-component formio-component-radio formio-component-radioFieldSet  required" ref="component">
-                  <label class="control-label  field-required">
+                  <label class="control-label  field-required" for="radioFieldSet-radioFieldSet">
                     Radio - Field Set
                   </label>
                   <div class="input-group">
@@ -110,11 +110,11 @@
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
                 <div id="phoneNumberFieldset" class="form-group has-feedback formio-component formio-component-phoneNumber formio-component-phoneNumberFieldset  required" ref="component">
-                  <label class="control-label  field-required">
+                  <label class="control-label  field-required" for="phoneNumberFieldset-phoneNumberFieldset">
                     Phone Number - Fieldset
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[phoneNumberFieldset]" type="text" class="form-control" lang="en" value=""></input>
+                    <input ref="input" name="data[phoneNumberFieldset]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="phoneNumberFieldset-phoneNumberFieldset"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
@@ -125,13 +125,15 @@
                       <tr ref="row-table">
                         <td ref="table-table-0" class="cell-align-left">
                           <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  required" ref="component">
-                            <label class="control-label  field-required">
+                            <label class="control-label  field-required" for="dateTime-dateTime">
                               Date / Time
                             </label>
                             <div ref="element">
                               <div class="input-group">
-                                <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
-                                <div class="input-group-addon" ref="suffix"><i ref="icon" class="fa fa-calendar" style=""></i></div>
+                                <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="" id="dateTime-dateTime"></input>
+                                <div class="input-group-addon" ref="suffix">
+                                  <i ref="icon" class="fa fa-calendar" style=""></i>
+                                </div>
                               </div>
                             </div>
                             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
@@ -139,7 +141,7 @@
                         </td>
                         <td ref="table-table-0" class="cell-align-left">
                           <div id="dayTable" class="form-group has-feedback formio-component formio-component-day formio-component-dayTable " ref="component">
-                            <label class="control-label ">
+                            <label class="control-label " for="dayTable-dayTable">
                               Day - Table
                             </label>
                             <div class="row">
@@ -191,13 +193,13 @@
                               <div class="form-group col col-xs-3">
                                 <label for="dayTable-day" class="field-required">Day</label>
                                 <div>
-                                  <input ref="day" id="dayTable-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31"></input>
+                                  <input ref="day" id="dayTable-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="dayTable-dayTable"></input>
                                 </div>
                               </div>
                               <div class="form-group col col-xs-5">
                                 <label for="dayTable-year" class="field-required">Year</label>
                                 <div>
-                                  <input ref="year" id="dayTable-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030"></input>
+                                  <input ref="year" id="dayTable-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="dayTable-dayTable"></input>
                                 </div>
                               </div>
                             </div>
@@ -209,11 +211,11 @@
                       <tr ref="row-table">
                         <td ref="table-table-1" class="cell-align-left">
                           <div id="currencyTable" class="form-group has-feedback formio-component formio-component-currency formio-component-currencyTable  required" ref="component">
-                            <label class="control-label  field-required">
+                            <label class="control-label  field-required" for="currencyTable-currencyTable">
                               Currency - Table
                             </label>
                             <div ref="element">
-                              <input ref="input" name="data[currencyTable]" type="text" class="form-control" lang="en" inputmode="numeric" value=""></input>
+                              <input ref="input" name="data[currencyTable]" type="text" class="form-control" lang="en" inputmode="numeric" value="" id="currencyTable-currencyTable"></input>
                             </div>
                             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                           </div>
@@ -233,16 +235,16 @@
             <div class="well">
               <div ref="nested-well1">
                 <div id="emailWell" class="form-group has-feedback formio-component formio-component-email formio-component-emailWell  required" ref="component">
-                  <label class="control-label  field-required">
+                  <label class="control-label  field-required" for="emailWell-emailWell">
                     Email - Well
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[emailWell]" type="email" class="form-control" lang="en" value=""></input>
+                    <input ref="input" name="data[emailWell]" type="email" class="form-control" lang="en" spellcheck="true" value="" id="emailWell-emailWell"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
                 <div id="addressWell" class="form-group has-feedback formio-component formio-component-address formio-component-addressWell  required" ref="component">
-                  <label class="control-label  field-required">
+                  <label class="control-label  field-required" for="addressWell-addressWell">
                     Address - Well
                   </label>
                   <div class="address-autocomplete-container">

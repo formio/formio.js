@@ -4,8 +4,10 @@ import Harness from '../../../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 import { expect } from 'chai';
-import { comp1 } from './fixtures';
+import { comp1, comp2, comp3 } from './fixtures';
+import { nestedForm } from '../../../../test/fixtures';
 import _map from 'lodash/map';
+import Webform from '../../../Webform';
 
 let component = null;
 describe('NestedComponent class', () => {
@@ -207,6 +209,123 @@ describe('NestedComponent class', () => {
           done();
         }, done)
         .catch(done);
+    });
+  });
+
+  describe('calculateComponentPath', () => {
+    it('the first layer components', (done) => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then((nested) => {
+          assert(nested.components[0].path === 'firstName');
+          assert(nested.components[1].path === 'lastName');
+          done();
+        })
+        .catch(done);
+    });
+    it('inside data components', (done) => {
+      Harness.testCreate(NestedComponent, comp2)
+        .then((nested) => {
+          assert(nested.components[0].path === 'dataGrid');
+          const dataGrid = nested.components[0];
+          dataGrid.setValue([{ textField: '' }, { textField: '' }]);
+          setTimeout(() => {
+            assert(dataGrid.components[0].path === 'dataGrid[0].textField');
+            assert(dataGrid.components[1].path === 'dataGrid[1].textField');
+            done();
+          },250);
+        })
+        .catch(done);
+    });
+    it('inside nested forms', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(nestedForm)
+        .then(() => {
+          assert(form.components[0].path === 'form');
+
+          const childForm = form.components[0].subForm;
+          const textField = childForm.components[0];
+          const dataGrid = childForm.components[1];
+          const tabs = childForm.components[2];
+
+          assert(textField.path === 'form.data.textField');
+          assert(dataGrid.path === 'form.data.dataGrid');
+          assert(dataGrid.components[0].path === 'form.data.dataGrid[0].textField');
+          assert(tabs.path === 'form.data.tabs');
+          assert(tabs.tabs[0][0].path === 'form.data.tabsTextfield');
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  describe('getComponent', () => {
+    it('the first layer components', (done) => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then((nested) => {
+          const firstNameTextFieldByStringPath = nested.getComponent('firstName');
+          const firstNameTextFieldByArrayPath = nested.getComponent(['firstName']);
+          assert(firstNameTextFieldByStringPath.path === 'firstName');
+          assert(firstNameTextFieldByArrayPath.path === 'firstName');
+          done();
+        })
+        .catch(done);
+    });
+    it('inside data components', (done) => {
+      Harness.testCreate(NestedComponent, comp2)
+        .then((nested) => {
+          assert(nested.components[0].path === 'dataGrid');
+          const dataGrid = nested.components[0];
+          dataGrid.setValue([{ textField: '' }, { textField: '' }]);
+          setTimeout(() => {
+            const dataGridFirstRowTextField= nested.getComponent('dataGrid[0].textField');
+            const dataGridSecondRowTextField= nested.getComponent('dataGrid[1].textField');
+
+            assert(dataGrid.components[0] === dataGridFirstRowTextField);
+            assert(dataGrid.components[1] === dataGridSecondRowTextField);
+            done();
+          },250);
+        })
+        .catch(done);
+    });
+    it('inside nested forms', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(nestedForm)
+        .then(() => {
+          const childForm = form.components[0].subForm;
+          const textField = form.getComponent('form.data.textField');
+          const dataGrid = form.getComponent('form.data.dataGrid');
+          const dataGridTextField = form.getComponent('form.data.dataGrid[0].textField');
+
+          assert(textField === childForm.components[0]);
+          assert(dataGrid === childForm.components[1]);
+          assert(dataGridTextField === childForm.components[1].components[0]);
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  describe('render value as String', () => {
+    it('Should render a Select\'s value template', (done) => {
+      Harness.testCreate(NestedComponent, comp3)
+      .then((nested) => {
+        const editGrid = nested.components[0];
+        editGrid.addRow();
+        editGrid.editRows[0].components[0].setValue(2);
+        setTimeout(() => {
+          editGrid.saveRow(0);
+          setTimeout(() => {
+            assert.equal(editGrid.dataValue[0].select, 2);
+            const rowContent = editGrid.element.querySelector('[ref="editgrid-editGrid-row"] .row .col-sm-2 span');
+            assert(rowContent);
+            assert.equal(rowContent.textContent, 'Banana');
+            done();
+          }, 250);
+        }, 250);
+      })
+      .catch(done);
     });
   });
 });
