@@ -145,7 +145,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   getRowChunks(groups, rows) {
     const [, chunks] = groups.reduce(
       ([startIndex, acc], size) => {
-        const endIndex = startIndex +  size;
+        const endIndex = startIndex + size;
         return [endIndex, [...acc, [startIndex, endIndex]]];
       }, [0, []]
     );
@@ -302,7 +302,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {
         this.addEventListener(header, 'click', () => this.toggleGroup(header, index));
       });
-     }
+    }
 
     const columns = this.getColumns();
     const rowLength = columns.length;
@@ -360,6 +360,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
     _.each(row, (component) => this.removeComponent(component));
+    this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
   }
 
