@@ -377,7 +377,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.itemOffsetX = offsetX;
     this.itemOffsetY = offsetY;
 
-    e.dataTransfer.setData('text/html', null);
+    e.dataTransfer.setData('text', '');
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
   }
