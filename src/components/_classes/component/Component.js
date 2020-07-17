@@ -2449,7 +2449,10 @@ export default class Component extends Element {
       return true;
     }
     // Set the new value.
-    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
+    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
+    ? false
+    : this.setValue(calculatedValue, flags);
+    // const changed = flags.dataSourceInitialLoading ? false : Component.prototype.setValue.call(this, calculatedValue, flags);
     this.calculatedValue = calculatedValue;
     return changed;
   }
