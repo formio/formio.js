@@ -270,7 +270,8 @@ describe(&apos;Time Component&apos;, () =&gt; {
       timeInput.dispatchEvent(inputEvent);
 
       setTimeout(() =&gt; {
-        assert.equal(component.dataValue, &apos;10:0_ __&apos;);
+        assert.equal(timeInput.value, &apos;10:0_ __&apos;);
+        assert.equal(component.dataValue, &apos;10:00:00&apos;);
         timeInput.dispatchEvent(blurEvent);
 
         setTimeout(() =&gt; {
