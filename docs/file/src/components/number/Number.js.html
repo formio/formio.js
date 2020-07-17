@@ -319,8 +319,7 @@ export default class NumberComponent extends Input {
       decimalSymbol: _.get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
       decimalLimit: _.get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),
       allowNegative: _.get(this.component, &apos;allowNegative&apos;, true),
-      allowDecimal: _.get(this.component, &apos;allowDecimal&apos;,
-        !(this.component.validate &amp;&amp; this.component.validate.integer))
+      allowDecimal: this.isDecimalAllowed(),
     });
   }
 
@@ -334,6 +333,10 @@ export default class NumberComponent extends Input {
       defaultValue = this.component.defaultValue;
     }
     return defaultValue;
+  }
+
+  isDecimalAllowed() {
+    return _.get(this.component, &apos;allowDecimal&apos;, !(this.component.validate &amp;&amp; this.component.validate.integer));
   }
 
   parseNumber(value) {
@@ -368,7 +371,7 @@ export default class NumberComponent extends Input {
     else {
       info.attr.type = &apos;text&apos;;
     }
-    info.attr.inputmode = &apos;numeric&apos;;
+    info.attr.inputmode = this.isDecimalAllowed() ? &apos;decimal&apos; : &apos;numeric&apos;;
     info.changeEvent = &apos;input&apos;;
     return info;
   }

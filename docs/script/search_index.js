@@ -7446,6 +7446,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#isdecimalallowed",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-isDecimalAllowed",
+    "src/components/currency/Currency.js~CurrencyComponent#isDecimalAllowed",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#parsenumber",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-parseNumber",
     "src/components/currency/Currency.js~CurrencyComponent#parseNumber",
@@ -10306,6 +10312,12 @@ window.esdocSearchIndex = [
     "class/src/components/number/Number.js~NumberComponent.html#instance-get-inputInfo",
     "src/components/number/Number.js~NumberComponent#inputInfo",
     "member"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#isdecimalallowed",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-isDecimalAllowed",
+    "src/components/number/Number.js~NumberComponent#isDecimalAllowed",
+    "method"
   ],
   [
     "src/components/number/number.js~numbercomponent#numbermask",
@@ -15652,6 +15664,12 @@ window.esdocSearchIndex = [
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-localeFormat",
     "src/widgets/CalendarWidget.js~CalendarWidget#localeFormat",
     "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#setplaceholder",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-setPlaceholder",
+    "src/widgets/CalendarWidget.js~CalendarWidget#setPlaceholder",
+    "method"
   ],
   [
     "src/widgets/calendarwidget.js~calendarwidget#setvalue",
