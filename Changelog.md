@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.1-rc.6
+#### Fixed
+ - FJS-1018: fixed signature is not visible after submission
+
 ### 4.11.1-rc.5
 #### Fixed
  - FJS-1061: 400 errors are not displaying on the front end when button action fails
