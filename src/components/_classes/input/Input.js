@@ -317,4 +317,11 @@ export default class Input extends Multivalue {
       });
     });
   }
+
+  isFieldLogicEqual(newComponent) {
+    if (this.component.widget && this.component.widget.type === 'calendar') {
+      return _.isEqual(_.omit(this.component, 'suffix'), _.omit(newComponent, 'suffix'));
+    }
+    return super.isFieldLogicEqual(newComponent);
+  }
 }

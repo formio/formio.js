@@ -14,8 +14,8 @@ import ComponentModal from '../componentModal/ComponentModal';
 
 const isIEBrowser = FormioUtils.getIEBrowserVersion();
 const CKEDITOR_URL = isIEBrowser
-      ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
-      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
+  ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
+  : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
 const QUILL_URL = isIEBrowser
   ? 'https://cdn.quilljs.com/1.3.7'
   : 'https://cdn.quilljs.com/2.0.0-dev.3';
@@ -201,7 +201,7 @@ export default class Component extends Element {
    * @param options
    */
   /* eslint-disable no-unused-vars */
-  static tableView(value, options) {}
+  static tableView(value, options) { }
   /* eslint-enable no-unused-vars */
 
   /**
@@ -1283,7 +1283,7 @@ export default class Component extends Element {
     const handleCloseClick = (e) => {
       if (confirm) {
         confirm().then(() => close(e))
-        .catch(() => {});
+          .catch(() => { });
       }
       else {
         close(e);
@@ -1426,7 +1426,7 @@ export default class Component extends Element {
    * @return {*}
    */
   errorMessage(type) {
-    return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
+    return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] : type;
   }
 
   setContent(element, content) {
@@ -1576,6 +1576,11 @@ export default class Component extends Element {
     return this.component.logic || [];
   }
 
+  // Can be overridden to exclude fields from comparison
+  isFieldLogicEqual(newComponent) {
+    return _.isEqual(this.component, newComponent);
+  }
+
   /**
    * Check all triggers and apply necessary actions.
    *
@@ -1607,7 +1612,7 @@ export default class Component extends Element {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (!_.isEqual(this.component, newComponent)) {
+    if (!this.isFieldLogicEqual) {
       this.component = newComponent;
       // If disabled changed, be sure to distribute the setting.
       this.disabled = this.shouldDisabled;
@@ -1902,8 +1907,8 @@ export default class Component extends Element {
       'ckeditor',
       isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
       _.get(this.options, 'editors.ckeditor.src',
-      CKEDITOR_URL
-    ), true)
+        CKEDITOR_URL
+      ), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -2368,7 +2373,7 @@ export default class Component extends Element {
    */
 
   convertNumberOrBoolToString(value) {
-    if (typeof value === 'number' || typeof value === 'boolean' ) {
+    if (typeof value === 'number' || typeof value === 'boolean') {
       return value.toString();
     }
     return value;
@@ -2847,7 +2852,7 @@ export default class Component extends Element {
   getRelativePath(path) {
     const keyPart = `.${this.key}`;
     const thisPath = this.isInputComponent ? this.path
-                                           : this.path.slice(0).replace(keyPart, '');
+      : this.path.slice(0).replace(keyPart, '');
     return path.replace(thisPath, '');
   }
 
