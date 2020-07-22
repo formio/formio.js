@@ -20,6 +20,10 @@ export default [
     ignore: true
   },
   {
+    key: 'tableView',
+    ignore: true
+  },
+  {
     key: 'label',
     hidden: true,
     calculateValue(context) {
