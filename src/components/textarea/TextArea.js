@@ -73,6 +73,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     return this.renderTemplate('input', {
+      prefix: this.prefix,
+      suffix: this.suffix,
       input: info,
       value,
       index
