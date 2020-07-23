@@ -7,7 +7,11 @@ export default class FormComponent extends Component {
         weight: number;
         schema: any;
     };
-    constructor(component: any, options: any, data: any);
+    constructor(component: any, options: any, data: any); /**
+     * Submit the subform if configured to do so.
+     *
+     * @return {*}
+     */
     formObj: any;
     valueChanged: boolean;
     subForm: any;
