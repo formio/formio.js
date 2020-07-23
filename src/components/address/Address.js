@@ -100,7 +100,7 @@ export default class AddressComponent extends ContainerComponent {
       defaultSchema = _.omit(defaultSchema, 'components');
     }
 
-    return _.defaultsDeep(component , defaultSchema);
+    return _.defaultsDeep(component, defaultSchema);
   }
 
   init() {
