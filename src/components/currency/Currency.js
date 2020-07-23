@@ -45,11 +45,11 @@ export default class CurrencyComponent extends NumberComponent {
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language
     });
-    this.prefix = this.options.prefix || affixes.prefix;
-    this.suffix = this.options.suffix || affixes.suffix;
+    this.currencyPrefix = this.options.prefix || affixes.prefix;
+    this.currencySuffix = this.options.suffix || affixes.suffix;
     return createNumberMask({
-      prefix: this.prefix,
-      suffix: this.suffix,
+      prefix: this.currencyPrefix,
+      suffix: this.currencySuffix,
       thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
       decimalLimit: decimalLimit,
@@ -100,8 +100,8 @@ export default class CurrencyComponent extends NumberComponent {
     let decimalPart = '';
     let decimalPartNumbers = [];
     const negativeValueSymbol = '-';
-    const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
-    const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+    const hasPrefix = this.currencyPrefix ? value.includes(this.currencyPrefix) : false;
+    const hasSuffix = this.currencySuffix ? value.includes(this.currencySuffix) : false;
     const isNegative = value.includes(negativeValueSymbol) || false;
 
     value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol,'') : value);
@@ -120,7 +120,7 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
 
-    const formattedValue = `${isNegative ? negativeValueSymbol:''}${hasPrefix ? this.prefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.suffix : ''}`;
+    const formattedValue = `${isNegative ? negativeValueSymbol:''}${hasPrefix ? this.currencyPrefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.currencySuffix : ''}`;
 
     return super.formatValue(formattedValue);
   }
@@ -147,16 +147,16 @@ export default class CurrencyComponent extends NumberComponent {
   stripPrefixSuffix(value) {
     if (typeof value === 'string') {
       try {
-        const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
-        const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+        const hasPrefix = this.currencyPrefix ? value.includes(this.currencyPrefix) : false;
+        const hasSuffix = this.currencySuffix ? value.includes(this.currencySuffix) : false;
         const hasDelimiter = value.includes(this.delimiter);
         const hasDecimalSeparator = value.includes(this.decimalSeparator);
 
-        if (this.prefix) {
-          value = value.replace(this.prefix, '');
+        if (this.currencyPrefix) {
+          value = value.replace(this.currencyPrefix, '');
         }
-        if (this.suffix) {
-          value = value.replace(this.suffix, '');
+        if (this.currencySuffix) {
+          value = value.replace(this.currencySuffix, '');
         }
         //when we enter $ in the field using dashboard, it contains '_' that is NaN
         if ((hasPrefix || hasSuffix) && !hasDelimiter && !hasDecimalSeparator && (Number.isNaN(+value) || !value)) {
