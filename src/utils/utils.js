@@ -361,6 +361,32 @@ export function setActionProperty(component, action, result, row, data, instance
 }
 
 /**
+ * Unescape HTML characters like &lt, &gt, &amp and etc.
+ * @param str
+ * @returns {string}
+ */
+export function unescapeHTML(str) {
+  if (typeof window === 'undefined' || !('DOMParser' in window)) {
+    return str;
+  }
+
+  const doc = new window.DOMParser().parseFromString(str, 'text/html');
+  return doc.documentElement.textContent;
+}
+
+/**
+ * Make HTML element from string
+ * @param str
+ * @param selector
+ * @returns {HTMLElement}
+ */
+
+export function convertStringToHTMLElement(str, selector) {
+  const doc = new window.DOMParser().parseFromString(str, 'text/html');
+  return doc.body.querySelector(selector);
+}
+
+/**
  * Make a filename guaranteed to be unique.
  * @param name
  * @param template
@@ -1038,7 +1064,7 @@ export function getContextComponents(context) {
     if (component.key !== context.data.key) {
       values.push({
         label: `${component.label || component.key} (${path})`,
-        value: component.key,
+        value: path,
       });
     }
   });
@@ -1121,6 +1147,7 @@ export function getArrayFromComponentPath(pathStr) {
   }
   return pathStr.replace(/[[\]]/g, '.')
     .replace(/\.\./g, '.')
+    .replace(/(^\.)|(\.$)/g, '')
     .split('.')
     .map(part => _.defaultTo(_.toNumber(part), part));
 }
@@ -1146,4 +1173,17 @@ export function round(number, precision) {
     return number.toFixed(precision);
   }
   return number;
+}
+
+/**
+ * Check for Internet Explorer browser version
+ *
+ * @return {(number|null)}
+ */
+export function getIEBrowserVersion() {
+  if (typeof document === 'undefined' || !('documentMode' in document)) {
+    return null;
+  }
+
+  return document['documentMode'];
 }

@@ -152,10 +152,10 @@ export default class Base {
     /**
      * Translate a text using the i18n system.
      *
-     * @param {string} text - The i18n identifier.
+     * @param {string|Array<string>} text - The i18n identifier.
      * @param {Object} params - The i18n parameters to use for translation.
      */
-    t(text: string, params: any): any;
+    t(text: string | Array<string>, ...args: any[]): any;
     /**
      * Alias to create a text node.
      * @param text

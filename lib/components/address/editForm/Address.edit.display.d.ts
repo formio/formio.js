@@ -15,6 +15,9 @@ declare var _default: ({
     key: string;
     label: string;
     tooltip: string;
+    customConditional: ({ data }: {
+        data: any;
+    }) => boolean;
     ignore?: undefined;
     placeholder?: undefined;
     validate?: undefined;
@@ -33,5 +36,28 @@ declare var _default: ({
         data: any;
     }) => boolean;
     ignore?: undefined;
+} | {
+    weight: number;
+    type: string;
+    input: boolean;
+    key: string;
+    label: string;
+    tooltip: string;
+    ignore?: undefined;
+    placeholder?: undefined;
+    validate?: undefined;
+} | {
+    type: string;
+    label: string;
+    key: string;
+    tooltip: string;
+    placeholder: string;
+    weight: number;
+    input: boolean;
+    customConditional: ({ data }: {
+        data: any;
+    }) => any;
+    ignore?: undefined;
+    validate?: undefined;
 })[];
 export default _default;

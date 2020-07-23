@@ -20,6 +20,7 @@ declare class ChoicesWrapper extends Choices {
     isDirectionUsing: boolean;
     shouldOpenDropDown: boolean;
     _handleButtonAction(activeItems: any, element: any): any;
+    _onEnterKey(args: any): void;
     _onDirectionKey(...args: any[]): any;
     _selectHighlightedChoice(activeItems: any): void;
     _onKeyDown(event: any): any;

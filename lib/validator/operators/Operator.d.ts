@@ -3,7 +3,6 @@ export class Operator extends BaseCalculatableEntity {
     static get complementaryOperatorName(): string;
     static get complementaryOperatorTitle(): string;
     static get complementaryOperator(): any;
-    static get lazyArgsEvaluation(): boolean;
     constructor(context?: {});
     execute(args: any, opts: any): void;
 }

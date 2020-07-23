@@ -7,7 +7,8 @@ import NativePromise from 'native-promise-only';
 import {
   comp1,
   comp2,
-  comp4
+  comp4,
+  comp5
 } from './fixtures';
 
 describe('TextField Component', () => {
@@ -52,6 +53,36 @@ describe('TextField Component', () => {
       return Harness.testInvalid(component, 'test', 'firstName', 'First Name must have at least 2 words.').then(() => component);
     }).then((component) => {
       return Harness.testValid(component, 'te st').then(() => component);
+    });
+  });
+
+  it('Should correctly calculate remaining words', (done) => {
+    Harness.testCreate(TextFieldComponent, comp5).then((component) => {
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      const element = component.refs.input[0];
+
+      element.value = 'paper format A4';
+      element.dispatchEvent(inputEvent);
+
+      setTimeout(()=>{
+        assert.equal(component.refs.wordcount[0].textContent, '2 words remaining.');
+
+        element.value = 'Hey, guys! We are here!!';
+        element.dispatchEvent(inputEvent);
+
+        setTimeout(()=>{
+          assert.equal(component.refs.wordcount[0].textContent, '0 words remaining.');
+
+          element.value = ' Some   test   text  111 ';
+          element.dispatchEvent(inputEvent);
+
+          setTimeout(()=>{
+            assert.equal(component.refs.wordcount[0].textContent, '1 words remaining.');
+
+            done();
+          }, 300);
+        }, 275);
+      }, 250);
     });
   });
 

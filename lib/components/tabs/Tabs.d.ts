@@ -20,5 +20,6 @@ export default class TabsComponent extends NestedComponent {
      * @param index
      */
     setTab(index: any): void;
+    beforeFocus(component: any): void;
 }
 import NestedComponent from "../_classes/nested/NestedComponent";

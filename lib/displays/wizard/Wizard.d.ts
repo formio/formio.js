@@ -46,7 +46,7 @@ export class Wizard extends Webform {
     setComponentSchema(): void;
     wizard: any;
     isClickable(page: any, index: any): any;
-    hasButton(name: any, nextPage: any): any;
+    hasButton(name: any, nextPage?: number): any;
     pageId(page: any): any;
 }
 import { Webform } from "../webform/Webform";

@@ -32,6 +32,9 @@ import loader from './loader';
 import loading from './loading';
 import map from './map';
 import message from './message';
+import modaldialog from './modaldialog';
+import modaledit from './modaledit';
+import modalPreview from './modalPreview';
 import multipleMasksInput from './multipleMasksInput';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
@@ -105,6 +108,9 @@ export default {
   loading,
   map,
   message,
+  modaledit,
+  modaldialog,
+  modalPreview,
   multipleMasksInput,
   multiValueRow,
   multiValueTable,

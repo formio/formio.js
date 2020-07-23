@@ -14,6 +14,6 @@ export class PDF extends Webform {
     getSrc(): string;
     downloadButton: HTMLElement;
     postMessage(message: any): void;
-    checkSubmitButtonHiddenness(): boolean;
+    isSubmitButtonHidden(): boolean;
 }
 import { Webform } from "../webform/Webform";

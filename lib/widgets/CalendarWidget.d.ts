@@ -53,5 +53,6 @@ export default class CalendarWidget extends InputWidget {
      * @return {string}
      */
     getDateValue(date: any, format: any): string;
+    setPlaceholder(input: any): void;
 }
 import InputWidget from "./InputWidget";

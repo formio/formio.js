@@ -18,6 +18,7 @@ export default class NumberComponent extends Input {
      * @return {*}
      */
     createNumberMask(): any;
+    isDecimalAllowed(): any;
     parseNumber(value: any): number;
     getMaskedValue(value: any): any;
 }

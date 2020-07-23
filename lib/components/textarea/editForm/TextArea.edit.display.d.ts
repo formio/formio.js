@@ -88,35 +88,6 @@ declare var _default: ({
     input: boolean;
     key: string;
     label: string;
-    weight: number;
-    placeholder: string;
-    conditional: {
-        json: {
-            '===': (string | {
-                var: string;
-            })[];
-            '=='?: undefined;
-            or?: undefined;
-            and?: undefined;
-        };
-    };
-    ignore?: undefined;
-    tooltip?: undefined;
-    defaultValue?: undefined;
-    dataSrc?: undefined;
-    data?: undefined;
-    valueProperty?: undefined;
-    rows?: undefined;
-    editor?: undefined;
-    clearOnHide?: undefined;
-    as?: undefined;
-    customDefaultValue?: undefined;
-    components?: undefined;
-} | {
-    type: string;
-    input: boolean;
-    key: string;
-    label: string;
     tooltip: string;
     weight: number;
     conditional: {
@@ -124,8 +95,8 @@ declare var _default: ({
             '==': (string | {
                 var: string;
             })[];
-            '==='?: undefined;
             or?: undefined;
+            '==='?: undefined;
             and?: undefined;
         };
     };
@@ -154,8 +125,8 @@ declare var _default: ({
                     var: string;
                 })[];
             }[];
-            '==='?: undefined;
             '=='?: undefined;
+            '==='?: undefined;
             and?: undefined;
         };
     };
@@ -311,9 +282,9 @@ declare var _default: ({
                     var: string;
                 })[];
             })[];
-            '==='?: undefined;
             '=='?: undefined;
             or?: undefined;
+            '==='?: undefined;
         };
     };
     ignore?: undefined;
@@ -347,8 +318,8 @@ declare var _default: ({
                     var: string;
                 })[];
             }[];
-            '==='?: undefined;
             '=='?: undefined;
+            '==='?: undefined;
             and?: undefined;
         };
     };
@@ -379,8 +350,8 @@ declare var _default: ({
                     var: string;
                 })[];
             }[];
-            '==='?: undefined;
             '=='?: undefined;
+            '==='?: undefined;
             and?: undefined;
         };
     };

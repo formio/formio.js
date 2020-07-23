@@ -62,8 +62,12 @@ export default class CurrencyComponent extends NumberComponent {
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
       decimalLimit: decimalLimit,
       allowNegative: _.get(this.component, 'allowNegative', true),
-      allowDecimal: _.get(this.component, 'allowDecimal', true)
+      allowDecimal: this.isDecimalAllowed(),
     });
+  }
+
+  isDecimalAllowed() {
+    return _.get(this.component, 'allowDecimal', true);
   }
 
   setInputMask(input) {

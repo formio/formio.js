@@ -23,10 +23,11 @@ export default class ButtonComponent extends Field {
     createLabel(): void;
     createInput(container: any): any;
     get clicked(): any;
+    get oauthConfig(): any;
     attachButton(): void;
     hasError: boolean;
     onClick(event: any): void;
-    openOauth(): void;
+    openOauth(settings: any): void;
     triggerReCaptcha(): void;
 }
 import Field from "../_classes/field/Field";

@@ -340,10 +340,11 @@ declare namespace EditFormUtils {
         valueProperty: string;
         template: string;
     };
-    export function getTransformer({ title, name, arguments: transformerArguments, optionsEditForm, }: {
+    export function getTransformer({ title, name, arguments: transformerArguments, presetArguments, optionsEditForm, }: {
         title: any;
         name: any;
         arguments: any;
+        presetArguments?: {};
         optionsEditForm: any;
     }, { customConditions, customVariables, excludeValueSources, excludeVariables, }?: {
         customConditions?: any;
@@ -362,10 +363,11 @@ declare namespace EditFormUtils {
             };
         };
     }[];
-    export function getTransformer({ title, name, arguments: transformerArguments, optionsEditForm, }: {
+    export function getTransformer({ title, name, arguments: transformerArguments, presetArguments, optionsEditForm, }: {
         title: any;
         name: any;
         arguments: any;
+        presetArguments?: {};
         optionsEditForm: any;
     }, { customConditions, customVariables, excludeValueSources, excludeVariables, }?: {
         customConditions?: any;
@@ -384,10 +386,11 @@ declare namespace EditFormUtils {
             };
         };
     }[];
-    export function getOperator({ title, name, arguments: operatorArguments, optionsEditForm, }: {
+    export function getOperator({ title, name, arguments: operatorArguments, presetArguments, optionsEditForm, }: {
         title: any;
         name: any;
         arguments: any;
+        presetArguments?: {};
         optionsEditForm: any;
     }, { customConditions, customVariables, excludeConditions, excludeValueSources, }?: {
         customConditions?: any;
@@ -414,10 +417,11 @@ declare namespace EditFormUtils {
             };
         };
     }[];
-    export function getOperator({ title, name, arguments: operatorArguments, optionsEditForm, }: {
+    export function getOperator({ title, name, arguments: operatorArguments, presetArguments, optionsEditForm, }: {
         title: any;
         name: any;
         arguments: any;
+        presetArguments?: {};
         optionsEditForm: any;
     }, { customConditions, customVariables, excludeConditions, excludeValueSources, }?: {
         customConditions?: any;

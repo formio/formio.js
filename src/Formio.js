@@ -223,7 +223,7 @@ export class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (!this[_id]) {
-      NativePromise.reject('Nothing to delete');
+      return NativePromise.reject('Nothing to delete');
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], 'delete', null, opts);
@@ -975,7 +975,7 @@ export class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken ? Formio.tokens.formioToken : '';
+    return Formio.tokens.formioToken || '';
   }
 
   // Needed to maintain reverse compatability...
@@ -990,16 +990,12 @@ export class Formio {
   static setToken(token = '', opts) {
     token = token || '';
     opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
-    var tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
+    const tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
+
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
 
-    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] === token) {
-      return;
-    }
-
-    Formio.tokens[tokenName] = token;
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1007,20 +1003,27 @@ export class Formio {
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(tokenName);
+        localStorage.removeItem(tokenName);
       }
       catch (err) {
-        return cookies.erase(tokenName, { path: '/' });
+        cookies.erase(tokenName, { path: '/' });
+      }
+      Formio.tokens[tokenName] = token;
+      return Promise.resolve(null);
+    }
+
+    if (Formio.tokens[tokenName] !== token) {
+      Formio.tokens[tokenName] = token;
+      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+      try {
+        localStorage.setItem(tokenName, token);
+      }
+      catch (err) {
+        cookies.set(tokenName, token, { path: '/' });
       }
     }
-    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
-    try {
-      localStorage.setItem(tokenName, token);
-    }
-    catch (err) {
-      cookies.set(tokenName, token, { path: '/' });
-    }
-    return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null
+    // Return or updates the current user
+    return Formio.currentUser(opts.formio, opts);
   }
 
   static getToken(options) {
@@ -1247,11 +1250,20 @@ export class Formio {
   static logout(formio, options) {
     options = options || {};
     options.formio = formio;
-    Formio.setToken(null, options);
-    Formio.setUser(null, options);
-    Formio.clearCache();
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
-    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
+    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
+      .then(function(result) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        return result;
+      })
+      .catch(function(err) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        throw err;
+      });
   }
 
   static pageQuery() {

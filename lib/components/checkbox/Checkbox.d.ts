@@ -21,6 +21,7 @@ export default class CheckBoxComponent extends Field {
         };
     };
     input: any;
+    get checked(): boolean;
     setCheckedState(value: any): any;
 }
 import Field from "../_classes/field/Field";

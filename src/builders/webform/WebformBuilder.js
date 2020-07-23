@@ -18,7 +18,7 @@ const nestedDataComponents = ['container', 'datagrid', 'editgrid'];
 const arrayDataComponents = ['datagrid', 'editgrid'];
 
 export default class WebformBuilder extends Component {
-// eslint-disable-next-line max-statements
+  // eslint-disable-next-line max-statements
   constructor() {
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
@@ -207,7 +207,11 @@ export default class WebformBuilder extends Component {
       component.loadRefs(element, {
         [`${component.key}-container`]: 'single',
       });
-      component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
+      const dataGridContainer = component.refs[`${component.key}-container`];
+
+      if (dataGridContainer) {
+        component.attachComponents(dataGridContainer.parentNode, [], component.component.components);
+      }
     };
 
     this.options.hooks.attachWebform = (element, component) => {
@@ -353,7 +357,7 @@ export default class WebformBuilder extends Component {
             this.groups.resource = {
               title: resourceOptions ? resourceOptions.title : 'Existing Resource Fields',
               key: 'resource',
-              weight: resourceOptions ? resourceOptions.weight :  50,
+              weight: resourceOptions ? resourceOptions.weight : 50,
               subgroups: [],
               components: [],
               componentOrder: []
@@ -579,7 +583,7 @@ export default class WebformBuilder extends Component {
     }
 
     // Some components are their own namespace.
-    if (['container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
+    if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
       return component.key;
     }
 
@@ -658,7 +662,7 @@ export default class WebformBuilder extends Component {
                   groupId === clickedParentId ||
                   groupIndex === index
                 )
-                ? 'inherit' : 'none';
+                  ? 'inherit' : 'none';
             });
           }, true);
         });
@@ -765,8 +769,8 @@ export default class WebformBuilder extends Component {
     let tabIndex = 0;
     switch (parent.type) {
       case 'table':
-        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key  === component.key)));
-        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key  === component.key)));
+        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key === component.key)));
+        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key === component.key)));
         path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         break;
       case 'columns':
@@ -774,7 +778,7 @@ export default class WebformBuilder extends Component {
         path = `columns[${columnIndex}].components`;
         break;
       case 'tabs':
-        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key  === component.key));
+        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key === component.key));
         path = `components[${tabIndex}].components`;
         break;
     }
@@ -858,7 +862,7 @@ export default class WebformBuilder extends Component {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 
-    if (isNew && !this.options.noNewEdit) {
+    if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
       this.editComponent(info, target, isNew);
     }
 
@@ -888,8 +892,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
-      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit);
-      if (!isNew || this.options.noNewEdit) {
+      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit && !info.noNewEdit);
+      if (!isNew || this.options.noNewEdit || info.noNewEdit) {
         this.emit('change', this.form);
       }
     });
@@ -918,7 +922,8 @@ export default class WebformBuilder extends Component {
     }
 
     if (this.webform) {
-      const shouldRebuild = !this.webform.form.components;
+      const shouldRebuild = !this.webform.form.components ||
+        (form.components.length !== this.webform.form.components.length);
       return this.webform.setForm(form).then(() => {
         if (this.refs.form) {
           this.builderHeight = this.refs.form.offsetHeight;
@@ -1123,11 +1128,13 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       let comp = null;
       parentComponent.getComponents().forEach((component) => {
-        if (component.key === original.key) {
+        if (component.component.key === original.key) {
           comp = component;
         }
       });
       const originalComp = comp.component;
+      const originalComponentSchema = comp.schema;
+
       if (parentContainer) {
         parentContainer[index] = submissionData;
         if (comp) {
@@ -1139,14 +1146,15 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
+        const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
           originalComp,
           parentComponent.schema,
           path,
           index,
-          isNew
+          isNew,
+          originalComponentSchema
         );
         this.emit('change', this.form);
         this.highlightInvalidComponents();
@@ -1407,8 +1415,12 @@ export default class WebformBuilder extends Component {
             }
 
             if (this.form) {
+              let formComponents = this.findNamespaceRoot(parent.formioComponent.component);
+              // excluding component which key uniqueness is to be checked to prevent the comparing of the same keys
+              formComponents = formComponents.filter(comp => editFormOptions.editComponent.id !== comp.id);
+
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), event.data);
+              BuilderUtils.uniquify(formComponents, event.data);
             }
           }
         }

@@ -36,6 +36,25 @@ export default [
     },
   },
   {
+    type: 'select',
+    key: 'oauthProvider',
+    label: 'OAuth Provider',
+    input: true,
+    dataSrc: 'values',
+    weight: 111,
+    tooltip: 'The oauth provider to use to log in (8.x server only).',
+    data: {
+      values: [
+        { label: 'OpenID', value: 'openid' },
+        { label: 'Github', value: 'github' },
+        { label: 'Google', value: 'google' },
+      ],
+    },
+    conditional: {
+      json: { '===': [{ var: 'data.action' }, 'oauth'] },
+    },
+  },
+  {
     type: 'textfield',
     label: 'Save in state',
     key: 'state',

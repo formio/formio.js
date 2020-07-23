@@ -4,7 +4,11 @@
 {% if (ctx.component.prefix) { %}
 <div class="input-group-prepend" ref="prefix">
   <span class="input-group-text">
-    {{ctx.component.prefix}}
+    {% if(ctx.component.prefix instanceof HTMLElement){ %}
+      {{ ctx.t(ctx.component.prefix.outerHTML) }}
+    {% } else{ %}
+      {{ ctx.t(ctx.component.prefix) }}
+    {% } %}
   </span>
 </div>
 {% } %}
@@ -28,7 +32,11 @@
 {% if (ctx.component.suffix) { %}
 <div class="input-group-append" ref="suffix">
   <span class="input-group-text">
-    {{ctx.component.suffix}}
+    {% if(ctx.component.suffix instanceof HTMLElement){ %}
+      {{ ctx.t(ctx.component.suffix.outerHTML) }}
+    {% } else{ %}
+      {{ ctx.t(ctx.component.suffix) }}
+    {% } %}
   </span>
 </div>
 {% } %}

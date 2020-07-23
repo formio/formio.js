@@ -82,9 +82,7 @@ export default class CalendarWidget extends InputWidget {
 
   attach(input) {
     const superAttach = super.attach(input);
-    if (input && !input.getAttribute('placeholder')) {
-      input.setAttribute('placeholder', this.settings.format);
-    }
+    this.setPlaceholder(input);
 
     const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);
     this.defaultFormat = {
@@ -104,11 +102,34 @@ export default class CalendarWidget extends InputWidget {
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.wasDefaultValueChanged = false;
     this.settings.defaultValue = '';
+    this.settings.manualInputValue = '';
+    this.settings.isManuallyOverriddenValue = false;
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
-    this.settings.onChange = () => this.emit('update');
+    this.settings.onChange = () => {
+      if (this.settings.allowInput) {
+        if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
+          this.calendar._input.value = this.settings.manualInputValue;
+        }
+        else {
+          this.settings.manualInputValue = '';
+        }
+
+        this.settings.isManuallyOverriddenValue = false;
+      }
+
+      this.emit('update');
+    };
+    this.settings.onOpen = () => this.hook('onCalendarOpen');
     this.settings.onClose = () => {
+      this.hook('onCalendarClose');
       this.closedOn = Date.now();
+
+      if (this.settings.allowInput && this.settings.enableTime) {
+        this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;
+        this.settings.isManuallyOverriddenValue = false;
+      }
+
       if (this.settings.wasDefaultValueChanged) {
         this.calendar._input.value = this.settings.defaultValue;
         this.settings.wasDefaultValueChanged = false;
@@ -134,6 +155,11 @@ export default class CalendarWidget extends InputWidget {
       // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
       this.calendar.altInput.addEventListener('input', (event) => {
+        if (this.settings.allowInput) {
+          this.settings.manualInputValue = event.target.value;
+          this.settings.isManuallyOverriddenValue = true;
+        }
+
         if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
           this.settings.wasDefaultValueChanged = true;
           this.settings.defaultValue = event.target.value;
@@ -322,6 +348,12 @@ export default class CalendarWidget extends InputWidget {
     }
 
     return formatDate(value, format, this.timezone);
+  }
+
+  setPlaceholder(input) {
+    if (input && !input.getAttribute('placeholder')) {
+      input.setAttribute('placeholder', this.settings.format);
+    }
   }
 
   validationValue(value) {

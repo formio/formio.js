@@ -136,6 +136,15 @@ declare var _default: {
     message: {
         form: any;
     };
+    modaledit: {
+        form: any;
+    };
+    modaldialog: {
+        form: any;
+    };
+    modalPreview: {
+        form: any;
+    };
     multipleMasksInput: {
         form: any;
     };

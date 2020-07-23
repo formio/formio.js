@@ -18,6 +18,17 @@
       "input": true
     },
     {
+      "label": "Text Field",
+      "tableView": true,
+      "validateOn": "blur",
+      "validate": {
+        "minLength": 5
+      },
+      "key": "textField1",
+      "type": "textfield",
+      "input": true
+    },
+    {
       "type": "button",
       "label": "Submit",
       "key": "submit",

@@ -1,8 +1,13 @@
 declare namespace _default {
     export const lng: string;
+    export const nsSeparator: string;
+    export const keySeparator: string;
+    export const pluralSeparator: string;
+    export const contextSeparator: string;
     export namespace resources {
         export namespace en {
             export const translation: {
+                alertMessage: string;
                 complete: string;
                 error: string;
                 submitError: string;
@@ -53,6 +58,7 @@ declare namespace _default {
                 saveDraftInstanceError: string;
                 saveDraftAuthError: string;
                 restoreDraftInstanceError: string;
+                time: string;
             };
         }
     }

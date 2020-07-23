@@ -229,8 +229,9 @@ export default class NestedComponent extends Field {
    * @return {Object} - The component that is located.
    */
   getComponent(path, fn, originalPath) {
+    originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
-    const pathStr = originalPath || getStringFromComponentPath(path);
+    const pathStr = originalPath;
     const [key, ...remainingPath] = path;
     let comp = null;
     let possibleComp = null;
@@ -299,7 +300,7 @@ export default class NestedComponent extends Field {
       }
       const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';
       path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
-      path += component._parentPath && component.component.subFormDirectChild ? component._parentPath : '';
+      path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';
       path += component.component.key;
       return path;
     }
@@ -321,7 +322,11 @@ export default class NestedComponent extends Field {
     options.parentVisible = this.visible;
     options.root = this.root || this;
     options.skipInit = true;
+    if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
+      component.shouldIncludeSubFormPath = true;
+    }
     const comp = Components.create(component, options, data, true);
+
     const path = this.calculateComponentPath(comp);
     if (path) {
       comp.path = path;
@@ -396,7 +401,7 @@ export default class NestedComponent extends Field {
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
     if (this.options.parentPath) {
-      component.subFormDirectChild = true;
+      component.shouldIncludeSubFormPath = true;
     }
     component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
@@ -687,11 +692,6 @@ export default class NestedComponent extends Field {
     }
     if (component.type === 'components') {
       return component.setValue(value, flags);
-    }
-    else if (flags.validateOnInit) {
-      return component.defaultValue
-        ? component.setValue(component.defaultValue, flags)
-        : component.setValue(_.get(value, component.key), flags);
     }
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);

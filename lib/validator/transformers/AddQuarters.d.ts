@@ -1,0 +1,10 @@
+export class AddQuartersTransformer extends AddDateComponentTransformer {
+    static get presetArguments(): {
+        unit: {
+            valueSource: string;
+            stringInput: string;
+        };
+    };
+    constructor(context?: {});
+}
+import { AddDateComponentTransformer } from "./AddDateComponent";

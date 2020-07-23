@@ -5,6 +5,11 @@ export default class PDFBuilder extends WebformBuilder {
     afterAttach(): void;
     upload(file: any): void;
     setUploadError(message: any): void;
+    getParentContainer(component: any): {
+        formioComponent: any;
+        formioContainer: any[];
+        originalComponent: any;
+    };
     initIframeEvents(): void;
     initDropzoneEvents(): void;
     prepSidebarComponentsForDrag(): void;
