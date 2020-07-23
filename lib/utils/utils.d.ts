@@ -100,6 +100,19 @@ export function checkCondition(component: any, row: any, data: any, form: any, i
 export function checkTrigger(component: any, trigger: any, row: any, data: any, form: any, instance: any): any;
 export function setActionProperty(component: any, action: any, result: any, row: any, data: any, instance: any): any;
 /**
+ * Unescape HTML characters like &lt, &gt, &amp and etc.
+ * @param str
+ * @returns {string}
+ */
+export function unescapeHTML(str: any): string;
+/**
+ * Make HTML element from string
+ * @param str
+ * @param selector
+ * @returns {HTMLElement}
+ */
+export function convertStringToHTMLElement(str: any, selector: any): HTMLElement;
+/**
  * Make a filename guaranteed to be unique.
  * @param name
  * @param template
@@ -280,6 +293,12 @@ export function isInputComponent(componentJson: any): any;
 export function getArrayFromComponentPath(pathStr: any): any;
 export function getStringFromComponentPath(path: any): any;
 export function round(number: any, precision: any): any;
+/**
+ * Check for Internet Explorer browser version
+ *
+ * @return {(number|null)}
+ */
+export function getIEBrowserVersion(): (number | null);
 export * from "./formUtils";
 /**
  * Map values through unfold and return first non-nil value.

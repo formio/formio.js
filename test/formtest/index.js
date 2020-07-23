@@ -13,6 +13,16 @@ const uniqueApiKeysSameLevel = require('./uniqueApiKeysSameLevel.json');
 const validationOnBlur = require('./validationOnBlur.json');
 const calculateValueWithManualOverride = require('./calculateValueWithManualOverride.json');
 const displayAsModalEditGrid = require('./displayAsModalEditGrid.json');
+const formWithAdvancedLogic = require('./advancedLogicForm.json');
+const formWithConditionalLogic = require('./conditionalLogicForm.json');
+const formWithPatternValidation = require('./patternValidation.json');
+const formWithCalculatedValueWithoutOverriding = require('./calculatedValueForm.json');
+const formWithTimeComponent = require('./formWithTimeComponent.json');
+const calculatedSelectboxes = require('./calculatedSelectboxes.json');
+const columnsForm = require('./columnsForm.json');
+const calculateZeroValue = require('./calculateZeroValue.json');
+const formWithEditGridModalDrafts = require('./editGridModalDraftsTest.json');
+const formWithBlurValidationInsidePanel = require('./blurValidationInsidePanel.json');
 
 module.exports = {
   advanced,
@@ -29,5 +39,15 @@ module.exports = {
   uniqueApiKeysSameLevel,
   validationOnBlur,
   calculateValueWithManualOverride,
-  displayAsModalEditGrid
+  displayAsModalEditGrid,
+  formWithAdvancedLogic,
+  formWithPatternValidation,
+  calculatedSelectboxes,
+  columnsForm,
+  calculateZeroValue,
+  formWithConditionalLogic,
+  formWithCalculatedValueWithoutOverriding,
+  formWithTimeComponent,
+  formWithEditGridModalDrafts,
+  formWithBlurValidationInsidePanel
 };

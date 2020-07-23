@@ -1,4 +1,7 @@
 export default class WebformBuilder extends Component {
+    static editForm: (...extend: any[]) => {
+        components: any;
+    };
     constructor(...args: any[]);
     builderHeight: number;
     schemas: {};

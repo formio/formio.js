@@ -1,4 +1,4 @@
-/* globals Quill, ClassicEditor */
+/* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
@@ -17,10 +17,16 @@ import { Templates } from '../../../templates/Templates';
 import { fastCloneDeep, boolValue, delay } from '../../../utils/utils';
 import Base from '../base/Base';
 import ComponentModal from '../componentModal/ComponentModal';
-const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
-const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
+
+const isIEBrowser = FormioUtils.getIEBrowserVersion();
+const CKEDITOR_URL = isIEBrowser
+      ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
+      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
+const QUILL_URL = isIEBrowser
+  ? 'https://cdn.quilljs.com/1.3.7'
+  : 'https://cdn.quilljs.com/2.0.0-dev.3';
+const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
-const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
  * This is the Component class
@@ -354,6 +360,7 @@ export default class Component extends Base {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
+    let changes = [];
     let lastChanged = null;
     let triggerArgs = [];
     const _triggerChange = _.debounce((...args) => {
@@ -370,13 +377,17 @@ export default class Component extends Base {
         args[0] = lastChanged.flags;
       }
       lastChanged = null;
-      return this.onChange(...args);
+      args[3] = changes;
+      const retVal = this.onChange(...args);
+      changes = [];
+      return retVal;
     }, 100);
     this.triggerChange = (...args) => {
       if (args[1]) {
         // Make sure that during the debounce that we always track lastChanged component, even if they
         // don't provide one later.
         lastChanged = args[1];
+        changes.push(lastChanged);
       }
       if (this.root) {
         this.root.changing = true;
@@ -462,7 +473,12 @@ export default class Component extends Base {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required)) {
+    const isPDFReadOnlyMode = this.parent &&
+      this.parent.form &&
+      (this.parent.form.display === 'pdf') &&
+      this.options.readOnly;
+
+    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
       label.className += ' field-required';
     }
     if (label.hidden) {
@@ -696,20 +712,14 @@ export default class Component extends Base {
    * @param {string} text - The i18n identifier.
    * @param {Object} params - The i18n parameters to use for translation.
    */
-  t(text, params) {
+  t(text, params = {}, ...args) {
     if (!text) {
       return '';
     }
-    params = params || {};
     params.data = this.rootValue;
     params.row = this.data;
     params.component = this.component;
-    params.nsSeparator = '::';
-    params.keySeparator = '.|.';
-    params.pluralSeparator = '._.';
-    params.contextSeparator = '._.';
-    const translated = this.i18next.t(text, params);
-    return translated || text;
+    return super.t(text, params, ...args);
   }
 
   labelIsHidden() {
@@ -936,14 +946,13 @@ export default class Component extends Base {
   }
 
   setOpenModalElement() {
-    const template = this.getModalPreviewTemplate();
-    this.componentModal.setOpenModalElement(template);
+    this.componentModal.setOpenModalElement(this.getModalPreviewTemplate());
   }
 
   getModalPreviewTemplate() {
-    return `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue) || this.t('Click to set value')}</button>`;
+    return this.renderTemplate('modalPreview', {
+      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+    });
   }
 
   build(element) {
@@ -953,6 +962,10 @@ export default class Component extends Base {
     return this.attach(element);
   }
 
+  get hasModalSaveButton() {
+    return true;
+  }
+
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
@@ -960,6 +973,7 @@ export default class Component extends Base {
     if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
+        showSaveButton: this.hasModalSaveButton,
         id: this.id,
         classes: this.className,
         styles: this.customStyle,
@@ -979,7 +993,9 @@ export default class Component extends Base {
 
   attach(element) {
     if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
-      this.componentModal = new ComponentModal(this, element);
+      const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+      const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
+      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
       this.setOpenModalElement();
     }
 
@@ -1105,14 +1121,14 @@ export default class Component extends Base {
     }
   }
 
-  checkRefresh(refreshData, changed) {
+  checkRefresh(refreshData, changed, flags) {
     const changePath = _.get(changed, 'instance.path', false);
     // Don't let components change themselves.
     if (changePath && this.path === changePath) {
       return;
     }
     if (refreshData === 'data') {
-      this.refresh(this.data);
+      this.refresh(this.data, changed, flags);
     }
     else if (
       (changePath && changePath === refreshData) && changed && changed.instance &&
@@ -1120,21 +1136,20 @@ export default class Component extends Base {
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
     ) {
-      this.refresh(changed.value);
+      this.refresh(changed.value, changed, flags);
     }
   }
 
-  checkRefreshOn(changed) {
+  checkRefreshOn(changes, flags) {
+    changes = changes || [];
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
-        refreshOn.forEach(refreshData => {
-          this.checkRefresh(refreshData, changed);
-        });
+        refreshOn.forEach(refreshData => changes.forEach(changed => this.checkRefresh(refreshData, changed, flags)));
       }
       else {
-        this.checkRefresh(refreshOn, changed);
+        changes.forEach(changed => this.checkRefresh(refreshOn, changed, flags));
       }
     }
   }
@@ -1219,7 +1234,7 @@ export default class Component extends Base {
     if (Array.isArray(value)) {
       const values = [];
       value.forEach((val, index) => {
-        const widget = this.refs.input[index] && this.refs.input[index].widge;
+        const widget = this.refs.input[index] && this.refs.input[index].widget;
         if (widget) {
           values.push(widget.getValueAsString(val, options));
         }
@@ -1289,7 +1304,7 @@ export default class Component extends Base {
     return this.itemValue(value);
   }
 
-  createModal(element, attr) {
+  createModal(element, attr, confirm) {
     const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));
 
@@ -1316,8 +1331,18 @@ export default class Component extends Base {
       dialog.close();
     };
 
-    this.addEventListener(dialog.refs.dialogOverlay, 'click', close);
-    this.addEventListener(dialog.refs.dialogClose, 'click', close);
+    const handleCloseClick = (e) => {
+      if (confirm) {
+        confirm().then(() => close(e))
+        .catch(() => {});
+      }
+      else {
+        close(e);
+      }
+    };
+
+    this.addEventListener(dialog.refs.dialogOverlay, 'click', handleCloseClick);
+    this.addEventListener(dialog.refs.dialogClose, 'click', handleCloseClick);
 
     return dialog;
   }
@@ -1470,7 +1495,7 @@ export default class Component extends Base {
       // Return a non-resolving promise.
       return NativePromise.resolve();
     }
-    this.clear();
+    this.detach();
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
@@ -1920,9 +1945,6 @@ export default class Component extends Base {
           ]
         }
       },
-      tiny: {
-        theme: 'silver'
-      },
       default: {}
     };
   }
@@ -1932,22 +1954,40 @@ export default class Component extends Base {
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
     settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
-    return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
+
+    return Formio.requireLibrary(
+      'ckeditor',
+      isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
+      _.get(this.options, 'editors.ckeditor.src',
+      CKEDITOR_URL
+    ), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
         }
-        return ClassicEditor.create(element, settings).then(editor => {
-          editor.model.document.on('change', () => onChange(editor.data.get()));
-          return editor;
-        });
+        if (isIEBrowser) {
+          const editor = CKEDITOR.replace(element);
+          editor.on('change', () => onChange(editor.getData()));
+          return NativePromise.resolve(editor);
+        }
+        else {
+          return ClassicEditor.create(element, settings).then(editor => {
+            editor.model.document.on('change', () => onChange(editor.data.get()));
+            return editor;
+          });
+        }
       });
   }
 
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault.quill : settings;
     settings = _.merge(this.wysiwygDefault.quill, _.get(this.options, 'editors.quill.settings', {}), settings);
-
+    settings = {
+      ...settings,
+      modules: {
+        table: true
+      }
+    };
     // Lazy load the quill css.
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
@@ -1956,42 +1996,45 @@ export default class Component extends Base {
     // Lazy load the quill library.
     return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
       .then(() => {
-        if (!element.parentNode) {
-          return NativePromise.reject();
-        }
-        this.quill = new Quill(element, settings);
-
-        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        const txtArea = document.createElement('textarea');
-        txtArea.setAttribute('class', 'quill-source-code');
-        this.quill.addContainer('ql-custom').appendChild(txtArea);
-        const qlSource = element.parentNode.querySelector('.ql-source');
-        if (qlSource) {
-          this.addEventListener(qlSource, 'click', (event) => {
-            event.preventDefault();
-            if (txtArea.style.display === 'inherit') {
-              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+        return Formio.requireLibrary('quill-table', 'Quill', QUILL_TABLE_URL, true)
+          .then(() => {
+            if (!element.parentNode) {
+              return NativePromise.reject();
             }
-            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+            this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
+
+            /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+            const txtArea = document.createElement('textarea');
+            txtArea.setAttribute('class', 'quill-source-code');
+            this.quill.addContainer('ql-custom').appendChild(txtArea);
+            const qlSource = element.parentNode.querySelector('.ql-source');
+            if (qlSource) {
+              this.addEventListener(qlSource, 'click', (event) => {
+                event.preventDefault();
+                if (txtArea.style.display === 'inherit') {
+                  this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+                }
+                txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+              });
+            }
+            /** END CODEBLOCK **/
+
+            // Make sure to select cursor when they click on the element.
+            this.addEventListener(element, 'click', () => this.quill.focus());
+
+            // Allows users to skip toolbar items when tabbing though form
+            const elm = document.querySelectorAll('.ql-formats > button');
+            for (let i = 0; i < elm.length; i++) {
+              elm[i].setAttribute('tabindex', '-1');
+            }
+
+            this.quill.on('text-change', () => {
+              txtArea.value = this.quill.root.innerHTML;
+              onChange(txtArea);
+            });
+
+            return this.quill;
           });
-        }
-        /** END CODEBLOCK **/
-
-        // Make sure to select cursor when they click on the element.
-        this.addEventListener(element, 'click', () => this.quill.focus());
-
-        // Allows users to skip toolbar items when tabbing though form
-        const elm = document.querySelectorAll('.ql-formats > button');
-        for (let i = 0; i < elm.length; i++) {
-          elm[i].setAttribute('tabindex', '-1');
-        }
-
-        this.quill.on('text-change', () => {
-          txtArea.value = this.quill.root.innerHTML;
-          onChange(txtArea);
-        });
-
-        return this.quill;
       });
   }
 
@@ -2012,20 +2055,6 @@ export default class Component extends Base {
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
-      });
-  }
-
-  addTiny(element, settings, onChange) {
-    return Formio.requireLibrary('tinymce', 'tinymce', TINYMCE_URL.replace('no-api-key', settings.tinyApiKey), true)
-      .then((editor) => {
-        return editor.init({
-          ...settings,
-          target: element,
-          // eslint-disable-next-line camelcase
-          init_instance_callback: (editor) => {
-            editor.on('Change', () => onChange(editor.getContent()));
-          },
-        });
       });
   }
 
@@ -2436,7 +2465,7 @@ export default class Component extends Base {
     }
 
     // Calculate the new value.
-    const calculatedValue = calculateValueVariable
+    let calculatedValue = calculateValueVariable
       ? this.calculateVariable(calculateValueVariable)
       : this.evaluate(calculateValue, {
         value: dataValue,
@@ -2444,8 +2473,20 @@ export default class Component extends Base {
         row: row || this.data
       }, 'value');
 
+    if (_.isNil(calculatedValue)) {
+      calculatedValue = this.emptyValue;
+    }
+
+    // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
+    if (flags.isReordered && allowOverride) {
+      this.calculatedValue = calculatedValue;
+    }
+
     const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
     const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
+
+    const normCurr = this.normalizeValue(currentCalculatedValue);
+    const normNew = this.normalizeValue(newCalculatedValue);
 
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
@@ -2456,9 +2497,11 @@ export default class Component extends Base {
       return false;
     }
 
-    if (flags.fromSubmission &&
-      allowOverride &&
-      currentCalculatedValue !== this.dataValue) {
+    if (_.isEqual(normCurr, normNew) && allowOverride) {
+      return false;
+    }
+
+    if (flags.fromSubmission) {
       this.calculatedValue = calculatedValue;
       return false;
     }
@@ -2475,10 +2518,9 @@ export default class Component extends Base {
       this.calculatedValue = calculatedValue;
       return true;
     }
-
     // Set the new value.
-    const changed = this.setValue(calculatedValue, flags);
-    this.calculatedValue = this.dataValue;
+    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
+    this.calculatedValue = calculatedValue;
     return changed;
   }
 
@@ -2885,7 +2927,7 @@ export default class Component extends Base {
 
   setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && !silentCheck && (dirty || !this.pristine)) {
+    if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else {
@@ -2951,13 +2993,14 @@ export default class Component extends Base {
 
     this.resetCaches();
 
-    this.checkRefreshOn(flags.changed);
+    this.checkRefreshOn(flags.changes, flags);
+
     if (flags.noCheck) {
       return true;
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    if (flags.noValidate) {
+    if (flags.noValidate && !flags.validateOnInit) {
       return true;
     }
 
@@ -3057,7 +3100,7 @@ export default class Component extends Base {
         external: !!external,
       };
       this.emit('componentError', this.error);
-      this.addMessages(messages, dirty, this.refs.input);
+      this.addMessages(messages, dirty, inputRefs);
       if (inputRefs) {
         this.setErrorClasses(inputRefs, dirty, options);
       }
@@ -3220,6 +3263,13 @@ export default class Component extends Base {
     }
   }
 
+  getRelativePath(path) {
+    const keyPart = `.${this.key}`;
+    const thisPath = this.isInputComponent ? this.path
+                                           : this.path.slice(0).replace(keyPart, '');
+    return path.replace(thisPath, '');
+  }
+
   clear() {
     this.detach();
     this.empty(this.getElement());
@@ -3308,6 +3358,9 @@ export default class Component extends Base {
   }
 
   focus() {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
     if (this.refs.input && this.refs.input[0]) {
       this.refs.input[0].focus();
     }

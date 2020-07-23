@@ -33,6 +33,7 @@ export default class SelectComponent extends Field {
     get isSelectResource(): boolean;
     get isSelectURL(): boolean;
     get isInfiniteScrollProvided(): boolean;
+    get lazyLoad(): any;
     isEntireObjectDisplay(): boolean;
     groupOptions(options: any): any;
     get groupedSelectOptions(): any;

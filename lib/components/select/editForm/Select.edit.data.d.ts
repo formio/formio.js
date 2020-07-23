@@ -339,6 +339,7 @@ declare var _default: ({
         input: boolean;
         dataSrc: string;
         groupProperty: string;
+        dataType: string;
         data: {
             custom(args: any): any;
         };
@@ -444,6 +445,7 @@ declare var _default: ({
     label: string;
     dataSrc: string;
     groupProperty: string;
+    dataType: string;
     data: {
         custom(args: any): any;
     };

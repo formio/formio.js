@@ -10,6 +10,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     static get defaultHeaderTemplate(): string;
     static get defaultRowTemplate(): string;
     constructor(...args: any[]);
+    get defaultDialogTemplate(): string;
     get editgridKey(): string;
     get rowRef(): string;
     get rowElements(): any;
@@ -42,16 +43,21 @@ export default class EditGridComponent extends NestedArrayComponent {
         error: any;
     };
     addRowModal(rowIndex: any): any;
+    alert: Alert;
+    showDialog(rowIndex: any): any;
     editRow(rowIndex: any): any;
     clearErrors(rowIndex: any): void;
     cancelRow(rowIndex: any): void;
     saveRow(rowIndex: any): boolean;
+    beforeFocus(component: any): void;
     updateComponentsRowIndex(components: any, rowIndex: any): void;
     updateRowsComponents(rowIndex: any): void;
     baseRemoveRow(rowIndex: any): any;
     removeRow(rowIndex: any): void;
     createRowComponents(row: any, rowIndex: any): any;
+    hasOpenRows(): any;
     validateRow(editRow: any, dirty: any): boolean;
     restoreRowContext(editRow: any, flags?: {}): void;
 }
 import NestedArrayComponent from "../_classes/nestedarray/NestedArrayComponent";
+import Alert from "../alert/Alert";

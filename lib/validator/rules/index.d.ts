@@ -21,6 +21,7 @@ export class Rules {
         select: typeof Select;
         unique: typeof Unique;
         url: typeof Url;
+        time: typeof Time;
     };
     static addRule(name: any, rule: any): void;
     static addRules(rules: any): void;
@@ -47,6 +48,7 @@ export class Rules {
         select: typeof Select;
         unique: typeof Unique;
         url: typeof Url;
+        time: typeof Time;
     };
 }
 import { Custom } from "./Custom";
@@ -70,3 +72,4 @@ import { Required } from "./Required";
 import { Select } from "./Select";
 import { Unique } from "./Unique";
 import { Url } from "./Url";
+import { Time } from "./Time";

@@ -60,14 +60,6 @@
   padding: 0;
 }
 
-.formio-dialog .tab-content {
-  padding-top: 12px;
-}
-
-.formio-dialog-close {
-  z-index: 1000;
-}
-
 .component-btn-group .component-settings-button {
   float: right;
   z-index: 1001;
@@ -215,6 +207,15 @@
 .component-edit-tabs.col-sm-12 .editForm {
   height: calc(100% - 4em);
   overflow-y: auto;
+}
+
+.progress.pdf-progress {
+  height: 1rem;
+}
+
+.progress.pdf-progress .progress-bar {
+  font-size: 0.7rem;
+  line-height: 1rem;
 }
 
 .edit-form-action-buttons {

@@ -19,6 +19,7 @@ import { Required } from './Required';
 import { Select } from './Select';
 import { Unique } from './Unique';
 import { Url } from './Url';
+import { Time } from './Time';
 
 const rules = {
   custom: Custom,
@@ -42,6 +43,7 @@ const rules = {
   select: Select,
   unique: Unique,
   url: Url,
+  time: Time,
 };
 
 export class Rules {

@@ -21,17 +21,21 @@ export class PDF extends Webform {
       fromIframe: true
     }), true);
 
-    this.on('iframe-getIframePositions', () => {
-      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
-      this.postMessage({
-        name: 'iframePositions',
-        data: {
-          iframe: {
-            top: iframeBoundingClientRect.top
-          },
-          scrollY: window.scrollY || window.pageYOffset
-        }
-      });
+    this.on('iframe-getIframePositions', (query) => {
+      const iframe = document.getElementById(`iframe-${query.formId}`);
+      if (iframe) {
+        const iframeBoundingClientRect = iframe.getBoundingClientRect();
+        this.postMessage({
+          name: 'iframePositions',
+          data: {
+            formId: query.formId,
+            iframe: {
+              top: iframeBoundingClientRect.top
+            },
+            scrollY: window.scrollY || window.pageYOffset
+          }
+        });
+      }
     });
 
     // Trigger when this form is ready.
@@ -47,7 +51,7 @@ export class PDF extends Webform {
       label: 'Submit',
       key: 'submit',
       ref: 'button',
-      hidden: this.checkSubmitButtonHiddenness()
+      hidden: this.isSubmitButtonHidden()
     });
 
     return this.renderTemplate('pdf', {
@@ -188,10 +192,6 @@ export class PDF extends Webform {
   }
 
   setForm(form) {
-    if (this.builderMode && this.form.components) {
-      this.postMessage({ name: 'form', data: this.form });
-      return NativePromise.resolve();
-    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -199,7 +199,7 @@ export class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
-      this.postMessage({ name: 'form', data: form });
+      this.postMessage({ name: 'form', data: this.form });
     });
   }
 
@@ -220,7 +220,6 @@ export class PDF extends Webform {
   }
 
   setSubmission(submission) {
-    submission.readOnly = !!this.options.readOnly;
     return super.setSubmission(submission).then(() => {
       if (this.formio) {
         this.formio.getDownloadUrl().then((url) => {
@@ -298,7 +297,7 @@ export class PDF extends Webform {
     super.showErrors(error, triggerEvent);
   }
 
-  checkSubmitButtonHiddenness() {
+  isSubmitButtonHidden() {
     let hidden = false;
     eachComponent(this.component.components, (component) => {
       if (

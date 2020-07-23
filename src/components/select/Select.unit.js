@@ -232,6 +232,57 @@ describe('Select Component', () => {
     });
   });
 
+  it('should remove selected item', () => {
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      assert.deepEqual(component.dataValue, '');
+      component.setValue('red');
+      assert.equal(component.dataValue, 'red');
+
+      const element = component.element.getElementsByClassName('choices__button')[0];
+      component.choices._handleButtonAction(component.choices._store.activeItems, element);
+
+      assert.equal(component.dataValue, '');
+    });
+  });
+
+  it('should open dropdown after item has been removed', () => {
+    global.requestAnimationFrame = cb => cb();
+    window.matchMedia = window.matchMedia || function() {
+      return {
+        matches : false,
+        addListener : function() {},
+        removeListener: function() {}
+      };
+    };
+
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      component.setValue('red');
+
+      const element = component.element.getElementsByClassName('choices__button')[0];
+      component.choices._handleButtonAction(component.choices._store.activeItems, element);
+
+      component.choices.showDropdown(true);
+
+      assert.equal(component.choices.dropdown.isActive, true);
+    });
+  });
+
+  it('should keep dropdown closed after item has been removed by keypress', () => {
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      component.setValue('red');
+
+      const element = component.element.querySelector('.choices__button');
+      const ke = new KeyboardEvent('keydown', {
+        bubbles: true, cancelable: true, keyCode: 13
+      });
+
+      element.dispatchEvent(ke);
+
+      assert.equal(component.dataValue, '');
+      assert.equal(component.choices.dropdown.isActive, false);
+    });
+  });
+
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;

@@ -163,6 +163,7 @@ declare namespace EditFormUtils {
                 label: string;
                 dataSrc: string;
                 groupProperty: string;
+                dataType: string;
                 data: {
                     custom(args: any): any;
                 };
@@ -186,6 +187,7 @@ declare namespace EditFormUtils {
                 label: string;
                 dataSrc: string;
                 groupProperty: string;
+                dataType: string;
                 data: {
                     custom(args: any): any;
                 };
@@ -209,6 +211,7 @@ declare namespace EditFormUtils {
                 label: string;
                 dataSrc: string;
                 groupProperty: string;
+                dataType: string;
                 data: {
                     custom(args: any): any;
                 };
@@ -232,6 +235,7 @@ declare namespace EditFormUtils {
                 label: string;
                 dataSrc: string;
                 groupProperty: string;
+                dataType: string;
                 data: {
                     custom(args: any): any;
                 };
@@ -286,6 +290,7 @@ declare namespace EditFormUtils {
         label: string;
         dataSrc: string;
         groupProperty: string;
+        dataType: string;
         data: {
             custom(args: any): any;
         };
@@ -302,6 +307,7 @@ declare namespace EditFormUtils {
         label: string;
         dataSrc: string;
         groupProperty: string;
+        dataType: string;
         data: {
             custom(args: any): any;
         };
@@ -318,6 +324,7 @@ declare namespace EditFormUtils {
         label: string;
         dataSrc: string;
         groupProperty: string;
+        dataType: string;
         data: {
             custom(args: any): any;
         };
@@ -334,6 +341,7 @@ declare namespace EditFormUtils {
         label: string;
         dataSrc: string;
         groupProperty: string;
+        dataType: string;
         data: {
             custom(args: any): any;
         };
@@ -679,6 +687,7 @@ declare namespace EditFormUtils {
                 label: string;
                 dataSrc: string;
                 groupProperty: string;
+                dataType: string;
                 data: {
                     custom(args: any): any;
                 };
@@ -851,6 +860,7 @@ declare namespace EditFormUtils {
                 label: string;
                 dataSrc: string;
                 groupProperty: string;
+                dataType: string;
                 data: {
                     custom(args: any): any;
                 };

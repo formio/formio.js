@@ -263,11 +263,12 @@ declare class Component extends Base {
     get submissionTimezone(): any;
     loadRefs(element: any, refs: any): void;
     setOpenModalElement(): void;
-    getModalPreviewTemplate(): string;
+    getModalPreviewTemplate(): any;
     build(element: any): any;
+    get hasModalSaveButton(): boolean;
     render(children?: string, topLevel?: boolean): any;
     attach(element: any): any;
-    componentModal: ComponentModal;
+    componentModal: any;
     element: any;
     addFocusBlurEvents(element: any): void;
     addShortcut(element: any, shortcut: any): void;
@@ -276,8 +277,8 @@ declare class Component extends Base {
      * Remove all event handlers.
      */
     detach(): void;
-    checkRefresh(refreshData: any, changed: any): void;
-    checkRefreshOn(changed: any): void;
+    checkRefresh(refreshData: any, changed: any, flags: any): void;
+    checkRefreshOn(changes: any, flags: any): void;
     /**
      * Refreshes the component with a new value.
      *
@@ -316,7 +317,7 @@ declare class Component extends Base {
      */
     itemValue(data: any, forceUseValue?: boolean): any;
     itemValueForHTMLMode(value: any): any;
-    createModal(element: any, attr: any): HTMLElement;
+    createModal(element: any, attr: any, confirm: any): HTMLElement;
     /**
      * Retrieves the CSS class name of this component.
      * @returns {string} - The class name of this component.
@@ -477,16 +478,12 @@ declare class Component extends Base {
                 styles: string[];
             };
         };
-        tiny: {
-            theme: string;
-        };
         default: {};
     };
     addCKE(element: any, settings: any, onChange: any): any;
     addQuill(element: any, settings: any, onChange: any): any;
     quill: any;
     addAce(element: any, settings: any, onChange: any): any;
-    addTiny(element: any, settings: any, onChange: any): any;
     get tree(): any;
     /**
      * The empty value for this component.
@@ -764,6 +761,7 @@ declare class Component extends Base {
     setLoading(element: any, loading: any): void;
     selectOptions(select: any, tag: any, options: any, defaultValue: any): void;
     setSelectValue(select: any, value: any): void;
+    getRelativePath(path: any): any;
     clear(): void;
     append(element: any): void;
     prepend(element: any): void;
@@ -798,4 +796,3 @@ declare namespace Component {
 }
 export default Component;
 import Base from "../base/Base";
-import ComponentModal from "../componentModal/ComponentModal";

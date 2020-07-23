@@ -8,8 +8,8 @@ declare var _default: ({
     weight?: undefined;
     tooltip?: undefined;
     data?: undefined;
-    placeholder?: undefined;
     conditional?: undefined;
+    placeholder?: undefined;
     inputType?: undefined;
     addAnother?: undefined;
     components?: undefined;
@@ -33,8 +33,40 @@ declare var _default: ({
         }[];
     };
     ignore?: undefined;
-    placeholder?: undefined;
     conditional?: undefined;
+    placeholder?: undefined;
+    inputType?: undefined;
+    addAnother?: undefined;
+    components?: undefined;
+    rows?: undefined;
+    editor?: undefined;
+    valueProperty?: undefined;
+    customDefaultValue?: undefined;
+    template?: undefined;
+} | {
+    type: string;
+    key: string;
+    label: string;
+    input: boolean;
+    dataSrc: string;
+    weight: number;
+    tooltip: string;
+    data: {
+        values: {
+            label: string;
+            value: string;
+        }[];
+    };
+    conditional: {
+        json: {
+            '===': (string | {
+                var: string;
+            })[];
+            '!=='?: undefined;
+        };
+    };
+    ignore?: undefined;
+    placeholder?: undefined;
     inputType?: undefined;
     addAnother?: undefined;
     components?: undefined;
@@ -249,8 +281,8 @@ declare var _default: ({
         values?: undefined;
     };
     ignore?: undefined;
-    placeholder?: undefined;
     conditional?: undefined;
+    placeholder?: undefined;
     inputType?: undefined;
     addAnother?: undefined;
     components?: undefined;
@@ -266,8 +298,8 @@ declare var _default: ({
     ignore?: undefined;
     dataSrc?: undefined;
     data?: undefined;
-    placeholder?: undefined;
     conditional?: undefined;
+    placeholder?: undefined;
     inputType?: undefined;
     addAnother?: undefined;
     components?: undefined;

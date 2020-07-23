@@ -1256,6 +1256,12 @@ td > .form-group {
 .choices__list--single {
   padding: 0; }
 
+.choices__item.choices__item--selectable {
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 25px;
+  text-overflow: ellipsis; }
+
 .choices__input {
   padding: 2px; }
 
@@ -1397,6 +1403,12 @@ td > .form-group {
 html.formio-dialog-open,
 body.formio-dialog-open {
   overflow: hidden; }
+
+.formio-dialog .tab-content {
+  padding-top: 12px; }
+
+.formio-dialog-close {
+  z-index: 1000; }
 
 @-webkit-keyframes formio-dialog-flyin {
   0% {
@@ -1841,6 +1853,13 @@ div[data-oembed-url] {
   width: 100%;
   text-align: left; }
 
+.formio-component-modal-wrapper-signature .open-modal-button {
+  text-align: center;
+  height: 100%;
+  font-size: 1.4em;
+  padding: 0;
+  margin: 0; }
+
 /* ckeditor5-image/theme/image.css */
 .formio-component-content .image {
   display: table;
@@ -2056,12 +2075,6 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .form-builder-group-header {
   padding: 0; }
 
-.formio-dialog .tab-content {
-  padding-top: 12px; }
-
-.formio-dialog-close {
-  z-index: 1000; }
-
 .component-btn-group .component-settings-button {
   float: right;
   z-index: 1001;
@@ -2181,6 +2194,13 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .component-edit-tabs.col-sm-12 .editForm {
   height: calc(100% - 4em);
   overflow-y: auto; }
+
+.progress.pdf-progress {
+  height: 1rem; }
+
+.progress.pdf-progress .progress-bar {
+  font-size: 0.7rem;
+  line-height: 1rem; }
 
 .edit-form-action-buttons {
   margin-top: 10px; }

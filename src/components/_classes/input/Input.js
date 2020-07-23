@@ -1,4 +1,5 @@
 import Multivalue from '../multivalue/Multivalue';
+import { convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
 import _ from 'lodash';
 
@@ -80,10 +81,7 @@ export default class Input extends Multivalue {
   }
 
   getWordCount(value) {
-    if (this.editors) {
-      return value.trim() ? value.trim().split(/\s+/).length : 0;
-    }
-    return _.words(value).length;
+    return value.trim().split(/\s+/).length;
   }
 
   get remainingWords() {
@@ -118,7 +116,8 @@ export default class Input extends Multivalue {
         content: ''
       }).trim();
       if (this.component.prefix !== calendarIcon) {
-        this.component.suffix = calendarIcon;
+        // converting string to HTML markup to render correctly DateTime component in portal.form.io
+        this.originalComponent.suffix = this.component.suffix = convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
       }
     }
 

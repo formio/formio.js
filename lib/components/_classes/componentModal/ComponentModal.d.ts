@@ -1,22 +1,46 @@
 export default class ComponentModal {
     static render(component: any, data: any, topLevel: any): any;
-    constructor(component: any, modal: any);
+    constructor(component: any, element: any, isOpened: any, currentValue: any);
+    isOpened: any;
     component: any;
-    modal: any;
+    element: any;
     currentValue: any;
     dataLoaded: boolean;
     get refs(): any;
     init(): void;
+    openModalListener: any;
+    showDialogListener: (event: any) => void;
+    closeModalListener: any;
+    saveModalListener: any;
+    closeDialogListener: any;
+    saveDialogListener: any;
     setValue(value: any): void;
     setOpenModalElement(template: any): void;
     openModalTemplate: any;
+    get templateRefs(): {
+        modalOverlay: string;
+        modalContents: string;
+        modalClose: string;
+        openModalWrapper: string;
+        openModal: string;
+        modalSave: string;
+        modalWrapper: string;
+    };
     loadRefs(): void;
+    removeEventListeners(): void;
     setEventListeners(): void;
+    isValueChanged(): boolean;
     setOpenEventListener(): void;
     openModalHandler(event: any): void;
+    positionOverElement(): void;
+    openModal(): void;
     updateView(): void;
     closeModal(): void;
     closeModalHandler(event: any): void;
     showDialog(): void;
+    dialogElement: any;
+    dialog: any;
+    closeDialog(event: any): void;
+    saveDialog(event: any): void;
     saveModalValueHandler(event: any): void;
 }
