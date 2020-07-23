@@ -119,6 +119,7 @@ declare var _default: {
             label: string;
             dataSrc: string;
             groupProperty: string;
+            dataType: string;
             data: {
                 custom(args: any): any;
             };

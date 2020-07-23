@@ -19,6 +19,7 @@ export default class Input extends Multivalue {
     getMaskOptions(): any;
     getWordCount(value: any): any;
     get remainingWords(): number;
+    getValueAttribute(value: any): any;
     setCounter(type: any, element: any, count: any, max: any): void;
     updateValueAt(value: any, flags: any, index: any): void;
     parseValue(value: any): any;

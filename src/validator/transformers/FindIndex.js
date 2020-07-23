@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { IterateeTransformer } from './Iteratee';
 
 export class FindIndexTransformer extends IterateeTransformer {
@@ -14,6 +16,6 @@ export class FindIndexTransformer extends IterateeTransformer {
       iteratee,
     } = args;
 
-    return value?.findIndex?.(this.getIteratee(iteratee)) ?? null;
+    return _.findIndex(value, this.getIteratee(iteratee)) ?? null;
   }
 }

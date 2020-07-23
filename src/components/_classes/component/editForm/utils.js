@@ -267,6 +267,7 @@ const EditFormUtils = {
       label: 'Variable',
       dataSrc: 'custom',
       groupProperty: 'group',
+      dataType: 'string',
       data: {
         custom(args) {
           const { data, options } = args;
@@ -329,6 +330,7 @@ const EditFormUtils = {
       label: 'Condition',
       dataSrc: 'custom',
       groupProperty: 'group',
+      dataType: 'string',
       data: {
         custom(args) {
           const { data, options } = args;

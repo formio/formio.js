@@ -12,7 +12,7 @@ import BuilderUtils from '../../utils/builder';
 import _ from 'lodash';
 import { Templates } from '../../templates/Templates';
 require('../../components/builder');
-import FormEditForms from './editForm';
+import WebformEditForm from './editForm';
 
 const nestedDataComponents = ['container', 'datagrid', 'editgrid'];
 const arrayDataComponents = ['datagrid', 'editgrid'];
@@ -379,6 +379,8 @@ export default class WebformBuilder extends Component {
     this.nestedDataComponents = [];
     this.arrayDataComponents = [];
   }
+
+  static editForm = WebformEditForm;
 
   allowDrop() {
     return true;
@@ -1208,7 +1210,7 @@ export default class WebformBuilder extends Component {
           tooltip: 'Edit the JSON for this component.'
         }
       ]
-    } : FormEditForms;
+    } : this.constructor.editForm();
 
     const form = _.cloneDeep(this.form);
 

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { IterateeTransformer } from './Iteratee';
 
 export class FilterTransformer extends IterateeTransformer {
@@ -14,6 +16,6 @@ export class FilterTransformer extends IterateeTransformer {
       iteratee,
     } = args;
 
-    return value?.filter?.(this.getIteratee(iteratee)) ?? null;
+    return _.filter(value, this.getIteratee(iteratee)) ?? null;
   }
 }

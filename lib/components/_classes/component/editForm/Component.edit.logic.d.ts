@@ -166,6 +166,30 @@ declare var _default: {
                 rows?: undefined;
                 editor?: undefined;
                 as?: undefined;
+            } | {
+                customConditional({ row }: {
+                    row: any;
+                }): boolean;
+                type: string;
+                input: boolean;
+                key: string;
+                label: string;
+                dataSrc: string;
+                groupProperty: string;
+                dataType: string;
+                data: {
+                    custom(args: any): any;
+                };
+                valueProperty: string;
+                template: string;
+                weight?: undefined;
+                tableView?: undefined;
+                components?: undefined;
+                rows?: undefined;
+                editor?: undefined;
+                placeholder?: undefined;
+                description?: undefined;
+                as?: undefined;
             })[];
             key: string;
             type: string;
@@ -326,6 +350,30 @@ declare var _default: {
                 data?: undefined;
                 dataSrc?: undefined;
                 template?: undefined;
+            } | {
+                customConditional({ row }: {
+                    row: any;
+                }): boolean;
+                type: string;
+                input: boolean;
+                key: string;
+                label: string;
+                dataSrc: string;
+                groupProperty: string;
+                dataType: string;
+                data: {
+                    custom(args: any): any;
+                };
+                valueProperty: string;
+                template: string;
+                weight?: undefined;
+                inputType?: undefined;
+                validate?: undefined;
+                tableView?: undefined;
+                description?: undefined;
+                editor?: undefined;
+                rows?: undefined;
+                placeholder?: undefined;
             })[];
         }[];
         inputType?: undefined;

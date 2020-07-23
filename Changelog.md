@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 5.0.0
 ### Changed
- - New Rules/Validation/Conditionals Engine
+ - New Rules/Validation/Conditionals Engine.
+ - Redone build process.
+ - Published to @formio/core instead of formio.js in npm.
 
 ### 4.11.1-rc.7
 #### Fixed

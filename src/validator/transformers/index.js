@@ -6,6 +6,7 @@ import { AddHoursTransformer } from './AddHours';
 import { AddMillsecondsTransformer } from './AddMillseconds';
 import { AddMinutesTransformer } from './AddMinutes';
 import { AddMonthsTransformer } from './AddMonths';
+import { AddPropertyTransformer } from './AddProperty';
 import { AddQuartersTransformer } from './AddQuarters';
 import { AddSecondsTransformer } from './AddSeconds';
 import { AddWeeksTransformer } from './AddWeeks';
@@ -20,8 +21,10 @@ import { DivideTransformer } from './Divide';
 import { FilterTransformer } from './Filter';
 import { FindTransformer } from './Find';
 import { FindIndexTransformer } from './FindIndex';
+import { FindKeyTransformer } from './FindKey';
 import { FindLastTransformer } from './FindLast';
 import { FindLastIndexTransformer } from './FindLastIndex';
+import { FindLastKeyTransformer } from './FindLastKey';
 import { FirstTransformer } from './First';
 import { FlatTransformer } from './Flat';
 import { FlatMapTransformer } from './FlatMap';
@@ -54,6 +57,7 @@ import { GetWeeksInYearTransformer } from './GetWeeksInYear';
 import { GetWeekYearTransformer } from './GetWeekYear';
 import { GetYearTransformer } from './GetYear';
 import { GetYearsBetweenTransformer } from './GetYearsBetween';
+import { GroupByTransformer } from './GroupBy';
 import { IdentityTransformer } from './Identity';
 import { JoinTransformer } from './Join';
 import { KebabCaseTransformer } from './KebabCase';
@@ -62,6 +66,8 @@ import { LengthTransformer } from './Length';
 import { LowerCaseTransformer } from './LowerCase';
 import { LowerFirstTransformer } from './LowerFirst';
 import { MapTransformer } from './Map';
+import { MapKeysTransformer } from './MapKeys';
+import { MapValuesTransformer } from './MapValues';
 import { MaxTransformer } from './Max';
 import { MaxDateTransformer } from './MaxDate';
 import { MinTransformer } from './Min';
@@ -134,6 +140,7 @@ const transformers = [
   AddMillsecondsTransformer,
   AddMinutesTransformer,
   AddMonthsTransformer,
+  AddPropertyTransformer,
   AddQuartersTransformer,
   AddSecondsTransformer,
   AddWeeksTransformer,
@@ -148,8 +155,10 @@ const transformers = [
   FilterTransformer,
   FindTransformer,
   FindIndexTransformer,
+  FindKeyTransformer,
   FindLastTransformer,
   FindLastIndexTransformer,
+  FindLastKeyTransformer,
   FirstTransformer,
   FlatTransformer,
   FlatMapTransformer,
@@ -182,6 +191,7 @@ const transformers = [
   GetWeekYearTransformer,
   GetYearTransformer,
   GetYearsBetweenTransformer,
+  GroupByTransformer,
   IdentityTransformer,
   JoinTransformer,
   KebabCaseTransformer,
@@ -190,6 +200,8 @@ const transformers = [
   LowerCaseTransformer,
   LowerFirstTransformer,
   MapTransformer,
+  MapKeysTransformer,
+  MapValuesTransformer,
   MaxTransformer,
   MaxDateTransformer,
   MinTransformer,

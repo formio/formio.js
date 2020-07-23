@@ -311,6 +311,8 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   }
 
   switch (trigger.type) {
+    case 'condition':
+      return instance.calculateCondition(trigger.condition);
     case 'simple':
       return checkSimpleConditional(component, trigger.simple, row, data);
     case 'javascript':
