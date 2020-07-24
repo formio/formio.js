@@ -2186,9 +2186,9 @@ export default class Component extends Element {
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
-    if (this.componentModal && flags && flags.fromSubmission) {
-      this.componentModal.setValue(value);
-    }
+    // if (this.componentModal && flags && flags.fromSubmission) {
+    //   this.componentModal.setValue(value);
+    // }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -2285,6 +2285,9 @@ export default class Component extends Element {
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
+    }
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
     }
     return changed;
   }
