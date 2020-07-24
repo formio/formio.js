@@ -185,7 +185,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const massageContainerRef = 'messageContainer';
 
     if (refs[`${ massageContainerRef }`] === 'single') {
-      this.refs[`${ massageContainerRef }`] = element.querySelector(`:scope > [ref="${ massageContainerRef }"]`);
+      this.refs[`${ massageContainerRef }`] = [...element.children].filter(elem => elem.attributes?.ref?.value === massageContainerRef)[0];
     }
   }
 
