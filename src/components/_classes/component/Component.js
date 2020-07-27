@@ -1591,7 +1591,7 @@ export default class Component extends Element {
       return;
     }
 
-    const newComponent = fastCloneDeep(this.originalComponent);
+    const newComponent = fastCloneDeep(this.component);
 
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
@@ -2886,7 +2886,7 @@ export default class Component extends Element {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) => {
-          const newComponent = fastCloneDeep(this.originalComponent);
+          const newComponent = fastCloneDeep(this.component);
           if (this.applyActions(newComponent, logic.actions, args)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
