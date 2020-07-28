@@ -10,6 +10,7 @@ const EditRowState = {
   New: 'new',
   Editing: 'editing',
   Saved: 'saved',
+  Viewing: 'viewing',
   Removed: 'removed',
   Draft: 'draft',
 };
@@ -235,7 +236,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   isOpen(editRow) {
-    return [EditRowState.New, EditRowState.Editing].includes(editRow.state);
+    return [EditRowState.New, EditRowState.Editing, EditRowState.Viewing].includes(editRow.state);
   }
 
   render(children) {
@@ -554,10 +555,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
     editRow.prevState = editRow.state;
-
-    if (!this.options.readOnly) {
-      editRow.state = EditRowState.Editing;
-    }
+    editRow.state = this.options.readOnly ? EditRowState.Viewing :  EditRowState.Editing;
 
     const dataSnapshot = fastCloneDeep(editRow.data);
 
