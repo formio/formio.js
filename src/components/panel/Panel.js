@@ -1,3 +1,6 @@
+import { superGet, superSet } from '../../utils/utils';
+
+import Component from '../_classes/component/Component';
 import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class PanelComponent extends NestedComponent {
@@ -57,5 +60,24 @@ export default class PanelComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.noField = true;
+  }
+
+  init() {
+    this.components = this.components || [];
+    if (this.builderMode || !this.lazyLoad || this.visible && !this.collapsed) {
+      this.addComponents();
+    }
+    return Component.prototype.init.call(this);
+  }
+
+  get collapsed() {
+    return superGet(NestedComponent, 'collapsed', this);
+  }
+
+  set collapsed(value) {
+    if (this.lazyLoad && (this.components.length === 0) && !value) {
+      this.addComponents();
+    }
+    superSet(NestedComponent, 'collapsed', this, value);
   }
 }

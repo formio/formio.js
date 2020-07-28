@@ -15,7 +15,8 @@ import Field from '../field/Field';
 export default class NestedComponent extends Field {
   static schema(...extend) {
     return Field.schema({
-      tree: false
+      tree: false,
+      lazyLoad: false,
     }, ...extend);
   }
 
@@ -46,6 +47,9 @@ export default class NestedComponent extends Field {
   }
 
   set visible(value) {
+    if (this.lazyLoad && (this.components.length === 0) && value) {
+      this.addComponents();
+    }
     superSet(Field, 'visible', this, value);
     const isVisible = this.visible;
     const forceShow = this.options.show && this.options.show[this.component.key];
@@ -375,9 +379,15 @@ export default class NestedComponent extends Field {
     return 'container';
   }
 
+  get lazyLoad() {
+    return this.component.lazyLoad ?? false;
+  }
+
   init() {
     this.components = this.components || [];
-    this.addComponents();
+    if (this.builderMode || !this.lazyLoad || this.visible) {
+      this.addComponents();
+    }
     return super.init();
   }
 

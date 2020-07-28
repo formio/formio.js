@@ -23,4 +23,12 @@ export default [
     key: 'multiple',
     ignore: true,
   },
+  {
+    weight: 710,
+    type: 'checkbox',
+    label: 'Lozy Load',
+    key: 'lazyLoad',
+    tooltip: 'Nested components will be instantiated only when row opened.',
+    input: true,
+  },
 ];
