@@ -272,7 +272,7 @@ export default class Component extends Base {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = (this.root && this.root.schemaMerged) ? component : this.mergeSchema(component || {});
+    this.component = this.mergeSchema(component || {});
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
