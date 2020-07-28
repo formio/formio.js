@@ -1,9 +1,17 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import Component from '../_classes/component/Component';
+
+import {
+  Evaluator,
+  fastCloneDeep,
+  getArrayFromComponentPath,
+  superGet,
+} from '../../utils/utils';
+
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from '../../utils/utils';
+import Component from '../_classes/component/Component';
+import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
+
 import templates from './templates';
 
 const EditRowState = {
@@ -168,7 +176,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
-    const value = super.defaultValue;
+    const value = superGet(NestedArrayComponent, 'defaultValue', this);
     const defaultValue = Array.isArray(value) ? value : [];
 
     _.times(this.minLength - defaultValue.length, () => defaultValue.push({}));

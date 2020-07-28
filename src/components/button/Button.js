@@ -1,7 +1,9 @@
 import _ from 'lodash';
+
+import { flattenComponents, superGet } from '../../utils/utils';
+
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { flattenComponents } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -94,7 +96,7 @@ export default class ButtonComponent extends Field {
   }
 
   get className() {
-    let className = super.className;
+    let className = superGet(Field, 'className', this);
     className += ' form-group';
     return className;
   }

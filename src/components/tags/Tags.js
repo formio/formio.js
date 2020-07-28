@@ -1,5 +1,8 @@
-import Input from '../_classes/input/Input';
 import Choices from 'choices.js';
+
+import { superGet, superSet } from '../../utils/utils';
+
+import Input from '../_classes/input/Input';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -37,7 +40,7 @@ export default class TagsComponent extends Input {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(Input, 'inputInfo', this);
     info.type = 'input';
     info.attr.type = 'text';
     info.changeEvent = 'change';
@@ -121,7 +124,7 @@ export default class TagsComponent extends Input {
   }
 
   set disabled(disabled) {
-    super.disabled = disabled;
+    superSet(Input, 'disabled', this, disabled);
     if (!this.choices) {
       return;
     }
@@ -134,7 +137,7 @@ export default class TagsComponent extends Input {
   }
 
   get disabled() {
-    return super.disabled;
+    return superGet(Input, 'disabled', this);
   }
 
   focus() {

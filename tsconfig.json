@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es5",
     "allowJs": true,
     "preserveConstEnums": true,
     "rootDir": "src",
@@ -16,9 +16,6 @@
     ]
   },
   "include": [
-    "src/*.ts",
-    "src/*.js",
-    "src/*.ejs",
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.ejs"

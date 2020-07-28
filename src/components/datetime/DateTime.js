@@ -1,8 +1,14 @@
 import _ from 'lodash';
 import moment from 'moment';
-import Input from '../_classes/input/Input';
-import { Utils as FormioUtils } from '../../utils';
+
+import {
+  convertFormatToMoment,
+  getDateSetting,
+  superGet,
+} from '../../utils/utils';
 import Widgets from '../../widgets';
+
+import Input from '../_classes/input/Input';
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -132,9 +138,9 @@ export default class DateTimeComponent extends Input {
   }
 
   get defaultValue() {
-    let defaultValue = super.defaultValue;
+    let defaultValue = superGet(Input, 'defaultValue', this);
     if (!defaultValue && this.component.defaultDate) {
-      defaultValue = FormioUtils.getDateSetting(this.component.defaultDate);
+      defaultValue = getDateSetting(this.component.defaultDate);
       defaultValue = defaultValue ? defaultValue.toISOString() : '';
     }
     return defaultValue;
@@ -157,7 +163,7 @@ export default class DateTimeComponent extends Input {
   }
 
   isEqual(valueA, valueB = this.dataValue) {
-    const format = FormioUtils.convertFormatToMoment(this.component.format);
+    const format = convertFormatToMoment(this.component.format);
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
       || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);
   }

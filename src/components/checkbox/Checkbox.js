@@ -1,3 +1,5 @@
+import { superGet } from '../../utils/utils';
+
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -106,7 +108,7 @@ export default class CheckBoxComponent extends Field {
   }
 
   get key() {
-    return this.component.name ? this.component.name : super.key;
+    return this.component.name ? this.component.name : superGet(Field, 'key', this);
   }
 
   getValueAt(index) {

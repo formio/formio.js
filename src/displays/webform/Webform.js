@@ -1,21 +1,21 @@
-import _ from 'lodash';
-import moment from 'moment';
 import compareVersions from 'compare-versions';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import i18next from 'i18next';
-import i18nDefaults from './i18n';
-import { Formio } from '../../Formio';
+import _ from 'lodash';
+import moment from 'moment';
 import NativePromise from 'native-promise-only';
-import NestedDataComponent from '../../components/_classes/nesteddata/NestedDataComponent';
-import {
-  fastCloneDeep,
-  currentTimezone,
-  getStringFromComponentPath
-} from '../../utils/utils';
-import { eachComponent } from '../../utils/formUtils';
 
-// Initialize the available forms.
-Formio.forms = {};
+import { Formio } from '../../Formio';
+import NestedDataComponent from '../../components/_classes/nesteddata/NestedDataComponent';
+import { eachComponent } from '../../utils/formUtils';
+import {
+  currentTimezone,
+  fastCloneDeep,
+  getStringFromComponentPath,
+  superGet,
+} from '../../utils/utils';
+
+import i18nDefaults from './i18n';
 
 function getIconSet(icons) {
   if (icons === 'fontawesome') {
@@ -553,7 +553,7 @@ export class Webform extends NestedDataComponent {
    */
   get ready() {
     return this.formReady.then(() => {
-      return super.ready.then(() => {
+      return superGet(NestedDataComponent, 'ready', this).then(() => {
         return this.loadingSubmission ? this.submissionReady : true;
       });
     });

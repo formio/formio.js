@@ -1,4 +1,7 @@
 import _ from 'lodash';
+
+import { superGet } from '../../utils/utils';
+
 import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class TabsComponent extends NestedComponent {
@@ -36,7 +39,7 @@ export default class TabsComponent extends NestedComponent {
   }
 
   get schema() {
-    const schema = super.schema;
+    const schema = superGet(NestedComponent, 'schema', this);
     // We need to clone this because the builder uses the "components" reference and this would reset that reference.
     const components = _.cloneDeep(this.component.components);
     schema.components = components.map((tab, index) => {

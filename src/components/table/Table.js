@@ -1,5 +1,8 @@
 import _ from 'lodash';
+
 import BuilderUtils from '../../utils/builder';
+import { superGet } from '../../utils/utils';
+
 import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class TableComponent extends NestedComponent {
@@ -51,7 +54,7 @@ export default class TableComponent extends NestedComponent {
   }
 
   get schema() {
-    const schema = _.omit(super.schema, 'components');
+    const schema = _.omit(superGet(NestedComponent, 'schema', this), 'components');
     schema.rows = [];
     this.eachComponent((component) => {
       if (!schema.rows || !schema.rows.length) {
@@ -72,7 +75,7 @@ export default class TableComponent extends NestedComponent {
   }
 
   get className() {
-    let name = `table-responsive ${super.className}`;
+    let name = `table-responsive ${superGet(NestedComponent, 'className', this)}`;
     if (!this.component.bordered) {
       name += ' no-top-border-table';
     }

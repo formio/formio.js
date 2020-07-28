@@ -44,7 +44,7 @@ export function isLayoutComponent(component) {
  * @param {Object} parent
  *   The parent object.
  */
-export function eachComponent(components, fn, includeAll, path, parent) {
+export function eachComponent(components, fn, includeAll = false, path = '', parent = null) {
   if (!components) return;
   path = path || '';
   components.forEach((component) => {
@@ -382,7 +382,7 @@ export function applyFormChanges(form, changes) {
  * @returns {Object}
  *   The flattened components map.
  */
-export function flattenComponents(components, includeAll) {
+export function flattenComponents(components, includeAll = false) {
   const flattened = {};
   eachComponent(components, (component, path) => {
     flattened[path] = component;

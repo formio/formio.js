@@ -1,4 +1,7 @@
 import _ from 'lodash';
+
+import { superGet } from '../../../utils/utils';
+
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
@@ -18,7 +21,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   get rowIndex() {
-    return super.rowIndex;
+    return superGet(NestedDataComponent, 'rowIndex', this);
   }
 
   set rowIndex(value) {

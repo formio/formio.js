@@ -1,8 +1,16 @@
 import _ from 'lodash';
-import Field from '../field/Field';
-import { Components } from '../../Components';
 import NativePromise from 'native-promise-only';
-import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';
+
+import {
+  getArrayFromComponentPath,
+  getStringFromComponentPath,
+  superGet,
+  superSet,
+} from '../../../utils/utils';
+
+import { Components } from '../../Components';
+
+import Field from '../field/Field';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -22,7 +30,7 @@ export default class NestedComponent extends Field {
   }
 
   get schema() {
-    const schema = super.schema;
+    const schema = superGet(Field, 'schema', this);
     const components = _.uniqBy(this.getComponents(), 'component.key');
     schema.components = _.map(components, 'schema');
     return schema;
@@ -38,7 +46,7 @@ export default class NestedComponent extends Field {
   }
 
   set visible(value) {
-    super.visible = value;
+    superSet(Field, 'visible', this, value);
     const isVisible = this.visible;
     const forceShow = this.options.show && this.options.show[this.component.key];
     const forceHide = this.options.hide && this.options.hide[this.component.key];
@@ -59,38 +67,38 @@ export default class NestedComponent extends Field {
   }
 
   get visible() {
-    return super.visible;
+    return superGet(Field, 'visible', this);
   }
 
   set parentVisible(value) {
-    super.parentVisible = value;
+    superSet(Field, 'parentVisible', this, value);
     this.components.forEach(component => {
       component.parentVisible = this.visible;
     });
   }
 
   get parentVisible() {
-    return super.parentVisible;
+    return superGet(Field, 'parentVisible', this);
   }
 
   get disabled() {
-    return super.disabled;
+    return superGet(Field, 'disabled', this);
   }
 
   set disabled(disabled) {
-    super.disabled = disabled;
+    superSet(Field, 'disabled', this, disabled);
     this.components.forEach((component) => component.parentDisabled = disabled);
   }
 
   set parentDisabled(value) {
-    super.parentDisabled = value;
+    superSet(Field, 'parentDisabled', this, value);
     this.components.forEach(component => {
       component.parentDisabled = this.disabled;
     });
   }
 
   get parentDisabled() {
-    return super.parentDisabled;
+    return superGet(Field, 'parentDisabled', this);
   }
 
   get ready() {
@@ -98,11 +106,11 @@ export default class NestedComponent extends Field {
   }
 
   get currentForm() {
-    return super.currentForm;
+    return superGet(Field, 'currentForm', this);
   }
 
   set currentForm(instance) {
-    super.currentForm = instance;
+    superSet(Field, 'currentForm', this, instance);
     this.getComponents().forEach(component => {
       component.currentForm = instance;
     });

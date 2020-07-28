@@ -1,9 +1,12 @@
-import Field from '../field/Field';
 import _ from 'lodash';
+
+import { superGet, superSet } from '../../../utils/utils';
+
+import Field from '../field/Field';
 
 export default class Multivalue extends Field {
   get dataValue() {
-    const parent = super.dataValue;
+    const parent = superGet(Field, 'dataValue', this);
 
     if (!parent && this.component.multiple) {
       return [];
@@ -12,15 +15,15 @@ export default class Multivalue extends Field {
   }
 
   set dataValue(value) {
-    super.dataValue = value;
+    superSet(Field, 'dataValue', this, value);
   }
 
   get defaultValue() {
-    let value = super.defaultValue;
+    let value = superGet(Field, 'defaultValue', this);
 
     if (this.component.multiple) {
       if (_.isArray(value)) {
-        value = !value.length ? [super.emptyValue] : value;
+        value = !value.length ? [superGet(Field, 'emptyValue', this)] : value;
       }
       else {
         value = [value];

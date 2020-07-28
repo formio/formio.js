@@ -1,5 +1,7 @@
 import Flatpickr from 'flatpickr';
-import InputWidget from './InputWidget';
+import _ from 'lodash';
+import moment from 'moment';
+
 import {
   convertFormatToFlatpickr,
   convertFormatToMask,
@@ -12,10 +14,13 @@ import {
   momentDate,
   zonesLoaded,
   shouldLoadZones,
-  loadZones
+  loadZones,
+  superGet,
+  superSet,
 } from '../utils/utils';
-import moment from 'moment';
-import _ from 'lodash';
+
+import InputWidget from './InputWidget';
+
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 
@@ -227,8 +232,12 @@ export default class CalendarWidget extends InputWidget {
     return suffix;
   }
 
+  get disabled() {
+    return superGet(InputWidget, 'disabled', this);
+  }
+
   set disabled(disabled) {
-    super.disabled = disabled;
+    superSet(InputWidget, 'disabled', this, disabled);
     if (this.calendar) {
       if (disabled) {
         this.calendar._input.setAttribute('disabled', 'disabled');
