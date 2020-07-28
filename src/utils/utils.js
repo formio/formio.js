@@ -492,6 +492,7 @@ export function currentTimezone() {
   if (moment.currentTimezone) {
     return moment.currentTimezone;
   }
+  // eslint-disable-next-line no-import-assign
   moment.currentTimezone = jtz.determine().name();
   return moment.currentTimezone;
 }
@@ -553,10 +554,12 @@ export function loadZones(timezone) {
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
+  // eslint-disable-next-line no-import-assign
   return moment.zonesPromise = fetch(
     'https://cdn.form.io/moment-timezone/data/packed/latest.json',
   ).then(resp => resp.json().then(zones => {
     moment.tz.load(zones);
+    // eslint-disable-next-line no-import-assign
     moment.zonesLoaded = true;
 
     // Trigger a global event that the timezones have finished loading.
