@@ -20,26 +20,29 @@ export class Components {
     Components.components[name] = comp;
   }
 
-  static create(component, options, data) {
-    let comp = null;
+  static getComponentConstructor(component) {
     if (component.type && Components.components.hasOwnProperty(component.type)) {
-      comp = new Components.components[component.type](component, options, data);
+      return Components.components[component.type];
     }
-    else if (component.arrayTree) {
-      // eslint-disable-next-line new-cap
-      comp = new Components.components['datagrid'](component, options, data);
+
+    if (component.arrayTree) {
+      return Components.components.datagrid;
     }
-    else if (component.tree) {
-      // eslint-disable-next-line new-cap
-      comp = new Components.components['nesteddata'](component, options, data);
+
+    if (component.tree) {
+      return Components.components.nesteddata;
     }
-    else if (Array.isArray(component.components)) {
-      // eslint-disable-next-line new-cap
-      comp = new Components.components['nested'](component, options, data);
+
+    if (Array.isArray(component.components)) {
+      return Components.components.nested;
     }
-    else {
-      comp = new Components.components['component'](component, options, data);
-    }
-    return comp;
+
+    return Components.components.component;
+  }
+
+  static create(component, options, data) {
+    const Constructor = Components.getComponentConstructor(component);
+
+    return Constructor ? new Constructor(component, options, data) : null;
   }
 }
