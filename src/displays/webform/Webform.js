@@ -724,6 +724,28 @@ export class Webform extends NestedDataComponent {
     return this.getValue();
   }
 
+  get cleanSubmission() {
+    const submission = {
+      data: _.clone((this.submission && this.submission.data) || {}),
+    };
+
+    eachComponent(this.component.components || [], (component, path) => {
+      if (!component.input) {
+        return;
+      }
+
+      const { persistent } = component;
+      if (persistent === 'client-only') {
+        _.unset(submission.data, path);
+      }
+      else {
+        _.set(submission.data, path, _.clone(_.get(submission.data, path)));
+      }
+    }, true);
+
+    return submission;
+  }
+
   /**
    * Sets the submission of a form.
    *
