@@ -15,7 +15,7 @@
     "styles": "npm run styles-form && npm run styles-builder && npm run styles-full",
     "styles-form": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.form.scss ./dist/formio.form.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.form.scss ./dist/formio.form.min.css",
     "styles-builder": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.builder.scss ./dist/formio.builder.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.builder.scss ./dist/formio.builder.min.css",
-    "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.full.scss ./dist/formio.full.min.css",
+    "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.full.scss ./dist/formio.full.min.css && gulp fonts",
     "build": "tsc && gulp templates && webpack && npm run styles",
     "lint": "eslint src --fix",
     "prepublish": "npm run build"
@@ -80,6 +80,7 @@
     "vanilla-text-mask": "^5.1.1"
   },
   "devDependencies": {
+    "@types/moment-timezone": "^0.5.13",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "bootstrap": "^4.5.0",

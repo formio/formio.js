@@ -416,6 +416,7 @@ const EditFormUtils = {
               key: `${name}Arguments`,
               type: 'container',
               input: true,
+              lazyLoad: true,
               components: transformerArguments
                 .filter(({ key }) => !presetArgumentKeys.includes(key))
                 .map((argumentDescription) => EditFormUtils.getArgument(argumentDescription, {
@@ -443,6 +444,7 @@ const EditFormUtils = {
             key: `${name}Options`,
             type: 'container',
             input: true,
+            lazyLoad: true,
             components: [
               {
                 key: `${name}OptionsPanel`,
@@ -491,6 +493,7 @@ const EditFormUtils = {
         key: `${name}Arguments`,
         type: 'container',
         input: true,
+        lazyLoad: true,
         components: [
           {
             key: `${name}ArgumentsPanel`,
@@ -523,6 +526,7 @@ const EditFormUtils = {
             key: `${name}Options`,
             type: 'container',
             input: true,
+            lazyLoad: true,
             components: [
               {
                 key: `${name}OptionsPanel`,
@@ -643,7 +647,7 @@ const EditFormUtils = {
       },
       addAnother: 'Add Variable',
       saveRow: 'Save Variable',
-      lazyComponentsInstantiation: true,
+      lazyLoad: true,
       components: [
         {
           type: 'textfield',
@@ -687,6 +691,7 @@ const EditFormUtils = {
           key: 'transform',
           input: true,
           type: 'container',
+          lazyLoad: true,
           components: [
               {
                 label: 'Transform',
@@ -766,7 +771,7 @@ const EditFormUtils = {
       },
       addAnother: 'Add Condition',
       saveRow: 'Save Condition',
-      lazyComponentsInstantiation: true,
+      lazyLoad: true,
       components: [
         {
           type: 'textfield',
@@ -907,6 +912,7 @@ const EditFormUtils = {
               input: true,
               label: 'Operator',
               key: 'operator',
+              lazyLoad: true,
               components: [
                 {
                   type: 'select',

@@ -1471,22 +1471,22 @@ export class Formio {
 
     return NativePromise.reject(`${name} library was not required.`);
   }
-}
 
-// Define all the static properties.
-Formio.libraries = {};
-Formio.Promise = NativePromise;
-Formio.fetch = fetch;
-Formio.Headers = Headers;
-Formio.baseUrl = 'https://api.form.io';
-Formio.projectUrl = Formio.baseUrl;
-Formio.authUrl = '';
-Formio.projectUrlSet = false;
-Formio.plugins = [];
-Formio.cache = {};
-Formio.Providers = Providers;
-Formio.version = '---VERSION---';
-Formio.events = new EventEmitter({
-  wildcard: false,
-  maxListeners: 0
-});
+  static libraries = {};
+  static Promise = NativePromise;
+  static fetch = fetch;
+  static Headers = Headers;
+  static baseUrl = 'https://api.form.io';
+  static projectUrl = Formio.baseUrl;
+  static authUrl = '';
+  static projectUrlSet = false;
+  static plugins = [];
+  static cache = {};
+  static Providers = Providers;
+  static version = '---VERSION---';
+  static events = new EventEmitter({
+    wildcard: false,
+    maxListeners: 0
+  });
+  static forms = {};
+}

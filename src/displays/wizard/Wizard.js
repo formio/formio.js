@@ -1,12 +1,16 @@
-import NativePromise from 'native-promise-only';
 import _ from 'lodash';
-import { Webform } from '../webform/Webform';
+import NativePromise from 'native-promise-only';
+
 import {
-  fastCloneDeep,
   checkCondition,
+  fastCloneDeep,
   firstNonNil,
-  uniqueKey
+  superGet,
+  superSet,
+  uniqueKey,
 } from '../../utils/utils';
+
+import { Webform } from '../webform/Webform';
 
 export class Wizard extends Webform {
   /**
@@ -94,7 +98,7 @@ export class Wizard extends Webform {
   }
 
   set form(value) {
-    super.form = value;
+    superSet(Webform, 'form', this, value);
   }
 
   get buttons() {
@@ -633,7 +637,7 @@ export class Wizard extends Webform {
       return this.currentPage.errors;
     }
 
-    return super.errors;
+    return superGet(Webform, 'errors', this);
   }
 
   focusOnComponent(key) {

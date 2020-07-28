@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
 import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone/moment-timezone';
+import * as moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import NativePromise from 'native-promise-only';
@@ -162,10 +162,10 @@ export function boolValue(value) {
 /**
  * Check to see if an ID is a mongoID.
  * @param text
- * @return {Array|{index: number, input: string}|Boolean|*}
+ * @return {boolean}
  */
 export function isMongoId(text) {
-  return text.toString().match(/^[0-9a-fA-F]{24}$/);
+  return Boolean(text.toString().match(/^[0-9a-fA-F]{24}$/));
 }
 
 /**
@@ -492,6 +492,7 @@ export function currentTimezone() {
   if (moment.currentTimezone) {
     return moment.currentTimezone;
   }
+  // eslint-disable-next-line no-import-assign
   moment.currentTimezone = jtz.determine().name();
   return moment.currentTimezone;
 }
@@ -553,10 +554,12 @@ export function loadZones(timezone) {
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
+  // eslint-disable-next-line no-import-assign
   return moment.zonesPromise = fetch(
     'https://cdn.form.io/moment-timezone/data/packed/latest.json',
   ).then(resp => resp.json().then(zones => {
     moment.tz.load(zones);
+    // eslint-disable-next-line no-import-assign
     moment.zonesLoaded = true;
 
     // Trigger a global event that the timezones have finished loading.
@@ -1188,4 +1191,27 @@ export function getIEBrowserVersion() {
   }
 
   return document['documentMode'];
+}
+
+function getSuperPrototypeWithProperty(prototype, property) {
+  while (!Object.prototype.hasOwnProperty.call(prototype, property)) {
+      prototype = Object.getPrototypeOf(prototype);
+      if (prototype === null) {
+          throw new Error(`Property '${property}' not found.`);
+      }
+  }
+
+  return prototype;
+}
+
+function getSuperPropertyDescriptor(superClass, property) {
+  return Object.getOwnPropertyDescriptor(getSuperPrototypeWithProperty(superClass.prototype, property), property);
+}
+
+export function superGet(superClass, property, instance) {
+  return getSuperPropertyDescriptor(superClass, property).get.call(instance);
+}
+
+export function superSet(superClass, property, instance, value) {
+  return getSuperPropertyDescriptor(superClass, property).set.call(instance, value);
 }

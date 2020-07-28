@@ -1,4 +1,7 @@
 import moment from 'moment';
+
+import { superGet } from '../../utils/utils';
+
 import TextFieldComponent from '../textfield/TextField';
 
 const defaultDataFormat = 'HH:mm:ss';
@@ -50,7 +53,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get defaultValue() {
-    let value = super.defaultValue;
+    let value = superGet(TextFieldComponent, 'defaultValue', this);
     if (this.component.multiple && Array.isArray(value)) {
       value = value.map(item => item ? this.getStringAsValue(item) : item);
     }
@@ -67,7 +70,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(TextFieldComponent, 'inputInfo', this);
     info.attr.type = this.component.inputType;
     return info;
   }

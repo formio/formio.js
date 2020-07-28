@@ -1,5 +1,8 @@
-import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
+
+import { superGet } from '../../utils/utils';
+
+import TextFieldComponent from '../textfield/TextField';
 
 export default class PasswordComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -28,7 +31,7 @@ export default class PasswordComponent extends TextFieldComponent {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(TextFieldComponent, 'inputInfo', this);
     info.attr.type = 'password';
     return info;
   }

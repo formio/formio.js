@@ -1,8 +1,10 @@
 import _ from 'lodash';
 // Import from "dist" because it would require and "global" would not be defined in Angular apps.
 import dragula from 'dragula/dist/dragula';
+
+import { fastCloneDeep, superGet, superSet } from '../../utils/utils';
+
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -44,7 +46,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get dataValue() {
-    const dataValue = super.dataValue;
+    const dataValue = superGet(NestedArrayComponent, 'dataValue', this);
     if (!dataValue || !Array.isArray(dataValue)) {
       return this.emptyValue;
     }
@@ -52,7 +54,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   set dataValue(value) {
-    super.dataValue = value;
+    superSet(NestedArrayComponent, 'dataValue', this, value);
   }
 
   get defaultSchema() {
@@ -81,7 +83,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (this.builderMode) {
       return [{}];
     }
-    const value = super.defaultValue;
+    const value = superGet(NestedArrayComponent, 'defaultValue', this);
     let defaultValue;
 
     if (Array.isArray(value)) {
@@ -102,7 +104,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   set disabled(disabled) {
-    super.disabled = disabled;
+    superSet(NestedArrayComponent, 'disabled', this, disabled);
     _.each(this.refs[`${this.datagridKey}-addRow`], (button) => {
       button.disabled = disabled;
     });
@@ -112,7 +114,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get disabled() {
-    return super.disabled;
+    return superGet(NestedArrayComponent, 'disabled', this);
   }
 
   get datagridKey() {

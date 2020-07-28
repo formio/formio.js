@@ -3,7 +3,7 @@ import { IterateeTransformer } from './Iteratee';
 export class BaseReduceTransformer extends IterateeTransformer {
   static get arguments() {
     return [
-      ...super.arguments,
+      ...IterateeTransformer.arguments,
       {
         name: 'Initial Value',
         key: 'initialValue',

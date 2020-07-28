@@ -1,6 +1,8 @@
 import _ from 'lodash';
+
+import { boolValue, superGet, superSet } from '../../utils/utils';
+
 import Field from '../_classes/field/Field';
-import { boolValue } from '../../utils/utils';
 
 export default class SurveyComponent extends Field {
   static schema(...extend) {
@@ -85,14 +87,14 @@ export default class SurveyComponent extends Field {
   }
 
   set disabled(disabled) {
-    super.disabled = disabled;
+    superSet(Field, 'disabled', this, disabled);
     _.each(this.refs.input, (input) => {
       input.disabled = true;
     });
   }
 
   get disabled() {
-    return super.disabled;
+    return superGet(Field, 'disabled', this);
   }
 
   validateRequired(setting, value) {

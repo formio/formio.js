@@ -1,3 +1,5 @@
+import { superGet } from '../../utils/utils';
+
 import { AddressProvider } from './AddressProvider';
 
 export class CustomAddressProvider extends AddressProvider {
@@ -10,15 +12,15 @@ export class CustomAddressProvider extends AddressProvider {
   }
 
   get queryProperty() {
-    return this.options.queryProperty || super.queryProperty;
+    return this.options.queryProperty || superGet(AddressProvider, 'queryProperty', this);
   }
 
   get responseProperty() {
-    return this.options.responseProperty || super.responseProperty;
+    return this.options.responseProperty || superGet(AddressProvider, 'responseProperty', this);
   }
 
   get displayValueProperty() {
-    return this.options.displayValueProperty || super.displayValueProperty;
+    return this.options.displayValueProperty || superGet(AddressProvider, 'displayValueProperty', this);
   }
 
   getRequestUrl(options = {}) {

@@ -1,9 +1,11 @@
 import _ from 'lodash';
-import Component from '../_classes/component/Component';
-import { Components } from '../Components';
-import NestedComponent from '../_classes/nested/NestedComponent';
-import Node from './Node';
 import NativePromise from 'native-promise-only';
+
+import { Components } from '../Components';
+import Component from '../_classes/component/Component';
+import NestedComponent from '../_classes/nested/NestedComponent';
+
+import Node from './Node';
 
 export default class TreeComponent extends NestedComponent {
   static schema(...extend) {

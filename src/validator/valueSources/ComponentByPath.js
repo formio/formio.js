@@ -174,10 +174,6 @@ export class ComponentByPathValueSource extends ValueSource {
     let lastIndex = null;
 
     const component = input.reduce((context, pathPart) => {
-      if (_.isNil(context)) {
-        return context;
-      }
-
       const {
         component,
         indexType,
@@ -187,6 +183,10 @@ export class ComponentByPathValueSource extends ValueSource {
       const lastIndexExists = _.isNumber(lastIndex);
 
       const getNextContext = (prevContext) => {
+        if (_.isNil(prevContext)) {
+          return prevContext;
+        }
+
         const nextContext = prevContext.getComponent(component);
         return (lastIndexExists && _.isArray(nextContext))
           ? nextContext[lastIndex]

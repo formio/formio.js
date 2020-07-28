@@ -1,6 +1,9 @@
-import SignaturePad from 'signature_pad/dist/signature_pad.js';
-import Input from '../_classes/input/Input';
 import _ from 'lodash';
+import SignaturePad from 'signature_pad/dist/signature_pad.js';
+
+import { superGet } from '../../utils/utils';
+
+import Input from '../_classes/input/Input';
 
 export default class SignatureComponent extends Input {
   static schema(...extend) {
@@ -51,14 +54,14 @@ export default class SignatureComponent extends Input {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(Input, 'inputInfo', this);
     info.type = 'input';
     info.attr.type = 'hidden';
     return info;
   }
 
   get className() {
-    return `${super.className} signature-pad`;
+    return `${superGet(Input, 'className', this)} signature-pad`;
   }
 
   labelIsHidden() {
@@ -107,9 +110,9 @@ export default class SignatureComponent extends Input {
   }
 
   onDisabled() {
-    this.showCanvas(!super.disabled);
+    this.showCanvas(!superGet(Input, 'disabled', this));
     if (this.signaturePad) {
-      if (super.disabled) {
+      if (superGet(Input, 'disabled', this)) {
         this.signaturePad.off();
         if (this.refs.refresh) {
           this.refs.refresh.classList.add('disabled');

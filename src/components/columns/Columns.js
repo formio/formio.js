@@ -1,4 +1,7 @@
 import _ from 'lodash';
+
+import { superGet } from '../../utils/utils';
+
 import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class ColumnsComponent extends NestedComponent {
@@ -37,7 +40,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   get schema() {
-    const schema = _.omit(super.schema, ['components']);
+    const schema = _.omit(superGet(NestedComponent, 'schema', this), ['components']);
     this.columns.map((column, colIndex) => {
       column.map((comp, compIndex) => {
         _.set(schema, `columns[${colIndex}].components[${compIndex}]`, comp.schema);
@@ -51,7 +54,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   get className() {
-    return `row ${super.className}`;
+    return `row ${superGet(NestedComponent, 'className', this)}`;
   }
 
   get columnKey() {

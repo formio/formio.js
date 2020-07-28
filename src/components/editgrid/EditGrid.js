@@ -1,9 +1,17 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import Component from '../_classes/component/Component';
+
+import {
+  Evaluator,
+  fastCloneDeep,
+  getArrayFromComponentPath,
+  superGet,
+} from '../../utils/utils';
+
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from '../../utils/utils';
+import Component from '../_classes/component/Component';
+import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
+
 import templates from './templates';
 
 const EditRowState = {
@@ -27,8 +35,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       defaultOpen: false,
       openWhenEmpty: false,
       modal: false,
-      // TODO: revisit solution with 'lazyComponentsInstantiation'.
-      lazyComponentsInstantiation: false,
       components: [],
       inlineEdit: false,
       templates: {
@@ -168,7 +174,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
-    const value = super.defaultValue;
+    const value = superGet(NestedArrayComponent, 'defaultValue', this);
     const defaultValue = Array.isArray(value) ? value : [];
 
     _.times(this.minLength - defaultValue.length, () => defaultValue.push({}));
@@ -199,10 +205,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
 
-  get lazyComponentsInstantiation() {
-    return this.component.lazyComponentsInstantiation ?? false;
-  }
-
   init() {
     if (this.builderMode) {
       this.editRows = [];
@@ -229,7 +231,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     else {
       this.editRows = dataValue.map((row, rowIndex) => ({
-        components: this.lazyComponentsInstantiation ? [] : this.createRowComponents(row, rowIndex),
+        components: this.lazyLoad ? [] : this.createRowComponents(row, rowIndex),
         data: row,
         state: EditRowState.Saved,
         backup: null,
@@ -560,7 +562,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.state = EditRowState.Editing;
     }
 
-    if (this.lazyComponentsInstantiation && (editRow.components.length === 0)) {
+    if (this.lazyLoad && (editRow.components.length === 0)) {
       editRow.components = this.createRowComponents(editRow.data, rowIndex);
     }
 
@@ -887,7 +889,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
       else {
         this.editRows[rowIndex] = {
-          components: this.lazyComponentsInstantiation ? [] : this.createRowComponents(row, rowIndex),
+          components: this.lazyLoad ? [] : this.createRowComponents(row, rowIndex),
           data: row,
           state: EditRowState.Saved,
           backup: null,

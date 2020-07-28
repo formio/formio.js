@@ -1,8 +1,14 @@
 /* global Quill */
-import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import { uniqueName, getIEBrowserVersion } from '../../utils/utils';
+
+import {
+  getIEBrowserVersion,
+  superGet,
+  uniqueName,
+} from '../../utils/utils';
+
+import TextFieldComponent from '../textfield/TextField';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -48,7 +54,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(TextFieldComponent, 'inputInfo', this);
     info.type = this.component.wysiwyg ? 'div' : 'textarea';
     if (this.component.rows) {
       info.attr.rows = this.component.rows;
@@ -531,7 +537,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get defaultValue() {
-    let defaultValue = super.defaultValue;
+    let defaultValue = superGet(TextFieldComponent, 'defaultValue', this);
     if (this.component.editor === 'quill' && !defaultValue) {
       defaultValue = '<p><br></p>';
     }

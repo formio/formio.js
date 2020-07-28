@@ -1,21 +1,21 @@
-import _ from 'lodash';
-import moment from 'moment';
 import compareVersions from 'compare-versions';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import i18next from 'i18next';
-import i18nDefaults from './i18n';
-import { Formio } from '../../Formio';
+import _ from 'lodash';
+import moment from 'moment';
 import NativePromise from 'native-promise-only';
-import NestedDataComponent from '../../components/_classes/nesteddata/NestedDataComponent';
-import {
-  fastCloneDeep,
-  currentTimezone,
-  getStringFromComponentPath
-} from '../../utils/utils';
-import { eachComponent } from '../../utils/formUtils';
 
-// Initialize the available forms.
-Formio.forms = {};
+import { Formio } from '../../Formio';
+import NestedDataComponent from '../../components/_classes/nesteddata/NestedDataComponent';
+import { eachComponent } from '../../utils/formUtils';
+import {
+  currentTimezone,
+  fastCloneDeep,
+  getStringFromComponentPath,
+  superGet,
+} from '../../utils/utils';
+
+import i18nDefaults from './i18n';
 
 function getIconSet(icons) {
   if (icons === 'fontawesome') {
@@ -553,7 +553,7 @@ export class Webform extends NestedDataComponent {
    */
   get ready() {
     return this.formReady.then(() => {
-      return super.ready.then(() => {
+      return superGet(NestedDataComponent, 'ready', this).then(() => {
         return this.loadingSubmission ? this.submissionReady : true;
       });
     });
@@ -722,6 +722,28 @@ export class Webform extends NestedDataComponent {
    */
   get submission() {
     return this.getValue();
+  }
+
+  get cleanSubmission() {
+    const submission = {
+      data: _.clone((this.submission && this.submission.data) || {}),
+    };
+
+    eachComponent(this.component.components || [], (component, path) => {
+      if (!component.input) {
+        return;
+      }
+
+      const { persistent } = component;
+      if (persistent === 'client-only') {
+        _.unset(submission.data, path);
+      }
+      else {
+        _.set(submission.data, path, _.clone(_.get(submission.data, path)));
+      }
+    }, true);
+
+    return submission;
   }
 
   /**

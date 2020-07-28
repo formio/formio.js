@@ -1,16 +1,19 @@
+import EventEmitter from 'eventemitter2';
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
+
+import Form from '../../Form';
+import Formio from '../../Formio';
+import {
+  getStringFromComponentPath,
+  getArrayFromComponentPath,
+  eachComponent,
+  isMongoId,
+  superGet,
+} from '../../utils/utils';
+
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
-import EventEmitter from 'eventemitter2';
-import NativePromise from 'native-promise-only';
-import {
-  isMongoId,
-  eachComponent,
-  getStringFromComponentPath,
-  getArrayFromComponentPath
-} from '../../utils/utils';
-import Formio from '../../Formio';
-import Form from '../../Form';
 
 export default class FormComponent extends Component {
   static schema(...extend) {
@@ -104,7 +107,7 @@ export default class FormComponent extends Component {
 
   get defaultValue() {
     // Not not provide a default value unless the subform is ready so that it will initialize correctly.
-    return this.subForm ? super.defaultValue : null;
+    return this.subForm ? superGet(Component, 'defaultValue', this) : null;
   }
 
   get defaultSchema() {
@@ -531,7 +534,7 @@ export default class FormComponent extends Component {
   }
 
   get errors() {
-    let errors = super.errors;
+    let errors = superGet(Component, 'errors', this);
     if (this.subForm) {
       errors = errors.concat(this.subForm.errors);
     }
@@ -545,7 +548,7 @@ export default class FormComponent extends Component {
   }
 
   get visible() {
-    return super.visible;
+    return superGet(Component, 'visible', this);
   }
 
   set visible(value) {
@@ -567,7 +570,7 @@ export default class FormComponent extends Component {
   }
 
   get parentVisible() {
-    return super.parentVisible;
+    return superGet(Component, 'parentVisible', this);
   }
 
   set parentVisible(value) {
