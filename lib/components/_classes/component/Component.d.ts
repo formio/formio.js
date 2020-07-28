@@ -41,6 +41,12 @@ declare class Component extends Base {
      */
     path: string;
     /**
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {Component}
+     */
+    root: Component;
+    /**
      * The Form.io component JSON schema.
      * @type {*}
      */
@@ -80,12 +86,6 @@ declare class Component extends Base {
      * @type {boolean}
      */
     _disabled: boolean;
-    /**
-     * Points to the root component, usually the FormComponent.
-     *
-     * @type {Component}
-     */
-    root: Component;
     /**
      * If this input has been input and provided value.
      *

@@ -60,6 +60,7 @@ export default class NestedComponent extends Field {
     get componentComponents(): any;
     get nestedKey(): string;
     get templateName(): string;
+    get lazyLoad(): any;
     components: any;
     /**
      *

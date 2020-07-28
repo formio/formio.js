@@ -10,7 +10,7 @@ declare var _default: {
     };
     addAnother: string;
     saveRow: string;
-    lazyComponentsInstantiation: boolean;
+    lazyLoad: boolean;
     components: any[];
 }[];
 export default _default;

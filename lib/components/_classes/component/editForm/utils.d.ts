@@ -364,6 +364,7 @@ declare namespace EditFormUtils {
         key: string;
         type: string;
         input: boolean;
+        lazyLoad: boolean;
         components: any;
         conditional: {
             json: {
@@ -387,6 +388,7 @@ declare namespace EditFormUtils {
         key: string;
         type: string;
         input: boolean;
+        lazyLoad: boolean;
         components: any;
         conditional: {
             json: {
@@ -410,6 +412,7 @@ declare namespace EditFormUtils {
         key: string;
         type: string;
         input: boolean;
+        lazyLoad: boolean;
         components: {
             key: string;
             type: string;
@@ -441,6 +444,7 @@ declare namespace EditFormUtils {
         key: string;
         type: string;
         input: boolean;
+        lazyLoad: boolean;
         components: {
             key: string;
             type: string;
@@ -540,7 +544,7 @@ declare namespace EditFormUtils {
         };
         addAnother: string;
         saveRow: string;
-        lazyComponentsInstantiation: boolean;
+        lazyLoad: boolean;
         components: any[];
     };
     export function getVariablesEditForm({ customConditions, customVariables, excludeValueSources, }?: {
@@ -559,7 +563,7 @@ declare namespace EditFormUtils {
         };
         addAnother: string;
         saveRow: string;
-        lazyComponentsInstantiation: boolean;
+        lazyLoad: boolean;
         components: any[];
     };
     export function getConditionsEditForm({ customConditions, customVariables, excludeValueSources, }?: {
@@ -578,7 +582,7 @@ declare namespace EditFormUtils {
         };
         addAnother: string;
         saveRow: string;
-        lazyComponentsInstantiation: boolean;
+        lazyLoad: boolean;
         components: ({
             type: string;
             input: boolean;
@@ -669,6 +673,7 @@ declare namespace EditFormUtils {
                     required: boolean;
                 };
                 conditional?: undefined;
+                lazyLoad?: undefined;
                 components?: undefined;
             } | {
                 validate: {
@@ -693,6 +698,7 @@ declare namespace EditFormUtils {
                 };
                 valueProperty: string;
                 template: string;
+                lazyLoad?: undefined;
                 components?: undefined;
             } | {
                 type: string;
@@ -709,12 +715,14 @@ declare namespace EditFormUtils {
                 dataSrc?: undefined;
                 data?: undefined;
                 validate?: undefined;
+                lazyLoad?: undefined;
                 components?: undefined;
             } | {
                 type: string;
                 input: boolean;
                 label: string;
                 key: string;
+                lazyLoad: boolean;
                 components: any[];
                 conditional: {
                     json: {
@@ -751,7 +759,7 @@ declare namespace EditFormUtils {
         };
         addAnother: string;
         saveRow: string;
-        lazyComponentsInstantiation: boolean;
+        lazyLoad: boolean;
         components: ({
             type: string;
             input: boolean;
@@ -842,6 +850,7 @@ declare namespace EditFormUtils {
                     required: boolean;
                 };
                 conditional?: undefined;
+                lazyLoad?: undefined;
                 components?: undefined;
             } | {
                 validate: {
@@ -866,6 +875,7 @@ declare namespace EditFormUtils {
                 };
                 valueProperty: string;
                 template: string;
+                lazyLoad?: undefined;
                 components?: undefined;
             } | {
                 type: string;
@@ -882,12 +892,14 @@ declare namespace EditFormUtils {
                 dataSrc?: undefined;
                 data?: undefined;
                 validate?: undefined;
+                lazyLoad?: undefined;
                 components?: undefined;
             } | {
                 type: string;
                 input: boolean;
                 label: string;
                 key: string;
+                lazyLoad: boolean;
                 components: any[];
                 conditional: {
                     json: {

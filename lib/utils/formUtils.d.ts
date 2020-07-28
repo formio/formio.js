@@ -22,7 +22,7 @@ export function isLayoutComponent(component: any): boolean;
  * @param {Object} parent
  *   The parent object.
  */
-export function eachComponent(components: any, fn: Function, includeAll: boolean, path: string, parent: any): void;
+export function eachComponent(components: any, fn: Function, includeAll?: boolean, path?: string, parent?: any): void;
 /**
  * Matches if a component matches the query.
  *
@@ -119,7 +119,7 @@ export function applyFormChanges(form: any, changes: any): {
  * @returns {Object}
  *   The flattened components map.
  */
-export function flattenComponents(components: any, includeAll: boolean): any;
+export function flattenComponents(components: any, includeAll?: boolean): any;
 /**
  * Returns if this component has a conditional statement.
  *

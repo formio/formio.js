@@ -12,10 +12,10 @@
     "test:coverage": "nyc --reporter=text mocha --reporter spec './{,!(node_modules)/**/}*.spec.js'",
     "test": "mocha --require ts-node/register --reporter spec './{,!(node_modules)/**/}*.spec.ts'",
     "watch": "tsc -w",
-    "styles": "npm run styles-form && npm run styles-builder && npm run styles-full",
+    "styles": "npm run styles-form && npm run styles-builder && npm run styles-full && gulp fonts",
     "styles-form": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.form.scss ./dist/formio.form.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.form.scss ./dist/formio.form.min.css",
     "styles-builder": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.builder.scss ./dist/formio.builder.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.builder.scss ./dist/formio.builder.min.css",
-    "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.full.scss ./dist/formio.full.min.css && gulp fonts",
+    "styles-full": "node-sass --importer node_modules/node-sass-package-importer/dist/cli.js ./src/sass/formio.full.scss ./dist/formio.full.css && node-sass --importer node_modules/node-sass-package-importer/dist/cli.js --output-style compressed ./src/sass/formio.full.scss ./dist/formio.full.min.css",
     "build": "tsc && gulp templates && webpack && npm run styles",
     "lint": "eslint src --fix",
     "prepublish": "npm run build"
