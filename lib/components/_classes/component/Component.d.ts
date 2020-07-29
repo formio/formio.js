@@ -714,7 +714,7 @@ declare class Component extends Base {
      * @return {boolean}
      */
     checkComponentValidity(data: any, dirty: any, row: any, options?: {}): boolean;
-    checkValidity(data: any, dirty: any, row: any, silentCheck: any): boolean;
+    checkValidity(data?: any, dirty?: boolean, row?: any, silentCheck?: boolean): boolean;
     checkAsyncValidity(data: any, dirty: any, row: any, silentCheck: any): any;
     resetCaches(): void;
     conditionsCache: {};
