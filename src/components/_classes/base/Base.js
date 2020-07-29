@@ -70,7 +70,7 @@ export default class Base {
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
    */
-  on(event, cb, internal, once = false) {
+  on(event, cb, internal = false, once = false) {
     if (!this.events) {
       return;
     }
@@ -90,7 +90,7 @@ export default class Base {
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
    */
-  once(event, cb, internal) {
+  once(event, cb, internal = false) {
     return this.on(event, cb, internal, true);
   }
 

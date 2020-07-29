@@ -2968,9 +2968,7 @@ export default class Component extends Base {
       this.setComponentValidity(check, dirty, silentCheck);
   }
 
-  checkValidity(data, dirty, row, silentCheck) {
-    data = data || this.rootValue;
-    row = row || this.data;
+  checkValidity(data = this.rootValue, dirty = false, row = this.data, silentCheck = false) {
     return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
