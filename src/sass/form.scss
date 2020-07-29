@@ -1230,3 +1230,127 @@ div[read-only="true"] {
     }
   }
 }
+
+$header-size: 12px;
+$progress-height: 10px;
+$circle-size: 30px;
+
+$circle-color: #e9ecef;
+$circle-active-color: #007bff;
+
+$progress-animation-time: .4s;
+
+@keyframes formio-classic-wizard-circle {
+  0% {
+    border-color: $circle-color;
+  }
+
+  100% {
+    border-color: $circle-active-color;
+  }
+}
+
+@keyframes formio-classic-wizard-circle-reverted {
+  0% {
+    border-color: $circle-active-color;
+  }
+
+  100% {
+    border-color: $circle-color;
+  }
+}
+
+.formio-classic-wizard {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+  margin: 21px 0;
+  padding: 0 $circle-size / 2;
+
+  & > .formio-classic-wizard-wrapper {
+    width: 100%;
+    position: relative;
+  }
+
+  &-steps {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  & .formio-classic-wizard-progress {
+    background: $circle-color;
+    top: $circle-size / 2 + $header-size * 2 - $progress-height / 2;
+
+    position: absolute;
+    height: $progress-height;
+    width: 100%;
+
+    & > .formio-classic-wizard-progress-fill {
+      height: 100%;
+      position: relative;
+      background: #007bff;
+      width: 0;
+      left: 0;
+
+      transition: width $progress-animation-time ease-in-out;
+      transform-origin: left;
+    }
+  }
+
+  &-step {
+    &:first-child {
+      right: $circle-size / 2;
+    }
+
+    &:last-child {
+      left: $circle-size / 2;
+    }
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-size: $header-size;
+    line-height: $header-size;
+
+    position: relative;
+
+    & > .formio-classic-wizard-header {
+      margin-bottom: $header-size;
+    }
+
+    & > .formio-classic-wizard-circle {
+      cursor: pointer;
+
+      border: ($circle-size / 4) solid $circle-color;
+      border-radius: 50%;
+      width: $circle-size;
+      height: $circle-size;
+
+      background-color: $circle-color;
+      transition: border-color $progress-animation-time ease;
+
+      &:hover {
+        border-color: darken(#e9ecef, 30%);
+      }
+
+      &.reverted {
+        animation: formio-classic-wizard-circle-reverted $progress-animation-time linear;
+      }
+    }
+
+    &.active > .formio-classic-wizard-circle {
+      border-color: $circle-active-color;
+
+      &.animated {
+        animation: formio-classic-wizard-circle $progress-animation-time linear;
+      }
+
+      &:hover {
+        border-color: darken(#007bff, 10%);
+      }
+    }
+  }
+}
