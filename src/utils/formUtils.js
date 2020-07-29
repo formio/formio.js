@@ -55,7 +55,8 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     const hasRows = component.rows && Array.isArray(component.rows);
     const hasComps = component.components && Array.isArray(component.components);
     let noRecurse = false;
-    const newPath = component.key ? (path ? (`${path}.${component.key}`) : component.key) : '';
+    const componentKey = component.name ? component.name : component.key;
+    const newPath = componentKey ? (path ? (`${path}.${componentKey}`) : componentKey) : '';
 
     // Keep track of parent references.
     if (parent) {

@@ -176,6 +176,21 @@ export default class CheckBoxComponent extends Field {
     return false;
   }
 
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+
+    // If they clicked on the radio that is currently selected, it needs to reset the value.
+    this.currentValue = this.dataValue;
+    const shouldResetValue = !(flags && flags.noUpdateEvent)
+      && this.previousValue === this.currentValue;
+    if (shouldResetValue) {
+      this.resetValue();
+      this.triggerChange();
+    }
+    this.previousValue = this.dataValue;
+    return changed;
+  }
+
   getValueAsString(value) {
     return value ? 'Yes' : 'No';
   }
