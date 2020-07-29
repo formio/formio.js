@@ -111,7 +111,7 @@ export default class DataGridComponent extends NestedComponent {
     }
     this.visibleColumns = true;
     this.errorContainer = this.element;
-    this.restoreValue();
+    this.options.builder ? this.setValue() : this.restoreValue();
     this.createDescription(this.element);
     this.attachLogic();
   }
@@ -265,7 +265,7 @@ export default class DataGridComponent extends NestedComponent {
     }
     else if (this.options.builder) {
       lastColumn = this.ce('td', {
-        id: `${this.id}-drag-container`,
+        id: `${this.id}-${index}-drag-container`,
         class: 'drag-container'
       }, this.ce('div', {
         id: `${this.id}-placeholder`,
@@ -313,6 +313,28 @@ export default class DataGridComponent extends NestedComponent {
     }
 
     return rowElement;
+  }
+
+  removeComponentById(id, fn) {
+    const comp = super.removeComponentById(id,fn);
+
+    if (comp && this.numRows > 1) {
+      const compColumn = this.getComponentColumnIndex(comp);
+
+      _.clone(this.components).forEach(component => {
+        const componentColumn = this.getComponentColumnIndex(component);
+
+        if (componentColumn === compColumn) {
+          super.removeComponentById(component.id, fn);
+        }
+      });
+    }
+
+    return comp;
+  }
+
+  getComponentColumnIndex(component) {
+    return component.row.split('-')[1];
   }
 
   destroyRows() {

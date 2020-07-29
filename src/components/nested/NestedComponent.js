@@ -310,6 +310,7 @@ export default class NestedComponent extends BaseComponent {
       }
       return null;
     }
+    return comp;
   }
 
   get componentComponents() {

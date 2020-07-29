@@ -146,7 +146,7 @@ export default class WebformBuilder extends Webform {
       }
 
       if (!container.noDrop) {
-        this.addDragContainer(container, parent);
+        this.addDragContainer(container, parent, null, comp);
       }
 
       return container;
@@ -856,15 +856,24 @@ export default class WebformBuilder extends Webform {
     return containerComponent;
   }
 
-  addDragContainer(element, component, dragEvents) {
-    _.remove(this.dragContainers, (container) => (element.id && (element.id === container.id)));
-    element.component = component;
+  addDragContainer(element, parentComponent, dragEvents, comp) {
+    _.remove(this.dragContainers, (container) => {
+      const isIdEqual = element.id && (element.id === container.id);
+
+      return comp?.row
+        ? isIdEqual && (comp.row === container.row)
+        : isIdEqual;
+    });
+
+    element.component = parentComponent;
+    element.row = comp?.row || null;
+
     if (dragEvents) {
       element.dragEvents = dragEvents;
     }
     this.addClass(element, 'drag-container');
     if (!element.id) {
-      element.id = `builder-element-${component.id}`;
+      element.id = `builder-element-${parentComponent.id}`;
     }
     this.dragContainers.push(element);
     this.updateDraggable();
