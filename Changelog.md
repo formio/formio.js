@@ -4,6 +4,49 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.1-rc.8
+#### Fixed
+ - FJS-1083: Add polyfill for :scope CSS pseudo-class to fix IE11.
+ - FJS-1080: Fixed problems where the suffix was getting mutated on the component causing issues with logic.
+
+### 4.11.1-rc.7
+#### Fixed
+ - FJS-1080: Fix focus for TextField with calendar widget
+
+### 4.11.1-rc.6
+#### Fixed
+ - FJS-1018: fixed signature is not visible after submission
+
+### 4.11.1-rc.5
+#### Fixed
+ - FJS-1061: 400 errors are not displaying on the front end when button action fails
+ - [FJS-1062] Fixed matching dataValue to dataFormat of time component on input and blur events.
+
+### 4.11.1-rc.4
+#### Fixed
+ - PDF-81 (IE11): Update data type and value to resolve ie11 issue
+ - PDF-83: Create method to set placeholder
+ - FJS-1074: added using decimal keyboard if decimal is allowed
+
+### 4.11.1-rc.3
+#### Changed
+ - Downgrade core-js@3.5.0 to fix Select dropdown URL with IE11.
+
+#### Fixed
+ - FJS-1039: Fixed CKEditor and Quill editor for IE11
+
+### 4.11.1-rc.2
+#### Fixed
+ - Adding for attributes to labels to support VPAT.
+ - Removed bad behavior of PDF forms where the page would jump as you correct errors.
+
+### 4.11.1-rc.1
+#### Fixed
+ - Problems with the PDF Builder where it would not update forms after they have been saved.
+ - FJS-1022: added cursor pointer for error messages inside alerts (for modal editGrid rows) and simplified message
+ - FJS-1043: fixed validation on blur inside a panel 
+ - FJS-1032: fixed an issue where btn checks validity when disableOnInvalid is not set and removes error classes when form is still invalid
+
 ### 4.11.0
 ### No changes.  Released 4.11.0.
 

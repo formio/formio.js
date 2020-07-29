@@ -198,6 +198,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
@@ -240,7 +241,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/component/Component.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals Quill, ClassicEditor */
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from &apos;vanilla-text-mask&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
@@ -253,8 +254,14 @@ import Templates from &apos;../../../templates/Templates&apos;;
 import { fastCloneDeep, boolValue } from &apos;../../../utils/utils&apos;;
 import Element from &apos;../../../Element&apos;;
 import ComponentModal from &apos;../componentModal/ComponentModal&apos;;
-const CKEDITOR = &apos;https://cdn.form.io/ckeditor/19.0.0/ckeditor.js&apos;;
-const QUILL_URL = &apos;https://cdn.quilljs.com/2.0.0-dev.3&apos;;
+
+const isIEBrowser = FormioUtils.getIEBrowserVersion();
+const CKEDITOR_URL = isIEBrowser
+      ? &apos;https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js&apos;
+      : &apos;https://cdn.form.io/ckeditor/19.0.0/ckeditor.js&apos;;
+const QUILL_URL = isIEBrowser
+  ? &apos;https://cdn.quilljs.com/1.3.7&apos;
+  : &apos;https://cdn.quilljs.com/2.0.0-dev.3&apos;;
 const QUILL_TABLE_URL = &apos;https://cdn.form.io/quill/quill-table.js&apos;;
 const ACE_URL = &apos;https://cdn.form.io/ace/1.4.10/ace.js&apos;;
 
@@ -2133,15 +2140,28 @@ export default class Component extends Element {
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
     settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, &apos;editors.ckeditor.settings&apos;, {}), settings);
-    return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, _.get(this.options, &apos;editors.ckeditor.src&apos;, CKEDITOR), true)
+
+    return Formio.requireLibrary(
+      &apos;ckeditor&apos;,
+      isIEBrowser ? &apos;CKEDITOR&apos; : &apos;ClassicEditor&apos;,
+      _.get(this.options, &apos;editors.ckeditor.src&apos;,
+      CKEDITOR_URL
+    ), true)
       .then(() =&gt; {
         if (!element.parentNode) {
           return NativePromise.reject();
         }
-        return ClassicEditor.create(element, settings).then(editor =&gt; {
-          editor.model.document.on(&apos;change&apos;, () =&gt; onChange(editor.data.get()));
-          return editor;
-        });
+        if (isIEBrowser) {
+          const editor = CKEDITOR.replace(element);
+          editor.on(&apos;change&apos;, () =&gt; onChange(editor.getData()));
+          return NativePromise.resolve(editor);
+        }
+        else {
+          return ClassicEditor.create(element, settings).then(editor =&gt; {
+            editor.model.document.on(&apos;change&apos;, () =&gt; onChange(editor.data.get()));
+            return editor;
+          });
+        }
       });
   }
 
@@ -2167,7 +2187,7 @@ export default class Component extends Element {
             if (!element.parentNode) {
               return NativePromise.reject();
             }
-            this.quill = new Quill(element, settings);
+            this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
 
             /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
             const txtArea = document.createElement(&apos;textarea&apos;);

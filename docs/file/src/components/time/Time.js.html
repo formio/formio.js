@@ -198,6 +198,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
@@ -378,7 +379,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getStringAsValue(view) {
-    return view &amp;&amp; this.component.inputType !==&apos;text&apos; ? moment(view, this.component.format).format(this.component.dataFormat) : view;
+    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
   }
 
   getValueAsString(value) {

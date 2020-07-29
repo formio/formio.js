@@ -972,6 +972,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~getiebrowserversion",
+    "function/index.html#static-function-getIEBrowserVersion",
+    "<span>getIEBrowserVersion</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~getinputmask",
     "function/index.html#static-function-getInputMask",
     "<span>getInputMask</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -2406,21 +2412,9 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/pdf.js~pdf#_form",
-    "class/src/PDF.js~PDF.html#instance-member-_form",
-    "src/PDF.js~PDF#_form",
-    "member"
-  ],
-  [
     "src/pdf.js~pdf#attach",
     "class/src/PDF.js~PDF.html#instance-method-attach",
     "src/PDF.js~PDF#attach",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#checksubmitbuttonhiddenness",
-    "class/src/PDF.js~PDF.html#instance-method-checkSubmitButtonHiddenness",
-    "src/PDF.js~PDF#checkSubmitButtonHiddenness",
     "method"
   ],
   [
@@ -2496,6 +2490,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdf.js~pdf#issubmitbuttonhidden",
+    "class/src/PDF.js~PDF.html#instance-method-isSubmitButtonHidden",
+    "src/PDF.js~PDF#isSubmitButtonHidden",
+    "method"
+  ],
+  [
     "src/pdf.js~pdf#postmessage",
     "class/src/PDF.js~PDF.html#instance-method-postMessage",
     "src/PDF.js~PDF#postMessage",
@@ -2517,12 +2517,6 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#render",
     "class/src/PDF.js~PDF.html#instance-method-render",
     "src/PDF.js~PDF#render",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#setalert",
-    "class/src/PDF.js~PDF.html#instance-method-setAlert",
-    "src/PDF.js~PDF#setAlert",
     "method"
   ],
   [
@@ -2620,6 +2614,12 @@ window.esdocSearchIndex = [
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-dropEvent",
     "src/PDFBuilder.js~PDFBuilder#dropEvent",
     "member"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#getparentcontainer",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-getParentContainer",
+    "src/PDFBuilder.js~PDFBuilder#getParentContainer",
+    "method"
   ],
   [
     "src/pdfbuilder.js~pdfbuilder#haspdf",
@@ -2817,6 +2817,12 @@ window.esdocSearchIndex = [
     "src/webform.js~webform#component",
     "class/src/Webform.js~Webform.html#instance-member-component",
     "src/Webform.js~Webform#component",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#componentcomponents",
+    "class/src/Webform.js~Webform.html#instance-get-componentComponents",
+    "src/Webform.js~Webform#componentComponents",
     "member"
   ],
   [
@@ -5928,6 +5934,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/input/input.js~input#prefix",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-get-prefix",
+    "src/components/_classes/input/Input.js~Input#prefix",
+    "member"
+  ],
+  [
     "src/components/_classes/input/input.js~input#remainingwords",
     "class/src/components/_classes/input/Input.js~Input.html#instance-get-remainingWords",
     "src/components/_classes/input/Input.js~Input#remainingWords",
@@ -5950,6 +5962,12 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/input/Input.js~Input.html#instance-method-setInputMask",
     "src/components/_classes/input/Input.js~Input#setInputMask",
     "method"
+  ],
+  [
+    "src/components/_classes/input/input.js~input#suffix",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-get-suffix",
+    "src/components/_classes/input/Input.js~Input#suffix",
+    "member"
   ],
   [
     "src/components/_classes/input/input.js~input#triggerupdatevalueat",
@@ -7422,6 +7440,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#currencyprefix",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-currencyPrefix",
+    "src/components/currency/Currency.js~CurrencyComponent#currencyPrefix",
+    "member"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#currencysuffix",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-currencySuffix",
+    "src/components/currency/Currency.js~CurrencyComponent#currencySuffix",
+    "member"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#defaultschema",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-get-defaultSchema",
     "src/components/currency/Currency.js~CurrencyComponent#defaultSchema",
@@ -7440,6 +7470,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#isdecimalallowed",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-isDecimalAllowed",
+    "src/components/currency/Currency.js~CurrencyComponent#isDecimalAllowed",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#parsenumber",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-parseNumber",
     "src/components/currency/Currency.js~CurrencyComponent#parseNumber",
@@ -7452,12 +7488,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/currency/currency.js~currencycomponent#prefix",
-    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-prefix",
-    "src/components/currency/Currency.js~CurrencyComponent#prefix",
-    "member"
-  ],
-  [
     "src/components/currency/currency.js~currencycomponent#setinputmask",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-setInputMask",
     "src/components/currency/Currency.js~CurrencyComponent#setInputMask",
@@ -7468,12 +7498,6 @@ window.esdocSearchIndex = [
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-stripPrefixSuffix",
     "src/components/currency/Currency.js~CurrencyComponent#stripPrefixSuffix",
     "method"
-  ],
-  [
-    "src/components/currency/currency.js~currencycomponent#suffix",
-    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-suffix",
-    "src/components/currency/Currency.js~CurrencyComponent#suffix",
-    "member"
   ],
   [
     "src/components/currency/currency.js~currencycomponent.builderinfo",
@@ -10302,6 +10326,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/number/number.js~numbercomponent#isdecimalallowed",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-isDecimalAllowed",
+    "src/components/number/Number.js~NumberComponent#isDecimalAllowed",
+    "method"
+  ],
+  [
     "src/components/number/number.js~numbercomponent#numbermask",
     "class/src/components/number/Number.js~NumberComponent.html#instance-member-numberMask",
     "src/components/number/Number.js~NumberComponent#numberMask",
@@ -11685,12 +11715,6 @@ window.esdocSearchIndex = [
     "src/components/signature/signature.js~signaturecomponent#attach",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-attach",
     "src/components/signature/Signature.js~SignatureComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#changecanvasdimensions",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-changeCanvasDimensions",
-    "src/components/signature/Signature.js~SignatureComponent#changeCanvasDimensions",
     "method"
   ],
   [
@@ -15646,6 +15670,12 @@ window.esdocSearchIndex = [
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-localeFormat",
     "src/widgets/CalendarWidget.js~CalendarWidget#localeFormat",
     "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#setplaceholder",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-setPlaceholder",
+    "src/widgets/CalendarWidget.js~CalendarWidget#setPlaceholder",
+    "method"
   ],
   [
     "src/widgets/calendarwidget.js~calendarwidget#setvalue",

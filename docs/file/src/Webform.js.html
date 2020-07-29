@@ -198,6 +198,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
@@ -541,6 +542,10 @@ export default class Webform extends NestedDataComponent {
         return reject(err);
       }
     });
+  }
+
+  get componentComponents() {
+    return this.form.components;
   }
 
   /**
@@ -1745,17 +1750,15 @@ export default class Webform extends NestedDataComponent {
       });
     }
     if (API_URL &amp;&amp; settings) {
-      try {
         Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() =&gt; {
           this.emit(&apos;requestDone&apos;);
           this.setAlert(&apos;success&apos;, &apos;&lt;p&gt; Success &lt;/p&gt;&apos;);
+        }).catch((e) =&gt; {
+          this.showErrors(`${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e}`);
+          this.emit(&apos;error&apos;,`${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e}`);
+          console.error(`${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e}`);
+          this.setAlert(&apos;danger&apos;, `&lt;p&gt; ${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e} &lt;/p&gt;`);
         });
-      }
-      catch (e) {
-        this.showErrors(`${e.statusText} ${e.status}`);
-        this.emit(&apos;error&apos;,`${e.statusText} ${e.status}`);
-        console.error(`${e.statusText} ${e.status}`);
-      }
     }
     else {
       this.emit(&apos;error&apos;, &apos;You should add a URL to this button.&apos;);

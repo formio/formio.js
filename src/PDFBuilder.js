@@ -251,11 +251,24 @@ export default class PDFBuilder extends WebformBuilder {
   // 888 888     888    .d888888 888  888  888 88888888      88888888 Y88  88P 88888888 888  888 888    "Y8888b.
   // 888 888     888    888  888 888  888  888 Y8b.          Y8b.      Y8bd8P  Y8b.     888  888 Y88b.       X88
   // 888 888     888    "Y888888 888  888  888  "Y8888        "Y8888    Y88P    "Y8888  888  888  "Y888  88888P'
+  getParentContainer(component) {
+    let container = [];
+    let originalComponent = null;
+    eachComponent(this.webform._form.components, (comp, path, components) => {
+      if (comp.id === component.component.id) {
+        container = components;
+        originalComponent = comp;
+        return true;
+      }
+    });
+    return {
+      formioComponent: component.parent,
+      formioContainer: container,
+      originalComponent
+    };
+  }
 
   initIframeEvents() {
-    if (!this.webform.iframeElement) {
-      return;
-    }
     this.webform.off('iframe-elementUpdate');
     this.webform.off('iframe-componentUpdate');
     this.webform.off('iframe-componentClick');
@@ -271,7 +284,7 @@ export default class PDFBuilder extends WebformBuilder {
         };
 
         if (!this.options.noNewEdit && !component.component.noNewEdit) {
-          this.editComponent(component.component, this.webform.iframeElement);
+          this.editComponent(component.component, this.getParentContainer(component));
         }
         this.emit('updateComponent', component.component);
       }
@@ -289,12 +302,6 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.overlay.width
         };
         this.emit('updateComponent', component.component);
-
-        const localComponent = _.find(this.form.components, { id: schema.id });
-        if (localComponent) {
-          localComponent.overlay = _.clone(component.component.overlay);
-        }
-
         this.emit('change', this.form);
       }
       return component;
@@ -303,7 +310,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.on('iframe-componentClick', schema => {
       const component = this.webform.getComponentById(schema.id);
       if (component) {
-        this.editComponent(component.component, this.webform.iframeElement);
+        this.editComponent(component.component, this.getParentContainer(component));
       }
     }, true);
   }
@@ -370,7 +377,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.itemOffsetX = offsetX;
     this.itemOffsetY = offsetY;
 
-    e.dataTransfer.setData('text/html', null);
+    e.dataTransfer.setData('text', '');
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
   }

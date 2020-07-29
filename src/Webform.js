@@ -309,6 +309,10 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
+  get componentComponents() {
+    return this.form.components;
+  }
+
   /**
    * Add a language for translations
    *
@@ -1563,17 +1567,15 @@ export default class Webform extends NestedDataComponent {
       });
     }
     if (API_URL && settings) {
-      try {
         Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() => {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
+        }).catch((e) => {
+          this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
         });
-      }
-      catch (e) {
-        this.showErrors(`${e.statusText} ${e.status}`);
-        this.emit('error',`${e.statusText} ${e.status}`);
-        console.error(`${e.statusText} ${e.status}`);
-      }
     }
     else {
       this.emit('error', 'You should add a URL to this button.');

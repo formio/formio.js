@@ -198,6 +198,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
@@ -324,9 +325,7 @@ export default class CalendarWidget extends InputWidget {
 
   attach(input) {
     const superAttach = super.attach(input);
-    if (input &amp;&amp; !input.getAttribute(&apos;placeholder&apos;)) {
-      input.setAttribute(&apos;placeholder&apos;, this.settings.format);
-    }
+    this.setPlaceholder(input);
 
     const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);
     this.defaultFormat = {
@@ -592,6 +591,12 @@ export default class CalendarWidget extends InputWidget {
     }
 
     return formatDate(value, format, this.timezone);
+  }
+
+  setPlaceholder(input) {
+    if (input &amp;&amp; !input.getAttribute(&apos;placeholder&apos;)) {
+      input.setAttribute(&apos;placeholder&apos;, this.settings.format);
+    }
   }
 
   validationValue(value) {

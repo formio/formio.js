@@ -83,9 +83,7 @@ export default class CalendarWidget extends InputWidget {
 
   attach(input) {
     const superAttach = super.attach(input);
-    if (input && !input.getAttribute('placeholder')) {
-      input.setAttribute('placeholder', this.settings.format);
-    }
+    this.setPlaceholder(input);
 
     const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);
     this.defaultFormat = {
@@ -365,6 +363,12 @@ export default class CalendarWidget extends InputWidget {
     }
 
     return formatDate(value, format, this.timezone);
+  }
+
+  setPlaceholder(input) {
+    if (input && !input.getAttribute('placeholder')) {
+      input.setAttribute('placeholder', this.settings.format);
+    }
   }
 
   validationValue(value) {
