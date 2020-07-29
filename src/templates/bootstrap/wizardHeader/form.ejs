@@ -24,6 +24,18 @@
         </div>
       </div>
     </div>
+  {% } else if (ctx.options && ctx.options.renderMode === 'default') { %}
+    <div class="formio-wizard-header_default">
+      <div class="formio-wizard-header__cells">
+        {% ctx.panels.forEach(function(panel, index) { %}
+          <div class="formio-wizard-header__cell{{index <= ctx.currentPage ? ' active' : ''}}"></div>
+        {% }) %}
+      </div>
+      <div class="formio-wizard-header__info">
+        {{ctx.currentPage + 1}} of {{ctx.panels.length}} - 
+        <span class="formio-wizard-header__title">{{ctx.panels[ctx.currentPage].title}}</span>
+      </div>
+    </div>
   {% } else { %}
     <ul class="pagination">
       {% ctx.panels.forEach(function(panel, index) { %}
