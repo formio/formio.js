@@ -1,3 +1,5 @@
+import { superGet } from '../../utils/utils';
+
 import TextFieldComponent from '../textfield/TextField';
 
 export default class EmailComponent extends TextFieldComponent {
@@ -34,7 +36,7 @@ export default class EmailComponent extends TextFieldComponent {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(TextFieldComponent, 'inputInfo', this);
     info.attr.type = this.component.mask ? 'password' : 'email';
     return info;
   }

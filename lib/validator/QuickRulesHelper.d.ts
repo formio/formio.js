@@ -6,9 +6,9 @@ export class QuickRulesHelper {
     conditions: any;
     validations: any;
     queue: any[];
-    addVariable(variable: any): void;
-    addCondition(condition: any): void;
-    addValidation(validation: any): void;
+    addVariable(variable: any): QuickRulesHelper;
+    addCondition(condition: any): QuickRulesHelper;
+    addValidation(validation: any): QuickRulesHelper;
     addEditGridValue(editGrid: any, value: any, editRowState?: string): {
         components: any;
         data: any;
@@ -16,5 +16,5 @@ export class QuickRulesHelper {
         backup: any;
         error: any;
     };
-    execute(): void;
+    execute(): any[];
 }

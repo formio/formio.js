@@ -1,3 +1,4 @@
+/// <reference path="../typings/json-logic-js.d.ts" />
 /**
  * Evaluate a method.
  *
@@ -37,12 +38,9 @@ export function boolValue(value: any): boolean;
 /**
  * Check to see if an ID is a mongoID.
  * @param text
- * @return {Array|{index: number, input: string}|Boolean|*}
+ * @return {boolean}
  */
-export function isMongoId(text: any): Array | {
-    index: number;
-    input: string;
-} | boolean | any;
+export function isMongoId(text: any): boolean;
 /**
  * Checks the calculated value for a provided component and data.
  *
@@ -299,6 +297,8 @@ export function round(number: any, precision: any): any;
  * @return {(number|null)}
  */
 export function getIEBrowserVersion(): (number | null);
+export function superGet(superClass: any, property: any, instance: any): any;
+export function superSet(superClass: any, property: any, instance: any, value: any): any;
 export * from "./formUtils";
 /**
  * Map values through unfold and return first non-nil value.
@@ -307,6 +307,8 @@ export * from "./formUtils";
  * @return {T}
  */
 export const firstNonNil: any;
+import jsonLogic from "json-logic-js";
+import * as moment from "moment-timezone/moment-timezone";
 import Evaluator from "./Evaluator";
 export const interpolate: (rawTemplate: any, data: any) => any;
 export { jsonLogic, moment, Evaluator };

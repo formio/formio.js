@@ -1,6 +1,8 @@
-import Input from '../_classes/input/Input';
 import { conformToMask } from 'vanilla-text-mask';
-import * as FormioUtils from '../../utils/utils';
+
+import { getInputMask, superGet } from '../../utils/utils';
+
+import Input from '../_classes/input/Input';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -38,7 +40,7 @@ export default class TextFieldComponent extends Input {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(Input, 'inputInfo', this);
     info.type = 'input';
 
     if (this.component.hasOwnProperty('spellcheck')) {
@@ -118,7 +120,7 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
-      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask)).conformedValue;
+      textInput.value = conformToMask(textValue, getInputMask(mask)).conformedValue;
       maskInput.value = value.maskName;
     }
     else {

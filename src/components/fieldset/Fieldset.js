@@ -1,3 +1,5 @@
+import { superGet } from '../../utils/utils';
+
 import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class FieldsetComponent extends NestedComponent {
@@ -29,7 +31,7 @@ export default class FieldsetComponent extends NestedComponent {
   }
 
   get className() {
-    return `form-group ${super.className}`;
+    return `form-group ${superGet(NestedComponent, 'className', this)}`;
   }
 
   get templateName() {

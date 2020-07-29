@@ -19,28 +19,25 @@ export class QuickRulesHelper {
   }
 
   addVariable(variable) {
-    this.queue.push(() => {
-      this.addEditGridValue(this.variables, variable);
-    });
+    this.queue.push(() => this.addEditGridValue(this.variables, variable));
+    return this;
   }
 
   addCondition(condition) {
-    this.queue.push(() => {
-      this.addEditGridValue(this.conditions, condition);
-    });
+    this.queue.push(() => this.addEditGridValue(this.conditions, condition));
+    return this;
   }
 
   addValidation(validation) {
-    this.queue.push(() => {
-      this.addEditGridValue(this.validations, validation, EditRowState.New);
-    });
+    this.queue.push(() => this.addEditGridValue(this.validations, validation, EditRowState.New));
+    return this;
   }
 
   addEditGridValue(editGrid, value, editRowState = EditRowState.Saved) {
     editGrid.dataValue.push(value);
     const index = editGrid.editRows.length;
     const editRow = {
-      components: editGrid.createRowComponents(value, index),
+      components: (editRowState === EditRowState.Saved) ? [] : editGrid.createRowComponents(value, index),
       data: value,
       state: editRowState,
       backup: null,
@@ -52,7 +49,8 @@ export class QuickRulesHelper {
   }
 
   execute() {
-    this.queue.forEach((handler) => handler());
+    const result = this.queue.map((handler) => handler());
     this.queue = [];
+    return result;
   }
 }

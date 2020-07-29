@@ -10,7 +10,7 @@ declare var _default: {
     };
     addAnother: string;
     saveRow: string;
-    lazyComponentsInstantiation: boolean;
+    lazyLoad: boolean;
     components: ({
         type: string;
         input: boolean;
@@ -101,6 +101,7 @@ declare var _default: {
                 required: boolean;
             };
             conditional?: undefined;
+            lazyLoad?: undefined;
             components?: undefined;
         } | {
             validate: {
@@ -125,6 +126,7 @@ declare var _default: {
             };
             valueProperty: string;
             template: string;
+            lazyLoad?: undefined;
             components?: undefined;
         } | {
             type: string;
@@ -141,12 +143,14 @@ declare var _default: {
             dataSrc?: undefined;
             data?: undefined;
             validate?: undefined;
+            lazyLoad?: undefined;
             components?: undefined;
         } | {
             type: string;
             input: boolean;
             label: string;
             key: string;
+            lazyLoad: boolean;
             components: any[];
             conditional: {
                 json: {

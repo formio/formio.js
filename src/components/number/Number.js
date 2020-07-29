@@ -1,8 +1,14 @@
-import { maskInput, conformToMask } from 'vanilla-text-mask';
 import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
+import { maskInput, conformToMask } from 'vanilla-text-mask';
+
+import {
+  getNumberDecimalLimit,
+  getNumberSeparators,
+  superGet,
+} from '../../utils/utils';
+
 import Input from '../_classes/input/Input';
-import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
 
 export default class NumberComponent extends Input {
   static schema(...extend) {
@@ -93,7 +99,7 @@ export default class NumberComponent extends Input {
   }
 
   get defaultValue() {
-    let defaultValue = super.defaultValue;
+    let defaultValue = superGet(Input, 'defaultValue', this);
     if (!defaultValue && this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
     }
@@ -129,7 +135,7 @@ export default class NumberComponent extends Input {
   }
 
   get inputInfo() {
-    const info = super.inputInfo;
+    const info = superGet(Input, 'inputInfo', this);
     if (this.component.mask) {
       info.attr.type = 'password';
     }

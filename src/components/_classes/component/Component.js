@@ -262,6 +262,13 @@ export default class Component extends Base {
     this.path = '';
 
     /**
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {Component}
+     */
+    this.root = this.options.root;
+
+    /**
      * The Form.io component JSON schema.
      * @type {*}
      */
@@ -313,13 +320,6 @@ export default class Component extends Base {
      * @type {boolean}
      */
     this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
-
-    /**
-     * Points to the root component, usually the FormComponent.
-     *
-     * @type {Component}
-     */
-    this.root = this.options.root;
 
     /**
      * If this input has been input and provided value.
@@ -1048,6 +1048,10 @@ export default class Component extends Base {
     this.addEventListener(element, 'focusin', (event) => {
       event.stopPropagation();
 
+      if (!this.root) {
+        return;
+      }
+
       if (this.root.focusedComponent !== this) {
         if (this.root.pendingBlur) {
           this.root.pendingBlur();
@@ -1065,6 +1069,10 @@ export default class Component extends Base {
     });
     this.addEventListener(element, 'focusout', (event) => {
       event.stopPropagation();
+
+      if (!this.root) {
+        return;
+      }
 
       this.root.pendingBlur = delay(() => {
         this.emit('blur', this);

@@ -21,3 +21,8 @@ gulp.task('templates', () =>
     }))
     .pipe(gulp.dest('lib'))
 );
+
+gulp.task('fonts', () =>
+  gulp.src('./node_modules/font-awesome/fonts/*')
+    .pipe(gulp.dest('dist/fonts'))
+);

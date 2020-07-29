@@ -1,6 +1,13 @@
 import _ from 'lodash';
+
+import {
+  boolValue,
+  getLocaleDateFormatInfo,
+  superGet,
+  superSet,
+} from '../../utils/utils';
+
 import Field from '../_classes/field/Field';
-import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -305,8 +312,12 @@ export default class DayComponent extends Field {
     return !this.isEmpty(value);
   }
 
+  get disabled() {
+    return superGet(Field, 'disabled', this);
+  }
+
   set disabled(disabled) {
-    super.disabled = disabled;
+    superSet(Field, 'disabled', this, disabled);
     if (!this.refs.year || !this.refs.month || !this.refs.day) {
       return;
     }

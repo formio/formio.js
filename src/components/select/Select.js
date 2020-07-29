@@ -1,9 +1,12 @@
-import Choices from '../../utils/ChoicesWrapper';
 import _ from 'lodash';
-import { Formio } from '../../Formio';
-import Field from '../_classes/field/Field';
-import { Form } from '../../Form';
 import NativePromise from 'native-promise-only';
+
+import { Form } from '../../Form';
+import { Formio } from '../../Formio';
+import Choices from '../../utils/ChoicesWrapper';
+import { superGet, superSet } from '../../utils/utils';
+
+import Field from '../_classes/field/Field';
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -161,7 +164,7 @@ export default class SelectComponent extends Field {
   }
 
   get shouldDisabled() {
-    return super.shouldDisabled || this.parentDisabled;
+    return superGet(Field, 'shouldDisabled', this) || this.parentDisabled;
   }
 
   get lazyLoad() {
@@ -1052,7 +1055,7 @@ export default class SelectComponent extends Field {
   }
 
   set disabled(disabled) {
-    super.disabled = disabled;
+    superSet(Field, 'disabled', this, disabled);
     if (!this.choices) {
       return;
     }
@@ -1069,7 +1072,7 @@ export default class SelectComponent extends Field {
   }
 
   get disabled() {
-    return super.disabled;
+    return superGet(Field, 'disabled', this);
   }
 
   set visible(value) {
@@ -1077,11 +1080,11 @@ export default class SelectComponent extends Field {
     if (value && (!this._visible !== !value)) {
       this.triggerUpdate();
     }
-    super.visible = value;
+    superSet(Field, 'visible', this, value);
   }
 
   get visible() {
-    return super.visible;
+    return superGet(Field, 'visible', this);
   }
 
   /**

@@ -1,8 +1,10 @@
+import EventEmitter from 'eventemitter2';
+import _ from 'lodash';
+
+import { superGet, superSet, uniqueKey } from '../../utils/utils';
+
 import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
-import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
-import { uniqueKey } from '../../utils/utils';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -40,7 +42,7 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   get schema() {
-    const schema = super.schema;
+    const schema = superGet(DataGridComponent, 'schema', this);
     if (this.components && (this.components.length > 0)) {
       schema.valueComponent = this.components[this.components.length - 1].schema;
     }
@@ -85,11 +87,11 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   set dataValue(value) {
-    super.dataValue = value;
+    superSet(DataGridComponent, 'dataValue', this, value);
   }
 
   get defaultValue() {
-    const value = super.defaultValue;
+    const value = superGet(DataGridComponent, 'defaultValue', this);
     if (Array.isArray(value)) {
       return value[0];
     }

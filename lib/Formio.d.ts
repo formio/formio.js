@@ -53,6 +53,20 @@ export class Formio {
     static ssoInit(type: any, options: any): any;
     static requireLibrary(name: any, property: any, src: any, polling: any): any;
     static libraryReady(name: any): any;
+    static libraries: {};
+    static Promise: any;
+    static fetch: any;
+    static Headers: any;
+    static baseUrl: string;
+    static projectUrl: string;
+    static authUrl: string;
+    static projectUrlSet: boolean;
+    static plugins: any[];
+    static cache: {};
+    static Providers: typeof Providers;
+    static version: string;
+    static events: EventEmitter;
+    static forms: {};
     constructor(path: any, options?: {});
     base: any;
     projectsUrl: any;
@@ -150,24 +164,5 @@ export class Formio {
     canSubmit(): any;
     getUrlParts(url: any): any;
 }
-export namespace Formio {
-    export const libraries: {};
-    export { NativePromise as Promise };
-    export { fetch };
-    export { Headers };
-    export const baseUrl: string;
-    import projectUrl = baseUrl;
-    export { projectUrl };
-    export const authUrl: string;
-    export const projectUrlSet: boolean;
-    export const plugins: any[];
-    export const cache: {};
-    export { Providers };
-    export const version: string;
-    export const events: EventEmitter;
-}
-declare const fetch: any;
-declare const Headers: any;
 import { Providers } from "./providers/Providers";
 import { EventEmitter2 as EventEmitter } from "eventemitter2";
-export {};

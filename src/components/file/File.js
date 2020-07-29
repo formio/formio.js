@@ -1,8 +1,10 @@
-import Field from '../_classes/field/Field';
-import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
+
+import { superGet, uniqueName } from '../../utils/utils';
+
+import Field from '../_classes/field/Field';
 
 let Camera;
 let webViewCamera = navigator.camera || Camera;
@@ -108,7 +110,7 @@ export default class FileComponent extends Field {
   }
 
   get defaultValue() {
-    const value = super.defaultValue;
+    const value = superGet(Field, 'defaultValue', this);
     return Array.isArray(value) ? value : [];
   }
 

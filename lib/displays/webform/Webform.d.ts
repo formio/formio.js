@@ -268,6 +268,9 @@ export class Webform extends NestedDataComponent {
      * @returns {Object}
      */
     get submission(): any;
+    get cleanSubmission(): {
+        data: any;
+    };
     /**
      * Sets a submission and returns the promise when it is ready.
      * @param submission
@@ -366,8 +369,4 @@ export class Webform extends NestedDataComponent {
     _nosubmit: any;
 }
 import NestedDataComponent from "../../components/_classes/nesteddata/NestedDataComponent";
-declare namespace Formio {
-    export const forms: {};
-}
 import { Formio } from "../../Formio";
-export {};
