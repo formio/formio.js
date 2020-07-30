@@ -2596,7 +2596,7 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    if ((flags.fromSubmission || flags.noValidate) && !flags.validateOnInit) {
+    if (flags.noValidate && !flags.validateOnInit) {
       return true;
     }
 
