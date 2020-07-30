@@ -133,7 +133,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
             <tr>
       `);
 
-      this.component.components.forEach((component) => {
+      this.component.components?.forEach((component) => {
         const label = component.label || component.key;
         result += `<th style="padding: 5px 10px;">${label}</th>`;
       });
