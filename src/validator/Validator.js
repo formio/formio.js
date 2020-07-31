@@ -282,7 +282,7 @@ class ValidationChecker {
           const min = parseFloat(setting);
           const parsedValue = parseFloat(value);
 
-          if (Number.isNaN(min) || (!_.isNumber(parsedValue))) {
+          if (Number.isNaN(min) || Number.isNaN(parsedValue)) {
             return true;
           }
 
@@ -302,7 +302,7 @@ class ValidationChecker {
           const max = parseFloat(setting);
           const parsedValue = parseFloat(value);
 
-          if (Number.isNaN(max) || (!_.isNumber(parsedValue))) {
+          if (Number.isNaN(max) || Number.isNaN(parsedValue)) {
             return true;
           }
 
