@@ -2546,9 +2546,10 @@ export default class Component extends Element {
     if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
-    else {
+    else if (!silentCheck) {
       this.setCustomValidity('');
     }
+
     return !hasErrors;
   }
 
@@ -2606,7 +2607,11 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+
     if (flags.noValidate && !flags.validateOnInit) {
+      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
+        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+      }
       return true;
     }
 
