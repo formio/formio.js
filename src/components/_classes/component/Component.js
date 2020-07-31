@@ -194,6 +194,16 @@ export default class Component extends Element {
   }
 
   /**
+   * Return the validator as part of the component.
+   *
+   * @return {ValidationChecker}
+   * @constructor
+   */
+  static get Validator() {
+    return Validator;
+  }
+
+  /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.
    *

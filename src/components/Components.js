@@ -1,6 +1,11 @@
 import Component from './_classes/component/Component';
+import EditFormUtils from './_classes/component/editForm/utils';
 import _ from 'lodash';
 export default class Components {
+  static get EditFormUtils() {
+    return EditFormUtils;
+  }
+
   static get components() {
     if (!Components._components) {
       Components._components = {};
