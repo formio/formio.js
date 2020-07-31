@@ -1,7 +1,4 @@
-export class Displays {
-  static readonly displays: any;
-  static addDisplay(name: string, display: any): void;
-  static addDisplays(name: string, display: any): void;
-  static getDisplay(name: string): any;
-  static getDisplays(name: string): any;
+export class Widgets {
+  static readonly calendar: any;
+  static readonly input: any;
 }
