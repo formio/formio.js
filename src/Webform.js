@@ -634,10 +634,18 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   setForm(form, flags) {
-    // Do not set the form again if it has been already set
-    if (JSON.stringify(this._form) === JSON.stringify(form)) {
+    try {
+      // Do not set the form again if it has been already set
+      if (JSON.stringify(this._form) === JSON.stringify(form)) {
+        return NativePromise.resolve();
+      }
+    }
+    catch (err) {
+      console.warn(err);
+      // If provided form is not a valid JSON object, do not set it too
       return NativePromise.resolve();
     }
+
     // Create the form.
     this._form = form;
 
