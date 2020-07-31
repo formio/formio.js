@@ -164,6 +164,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
       return result;
     }
 
+    if (!value || !value.length) {
+      return '';
+    }
+
     return super.getValueAsString(value, options);
   }
 

@@ -48,6 +48,9 @@ export default class NestedDataComponent extends NestedComponent {
 
       return result;
     }
+    if (_.isEmpty(value)) {
+      return '';
+    }
     if (options?.modalPreview) {
       delete options.modalPreview;
       return this.getDataValueAsTable(value, options);
