@@ -4,6 +4,7 @@ import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
+import { getRandomComponentId } from '../../utils/utils';
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -11,6 +12,7 @@ export default class SelectComponent extends Field {
       type: 'select',
       label: 'Select',
       key: 'select',
+      idPath: 'id',
       data: {
         values: [],
         json: '',
@@ -214,6 +216,7 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
+      id: id || getRandomComponentId(),
       value: _.isObject(value) && this.isEntireObjectDisplay()
         ? this.normalizeSingleValue(value)
         : _.isObject(value)
@@ -233,7 +236,17 @@ export default class SelectComponent extends Field {
     }
 
     if (value) {
-      this.selectOptions.push(option);
+      const repeatedOptionIndex = this.selectOptions.find((selectOption, index) => {
+        const { idPath } = this.component;
+        const selectOptionId = _.get(selectOption, idPath);
+        const optionId = _.get(option, idPath);
+
+        return selectOptionId === optionId ? index : null;
+      });
+
+      Number.isInteger(repeatedOptionIndex)
+        ? this.selectOptions.splice(repeatedOptionIndex, 1, option)
+        : this.selectOptions.push(option);
     }
 
     if (this.refs.selectContainer && (this.component.widget === 'html5')) {
@@ -357,7 +370,7 @@ export default class SelectComponent extends Field {
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
       if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath) || String(index));
     });
 
     if (this.choices) {
