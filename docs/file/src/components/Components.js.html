@@ -242,8 +242,13 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/Components.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Component from &apos;./_classes/component/Component&apos;;
+import EditFormUtils from &apos;./_classes/component/editForm/utils&apos;;
 import _ from &apos;lodash&apos;;
 export default class Components {
+  static get EditFormUtils() {
+    return EditFormUtils;
+  }
+
   static get components() {
     if (!Components._components) {
       Components._components = {};
