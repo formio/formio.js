@@ -643,13 +643,24 @@ export default class Component extends Element {
 
   getLabelInfo() {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isLeftPosition = this.labelPositions[0] === 'left';
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
+
+    let contentMargin = '';
+    if (this.component.hideLabel) {
+      const margin = this.labelWidth + this.labelMargin;
+      contentMargin = isRightPosition ? `margin-right: ${margin}%` : '';
+      contentMargin = isLeftPosition ? `margin-left: ${margin}%` : '';
+    }
+
     const labelStyles = `
       flex: ${this.labelWidth};
-      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+      ${isRightPosition ? 'margin-left' : 'margin-right'}: ${this.labelMargin}%;
     `;
     const contentStyles = `
       flex: ${100 - this.labelWidth - this.labelMargin};
+      ${contentMargin};
+      ${this.component.hideLabel ? `max-width: ${100 - this.labelWidth - this.labelMargin}` : ''};
     `;
 
     return {
@@ -950,7 +961,7 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
@@ -2441,7 +2452,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission) {
+    if (flags.fromSubmission && this.component.persistent === true) {
       this.calculatedValue = calculatedValue;
       return false;
     }

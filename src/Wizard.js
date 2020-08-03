@@ -56,6 +56,17 @@ export default class Wizard extends Webform {
     return pages;
   }
 
+  get data() {
+    return super.data;
+  }
+
+  set data(value) {
+    this.establishPages(value);
+    _.each(this.getPages({ all: true }), (component) => {
+      component.data = this.componentContext(component);
+    });
+  }
+
   getComponents() {
     return this.submitting
       ? this.getPages({ all: this.isLastPage() })
@@ -286,7 +297,7 @@ export default class Wizard extends Webform {
     });
   }
 
-  establishPages() {
+  establishPages(data = this.data) {
     this.pages = [];
     this.prefixComps = [];
     this.suffixComps = [];
@@ -307,7 +318,7 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const isVisible = checkCondition(item, this.data, this.data, this.component, this);
+          const isVisible = checkCondition(item, data, data, this.component, this);
           if (isVisible) {
             visible.push(item);
             if (page) {
@@ -316,6 +327,7 @@ export default class Wizard extends Webform {
           }
           if (!page && isVisible) {
             page = this.createComponent(item, pageOptions);
+            page.visible = isVisible;
             this.pages.push(page);
             page.eachComponent((component) => {
               component.page = (this.pages.length - 1);
@@ -540,7 +552,10 @@ export default class Wizard extends Webform {
   }
 
   setValue(submission, flags = {}) {
-    const changed = super.setValue(submission, flags);
+    this.establishPages(submission.data);
+    const changed = this.getPages({ all: true }).reduce((changed, page) => {
+      return this.setNestedValue(page, submission.data, flags, changed) || changed;
+    }, false);
     this.pageFieldLogic(this.page);
     return changed;
   }

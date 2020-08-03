@@ -139,7 +139,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('error'));
+        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('submitError'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -167,7 +167,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
+        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('submitError')));
       };
     }
 
