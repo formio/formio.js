@@ -87,13 +87,8 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="panel" class="formio-component formio-component-panel formio-component-panel  formio-component-label-hidden" ref="component">
-      <div class="mb-2 card border">
-        <div class="card-header bg-default" ref="header">
-          <span class="mb-0 card-title ">
-      Panel
-    </span>
-        </div>
-        <div class="card-body" ref="nested-panel">
+      <div class="panel panel-default">
+        <div class="panel-body" ref="nested-panel">
           <div id="panelText" class="form-group has-feedback formio-component formio-component-textfield formio-component-panelText " ref="component">
             <label class="col-form-label " for="panelText-panelText">
               Text
@@ -108,25 +103,23 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="panel2" class="formio-component formio-component-panel formio-component-panel2  formio-component-label-hidden" ref="component">
-      <div class="mb-2 card border">
-        <div class="card-header bg-default" ref="header">
-          <span class="mb-0 card-title ">
-        <i class="formio-collapse-icon fa fa-plus-square-o text-muted" data-title="Collapse Panel"></i>
-      Collapsed
-    </span>
+      <div class="panel panel-default">
+        <div class="panel-heading" ref="header">
+          <h4 class="mb-0 panel-title">
+            <i class="formio-collapse-icon fa fa-plus text-muted" data-title="Collapse Panel"></i>
+          </h4>
         </div>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="panel3" class="formio-component formio-component-panel formio-component-panel3  formio-component-label-hidden" ref="component">
-      <div class="mb-2 card border">
-        <div class="card-header bg-default" ref="header">
-          <span class="mb-0 card-title ">
-        <i class="formio-collapse-icon fa fa-minus-square-o text-muted" data-title="Collapse Panel"></i>
-      Collapsible
-    </span>
+      <div class="panel panel-default">
+        <div class="panel-heading" ref="header">
+          <h4 class="mb-0 panel-title">
+            <i class="formio-collapse-icon fa fa-minus text-muted" data-title="Collapse Panel"></i>
+          </h4>
         </div>
-        <div class="card-body" ref="nested-panel3">
+        <div class="panel-body" ref="nested-panel3">
           <div id="panel3Text" class="form-group has-feedback formio-component formio-component-textfield formio-component-panel3Text " ref="component">
             <label class="col-form-label " for="panel3Text-panel3Text">
               Text
