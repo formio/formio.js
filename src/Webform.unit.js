@@ -23,6 +23,7 @@ import {
   formWithEditGridModalDrafts,
   formWithBlurValidationInsidePanel,
   modalEditComponents,
+  calculatedNotPersistentValue,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -1435,6 +1436,29 @@ describe('Webform tests', function() {
           });
           done();
         });
+      }).catch(done);
+    });
+  });
+
+  describe('Calculate Value', () => {
+    it('Should calculate value when set submission if the component is not persistent', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(calculatedNotPersistentValue).then(() => {
+        form.setSubmission({
+          data:
+            {
+              a: 'testValue'
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const persistentField = form.getComponent(['a']);
+          assert.equal(persistentField.dataValue, 'testValue', 'Should set the value from the submission');
+          const notPersistentFieldInput = form.element.querySelector('input[name="data[textField]"]');
+          assert.equal(notPersistentFieldInput.value, 'testValue', 'Should calculate the value');
+          done();
+        }, 550);
       }).catch(done);
     });
   });

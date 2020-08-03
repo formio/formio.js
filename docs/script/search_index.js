@@ -4158,6 +4158,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/components.js~components.editformutils",
+    "class/src/components/Components.js~Components.html#static-get-EditFormUtils",
+    "src/components/Components.js~Components.EditFormUtils",
+    "member"
+  ],
+  [
     "src/components/components.js~components.addcomponent",
     "class/src/components/Components.js~Components.html#static-method-addComponent",
     "src/components/Components.js~Components.addComponent",
@@ -5496,6 +5502,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/component/component.js~component.validator",
+    "class/src/components/_classes/component/Component.js~Component.html#static-get-Validator",
+    "src/components/_classes/component/Component.js~Component.Validator",
+    "member"
+  ],
+  [
     "src/components/_classes/component/component.js~component.schema",
     "class/src/components/_classes/component/Component.js~Component.html#static-method-schema",
     "src/components/_classes/component/Component.js~Component.schema",
@@ -5934,6 +5946,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/input/input.js~input#prefix",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-get-prefix",
+    "src/components/_classes/input/Input.js~Input#prefix",
+    "member"
+  ],
+  [
     "src/components/_classes/input/input.js~input#remainingwords",
     "class/src/components/_classes/input/Input.js~Input.html#instance-get-remainingWords",
     "src/components/_classes/input/Input.js~Input#remainingWords",
@@ -5956,6 +5974,12 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/input/Input.js~Input.html#instance-method-setInputMask",
     "src/components/_classes/input/Input.js~Input#setInputMask",
     "method"
+  ],
+  [
+    "src/components/_classes/input/input.js~input#suffix",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-get-suffix",
+    "src/components/_classes/input/Input.js~Input#suffix",
+    "member"
   ],
   [
     "src/components/_classes/input/input.js~input#triggerupdatevalueat",
@@ -7428,6 +7452,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#currencyprefix",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-currencyPrefix",
+    "src/components/currency/Currency.js~CurrencyComponent#currencyPrefix",
+    "member"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#currencysuffix",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-currencySuffix",
+    "src/components/currency/Currency.js~CurrencyComponent#currencySuffix",
+    "member"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#defaultschema",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-get-defaultSchema",
     "src/components/currency/Currency.js~CurrencyComponent#defaultSchema",
@@ -7464,12 +7500,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/currency/currency.js~currencycomponent#prefix",
-    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-prefix",
-    "src/components/currency/Currency.js~CurrencyComponent#prefix",
-    "member"
-  ],
-  [
     "src/components/currency/currency.js~currencycomponent#setinputmask",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-setInputMask",
     "src/components/currency/Currency.js~CurrencyComponent#setInputMask",
@@ -7480,12 +7510,6 @@ window.esdocSearchIndex = [
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-stripPrefixSuffix",
     "src/components/currency/Currency.js~CurrencyComponent#stripPrefixSuffix",
     "method"
-  ],
-  [
-    "src/components/currency/currency.js~currencycomponent#suffix",
-    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-suffix",
-    "src/components/currency/Currency.js~CurrencyComponent#suffix",
-    "member"
   ],
   [
     "src/components/currency/currency.js~currencycomponent.builderinfo",

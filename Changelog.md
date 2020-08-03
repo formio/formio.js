@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.1-rc.9
+#### Fixed
+ - FJS-1117: fixed an issue where validation error is shown for valid value when component has invalid default value
+
+#### Added
+ - More entry points for external libraries to reference components within the renderer.
+
+### 4.11.1-rc.8
+#### Fixed
+ - FJS-1083: Add polyfill for :scope CSS pseudo-class to fix IE11.
+ - FJS-1080: Fixed problems where the suffix was getting mutated on the component causing issues with logic.
+
 ### 4.11.1-rc.7
 #### Fixed
  - FJS-1080: Fix focus for TextField with calendar widget

@@ -486,6 +486,8 @@ export default class DayComponent extends Field {
     }
     else {
       return this.renderTemplate(&apos;input&apos;, {
+        prefix: this.prefix,
+        suffix: this.suffix,
         input: this.inputDefinition(name)
       });
     }
