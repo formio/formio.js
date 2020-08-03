@@ -669,6 +669,7 @@ export default class WebformBuilder extends Component {
 
     if (info) {
       info.key = _.camelCase(
+        info.key ||
         info.title ||
         info.label ||
         info.placeholder ||
