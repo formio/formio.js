@@ -198,6 +198,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
@@ -247,6 +248,7 @@ import Displays from &apos;./displays/Displays&apos;;
 import Templates from &apos;./templates/Templates&apos;;
 import Providers from &apos;./providers&apos;;
 import Rules from &apos;./validator/Rules&apos;;
+import Widgets from &apos;./widgets&apos;;
 import Formio from &apos;./Formio&apos;;
 import Form from &apos;./Form&apos;;
 import Utils from &apos;./utils&apos;;
@@ -332,12 +334,14 @@ Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
+Formio.Rules = Rules;
+Formio.Widgets = Widgets;
 
 // This is strange, but is needed for &quot;premium&quot; components to import correctly.
 Formio.Formio = Formio;
 
 // Export the components.
-export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio };
+export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Utils, Form, Formio };
 </code></pre>
 
 </div>

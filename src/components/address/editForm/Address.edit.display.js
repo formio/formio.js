@@ -1,9 +1,5 @@
 export default [
   {
-    key: 'labelPosition',
-    ignore: true,
-  },
-  {
     weight: 20,
     type: 'checkbox',
     input: true,

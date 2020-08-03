@@ -1,4 +1,4 @@
-/* globals Quill, ClassicEditor */
+/* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
@@ -11,8 +11,14 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
-const CKEDITOR = 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
-const QUILL_URL = 'https://cdn.quilljs.com/2.0.0-dev.3';
+
+const isIEBrowser = FormioUtils.getIEBrowserVersion();
+const CKEDITOR_URL = isIEBrowser
+      ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
+      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
+const QUILL_URL = isIEBrowser
+  ? 'https://cdn.quilljs.com/1.3.7'
+  : 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 
@@ -185,6 +191,16 @@ export default class Component extends Element {
       properties: {},
       allowMultipleMasks: false
     }, ...sources);
+  }
+
+  /**
+   * Return the validator as part of the component.
+   *
+   * @return {ValidationChecker}
+   * @constructor
+   */
+  static get Validator() {
+    return Validator;
   }
 
   /**
@@ -627,13 +643,24 @@ export default class Component extends Element {
 
   getLabelInfo() {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isLeftPosition = this.labelPositions[0] === 'left';
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
+
+    let contentMargin = '';
+    if (this.component.hideLabel) {
+      const margin = this.labelWidth + this.labelMargin;
+      contentMargin = isRightPosition ? `margin-right: ${margin}%` : '';
+      contentMargin = isLeftPosition ? `margin-left: ${margin}%` : '';
+    }
+
     const labelStyles = `
       flex: ${this.labelWidth};
-      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+      ${isRightPosition ? 'margin-left' : 'margin-right'}: ${this.labelMargin}%;
     `;
     const contentStyles = `
       flex: ${100 - this.labelWidth - this.labelMargin};
+      ${contentMargin};
+      ${this.component.hideLabel ? `max-width: ${100 - this.labelWidth - this.labelMargin}` : ''};
     `;
 
     return {
@@ -707,9 +734,9 @@ export default class Component extends Element {
 
   labelIsHidden() {
     return !this.component.label ||
-      (!this.inDataGrid && this.component.hideLabel) ||
+      ((!this.inDataGrid && this.component.hideLabel) ||
       (this.inDataGrid && !this.component.dataGridLabel) ||
-      this.options.inputsOnly;
+      this.options.inputsOnly) && !this.builderMode;
   }
 
   get transform() {
@@ -934,7 +961,7 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
@@ -1891,15 +1918,28 @@ export default class Component extends Element {
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
     settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
-    return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
+
+    return Formio.requireLibrary(
+      'ckeditor',
+      isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
+      _.get(this.options, 'editors.ckeditor.src',
+      CKEDITOR_URL
+    ), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
         }
-        return ClassicEditor.create(element, settings).then(editor => {
-          editor.model.document.on('change', () => onChange(editor.data.get()));
-          return editor;
-        });
+        if (isIEBrowser) {
+          const editor = CKEDITOR.replace(element);
+          editor.on('change', () => onChange(editor.getData()));
+          return NativePromise.resolve(editor);
+        }
+        else {
+          return ClassicEditor.create(element, settings).then(editor => {
+            editor.model.document.on('change', () => onChange(editor.data.get()));
+            return editor;
+          });
+        }
       });
   }
 
@@ -1925,7 +1965,7 @@ export default class Component extends Element {
             if (!element.parentNode) {
               return NativePromise.reject();
             }
-            this.quill = new Quill(element, settings);
+            this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
 
             /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
             const txtArea = document.createElement('textarea');
@@ -2167,9 +2207,6 @@ export default class Component extends Element {
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
-    if (this.componentModal && flags && flags.fromSubmission) {
-      this.componentModal.setValue(value);
-    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -2266,6 +2303,9 @@ export default class Component extends Element {
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
+    }
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
     }
     return changed;
   }
@@ -2412,7 +2452,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission) {
+    if (flags.fromSubmission && this.component.persistent === true) {
       this.calculatedValue = calculatedValue;
       return false;
     }
@@ -2430,7 +2470,9 @@ export default class Component extends Element {
       return true;
     }
     // Set the new value.
-    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
+    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
+    ? false
+    : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
     return changed;
   }
@@ -2517,9 +2559,10 @@ export default class Component extends Element {
     if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
-    else {
+    else if (!silentCheck) {
       this.setCustomValidity('');
     }
+
     return !hasErrors;
   }
 
@@ -2577,7 +2620,11 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+
     if (flags.noValidate && !flags.validateOnInit) {
+      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
+        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+      }
       return true;
     }
 

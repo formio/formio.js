@@ -275,6 +275,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.on('iframe-elementUpdate', schema => {
       const component = this.webform.getComponentById(schema.id);
       if (component && component.component) {
+        const isNew = true;
         component.component.overlay = {
           page: schema.page,
           left: schema.left,
@@ -284,7 +285,7 @@ export default class PDFBuilder extends WebformBuilder {
         };
 
         if (!this.options.noNewEdit && !component.component.noNewEdit) {
-          this.editComponent(component.component, this.getParentContainer(component));
+          this.editComponent(component.component, this.getParentContainer(component), isNew);
         }
         this.emit('updateComponent', component.component);
       }
@@ -377,7 +378,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.itemOffsetX = offsetX;
     this.itemOffsetY = offsetY;
 
-    e.dataTransfer.setData('text/html', null);
+    e.dataTransfer.setData('text', '');
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
   }

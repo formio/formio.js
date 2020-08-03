@@ -22,7 +22,9 @@ import {
   formWithCalculatedValueWithoutOverriding,
   formWithTimeComponent,
   formWithEditGridModalDrafts,
-  formWithBlurValidationInsidePanel
+  formWithBlurValidationInsidePanel,
+  modalEditComponents,
+  calculatedNotPersistentValue,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -1398,6 +1400,66 @@ describe('Webform tests', function() {
             done();
           }, 250);
         }, 250);
+      }).catch(done);
+    });
+  });
+
+  describe('Modal Edit', () => {
+    const submission = {
+      state: 'submitted',
+      data: {
+        checkbox: true,
+        selectBoxes: {
+          a: true,
+          b: true
+        },
+        select: 'f',
+        submit: true
+      }
+    };
+    const componentsKeys = ['checkbox', 'selectBoxes', 'select'];
+    const expectedValues = {
+      checkbox: 'Yes',
+      selectBoxes: 'a, b',
+      select: 'f'
+    };
+    it('Test rendering previews after the submission is set', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(modalEditComponents).then(() => {
+        return form.setSubmission(submission, { fromSubmission: true }).then(() => {
+          componentsKeys.forEach((key) => {
+            const comp = form.getComponent([key]);
+            assert(comp);
+            const preview = comp.componentModal.refs.openModal;
+            assert(preview);
+            assert.equal(preview.textContent.replace(/\n|\t/g, '').trim(), expectedValues[key]);
+          });
+          done();
+        });
+      }).catch(done);
+    });
+  });
+
+  describe('Calculate Value', () => {
+    it('Should calculate value when set submission if the component is not persistent', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(calculatedNotPersistentValue).then(() => {
+        form.setSubmission({
+          data:
+            {
+              a: 'testValue'
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const persistentField = form.getComponent(['a']);
+          assert.equal(persistentField.dataValue, 'testValue', 'Should set the value from the submission');
+          const notPersistentFieldInput = form.element.querySelector('input[name="data[textField]"]');
+          assert.equal(notPersistentFieldInput.value, 'testValue', 'Should calculate the value');
+          done();
+        }, 550);
       }).catch(done);
     });
   });

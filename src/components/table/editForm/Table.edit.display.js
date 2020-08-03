@@ -32,6 +32,10 @@ export default [
     ignore: true
   },
   {
+    key: 'tableView',
+    ignore: true
+  },
+  {
     type: 'number',
     label: 'Number of Rows',
     key: 'numRows',

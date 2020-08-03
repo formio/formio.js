@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 61,
+  "end": 89,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 4,
+      "line": 5,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 61,
+    "end": 89,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 4,
+        "line": 5,
         "column": 0
       }
     },
@@ -66,30 +66,66 @@
       },
       {
         "type": "ImportDeclaration",
-        "start": 33,
-        "end": 60,
+        "start": 32,
+        "end": 59,
         "loc": {
           "start": {
-            "line": 3,
+            "line": 2,
             "column": 0
           },
           "end": {
-            "line": 3,
+            "line": 2,
             "column": 27
           }
         },
         "specifiers": [],
         "source": {
           "type": "StringLiteral",
-          "start": 40,
-          "end": 59,
+          "start": 39,
+          "end": 58,
           "loc": {
             "start": {
-              "line": 3,
+              "line": 2,
               "column": 7
             },
             "end": {
-              "line": 3,
+              "line": 2,
+              "column": 26
+            }
+          },
+          "extra": {
+            "rawValue": "element-qsa-scope",
+            "raw": "'element-qsa-scope'"
+          },
+          "value": "element-qsa-scope"
+        }
+      },
+      {
+        "type": "ImportDeclaration",
+        "start": 61,
+        "end": 88,
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 0
+          },
+          "end": {
+            "line": 4,
+            "column": 27
+          }
+        },
+        "specifiers": [],
+        "source": {
+          "type": "StringLiteral",
+          "start": 68,
+          "end": 87,
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 7
+            },
+            "end": {
+              "line": 4,
               "column": 26
             }
           },
@@ -201,15 +237,96 @@
         "updateContext": null
       },
       "value": "import",
-      "start": 33,
-      "end": 39,
+      "start": 32,
+      "end": 38,
       "loc": {
         "start": {
-          "line": 3,
+          "line": 2,
           "column": 0
         },
         "end": {
-          "line": 3,
+          "line": 2,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "element-qsa-scope",
+      "start": 39,
+      "end": 58,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 7
+        },
+        "end": {
+          "line": 2,
+          "column": 26
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 58,
+      "end": 59,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 26
+        },
+        "end": {
+          "line": 2,
+          "column": 27
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "import",
+        "keyword": "import",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "import",
+      "start": 61,
+      "end": 67,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 0
+        },
+        "end": {
+          "line": 4,
           "column": 6
         }
       }
@@ -228,15 +345,15 @@
         "updateContext": null
       },
       "value": "./ElementPolyfill",
-      "start": 40,
-      "end": 59,
+      "start": 68,
+      "end": 87,
       "loc": {
         "start": {
-          "line": 3,
+          "line": 4,
           "column": 7
         },
         "end": {
-          "line": 3,
+          "line": 4,
           "column": 26
         }
       }
@@ -254,15 +371,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 59,
-      "end": 60,
+      "start": 87,
+      "end": 88,
       "loc": {
         "start": {
-          "line": 3,
+          "line": 4,
           "column": 26
         },
         "end": {
-          "line": 3,
+          "line": 4,
           "column": 27
         }
       }
@@ -280,15 +397,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 61,
-      "end": 61,
+      "start": 89,
+      "end": 89,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 0
         },
         "end": {
-          "line": 4,
+          "line": 5,
           "column": 0
         }
       }
