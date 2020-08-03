@@ -961,7 +961,7 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
