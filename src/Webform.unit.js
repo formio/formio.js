@@ -89,7 +89,8 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it('Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn', function(done) {
+  it(`Should show validation errors and update validation errors list when openning and editing edit grid rows 
+  in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement);
 
@@ -149,17 +150,44 @@ describe('Webform tests', function() {
                 //checking if alert with errors list appeared inside the modal
                 assert.equal(!!alertWithErrorText, true);
 
-                const numberComponent = rowModalAfterValidation.querySelector('.formio-component-number');
-                const numberComponentError = numberComponent.querySelector('.error').textContent;
+                const alertErrorMessages = rowModalAfterValidation.querySelectorAll('[ref="messageRef"]');
+                assert.equal(alertErrorMessages.length, 1);
+
+                const numberComponentError = rowModalAfterValidation.querySelector('.formio-component-number').querySelector('.error').textContent;
                 //checking if error was shown for empty required field
                 assert.equal(numberComponentError, 'Number is required');
 
-                done();
-              }, 350);
-            }, 300);
-          }, 200);
-        }, 150);
-      }, 100);
+                const numberInput = rowModalAfterValidation.querySelector('[name="data[editGrid][0][number]"]');
+                numberInput.value = 123;
+                //input value to make the field valid
+                numberInput.dispatchEvent(inputEvent);
+
+                setTimeout(() => {
+                  const rowModalWithValidFields = document.querySelector('.formio-dialog-content');
+                  const alertErrorMessagesAfterInputtingValidValues = rowModalWithValidFields.querySelectorAll('[ref="messageRef"]');
+                  assert.equal(alertErrorMessagesAfterInputtingValidValues.length, 0);
+
+                  //input values to make all row fields invalid
+                  const validNumberInput = rowModalWithValidFields.querySelector('[name="data[editGrid][0][number]"]');
+                  validNumberInput.value = null;
+                  validNumberInput.dispatchEvent(inputEvent);
+
+                  const validTextInput = rowModalWithValidFields.querySelector('[name="data[editGrid][0][textField]"]');
+                  validTextInput.value = '';
+                  validTextInput.dispatchEvent(inputEvent);
+
+                  setTimeout(() => {
+                    const alertErrorMessagesAfterInputtingInvalidValues = document.querySelector('.formio-dialog-content').querySelectorAll('[ref="messageRef"]');
+                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length,2);
+
+                    done();
+                  }, 280);
+                }, 240);
+              }, 200);
+            }, 160);
+          }, 120);
+        }, 80);
+      }, 50);
     }).catch((err) => done(err));
   });
 

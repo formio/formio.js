@@ -38,7 +38,14 @@ export default class NestedArrayComponent extends NestedDataComponent {
 
   checkRows(method, data, opts, defaultValue, silentCheck) {
     return this.iteratableRows.reduce(
-      (valid, row) => this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid,
+      (valid, row, rowIndex) => {
+        if (!opts?.rowIndex || opts?.rowIndex === rowIndex ) {
+          return this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid;
+        }
+        else {
+          return valid;
+        }
+      },
       defaultValue,
     );
   }
