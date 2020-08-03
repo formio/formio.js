@@ -1230,3 +1230,166 @@ div[read-only="true"] {
     }
   }
 }
+
+$wizard-tab-color: #e9ecef;
+$wizard-tab-active-color: #007bff;
+
+$wizard-classic-header-size: 12px;
+$wizard-classic-progress-height: 10px;
+$wizard-classic-circle-size: 30px;
+$wizard-classic-progress-animation-time: .4s;
+
+@keyframes formio-classic-wizard-circle {
+  0% {
+    border-color: $wizard-tab-color;
+  }
+
+  100% {
+    border-color: $wizard-tab-active-color;
+  }
+}
+
+@keyframes formio-classic-wizard-circle-reverted {
+  0% {
+    border-color: $wizard-tab-active-color;
+  }
+
+  100% {
+    border-color: $wizard-tab-color;
+  }
+}
+
+.formio-classic-wizard {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+  margin: 21px 0;
+  padding: 0 $wizard-classic-circle-size / 2;
+
+  & > .formio-classic-wizard-wrapper {
+    width: 100%;
+    position: relative;
+  }
+
+  &-steps {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  & .formio-classic-wizard-progress {
+    background: $wizard-tab-color;
+    top: $wizard-classic-circle-size / 2 + $wizard-classic-header-size * 2 - $wizard-classic-progress-height / 2;
+
+    position: absolute;
+    height: $wizard-classic-progress-height;
+    width: 100%;
+
+    & > .formio-classic-wizard-progress-fill {
+      height: 100%;
+      position: relative;
+      background: #007bff;
+      width: 0;
+      left: 0;
+
+      transition: width $wizard-classic-progress-animation-time ease-in-out;
+      transform-origin: left;
+    }
+  }
+
+  &-step {
+    &:first-child {
+      right: $wizard-classic-circle-size / 2;
+    }
+
+    &:last-child {
+      left: $wizard-classic-circle-size / 2;
+    }
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-size: $wizard-classic-header-size;
+    line-height: $wizard-classic-header-size;
+
+    position: relative;
+
+    & > .formio-classic-wizard-header {
+      margin-bottom: $wizard-classic-header-size;
+    }
+
+    & > .formio-classic-wizard-circle {
+      cursor: pointer;
+
+      border: ($wizard-classic-circle-size / 4) solid $wizard-tab-color;
+      border-radius: 50%;
+      width: $wizard-classic-circle-size;
+      height: $wizard-classic-circle-size;
+
+      background-color: $wizard-tab-color;
+      transition: border-color $wizard-classic-progress-animation-time ease;
+
+      &:hover {
+        border-color: darken(#e9ecef, 30%);
+      }
+
+      &.reverted {
+        animation: formio-classic-wizard-circle-reverted $wizard-classic-progress-animation-time linear;
+      }
+    }
+
+    &.active > .formio-classic-wizard-circle {
+      border-color: $wizard-tab-active-color;
+
+      &.animated {
+        animation: formio-classic-wizard-circle $wizard-classic-progress-animation-time linear;
+      }
+
+      &:hover {
+        border-color: darken(#007bff, 10%);
+      }
+    }
+  }
+}
+
+.formio-wizard-header {
+  &_default {
+    width: 100%;
+  }
+
+  &__cells {
+    height: 6px;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  &__cell {
+    flex: 1;
+    margin: 0 2px;
+    background-color: $wizard-tab-color;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.active {
+      background-color: $wizard-tab-active-color;
+    }
+  }
+
+  &__info {
+    line-height: 18px;
+    margin: 12px 0;
+  }
+
+  &__title {
+    font-weight: bold;
+    font-size: 18px;
+  }
+}

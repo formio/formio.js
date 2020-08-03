@@ -1,9 +1,48 @@
 <nav aria-label="navigation" id="{{ ctx.wizardKey }}-header">
-  <ul class="pagination">
-    {% ctx.panels.forEach(function(panel, index) { %}
-    <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="">
-      <span class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(panel.title)}}</span>
-    </li>
-    {% }) %}
-  </ul>
+  {% if (ctx.options && ctx.options.renderMode === 'classic') { %}
+    <div class="formio-classic-wizard">
+      <div class="formio-classic-wizard-wrapper">
+        {% if (ctx.panels.length > 1 ) { %}
+          <div class="formio-classic-wizard-progress">
+            <div
+              class="formio-classic-wizard-progress-fill"
+              style="width: {{ctx.progressFillWidth}};"
+              ref="progressFill"
+            ></div>
+          </div>
+        {% } %}
+        <div class="formio-classic-wizard-steps"{{ctx.panels.length <= 1 ? ' style="justify-content: center;"' : ''}}>
+          {% ctx.panels.forEach(function(panel, index) { %}
+            <div class="formio-classic-wizard-step{{ctx.currentPage >= index ? ' active' : ''}}">
+              <div class="formio-classic-wizard-header text-center">{{ctx.t(panel.title)}}</div>
+              <a
+                class="formio-classic-wizard-circle{{index > ctx.prevPage ? ' animated' : ''}}{{index <= ctx.prevPage && index > ctx.currentPage ? ' reverted' : ''}}"
+                ref="{{ctx.wizardKey}}-link">
+              </a>
+            </div>
+          {% }) %}
+        </div>
+      </div>
+    </div>
+  {% } else if (ctx.options && ctx.options.renderMode === 'default') { %}
+    <div class="formio-wizard-header_default">
+      <div class="formio-wizard-header__cells">
+        {% ctx.panels.forEach(function(panel, index) { %}
+          <div class="formio-wizard-header__cell{{index <= ctx.currentPage ? ' active' : ''}}"></div>
+        {% }) %}
+      </div>
+      <div class="formio-wizard-header__info">
+        {{ctx.currentPage + 1}} of {{ctx.panels.length}} - 
+        <span class="formio-wizard-header__title">{{ctx.panels[ctx.currentPage].title}}</span>
+      </div>
+    </div>
+  {% } else { %}
+    <ul class="pagination">
+      {% ctx.panels.forEach(function(panel, index) { %}
+      <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="">
+        <span class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(panel.title)}}</span>
+      </li>
+      {% }) %}
+    </ul>
+  {% } %}
 </nav>

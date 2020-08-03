@@ -39,6 +39,7 @@ export class Wizard extends Webform {
     this.currentPanel = null;
     this.currentNextPage = 0;
     this._seenPages = [0];
+    this._prevPageNum = 0;
   }
 
   isLastPage() {
@@ -117,13 +118,34 @@ export class Wizard extends Webform {
   }
 
   get renderContext() {
-    return {
+    const ctx = {
       wizardKey: this.wizardKey,
       isBreadcrumbClickable: this.isBreadcrumbClickable(),
       panels: this.pages.map(page => page.component),
       buttons: this.buttons,
       currentPage: this.page,
+      prevPage: this.prevPageNum,
     };
+
+    if (!this.options || this.options.renderMode !== 'classic') {
+      return ctx;
+    }
+
+    if (this.pages.length - 1 <= 0) {
+      ctx.progressFillWidth = '100%';
+      return ctx;
+    }
+
+    ctx.progressFillWidth = `${this.prevPageNum / (this.pages.length - 1) * 100}%`;
+    return ctx;
+  }
+
+  get prevPageNum() {
+    return this._prevPageNum;
+  }
+
+  set prevPageNum(value) {
+    this._prevPageNum = value;
   }
 
   prepareNavigationSettings(ctx) {
@@ -218,6 +240,7 @@ export class Wizard extends Webform {
       [`${this.wizardKey}-next`]: 'single',
       [`${this.wizardKey}-submit`]: 'single',
       [`${this.wizardKey}-link`]: 'multiple',
+      progressFill: 'single',
     });
 
     this.hook('attachWebform', element, this);
@@ -275,6 +298,18 @@ export class Wizard extends Webform {
           });
         });
       });
+    }
+
+    if (this.refs.progressFill) {
+      if (this.pages.length - 1 <= 0) {
+        return this.refs.progressFill.style.width = '100%';
+      }
+
+      const finishRate = this.page / (this.pages.length - 1);
+      // Animate progress on component render
+      setTimeout(() => {
+        this.refs.progressFill.style.width = `${finishRate * 100}%`;
+      }, 0);
     }
   }
 
@@ -347,6 +382,7 @@ export class Wizard extends Webform {
   }
 
   setPage(num) {
+    this.prevPageNum = this.page;
     if (num === this.page) {
       return NativePromise.resolve();
     }
