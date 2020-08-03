@@ -194,6 +194,16 @@ export default class Component extends Element {
   }
 
   /**
+   * Return the validator as part of the component.
+   *
+   * @return {ValidationChecker}
+   * @constructor
+   */
+  static get Validator() {
+    return Validator;
+  }
+
+  /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.
    *
@@ -633,13 +643,24 @@ export default class Component extends Element {
 
   getLabelInfo() {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isLeftPosition = this.labelPositions[0] === 'left';
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
+
+    let contentMargin = '';
+    if (this.component.hideLabel) {
+      const margin = this.labelWidth + this.labelMargin;
+      contentMargin = isRightPosition ? `margin-right: ${margin}%` : '';
+      contentMargin = isLeftPosition ? `margin-left: ${margin}%` : '';
+    }
+
     const labelStyles = `
       flex: ${this.labelWidth};
-      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+      ${isRightPosition ? 'margin-left' : 'margin-right'}: ${this.labelMargin}%;
     `;
     const contentStyles = `
       flex: ${100 - this.labelWidth - this.labelMargin};
+      ${contentMargin};
+      ${this.component.hideLabel ? `max-width: ${100 - this.labelWidth - this.labelMargin}` : ''};
     `;
 
     return {
@@ -940,7 +961,7 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
@@ -2186,9 +2207,6 @@ export default class Component extends Element {
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
-    if (this.componentModal && flags && flags.fromSubmission) {
-      this.componentModal.setValue(value);
-    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -2285,6 +2303,9 @@ export default class Component extends Element {
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
+    }
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
     }
     return changed;
   }
@@ -2431,7 +2452,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission) {
+    if (flags.fromSubmission && this.component.persistent === true) {
       this.calculatedValue = calculatedValue;
       return false;
     }
@@ -2536,9 +2557,10 @@ export default class Component extends Element {
     if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
-    else {
+    else if (!silentCheck) {
       this.setCustomValidity('');
     }
+
     return !hasErrors;
   }
 
@@ -2596,7 +2618,11 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+
     if (flags.noValidate && !flags.validateOnInit) {
+      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
+        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+      }
       return true;
     }
 

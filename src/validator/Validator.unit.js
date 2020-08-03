@@ -484,7 +484,7 @@ describe('Validator Tests', () => {
     component.dataValue = 1000000000;
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = '12';
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = undefined;
     assert.deepEqual(Validator.checkComponent(component, {}), pass);
     component.dataValue = null;
