@@ -188,11 +188,12 @@ export default class SelectComponent extends Field {
     }
 
     if (data.data) {
-      data.data = this.isEntireObjectDisplay() && _.isObject(data.data)
+      // checking additional fields in the template for the selected Entire Object option
+      const hasNestedFields = this.component.template.match(/(?<=item\.data.)\w*/g)[0];
+      data.data = this.isEntireObjectDisplay() && _.isObject(data.data) && !hasNestedFields
         ? JSON.stringify(data.data)
         : data.data;
     }
-
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
@@ -974,7 +975,8 @@ export default class SelectComponent extends Field {
         groupId: -1,
         customProperties: null,
         placeholder: true,
-        keyCode: null });
+        keyCode: null
+      });
     }
   }
 
@@ -1156,7 +1158,7 @@ export default class SelectComponent extends Field {
         const numberValue = Number(this.value);
         const isEquivalent = value.toString() === numberValue.toString();
 
-        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !=='' && isEquivalent) {
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !== '' && isEquivalent) {
           this.value = numberValue;
         }
 
@@ -1167,7 +1169,7 @@ export default class SelectComponent extends Field {
         if (
           _.isString(this.value)
           && (this.value.toLowerCase() === 'true'
-          || this.value.toLowerCase() === 'false')
+            || this.value.toLowerCase() === 'false')
         ) {
           this.value = (this.value.toLowerCase() === 'true');
         }
@@ -1267,11 +1269,11 @@ export default class SelectComponent extends Field {
 
   isInitApiCallNeeded(hasValue) {
     return this.component.lazyLoad &&
-    !this.lazyLoadInit &&
-    !this.active &&
-    !this.selectOptions.length &&
-    hasValue &&
-    this.visible && (this.component.searchField || this.component.valueProperty);
+      !this.lazyLoadInit &&
+      !this.active &&
+      !this.selectOptions.length &&
+      hasValue &&
+      this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
   setChoicesValue(value, hasPreviousValue) {
@@ -1280,7 +1282,7 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-          this.choices.removeActiveItems();
+        this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
@@ -1390,14 +1392,14 @@ export default class SelectComponent extends Field {
         items,
         valueProperty,
       } = this.component.dataSrc === 'values'
-        ? {
-          items: convertToString(this.getNormalizedValues(), 'value'),
-          valueProperty: 'value',
-        }
-        : {
-          items: convertToString(this.getCustomItems(), this.valueProperty),
-          valueProperty: this.valueProperty,
-        };
+          ? {
+            items: convertToString(this.getNormalizedValues(), 'value'),
+            valueProperty: 'value',
+          }
+          : {
+            items: convertToString(this.getCustomItems(), this.valueProperty),
+            valueProperty: this.valueProperty,
+          };
 
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))

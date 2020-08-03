@@ -88,7 +88,6 @@ const compileStyles = (styles, file) => {
 };
 gulp.task('styles-form', function formStyles() {
   return compileStyles([
-    './node_modules/flatpickr/dist/flatpickr.min.css',
     './node_modules/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './src/sass/formio.form.scss'
@@ -96,7 +95,6 @@ gulp.task('styles-form', function formStyles() {
 });
 gulp.task('styles-builder', function builderStyles() {
   return compileStyles([
-    './node_modules/flatpickr/dist/flatpickr.min.css',
     './node_modules/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',
@@ -106,7 +104,6 @@ gulp.task('styles-builder', function builderStyles() {
 });
 gulp.task('styles-full', gulp.series('builder-fonts', function fullStyles() {
   return compileStyles([
-    './node_modules/flatpickr/dist/flatpickr.min.css',
     './node_modules/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',

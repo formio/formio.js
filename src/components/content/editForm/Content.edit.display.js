@@ -32,6 +32,10 @@ export default [
     ignore: true
   },
   {
+    key: 'tableView',
+    ignore: true
+  },
+  {
     weight: 700,
     type: 'checkbox',
     label: 'Refresh On Change',

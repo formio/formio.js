@@ -12,11 +12,11 @@ export default [
     ignore: true
   },
   {
-    key: 'hideLabel',
+    key: 'autofocus',
     ignore: true
   },
   {
-    key: 'autofocus',
+    key: 'tableView',
     ignore: true
   },
   {
