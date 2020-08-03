@@ -5,6 +5,7 @@ import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers';
 import Rules from './validator/Rules';
+import Widgets from './widgets';
 import Formio from './Formio';
 import Form from './Form';
 import Utils from './utils';
@@ -90,9 +91,11 @@ Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
+Formio.Rules = Rules;
+Formio.Widgets = Widgets;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
 
 // Export the components.
-export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio };
+export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Utils, Form, Formio };
