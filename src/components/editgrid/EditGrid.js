@@ -51,30 +51,34 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   static get defaultHeaderTemplate() {
     return `<div class="row">
-  {% (component.components || []).forEach(function(component) { %}
-    <div class="col-sm-2">{{ component.label }}</div>
-  {% }) %}
-</div>`;
+      {% util.eachComponent(components, function(component) { %}
+        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+          <div class="col-sm-2">{{ component.label }}</div>
+        {% } %}
+      {% }) %}
+    </div>`;
   }
 
   static get defaultRowTemplate() {
     return `<div class="row">
-  {% instance.eachComponent(function(component) { %}
-    <div class="col-sm-2">
-      {{ component.getView(component.dataValue) }}
-    </div>
-  {% }, rowIndex) %}
-  {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
-    <div class="col-sm-2">
-      <div class="btn-group pull-right">
-        <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
-        {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
-          <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
+      {% util.eachComponent(components, function(component) { %}
+        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+          <div class="col-sm-2">
+            {{ getView(component, row[component.key]) }}
+          </div>
         {% } %}
-      </div>
-    </div>
-  {% } %}
-</div>`;
+      {% }) %}
+      {% if (!instance.disabled) { %}
+        <div class="col-sm-2">
+          <div class="btn-group pull-right">
+            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
+            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
+              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
+            {% } %}
+          </div>
+        </div>
+      {% } %}
+    </div>`;
   }
 
   get defaultDialogTemplate() {
