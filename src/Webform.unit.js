@@ -7,7 +7,7 @@ import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
-import Flatpickr from 'flatpickr';
+import 'flatpickr';
 import {
   settingErrors,
   clearOnHide,
@@ -89,7 +89,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it(`Should show validation errors and update validation errors list when openning and editing edit grid rows 
+  it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement);
