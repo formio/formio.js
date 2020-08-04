@@ -23,8 +23,12 @@ import {
   formWithTimeComponent,
   formWithEditGridModalDrafts,
   formWithBlurValidationInsidePanel,
+<<<<<<< HEAD
   modalEditComponents,
   calculatedNotPersistentValue,
+=======
+  initiallyCollapsedPanel,
+>>>>>>> Added test
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -1490,6 +1494,35 @@ describe('Webform tests', function() {
         }, 550);
       }).catch(done);
     });
+  });
+
+  describe('Initially Collapsed Panel', () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(initiallyCollapsedPanel).then(() => {
+      it('Should be collapsed', (done) => {
+        try {
+          const panelBody = form.element.querySelector('[ref=nested-panel]');
+          assert.equal(panelBody, null, 'Should not render the panel\'s body when initially collapsed');
+          done();
+        }
+        catch (err) {
+          done(err);
+        }
+      });
+      it('Should open when an Error occured', (done) => {
+        form.executeSubmit().catch(() => {
+          try {
+            const panelBody = form.element.querySelector('[ref=nested-panel]');
+            assert(panelBody, 'Should open the panel when an error occured');
+            done();
+          }
+          catch (err) {
+            done(err);
+          }
+        });
+      });
+    }).catch((err) => console.error(err));
   });
 
   each(FormTests, (formTest) => {

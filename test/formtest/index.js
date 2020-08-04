@@ -25,6 +25,7 @@ const formWithEditGridModalDrafts = require('./editGridModalDraftsTest.json');
 const formWithBlurValidationInsidePanel = require('./blurValidationInsidePanel.json');
 const modalEditComponents = require('./modalEditComponents.json');
 const calculatedNotPersistentValue = require('./calculatedNotPersistentValue.json');
+const initiallyCollapsedPanel = require('./initiallyCollapsedPanel.json');
 
 module.exports = {
   advanced,
@@ -54,4 +55,5 @@ module.exports = {
   formWithBlurValidationInsidePanel,
   modalEditComponents,
   calculatedNotPersistentValue,
+  initiallyCollapsedPanel,
 };
