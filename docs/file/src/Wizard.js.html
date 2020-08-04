@@ -71,8 +71,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -297,6 +296,17 @@ export default class Wizard extends Webform {
           .filter(all ? _.identity : (p, index) =&gt; this._seenPages.includes(index));
 
     return pages;
+  }
+
+  get data() {
+    return super.data;
+  }
+
+  set data(value) {
+    this.establishPages(value);
+    _.each(this.getPages({ all: true }), (component) =&gt; {
+      component.data = this.componentContext(component);
+    });
   }
 
   getComponents() {
@@ -529,7 +539,7 @@ export default class Wizard extends Webform {
     });
   }
 
-  establishPages() {
+  establishPages(data = this.data) {
     this.pages = [];
     this.prefixComps = [];
     this.suffixComps = [];
@@ -550,7 +560,7 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const isVisible = checkCondition(item, this.data, this.data, this.component, this);
+          const isVisible = checkCondition(item, data, data, this.component, this);
           if (isVisible) {
             visible.push(item);
             if (page) {
@@ -559,6 +569,7 @@ export default class Wizard extends Webform {
           }
           if (!page &amp;&amp; isVisible) {
             page = this.createComponent(item, pageOptions);
+            page.visible = isVisible;
             this.pages.push(page);
             page.eachComponent((component) =&gt; {
               component.page = (this.pages.length - 1);
@@ -783,7 +794,10 @@ export default class Wizard extends Webform {
   }
 
   setValue(submission, flags = {}) {
-    const changed = super.setValue(submission, flags);
+    this.establishPages(submission.data);
+    const changed = this.getPages({ all: true }).reduce((changed, page) =&gt; {
+      return this.setNestedValue(page, submission.data, flags, changed) || changed;
+    }, false);
     this.pageFieldLogic(this.page);
     return changed;
   }

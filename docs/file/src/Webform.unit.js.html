@@ -71,8 +71,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -250,6 +249,7 @@ import i18next from &apos;i18next&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
+import &apos;flatpickr&apos;;
 import {
   settingErrors,
   clearOnHide,
@@ -264,7 +264,9 @@ import {
   formWithCalculatedValueWithoutOverriding,
   formWithTimeComponent,
   formWithEditGridModalDrafts,
-  formWithBlurValidationInsidePanel
+  formWithBlurValidationInsidePanel,
+  modalEditComponents,
+  calculatedNotPersistentValue,
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
@@ -329,7 +331,8 @@ describe(&apos;Webform tests&apos;, function() {
     .catch((err) =&gt; done(err));
   });
 
-  it(&apos;Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn&apos;, function(done) {
+  it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
+  in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithDraftModals = new Webform(formElement);
 
@@ -389,17 +392,44 @@ describe(&apos;Webform tests&apos;, function() {
                 //checking if alert with errors list appeared inside the modal
                 assert.equal(!!alertWithErrorText, true);
 
-                const numberComponent = rowModalAfterValidation.querySelector(&apos;.formio-component-number&apos;);
-                const numberComponentError = numberComponent.querySelector(&apos;.error&apos;).textContent;
+                const alertErrorMessages = rowModalAfterValidation.querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
+                assert.equal(alertErrorMessages.length, 1);
+
+                const numberComponentError = rowModalAfterValidation.querySelector(&apos;.formio-component-number&apos;).querySelector(&apos;.error&apos;).textContent;
                 //checking if error was shown for empty required field
                 assert.equal(numberComponentError, &apos;Number is required&apos;);
 
-                done();
-              }, 350);
-            }, 300);
-          }, 200);
-        }, 150);
-      }, 100);
+                const numberInput = rowModalAfterValidation.querySelector(&apos;[name=&quot;data[editGrid][0][number]&quot;]&apos;);
+                numberInput.value = 123;
+                //input value to make the field valid
+                numberInput.dispatchEvent(inputEvent);
+
+                setTimeout(() =&gt; {
+                  const rowModalWithValidFields = document.querySelector(&apos;.formio-dialog-content&apos;);
+                  const alertErrorMessagesAfterInputtingValidValues = rowModalWithValidFields.querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
+                  assert.equal(alertErrorMessagesAfterInputtingValidValues.length, 0);
+
+                  //input values to make all row fields invalid
+                  const validNumberInput = rowModalWithValidFields.querySelector(&apos;[name=&quot;data[editGrid][0][number]&quot;]&apos;);
+                  validNumberInput.value = null;
+                  validNumberInput.dispatchEvent(inputEvent);
+
+                  const validTextInput = rowModalWithValidFields.querySelector(&apos;[name=&quot;data[editGrid][0][textField]&quot;]&apos;);
+                  validTextInput.value = &apos;&apos;;
+                  validTextInput.dispatchEvent(inputEvent);
+
+                  setTimeout(() =&gt; {
+                    const alertErrorMessagesAfterInputtingInvalidValues = document.querySelector(&apos;.formio-dialog-content&apos;).querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
+                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length,2);
+
+                    done();
+                  }, 280);
+                }, 240);
+              }, 200);
+            }, 160);
+          }, 120);
+        }, 80);
+      }, 50);
     }).catch((err) =&gt; done(err));
   });
 
@@ -1640,6 +1670,66 @@ describe(&apos;Webform tests&apos;, function() {
             done();
           }, 250);
         }, 250);
+      }).catch(done);
+    });
+  });
+
+  describe(&apos;Modal Edit&apos;, () =&gt; {
+    const submission = {
+      state: &apos;submitted&apos;,
+      data: {
+        checkbox: true,
+        selectBoxes: {
+          a: true,
+          b: true
+        },
+        select: &apos;f&apos;,
+        submit: true
+      }
+    };
+    const componentsKeys = [&apos;checkbox&apos;, &apos;selectBoxes&apos;, &apos;select&apos;];
+    const expectedValues = {
+      checkbox: &apos;Yes&apos;,
+      selectBoxes: &apos;a, b&apos;,
+      select: &apos;f&apos;
+    };
+    it(&apos;Test rendering previews after the submission is set&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(modalEditComponents).then(() =&gt; {
+        return form.setSubmission(submission, { fromSubmission: true }).then(() =&gt; {
+          componentsKeys.forEach((key) =&gt; {
+            const comp = form.getComponent([key]);
+            assert(comp);
+            const preview = comp.componentModal.refs.openModal;
+            assert(preview);
+            assert.equal(preview.textContent.replace(/\n|\t/g, &apos;&apos;).trim(), expectedValues[key]);
+          });
+          done();
+        });
+      }).catch(done);
+    });
+  });
+
+  describe(&apos;Calculate Value&apos;, () =&gt; {
+    it(&apos;Should calculate value when set submission if the component is not persistent&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(calculatedNotPersistentValue).then(() =&gt; {
+        form.setSubmission({
+          data:
+            {
+              a: &apos;testValue&apos;
+            },
+          state: &apos;submitted&apos;
+        });
+        setTimeout(() =&gt; {
+          const persistentField = form.getComponent([&apos;a&apos;]);
+          assert.equal(persistentField.dataValue, &apos;testValue&apos;, &apos;Should set the value from the submission&apos;);
+          const notPersistentFieldInput = form.element.querySelector(&apos;input[name=&quot;data[textField]&quot;]&apos;);
+          assert.equal(notPersistentFieldInput.value, &apos;testValue&apos;, &apos;Should calculate the value&apos;);
+          done();
+        }, 550);
       }).catch(done);
     });
   });

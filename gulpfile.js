@@ -13,6 +13,7 @@ const eslint = require('gulp-eslint');
 const insert = require('gulp-insert');
 const template = require('gulp-template');
 const packageJson = require('./package.json');
+const _ = require('lodash');
 
 // Clean lib folder.
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
@@ -88,7 +89,6 @@ const compileStyles = (styles, file) => {
 };
 gulp.task('styles-form', function formStyles() {
   return compileStyles([
-    './node_modules/flatpickr/dist/flatpickr.min.css',
     './node_modules/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './src/sass/formio.form.scss'
@@ -96,7 +96,6 @@ gulp.task('styles-form', function formStyles() {
 });
 gulp.task('styles-builder', function builderStyles() {
   return compileStyles([
-    './node_modules/flatpickr/dist/flatpickr.min.css',
     './node_modules/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',
@@ -106,7 +105,6 @@ gulp.task('styles-builder', function builderStyles() {
 });
 gulp.task('styles-full', gulp.series('builder-fonts', function fullStyles() {
   return compileStyles([
-    './node_modules/flatpickr/dist/flatpickr.min.css',
     './node_modules/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',
@@ -119,8 +117,18 @@ gulp.task('styles-full', gulp.series('builder-fonts', function fullStyles() {
 // Script builds.
 const webpackDev = require('./config/webpack.dev');
 const webpackProd = require('./config/webpack.prod');
-const buildDev = (input, output) => webpackStream(webpackDev(input, output), webpack).pipe(gulp.dest('dist'));
-const buildProd = (input, output) => webpackStream(webpackProd(input, output), webpack).pipe(gulp.dest('dist'));
+const buildDev = (input, output) => {
+  let devConfig = _.cloneDeep(webpackDev);
+  devConfig.entry = `./lib/${input}`;
+  devConfig.output.filename = output;
+  return webpackStream(devConfig, webpack).pipe(gulp.dest('dist'));
+};
+const buildProd = (input, output) => {
+  let prodConfig = _.cloneDeep(webpackProd);
+  prodConfig.entry = `./lib/${input}`;
+  prodConfig.output.filename = output;
+  return webpackStream(prodConfig, webpack).pipe(gulp.dest('dist'));
+}
 const build = (input, output) => {
   const prodFile = output.replace(/\.js$/, '.min.js');
   gulp.task(output, () => buildDev(input, output));

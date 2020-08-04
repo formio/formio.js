@@ -938,7 +938,7 @@ export default class WebformBuilder extends Component {
 
     // Change the "default value" field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-    if (defaultValueComponent) {
+    if (defaultValueComponent && component.type !== 'hidden') {
       const defaultChanged = changed && (
         (changed.component && changed.component.key === 'defaultValue')
         || (changed.instance && defaultValueComponent.hasComponent && defaultValueComponent.hasComponent(changed.instance))
