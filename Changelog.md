@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.2
+#### Fixed
+ - FJS-1118: fixes an issue where initially collapsed panels are opened when have required component inside
+ - FJS-1041: added possibility to interpolate dataGrid max/min length
+
 ### 4.12.0-rc.1
 #### Fixed
  - FJS-1109: replaced scope with alternative selector for working in IE11
