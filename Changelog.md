@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.12.0-rc.1
 #### Fixed
  - FJS-1109: replaced scope with alternative selector for working in IE11
  - FJS-1079: fixes an issue where label width ignored when label is hidden
@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
  - FJS-1006: Remove 'Table View' setting for layout components
  - VPAT-498 Changed flatpickr to be lazy-loaded and removed dependencies
+ - Reverted EditGrid default template back to where it was before to adhere to 80% usecases
 
 #### Added
  - VPAT-502 Added 'for' attributes for labels and IDs for inputs

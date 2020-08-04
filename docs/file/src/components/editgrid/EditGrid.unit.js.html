@@ -283,8 +283,8 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
         const firstValue = component.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;)[0].querySelector(&apos;.col-sm-2&apos;).textContent.trim();
         const secondValue = component.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;)[1].querySelector(&apos;.col-sm-2&apos;).textContent.trim();
 
-        assert.equal(firstValue, &apos;[Complex Data]&apos;);
-        assert.equal(secondValue, &apos;[Complex Data]&apos;);
+        assert.equal(firstValue, &apos;55555&apos;);
+        assert.equal(secondValue, &apos;666666&apos;);
         done();
       }, 600);
     });
