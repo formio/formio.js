@@ -38,6 +38,10 @@ export default class Input extends Multivalue {
       attr.disabled = 'disabled';
     }
 
+    if (this.component.autocomplete) {
+      attr.autocomplete = this.component.autocomplete;
+    }
+
     _.defaults(attr, this.component.attributes);
 
     return {
