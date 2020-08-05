@@ -48,6 +48,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Retain key if provided when drag/dropping an element
  - FJS-1050: added hide label option for panel component
 
+### 4.11.1
+#### Changes
+ - No changes. Released 4.11.1-rc.9 as official release.
+
 ### 4.11.1-rc.9
 #### Fixed
  - FJS-1117: fixed an issue where validation error is shown for valid value when component has invalid default value
