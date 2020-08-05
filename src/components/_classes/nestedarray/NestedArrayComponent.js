@@ -28,10 +28,24 @@ export default class NestedArrayComponent extends NestedDataComponent {
     this._rowIndex = value;
   }
 
+  init() {
+    super.init();
+    this.prevHasAddButton = this.hasAddButton();
+  }
+
+  checkAddButtonChanged() {
+    const isAddButton = this.hasAddButton();
+    if (isAddButton !== this.prevHasAddButton) {
+      this.prevHasAddButton = isAddButton;
+      this.redraw();
+    }
+  }
+
   checkData(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+    this.checkAddButtonChanged();
 
     return this.checkRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
   }
@@ -39,7 +53,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
   checkRows(method, data, opts, defaultValue, silentCheck) {
     return this.iteratableRows.reduce(
       (valid, row, rowIndex) => {
-        if (!opts?.rowIndex || opts?.rowIndex === rowIndex ) {
+        if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
           return this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid;
         }
         else {

@@ -507,7 +507,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
         else {
           this.alert.showErrors(editRow.errors, false);
-          editRow.alerts= true;
+          editRow.alerts = true;
         }
       },
     }, this.component.saveRow || 'Save'));
@@ -561,7 +561,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
     editRow.prevState = editRow.state;
-    editRow.state = this.options.readOnly ? EditRowState.Viewing :  EditRowState.Editing;
+    editRow.state = this.options.readOnly ? EditRowState.Viewing : EditRowState.Editing;
 
     const dataSnapshot = fastCloneDeep(editRow.data);
 
@@ -750,7 +750,7 @@ export default class EditGridComponent extends NestedArrayComponent {
             ...flags,
             changed,
             rowIndex,
-          },   this.data);
+          }, this.data);
         }
         else if (editRow) {
           this.checkRow('checkData', null, {
