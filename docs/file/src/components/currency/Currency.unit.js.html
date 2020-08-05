@@ -246,7 +246,6 @@ import assert from &apos;power-assert&apos;;
 import {
   comp1,
   comp2,
-  comp3,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Currency Component&apos;, () =&gt; {
@@ -261,23 +260,6 @@ describe(&apos;Currency Component&apos;, () =&gt; {
     return Harness.testCreate(CurrencyComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
     });
-  });
-
-  it(&apos;Should place a caret between the period and the underline.&apos;, (done) =&gt; {
-    Harness.testCreate(CurrencyComponent, comp3, { language: &apos;en-US&apos; })
-      .then((component) =&gt; {
-        const inputEvent = new Event(&apos;input&apos;);
-        const currencyElement = component.element.querySelector(&apos;[name=&quot;data[currency]&quot;]&apos;);
-
-        currencyElement.value = 42;
-        currencyElement.dispatchEvent(inputEvent);
-        assert.equal(currencyElement.value, &apos;$42&apos;);
-
-        currencyElement.value = &apos;.&apos;;
-        currencyElement.dispatchEvent(inputEvent);
-        assert.equal(currencyElement.selectionStart, 3);
-        done();
-      });
   });
 
   it(&apos;Should format value on blur for USA locale&apos;, (done) =&gt; {

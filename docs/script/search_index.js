@@ -7560,12 +7560,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/currency/fixtures/comp3.js",
-    "file/src/components/currency/fixtures/comp3.js.html",
-    "src/components/currency/fixtures/comp3.js",
-    "file"
-  ],
-  [
     "src/components/currency/fixtures/index.js",
     "file/src/components/currency/fixtures/index.js.html",
     "src/components/currency/fixtures/index.js",

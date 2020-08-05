@@ -11,8 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2714: Fix Webhook Action authentication part autocompleting
  - FJS-1058: fixes an issuewhere the Signature has different dimensions in the View and Edit modes
  - FJS-1035: Fix Conditional add button for EditGrid
- - FJS-971: fix entering period as a first character in currency input
- - 
 
 ### 4.12.0-rc.1
 #### Fixed
