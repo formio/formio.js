@@ -627,6 +627,10 @@ export default class Component extends Element {
     return false;
   }
 
+  get pdfLabel() {
+    return _.get(this, 'component.properties.pdfLabel') || this.component.type;
+  }
+
   rightDirection(direction) {
     return direction === 'right';
   }
