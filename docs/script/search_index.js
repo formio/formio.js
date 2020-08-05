@@ -7560,6 +7560,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/currency/fixtures/comp3.js",
+    "file/src/components/currency/fixtures/comp3.js.html",
+    "src/components/currency/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/currency/fixtures/index.js",
     "file/src/components/currency/fixtures/index.js.html",
     "src/components/currency/fixtures/index.js",
@@ -10128,6 +10134,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/panel/panel.js~panelcomponent#hasinvalidcomponent",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-hasInvalidComponent",
+    "src/components/panel/Panel.js~PanelComponent#hasInvalidComponent",
+    "method"
+  ],
+  [
     "src/components/panel/panel.js~panelcomponent#nofield",
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-member-noField",
     "src/components/panel/Panel.js~PanelComponent#noField",
@@ -11458,6 +11470,12 @@ window.esdocSearchIndex = [
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-scale",
     "src/components/signature/Signature.js~SignatureComponent#scale",
     "member"
+  ],
+  [
+    "src/components/signature/signature.js~signaturecomponent#setdatatosigaturepad",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-setDataToSigaturePad",
+    "src/components/signature/Signature.js~SignatureComponent#setDataToSigaturePad",
+    "method"
   ],
   [
     "src/components/signature/signature.js~signaturecomponent#setvalue",

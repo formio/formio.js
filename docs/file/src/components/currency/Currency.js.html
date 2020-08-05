@@ -318,6 +318,19 @@ export default class CurrencyComponent extends NumberComponent {
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask || &apos;&apos;,
+      afterUpdate: (value) =&gt; {
+        if (value === &apos;.&apos; &amp;&amp; input.prevValue) {
+          const caretPosition = input.value.length - 1;
+          input.setSelectionRange(caretPosition, caretPosition);
+        }
+        input.prevValue = value;
+      }
+    });
+
+    input.mask.textMaskInputElement.update(input.value);
+    // Delay to allow mask to update first.
+    setTimeout(() =&gt; {
+      input.prevValue = input.value;
     });
   }
 

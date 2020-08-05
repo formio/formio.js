@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
  - FJS-1118: fixes an issue where initially collapsed panels are opened when have required component inside
  - FJS-1041: added possibility to interpolate dataGrid max/min length
+ - FOR-2714: Fix Webhook Action authentication part autocompleting
+ - FJS-1058: fixes an issuewhere the Signature has different dimensions in the View and Edit modes
+ - FJS-1035: Fix Conditional add button for EditGrid
+ - FJS-971: fix entering period as a first character in currency input
+ - 
 
 ### 4.12.0-rc.1
 #### Fixed

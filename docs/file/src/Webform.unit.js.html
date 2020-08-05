@@ -267,6 +267,7 @@ import {
   formWithBlurValidationInsidePanel,
   modalEditComponents,
   calculatedNotPersistentValue,
+  initiallyCollapsedPanel,
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
@@ -1709,6 +1710,35 @@ describe(&apos;Webform tests&apos;, function() {
         });
       }).catch(done);
     });
+  });
+
+  describe(&apos;Initially Collapsed Panel&apos;, () =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(initiallyCollapsedPanel).then(() =&gt; {
+      it(&apos;Should be collapsed&apos;, (done) =&gt; {
+        try {
+          const panelBody = form.element.querySelector(&apos;[ref=nested-panel]&apos;);
+          assert.equal(panelBody, null, &apos;Should not render the panel\&apos;s body when initially collapsed&apos;);
+          done();
+        }
+        catch (err) {
+          done(err);
+        }
+      });
+      it(&apos;Should open when an Error occured&apos;, (done) =&gt; {
+        form.executeSubmit().catch(() =&gt; {
+          try {
+            const panelBody = form.element.querySelector(&apos;[ref=nested-panel]&apos;);
+            assert(panelBody, &apos;Should open the panel when an error occured&apos;);
+            done();
+          }
+          catch (err) {
+            done(err);
+          }
+        });
+      });
+    }).catch((err) =&gt; console.error(err));
   });
 
   describe(&apos;Calculate Value&apos;, () =&gt; {
