@@ -2617,6 +2617,9 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    if (this.component.validateOn === 'blur' && flags.fromSubmission) {
+      return true;
+    }
     return this.checkComponentValidity(data, isDirty, row);
   }
 

@@ -326,11 +326,4 @@ export default class Input extends Multivalue {
       });
     });
   }
-
-  checkData(data, flags, row) {
-    if (this.component.validateOn === 'blur' && flags.fromSubmission) {
-      return true;
-    }
-    return super.checkData(data, flags, row);
-  }
 }
