@@ -2217,7 +2217,8 @@ export default class Component extends Element {
       Array.isArray(this.defaultValue) &&
       this.refs.hasOwnProperty('input') &&
       this.refs.input &&
-      (this.refs.input.length !== value.length)
+      (this.refs.input.length !== value.length) &&
+      this.visible
     ) {
       this.redraw();
     }
