@@ -315,6 +315,7 @@ export default class Formio {
         }
         return this.loadFormRevision(this.vId, query, opts)
           .then((revisionForm) => {
+            currentForm._vid = revisionForm._vid;
             currentForm.components = revisionForm.components;
             // Using object.assign so we don't cross polinate multiple form loads.
             return Object.assign({}, currentForm);
