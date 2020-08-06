@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import XHR from './xhr';
 const s3 = (formio) => ({
-  uploadFile(file, fileName, dir, progressCallback) {
+  uploadFile(file, fileName, dir, groupPermissions, groupId, progressCallback) {
     return XHR.upload(formio, 's3', (xhr, response) => {
       response.data.fileName = fileName;
       response.data.key = XHR.path([response.data.key, dir, fileName]);
@@ -19,7 +19,7 @@ const s3 = (formio) => ({
         xhr.open('POST', response.url);
         return fd;
       }
-    }, file, fileName, dir, progressCallback).then((response) => {
+    }, file, fileName, dir, groupPermissions, groupId, progressCallback).then((response) => {
       return {
         storage: 's3',
         name: fileName,

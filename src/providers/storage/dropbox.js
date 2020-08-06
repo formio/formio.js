@@ -1,6 +1,6 @@
 import NativePromise from 'native-promise-only';
 const dropbox = (formio) => ({
-  uploadFile(file, fileName, dir, progressCallback) {
+  uploadFile(file, fileName, dir, groupPermissions, groupId, progressCallback) {
     return new NativePromise(((resolve, reject) => {
       // Send the file with data.
       const xhr = new XMLHttpRequest();
@@ -26,6 +26,8 @@ const dropbox = (formio) => ({
           response.storage = 'dropbox';
           response.size = file.size;
           response.type = file.type;
+          response.groupId = groupId;
+          response.groupPermissions = groupPermissions;
           response.url = response.path_lower;
           resolve(response);
         }
