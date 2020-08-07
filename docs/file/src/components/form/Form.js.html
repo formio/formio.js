@@ -578,7 +578,7 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.restoreValue();
-        this.valueChanged = false;
+        this.valueChanged = this.hasSetValue;
         return this.subForm;
       });
     });
@@ -632,7 +632,7 @@ export default class FormComponent extends Component {
       return visible;
     }
 
-    if (this.subForm &amp;&amp; this.subForm.hasCondition()) {
+    if (this.subForm) {
       return this.subForm.checkConditions(this.dataValue.data);
     }
 

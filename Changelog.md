@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.2-rc.1
+#### Fixed
+ - Issue where conditionals were not propogating through into nested forms.
+ - Issue where nested form values were getting reset.
+
+### 4.11.1
+#### Changed
+ - No changes. Released 4.11.1-rc.9 as stable.
+
 ### 4.11.1-rc.9
 #### Fixed
  - FJS-1117: fixed an issue where validation error is shown for valid value when component has invalid default value
