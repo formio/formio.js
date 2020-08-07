@@ -1107,7 +1107,7 @@
     "__docId__": 75,
     "kind": "file",
     "name": "src/Formio.js",
-    "content": "/* globals OktaAuth */\n\n// Keep lodash off the global scope.\nimport _ from 'lodash';\n_.noConflict();\n\n// Intentionally use native-promise-only here... Other promise libraries (es6-promise)\n// duck-punch the global Promise definition which messes up Angular 2 since it\n// also duck-punches the global Promise definition. For now, keep native-promise-only.\nimport NativePromise from 'native-promise-only';\nimport fetchPonyfill from 'fetch-ponyfill';\nimport 'custom-event-polyfill';\nimport EventEmitter from './EventEmitter';\nimport cookies from 'browser-cookies';\nimport copy from 'shallow-copy';\nimport * as providers from './providers';\nimport _intersection from 'lodash/intersection';\nimport _get from 'lodash/get';\nimport _cloneDeep from 'lodash/cloneDeep';\nimport _defaults from 'lodash/defaults';\nconst { fetch, Headers } = fetchPonyfill({\n  Promise: NativePromise\n});\n\nconst isBoolean = (val) => typeof val === typeof true;\nconst isNil = (val) => val === null || val === undefined;\nconst isObject = (val) => val && typeof val === 'object';\n\n/**\n * The Formio interface class.\n *\n *   let formio = new Formio('https://examples.form.io/example');\n */\nexport default class Formio {\n  /* eslint-disable max-statements */\n  constructor(path, options = {}) {\n    // Ensure we have an instance of Formio.\n    if (!(this instanceof Formio)) {\n      return new Formio(path);\n    }\n\n    // Initialize our variables.\n    this.base = '';\n    this.projectsUrl = '';\n    this.projectUrl = '';\n    this.projectId = '';\n    this.formUrl = '';\n    this.formsUrl = '';\n    this.formId = '';\n    this.submissionsUrl = '';\n    this.submissionUrl = '';\n    this.submissionId = '';\n    this.actionsUrl = '';\n    this.actionId = '';\n    this.actionUrl = '';\n    this.vsUrl = '';\n    this.vId = '';\n    this.vUrl = '';\n    this.query = '';\n\n    // Store the original path and options.\n    this.path = path;\n    this.options = options;\n\n    if (options.hasOwnProperty('base')) {\n      this.base = options.base;\n    }\n    else if (Formio.baseUrl) {\n      this.base = Formio.baseUrl;\n    }\n    else {\n      this.base = window.location.href.match(/http[s]?:\\/\\/api./)[0];\n    }\n\n    if (!path) {\n      // Allow user to create new projects if this was instantiated without\n      // a url\n      this.projectUrl = Formio.projectUrl || `${this.base}/project`;\n      this.projectsUrl = `${this.base}/project`;\n      this.projectId = false;\n      this.query = '';\n      return;\n    }\n\n    if (options.hasOwnProperty('project')) {\n      this.projectUrl = options.project;\n    }\n\n    const project = this.projectUrl || Formio.projectUrl;\n    const projectRegEx = /(^|\\/)(project)($|\\/[^/]+)/;\n    const isProjectUrl = (path.search(projectRegEx) !== -1);\n\n    // The baseURL is the same as the projectUrl, and does not contain \"/project/MONGO_ID\" in\n    // its domain. This is almost certainly against the Open Source server.\n    if (project && this.base === project && !isProjectUrl) {\n      this.noProject = true;\n      this.projectUrl = this.base;\n    }\n\n    // Normalize to an absolute path.\n    if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {\n      path = this.base + path;\n    }\n\n    const hostparts = this.getUrlParts(path);\n    let parts = [];\n    const hostName = hostparts[1] + hostparts[2];\n    path = hostparts.length > 3 ? hostparts[3] : '';\n    const queryparts = path.split('?');\n    if (queryparts.length > 1) {\n      path = queryparts[0];\n      this.query = `?${queryparts[1]}`;\n    }\n\n    // Register a specific path.\n    const registerPath = (name, base) => {\n      this[`${name}sUrl`] = `${base}/${name}`;\n      const regex = new RegExp(`/${name}/([^/]+)`);\n      if (path.search(regex) !== -1) {\n        parts = path.match(regex);\n        this[`${name}Url`] = parts ? (base + parts[0]) : '';\n        this[`${name}Id`] = (parts.length > 1) ? parts[1] : '';\n        base += parts[0];\n      }\n      return base;\n    };\n\n    // Register an array of items.\n    const registerItems = (items, base, staticBase) => {\n      for (const i in items) {\n        if (items.hasOwnProperty(i)) {\n          const item = items[i];\n          if (Array.isArray(item)) {\n            registerItems(item, base, true);\n          }\n          else {\n            const newBase = registerPath(item, base);\n            base = staticBase ? base : newBase;\n          }\n        }\n      }\n    };\n\n    if (!this.projectUrl || (this.projectUrl === this.base)) {\n      this.projectUrl = hostName;\n    }\n\n    if (!this.noProject) {\n      // Determine the projectUrl and projectId\n      if (isProjectUrl) {\n        // Get project id as project/:projectId.\n        registerItems(['project'], hostName);\n        path = path.replace(projectRegEx, '');\n      }\n      else if (hostName === this.base) {\n        // Get project id as first part of path (subdirectory).\n        if (hostparts.length > 3 && path.split('/').length > 1) {\n          const pathParts = path.split('/');\n          pathParts.shift(); // Throw away the first /.\n          this.projectId = pathParts.shift();\n          path = `/${pathParts.join('/')}`;\n          this.projectUrl = `${hostName}/${this.projectId}`;\n        }\n      }\n      else {\n        // Get project id from subdomain.\n        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.includes('localhost'))) {\n          this.projectUrl = hostName;\n          this.projectId = hostparts[2].split('.')[0];\n        }\n      }\n      this.projectsUrl = this.projectsUrl || `${this.base}/project`;\n    }\n\n    // Configure Form urls and form ids.\n    if ((path.search(/(^|\\/)(form)($|\\/)/) !== -1)) {\n      registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);\n    }\n    else {\n      const subRegEx = new RegExp('/(submission|action|v)($|/.*)');\n      const subs = path.match(subRegEx);\n      this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';\n      path = path.replace(subRegEx, '');\n      path = path.replace(/\\/$/, '');\n      this.formsUrl = `${this.projectUrl}/form`;\n      this.formUrl = path ? this.projectUrl + path : '';\n      this.formId = path.replace(/^\\/+|\\/+$/g, '');\n      const items = ['submission', 'action', 'v'];\n      for (const i in items) {\n        if (items.hasOwnProperty(i)) {\n          const item = items[i];\n          this[`${item}sUrl`] = `${this.projectUrl + path}/${item}`;\n          if ((this.pathType === item) && (subs.length > 2) && subs[2]) {\n            this[`${item}Id`] = subs[2].replace(/^\\/+|\\/+$/g, '');\n            this[`${item}Url`] = this.projectUrl + path + subs[0];\n          }\n        }\n      }\n    }\n\n    // Set the app url if it is not set.\n    if (!Formio.projectUrlSet) {\n      Formio.projectUrl = this.projectUrl;\n    }\n  }\n  /* eslint-enable max-statements */\n\n  delete(type, opts) {\n    const _id = `${type}Id`;\n    const _url = `${type}Url`;\n    if (!this[_id]) {\n      NativePromise.reject('Nothing to delete');\n    }\n    Formio.cache = {};\n    return this.makeRequest(type, this[_url], 'delete', null, opts);\n  }\n\n  index(type, query, opts) {\n    const _url = `${type}Url`;\n    query = query || '';\n    if (query && isObject(query)) {\n      query = `?${Formio.serialize(query.params)}`;\n    }\n    return this.makeRequest(type, this[_url] + query, 'get', null, opts);\n  }\n\n  save(type, data, opts) {\n    const _id = `${type}Id`;\n    const _url = `${type}Url`;\n    const method = (this[_id] || data._id) ? 'put' : 'post';\n    let reqUrl = this[_id] ? this[_url] : this[`${type}sUrl`];\n    if (!this[_id] && data._id && (method === 'put') && !reqUrl.includes(data._id)) {\n      reqUrl += `/${data._id}`;\n    }\n    Formio.cache = {};\n    return this.makeRequest(type, reqUrl + this.query, method, data, opts);\n  }\n\n  load(type, query, opts) {\n    const _id = `${type}Id`;\n    const _url = `${type}Url`;\n    if (query && isObject(query)) {\n      query = Formio.serialize(query.params);\n    }\n    if (query) {\n      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);\n    }\n    else {\n      query = this.query;\n    }\n    if (!this[_id]) {\n      return NativePromise.reject(`Missing ${_id}`);\n    }\n    return this.makeRequest(type, this[_url] + query, 'get', null, opts);\n  }\n\n  makeRequest(...args) {\n    return Formio.makeRequest(this, ...args);\n  }\n\n  loadProject(query, opts) {\n    return this.load('project', query, opts);\n  }\n\n  saveProject(data, opts) {\n    return this.save('project', data, opts);\n  }\n\n  deleteProject(opts) {\n    return this.delete('project', opts);\n  }\n\n  static loadProjects(query, opts) {\n    query = query || '';\n    if (isObject(query)) {\n      query = `?${Formio.serialize(query.params)}`;\n    }\n    return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);\n  }\n\n  loadFormRevision(vid, query, opts) {\n    if (!this.formUrl && !this.vUrl) {\n      return NativePromise.reject('No form url set.');\n    }\n\n    // Set the version url if not set.\n    if (vid && !this.vUrl) {\n      this.vId = vid;\n      this.vUrl = `${this.formUrl}/v/${vid}`;\n    }\n\n    // If they specified a revision form, load the revised form components.\n    if (query && isObject(query)) {\n      query = Formio.serialize(query.params);\n    }\n    if (query) {\n      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);\n    }\n    else {\n      query = this.query;\n    }\n    return this.makeRequest('form', this.vUrl + query, 'get', null, opts);\n  }\n\n  loadForm(query, opts) {\n    return this.load('form', query, opts)\n      .then((currentForm) => {\n        // Check to see if there isn't a number in vId.\n        if (!currentForm.revisions || isNaN(parseInt(this.vId))) {\n          return currentForm;\n        }\n        // If a submission already exists but form is marked to load current version of form.\n        if (currentForm.revisions === 'current' && this.submissionId) {\n          return currentForm;\n        }\n        return this.loadFormRevision(this.vId, query, opts)\n          .then((revisionForm) => {\n            currentForm.components = revisionForm.components;\n            // Using object.assign so we don't cross polinate multiple form loads.\n            return Object.assign({}, currentForm);\n          })\n          // If we couldn't load the revision, just return the original form.\n          .catch(() => Object.assign({}, currentForm));\n      });\n  }\n\n  saveForm(data, opts) {\n    return this.save('form', data, opts);\n  }\n\n  deleteForm(opts) {\n    return this.delete('form', opts);\n  }\n\n  loadForms(query, opts) {\n    return this.index('forms', query, opts);\n  }\n\n  loadSubmission(query, opts) {\n    return this.load('submission', query, opts)\n      .then((submission) => {\n        this.vId = submission._fvid;\n        this.vUrl = `${this.formUrl}/v/${this.vId}`;\n        return submission;\n      });\n  }\n\n  saveSubmission(data, opts) {\n    if (!isNaN(parseInt(this.vId))) {\n      data._fvid = this.vId;\n    }\n    return this.save('submission', data, opts);\n  }\n\n  deleteSubmission(opts) {\n    return this.delete('submission', opts);\n  }\n\n  loadSubmissions(query, opts) {\n    return this.index('submissions', query, opts);\n  }\n\n  loadAction(query, opts) {\n    return this.load('action', query, opts);\n  }\n\n  saveAction(data, opts) {\n    return this.save('action', data, opts);\n  }\n\n  deleteAction(opts) {\n    return this.delete('action', opts);\n  }\n\n  loadActions(query, opts) {\n    return this.index('actions', query, opts);\n  }\n\n  availableActions() {\n    return this.makeRequest('availableActions', `${this.formUrl}/actions`);\n  }\n\n  actionInfo(name) {\n    return this.makeRequest('actionInfo', `${this.formUrl}/actions/${name}`);\n  }\n\n  isObjectId(id) {\n    const checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');\n    return checkForHexRegExp.test(id);\n  }\n\n  getProjectId() {\n    if (!this.projectId) {\n      return NativePromise.resolve('');\n    }\n    if (this.isObjectId(this.projectId)) {\n      return NativePromise.resolve(this.projectId);\n    }\n    else {\n      return this.loadProject().then((project) => {\n        return project._id;\n      });\n    }\n  }\n\n  getFormId() {\n    if (!this.formId) {\n      return NativePromise.resolve('');\n    }\n    if (this.isObjectId(this.formId)) {\n      return NativePromise.resolve(this.formId);\n    }\n    else {\n      return this.loadForm().then((form) => {\n        return form._id;\n      });\n    }\n  }\n\n  currentUser(options) {\n    return Formio.currentUser(this, options);\n  }\n\n  accessInfo() {\n    return Formio.accessInfo(this);\n  }\n\n  /**\n   * Returns the JWT token for this instance.\n   *\n   * @return {*}\n   */\n  getToken(options) {\n    return Formio.getToken(Object.assign({ formio: this }, this.options, options));\n  }\n\n  /**\n   * Sets the JWT token for this instance.\n   *\n   * @return {*}\n   */\n  setToken(token, options) {\n    return Formio.setToken(token, Object.assign({ formio: this }, this.options, options));\n  }\n\n  /**\n   * Returns a temporary authentication token for single purpose token generation.\n   */\n  getTempToken(expire, allowed, options) {\n    const token = Formio.getToken(options);\n    if (!token) {\n      return NativePromise.reject('You must be authenticated to generate a temporary auth token.');\n    }\n    const authUrl = Formio.authUrl || this.projectUrl;\n    return this.makeRequest('tempToken', `${authUrl}/token`, 'GET', null, {\n      ignoreCache: true,\n      header: new Headers({\n        'x-expire': expire,\n        'x-allow': allowed\n      })\n    });\n  }\n\n  /**\n   * Get a download url for a submission PDF of this submission.\n   *\n   * @return {*}\n   */\n  getDownloadUrl(form) {\n    if (!this.submissionId) {\n      return NativePromise.resolve('');\n    }\n\n    if (!form) {\n      // Make sure to load the form first.\n      return this.loadForm().then((_form) => {\n        if (!_form) {\n          return '';\n        }\n        return this.getDownloadUrl(_form);\n      });\n    }\n\n    let apiUrl = `/project/${form.project}`;\n    apiUrl += `/form/${form._id}`;\n    apiUrl += `/submission/${this.submissionId}`;\n    apiUrl += '/download';\n\n    let download = this.base + apiUrl;\n    return new NativePromise((resolve, reject) => {\n      this.getTempToken(3600, `GET:${apiUrl}`).then((tempToken) => {\n        download += `?token=${tempToken.key}`;\n        resolve(download);\n      }, () => {\n        resolve(download);\n      }).catch(reject);\n    });\n  }\n\n  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {\n    const requestArgs = {\n      provider: storage,\n      method: 'upload',\n      file,\n      fileName,\n      dir\n    };\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => {\n        return Formio.pluginGet('fileRequest', requestArgs)\n          .then((result) => {\n            if (storage && isNil(result)) {\n              if (Formio.providers.storage.hasOwnProperty(storage)) {\n                const provider = new Formio.providers.storage[storage](this);\n                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);\n              }\n              else {\n                throw ('Storage provider not found');\n              }\n            }\n            return result || { url: '' };\n          });\n      });\n\n    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);\n  }\n\n  downloadFile(file) {\n    const requestArgs = {\n      method: 'download',\n      file: file\n    };\n\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => {\n        return Formio.pluginGet('fileRequest', requestArgs)\n          .then((result) => {\n            if (file.storage && isNil(result)) {\n              if (Formio.providers.storage.hasOwnProperty(file.storage)) {\n                const provider = new Formio.providers.storage[file.storage](this);\n                return provider.downloadFile(file);\n              }\n              else {\n                throw ('Storage provider not found');\n              }\n            }\n            return result || { url: '' };\n          });\n      });\n\n    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);\n  }\n\n  /**\n   * Returns the user permissions to a form and submission.\n   *\n   * @param user - The user or current user if undefined. For anonymous, use \"null\"\n   * @param form - The form or current form if undefined. For no form check, use \"null\"\n   * @param submission - The submisison or \"index\" if undefined.\n   *\n   * @return {create: boolean, read: boolean, edit: boolean, delete: boolean}\n   */\n  userPermissions(user, form, submission) {\n    return NativePromise.all([\n      (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),\n      (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),\n      this.accessInfo()\n    ]).then((results) => {\n      const form = results.shift();\n      const user = results.shift() || { _id: false, roles: [] };\n      const access = results.shift();\n      const permMap = {\n        create: 'create',\n        read: 'read',\n        update: 'edit',\n        delete: 'delete'\n      };\n      const perms = {\n        user: user,\n        form: form,\n        access: access,\n        create: false,\n        read: false,\n        edit: false,\n        delete: false\n      };\n      for (const roleName in access.roles) {\n        if (access.roles.hasOwnProperty(roleName)) {\n          const role = access.roles[roleName];\n          if (role.default && (user._id === false)) {\n            // User is anonymous. Add the anonymous role.\n            user.roles.push(role._id);\n          }\n          else if (role.admin && user.roles.indexOf(role._id) !== -1) {\n            perms.create = true;\n            perms.read = true;\n            perms.delete = true;\n            perms.edit = true;\n            return perms;\n          }\n        }\n      }\n      if (form && form.submissionAccess) {\n        for (let i = 0; i < form.submissionAccess.length; i++) {\n          const permission = form.submissionAccess[i];\n          const [perm, scope] = permission.type.split('_');\n          if (['create', 'read', 'update', 'delete'].includes(perm)) {\n            if (_intersection(permission.roles, user.roles).length) {\n              perms[permMap[perm]] = (scope === 'all') || (!submission || (user._id === submission.owner));\n            }\n          }\n        }\n      }\n      return perms;\n    });\n  }\n\n  /**\n   * Determine if the current user can submit a form.\n   * @return {*}\n   */\n  canSubmit() {\n    return this.userPermissions().then((perms) => {\n      // If there is user and they cannot create, then check anonymous user permissions.\n      if (!perms.create && Formio.getUser()) {\n        return this.userPermissions(null).then((anonPerms) => {\n          if (anonPerms.create) {\n            Formio.setUser(null);\n            return true;\n          }\n\n          return false;\n        });\n      }\n\n      return perms.create;\n    });\n  }\n\n  getUrlParts(url) {\n    return Formio.getUrlParts(url, this);\n  }\n\n  static getUrlParts(url, formio) {\n    const base = (formio && formio.base) ? formio.base : Formio.baseUrl;\n    let regex = '^(http[s]?:\\\\/\\\\/)';\n    if (base && url.indexOf(base) === 0) {\n      regex += `(${base.replace(/^http[s]?:\\/\\//, '')})`;\n    }\n    else {\n      regex += '([^/]+)';\n    }\n    regex += '($|\\\\/.*)';\n    return url.match(new RegExp(regex));\n  }\n\n  static serialize(obj, _interpolate) {\n    const str = [];\n    const interpolate = (item) => {\n      return _interpolate ? _interpolate(item) : item;\n    };\n    for (const p in obj) {\n      if (obj.hasOwnProperty(p)) {\n        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);\n      }\n    }\n    return str.join('&');\n  }\n\n  static getRequestArgs(formio, type, url, method, data, opts) {\n    method = (method || 'GET').toUpperCase();\n    if (!opts || !isObject(opts)) {\n      opts = {};\n    }\n\n    const requestArgs = {\n      url,\n      method,\n      data: data || null,\n      opts\n    };\n\n    if (type) {\n      requestArgs.type = type;\n    }\n\n    if (formio) {\n      requestArgs.formio = formio;\n    }\n    return requestArgs;\n  }\n\n  static makeStaticRequest(url, method, data, opts) {\n    const requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => Formio.pluginGet('staticRequest', requestArgs)\n        .then((result) => {\n          if (isNil(result)) {\n            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);\n          }\n          return result;\n        }));\n\n    return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);\n  }\n\n  static makeRequest(formio, type, url, method, data, opts) {\n    if (!formio) {\n      return Formio.makeStaticRequest(url, method, data, opts);\n    }\n\n    const requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);\n    requestArgs.opts = requestArgs.opts || {};\n    requestArgs.opts.formio = formio;\n\n    //for Formio requests default Accept and Content-type headers\n    if (!requestArgs.opts.headers) {\n      requestArgs.opts.headers = {};\n    }\n    requestArgs.opts.headers = _defaults(requestArgs.opts.headers, {\n      'Accept': 'application/json',\n      'Content-type': 'application/json'\n    });\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => Formio.pluginGet('request', requestArgs)\n        .then((result) => {\n          if (isNil(result)) {\n            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);\n          }\n          return result;\n        }));\n\n    return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);\n  }\n\n  static request(url, method, data, header, opts) {\n    if (!url) {\n      return NativePromise.reject('No url provided');\n    }\n    method = (method || 'GET').toUpperCase();\n\n    // For reverse compatibility, if they provided the ignoreCache parameter,\n    // then change it back to the options format where that is a parameter.\n    if (isBoolean(opts)) {\n      opts = { ignoreCache: opts };\n    }\n    if (!opts || !isObject(opts)) {\n      opts = {};\n    }\n\n    // Generate a cachekey.\n    const cacheKey = btoa(url);\n\n    // Get the cached promise to save multiple loads.\n    if (!Formio.ignoreCache && !opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {\n      return NativePromise.resolve(_cloneDeep(Formio.cache[cacheKey]));\n    }\n\n    // Set up and fetch request\n    const headers = header || new Headers(opts.headers || {\n      'Accept': 'application/json',\n      'Content-type': 'application/json'\n    });\n    const token = Formio.getToken(opts);\n    if (token && !opts.noToken) {\n      headers.append('x-jwt-token', token);\n    }\n\n    // The fetch-ponyfill can't handle a proper Headers class anymore. Change it back to an object.\n    const headerObj = {};\n    headers.forEach(function(value, name) {\n      headerObj[name] = value;\n    });\n\n    let options = {\n      method: method,\n      headers: headerObj,\n      mode: 'cors'\n    };\n    if (data) {\n      options.body = JSON.stringify(data);\n    }\n\n    // Allow plugins to alter the options.\n    options = Formio.pluginAlter('requestOptions', options, url);\n    if (options.namespace || Formio.namespace) {\n      opts.namespace = options.namespace ||  Formio.namespace;\n    }\n\n    const requestToken = options.headers['x-jwt-token'];\n    const result = Formio.fetch(url, options)\n      .then((response) => {\n        // Allow plugins to respond.\n        response = Formio.pluginAlter('requestResponse', response, Formio);\n\n        if (!response.ok) {\n          if (response.status === 440) {\n            Formio.setToken(null, opts);\n            Formio.events.emit('formio.sessionExpired', response.body);\n          }\n          else if (response.status === 401) {\n            Formio.events.emit('formio.unauthorized', response.body);\n          }\n          // Parse and return the error as a rejected promise to reject this promise\n          return (response.headers.get('content-type').includes('application/json')\n            ? response.json()\n            : response.text())\n            .then((error) => {\n              return NativePromise.reject(error);\n            });\n        }\n\n        // Handle fetch results\n        const token = response.headers.get('x-jwt-token');\n\n        // In some strange cases, the fetch library will return an x-jwt-token without sending\n        // one to the server. This has even been debugged on the server to verify that no token\n        // was introduced with the request, but the response contains a token. This is an Invalid\n        // case where we do not send an x-jwt-token and get one in return for any GET request.\n        let tokenIntroduced = false;\n        if (\n          (method === 'GET') &&\n          !requestToken &&\n          token &&\n          !opts.external &&\n          !url.includes('token=') &&\n          !url.includes('x-jwt-token=')\n        ) {\n          console.warn('Token was introduced in request.');\n          tokenIntroduced = true;\n        }\n\n        if (\n          response.status >= 200 &&\n          response.status < 300 &&\n          token &&\n          token !== '' &&\n          !tokenIntroduced\n        ) {\n          Formio.setToken(token, opts);\n        }\n        // 204 is no content. Don't try to .json() it.\n        if (response.status === 204) {\n          return {};\n        }\n\n        const getResult = response.headers.get('content-type').includes('application/json')\n          ? response.json()\n          : response.text();\n        return getResult.then((result) => {\n          // Add some content-range metadata to the result here\n          let range = response.headers.get('content-range');\n          if (range && isObject(result)) {\n            range = range.split('/');\n            if (range[0] !== '*') {\n              const skipLimit = range[0].split('-');\n              result.skip = Number(skipLimit[0]);\n              result.limit = skipLimit[1] - skipLimit[0] + 1;\n            }\n            result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);\n          }\n\n          if (!opts.getHeaders) {\n            return result;\n          }\n\n          const headers = {};\n          response.headers.forEach((item, key) => {\n            headers[key] = item;\n          });\n\n          // Return the result with the headers.\n          return {\n            result: result,\n            headers: headers\n          };\n        });\n      })\n      .then((result) => {\n        if (opts.getHeaders) {\n          return result;\n        }\n\n        // Cache the response.\n        if (!Formio.ignoreCache && (method === 'GET')) {\n          Formio.cache[cacheKey] = _cloneDeep(result);\n        }\n\n        let resultCopy = {};\n\n        // Shallow copy result so modifications don't end up in cache\n        if (Array.isArray(result)) {\n          resultCopy = result.map(copy);\n          resultCopy.skip = result.skip;\n          resultCopy.limit = result.limit;\n          resultCopy.serverCount = result.serverCount;\n        }\n        else {\n          resultCopy = copy(result);\n        }\n\n        return resultCopy;\n      })\n      .catch((err) => {\n        if (err === 'Bad Token') {\n          Formio.setToken(null, opts);\n          Formio.events.emit('formio.badToken', err);\n        }\n        if (err.message) {\n          err.message = `Could not connect to API server (${err.message})`;\n          err.networkError = true;\n        }\n\n        if (method === 'GET') {\n          delete Formio.cache[cacheKey];\n        }\n\n        return NativePromise.reject(err);\n      });\n\n    return result;\n  }\n\n  // Needed to maintain reverse compatability...\n  static get token() {\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    return Formio.tokens.formioToken ? Formio.tokens.formioToken : '';\n  }\n\n  // Needed to maintain reverse compatability...\n  static set token(token) {\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    return Formio.tokens.formioToken = token || '';\n  }\n\n  static setToken(token = '', opts) {\n    opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};\n    var tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    if (Formio.tokens[tokenName] === token) {\n      return;\n    }\n\n    Formio.tokens[tokenName] = token;\n    if (!token) {\n      Formio.setUser(null, opts);\n      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n      try {\n        return localStorage.removeItem(tokenName);\n      }\n      catch (err) {\n        return cookies.erase(tokenName, { path: '/' });\n      }\n    }\n    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n    try {\n      localStorage.setItem(tokenName, token);\n    }\n    catch (err) {\n      cookies.set(tokenName, token, { path: '/' });\n    }\n    return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null\n  }\n\n  static getToken(options) {\n    options = (typeof options === 'string') ? { namespace: options } : options || {};\n    var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    if (Formio.tokens[tokenName]) {\n      return Formio.tokens[tokenName];\n    }\n    try {\n      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';\n      return Formio.tokens[tokenName];\n    }\n    catch (e) {\n      Formio.tokens[tokenName] = cookies.get(tokenName);\n      return Formio.tokens[tokenName];\n    }\n  }\n\n  static setUser(user, opts = {}) {\n    var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;\n    if (!user) {\n      Formio.setToken(null, opts);\n\n      // Emit an event on the cleared user.\n      Formio.events.emit('formio.user', null);\n\n      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n      try {\n        return localStorage.removeItem(userName);\n      }\n      catch (err) {\n        return cookies.erase(userName, { path: '/' });\n      }\n    }\n    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n    try {\n      localStorage.setItem(userName, JSON.stringify(user));\n    }\n    catch (err) {\n      cookies.set(userName, JSON.stringify(user), { path: '/' });\n    }\n\n    // Emit an event on the authenticated user.\n    Formio.events.emit('formio.user', user);\n  }\n\n  static getUser(options) {\n    options = options || {};\n    var userName = `${options.namespace || Formio.namespace || 'formio'}User`;\n    try {\n      return JSON.parse(localStorage.getItem(userName) || null);\n    }\n    catch (e) {\n      return JSON.parse(cookies.get(userName));\n    }\n  }\n\n  static setBaseUrl(url) {\n    Formio.baseUrl = url;\n    if (!Formio.projectUrlSet) {\n      Formio.projectUrl = url;\n    }\n  }\n\n  static getBaseUrl() {\n    return Formio.baseUrl;\n  }\n\n  static setApiUrl(url) {\n    return Formio.setBaseUrl(url);\n  }\n\n  static getApiUrl() {\n    return Formio.getBaseUrl();\n  }\n\n  static setAppUrl(url) {\n    console.warn('Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.');\n    Formio.projectUrl = url;\n    Formio.projectUrlSet = true;\n  }\n\n  static setProjectUrl(url) {\n    Formio.projectUrl = url;\n    Formio.projectUrlSet = true;\n  }\n\n  static setAuthUrl(url) {\n    Formio.authUrl = url;\n  }\n\n  static getAppUrl() {\n    console.warn('Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.');\n    return Formio.projectUrl;\n  }\n\n  static getProjectUrl() {\n    return Formio.projectUrl;\n  }\n\n  static clearCache() {\n    Formio.cache = {};\n  }\n\n  static noop() {}\n  static identity(value) {\n    return value;\n  }\n\n  static deregisterPlugin(plugin) {\n    const beforeLength = Formio.plugins.length;\n    Formio.plugins = Formio.plugins.filter((p) => {\n      if (p !== plugin && p.__name !== plugin) {\n        return true;\n      }\n\n      (p.deregister || Formio.noop).call(plugin, Formio);\n      return false;\n    });\n    return beforeLength !== Formio.plugins.length;\n  }\n\n  static registerPlugin(plugin, name) {\n    let found = false;\n    Formio.plugins.forEach((existing) => {\n      if (existing.__name === name) {\n        found = true;\n      }\n    });\n    if (!found) {\n      // Do not register already registered plugins.\n      Formio.plugins.push(plugin);\n      Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));\n      plugin.__name = name;\n      (plugin.init || Formio.noop).call(plugin, Formio);\n    }\n  }\n\n  static getPlugin(name) {\n    for (const plugin of Formio.plugins) {\n      if (plugin.__name === name) {\n        return plugin;\n      }\n    }\n\n    return null;\n  }\n\n  static pluginWait(pluginFn, ...args) {\n    return NativePromise.all(Formio.plugins.map((plugin) =>\n      (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));\n  }\n\n  static pluginGet(pluginFn, ...args) {\n    const callPlugin = (index) => {\n      const plugin = Formio.plugins[index];\n\n      if (!plugin) {\n        return NativePromise.resolve(null);\n      }\n\n      return NativePromise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))\n        .then((result) => {\n          if (!isNil(result)) {\n            return result;\n          }\n\n          return callPlugin(index + 1);\n        });\n    };\n    return callPlugin(0);\n  }\n\n  static pluginAlter(pluginFn, value, ...args) {\n    return Formio.plugins.reduce((value, plugin) =>\n      (plugin[pluginFn] || Formio.identity)(value, ...args), value);\n  }\n\n  static accessInfo(formio) {\n    const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;\n    return Formio.makeRequest(formio, 'accessInfo', `${projectUrl}/access`);\n  }\n\n  static currentUser(formio, options) {\n    let authUrl = Formio.authUrl;\n    if (!authUrl) {\n      authUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);\n    }\n    authUrl += '/current';\n    const user = Formio.getUser(options);\n    if (user) {\n      return Formio.pluginAlter('wrapStaticRequestPromise', NativePromise.resolve(user), {\n        url: authUrl,\n        method: 'GET',\n        options\n      });\n    }\n    const token = Formio.getToken(options);\n    if ((!options || !options.external) && !token) {\n      return Formio.pluginAlter('wrapStaticRequestPromise', NativePromise.resolve(null), {\n        url: authUrl,\n        method: 'GET',\n        options\n      });\n    }\n    return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)\n      .then((response) => {\n        Formio.setUser(response, options);\n        return response;\n      });\n  }\n\n  static logout(formio, options) {\n    options = options || {};\n    options.formio = formio;\n    Formio.setToken(null, options);\n    Formio.setUser(null, options);\n    Formio.clearCache();\n    const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);\n    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);\n  }\n\n  static pageQuery() {\n    if (Formio._pageQuery) {\n      return Formio._pageQuery;\n    }\n\n    Formio._pageQuery = {};\n    Formio._pageQuery.paths = [];\n    const hashes = location.hash.substr(1).replace(/\\?/g, '&').split('&');\n    let parts = [];\n    location.search.substr(1).split('&').forEach(function(item) {\n      parts = item.split('=');\n      if (parts.length > 1) {\n        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);\n      }\n    });\n\n    hashes.forEach(function(item) {\n      parts = item.split('=');\n      if (parts.length > 1) {\n        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);\n      }\n      else if (item.indexOf('/') === 0) {\n        Formio._pageQuery.paths = item.substr(1).split('/');\n      }\n    });\n    return Formio._pageQuery;\n  }\n\n  static oAuthCurrentUser(formio, token) {\n    return Formio.currentUser(formio, {\n      external: true,\n      headers: {\n        Authorization: `Bearer ${token}`\n      }\n    });\n  }\n\n  static samlInit(options) {\n    options = options || {};\n    const query = Formio.pageQuery();\n    if (query.saml) {\n      Formio.setUser(null);\n      const retVal = Formio.setToken(query.saml);\n      let uri = window.location.toString();\n      uri = uri.substring(0, uri.indexOf('?'));\n      window.history.replaceState({}, document.title, uri);\n      return retVal;\n    }\n\n    if (options.forceAuth) {\n      Formio.setUser(null);\n    }\n    else if (Formio.getToken()) {\n      // If we are not forcing the authentication and we have a token, then return here.\n      return false;\n    }\n\n    // Set the relay if not provided.\n    if (!options.relay) {\n      options.relay = window.location.href;\n    }\n\n    // go to the saml sso endpoint for this project.\n    const authUrl = Formio.authUrl || Formio.projectUrl;\n    window.location.href = `${authUrl}/saml/sso?relay=${encodeURIComponent(options.relay)}`;\n    return false;\n  }\n\n  static oktaInit(options) {\n    options = options || {};\n    if (typeof OktaAuth !== undefined) {\n      options.OktaAuth = OktaAuth;\n    }\n\n    if (typeof options.OktaAuth === undefined) {\n      const errorMessage = 'Cannot find OktaAuth. Please include the Okta JavaScript SDK within your application. See https://developer.okta.com/code/javascript/okta_auth_sdk for an example.';\n      console.warn(errorMessage);\n      return NativePromise.reject(errorMessage);\n    }\n    return new NativePromise((resolve, reject) => {\n      const Okta = options.OktaAuth;\n      delete options.OktaAuth;\n      var authClient = new Okta(options);\n      authClient.tokenManager.get('accessToken')\n        .then(accessToken => {\n          if (accessToken) {\n            resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));\n          }\n          else if (location.hash) {\n            authClient.token.parseFromUrl()\n              .then(token => {\n                authClient.tokenManager.add('accessToken', token);\n                resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));\n              })\n              .catch(err => {\n                console.warn(err);\n                reject(err);\n              });\n          }\n          else {\n            authClient.token.getWithRedirect({\n              responseType: 'token',\n              scopes: options.scopes\n            });\n            resolve(false);\n          }\n        });\n    });\n  }\n\n  static ssoInit(type, options) {\n    switch (type) {\n      case 'saml':\n        return Formio.samlInit(options);\n      case 'okta':\n        return Formio.oktaInit(options);\n      default:\n        console.warn('Unknown SSO type');\n        return NativePromise.reject('Unknown SSO type');\n    }\n  }\n\n  static requireLibrary(name, property, src, polling) {\n    if (!Formio.libraries.hasOwnProperty(name)) {\n      Formio.libraries[name] = {};\n      Formio.libraries[name].ready = new NativePromise((resolve, reject) => {\n        Formio.libraries[name].resolve = resolve;\n        Formio.libraries[name].reject = reject;\n      });\n\n      const callbackName = `${name}Callback`;\n\n      if (!polling && !window[callbackName]) {\n        window[callbackName] = () => Formio.libraries[name].resolve();\n      }\n\n      // See if the plugin already exists.\n      const plugin = _get(window, property);\n      if (plugin) {\n        Formio.libraries[name].resolve(plugin);\n      }\n      else {\n        src = Array.isArray(src) ? src : [src];\n        src.forEach((lib) => {\n          let attrs = {};\n          let elementType = '';\n          if (typeof lib === 'string') {\n            lib = {\n              type: 'script',\n              src: lib\n            };\n          }\n          switch (lib.type) {\n            case 'script':\n              elementType = 'script';\n              attrs = {\n                src: lib.src,\n                type: 'text/javascript',\n                defer: true,\n                async: true\n              };\n              break;\n            case 'styles':\n              elementType = 'link';\n              attrs = {\n                href: lib.src,\n                rel: 'stylesheet'\n              };\n              break;\n          }\n\n          // Add the script to the top page.\n          const script = document.createElement(elementType);\n          for (const attr in attrs) {\n            script.setAttribute(attr, attrs[attr]);\n          }\n          document.getElementsByTagName('head')[0].appendChild(script);\n        });\n\n        // if no callback is provided, then check periodically for the script.\n        if (polling) {\n          const interval = setInterval(() => {\n            const plugin = _get(window, property);\n            if (plugin) {\n              clearInterval(interval);\n              Formio.libraries[name].resolve(plugin);\n            }\n          }, 200);\n        }\n      }\n    }\n    return Formio.libraries[name].ready;\n  }\n\n  static libraryReady(name) {\n    if (\n      Formio.libraries.hasOwnProperty(name) &&\n      Formio.libraries[name].ready\n    ) {\n      return Formio.libraries[name].ready;\n    }\n\n    return NativePromise.reject(`${name} library was not required.`);\n  }\n}\n\n// Define all the static properties.\nFormio.ignoreCache = false;\nFormio.libraries = {};\nFormio.Promise = NativePromise;\nFormio.fetch = fetch;\nFormio.Headers = Headers;\nFormio.baseUrl = 'https://api.form.io';\nFormio.projectUrl = Formio.baseUrl;\nFormio.authUrl = '';\nFormio.projectUrlSet = false;\nFormio.plugins = [];\nFormio.cache = {};\nFormio.providers = providers;\nFormio.events = new EventEmitter({\n  wildcard: false,\n  maxListeners: 0\n});\n\nif (typeof global === 'object' && !global.Formio) {\n  global.Formio = Formio;\n}\n",
+    "content": "/* globals OktaAuth */\n\n// Keep lodash off the global scope.\nimport _ from 'lodash';\n_.noConflict();\n\n// Intentionally use native-promise-only here... Other promise libraries (es6-promise)\n// duck-punch the global Promise definition which messes up Angular 2 since it\n// also duck-punches the global Promise definition. For now, keep native-promise-only.\nimport NativePromise from 'native-promise-only';\nimport fetchPonyfill from 'fetch-ponyfill';\nimport 'custom-event-polyfill';\nimport EventEmitter from './EventEmitter';\nimport cookies from 'browser-cookies';\nimport copy from 'shallow-copy';\nimport * as providers from './providers';\nimport _intersection from 'lodash/intersection';\nimport _get from 'lodash/get';\nimport _cloneDeep from 'lodash/cloneDeep';\nimport _defaults from 'lodash/defaults';\nconst { fetch, Headers } = fetchPonyfill({\n  Promise: NativePromise\n});\n\nconst isBoolean = (val) => typeof val === typeof true;\nconst isNil = (val) => val === null || val === undefined;\nconst isObject = (val) => val && typeof val === 'object';\n\n/**\n * The Formio interface class.\n *\n *   let formio = new Formio('https://examples.form.io/example');\n */\nexport default class Formio {\n  /* eslint-disable max-statements */\n  constructor(path, options = {}) {\n    // Ensure we have an instance of Formio.\n    if (!(this instanceof Formio)) {\n      return new Formio(path);\n    }\n\n    // Initialize our variables.\n    this.base = '';\n    this.projectsUrl = '';\n    this.projectUrl = '';\n    this.projectId = '';\n    this.formUrl = '';\n    this.formsUrl = '';\n    this.formId = '';\n    this.submissionsUrl = '';\n    this.submissionUrl = '';\n    this.submissionId = '';\n    this.actionsUrl = '';\n    this.actionId = '';\n    this.actionUrl = '';\n    this.vsUrl = '';\n    this.vId = '';\n    this.vUrl = '';\n    this.query = '';\n\n    // Store the original path and options.\n    this.path = path;\n    this.options = options;\n\n    if (options.hasOwnProperty('base')) {\n      this.base = options.base;\n    }\n    else if (Formio.baseUrl) {\n      this.base = Formio.baseUrl;\n    }\n    else {\n      this.base = window.location.href.match(/http[s]?:\\/\\/api./)[0];\n    }\n\n    if (!path) {\n      // Allow user to create new projects if this was instantiated without\n      // a url\n      this.projectUrl = Formio.projectUrl || `${this.base}/project`;\n      this.projectsUrl = `${this.base}/project`;\n      this.projectId = false;\n      this.query = '';\n      return;\n    }\n\n    if (options.hasOwnProperty('project')) {\n      this.projectUrl = options.project;\n    }\n\n    const project = this.projectUrl || Formio.projectUrl;\n    const projectRegEx = /(^|\\/)(project)($|\\/[^/]+)/;\n    const isProjectUrl = (path.search(projectRegEx) !== -1);\n\n    // The baseURL is the same as the projectUrl, and does not contain \"/project/MONGO_ID\" in\n    // its domain. This is almost certainly against the Open Source server.\n    if (project && this.base === project && !isProjectUrl) {\n      this.noProject = true;\n      this.projectUrl = this.base;\n    }\n\n    // Normalize to an absolute path.\n    if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {\n      path = this.base + path;\n    }\n\n    const hostparts = this.getUrlParts(path);\n    let parts = [];\n    const hostName = hostparts[1] + hostparts[2];\n    path = hostparts.length > 3 ? hostparts[3] : '';\n    const queryparts = path.split('?');\n    if (queryparts.length > 1) {\n      path = queryparts[0];\n      this.query = `?${queryparts[1]}`;\n    }\n\n    // Register a specific path.\n    const registerPath = (name, base) => {\n      this[`${name}sUrl`] = `${base}/${name}`;\n      const regex = new RegExp(`/${name}/([^/]+)`);\n      if (path.search(regex) !== -1) {\n        parts = path.match(regex);\n        this[`${name}Url`] = parts ? (base + parts[0]) : '';\n        this[`${name}Id`] = (parts.length > 1) ? parts[1] : '';\n        base += parts[0];\n      }\n      return base;\n    };\n\n    // Register an array of items.\n    const registerItems = (items, base, staticBase) => {\n      for (const i in items) {\n        if (items.hasOwnProperty(i)) {\n          const item = items[i];\n          if (Array.isArray(item)) {\n            registerItems(item, base, true);\n          }\n          else {\n            const newBase = registerPath(item, base);\n            base = staticBase ? base : newBase;\n          }\n        }\n      }\n    };\n\n    if (!this.projectUrl || (this.projectUrl === this.base)) {\n      this.projectUrl = hostName;\n    }\n\n    if (!this.noProject) {\n      // Determine the projectUrl and projectId\n      if (isProjectUrl) {\n        // Get project id as project/:projectId.\n        registerItems(['project'], hostName);\n        path = path.replace(projectRegEx, '');\n      }\n      else if (hostName === this.base) {\n        // Get project id as first part of path (subdirectory).\n        if (hostparts.length > 3 && path.split('/').length > 1) {\n          const pathParts = path.split('/');\n          pathParts.shift(); // Throw away the first /.\n          this.projectId = pathParts.shift();\n          path = `/${pathParts.join('/')}`;\n          this.projectUrl = `${hostName}/${this.projectId}`;\n        }\n      }\n      else {\n        // Get project id from subdomain.\n        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.includes('localhost'))) {\n          this.projectUrl = hostName;\n          this.projectId = hostparts[2].split('.')[0];\n        }\n      }\n      this.projectsUrl = this.projectsUrl || `${this.base}/project`;\n    }\n\n    // Configure Form urls and form ids.\n    if ((path.search(/(^|\\/)(form)($|\\/)/) !== -1)) {\n      registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);\n    }\n    else {\n      const subRegEx = new RegExp('/(submission|action|v)($|/.*)');\n      const subs = path.match(subRegEx);\n      this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';\n      path = path.replace(subRegEx, '');\n      path = path.replace(/\\/$/, '');\n      this.formsUrl = `${this.projectUrl}/form`;\n      this.formUrl = path ? this.projectUrl + path : '';\n      this.formId = path.replace(/^\\/+|\\/+$/g, '');\n      const items = ['submission', 'action', 'v'];\n      for (const i in items) {\n        if (items.hasOwnProperty(i)) {\n          const item = items[i];\n          this[`${item}sUrl`] = `${this.projectUrl + path}/${item}`;\n          if ((this.pathType === item) && (subs.length > 2) && subs[2]) {\n            this[`${item}Id`] = subs[2].replace(/^\\/+|\\/+$/g, '');\n            this[`${item}Url`] = this.projectUrl + path + subs[0];\n          }\n        }\n      }\n    }\n\n    // Set the app url if it is not set.\n    if (!Formio.projectUrlSet) {\n      Formio.projectUrl = this.projectUrl;\n    }\n  }\n  /* eslint-enable max-statements */\n\n  delete(type, opts) {\n    const _id = `${type}Id`;\n    const _url = `${type}Url`;\n    if (!this[_id]) {\n      NativePromise.reject('Nothing to delete');\n    }\n    Formio.cache = {};\n    return this.makeRequest(type, this[_url], 'delete', null, opts);\n  }\n\n  index(type, query, opts) {\n    const _url = `${type}Url`;\n    query = query || '';\n    if (query && isObject(query)) {\n      query = `?${Formio.serialize(query.params)}`;\n    }\n    return this.makeRequest(type, this[_url] + query, 'get', null, opts);\n  }\n\n  save(type, data, opts) {\n    const _id = `${type}Id`;\n    const _url = `${type}Url`;\n    const method = (this[_id] || data._id) ? 'put' : 'post';\n    let reqUrl = this[_id] ? this[_url] : this[`${type}sUrl`];\n    if (!this[_id] && data._id && (method === 'put') && !reqUrl.includes(data._id)) {\n      reqUrl += `/${data._id}`;\n    }\n    Formio.cache = {};\n    return this.makeRequest(type, reqUrl + this.query, method, data, opts);\n  }\n\n  load(type, query, opts) {\n    const _id = `${type}Id`;\n    const _url = `${type}Url`;\n    if (query && isObject(query)) {\n      query = Formio.serialize(query.params);\n    }\n    if (query) {\n      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);\n    }\n    else {\n      query = this.query;\n    }\n    if (!this[_id]) {\n      return NativePromise.reject(`Missing ${_id}`);\n    }\n    return this.makeRequest(type, this[_url] + query, 'get', null, opts);\n  }\n\n  makeRequest(...args) {\n    return Formio.makeRequest(this, ...args);\n  }\n\n  loadProject(query, opts) {\n    return this.load('project', query, opts);\n  }\n\n  saveProject(data, opts) {\n    return this.save('project', data, opts);\n  }\n\n  deleteProject(opts) {\n    return this.delete('project', opts);\n  }\n\n  static loadProjects(query, opts) {\n    query = query || '';\n    if (isObject(query)) {\n      query = `?${Formio.serialize(query.params)}`;\n    }\n    return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);\n  }\n\n  loadFormRevision(vid, query, opts) {\n    if (!this.formUrl && !this.vUrl) {\n      return NativePromise.reject('No form url set.');\n    }\n\n    // Set the version url if not set.\n    if (vid && !this.vUrl) {\n      this.vId = vid;\n      this.vUrl = `${this.formUrl}/v/${vid}`;\n    }\n\n    // If they specified a revision form, load the revised form components.\n    if (query && isObject(query)) {\n      query = Formio.serialize(query.params);\n    }\n    if (query) {\n      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);\n    }\n    else {\n      query = this.query;\n    }\n    return this.makeRequest('form', this.vUrl + query, 'get', null, opts);\n  }\n\n  loadForm(query, opts) {\n    return this.load('form', query, opts)\n      .then((currentForm) => {\n        // Check to see if there isn't a number in vId.\n        if (!currentForm.revisions || isNaN(parseInt(this.vId))) {\n          return currentForm;\n        }\n        // If a submission already exists but form is marked to load current version of form.\n        if (currentForm.revisions === 'current' && this.submissionId) {\n          return currentForm;\n        }\n        return this.loadFormRevision(this.vId, query, opts)\n          .then((revisionForm) => {\n            currentForm._vid = revisionForm._vid;\n            currentForm.components = revisionForm.components;\n            // Using object.assign so we don't cross polinate multiple form loads.\n            return Object.assign({}, currentForm);\n          })\n          // If we couldn't load the revision, just return the original form.\n          .catch(() => Object.assign({}, currentForm));\n      });\n  }\n\n  saveForm(data, opts) {\n    return this.save('form', data, opts);\n  }\n\n  deleteForm(opts) {\n    return this.delete('form', opts);\n  }\n\n  loadForms(query, opts) {\n    return this.index('forms', query, opts);\n  }\n\n  loadSubmission(query, opts) {\n    return this.load('submission', query, opts)\n      .then((submission) => {\n        this.vId = submission._fvid;\n        this.vUrl = `${this.formUrl}/v/${this.vId}`;\n        return submission;\n      });\n  }\n\n  saveSubmission(data, opts) {\n    if (!isNaN(parseInt(this.vId))) {\n      data._fvid = this.vId;\n    }\n    return this.save('submission', data, opts);\n  }\n\n  deleteSubmission(opts) {\n    return this.delete('submission', opts);\n  }\n\n  loadSubmissions(query, opts) {\n    return this.index('submissions', query, opts);\n  }\n\n  loadAction(query, opts) {\n    return this.load('action', query, opts);\n  }\n\n  saveAction(data, opts) {\n    return this.save('action', data, opts);\n  }\n\n  deleteAction(opts) {\n    return this.delete('action', opts);\n  }\n\n  loadActions(query, opts) {\n    return this.index('actions', query, opts);\n  }\n\n  availableActions() {\n    return this.makeRequest('availableActions', `${this.formUrl}/actions`);\n  }\n\n  actionInfo(name) {\n    return this.makeRequest('actionInfo', `${this.formUrl}/actions/${name}`);\n  }\n\n  isObjectId(id) {\n    const checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');\n    return checkForHexRegExp.test(id);\n  }\n\n  getProjectId() {\n    if (!this.projectId) {\n      return NativePromise.resolve('');\n    }\n    if (this.isObjectId(this.projectId)) {\n      return NativePromise.resolve(this.projectId);\n    }\n    else {\n      return this.loadProject().then((project) => {\n        return project._id;\n      });\n    }\n  }\n\n  getFormId() {\n    if (!this.formId) {\n      return NativePromise.resolve('');\n    }\n    if (this.isObjectId(this.formId)) {\n      return NativePromise.resolve(this.formId);\n    }\n    else {\n      return this.loadForm().then((form) => {\n        return form._id;\n      });\n    }\n  }\n\n  currentUser(options) {\n    return Formio.currentUser(this, options);\n  }\n\n  accessInfo() {\n    return Formio.accessInfo(this);\n  }\n\n  /**\n   * Returns the JWT token for this instance.\n   *\n   * @return {*}\n   */\n  getToken(options) {\n    return Formio.getToken(Object.assign({ formio: this }, this.options, options));\n  }\n\n  /**\n   * Sets the JWT token for this instance.\n   *\n   * @return {*}\n   */\n  setToken(token, options) {\n    return Formio.setToken(token, Object.assign({ formio: this }, this.options, options));\n  }\n\n  /**\n   * Returns a temporary authentication token for single purpose token generation.\n   */\n  getTempToken(expire, allowed, options) {\n    const token = Formio.getToken(options);\n    if (!token) {\n      return NativePromise.reject('You must be authenticated to generate a temporary auth token.');\n    }\n    const authUrl = Formio.authUrl || this.projectUrl;\n    return this.makeRequest('tempToken', `${authUrl}/token`, 'GET', null, {\n      ignoreCache: true,\n      header: new Headers({\n        'x-expire': expire,\n        'x-allow': allowed\n      })\n    });\n  }\n\n  /**\n   * Get a download url for a submission PDF of this submission.\n   *\n   * @return {*}\n   */\n  getDownloadUrl(form) {\n    if (!this.submissionId) {\n      return NativePromise.resolve('');\n    }\n\n    if (!form) {\n      // Make sure to load the form first.\n      return this.loadForm().then((_form) => {\n        if (!_form) {\n          return '';\n        }\n        return this.getDownloadUrl(_form);\n      });\n    }\n\n    let apiUrl = `/project/${form.project}`;\n    apiUrl += `/form/${form._id}`;\n    apiUrl += `/submission/${this.submissionId}`;\n    apiUrl += '/download';\n\n    let download = this.base + apiUrl;\n    return new NativePromise((resolve, reject) => {\n      this.getTempToken(3600, `GET:${apiUrl}`).then((tempToken) => {\n        download += `?token=${tempToken.key}`;\n        resolve(download);\n      }, () => {\n        resolve(download);\n      }).catch(reject);\n    });\n  }\n\n  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {\n    const requestArgs = {\n      provider: storage,\n      method: 'upload',\n      file,\n      fileName,\n      dir\n    };\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => {\n        return Formio.pluginGet('fileRequest', requestArgs)\n          .then((result) => {\n            if (storage && isNil(result)) {\n              if (Formio.providers.storage.hasOwnProperty(storage)) {\n                const provider = new Formio.providers.storage[storage](this);\n                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);\n              }\n              else {\n                throw ('Storage provider not found');\n              }\n            }\n            return result || { url: '' };\n          });\n      });\n\n    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);\n  }\n\n  downloadFile(file) {\n    const requestArgs = {\n      method: 'download',\n      file: file\n    };\n\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => {\n        return Formio.pluginGet('fileRequest', requestArgs)\n          .then((result) => {\n            if (file.storage && isNil(result)) {\n              if (Formio.providers.storage.hasOwnProperty(file.storage)) {\n                const provider = new Formio.providers.storage[file.storage](this);\n                return provider.downloadFile(file);\n              }\n              else {\n                throw ('Storage provider not found');\n              }\n            }\n            return result || { url: '' };\n          });\n      });\n\n    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);\n  }\n\n  /**\n   * Returns the user permissions to a form and submission.\n   *\n   * @param user - The user or current user if undefined. For anonymous, use \"null\"\n   * @param form - The form or current form if undefined. For no form check, use \"null\"\n   * @param submission - The submisison or \"index\" if undefined.\n   *\n   * @return {create: boolean, read: boolean, edit: boolean, delete: boolean}\n   */\n  userPermissions(user, form, submission) {\n    return NativePromise.all([\n      (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),\n      (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),\n      this.accessInfo()\n    ]).then((results) => {\n      const form = results.shift();\n      const user = results.shift() || { _id: false, roles: [] };\n      const access = results.shift();\n      const permMap = {\n        create: 'create',\n        read: 'read',\n        update: 'edit',\n        delete: 'delete'\n      };\n      const perms = {\n        user: user,\n        form: form,\n        access: access,\n        create: false,\n        read: false,\n        edit: false,\n        delete: false\n      };\n      for (const roleName in access.roles) {\n        if (access.roles.hasOwnProperty(roleName)) {\n          const role = access.roles[roleName];\n          if (role.default && (user._id === false)) {\n            // User is anonymous. Add the anonymous role.\n            user.roles.push(role._id);\n          }\n          else if (role.admin && user.roles.indexOf(role._id) !== -1) {\n            perms.create = true;\n            perms.read = true;\n            perms.delete = true;\n            perms.edit = true;\n            return perms;\n          }\n        }\n      }\n      if (form && form.submissionAccess) {\n        for (let i = 0; i < form.submissionAccess.length; i++) {\n          const permission = form.submissionAccess[i];\n          const [perm, scope] = permission.type.split('_');\n          if (['create', 'read', 'update', 'delete'].includes(perm)) {\n            if (_intersection(permission.roles, user.roles).length) {\n              perms[permMap[perm]] = (scope === 'all') || (!submission || (user._id === submission.owner));\n            }\n          }\n        }\n      }\n      return perms;\n    });\n  }\n\n  /**\n   * Determine if the current user can submit a form.\n   * @return {*}\n   */\n  canSubmit() {\n    return this.userPermissions().then((perms) => {\n      // If there is user and they cannot create, then check anonymous user permissions.\n      if (!perms.create && Formio.getUser()) {\n        return this.userPermissions(null).then((anonPerms) => {\n          if (anonPerms.create) {\n            Formio.setUser(null);\n            return true;\n          }\n\n          return false;\n        });\n      }\n\n      return perms.create;\n    });\n  }\n\n  getUrlParts(url) {\n    return Formio.getUrlParts(url, this);\n  }\n\n  static getUrlParts(url, formio) {\n    const base = (formio && formio.base) ? formio.base : Formio.baseUrl;\n    let regex = '^(http[s]?:\\\\/\\\\/)';\n    if (base && url.indexOf(base) === 0) {\n      regex += `(${base.replace(/^http[s]?:\\/\\//, '')})`;\n    }\n    else {\n      regex += '([^/]+)';\n    }\n    regex += '($|\\\\/.*)';\n    return url.match(new RegExp(regex));\n  }\n\n  static serialize(obj, _interpolate) {\n    const str = [];\n    const interpolate = (item) => {\n      return _interpolate ? _interpolate(item) : item;\n    };\n    for (const p in obj) {\n      if (obj.hasOwnProperty(p)) {\n        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);\n      }\n    }\n    return str.join('&');\n  }\n\n  static getRequestArgs(formio, type, url, method, data, opts) {\n    method = (method || 'GET').toUpperCase();\n    if (!opts || !isObject(opts)) {\n      opts = {};\n    }\n\n    const requestArgs = {\n      url,\n      method,\n      data: data || null,\n      opts\n    };\n\n    if (type) {\n      requestArgs.type = type;\n    }\n\n    if (formio) {\n      requestArgs.formio = formio;\n    }\n    return requestArgs;\n  }\n\n  static makeStaticRequest(url, method, data, opts) {\n    const requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => Formio.pluginGet('staticRequest', requestArgs)\n        .then((result) => {\n          if (isNil(result)) {\n            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);\n          }\n          return result;\n        }));\n\n    return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);\n  }\n\n  static makeRequest(formio, type, url, method, data, opts) {\n    if (!formio) {\n      return Formio.makeStaticRequest(url, method, data, opts);\n    }\n\n    const requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);\n    requestArgs.opts = requestArgs.opts || {};\n    requestArgs.opts.formio = formio;\n\n    //for Formio requests default Accept and Content-type headers\n    if (!requestArgs.opts.headers) {\n      requestArgs.opts.headers = {};\n    }\n    requestArgs.opts.headers = _defaults(requestArgs.opts.headers, {\n      'Accept': 'application/json',\n      'Content-type': 'application/json'\n    });\n    const request = Formio.pluginWait('preRequest', requestArgs)\n      .then(() => Formio.pluginGet('request', requestArgs)\n        .then((result) => {\n          if (isNil(result)) {\n            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);\n          }\n          return result;\n        }));\n\n    return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);\n  }\n\n  static request(url, method, data, header, opts) {\n    if (!url) {\n      return NativePromise.reject('No url provided');\n    }\n    method = (method || 'GET').toUpperCase();\n\n    // For reverse compatibility, if they provided the ignoreCache parameter,\n    // then change it back to the options format where that is a parameter.\n    if (isBoolean(opts)) {\n      opts = { ignoreCache: opts };\n    }\n    if (!opts || !isObject(opts)) {\n      opts = {};\n    }\n\n    // Generate a cachekey.\n    const cacheKey = btoa(url);\n\n    // Get the cached promise to save multiple loads.\n    if (!Formio.ignoreCache && !opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {\n      return NativePromise.resolve(_cloneDeep(Formio.cache[cacheKey]));\n    }\n\n    // Set up and fetch request\n    const headers = header || new Headers(opts.headers || {\n      'Accept': 'application/json',\n      'Content-type': 'application/json'\n    });\n    const token = Formio.getToken(opts);\n    if (token && !opts.noToken) {\n      headers.append('x-jwt-token', token);\n    }\n\n    // The fetch-ponyfill can't handle a proper Headers class anymore. Change it back to an object.\n    const headerObj = {};\n    headers.forEach(function(value, name) {\n      headerObj[name] = value;\n    });\n\n    let options = {\n      method: method,\n      headers: headerObj,\n      mode: 'cors'\n    };\n    if (data) {\n      options.body = JSON.stringify(data);\n    }\n\n    // Allow plugins to alter the options.\n    options = Formio.pluginAlter('requestOptions', options, url);\n    if (options.namespace || Formio.namespace) {\n      opts.namespace = options.namespace ||  Formio.namespace;\n    }\n\n    const requestToken = options.headers['x-jwt-token'];\n    const result = Formio.fetch(url, options)\n      .then((response) => {\n        // Allow plugins to respond.\n        response = Formio.pluginAlter('requestResponse', response, Formio);\n\n        if (!response.ok) {\n          if (response.status === 440) {\n            Formio.setToken(null, opts);\n            Formio.events.emit('formio.sessionExpired', response.body);\n          }\n          else if (response.status === 401) {\n            Formio.events.emit('formio.unauthorized', response.body);\n          }\n          // Parse and return the error as a rejected promise to reject this promise\n          return (response.headers.get('content-type').includes('application/json')\n            ? response.json()\n            : response.text())\n            .then((error) => {\n              return NativePromise.reject(error);\n            });\n        }\n\n        // Handle fetch results\n        const token = response.headers.get('x-jwt-token');\n\n        // In some strange cases, the fetch library will return an x-jwt-token without sending\n        // one to the server. This has even been debugged on the server to verify that no token\n        // was introduced with the request, but the response contains a token. This is an Invalid\n        // case where we do not send an x-jwt-token and get one in return for any GET request.\n        let tokenIntroduced = false;\n        if (\n          (method === 'GET') &&\n          !requestToken &&\n          token &&\n          !opts.external &&\n          !url.includes('token=') &&\n          !url.includes('x-jwt-token=')\n        ) {\n          console.warn('Token was introduced in request.');\n          tokenIntroduced = true;\n        }\n\n        if (\n          response.status >= 200 &&\n          response.status < 300 &&\n          token &&\n          token !== '' &&\n          !tokenIntroduced\n        ) {\n          Formio.setToken(token, opts);\n        }\n        // 204 is no content. Don't try to .json() it.\n        if (response.status === 204) {\n          return {};\n        }\n\n        const getResult = response.headers.get('content-type').includes('application/json')\n          ? response.json()\n          : response.text();\n        return getResult.then((result) => {\n          // Add some content-range metadata to the result here\n          let range = response.headers.get('content-range');\n          if (range && isObject(result)) {\n            range = range.split('/');\n            if (range[0] !== '*') {\n              const skipLimit = range[0].split('-');\n              result.skip = Number(skipLimit[0]);\n              result.limit = skipLimit[1] - skipLimit[0] + 1;\n            }\n            result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);\n          }\n\n          if (!opts.getHeaders) {\n            return result;\n          }\n\n          const headers = {};\n          response.headers.forEach((item, key) => {\n            headers[key] = item;\n          });\n\n          // Return the result with the headers.\n          return {\n            result: result,\n            headers: headers\n          };\n        });\n      })\n      .then((result) => {\n        if (opts.getHeaders) {\n          return result;\n        }\n\n        // Cache the response.\n        if (!Formio.ignoreCache && (method === 'GET')) {\n          Formio.cache[cacheKey] = _cloneDeep(result);\n        }\n\n        let resultCopy = {};\n\n        // Shallow copy result so modifications don't end up in cache\n        if (Array.isArray(result)) {\n          resultCopy = result.map(copy);\n          resultCopy.skip = result.skip;\n          resultCopy.limit = result.limit;\n          resultCopy.serverCount = result.serverCount;\n        }\n        else {\n          resultCopy = copy(result);\n        }\n\n        return resultCopy;\n      })\n      .catch((err) => {\n        if (err === 'Bad Token') {\n          Formio.setToken(null, opts);\n          Formio.events.emit('formio.badToken', err);\n        }\n        if (err.message) {\n          err.message = `Could not connect to API server (${err.message})`;\n          err.networkError = true;\n        }\n\n        if (method === 'GET') {\n          delete Formio.cache[cacheKey];\n        }\n\n        return NativePromise.reject(err);\n      });\n\n    return result;\n  }\n\n  // Needed to maintain reverse compatability...\n  static get token() {\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    return Formio.tokens.formioToken ? Formio.tokens.formioToken : '';\n  }\n\n  // Needed to maintain reverse compatability...\n  static set token(token) {\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    return Formio.tokens.formioToken = token || '';\n  }\n\n  static setToken(token = '', opts) {\n    opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};\n    var tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    if (Formio.tokens[tokenName] === token) {\n      return;\n    }\n\n    Formio.tokens[tokenName] = token;\n    if (!token) {\n      Formio.setUser(null, opts);\n      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n      try {\n        return localStorage.removeItem(tokenName);\n      }\n      catch (err) {\n        return cookies.erase(tokenName, { path: '/' });\n      }\n    }\n    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n    try {\n      localStorage.setItem(tokenName, token);\n    }\n    catch (err) {\n      cookies.set(tokenName, token, { path: '/' });\n    }\n    return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null\n  }\n\n  static getToken(options) {\n    options = (typeof options === 'string') ? { namespace: options } : options || {};\n    var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;\n    if (!Formio.tokens) {\n      Formio.tokens = {};\n    }\n\n    if (Formio.tokens[tokenName]) {\n      return Formio.tokens[tokenName];\n    }\n    try {\n      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';\n      return Formio.tokens[tokenName];\n    }\n    catch (e) {\n      Formio.tokens[tokenName] = cookies.get(tokenName);\n      return Formio.tokens[tokenName];\n    }\n  }\n\n  static setUser(user, opts = {}) {\n    var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;\n    if (!user) {\n      Formio.setToken(null, opts);\n\n      // Emit an event on the cleared user.\n      Formio.events.emit('formio.user', null);\n\n      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n      try {\n        return localStorage.removeItem(userName);\n      }\n      catch (err) {\n        return cookies.erase(userName, { path: '/' });\n      }\n    }\n    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.\n    try {\n      localStorage.setItem(userName, JSON.stringify(user));\n    }\n    catch (err) {\n      cookies.set(userName, JSON.stringify(user), { path: '/' });\n    }\n\n    // Emit an event on the authenticated user.\n    Formio.events.emit('formio.user', user);\n  }\n\n  static getUser(options) {\n    options = options || {};\n    var userName = `${options.namespace || Formio.namespace || 'formio'}User`;\n    try {\n      return JSON.parse(localStorage.getItem(userName) || null);\n    }\n    catch (e) {\n      return JSON.parse(cookies.get(userName));\n    }\n  }\n\n  static setBaseUrl(url) {\n    Formio.baseUrl = url;\n    if (!Formio.projectUrlSet) {\n      Formio.projectUrl = url;\n    }\n  }\n\n  static getBaseUrl() {\n    return Formio.baseUrl;\n  }\n\n  static setApiUrl(url) {\n    return Formio.setBaseUrl(url);\n  }\n\n  static getApiUrl() {\n    return Formio.getBaseUrl();\n  }\n\n  static setAppUrl(url) {\n    console.warn('Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.');\n    Formio.projectUrl = url;\n    Formio.projectUrlSet = true;\n  }\n\n  static setProjectUrl(url) {\n    Formio.projectUrl = url;\n    Formio.projectUrlSet = true;\n  }\n\n  static setAuthUrl(url) {\n    Formio.authUrl = url;\n  }\n\n  static getAppUrl() {\n    console.warn('Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.');\n    return Formio.projectUrl;\n  }\n\n  static getProjectUrl() {\n    return Formio.projectUrl;\n  }\n\n  static clearCache() {\n    Formio.cache = {};\n  }\n\n  static noop() {}\n  static identity(value) {\n    return value;\n  }\n\n  static deregisterPlugin(plugin) {\n    const beforeLength = Formio.plugins.length;\n    Formio.plugins = Formio.plugins.filter((p) => {\n      if (p !== plugin && p.__name !== plugin) {\n        return true;\n      }\n\n      (p.deregister || Formio.noop).call(plugin, Formio);\n      return false;\n    });\n    return beforeLength !== Formio.plugins.length;\n  }\n\n  static registerPlugin(plugin, name) {\n    let found = false;\n    Formio.plugins.forEach((existing) => {\n      if (existing.__name === name) {\n        found = true;\n      }\n    });\n    if (!found) {\n      // Do not register already registered plugins.\n      Formio.plugins.push(plugin);\n      Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));\n      plugin.__name = name;\n      (plugin.init || Formio.noop).call(plugin, Formio);\n    }\n  }\n\n  static getPlugin(name) {\n    for (const plugin of Formio.plugins) {\n      if (plugin.__name === name) {\n        return plugin;\n      }\n    }\n\n    return null;\n  }\n\n  static pluginWait(pluginFn, ...args) {\n    return NativePromise.all(Formio.plugins.map((plugin) =>\n      (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));\n  }\n\n  static pluginGet(pluginFn, ...args) {\n    const callPlugin = (index) => {\n      const plugin = Formio.plugins[index];\n\n      if (!plugin) {\n        return NativePromise.resolve(null);\n      }\n\n      return NativePromise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))\n        .then((result) => {\n          if (!isNil(result)) {\n            return result;\n          }\n\n          return callPlugin(index + 1);\n        });\n    };\n    return callPlugin(0);\n  }\n\n  static pluginAlter(pluginFn, value, ...args) {\n    return Formio.plugins.reduce((value, plugin) =>\n      (plugin[pluginFn] || Formio.identity)(value, ...args), value);\n  }\n\n  static accessInfo(formio) {\n    const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;\n    return Formio.makeRequest(formio, 'accessInfo', `${projectUrl}/access`);\n  }\n\n  static currentUser(formio, options) {\n    let authUrl = Formio.authUrl;\n    if (!authUrl) {\n      authUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);\n    }\n    authUrl += '/current';\n    const user = Formio.getUser(options);\n    if (user) {\n      return Formio.pluginAlter('wrapStaticRequestPromise', NativePromise.resolve(user), {\n        url: authUrl,\n        method: 'GET',\n        options\n      });\n    }\n    const token = Formio.getToken(options);\n    if ((!options || !options.external) && !token) {\n      return Formio.pluginAlter('wrapStaticRequestPromise', NativePromise.resolve(null), {\n        url: authUrl,\n        method: 'GET',\n        options\n      });\n    }\n    return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)\n      .then((response) => {\n        Formio.setUser(response, options);\n        return response;\n      });\n  }\n\n  static logout(formio, options) {\n    options = options || {};\n    options.formio = formio;\n    Formio.setToken(null, options);\n    Formio.setUser(null, options);\n    Formio.clearCache();\n    const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);\n    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);\n  }\n\n  static pageQuery() {\n    if (Formio._pageQuery) {\n      return Formio._pageQuery;\n    }\n\n    Formio._pageQuery = {};\n    Formio._pageQuery.paths = [];\n    const hashes = location.hash.substr(1).replace(/\\?/g, '&').split('&');\n    let parts = [];\n    location.search.substr(1).split('&').forEach(function(item) {\n      parts = item.split('=');\n      if (parts.length > 1) {\n        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);\n      }\n    });\n\n    hashes.forEach(function(item) {\n      parts = item.split('=');\n      if (parts.length > 1) {\n        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);\n      }\n      else if (item.indexOf('/') === 0) {\n        Formio._pageQuery.paths = item.substr(1).split('/');\n      }\n    });\n    return Formio._pageQuery;\n  }\n\n  static oAuthCurrentUser(formio, token) {\n    return Formio.currentUser(formio, {\n      external: true,\n      headers: {\n        Authorization: `Bearer ${token}`\n      }\n    });\n  }\n\n  static samlInit(options) {\n    options = options || {};\n    const query = Formio.pageQuery();\n    if (query.saml) {\n      Formio.setUser(null);\n      const retVal = Formio.setToken(query.saml);\n      let uri = window.location.toString();\n      uri = uri.substring(0, uri.indexOf('?'));\n      window.history.replaceState({}, document.title, uri);\n      return retVal;\n    }\n\n    if (options.forceAuth) {\n      Formio.setUser(null);\n    }\n    else if (Formio.getToken()) {\n      // If we are not forcing the authentication and we have a token, then return here.\n      return false;\n    }\n\n    // Set the relay if not provided.\n    if (!options.relay) {\n      options.relay = window.location.href;\n    }\n\n    // go to the saml sso endpoint for this project.\n    const authUrl = Formio.authUrl || Formio.projectUrl;\n    window.location.href = `${authUrl}/saml/sso?relay=${encodeURIComponent(options.relay)}`;\n    return false;\n  }\n\n  static oktaInit(options) {\n    options = options || {};\n    if (typeof OktaAuth !== undefined) {\n      options.OktaAuth = OktaAuth;\n    }\n\n    if (typeof options.OktaAuth === undefined) {\n      const errorMessage = 'Cannot find OktaAuth. Please include the Okta JavaScript SDK within your application. See https://developer.okta.com/code/javascript/okta_auth_sdk for an example.';\n      console.warn(errorMessage);\n      return NativePromise.reject(errorMessage);\n    }\n    return new NativePromise((resolve, reject) => {\n      const Okta = options.OktaAuth;\n      delete options.OktaAuth;\n      var authClient = new Okta(options);\n      authClient.tokenManager.get('accessToken')\n        .then(accessToken => {\n          if (accessToken) {\n            resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));\n          }\n          else if (location.hash) {\n            authClient.token.parseFromUrl()\n              .then(token => {\n                authClient.tokenManager.add('accessToken', token);\n                resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));\n              })\n              .catch(err => {\n                console.warn(err);\n                reject(err);\n              });\n          }\n          else {\n            authClient.token.getWithRedirect({\n              responseType: 'token',\n              scopes: options.scopes\n            });\n            resolve(false);\n          }\n        });\n    });\n  }\n\n  static ssoInit(type, options) {\n    switch (type) {\n      case 'saml':\n        return Formio.samlInit(options);\n      case 'okta':\n        return Formio.oktaInit(options);\n      default:\n        console.warn('Unknown SSO type');\n        return NativePromise.reject('Unknown SSO type');\n    }\n  }\n\n  static requireLibrary(name, property, src, polling) {\n    if (!Formio.libraries.hasOwnProperty(name)) {\n      Formio.libraries[name] = {};\n      Formio.libraries[name].ready = new NativePromise((resolve, reject) => {\n        Formio.libraries[name].resolve = resolve;\n        Formio.libraries[name].reject = reject;\n      });\n\n      const callbackName = `${name}Callback`;\n\n      if (!polling && !window[callbackName]) {\n        window[callbackName] = () => Formio.libraries[name].resolve();\n      }\n\n      // See if the plugin already exists.\n      const plugin = _get(window, property);\n      if (plugin) {\n        Formio.libraries[name].resolve(plugin);\n      }\n      else {\n        src = Array.isArray(src) ? src : [src];\n        src.forEach((lib) => {\n          let attrs = {};\n          let elementType = '';\n          if (typeof lib === 'string') {\n            lib = {\n              type: 'script',\n              src: lib\n            };\n          }\n          switch (lib.type) {\n            case 'script':\n              elementType = 'script';\n              attrs = {\n                src: lib.src,\n                type: 'text/javascript',\n                defer: true,\n                async: true\n              };\n              break;\n            case 'styles':\n              elementType = 'link';\n              attrs = {\n                href: lib.src,\n                rel: 'stylesheet'\n              };\n              break;\n          }\n\n          // Add the script to the top page.\n          const script = document.createElement(elementType);\n          for (const attr in attrs) {\n            script.setAttribute(attr, attrs[attr]);\n          }\n          document.getElementsByTagName('head')[0].appendChild(script);\n        });\n\n        // if no callback is provided, then check periodically for the script.\n        if (polling) {\n          const interval = setInterval(() => {\n            const plugin = _get(window, property);\n            if (plugin) {\n              clearInterval(interval);\n              Formio.libraries[name].resolve(plugin);\n            }\n          }, 200);\n        }\n      }\n    }\n    return Formio.libraries[name].ready;\n  }\n\n  static libraryReady(name) {\n    if (\n      Formio.libraries.hasOwnProperty(name) &&\n      Formio.libraries[name].ready\n    ) {\n      return Formio.libraries[name].ready;\n    }\n\n    return NativePromise.reject(`${name} library was not required.`);\n  }\n}\n\n// Define all the static properties.\nFormio.ignoreCache = false;\nFormio.libraries = {};\nFormio.Promise = NativePromise;\nFormio.fetch = fetch;\nFormio.Headers = Headers;\nFormio.baseUrl = 'https://api.form.io';\nFormio.projectUrl = Formio.baseUrl;\nFormio.authUrl = '';\nFormio.projectUrlSet = false;\nFormio.plugins = [];\nFormio.cache = {};\nFormio.providers = providers;\nFormio.events = new EventEmitter({\n  wildcard: false,\n  maxListeners: 0\n});\n\nif (typeof global === 'object' && !global.Formio) {\n  global.Formio = Formio;\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/Formio.js",
     "access": "public",
@@ -2091,7 +2091,7 @@
     "longname": "src/Formio.js~Formio#saveForm",
     "access": "public",
     "description": null,
-    "lineNumber": 327,
+    "lineNumber": 328,
     "undocument": true,
     "params": [
       {
@@ -2124,7 +2124,7 @@
     "longname": "src/Formio.js~Formio#deleteForm",
     "access": "public",
     "description": null,
-    "lineNumber": 331,
+    "lineNumber": 332,
     "undocument": true,
     "params": [
       {
@@ -2151,7 +2151,7 @@
     "longname": "src/Formio.js~Formio#loadForms",
     "access": "public",
     "description": null,
-    "lineNumber": 335,
+    "lineNumber": 336,
     "undocument": true,
     "params": [
       {
@@ -2184,7 +2184,7 @@
     "longname": "src/Formio.js~Formio#loadSubmission",
     "access": "public",
     "description": null,
-    "lineNumber": 339,
+    "lineNumber": 340,
     "undocument": true,
     "params": [
       {
@@ -2217,7 +2217,7 @@
     "longname": "src/Formio.js~Formio#saveSubmission",
     "access": "public",
     "description": null,
-    "lineNumber": 348,
+    "lineNumber": 349,
     "undocument": true,
     "params": [
       {
@@ -2250,7 +2250,7 @@
     "longname": "src/Formio.js~Formio#deleteSubmission",
     "access": "public",
     "description": null,
-    "lineNumber": 355,
+    "lineNumber": 356,
     "undocument": true,
     "params": [
       {
@@ -2277,7 +2277,7 @@
     "longname": "src/Formio.js~Formio#loadSubmissions",
     "access": "public",
     "description": null,
-    "lineNumber": 359,
+    "lineNumber": 360,
     "undocument": true,
     "params": [
       {
@@ -2310,7 +2310,7 @@
     "longname": "src/Formio.js~Formio#loadAction",
     "access": "public",
     "description": null,
-    "lineNumber": 363,
+    "lineNumber": 364,
     "undocument": true,
     "params": [
       {
@@ -2343,7 +2343,7 @@
     "longname": "src/Formio.js~Formio#saveAction",
     "access": "public",
     "description": null,
-    "lineNumber": 367,
+    "lineNumber": 368,
     "undocument": true,
     "params": [
       {
@@ -2376,7 +2376,7 @@
     "longname": "src/Formio.js~Formio#deleteAction",
     "access": "public",
     "description": null,
-    "lineNumber": 371,
+    "lineNumber": 372,
     "undocument": true,
     "params": [
       {
@@ -2403,7 +2403,7 @@
     "longname": "src/Formio.js~Formio#loadActions",
     "access": "public",
     "description": null,
-    "lineNumber": 375,
+    "lineNumber": 376,
     "undocument": true,
     "params": [
       {
@@ -2436,7 +2436,7 @@
     "longname": "src/Formio.js~Formio#availableActions",
     "access": "public",
     "description": null,
-    "lineNumber": 379,
+    "lineNumber": 380,
     "undocument": true,
     "params": [],
     "return": {
@@ -2456,7 +2456,7 @@
     "longname": "src/Formio.js~Formio#actionInfo",
     "access": "public",
     "description": null,
-    "lineNumber": 383,
+    "lineNumber": 384,
     "undocument": true,
     "params": [
       {
@@ -2483,7 +2483,7 @@
     "longname": "src/Formio.js~Formio#isObjectId",
     "access": "public",
     "description": null,
-    "lineNumber": 387,
+    "lineNumber": 388,
     "undocument": true,
     "params": [
       {
@@ -2510,7 +2510,7 @@
     "longname": "src/Formio.js~Formio#getProjectId",
     "access": "public",
     "description": null,
-    "lineNumber": 392,
+    "lineNumber": 393,
     "undocument": true,
     "params": [],
     "return": {
@@ -2530,7 +2530,7 @@
     "longname": "src/Formio.js~Formio#getFormId",
     "access": "public",
     "description": null,
-    "lineNumber": 406,
+    "lineNumber": 407,
     "undocument": true,
     "params": [],
     "return": {
@@ -2550,7 +2550,7 @@
     "longname": "src/Formio.js~Formio#currentUser",
     "access": "public",
     "description": null,
-    "lineNumber": 420,
+    "lineNumber": 421,
     "undocument": true,
     "params": [
       {
@@ -2577,7 +2577,7 @@
     "longname": "src/Formio.js~Formio#accessInfo",
     "access": "public",
     "description": null,
-    "lineNumber": 424,
+    "lineNumber": 425,
     "undocument": true,
     "params": [],
     "return": {
@@ -2597,7 +2597,7 @@
     "longname": "src/Formio.js~Formio#getToken",
     "access": "public",
     "description": "Returns the JWT token for this instance.",
-    "lineNumber": 433,
+    "lineNumber": 434,
     "return": {
       "nullable": null,
       "types": [
@@ -2626,7 +2626,7 @@
     "longname": "src/Formio.js~Formio#setToken",
     "access": "public",
     "description": "Sets the JWT token for this instance.",
-    "lineNumber": 442,
+    "lineNumber": 443,
     "return": {
       "nullable": null,
       "types": [
@@ -2661,7 +2661,7 @@
     "longname": "src/Formio.js~Formio#getTempToken",
     "access": "public",
     "description": "Returns a temporary authentication token for single purpose token generation.",
-    "lineNumber": 449,
+    "lineNumber": 450,
     "params": [
       {
         "name": "expire",
@@ -2699,7 +2699,7 @@
     "longname": "src/Formio.js~Formio#getDownloadUrl",
     "access": "public",
     "description": "Get a download url for a submission PDF of this submission.",
-    "lineNumber": 469,
+    "lineNumber": 470,
     "return": {
       "nullable": null,
       "types": [
@@ -2728,7 +2728,7 @@
     "longname": "src/Formio.js~Formio#uploadFile",
     "access": "public",
     "description": null,
-    "lineNumber": 500,
+    "lineNumber": 501,
     "undocument": true,
     "params": [
       {
@@ -2791,7 +2791,7 @@
     "longname": "src/Formio.js~Formio#downloadFile",
     "access": "public",
     "description": null,
-    "lineNumber": 528,
+    "lineNumber": 529,
     "undocument": true,
     "params": [
       {
@@ -2818,7 +2818,7 @@
     "longname": "src/Formio.js~Formio#userPermissions",
     "access": "public",
     "description": "Returns the user permissions to a form and submission.",
-    "lineNumber": 563,
+    "lineNumber": 564,
     "params": [
       {
         "nullable": null,
@@ -2871,7 +2871,7 @@
     "longname": "src/Formio.js~Formio#canSubmit",
     "access": "public",
     "description": "Determine if the current user can submit a form.",
-    "lineNumber": 622,
+    "lineNumber": 623,
     "return": {
       "nullable": null,
       "types": [
@@ -2893,7 +2893,7 @@
     "longname": "src/Formio.js~Formio#getUrlParts",
     "access": "public",
     "description": null,
-    "lineNumber": 640,
+    "lineNumber": 641,
     "undocument": true,
     "params": [
       {
@@ -2920,7 +2920,7 @@
     "longname": "src/Formio.js~Formio.getUrlParts",
     "access": "public",
     "description": null,
-    "lineNumber": 644,
+    "lineNumber": 645,
     "undocument": true,
     "params": [
       {
@@ -2953,7 +2953,7 @@
     "longname": "src/Formio.js~Formio.serialize",
     "access": "public",
     "description": null,
-    "lineNumber": 657,
+    "lineNumber": 658,
     "undocument": true,
     "params": [
       {
@@ -2986,7 +2986,7 @@
     "longname": "src/Formio.js~Formio.getRequestArgs",
     "access": "public",
     "description": null,
-    "lineNumber": 670,
+    "lineNumber": 671,
     "undocument": true,
     "params": [
       {
@@ -3043,7 +3043,7 @@
     "longname": "src/Formio.js~Formio.makeStaticRequest",
     "access": "public",
     "description": null,
-    "lineNumber": 693,
+    "lineNumber": 694,
     "undocument": true,
     "params": [
       {
@@ -3088,7 +3088,7 @@
     "longname": "src/Formio.js~Formio.makeRequest",
     "access": "public",
     "description": null,
-    "lineNumber": 707,
+    "lineNumber": 708,
     "undocument": true,
     "params": [
       {
@@ -3145,7 +3145,7 @@
     "longname": "src/Formio.js~Formio.request",
     "access": "public",
     "description": null,
-    "lineNumber": 736,
+    "lineNumber": 737,
     "undocument": true,
     "params": [
       {
@@ -3196,7 +3196,7 @@
     "longname": "src/Formio.js~Formio.token",
     "access": "public",
     "description": null,
-    "lineNumber": 925,
+    "lineNumber": 926,
     "undocument": true,
     "type": {
       "types": [
@@ -3215,7 +3215,7 @@
     "longname": "src/Formio.js~Formio.token",
     "access": "public",
     "description": null,
-    "lineNumber": 934,
+    "lineNumber": 935,
     "undocument": true
   },
   {
@@ -3229,7 +3229,7 @@
     "longname": "src/Formio.js~Formio.setToken",
     "access": "public",
     "description": null,
-    "lineNumber": 942,
+    "lineNumber": 943,
     "undocument": true,
     "params": [
       {
@@ -3265,7 +3265,7 @@
     "longname": "src/Formio.js~Formio.getToken",
     "access": "public",
     "description": null,
-    "lineNumber": 974,
+    "lineNumber": 975,
     "undocument": true,
     "params": [
       {
@@ -3292,7 +3292,7 @@
     "longname": "src/Formio.js~Formio.setUser",
     "access": "public",
     "description": null,
-    "lineNumber": 994,
+    "lineNumber": 995,
     "undocument": true,
     "params": [
       {
@@ -3328,7 +3328,7 @@
     "longname": "src/Formio.js~Formio.getUser",
     "access": "public",
     "description": null,
-    "lineNumber": 1022,
+    "lineNumber": 1023,
     "undocument": true,
     "params": [
       {
@@ -3355,7 +3355,7 @@
     "longname": "src/Formio.js~Formio.setBaseUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1033,
+    "lineNumber": 1034,
     "undocument": true,
     "params": [
       {
@@ -3378,7 +3378,7 @@
     "longname": "src/Formio.js~Formio.getBaseUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1040,
+    "lineNumber": 1041,
     "undocument": true,
     "params": [],
     "return": {
@@ -3398,7 +3398,7 @@
     "longname": "src/Formio.js~Formio.setApiUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1044,
+    "lineNumber": 1045,
     "undocument": true,
     "params": [
       {
@@ -3425,7 +3425,7 @@
     "longname": "src/Formio.js~Formio.getApiUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1048,
+    "lineNumber": 1049,
     "undocument": true,
     "params": [],
     "return": {
@@ -3445,7 +3445,7 @@
     "longname": "src/Formio.js~Formio.setAppUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1052,
+    "lineNumber": 1053,
     "undocument": true,
     "params": [
       {
@@ -3468,7 +3468,7 @@
     "longname": "src/Formio.js~Formio.setProjectUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1058,
+    "lineNumber": 1059,
     "undocument": true,
     "params": [
       {
@@ -3491,7 +3491,7 @@
     "longname": "src/Formio.js~Formio.setAuthUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1063,
+    "lineNumber": 1064,
     "undocument": true,
     "params": [
       {
@@ -3514,7 +3514,7 @@
     "longname": "src/Formio.js~Formio.getAppUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1067,
+    "lineNumber": 1068,
     "undocument": true,
     "params": [],
     "return": {
@@ -3534,7 +3534,7 @@
     "longname": "src/Formio.js~Formio.getProjectUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 1072,
+    "lineNumber": 1073,
     "undocument": true,
     "params": [],
     "return": {
@@ -3554,7 +3554,7 @@
     "longname": "src/Formio.js~Formio.clearCache",
     "access": "public",
     "description": null,
-    "lineNumber": 1076,
+    "lineNumber": 1077,
     "undocument": true,
     "params": [],
     "return": null
@@ -3570,7 +3570,7 @@
     "longname": "src/Formio.js~Formio.noop",
     "access": "public",
     "description": null,
-    "lineNumber": 1080,
+    "lineNumber": 1081,
     "undocument": true,
     "params": [],
     "return": null
@@ -3586,7 +3586,7 @@
     "longname": "src/Formio.js~Formio.identity",
     "access": "public",
     "description": null,
-    "lineNumber": 1081,
+    "lineNumber": 1082,
     "undocument": true,
     "params": [
       {
@@ -3613,7 +3613,7 @@
     "longname": "src/Formio.js~Formio.deregisterPlugin",
     "access": "public",
     "description": null,
-    "lineNumber": 1085,
+    "lineNumber": 1086,
     "undocument": true,
     "params": [
       {
@@ -3640,7 +3640,7 @@
     "longname": "src/Formio.js~Formio.registerPlugin",
     "access": "public",
     "description": null,
-    "lineNumber": 1098,
+    "lineNumber": 1099,
     "undocument": true,
     "params": [
       {
@@ -3669,7 +3669,7 @@
     "longname": "src/Formio.js~Formio.getPlugin",
     "access": "public",
     "description": null,
-    "lineNumber": 1114,
+    "lineNumber": 1115,
     "undocument": true,
     "params": [
       {
@@ -3696,7 +3696,7 @@
     "longname": "src/Formio.js~Formio.pluginWait",
     "access": "public",
     "description": null,
-    "lineNumber": 1124,
+    "lineNumber": 1125,
     "undocument": true,
     "params": [
       {
@@ -3730,7 +3730,7 @@
     "longname": "src/Formio.js~Formio.pluginGet",
     "access": "public",
     "description": null,
-    "lineNumber": 1129,
+    "lineNumber": 1130,
     "undocument": true,
     "params": [
       {
@@ -3764,7 +3764,7 @@
     "longname": "src/Formio.js~Formio.pluginAlter",
     "access": "public",
     "description": null,
-    "lineNumber": 1149,
+    "lineNumber": 1150,
     "undocument": true,
     "params": [
       {
@@ -3804,7 +3804,7 @@
     "longname": "src/Formio.js~Formio.accessInfo",
     "access": "public",
     "description": null,
-    "lineNumber": 1154,
+    "lineNumber": 1155,
     "undocument": true,
     "params": [
       {
@@ -3831,7 +3831,7 @@
     "longname": "src/Formio.js~Formio.currentUser",
     "access": "public",
     "description": null,
-    "lineNumber": 1159,
+    "lineNumber": 1160,
     "undocument": true,
     "params": [
       {
@@ -3864,7 +3864,7 @@
     "longname": "src/Formio.js~Formio.logout",
     "access": "public",
     "description": null,
-    "lineNumber": 1188,
+    "lineNumber": 1189,
     "undocument": true,
     "params": [
       {
@@ -3897,7 +3897,7 @@
     "longname": "src/Formio.js~Formio.pageQuery",
     "access": "public",
     "description": null,
-    "lineNumber": 1198,
+    "lineNumber": 1199,
     "undocument": true,
     "params": [],
     "return": {
@@ -3917,7 +3917,7 @@
     "longname": "src/Formio.js~Formio.oAuthCurrentUser",
     "access": "public",
     "description": null,
-    "lineNumber": 1226,
+    "lineNumber": 1227,
     "undocument": true,
     "params": [
       {
@@ -3950,7 +3950,7 @@
     "longname": "src/Formio.js~Formio.samlInit",
     "access": "public",
     "description": null,
-    "lineNumber": 1235,
+    "lineNumber": 1236,
     "undocument": true,
     "params": [
       {
@@ -3977,7 +3977,7 @@
     "longname": "src/Formio.js~Formio.oktaInit",
     "access": "public",
     "description": null,
-    "lineNumber": 1266,
+    "lineNumber": 1267,
     "undocument": true,
     "params": [
       {
@@ -4004,7 +4004,7 @@
     "longname": "src/Formio.js~Formio.ssoInit",
     "access": "public",
     "description": null,
-    "lineNumber": 1308,
+    "lineNumber": 1309,
     "undocument": true,
     "params": [
       {
@@ -4037,7 +4037,7 @@
     "longname": "src/Formio.js~Formio.requireLibrary",
     "access": "public",
     "description": null,
-    "lineNumber": 1320,
+    "lineNumber": 1321,
     "undocument": true,
     "params": [
       {
@@ -4082,7 +4082,7 @@
     "longname": "src/Formio.js~Formio.libraryReady",
     "access": "public",
     "description": null,
-    "lineNumber": 1392,
+    "lineNumber": 1393,
     "undocument": true,
     "params": [
       {
@@ -19559,7 +19559,7 @@
     "__docId__": 1002,
     "kind": "file",
     "name": "src/components/datagrid/DataGrid.js",
-    "content": "import _ from 'lodash';\nimport NestedComponent from '../nested/NestedComponent';\nimport BaseComponent from '../base/Base';\n\nexport default class DataGridComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Data Grid',\n      key: 'dataGrid',\n      type: 'datagrid',\n      clearOnHide: true,\n      input: true,\n      tree: true,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Data Grid',\n      icon: 'fa fa-th',\n      group: 'data',\n      documentation: 'http://help.form.io/userguide/#datagrid',\n      weight: 20,\n      schema: DataGridComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.type = 'datagrid';\n    this.numRows = 0;\n    this.numColumns = 0;\n    this.rows = [];\n\n    if (this.hasRowGroups() && !this.options.builder) {\n      const groups = _.get(this.component, 'rowGroups', []);\n      const rowsNum = this.totalRowsNumber(groups);\n      this.setStaticValue(rowsNum);\n      this.dataValue = _.zipWith(this.dataValue, this.defaultValue, (a, b) => {\n        return _.merge(a, b);\n      });\n    }\n  }\n\n  get defaultSchema() {\n    return DataGridComponent.schema();\n  }\n\n  get emptyValue() {\n    return [{}];\n  }\n\n  get addAnotherPosition() {\n    return _.get(this.component, 'addAnotherPosition', 'bottom');\n  }\n\n  setStaticValue(n) {\n    this.dataValue = _.range(n).map(() => ({}));\n  }\n\n  hasAddButton() {\n    const maxLength = _.get(this.component, 'validate.maxLength');\n    return !this.component.disableAddingRemovingRows &&\n    !this.shouldDisable &&\n      !this.options.builder &&\n      !this.options.preview &&\n      (!maxLength || (this.dataValue.length < maxLength));\n  }\n\n  hasExtraColumn() {\n    const rmPlacement = _.get(this, 'component.removePlacement', 'col');\n    return (this.hasRemoveButtons() && rmPlacement === 'col') || this.options.builder;\n  }\n\n  hasRemoveButtons() {\n    return !this.component.disableAddingRemovingRows &&\n      !this.shouldDisable &&\n      !this.options.builder &&\n      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));\n  }\n\n  hasTopSubmit() {\n    return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasBottomSubmit() {\n    return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasChanged(newValue, oldValue) {\n    return !_.isEqual(newValue, oldValue);\n  }\n\n  build() {\n    this.createElement();\n    this.createLabel(this.element);\n    let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';\n    ['striped', 'bordered', 'hover', 'condensed'].forEach((prop) => {\n      if (this.component[prop]) {\n        tableClass += `table-${prop} `;\n      }\n    });\n    this.tableElement = this.ce('table', {\n      class: tableClass,\n      style: this.component.layoutFixed ? 'table-layout: fixed;' : '',\n    });\n    this.element.appendChild(this.tableElement);\n    if (!this.dataValue.length) {\n      this.addNewValue();\n    }\n    this.visibleColumns = true;\n    this.errorContainer = this.element;\n    this.restoreValue();\n    this.createDescription(this.element);\n    this.attachLogic();\n  }\n\n  setVisibleComponents() {\n    // Add new values based on minLength.\n    for (let dIndex = this.dataValue.length; dIndex < _.get(this.component, 'validate.minLength', 0); dIndex++) {\n      this.dataValue.push({});\n    }\n\n    this.numColumns = this.hasExtraColumn() ? 1 : 0;\n    this.numColumns += this.allowReorder ? 1 : 0;\n    this.numRows = this.dataValue.length;\n\n    if (this.visibleColumns === true) {\n      this.numColumns += this.component.components.length;\n      this.visibleComponents = this.component.components;\n      return this.visibleComponents;\n    }\n\n    this.visibleComponents = this.component.components.filter((comp) => this.visibleColumns[comp.key]);\n    this.numColumns += this.visibleComponents.length;\n  }\n\n  buildRows() {\n    this.setVisibleComponents();\n    const state = this.destroy();\n    this.empty(this.tableElement);\n\n    // Build the rows.\n    const tableRows = [];\n    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex, state.rows[rowIndex])));\n\n    // Create the header (must happen after build rows to get correct column length)\n    const header = this.createHeader();\n    if (header) {\n      this.tableElement.appendChild(header);\n    }\n    this.tableBody = this.ce('tbody', null, tableRows);\n    this.tableElement.appendChild(this.tableBody);\n\n    if (this.allowReorder) {\n      this.addDraggable([this.tableBody]);\n    }\n\n    if (this.hasRowGroups() && !this.options.builder) {\n      this.buildGroups();\n    }\n\n    // Create the add row button footer element.\n    if (this.hasBottomSubmit()) {\n      this.tableElement.appendChild(this.ce('tfoot', null,\n        this.ce('tr', null,\n          this.ce('td', { colspan: this.numColumns },\n            this.addButton()\n          )\n        )\n      ));\n    }\n  }\n\n  get allowReorder() {\n    return super.allowReorder && !this.options.builder;\n  }\n\n  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {\n    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);\n    this.triggerChange();\n  }\n\n  // Build the header.\n  createHeader() {\n    const hasTopButton = this.hasTopSubmit();\n    const hasEnd = this.hasExtraColumn() || hasTopButton;\n    let needsHeader = false;\n    const thead = this.ce('thead', null, this.ce('tr', null,\n      [\n        this.allowReorder ? this.ce('th', {\n          class: 'formio-drag-column-header'\n        }) : null,\n        this.visibleComponents.map(comp => {\n          const th = this.ce('th');\n          if (comp.validate && comp.validate.required) {\n            th.setAttribute('class', 'field-required');\n          }\n          const title = comp.label || comp.title;\n          if (title && !comp.dataGridLabel) {\n            needsHeader = true;\n            th.appendChild(this.text(title));\n            this.createTooltip(th, comp);\n          }\n          return th;\n        }),\n        hasEnd ? this.ce('th', null, (hasTopButton ? this.addButton(true) : null)) : null,\n      ]\n    ));\n    return needsHeader ? thead : null;\n  }\n\n  get dataValue() {\n    const dataValue = super.dataValue;\n    if (!dataValue || !Array.isArray(dataValue)) {\n      return this.emptyValue;\n    }\n    return dataValue;\n  }\n\n  set dataValue(value) {\n    super.dataValue = value;\n  }\n\n  get defaultValue() {\n    const value = super.defaultValue;\n    if (Array.isArray(value)) {\n      return value;\n    }\n    if (value && (typeof value === 'object')) {\n      return [value];\n    }\n    return this.emptyValue;\n  }\n\n  buildRow(rowData, index, state) {\n    state = state || {};\n    const components = _.get(this, 'component.components', []);\n    const colsNum = components.length;\n    const lastColIndex = colsNum - 1;\n    const hasRmButton = this.hasRemoveButtons();\n    const hasTopButton = this.hasTopSubmit();\n    const rmPlacement = _.get(this, 'component.removePlacement', 'col');\n    let useCorner = false;\n    let lastColumn = null;\n    this.rows[index] = {};\n    let firstColumn = null;\n\n    if (this.allowReorder) {\n      firstColumn = this.ce('td', {\n        class: 'formio-drag-column'\n      }, this.dragButton());\n    }\n\n    if (hasRmButton) {\n      if (rmPlacement === 'col') {\n        lastColumn = this.ce('td', {\n          class: 'formio-remove-column'\n        }, this.removeButton(index));\n      }\n      else {\n        useCorner = true;\n      }\n    }\n    else if (this.options.builder) {\n      lastColumn = this.ce('td', {\n        id: `${this.id}-drag-container`,\n        class: 'drag-container'\n      }, this.ce('div', {\n        id: `${this.id}-placeholder`,\n        class: 'alert alert-info',\n        style: 'text-align:center; margin-bottom: 0px;',\n        role: 'alert'\n      }, this.text('Drag and Drop a form component')));\n      this.root.addDragContainer(lastColumn, this);\n    }\n\n    const rowElement =  this.ce('tr', null,\n      [\n        firstColumn,\n        components.map(\n          (cmp, colIndex) => {\n            const cell = this.buildComponent(\n              cmp,\n              colIndex,\n              rowData,\n              index,\n              this.getComponentState(cmp, state)\n            );\n\n            if (hasRmButton && useCorner && lastColIndex === colIndex) {\n              cell.style.position = 'relative';\n              cell.style.width = '50px';\n              cell.append(this.removeButton(index, 'small'));\n              if (hasTopButton ) {\n                cell.setAttribute('colspan', 2);\n              }\n            }\n\n            return cell;\n          }\n        ),\n        lastColumn\n      ]\n    );\n\n    //add element info for drag'n'drop handlers\n    if (this.allowReorder) {\n      rowElement.dragInfo = {\n        index: index\n      };\n    }\n\n    return rowElement;\n  }\n\n  destroyRows() {\n    const state = {};\n    state.rows = state.rows || {};\n    this.rows.forEach((row, rowIndex) => _.forIn(row, col => {\n      state.rows[rowIndex] = state.rows[rowIndex] || {};\n      const compState = this.removeComponent(col, row);\n      if (col.key && compState) {\n        state.rows[rowIndex][col.key] = compState;\n      }\n    }));\n    this.rows = [];\n    return state;\n  }\n\n  destroy() {\n    const state = this.destroyRows();\n    super.destroy();\n    return state;\n  }\n\n  buildComponent(col, colIndex, row, rowIndex, state) {\n    var container;\n    const isVisible = this.visibleColumns &&\n      (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);\n    if (isVisible || this.options.builder) {\n      container = this.ce('td');\n      container.noDrop = true;\n    }\n    const column = _.clone(col);\n    const options = _.clone(this.options);\n    options.name += `[${rowIndex}]`;\n    options.row = `${rowIndex}-${colIndex}`;\n    options.inDataGrid = true;\n    const comp = this.createComponent(_.assign({}, column, {\n      row: options.row\n    }), options, row, null, state);\n    comp.rowIndex = rowIndex;\n    this.hook('addComponent', container, comp, this);\n    this.rows[rowIndex][column.key] = comp;\n    if (isVisible || this.options.builder) {\n      container.appendChild(comp.getElement());\n      return container;\n    }\n  }\n\n  checkConditions(data) {\n    let show = super.checkConditions(data);\n    // If table isn't visible, don't bother calculating columns.\n    if (!show) {\n      return false;\n    }\n    let rebuild = false;\n    if (this.visibleColumns === true) {\n      this.visibleColumns = {};\n    }\n    this.component.components.forEach((col) => {\n      let showColumn = false;\n      this.rows.forEach((comps) => {\n        if (comps && comps[col.key] && typeof comps[col.key].checkConditions === 'function') {\n          showColumn |= comps[col.key].checkConditions(data);\n        }\n      });\n      showColumn = showColumn && col.type !== 'hidden' && !col.hidden;\n      if (\n        (this.visibleColumns[col.key] && !showColumn) ||\n        (!this.visibleColumns[col.key] && showColumn)\n      ) {\n        rebuild = true;\n      }\n\n      this.visibleColumns[col.key] = showColumn;\n      show |= showColumn;\n    });\n\n    // If a rebuild is needed, then rebuild the table.\n    if (rebuild) {\n      this.restoreValue();\n    }\n\n    // Return if this table should show.\n    return show;\n  }\n\n  updateValue(flags, value) {\n    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n    return BaseComponent.prototype.updateValue.call(this, flags, value);\n  }\n\n  /* eslint-disable max-statements */\n  setValue(value, flags) {\n    flags = this.getFlags.apply(this, arguments);\n    if (!value) {\n      this.dataValue = this.defaultValue;\n      this.buildRows();\n      return;\n    }\n    if (!Array.isArray(value)) {\n      if (typeof value === 'object') {\n        value = [value];\n      }\n      else {\n        this.buildRows();\n        return;\n      }\n    }\n\n    const changed = this.hasChanged(value, this.dataValue);\n\n    //always should build if not built yet OR is trying to set empty value (in order to prevent deleting last row)\n    let shouldBuildRows = !this.isBuilt || changed || _.isEqual(this.emptyValue, value);\n    //check if visible columns changed\n    let visibleColumnsAmount = 0;\n    _.forEach(this.visibleColumns, (value) => {\n      if (value) {\n        visibleColumnsAmount++;\n      }\n    });\n    const visibleComponentsAmount = this.visibleComponents ? this.visibleComponents.length : 0;\n    //should build if visible columns changed\n    shouldBuildRows = shouldBuildRows || visibleColumnsAmount !== visibleComponentsAmount;\n    //loop through all rows and check if there is field in new value that differs from current value\n    const keys = this.componentComponents.map((component) => {\n      return component.key;\n    });\n    for (let i = 0; i < value.length; i++) {\n      if (shouldBuildRows) {\n        break;\n      }\n      const valueRow = value[i];\n      for (let j = 0; j < keys.length; j++) {\n        const key = keys[j];\n        const newFieldValue = valueRow[key];\n        const currentFieldValue = this.rows[i] && this.rows[i][key] ? this.rows[i][key].getValue() : undefined;\n        const defaultFieldValue = this.rows[i] && this.rows[i][key] ? this.rows[i][key].defaultValue : undefined;\n        const isMissingValue = newFieldValue === undefined && currentFieldValue === defaultFieldValue;\n        if (!isMissingValue && !_.isEqual(newFieldValue, currentFieldValue)) {\n          shouldBuildRows = true;\n          break;\n        }\n      }\n    }\n\n    if (shouldBuildRows) {\n      this.dataValue = value;\n      this.buildRows();\n      this.rows.forEach((row, index) => {\n        if (value.length <= index) {\n          return;\n        }\n        _.forIn(row, component => this.setNestedValue(component, value[index], flags));\n      });\n    }\n\n    return changed;\n  }\n  /* eslint-enable max-statements */\n\n  resetValue() {\n    super.resetValue();\n    this.buildRows();\n  }\n\n  /**\n   * Get the value of this component.\n   *\n   * @returns {*}\n   */\n  getValue() {\n    return this.dataValue;\n  }\n\n  restoreComponentsContext() {\n    this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));\n  }\n\n  getComponent(path, fn) {\n    path = Array.isArray(path) ? path : [path];\n    const [key, ...remainingPath] = path;\n    let result = [];\n\n    if (!_.isString(key)) {\n      return result;\n    }\n\n    this.everyComponent((component, components) => {\n      if (component.component.key === key) {\n        let comp = component;\n        if (remainingPath.length > 0 && 'getComponent' in component) {\n          comp = component.getComponent(remainingPath, fn);\n        }\n        else if (fn) {\n          fn(component, components);\n        }\n\n        result = result.concat(comp);\n      }\n    });\n    return result.length > 0 ? result : null;\n  }\n\n  /** @override **/\n  removeButton(index, mode = 'basic') {\n    if (mode === 'small') {\n      return this.removeButtonSmall(index);\n    }\n\n    return super.removeButton(index);\n  }\n\n  removeButtonSmall(index) {\n    const cmpType = _.get(this, 'component.type', 'datagrid');\n    const className = `btn btn-xxs btn-danger formio-${cmpType}-remove`;\n    const button = this.ce(\n      'button',\n      {\n        type: 'button',\n        tabindex: '-1',\n        class: className,\n      },\n      this.ce('i', { class: this.iconClass('remove') })\n    );\n\n    this.addEventListener(button, 'click', (event) => {\n      event.preventDefault();\n      this.removeValue(index);\n    });\n\n    return button;\n  }\n\n  /*** Row Groups ***/\n\n  /**\n   * @param {Numbers[]} groups\n   * @param {Array<T>} coll - collection\n   *\n   * @return {Array<T[]>}\n   */\n  getRowChunks(groups, coll) {\n    const [, chunks] = groups.reduce(\n      ([startIndex, acc], size) => {\n        const endIndex = startIndex +  size;\n        return [endIndex, [...acc, [startIndex, endIndex]]];\n      },\n      [0, []]\n    );\n\n    return chunks.map(range => _.slice(coll, ...range));\n  }\n\n  hasRowGroups() {\n    return _.get(this, 'component.enableRowGroups', false);\n  }\n\n  buildGroups() {\n    const groups = _.get(this.component, 'rowGroups', []);\n    const ranges = _.map(groups, 'numberOfRows');\n    const rows = this.tableElement.querySelectorAll('tbody>tr');\n    const tbody = this.tableElement.querySelector('tbody');\n    const chunks = this.getRowChunks(ranges, rows);\n    const firstElements = chunks.map(_.head);\n    const groupElements = groups.map((g, index) => this.buildGroup(g, index, chunks[index]));\n\n    groupElements.forEach((elt, index) => {\n      const row = firstElements[index];\n\n      if (row) {\n        tbody.insertBefore(elt, row);\n      }\n    });\n  }\n\n  buildGroup({ label }, index, groupRows) {\n    const hasToggle = _.get(this, 'component.groupToggle', false);\n    const colsNumber = _.get(this, 'component.components', []).length;\n    const cell = this.ce('td', {\n      colspan: colsNumber,\n      class: 'datagrid-group-label',\n    }, [label]);\n    const header = this.ce('tr', {\n      class: `datagrid-group-header ${hasToggle ? 'clickable' : ''}`,\n    }, cell);\n\n    if (hasToggle) {\n      this.addEventListener(header, 'click', () => {\n        header.classList.toggle('collapsed');\n        _.each(groupRows, row => {\n          row.classList.toggle('hidden');\n        });\n      });\n    }\n\n    return header;\n  }\n\n  totalRowsNumber(groups) {\n    return _.sum(_.map(groups, 'numberOfRows'));\n  }\n}\n// const BaseGetSchema = Object.getOwnPropertyDescriptor(BaseComponent.prototype, 'schema');\n// Object.defineProperty(DataGridComponent.prototype, 'schema', BaseGetSchema);\n",
+    "content": "import _ from 'lodash';\nimport NestedComponent from '../nested/NestedComponent';\nimport BaseComponent from '../base/Base';\n\nexport default class DataGridComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Data Grid',\n      key: 'dataGrid',\n      type: 'datagrid',\n      clearOnHide: true,\n      input: true,\n      tree: true,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Data Grid',\n      icon: 'fa fa-th',\n      group: 'data',\n      documentation: 'http://help.form.io/userguide/#datagrid',\n      weight: 20,\n      schema: DataGridComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.type = 'datagrid';\n    this.numRows = 0;\n    this.numColumns = 0;\n    this.rows = [];\n\n    if (this.hasRowGroups() && !this.options.builder) {\n      const groups = _.get(this.component, 'rowGroups', []);\n      const rowsNum = this.totalRowsNumber(groups);\n      this.setStaticValue(rowsNum);\n      this.dataValue = _.zipWith(this.dataValue, this.defaultValue, (a, b) => {\n        return _.merge(a, b);\n      });\n    }\n  }\n\n  get defaultSchema() {\n    return DataGridComponent.schema();\n  }\n\n  get emptyValue() {\n    return [{}];\n  }\n\n  get addAnotherPosition() {\n    return _.get(this.component, 'addAnotherPosition', 'bottom');\n  }\n\n  setStaticValue(n) {\n    this.dataValue = _.range(n).map(() => ({}));\n  }\n\n  hasAddButton() {\n    const maxLength = _.get(this.component, 'validate.maxLength');\n    return !this.component.disableAddingRemovingRows &&\n    !this.shouldDisable &&\n      !this.options.builder &&\n      !this.options.preview &&\n      (!maxLength || (this.dataValue.length < maxLength));\n  }\n\n  hasExtraColumn() {\n    const rmPlacement = _.get(this, 'component.removePlacement', 'col');\n    return (this.hasRemoveButtons() && rmPlacement === 'col') || this.options.builder;\n  }\n\n  hasRemoveButtons() {\n    return !this.component.disableAddingRemovingRows &&\n      !this.shouldDisable &&\n      !this.options.builder &&\n      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));\n  }\n\n  hasTopSubmit() {\n    return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasBottomSubmit() {\n    return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasChanged(newValue, oldValue) {\n    return !_.isEqual(newValue, oldValue);\n  }\n\n  build() {\n    this.createElement();\n    this.createLabel(this.element);\n    let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';\n    ['striped', 'bordered', 'hover', 'condensed'].forEach((prop) => {\n      if (this.component[prop]) {\n        tableClass += `table-${prop} `;\n      }\n    });\n    this.tableElement = this.ce('table', {\n      class: tableClass,\n      style: this.component.layoutFixed ? 'table-layout: fixed;' : '',\n    });\n    this.element.appendChild(this.tableElement);\n    if (!this.dataValue.length) {\n      this.addNewValue();\n    }\n    this.visibleColumns = true;\n    this.errorContainer = this.element;\n    this.restoreValue();\n    this.createDescription(this.element);\n    this.attachLogic();\n  }\n\n  setVisibleComponents() {\n    // Add new values based on minLength.\n    for (let dIndex = this.dataValue.length; dIndex < _.get(this.component, 'validate.minLength', 0); dIndex++) {\n      this.dataValue.push({});\n    }\n\n    this.numColumns = this.hasExtraColumn() ? 1 : 0;\n    this.numColumns += this.allowReorder ? 1 : 0;\n    this.numRows = this.dataValue.length;\n\n    if (this.visibleColumns === true) {\n      this.numColumns += this.component.components.length;\n      this.visibleComponents = this.component.components;\n      return this.visibleComponents;\n    }\n\n    this.visibleComponents = this.component.components.filter((comp) => this.visibleColumns[comp.key]);\n    this.numColumns += this.visibleComponents.length;\n  }\n\n  buildRows() {\n    this.setVisibleComponents();\n    const state = this.destroy();\n    this.empty(this.tableElement);\n\n    // Build the rows.\n    const tableRows = [];\n    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex, state.rows[rowIndex])));\n\n    // Create the header (must happen after build rows to get correct column length)\n    const header = this.createHeader();\n    if (header) {\n      this.tableElement.appendChild(header);\n    }\n    this.tableBody = this.ce('tbody', null, tableRows);\n    this.tableElement.appendChild(this.tableBody);\n\n    if (this.allowReorder) {\n      this.addDraggable([this.tableBody]);\n    }\n\n    if (this.hasRowGroups() && !this.options.builder) {\n      this.buildGroups();\n    }\n\n    // Create the add row button footer element.\n    if (this.hasBottomSubmit()) {\n      this.tableElement.appendChild(this.ce('tfoot', null,\n        this.ce('tr', null,\n          this.ce('td', { colspan: this.numColumns },\n            this.addButton()\n          )\n        )\n      ));\n    }\n  }\n\n  get allowReorder() {\n    return super.allowReorder && !this.options.builder;\n  }\n\n  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {\n    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);\n    this.triggerChange();\n  }\n\n  // Build the header.\n  createHeader() {\n    const hasTopButton = this.hasTopSubmit();\n    const hasEnd = this.hasExtraColumn() || hasTopButton;\n    let needsHeader = false;\n    const thead = this.ce('thead', null, this.ce('tr', null,\n      [\n        this.allowReorder ? this.ce('th', {\n          class: 'formio-drag-column-header'\n        }) : null,\n        this.visibleComponents.map(comp => {\n          const th = this.ce('th');\n          if (comp.validate && comp.validate.required) {\n            th.setAttribute('class', 'field-required');\n          }\n          const title = comp.label || comp.title;\n          if (title && !comp.dataGridLabel) {\n            needsHeader = true;\n            th.appendChild(this.text(title));\n            this.createTooltip(th, comp);\n          }\n          return th;\n        }),\n        hasEnd ? this.ce('th', null, (hasTopButton ? this.addButton(true) : null)) : null,\n      ]\n    ));\n    return needsHeader ? thead : null;\n  }\n\n  get dataValue() {\n    const dataValue = super.dataValue;\n    if (!dataValue || !Array.isArray(dataValue)) {\n      return this.emptyValue;\n    }\n    return dataValue;\n  }\n\n  set dataValue(value) {\n    super.dataValue = value;\n  }\n\n  get defaultValue() {\n    const value = super.defaultValue;\n    if (Array.isArray(value)) {\n      return value;\n    }\n    if (value && (typeof value === 'object')) {\n      return [value];\n    }\n    return this.emptyValue;\n  }\n\n  buildRow(rowData, index, state) {\n    state = state || {};\n    const components = _.get(this, 'component.components', []);\n    const colsNum = components.length;\n    const lastColIndex = colsNum - 1;\n    const hasRmButton = this.hasRemoveButtons();\n    const hasTopButton = this.hasTopSubmit();\n    const rmPlacement = _.get(this, 'component.removePlacement', 'col');\n    let useCorner = false;\n    let lastColumn = null;\n    this.rows[index] = {};\n    let firstColumn = null;\n\n    if (this.allowReorder) {\n      firstColumn = this.ce('td', {\n        class: 'formio-drag-column'\n      }, this.dragButton());\n    }\n\n    if (hasRmButton) {\n      if (rmPlacement === 'col') {\n        lastColumn = this.ce('td', {\n          class: 'formio-remove-column'\n        }, this.removeButton(index));\n      }\n      else {\n        useCorner = true;\n      }\n    }\n    else if (this.options.builder) {\n      lastColumn = this.ce('td', {\n        id: `${this.id}-drag-container`,\n        class: 'drag-container'\n      }, this.ce('div', {\n        id: `${this.id}-placeholder`,\n        class: 'alert alert-info',\n        style: 'text-align:center; margin-bottom: 0px;',\n        role: 'alert'\n      }, this.text('Drag and Drop a form component')));\n      this.root.addDragContainer(lastColumn, this);\n    }\n\n    const rowElement =  this.ce('tr', null,\n      [\n        firstColumn,\n        components.map(\n          (cmp, colIndex) => {\n            const cell = this.buildComponent(\n              cmp,\n              colIndex,\n              rowData,\n              index,\n              this.getComponentState(cmp, state)\n            );\n\n            if (hasRmButton && useCorner && lastColIndex === colIndex) {\n              cell.style.position = 'relative';\n              cell.style.width = '50px';\n              cell.append(this.removeButton(index, 'small'));\n              if (hasTopButton ) {\n                cell.setAttribute('colspan', 2);\n              }\n            }\n\n            return cell;\n          }\n        ),\n        lastColumn\n      ]\n    );\n\n    //add element info for drag'n'drop handlers\n    if (this.allowReorder) {\n      rowElement.dragInfo = {\n        index: index\n      };\n    }\n\n    return rowElement;\n  }\n\n  destroyRows() {\n    const state = {};\n    state.rows = state.rows || {};\n    this.rows.forEach((row, rowIndex) => _.forIn(row, col => {\n      state.rows[rowIndex] = state.rows[rowIndex] || {};\n      const compState = this.removeComponent(col, row);\n      if (col.key && compState) {\n        state.rows[rowIndex][col.key] = compState;\n      }\n    }));\n    this.rows = [];\n    return state;\n  }\n\n  destroy() {\n    const state = this.destroyRows();\n    super.destroy();\n    return state;\n  }\n\n  buildComponent(col, colIndex, row, rowIndex, state) {\n    var container;\n    const isVisible = this.visibleColumns &&\n      (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);\n    if (isVisible || this.options.builder) {\n      container = this.ce('td');\n      container.noDrop = true;\n    }\n    const column = _.clone(col);\n    const options = _.clone(this.options);\n    options.name += `[${rowIndex}]`;\n    options.row = `${rowIndex}-${colIndex}`;\n    options.inDataGrid = true;\n    const comp = this.createComponent(_.assign({}, column, {\n      row: options.row\n    }), options, row, null, state);\n    comp.rowIndex = rowIndex;\n    this.hook('addComponent', container, comp, this);\n    this.rows[rowIndex][column.key] = comp;\n    if (isVisible || this.options.builder) {\n      container.appendChild(comp.getElement());\n      return container;\n    }\n  }\n\n  checkConditions(data) {\n    let show = super.checkConditions(data);\n    // If table isn't visible, don't bother calculating columns.\n    if (!show) {\n      return false;\n    }\n    let rebuild = false;\n    if (this.visibleColumns === true) {\n      this.visibleColumns = {};\n    }\n    this.component.components.forEach((col) => {\n      let showColumn = false;\n      this.rows.forEach((comps) => {\n        if (comps && comps[col.key] && typeof comps[col.key].checkConditions === 'function') {\n          showColumn |= comps[col.key].checkConditions(data);\n        }\n      });\n      showColumn = showColumn && col.type !== 'hidden' && !col.hidden;\n      if (\n        (this.visibleColumns[col.key] && !showColumn) ||\n        (!this.visibleColumns[col.key] && showColumn)\n      ) {\n        rebuild = true;\n      }\n\n      this.visibleColumns[col.key] = showColumn;\n      show |= showColumn;\n    });\n\n    // If a rebuild is needed, then rebuild the table.\n    if (rebuild) {\n      this.restoreValue();\n    }\n\n    // Return if this table should show.\n    return show;\n  }\n\n  updateValue(flags, value) {\n    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n    return BaseComponent.prototype.updateValue.call(this, flags, value);\n  }\n\n  /* eslint-disable max-statements */\n  setValue(value, flags) {\n    flags = this.getFlags.apply(this, arguments);\n    if (!value) {\n      this.dataValue = this.defaultValue;\n      this.buildRows();\n      return;\n    }\n    if (!Array.isArray(value)) {\n      if (typeof value === 'object') {\n        value = [value];\n      }\n      else {\n        this.buildRows();\n        return;\n      }\n    }\n\n    const changed = this.hasChanged(value, this.dataValue);\n\n    //always should build if not built yet OR is trying to set empty value (in order to prevent deleting last row)\n    let shouldBuildRows = !this.isBuilt || changed || _.isEqual(this.emptyValue, value);\n    //check if visible columns changed\n    let visibleColumnsAmount = 0;\n    _.forEach(this.visibleColumns, (value) => {\n      if (value) {\n        visibleColumnsAmount++;\n      }\n    });\n    const visibleComponentsAmount = this.visibleComponents ? this.visibleComponents.length : 0;\n    //should build if visible columns changed\n    shouldBuildRows = shouldBuildRows || visibleColumnsAmount !== visibleComponentsAmount;\n    //loop through all rows and check if there is field in new value that differs from current value\n    const keys = this.componentComponents.map((component) => {\n      return component.key;\n    });\n    for (let i = 0; i < value.length; i++) {\n      if (shouldBuildRows) {\n        break;\n      }\n      const valueRow = value[i];\n      for (let j = 0; j < keys.length; j++) {\n        const key = keys[j];\n        const newFieldValue = valueRow[key];\n        const currentFieldValue = this.rows[i] && this.rows[i][key] ? this.rows[i][key].getValue() : undefined;\n        const defaultFieldValue = this.rows[i] && this.rows[i][key] ? this.rows[i][key].defaultValue : undefined;\n        const isMissingValue = newFieldValue === undefined && currentFieldValue === defaultFieldValue;\n        if (!isMissingValue && !_.isEqual(newFieldValue, currentFieldValue)) {\n          shouldBuildRows = true;\n          break;\n        }\n      }\n    }\n\n    if (shouldBuildRows) {\n      this.dataValue = value;\n      this.buildRows();\n      this.checkConditions();\n      this.rows.forEach((row, index) => {\n        if (value.length <= index) {\n          return;\n        }\n        _.forIn(row, component => this.setNestedValue(component, value[index], flags));\n      });\n    }\n\n    return changed;\n  }\n  /* eslint-enable max-statements */\n\n  resetValue() {\n    super.resetValue();\n    this.buildRows();\n  }\n\n  /**\n   * Get the value of this component.\n   *\n   * @returns {*}\n   */\n  getValue() {\n    return this.dataValue;\n  }\n\n  restoreComponentsContext() {\n    this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));\n  }\n\n  getComponent(path, fn) {\n    path = Array.isArray(path) ? path : [path];\n    const [key, ...remainingPath] = path;\n    let result = [];\n\n    if (!_.isString(key)) {\n      return result;\n    }\n\n    this.everyComponent((component, components) => {\n      if (component.component.key === key) {\n        let comp = component;\n        if (remainingPath.length > 0 && 'getComponent' in component) {\n          comp = component.getComponent(remainingPath, fn);\n        }\n        else if (fn) {\n          fn(component, components);\n        }\n\n        result = result.concat(comp);\n      }\n    });\n    return result.length > 0 ? result : null;\n  }\n\n  /** @override **/\n  removeButton(index, mode = 'basic') {\n    if (mode === 'small') {\n      return this.removeButtonSmall(index);\n    }\n\n    return super.removeButton(index);\n  }\n\n  removeButtonSmall(index) {\n    const cmpType = _.get(this, 'component.type', 'datagrid');\n    const className = `btn btn-xxs btn-danger formio-${cmpType}-remove`;\n    const button = this.ce(\n      'button',\n      {\n        type: 'button',\n        tabindex: '-1',\n        class: className,\n      },\n      this.ce('i', { class: this.iconClass('remove') })\n    );\n\n    this.addEventListener(button, 'click', (event) => {\n      event.preventDefault();\n      this.removeValue(index);\n    });\n\n    return button;\n  }\n\n  /*** Row Groups ***/\n\n  /**\n   * @param {Numbers[]} groups\n   * @param {Array<T>} coll - collection\n   *\n   * @return {Array<T[]>}\n   */\n  getRowChunks(groups, coll) {\n    const [, chunks] = groups.reduce(\n      ([startIndex, acc], size) => {\n        const endIndex = startIndex +  size;\n        return [endIndex, [...acc, [startIndex, endIndex]]];\n      },\n      [0, []]\n    );\n\n    return chunks.map(range => _.slice(coll, ...range));\n  }\n\n  hasRowGroups() {\n    return _.get(this, 'component.enableRowGroups', false);\n  }\n\n  buildGroups() {\n    const groups = _.get(this.component, 'rowGroups', []);\n    const ranges = _.map(groups, 'numberOfRows');\n    const rows = this.tableElement.querySelectorAll('tbody>tr');\n    const tbody = this.tableElement.querySelector('tbody');\n    const chunks = this.getRowChunks(ranges, rows);\n    const firstElements = chunks.map(_.head);\n    const groupElements = groups.map((g, index) => this.buildGroup(g, index, chunks[index]));\n\n    groupElements.forEach((elt, index) => {\n      const row = firstElements[index];\n\n      if (row) {\n        tbody.insertBefore(elt, row);\n      }\n    });\n  }\n\n  buildGroup({ label }, index, groupRows) {\n    const hasToggle = _.get(this, 'component.groupToggle', false);\n    const colsNumber = _.get(this, 'component.components', []).length;\n    const cell = this.ce('td', {\n      colspan: colsNumber,\n      class: 'datagrid-group-label',\n    }, [label]);\n    const header = this.ce('tr', {\n      class: `datagrid-group-header ${hasToggle ? 'clickable' : ''}`,\n    }, cell);\n\n    if (hasToggle) {\n      this.addEventListener(header, 'click', () => {\n        header.classList.toggle('collapsed');\n        _.each(groupRows, row => {\n          row.classList.toggle('hidden');\n        });\n      });\n    }\n\n    return header;\n  }\n\n  totalRowsNumber(groups) {\n    return _.sum(_.map(groups, 'numberOfRows'));\n  }\n}\n// const BaseGetSchema = Object.getOwnPropertyDescriptor(BaseComponent.prototype, 'schema');\n// Object.defineProperty(DataGridComponent.prototype, 'schema', BaseGetSchema);\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/datagrid/DataGrid.js",
     "access": "public",
@@ -20430,7 +20430,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#resetValue",
     "access": "public",
     "description": null,
-    "lineNumber": 475,
+    "lineNumber": 476,
     "undocument": true,
     "params": [],
     "return": null
@@ -20446,7 +20446,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#getValue",
     "access": "public",
     "description": "Get the value of this component.",
-    "lineNumber": 485,
+    "lineNumber": 486,
     "unknown": [
       {
         "tagName": "@returns",
@@ -20474,7 +20474,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#restoreComponentsContext",
     "access": "public",
     "description": null,
-    "lineNumber": 489,
+    "lineNumber": 490,
     "undocument": true,
     "params": [],
     "return": null
@@ -20490,7 +20490,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#getComponent",
     "access": "public",
     "description": null,
-    "lineNumber": 493,
+    "lineNumber": 494,
     "undocument": true,
     "params": [
       {
@@ -20523,7 +20523,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#removeButton",
     "access": "public",
     "description": null,
-    "lineNumber": 519,
+    "lineNumber": 520,
     "override": true,
     "params": [
       {
@@ -20559,7 +20559,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#removeButtonSmall",
     "access": "public",
     "description": null,
-    "lineNumber": 527,
+    "lineNumber": 528,
     "undocument": true,
     "params": [
       {
@@ -20586,7 +20586,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#getRowChunks",
     "access": "public",
     "description": "",
-    "lineNumber": 556,
+    "lineNumber": 557,
     "params": [
       {
         "nullable": null,
@@ -20629,7 +20629,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#hasRowGroups",
     "access": "public",
     "description": null,
-    "lineNumber": 568,
+    "lineNumber": 569,
     "undocument": true,
     "params": [],
     "return": {
@@ -20649,7 +20649,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#buildGroups",
     "access": "public",
     "description": null,
-    "lineNumber": 572,
+    "lineNumber": 573,
     "undocument": true,
     "params": [],
     "return": null
@@ -20665,7 +20665,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#buildGroup",
     "access": "public",
     "description": null,
-    "lineNumber": 590,
+    "lineNumber": 591,
     "undocument": true,
     "params": [
       {
@@ -20708,7 +20708,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#totalRowsNumber",
     "access": "public",
     "description": null,
-    "lineNumber": 613,
+    "lineNumber": 614,
     "undocument": true,
     "params": [
       {

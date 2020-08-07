@@ -678,6 +678,7 @@ export default class DataGridComponent extends NestedComponent {
     if (shouldBuildRows) {
       this.dataValue = value;
       this.buildRows();
+      this.checkConditions();
       this.rows.forEach((row, index) =&gt; {
         if (value.length &lt;= index) {
           return;
