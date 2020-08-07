@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.18
+### Fixed
+ - Fixed issue where _vid is not getting set on currentForm when revisions are loaded.
+ - Fixed HTML component builder style
+ - Fixed conditional fields are shown/hidden in all dataGrid rows when only one row meets the condition
+
 ## 3.29.17
 ### Fixed
  - Content component destroy fix
