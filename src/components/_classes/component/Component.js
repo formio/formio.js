@@ -2985,6 +2985,12 @@ export default class Component extends Element {
     if (this.refs.input && this.refs.input[0]) {
       this.refs.input[0].focus();
     }
+    if (this.refs.openModal) {
+      this.refs.openModal.focus();
+    }
+    if (this.parent.refs.openModal) {
+      this.parent.refs.openModal.focus();
+    }
   }
 
   /**
