@@ -26,6 +26,7 @@ import {
   modalEditComponents,
   calculatedNotPersistentValue,
   initiallyCollapsedPanel,
+  multipleTextareaInsideConditionalComponent,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -1520,6 +1521,32 @@ describe('Webform tests', function() {
         }, 550);
       }).catch(done);
     });
+  });
+
+  it('Should render components properly', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(multipleTextareaInsideConditionalComponent).then(() => {
+      form.setSubmission({
+        data: {
+          textArea2: [
+            'test'
+          ],
+          didAnyBehavioralIssuesOccurOnYourShift: 'yes',
+          submit: false,
+        }
+      });
+      setTimeout(() => {
+        const textarea = form.getComponent(['textArea2']);
+        const panel = form.getComponent(['behavioralIssues']);
+        assert.equal(panel.visible, true, 'Should be visible');
+        console.log({ formData: form._data });
+        assert.deepEqual(textarea.dataValue, ['test'], 'Should set the value from the submission');
+        const inputRows = textarea.element.querySelectorAll('[ref="input"]');
+        assert.equal(inputRows.length, 1, 'Should render all the rows of the Textarea');
+        done();
+      }, 750);
+    }).catch(done);
   });
 
   each(FormTests, (formTest) => {

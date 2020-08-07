@@ -26,6 +26,7 @@ const formWithBlurValidationInsidePanel = require('./blurValidationInsidePanel.j
 const modalEditComponents = require('./modalEditComponents.json');
 const calculatedNotPersistentValue = require('./calculatedNotPersistentValue.json');
 const initiallyCollapsedPanel = require('./initiallyCollapsedPanel.json');
+const multipleTextareaInsideConditionalComponent = require('./multipleTextareaInsideConditionalComponent.json');
 
 module.exports = {
   advanced,
@@ -56,4 +57,5 @@ module.exports = {
   modalEditComponents,
   calculatedNotPersistentValue,
   initiallyCollapsedPanel,
+  multipleTextareaInsideConditionalComponent,
 };
