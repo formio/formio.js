@@ -236,17 +236,7 @@ export default class SelectComponent extends Field {
     }
 
     if (value) {
-      const repeatedOptionIndex = this.selectOptions.find((selectOption, index) => {
-        const { idPath } = this.component;
-        const selectOptionId = _.get(selectOption, idPath);
-        const optionId = _.get(option, idPath);
-
-        return selectOptionId === optionId ? index : null;
-      });
-
-      Number.isInteger(repeatedOptionIndex)
-        ? this.selectOptions.splice(repeatedOptionIndex, 1, option)
-        : this.selectOptions.push(option);
+      this.selectOptions.push(option);
     }
 
     if (this.refs.selectContainer && (this.component.widget === 'html5')) {
@@ -355,6 +345,19 @@ export default class SelectComponent extends Field {
     else {
       this.downloadedResources = items || [];
       this.selectOptions = [];
+      // If there is new select option with same id as already selected, set the new one
+      if (this.dataValue && this.component.idPath) {
+        const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
+        const newOptionWithSameId = !_.isNil(selectedOptionId) && items.find(item => {
+          const itemId = _.get(item, this.component.idPath);
+
+          return itemId === selectedOptionId;
+        });
+
+        if (newOptionWithSameId) {
+          this.setValue(newOptionWithSameId);
+        }
+      }
     }
 
     // Add the value options.
@@ -370,7 +373,7 @@ export default class SelectComponent extends Field {
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
       if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath) || String(index));
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
     });
 
     if (this.choices) {
