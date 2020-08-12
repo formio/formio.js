@@ -236,17 +236,7 @@ export default class SelectComponent extends Field {
     }
 
     if (value) {
-      const repeatedOptionIndex = this.selectOptions.find((selectOption, index) => {
-        const { idPath } = this.component;
-        const selectOptionId = _.get(selectOption, idPath);
-        const optionId = _.get(option, idPath);
-
-        return selectOptionId === optionId ? index : null;
-      });
-
-      Number.isInteger(repeatedOptionIndex)
-        ? this.selectOptions.splice(repeatedOptionIndex, 1, option)
-        : this.selectOptions.push(option);
+      this.selectOptions.push(option);
     }
 
     if (this.refs.selectContainer && (this.component.widget === 'html5')) {
