@@ -232,6 +232,9 @@ export default class FormComponent extends Component {
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
             }
+            else {
+              this.restoreValue();
+            }
           }
           if (!this.builderMode && this.component.modalEdit) {
             const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
