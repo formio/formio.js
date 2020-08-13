@@ -113,7 +113,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
         else if (fn) {
           fn(component, components);
         }
-        result = rowIndex !== null ? comp : result.concat(comp);
+        result = rowIndex !== null ? comp : result.concat(comp || possibleComp);
       }
     }, rowIndex);
     if ((!result || result.length === 0) && possibleComp) {
