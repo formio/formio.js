@@ -38,7 +38,9 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
-    this.createRows(true);
+    if (this.initRows) {
+      this.createRows(true);
+    }
     this.visibleColumns = {};
     this.checkColumns();
   }
@@ -57,6 +59,10 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   get defaultSchema() {
     return DataGridComponent.schema();
+  }
+  // Checks if should init the first row (only when no defaultValue and just one row set)
+  get initRows() {
+    return this.builderMode || !_.isEqual(this.defaultValue, this.emptyValue) || !this.component.noFirstRow;
   }
 
   get emptyValue() {
@@ -498,8 +504,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    this.createRows();
+    if (this.initRows) {
+      this.dataValue = value;
+      this.createRows();
+    }
     this.rows.forEach((row, rowIndex) => {
       if (value.length <= rowIndex) {
         return;
