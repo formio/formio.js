@@ -246,6 +246,7 @@ import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import { getRandomComponentId } from &apos;../../utils/utils&apos;;
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -253,6 +254,7 @@ export default class SelectComponent extends Field {
       type: &apos;select&apos;,
       label: &apos;Select&apos;,
       key: &apos;select&apos;,
+      idPath: &apos;id&apos;,
       data: {
         values: [],
         json: &apos;&apos;,
@@ -456,6 +458,7 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
+      id: id || getRandomComponentId(),
       value: _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
         ? this.normalizeSingleValue(value)
         : _.isObject(value)
@@ -584,6 +587,19 @@ export default class SelectComponent extends Field {
     else {
       this.downloadedResources = items || [];
       this.selectOptions = [];
+      // If there is new select option with same id as already selected, set the new one
+      if (this.dataValue &amp;&amp; this.component.idPath) {
+        const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
+        const newOptionWithSameId = !_.isNil(selectedOptionId) &amp;&amp; items.find(item =&gt; {
+          const itemId = _.get(item, this.component.idPath);
+
+          return itemId === selectedOptionId;
+        });
+
+        if (newOptionWithSameId) {
+          this.setValue(newOptionWithSameId);
+        }
+      }
     }
 
     // Add the value options.
@@ -599,7 +615,7 @@ export default class SelectComponent extends Field {
     _.each(items, (item, index) =&gt; {
       // preventing references of the components inside the form to the parent form when building forms
       if (this.root &amp;&amp; this.root.options.editForm &amp;&amp; this.root.options.editForm._id &amp;&amp; this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
     });
 
     if (this.choices) {

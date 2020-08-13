@@ -1186,31 +1186,31 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 141,
+        "lineNumber": 144,
         "line": "  /**"
       },
       {
-        "lineNumber": 142,
+        "lineNumber": 145,
         "line": "   * Perform a deep iteration over every component, including those"
       },
       {
-        "lineNumber": 143,
+        "lineNumber": 146,
         "line": "   * within other container based components."
       },
       {
-        "lineNumber": 144,
+        "lineNumber": 147,
         "line": "   *"
       },
       {
-        "lineNumber": 145,
+        "lineNumber": 148,
         "line": "   * @param {function} fn - Called for every component."
       },
       {
-        "lineNumber": 146,
+        "lineNumber": 149,
         "line": "   */"
       },
       {
-        "lineNumber": 147,
+        "lineNumber": 150,
         "line": "  everyComponent(fn, options) {"
       }
     ],
@@ -1227,39 +1227,39 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 198,
+        "lineNumber": 201,
         "line": "  /**"
       },
       {
-        "lineNumber": 199,
+        "lineNumber": 202,
         "line": "   * Returns a component provided a key. This performs a deep search within the"
       },
       {
-        "lineNumber": 200,
+        "lineNumber": 203,
         "line": "   * component tree."
       },
       {
-        "lineNumber": 201,
+        "lineNumber": 204,
         "line": "   *"
       },
       {
-        "lineNumber": 202,
+        "lineNumber": 205,
         "line": "   * @param {string} key - The key of the component to retrieve."
       },
       {
-        "lineNumber": 203,
+        "lineNumber": 206,
         "line": "   * @param {function} fn - Called with the component once found."
       },
       {
-        "lineNumber": 204,
+        "lineNumber": 207,
         "line": "   * @return {Object} - The component that is located."
       },
       {
-        "lineNumber": 205,
+        "lineNumber": 208,
         "line": "   */"
       },
       {
-        "lineNumber": 206,
+        "lineNumber": 209,
         "line": "  getComponent(path, fn, originalPath) {"
       }
     ],
@@ -1278,31 +1278,31 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 284,
+        "lineNumber": 287,
         "line": "  /**"
       },
       {
-        "lineNumber": 285,
+        "lineNumber": 288,
         "line": "   * Create a new component and add it to the components array."
       },
       {
-        "lineNumber": 286,
+        "lineNumber": 289,
         "line": "   *"
       },
       {
-        "lineNumber": 287,
+        "lineNumber": 290,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 288,
+        "lineNumber": 291,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 289,
+        "lineNumber": 292,
         "line": "   */"
       },
       {
-        "lineNumber": 290,
+        "lineNumber": 293,
         "line": "  createComponent(component, options, data, before) {"
       }
     ],
@@ -1322,27 +1322,27 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 351,
+        "lineNumber": 354,
         "line": "  /**"
       },
       {
-        "lineNumber": 352,
+        "lineNumber": 355,
         "line": "   *"
       },
       {
-        "lineNumber": 353,
+        "lineNumber": 356,
         "line": "   * @param element"
       },
       {
-        "lineNumber": 354,
+        "lineNumber": 357,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 355,
+        "lineNumber": 358,
         "line": "   */"
       },
       {
-        "lineNumber": 356,
+        "lineNumber": 359,
         "line": "  addComponents(data, options) {"
       }
     ],
@@ -1360,39 +1360,39 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 368,
+        "lineNumber": 371,
         "line": "  /**"
       },
       {
-        "lineNumber": 369,
+        "lineNumber": 372,
         "line": "   * Add a new component to the components array."
       },
       {
-        "lineNumber": 370,
+        "lineNumber": 373,
         "line": "   *"
       },
       {
-        "lineNumber": 371,
+        "lineNumber": 374,
         "line": "   * @param {Object} component - The component JSON schema to add."
       },
       {
-        "lineNumber": 372,
+        "lineNumber": 375,
         "line": "   * @param {Object} data - The submission data object to house the data for this component."
       },
       {
-        "lineNumber": 373,
+        "lineNumber": 376,
         "line": "   * @param {HTMLElement} before - A DOM element to insert this element before."
       },
       {
-        "lineNumber": 374,
+        "lineNumber": 377,
         "line": "   * @return {Component} - The created component instance."
       },
       {
-        "lineNumber": 375,
+        "lineNumber": 378,
         "line": "   */"
       },
       {
-        "lineNumber": 376,
+        "lineNumber": 379,
         "line": "  addComponent(component, data, before, noAdd) {"
       }
     ],
@@ -1413,35 +1413,35 @@
     "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 405,
+        "lineNumber": 411,
         "line": "  /**"
       },
       {
-        "lineNumber": 406,
+        "lineNumber": 412,
         "line": "   * Checks the validity of this datagrid."
       },
       {
-        "lineNumber": 407,
+        "lineNumber": 413,
         "line": "   *"
       },
       {
-        "lineNumber": 408,
+        "lineNumber": 414,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 409,
+        "lineNumber": 415,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 410,
+        "lineNumber": 416,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 411,
+        "lineNumber": 417,
         "line": "   */"
       },
       {
-        "lineNumber": 412,
+        "lineNumber": 418,
         "line": "  checkValidity(data, dirty, row, silentCheck) {"
       }
     ],
@@ -1461,31 +1461,31 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 206,
+        "lineNumber": 208,
         "line": "  /**"
       },
       {
-        "lineNumber": 207,
+        "lineNumber": 209,
         "line": "   * Adds an option to the select dropdown."
       },
       {
-        "lineNumber": 208,
+        "lineNumber": 210,
         "line": "   *"
       },
       {
-        "lineNumber": 209,
+        "lineNumber": 211,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 210,
+        "lineNumber": 212,
         "line": "   * @param label"
       },
       {
-        "lineNumber": 211,
+        "lineNumber": 213,
         "line": "   */"
       },
       {
-        "lineNumber": 212,
+        "lineNumber": 214,
         "line": "  addOption(value, label, attrs = {}, id) {"
       }
     ],
@@ -1505,23 +1505,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 1027,
+        "lineNumber": 1043,
         "line": "  /**"
       },
       {
-        "lineNumber": 1028,
+        "lineNumber": 1044,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 1029,
+        "lineNumber": 1045,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 1030,
+        "lineNumber": 1046,
         "line": "   */"
       },
       {
-        "lineNumber": 1031,
+        "lineNumber": 1047,
         "line": "  addCurrentChoices(values, items, keyValue) {"
       }
     ],

@@ -7782,6 +7782,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#initrows",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-initRows",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#initRows",
+    "member"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#iteratablerows",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-iteratableRows",
     "src/components/datagrid/DataGrid.js~DataGridComponent#iteratableRows",

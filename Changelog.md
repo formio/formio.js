@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.2-rc.5
+#### Added
+ - A DataGrid: fix noFirstRow option to not initially show first row in DataGrid.
+ - Added ability to provide the ID Path for a select item so it will not show duplicates.
+
+#### Fixed
+ - FJS-1138: fixed an issue where validation errors are lost after opening collapsed panel
+
 ### 4.11.2-rc.4
 #### Fixed
  - Fixing customDefaultValues on subforms.
