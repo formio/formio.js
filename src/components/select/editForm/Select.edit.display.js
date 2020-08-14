@@ -22,13 +22,5 @@ export default [
     tooltip: 'Display only unique dropdown options.',
     key: 'uniqueOptions',
     input: true
-  },
-  {
-    weight: 1700,
-    type: 'checkbox',
-    label: 'Options overlay',
-    tooltip: 'Select options are displayed over other components.',
-    key: 'optionsOverlay',
-    input: true
-  },
+  }
 ];

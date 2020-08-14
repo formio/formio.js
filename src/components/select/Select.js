@@ -129,6 +129,10 @@ export default class SelectComponent extends Field {
     return {};
   }
 
+  get overlayOptions() {
+    return this.parent && this.parent.component && this.parent.component.type === 'table';
+  }
+
   get valueProperty() {
     if (this.component.valueProperty) {
       return this.component.valueProperty;
@@ -363,7 +367,7 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
 
-      if (this.component.optionsOverlay) {
+      if (this.overlayOptions) {
         const { element: optionsDropdown } = this.choices.dropdown;
 
         optionsDropdown.style.position = 'fixed';
@@ -750,7 +754,7 @@ export default class SelectComponent extends Field {
 
   render() {
     const info = this.inputInfo;
-    const styles = this.component.optionsOverlay
+    const styles = this.overlayOptions
       ? {
         position: 'fixed',
         display: 'block',
