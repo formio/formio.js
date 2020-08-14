@@ -10,7 +10,8 @@ import {
   fastCloneDeep,
   currentTimezone,
   getArrayFromComponentPath,
-  getStringFromComponentPath
+  getStringFromComponentPath,
+  searchComponents
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -1498,12 +1499,12 @@ export default class Webform extends NestedDataComponent {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = this.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
-        component.component.eventType === 'formLoad';
+    const recaptchaComponent = searchComponents(this.components, {
+      'component.type' === 'recaptcha',
+      'component.eventType' === 'formLoad'
     });
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    if (recaptchaComponent.length > 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
 
