@@ -1500,8 +1500,8 @@ export default class Webform extends NestedDataComponent {
       return;
     }
     const recaptchaComponent = searchComponents(this.components, {
-      'component.type' === 'recaptcha',
-      'component.eventType' === 'formLoad'
+      'component.type': 'recaptcha',
+      'component.eventType': 'formLoad'
     });
     if (recaptchaComponent.length > 0) {
       recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
