@@ -368,9 +368,7 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw().then(() => {
-        if (!this.options.readOnly) {
-          this.checkValidity(this.submission.data, false, this.submission.data, true);
-        }
+        this.checkData(this.submission.data);
       });
       return NativePromise.resolve();
     }
