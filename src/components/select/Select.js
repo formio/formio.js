@@ -131,6 +131,10 @@ export default class SelectComponent extends Field {
     return {};
   }
 
+  get overlayOptions() {
+    return this.parent && this.parent.component && this.parent.component.type === 'table';
+  }
+
   get valueProperty() {
     if (this.component.valueProperty) {
       return this.component.valueProperty;
@@ -379,6 +383,25 @@ export default class SelectComponent extends Field {
 
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+
+      if (this.overlayOptions) {
+        const { element: optionsDropdown } = this.choices.dropdown;
+
+        optionsDropdown.style.position = 'fixed';
+
+        const recalculatePosition = () => {
+          const { top, height, width } = this.element.getBoundingClientRect();
+
+          optionsDropdown.style.top = `${top + height}px`;
+          optionsDropdown.style.width = `${width}px`;
+        };
+
+        recalculatePosition();
+
+        ['scroll', 'resize'].forEach(
+          eventType => this.addEventListener(window, eventType, recalculatePosition)
+        );
+      }
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -751,11 +774,25 @@ export default class SelectComponent extends Field {
 
   render() {
     const info = this.inputInfo;
+    const styles = this.overlayOptions
+      ? {
+        position: 'fixed',
+        display: 'block',
+        width: '400px',
+        height: '100%',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        'z-index': 2
+      }
+      : null;
     info.attr = info.attr || {};
     info.multiple = this.component.multiple;
     return super.render(this.wrapElement(this.renderTemplate('select', {
       input: info,
       selectOptions: '',
+      styles,
       index: null,
     })));
   }
