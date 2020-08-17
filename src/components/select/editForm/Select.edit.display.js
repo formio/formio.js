@@ -22,5 +22,5 @@ export default [
     tooltip: 'Display only unique dropdown options.',
     key: 'uniqueOptions',
     input: true
-  }
+  },
 ];
