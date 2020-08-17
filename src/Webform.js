@@ -1089,8 +1089,8 @@ export default class Webform extends NestedDataComponent {
           this.focusOnComponent(key);
         });
         this.addEventListener(el, 'keydown', (e) => {
-          e.preventDefault();
           if (e.keyCode === 13) {
+            e.preventDefault();
             const key = e.currentTarget.dataset.componentKey;
             this.focusOnComponent(key);
           }
