@@ -367,17 +367,11 @@ export default class Element {
   /**
    * Translate a text using the i18n system.
    *
-   * @param {string} text - The i18n identifier.
+   * @param {string|Array<string>} text - The i18n identifier.
    * @param {Object} params - The i18n parameters to use for translation.
    */
-  t(text, params) {
-    params = params || {};
-    params.nsSeparator = '::';
-    params.keySeparator = '.|.';
-    params.pluralSeparator = '._.';
-    params.contextSeparator = '._.';
-    const translated = this.i18next.t(text, params);
-    return translated || text;
+  t(text, ...args) {
+    return this.i18next.t(text, ...args);
   }
 
   /**
@@ -435,7 +429,7 @@ export default class Element {
    *   The name of the class to add.
    */
   addClass(element, className) {
-    if (!element) {
+    if (!element || !(element instanceof HTMLElement)) {
       return this;
     }
     // Allow templates to intercept.
@@ -456,7 +450,7 @@ export default class Element {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
-    if (!element || !className) {
+    if (!element || !className || !(element instanceof HTMLElement)) {
       return this;
     }
     // Allow templates to intercept.

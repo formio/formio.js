@@ -38,7 +38,9 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
-    this.createRows(true);
+    if (this.initRows) {
+      this.createRows(true);
+    }
     this.visibleColumns = {};
     this.checkColumns();
   }
@@ -57,6 +59,10 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   get defaultSchema() {
     return DataGridComponent.schema();
+  }
+  // Checks if should init the first row (only when no defaultValue and just one row set)
+  get initRows() {
+    return this.builderMode || !_.isEqual(this.defaultValue, this.emptyValue) || !this.component.noFirstRow;
   }
 
   get emptyValue() {
@@ -77,6 +83,10 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
+    // Ensure we have one and only one row in builder mode.
+    if (this.builderMode) {
+      return [{}];
+    }
     const value = super.defaultValue;
     let defaultValue;
 
@@ -135,7 +145,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   getRowChunks(groups, rows) {
     const [, chunks] = groups.reduce(
       ([startIndex, acc], size) => {
-        const endIndex = startIndex +  size;
+        const endIndex = startIndex + size;
         return [endIndex, [...acc, [startIndex, endIndex]]];
       }, [0, []]
     );
@@ -292,7 +302,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {
         this.addEventListener(header, 'click', () => this.toggleGroup(header, index));
       });
-     }
+    }
 
     const columns = this.getColumns();
     const rowLength = columns.length;
@@ -329,7 +339,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
-    this.setValue(dataValue);
+    this.setValue(dataValue, { isReordered: true });
     this.redraw();
   }
 
@@ -350,11 +360,18 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
     _.each(row, (component) => this.removeComponent(component));
+    this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
   }
 
   getRowValues() {
     return this.dataValue;
+  }
+
+  setRowComponentsData(rowIndex, rowData) {
+    _.each(this.rows[rowIndex], (component) => {
+      component.data = rowData;
+    });
   }
 
   createRows(init) {
@@ -363,7 +380,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     // Create any missing rows.
     rowValues.forEach((row, index) => {
       if (this.rows[index]) {
-        _.each(this.rows[index], (component) => component.data = row);
+        this.setRowComponentsData(index, row);
       }
       else {
         this.rows[index] = this.createRowComponents(row, index);
@@ -386,9 +403,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.row = `${rowIndex}-${colIndex}`;
       const component = this.createComponent(col, options, row);
       component.parentDisabled = !!this.disabled;
-      if (component.path && col.key) {
-        component.path = component.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
-      }
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
       components[col.key] = component;
@@ -403,7 +417,7 @@ export default class DataGridComponent extends NestedArrayComponent {
    * @param dirty
    * @return {*}
    */
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
 
@@ -412,11 +426,11 @@ export default class DataGridComponent extends NestedArrayComponent {
       return true;
     }
 
-    if (!this.checkComponentValidity(data, dirty, row)) {
+    if (!this.checkComponentValidity(data, dirty, row, { silentCheck })) {
       return false;
     }
 
-    return this.checkRows('checkValidity', data, dirty, true);
+    return this.checkRows('checkValidity', data, dirty, true, silentCheck);
   }
 
   checkColumns(data, flags = {}) {
@@ -485,13 +499,15 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Make sure we always have at least one row.
     // NOTE: Removing this will break "Public Configurations" in portal. ;)
-    if (value && !value.length) {
+    if (value && !value.length && !this.component.noFirstRow) {
       value.push({});
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    this.createRows();
+    if (this.initRows) {
+      this.dataValue = value;
+      this.createRows();
+    }
     this.rows.forEach((row, rowIndex) => {
       if (value.length <= rowIndex) {
         return;

@@ -143,4 +143,13 @@ export default [
     key: 'groupToggle',
     weight: 442,
     conditional: { json: { var: 'data.enableRowGroups' } }
-  }];
+  },
+  {
+    label: 'Do not initially show first row',
+    type: 'checkbox',
+    input: true,
+    key: 'noFirstRow',
+    tooltip: 'The DataGrid will not have the first row visible when initialized.',
+    weight: 450
+  }
+];

@@ -1,4 +1,4 @@
-// Slate 4.3.1
+// Slate 4.5.1
 // Bootswatch
 
 //
@@ -11,10 +11,10 @@ $gray-200: #e9ecef !default;
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
 $gray-500: #999 !default;
-$gray-600: #7A8288 !default;
-$gray-700: #52575C !default;
-$gray-800: #3A3F44 !default;
-$gray-900: #272B30 !default;
+$gray-600: #7a8288 !default;
+$gray-700: #52575c !default;
+$gray-800: #3a3f44 !default;
+$gray-900: #272b30 !default;
 $black:    #000 !default;
 
 $blue:    #007bff !default;
@@ -82,6 +82,9 @@ $dropdown-link-color:               $body-color !default;
 $dropdown-link-hover-color:         $white !default;
 $dropdown-link-hover-bg:            $body-bg !default;
 
+$dropdown-link-active-color:        $dropdown-link-hover-color !default;
+$dropdown-link-active-bg:           $dropdown-link-hover-bg !default;
+
 // Navs
 
 $nav-tabs-border-color:             rgba($black, 0.6) !default;
@@ -129,6 +132,15 @@ $card-bg:                           lighten($body-bg, 5%) !default;
 // Popovers
 
 $popover-bg:                        lighten($body-bg, 5%) !default;
+
+// Toasts
+
+$toast-background-color:            lighten($body-bg, 5%) !default;
+$toast-border-color:                rgba(0,0,0,.2) !default;
+
+$toast-header-color:                $body-color !default;
+$toast-header-background-color:     $toast-background-color !default;
+$toast-header-border-color:         $toast-border-color !default;
 
 // Modals
 

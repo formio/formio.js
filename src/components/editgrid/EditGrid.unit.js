@@ -2,9 +2,52 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1 } from './fixtures';
+import { comp1, comp4, comp3, comp5, comp6 } from './fixtures';
+
+import ModalEditGrid from '../../../test/forms/modalEditGrid';
+import Webform from '../../Webform';
+import { displayAsModalEditGrid } from '../../../test/formtest';
 
 describe('EditGrid Component', () => {
+  it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
+    Harness.testCreate(EditGridComponent, comp4).then((component) => {
+      component.setValue([{ dataMap: { key111: '111' } }]);
+
+      setTimeout(()=>{
+        const clickEvent = new Event('click');
+        const editBtn = component.element.querySelector('.editRow');
+
+        editBtn.dispatchEvent(clickEvent);
+
+        setTimeout(()=>{
+          const keyValue = component.element.querySelectorAll('[ref="input"]')[0].value;
+          const valueValue = component.element.querySelectorAll('[ref="input"]')[1].value;
+          const saveBtnsQty = component.element.querySelectorAll('[ref="editgrid-editGrid-saveRow"]').length;
+
+          assert.equal(saveBtnsQty, 1);
+          assert.equal(keyValue, 'key111');
+          assert.equal(valueValue, '111');
+          done();
+        }, 500);
+      }, 200);
+    });
+  });
+
+  it('Should display saved values if there are more then 1 nested components', (done) => {
+    Harness.testCreate(EditGridComponent, comp3).then((component) => {
+      component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
+
+      setTimeout(()=>{
+        const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
+        const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
+
+        assert.equal(firstValue, '55555');
+        assert.equal(secondValue, '666666');
+        done();
+      }, 600);
+    });
+  });
+
   it('Should build an empty edit grid component', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(1)', 'Field 1');
@@ -302,6 +345,134 @@ describe('EditGrid Component', () => {
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
     });
+  });
+
+  describe('Display As Modal', () => {
+    it('Should show add error classes to invalid components', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(displayAsModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        const clickEvent = new Event('click');
+        editGrid.addRow();
+        setTimeout(() => {
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          saveButton.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            assert.equal(editGrid.errors.length, 6);
+            const components = Array.from(dialog.querySelectorAll('[ref="component"]'));
+            const areRequiredComponentsHaveErrorWrapper = components.every((comp) => {
+              const { className } = comp;
+              return (className.includes('required') && className.includes('formio-error-wrapper')) || true;
+            });
+            assert.equal(areRequiredComponentsHaveErrorWrapper, true);
+            document.body.innerHTML = '';
+            done();
+          }, 100);
+        }, 100);
+      }).catch(done);
+    });
+
+    it('Should set alert with validation errors on save', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        form.checkValidity(form._data, true, form._data);
+        assert.equal(form.errors.length, 1);
+        editGrid.addRow();
+
+        setTimeout(() => {
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          const clickEvent = new Event('click');
+          saveButton.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const alert = dialog.querySelector('.alert.alert-danger');
+            assert.equal(form.errors.length, 3);
+            const errorsLinks = alert.querySelectorAll('li');
+            assert.equal(errorsLinks.length, 2);
+            document.body.innerHTML = '';
+            done();
+          }, 100);
+        }, 100);
+      }).catch(done);
+    });
+
+    it('Confirmation dialog', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() => {
+        const component = form.components[0];
+        component.addRow();
+        const dialog = document.querySelector('[ref="dialogContents"]');
+        Harness.dispatchEvent('input', dialog, '[name="data[editGrid][0][textField]"]', (el) => el.value = '12');
+        Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+        const confirmationDialog = document.querySelector('[ref="confirmationDialog"]');
+        assert(confirmationDialog, 'Should open a confirmation dialog when trying to close');
+        Harness.dispatchEvent('click', confirmationDialog, '[ref="dialogCancelButton"]');
+        setTimeout(() => {
+          assert.equal(component.editRows[0].data.textField, '12', 'Data should not be cleared');
+
+          Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+          setTimeout(() => {
+            const confirmationDialog2 = document.querySelector('[ref="confirmationDialog"]');
+            assert(confirmationDialog2, 'Should open again a conformation dialog');
+            // eslint-disable-next-line no-debugger
+            debugger;
+            Harness.dispatchEvent('click', confirmationDialog2, '[ref="dialogYesButton"]');
+            setTimeout(() => {
+              assert.equal(component.editRows.length, 0, 'Data should be cleared');
+              done();
+            }, 250);
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it('Confirmation dialog shouldn\'t occure if no values within the row are changed', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6).then(() => {
+        const component = form.components[0];
+        component.setValue([
+          { textField: 'v1' }
+        ]);
+        setTimeout(() => {
+          component.editRow(0);
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+          const confirmationDialog = document.querySelector('[ref="confirmationDialog"]');
+          assert(!confirmationDialog, 'Shouldn\'t open a confirmation dialog when no values were changed');
+          assert.equal(component.editRows[0].data.textField, 'v1', 'Data shouldn\'t be changed');
+          done();
+        }, 150);
+      }).catch(done);
+    });
+  });
+
+  describe('Draft Rows', () => {
+    it('Check saving rows as draft', (done) => {
+      Harness.testCreate(EditGridComponent, comp5).then((component) => {
+        component.addRow();
+        Harness.clickElement(component, '[ref="editgrid-editGrid1-saveRow"]');
+        assert.deepEqual(component.dataValue, [{ textField: '' }]);
+        const isInvalid = !component.checkValidity(component.dataValue, true);
+        assert(isInvalid, 'Item should not be valid');
+        assert(component.editRows[0].state === 'draft', 'Row should be saved as draft if it has errors');
+        done();
+      }).catch(done);
+    });
+
+    // it('', (done) => {
+    //   const formElement = document.createElement('div');
+    //   const form = new Webform(formElement);
+    //   form.setForm(ModalEditGrid).then(() => {
+    //
+    //   }).catch(done);
+    // });
   });
 
   // TODO: Need to fix editing rows and conditionals.

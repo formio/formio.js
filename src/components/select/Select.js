@@ -4,6 +4,7 @@ import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
+import { getRandomComponentId } from '../../utils/utils';
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -11,6 +12,7 @@ export default class SelectComponent extends Field {
       type: 'select',
       label: 'Select',
       key: 'select',
+      idPath: 'id',
       data: {
         values: [],
         json: '',
@@ -32,6 +34,7 @@ export default class SelectComponent extends Field {
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
+      uniqueOptions: false,
       tableView: true,
       fuseOptions: {
         include: 'score',
@@ -105,10 +108,31 @@ export default class SelectComponent extends Field {
     if (this.component.multiple) {
       return [];
     }
+    // if select has JSON data source type, we are defining if empty value would be an object or a string by checking JSON's first item
+    if (this.component.dataSrc === 'json' && this.component.data.json) {
+      const firstItem = this.component.data.json[0];
+      let firstValue;
+      if (this.valueProperty) {
+        firstValue = _.get(firstItem, this.valueProperty);
+      }
+      else {
+        firstValue = firstItem;
+      }
+      if (firstValue && typeof firstValue === 'string') {
+        return '';
+      }
+      else {
+        return {};
+      }
+    }
     if (this.valueProperty) {
       return '';
     }
     return {};
+  }
+
+  get overlayOptions() {
+    return this.parent && this.parent.component && this.parent.component.type === 'table';
   }
 
   get valueProperty() {
@@ -146,6 +170,10 @@ export default class SelectComponent extends Field {
     return super.shouldDisabled || this.parentDisabled;
   }
 
+  isEntireObjectDisplay() {
+    return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
+  }
+
   itemTemplate(data) {
     if (_.isEmpty(data)) {
       return '';
@@ -165,10 +193,13 @@ export default class SelectComponent extends Field {
       return this.t(data);
     }
 
-    data.data = this.valueProperty === 'data' && _.isObject(data.data)
-      ? JSON.stringify(data.data)
-      : data.data;
-
+    if (data.data) {
+      // checking additional fields in the template for the selected Entire Object option
+      const hasNestedFields = this.component.template.match(/(?<=item\.data.)\w*/g)[0];
+      data.data = this.isEntireObjectDisplay() && _.isObject(data.data) && !hasNestedFields
+        ? JSON.stringify(data.data)
+        : data.data;
+    }
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
@@ -190,9 +221,24 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
-      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
+      id: id || getRandomComponentId(),
+      value: _.isObject(value) && this.isEntireObjectDisplay()
+        ? this.normalizeSingleValue(value)
+        : _.isObject(value)
+          ? value
+          : _.isNull(value)
+            ? this.emptyValue
+            : String(this.normalizeSingleValue(value)),
       label: label
     };
+
+    const skipOption = this.component.uniqueOptions
+      ? !!this.selectOptions.find((selectOption) => _.isEqual(selectOption.value, option.value))
+      : false;
+
+    if (skipOption) {
+      return;
+    }
 
     if (value) {
       this.selectOptions.push(option);
@@ -304,6 +350,19 @@ export default class SelectComponent extends Field {
     else {
       this.downloadedResources = items || [];
       this.selectOptions = [];
+      // If there is new select option with same id as already selected, set the new one
+      if (this.dataValue && this.component.idPath) {
+        const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
+        const newOptionWithSameId = !_.isNil(selectedOptionId) && items.find(item => {
+          const itemId = _.get(item, this.component.idPath);
+
+          return itemId === selectedOptionId;
+        });
+
+        if (newOptionWithSameId) {
+          this.setValue(newOptionWithSameId);
+        }
+      }
     }
 
     // Add the value options.
@@ -319,11 +378,30 @@ export default class SelectComponent extends Field {
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
       if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
     });
 
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+
+      if (this.overlayOptions) {
+        const { element: optionsDropdown } = this.choices.dropdown;
+
+        optionsDropdown.style.position = 'fixed';
+
+        const recalculatePosition = () => {
+          const { top, height, width } = this.element.getBoundingClientRect();
+
+          optionsDropdown.style.top = `${top + height}px`;
+          optionsDropdown.style.width = `${width}px`;
+        };
+
+        recalculatePosition();
+
+        ['scroll', 'resize'].forEach(
+          eventType => this.addEventListener(window, eventType, recalculatePosition)
+        );
+      }
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -479,8 +557,8 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
-  refresh() {
-    if (this.component.clearOnRefresh) {
+  refresh(value, { instance }) {
+    if (this.component.clearOnRefresh && (instance && !instance.pristine)) {
       this.setValue(this.emptyValue);
     }
 
@@ -533,6 +611,9 @@ export default class SelectComponent extends Field {
 
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
+    this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
       this.itemsLoadedResolve();
@@ -564,7 +645,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (forceUpdate || this.additionalResourcesAvailable) {
+        if (forceUpdate || this.additionalResourcesAvailable || this.dataValue.length && !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
@@ -578,7 +659,7 @@ export default class SelectComponent extends Field {
         break;
       }
       case 'url': {
-        if (!forceUpdate && !this.active) {
+        if (!forceUpdate && !this.active && !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
           return;
         }
@@ -693,17 +774,31 @@ export default class SelectComponent extends Field {
 
   render() {
     const info = this.inputInfo;
+    const styles = this.overlayOptions
+      ? {
+        position: 'fixed',
+        display: 'block',
+        width: '400px',
+        height: '100%',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        'z-index': 2
+      }
+      : null;
     info.attr = info.attr || {};
     info.multiple = this.component.multiple;
     return super.render(this.wrapElement(this.renderTemplate('select', {
       input: info,
       selectOptions: '',
+      styles,
       index: null,
     })));
   }
 
   wrapElement(element) {
-    return this.component.addResource
+    return this.component.addResource && !this.options.readOnly
       ? (
         this.renderTemplate('resourceAdd', {
           element
@@ -864,6 +959,13 @@ export default class SelectComponent extends Field {
           }
         });
       }
+
+      this.addEventListener(input, 'choice', () => {
+        if (this.component.multiple && this.component.dataSrc === 'resource' && this.isFromSearch) {
+          this.triggerUpdate();
+        }
+        this.isFromSearch = false;
+      });
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
@@ -899,10 +1001,14 @@ export default class SelectComponent extends Field {
         new Form(formioForm, formUrl, {}).ready
           .then((form) => {
             form.on('submit', (submission) => {
+              // If valueProperty is set, replace the submission with the corresponding value
+              let value = this.valueProperty ? _.get(submission, this.valueProperty) : submission;
+
               if (this.component.multiple) {
-                submission = [...this.dataValue, submission];
+                value = [...this.dataValue, value];
               }
-              this.setValue(submission);
+              this.setValue(value);
+              this.triggerUpdate();
               dialog.close();
             });
           });
@@ -925,7 +1031,8 @@ export default class SelectComponent extends Field {
         groupId: -1,
         customProperties: null,
         placeholder: true,
-        keyCode: null });
+        keyCode: null
+      });
     }
   }
 
@@ -1098,15 +1205,16 @@ export default class SelectComponent extends Field {
     if (_.isObject(value) && Object.keys(value).length === 0) {
       return value;
     }
-
+    const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || 'auto';
     const normalize = {
       value,
 
       number() {
         const numberValue = Number(this.value);
+        const isEquivalent = value.toString() === numberValue.toString();
 
-        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !=='') {
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !== '' && isEquivalent) {
           this.value = numberValue;
         }
 
@@ -1117,7 +1225,7 @@ export default class SelectComponent extends Field {
         if (
           _.isString(this.value)
           && (this.value.toLowerCase() === 'true'
-          || this.value.toLowerCase() === 'false')
+            || this.value.toLowerCase() === 'false')
         ) {
           this.value = (this.value.toLowerCase() === 'true');
         }
@@ -1131,7 +1239,7 @@ export default class SelectComponent extends Field {
       },
 
       object() {
-        if (_.isObject(this.value)) {
+        if (_.isObject(this.value) && displayEntireObject) {
           this.value = JSON.stringify(this.value);
         }
 
@@ -1139,7 +1247,13 @@ export default class SelectComponent extends Field {
       },
 
       auto() {
-        this.value = this.object().string().number().boolean().value;
+        if (_.isObject(this.value)) {
+          this.value = this.object().value;
+        }
+        else {
+          this.value = this.string().number().boolean().value;
+        }
+
         return this;
       }
     };
@@ -1211,11 +1325,11 @@ export default class SelectComponent extends Field {
 
   isInitApiCallNeeded(hasValue) {
     return this.component.lazyLoad &&
-    !this.lazyLoadInit &&
-    !this.active &&
-    !this.selectOptions.length &&
-    hasValue &&
-    this.visible && (this.component.searchField || this.component.valueProperty);
+      !this.lazyLoadInit &&
+      !this.active &&
+      !this.selectOptions.length &&
+      hasValue &&
+      this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
   setChoicesValue(value, hasPreviousValue) {
@@ -1224,7 +1338,7 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-          this.choices.removeActiveItems();
+        this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
@@ -1289,34 +1403,59 @@ export default class SelectComponent extends Field {
     return typeof value === 'number' || typeof value === 'boolean';
   }
 
+  getNormalizedValues() {
+    if (!this.component || !this.component.data || !this.component.data.values) {
+      return;
+    }
+    return this.component.data.values.map(
+      value => ({ label: value.label, value: String(this.normalizeSingleValue(value.value)) })
+    );
+  }
+
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
-    if (this.isBooleanOrNumber(value)) {
-      value = value.toString();
-    }
-
-    if (Array.isArray(value) && value.some(item => this.isBooleanOrNumber(item))) {
-      value = value.map(item => {
-        if (this.isBooleanOrNumber(item)) {
-          item = item.toString();
+    const convertToString = (data, valueProperty) => {
+      if (valueProperty) {
+        if (Array.isArray(data)) {
+          data.forEach((item) => item[valueProperty] = item[valueProperty].toString());
         }
-      });
-    }
+        else {
+          data[valueProperty] = data[valueProperty].toString();
+        }
+        return data;
+      }
+
+      if (this.isBooleanOrNumber(data)) {
+        data = data.toString();
+      }
+
+      if (Array.isArray(data) && data.some(item => this.isBooleanOrNumber(item))) {
+        data = data.map(item => {
+          if (this.isBooleanOrNumber(item)) {
+            item = item.toString();
+          }
+        });
+      }
+
+      return data;
+    };
+
+    value = convertToString(value);
 
     if (['values', 'custom'].includes(this.component.dataSrc)) {
       const {
         items,
         valueProperty,
       } = this.component.dataSrc === 'values'
-        ? {
-          items: this.component.data.values,
-          valueProperty: 'value',
-        }
-        : {
-          items: this.getCustomItems(),
-          valueProperty: this.valueProperty,
-        };
+          ? {
+            items: convertToString(this.getNormalizedValues(), 'value'),
+            valueProperty: 'value',
+          }
+          : {
+            items: convertToString(this.getCustomItems(), this.valueProperty),
+            valueProperty: this.valueProperty,
+          };
 
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))

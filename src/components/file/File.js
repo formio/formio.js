@@ -85,6 +85,9 @@ export default class FileComponent extends Field {
   }
 
   loadImage(fileInfo) {
+    if (this.component.privateDownload) {
+      fileInfo.private = true;
+    }
     return this.fileService.downloadFile(fileInfo).then((result) => result.url);
   }
 
@@ -362,7 +365,13 @@ export default class FileComponent extends Field {
         webViewCamera.getPicture((success) => {
           window.resolveLocalFileSystemURL(success, (fileEntry) => {
               fileEntry.file((file) => {
-                this.upload([file]);
+                const reader = new FileReader();
+                reader.onloadend = (evt) => {
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
+                  blob.name = file.name;
+                  this.upload([blob]);
+                };
+                reader.readAsArrayBuffer(file);
               });
             }
           );
@@ -380,7 +389,13 @@ export default class FileComponent extends Field {
         webViewCamera.getPicture((success) => {
           window.resolveLocalFileSystemURL(success, (fileEntry) => {
               fileEntry.file((file) => {
-                this.upload([file]);
+                const reader = new FileReader();
+                reader.onloadend = (evt) => {
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
+                  blob.name = file.name;
+                  this.upload([blob]);
+                };
+                reader.readAsArrayBuffer(file);
               });
             }
           );
@@ -596,7 +611,7 @@ export default class FileComponent extends Field {
             file.private = true;
           }
           const { storage, options = {} } = this.component;
-          const url = this.interpolate(this.component.url);
+          const url = this.interpolate(this.component.url, { file: fileUpload });
 
           const fileKey = this.component.fileKey || 'file';
           fileService.uploadFile(storage, file, fileName, dir, (evt) => {

@@ -90,10 +90,10 @@ export default class DateTimeComponent extends Input {
       timezone,
       displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),
       submissionTimezone: this.submissionTimezone,
-      language: this.options.language,
+      locale: this.options.language,
       useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),
       allowInput: _.get(this.component, 'allowInput', true),
-      mode: this.component.multiple ? 'multiple' : 'single',
+      mode: 'single',
       enableTime: _.get(this.component, 'enableTime', true),
       noCalendar: !_.get(this.component, 'enableDate', true),
       format: this.component.format,
@@ -184,5 +184,9 @@ export default class DateTimeComponent extends Input {
         sibling.focus();
       }
     }
+  }
+
+  getValueAsString(value) {
+    return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
   }
 }

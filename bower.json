@@ -1,8 +1,8 @@
 {
   "name": "formiojs",
   "description": "Common js library for client side interaction with <form.io>",
-  "version": "4.10.0-beta.12",
-  "main": "dist/formio.min.js",
+  "version": "4.10.0-rc.4",
+  "main": "dist/formio.full.min.js",
   "license": "MIT",
   "homepage": "https://github.com/formio/formio.js",
   "ignore": [
@@ -21,8 +21,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "native-promise-only": "^0.8.0-a",
-    "signature_pad": "^2.3.0",
-    "flatpickr": "^4.6.3"
+    "signature_pad": "^2.3.0"
   },
   "devDependencies": {
     "bootstrap": "4.3.1",

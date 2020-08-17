@@ -1,4 +1,4 @@
-// Superhero 4.3.1
+// Superhero 4.5.1
 // Bootswatch
 
 //
@@ -6,8 +6,8 @@
 //
 
 $white:    #fff !default;
-$gray-100: #EBEBEB !default;
-$gray-200: #4E5D6C !default;
+$gray-100: #ebebeb !default;
+$gray-200: #4e5d6c !default;
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
@@ -17,7 +17,7 @@ $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 $black:    #000 !default;
 
-$blue:    #DF691A !default;
+$blue:    #df691a !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
@@ -117,12 +117,6 @@ $pagination-disabled-color:         $nav-link-disabled-color !default;
 $pagination-disabled-bg:            $pagination-bg !default;
 $pagination-disabled-border-color:  $pagination-border-color !default;
 
-// Modals
-
-$modal-content-bg:                  $gray-200 !default;
-
-$modal-header-border-color:         rgba(0,0,0,.2) !default;
-
 // Cards
 
 $card-cap-bg:                       $table-hover-bg !default;
@@ -134,6 +128,21 @@ $card-inner-border-radius:          0px !default;
 $popover-bg:                        $gray-200 !default;
 
 $popover-header-bg:                 $table-hover-bg !default;
+
+// Toasts
+
+$toast-background-color:            $gray-200 !default;
+$toast-border-color:                rgba(0,0,0,.2) !default;
+
+$toast-header-color:                $body-color !default;
+$toast-header-background-color:     $toast-background-color !default;
+$toast-header-border-color:         $toast-border-color !default;
+
+// Modals
+
+$modal-content-bg:                  $gray-200 !default;
+
+$modal-header-border-color:         rgba(0,0,0,.2) !default;
 
 // List group
 

@@ -12,8 +12,12 @@ export default {
   uniquify(container, component) {
     let changed = false;
     const formKeys = {};
-    eachComponent(container, function(comp) {
+    eachComponent(container, (comp) => {
       formKeys[comp.key] = true;
+
+      if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
+        return true;
+      }
     }, true);
 
     // Recurse into all child components.
@@ -26,8 +30,13 @@ export default {
       const newKey = uniqueKey(formKeys, component.key);
       if (newKey !== component.key) {
         component.key = newKey;
-        formKeys[newKey] = true;
         changed = true;
+      }
+
+      formKeys[newKey] = true;
+
+      if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
+        return true;
       }
     }, true);
     return changed;

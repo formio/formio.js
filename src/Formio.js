@@ -224,7 +224,7 @@ export default class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (!this[_id]) {
-      NativePromise.reject('Nothing to delete');
+      return NativePromise.reject('Nothing to delete');
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], 'delete', null, opts);
@@ -332,6 +332,7 @@ export default class Formio {
         }
         return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
           .then((revisionForm) => {
+            currentForm._vid = revisionForm._vid;
             currentForm.components = revisionForm.components;
             currentForm.settings = revisionForm.settings;
             // Using object.assign so we don't cross polinate multiple form loads.
@@ -860,6 +861,9 @@ export default class Formio {
         else if (response.status === 401) {
           Formio.events.emit('formio.unauthorized', response.body);
         }
+        else if (response.status === 416) {
+          Formio.events.emit('formio.rangeIsNotSatisfiable', response.body);
+        }
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get('content-type').includes('application/json')
           ? response.json()
@@ -973,7 +977,7 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken ? Formio.tokens.formioToken : '';
+    return Formio.tokens.formioToken || '';
   }
 
   // Needed to maintain reverse compatability...
@@ -982,22 +986,18 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    return Formio.tokens.formioToken = token || '';
+    Formio.tokens.formioToken = token || '';
   }
 
   static setToken(token = '', opts) {
     token = token || '';
     opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
-    var tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
+    const tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
+
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
 
-    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] === token) {
-      return;
-    }
-
-    Formio.tokens[tokenName] = token;
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1005,20 +1005,27 @@ export default class Formio {
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(tokenName);
+        localStorage.removeItem(tokenName);
       }
       catch (err) {
-        return cookies.erase(tokenName, { path: '/' });
+        cookies.erase(tokenName, { path: '/' });
+      }
+      Formio.tokens[tokenName] = token;
+      return Promise.resolve(null);
+    }
+
+    if (Formio.tokens[tokenName] !== token) {
+      Formio.tokens[tokenName] = token;
+      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+      try {
+        localStorage.setItem(tokenName, token);
+      }
+      catch (err) {
+        cookies.set(tokenName, token, { path: '/' });
       }
     }
-    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
-    try {
-      localStorage.setItem(tokenName, token);
-    }
-    catch (err) {
-      cookies.set(tokenName, token, { path: '/' });
-    }
-    return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null
+    // Return or updates the current user
+    return Formio.currentUser(opts.formio, opts);
   }
 
   static getToken(options) {
@@ -1243,39 +1250,44 @@ export default class Formio {
   static logout(formio, options) {
     options = options || {};
     options.formio = formio;
-    Formio.setToken(null, options);
-    Formio.setUser(null, options);
-    Formio.clearCache();
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
-    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
+    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
+      .then(function(result) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        return result;
+      })
+      .catch(function(err) {
+        Formio.setToken(null, options);
+        Formio.setUser(null, options);
+        Formio.clearCache();
+        throw err;
+      });
   }
 
   static pageQuery() {
-    if (Formio._pageQuery) {
-      return Formio._pageQuery;
-    }
-
-    Formio._pageQuery = {};
-    Formio._pageQuery.paths = [];
+    const pageQuery = {};
+    pageQuery.paths = [];
     const hashes = location.hash.substr(1).replace(/\?/g, '&').split('&');
     let parts = [];
     location.search.substr(1).split('&').forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
       }
     });
 
     hashes.forEach(function(item) {
       parts = item.split('=');
       if (parts.length > 1) {
-        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+        pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
       }
       else if (item.indexOf('/') === 0) {
-        Formio._pageQuery.paths = item.substr(1).split('/');
+        pageQuery.paths = item.substr(1).split('/');
       }
     });
-    return Formio._pageQuery;
+    return pageQuery;
   }
 
   static oAuthCurrentUser(formio, token) {

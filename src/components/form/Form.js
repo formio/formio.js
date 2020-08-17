@@ -1,8 +1,14 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
+import ComponentModal from '../_classes/componentModal/ComponentModal';
 import EventEmitter from 'eventemitter2';
 import NativePromise from 'native-promise-only';
-import { isMongoId, eachComponent } from '../../utils/utils';
+import {
+  isMongoId,
+  eachComponent,
+  getStringFromComponentPath,
+  getArrayFromComponentPath
+} from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
@@ -38,6 +44,7 @@ export default class FormComponent extends Component {
       settings: this.component.settings,
       components: this.component.components
     };
+    this.valueChanged = false;
     this.subForm = null;
     this.formSrc = '';
     if (this.component.src) {
@@ -112,8 +119,19 @@ export default class FormComponent extends Component {
     return this.subFormReady || NativePromise.resolve();
   }
 
+  getComponent(path, fn) {
+    path = getArrayFromComponentPath(path);
+    if (path[0] === 'data') {
+      path.shift();
+    }
+    const originalPathStr = `${this.path}.data.${getStringFromComponentPath(path)}`;
+    if (this.subForm) {
+      return this.subForm.getComponent(path, fn, originalPathStr);
+    }
+  }
+
   getSubOptions(options = {}) {
-    options.parentPath = `${this.calculatedPath}.data.`;
+    options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
@@ -211,6 +229,18 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
+            if (!this.valueChanged && this.dataValue.state !== 'submitted') {
+              this.setDefaultValue();
+            }
+            else {
+              this.restoreValue();
+            }
+          }
+          if (!this.builderMode && this.component.modalEdit) {
+            const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+            const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
+            this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+            this.setOpenModalElement();
           }
         });
       });
@@ -308,6 +338,7 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.restoreValue();
+        this.valueChanged = this.hasSetValue;
         return this.subForm;
       });
     });
@@ -361,7 +392,7 @@ export default class FormComponent extends Component {
       return visible;
     }
 
-    if (this.subForm && this.subForm.hasCondition()) {
+    if (this.subForm) {
       return this.subForm.checkConditions(this.dataValue.data);
     }
 
@@ -440,6 +471,10 @@ export default class FormComponent extends Component {
    * Submit the form before the next page is triggered.
    */
   beforePage(next) {
+    // Should not submit child forms if we are going to the previous page
+    if (!next) {
+      return super.beforePage(next);
+    }
     return this.submitSubForm(true).then(() => super.beforePage(next));
   }
 
@@ -471,6 +506,7 @@ export default class FormComponent extends Component {
 
   setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
+    this.valueChanged = true;
     if (this.subForm) {
       if (
         submission &&
@@ -478,7 +514,8 @@ export default class FormComponent extends Component {
         this.subForm.formio &&
         _.isEmpty(submission.data)
       ) {
-        const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+        const formUrl = submission.form ? `${this.subForm.formio.formsUrl}/${submission.form}` : this.formSrc;
+        const submissionUrl = `${formUrl}/submission/${submission._id}`;
         this.subForm.setUrl(submissionUrl, this.options);
         this.subForm.loadSubmission();
       }

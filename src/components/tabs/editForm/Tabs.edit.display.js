@@ -32,6 +32,10 @@ export default [
     ignore: true
   },
   {
+    key: 'tableView',
+    ignore: true
+  },
+  {
     key: 'components',
     type: 'datagrid',
     input: true,

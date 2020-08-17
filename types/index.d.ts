@@ -5,4 +5,5 @@ export * from './formbuilder';
 export * from './formio';
 export * from './templates';
 export * from './displays';
+export * from './widgets';
 export * from './utils';

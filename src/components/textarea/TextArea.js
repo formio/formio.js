@@ -2,7 +2,7 @@
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import { uniqueName } from '../../utils/utils';
+import { uniqueName, getIEBrowserVersion } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -13,6 +13,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       rows: 3,
       wysiwyg: false,
       editor: '',
+      fixedSize: true,
       inputFormat: 'html',
       validate: {
         minWords: '',
@@ -65,17 +66,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if (this.options.readOnly || this.disabled) {
       return this.renderTemplate('well', {
-        children: '<div ref="input"></div>',
+        children: '<div ref="input" class="formio-editor-read-only-content"></div>',
         nestedKey: this.key,
         value
       });
     }
-    // Editors work better on divs.
-    if (this.component.editor || this.component.wysiwyg) {
-      return '<div ref="input"></div>';
-    }
 
     return this.renderTemplate('input', {
+      prefix: this.prefix,
+      suffix: this.suffix,
       input: info,
       value,
       index
@@ -103,7 +102,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if ((!_.isEqual(newValue, dataValue)) && (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
         modified: !this.autoModified
-      });
+      }, index);
     }
     this.autoModified = false;
   }
@@ -160,11 +159,11 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editors[index] = quill;
             if (this.component.isUploadEnabled) {
               const _this = this;
-              quill.getModule('toolbar').addHandler('image', function() {
+              quill.getModule('uploader').options.handler = function(...args) {
                 //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
                 //we also need current component instance as we use some fields and methods from it as well
-                _this.imageHandler.call(_this, this);
-              } );
+                _this.imageHandler.call(_this, this, ...args);
+              };
             }
             quill.root.spellcheck = this.component.spellcheck;
             if (this.options.readOnly || this.component.disabled) {
@@ -173,7 +172,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
             let dataValue = this.dataValue;
             dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
+            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
             editorReady(quill);
             return quill;
           }).catch(err => console.warn(err));
@@ -184,34 +183,32 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue))
             .then((editor) => {
               this.editors[index] = editor;
-              if (this.options.readOnly || this.component.disabled) {
-                editor.isReadOnly = true;
-              }
-              const numRows = parseInt(this.component.rows, 10);
-              if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-                // Default height is 21px with 10px margin + a 14px top margin.
-                const editorHeight = (numRows * 31) + 14;
-                editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-              }
               let dataValue = this.dataValue;
               dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-              editor.data.set(this.setConvertedValue(dataValue, index));
+              const value = this.setConvertedValue(dataValue, index);
+              const isReadOnly = this.options.readOnly || this.component.disabled;
+
+              if (getIEBrowserVersion()) {
+                editor.on('instanceReady', () => {
+                  editor.setReadOnly(isReadOnly);
+                  editor.setData(value);
+                });
+              }
+              else {
+                const numRows = parseInt(this.component.rows, 10);
+
+                if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+                  // Default height is 21px with 10px margin + a 14px top margin.
+                  const editorHeight = (numRows * 31) + 14;
+                  editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+                }
+                editor.isReadOnly = isReadOnly;
+                editor.data.set(value);
+              }
+
               editorReady(editor);
               return editor;
             });
-          break;
-        case 'tiny':
-          if (!settings) {
-            settings = {};
-          }
-          settings.mode = this.component.as || 'javascript';
-          this.addTiny(element, settings, (newValue) => this.updateEditorValue(newValue))
-            .then((tiny) => {
-              this.editors[index] = tiny;
-              tiny.setContent(this.setConvertedValue(this.dataValue));
-              editorReady(tiny);
-              return tiny;
-            }).catch(err => console.warn(err));
           break;
         default:
           super.attachElement(element, index);
@@ -229,64 +226,51 @@ export default class TextAreaComponent extends TextFieldComponent {
     return attached;
   }
 
-  imageHandler(quillInstance) {
-    let fileInput = quillInstance.container.querySelector('input.ql-image[type=file]');
-    if (fileInput == null) {
-      fileInput = document.createElement('input');
-      fileInput.setAttribute('type', 'file');
-      fileInput.setAttribute('accept', 'image/*');
-      fileInput.classList.add('ql-image');
-      this.addEventListener(fileInput, 'change', () => {
-        const files = fileInput.files;
-        const range = quillInstance.quill.getSelection(true);
+  imageHandler(moduleInstance, range, files) {
+    const quillInstance = moduleInstance.quill;
 
-        if (!files || !files.length) {
-          console.warn('No files selected');
-          return;
-        }
-
-        quillInstance.quill.enable(false);
-        const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
-        let requestData;
-        this.fileService
-          .uploadFile(
-            uploadStorage,
-            files[0],
-            uniqueName(files[0].name),
-            uploadDir || '', //should pass empty string if undefined
-            null,
-            uploadUrl,
-            uploadOptions,
-            fileKey
-          )
-          .then(result => {
-            requestData = result;
-            return this.fileService.downloadFile(result);
-          })
-          .then(result => {
-            quillInstance.quill.enable(true);
-            const Delta = Quill.import('delta');
-            quillInstance.quill.updateContents(new Delta()
-                .retain(range.index)
-                .delete(range.length)
-                .insert(
-                  {
-                    image: result.url
-                  },
-                  {
-                    alt: JSON.stringify(requestData),
-                  })
-              , Quill.sources.USER);
-            fileInput.value = '';
-          }).catch(error => {
-          console.warn('Quill image upload failed');
-          console.warn(error);
-          quillInstance.quill.enable(true);
-        });
-      });
-      quillInstance.container.appendChild(fileInput);
+    if (!files || !files.length) {
+      console.warn('No files selected');
+      return;
     }
-    fileInput.click();
+
+    quillInstance.enable(false);
+    const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
+    let requestData;
+    this.fileService
+      .uploadFile(
+        uploadStorage,
+        files[0],
+        uniqueName(files[0].name),
+        uploadDir || '', //should pass empty string if undefined
+        null,
+        uploadUrl,
+        uploadOptions,
+        fileKey
+      )
+      .then(result => {
+        requestData = result;
+        return this.fileService.downloadFile(result);
+      })
+      .then(result => {
+        quillInstance.enable(true);
+        const Delta = Quill.import('delta');
+        quillInstance.updateContents(new Delta()
+            .retain(range.index)
+            .delete(range.length)
+            .insert(
+              {
+                image: result.url
+              },
+              {
+                alt: JSON.stringify(requestData),
+              })
+          , Quill.sources.USER);
+      }).catch(error => {
+      console.warn('Quill image upload failed');
+      console.warn(error);
+      quillInstance.enable(true);
+    });
   }
 
   get isPlain() {
@@ -312,18 +296,18 @@ export default class TextAreaComponent extends TextFieldComponent {
               if (this.component.isUploadEnabled) {
                 this.setAsyncConvertedValue(value)
                   .then(result => {
-                    editor.setContents(editor.clipboard.convert(result));
+                    const content = editor.clipboard.convert({ html: result });
+                    editor.setContents(content);
                   });
               }
               else {
-                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
+                const convertedValue = this.setConvertedValue(value, index);
+                const content = editor.clipboard.convert({ html: convertedValue });
+                editor.setContents(content);
               }
               break;
             case 'ckeditor':
               editor.data.set(this.setConvertedValue(value, index));
-              break;
-            case 'tiny':
-              editor.setContent(this.setConvertedValue(value));
               break;
           }
         }
@@ -394,7 +378,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (images.length) {
       return this.setImagesUrl(images)
         .then( () => {
-          value = htmlDoc.getElementsByTagName('body')[0].firstElementChild;
+          value = htmlDoc.getElementsByTagName('body')[0].innerHTML;
           return new XMLSerializer().serializeToString(value);
         });
     }

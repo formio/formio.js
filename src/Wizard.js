@@ -2,7 +2,12 @@ import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
 import Formio from './Formio';
-import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from './utils/utils';
+import {
+  fastCloneDeep,
+  checkCondition,
+  firstNonNil,
+  uniqueKey
+} from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -28,8 +33,8 @@ export default class Wizard extends Webform {
     this.components = [];
     this.originalComponents = [];
     this.page = 0;
-    this.currentNextPage = 0;
     this.currentPanel = null;
+    this.currentNextPage = 0;
     this._seenPages = [0];
   }
 
@@ -49,6 +54,17 @@ export default class Wizard extends Webform {
           .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
 
     return pages;
+  }
+
+  get data() {
+    return super.data;
+  }
+
+  set data(value) {
+    this.establishPages(value);
+    _.each(this.getPages({ all: true }), (component) => {
+      component.data = this.componentContext(component);
+    });
   }
 
   getComponents() {
@@ -121,17 +137,15 @@ export default class Wizard extends Webform {
   prepareNavigationSettings(ctx) {
     const currentPanel = this.currentPanel;
 
-    if (!currentPanel) {
-      return false;
-    }
-
-    Object.keys(currentPanel.buttonSettings).forEach(() => {
-      Object.keys(ctx.buttons).forEach(key => {
-        if (typeof currentPanel.buttonSettings[key] !== 'undefined' && !currentPanel.buttonSettings[key]) {
-          ctx.buttons[key] = null;
-        }
+    if (currentPanel && currentPanel.buttonSettings) {
+      Object.keys(currentPanel.buttonSettings).forEach(() => {
+        Object.keys(ctx.buttons).forEach(key => {
+          if (typeof currentPanel.buttonSettings[key] !== 'undefined' && !currentPanel.buttonSettings[key]) {
+            ctx.buttons[key] = null;
+          }
+        });
       });
-    });
+    }
 
     return this.renderTemplate('wizardNav', ctx);
   }
@@ -153,6 +167,7 @@ export default class Wizard extends Webform {
         }
       });
     }
+
     const wizardNav = this.prepareNavigationSettings(ctx);
     const wizardHeader = this.prepareHeaderSettings(ctx);
 
@@ -224,7 +239,14 @@ export default class Wizard extends Webform {
   }
 
   isBreadcrumbClickable() {
-    return _.get(this.options, 'breadcrumbSettings.clickable', true);
+    let currentPage = null;
+    this.pages.map(page => {
+      if (_.isEqual(this.currentPage.component, page.component)) {
+        currentPage = page;
+      }
+    });
+
+    return _.get(currentPage.component, 'breadcrumbClickable', true);
   }
 
   attachNav() {
@@ -275,7 +297,7 @@ export default class Wizard extends Webform {
     });
   }
 
-  establishPages() {
+  establishPages(data = this.data) {
     this.pages = [];
     this.prefixComps = [];
     this.suffixComps = [];
@@ -296,7 +318,7 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const isVisible = checkCondition(item, this.data, this.data, this.component, this);
+          const isVisible = checkCondition(item, data, data, this.component, this);
           if (isVisible) {
             visible.push(item);
             if (page) {
@@ -305,6 +327,7 @@ export default class Wizard extends Webform {
           }
           if (!page && isVisible) {
             page = this.createComponent(item, pageOptions);
+            page.visible = isVisible;
             this.pages.push(page);
             page.eachComponent((component) => {
               component.page = (this.pages.length - 1);
@@ -345,9 +368,7 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw().then(() => {
-        if (!this.options.readOnly) {
-          this.checkValidity(this.submission.data, false, this.submission.data, true);
-        }
+        this.checkData(this.submission.data);
       });
       return NativePromise.resolve();
     }
@@ -518,18 +539,21 @@ export default class Wizard extends Webform {
     }
   }
 
-  setForm(form) {
+  setForm(form, flags) {
     if (!form) {
       return;
     }
     this.wizard = form;
     this.component.components = form.components || [];
     this.setComponentSchema();
-    return super.setForm(form);
+    return super.setForm(form, flags);
   }
 
   setValue(submission, flags = {}) {
-    const changed = super.setValue(submission, flags);
+    this.establishPages(submission.data);
+    const changed = this.getPages({ all: true }).reduce((changed, page) => {
+      return this.setNestedValue(page, submission.data, flags, changed) || changed;
+    }, false);
     this.pageFieldLogic(this.page);
     return changed;
   }
@@ -541,37 +565,27 @@ export default class Wizard extends Webform {
     ]);
   }
 
-  hasButton(name, nextPage) {
-    const currentPage = this.currentPage;
-    if (name === 'previous') {
-      const show = firstNonNil([
-        _.get(currentPage, 'buttonSettings.previous'),
-        this.options.buttonSettings.showPrevious
-      ]);
-      return (this.getPreviousPage() > -1) && show;
+  hasButton(name, nextPage = this.getNextPage()) {
+    // get page options with global options as default values
+    const {
+      previous = this.options.buttonSettings.showPrevious,
+      cancel = this.options.buttonSettings.showCancel,
+      submit = this.options.buttonSettings.showSubmit,
+      next = this.options.buttonSettings.showNext
+    } = _.get(this.currentPage, 'component.buttonSettings', {});
+
+    switch (name) {
+      case 'previous':
+        return previous && (this.getPreviousPage() > -1);
+      case 'next':
+        return next && (nextPage !== null) && (nextPage !== -1);
+      case 'cancel':
+        return cancel;
+      case 'submit':
+        return submit && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
+      default:
+        return true;
     }
-    nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
-    if (name === 'next') {
-      const show = firstNonNil([
-        _.get(currentPage, 'buttonSettings.next'),
-        this.options.buttonSettings.showNext
-      ]);
-      return (nextPage !== null) && (nextPage !== -1) && show;
-    }
-    if (name === 'cancel') {
-      return firstNonNil([
-        _.get(currentPage, 'buttonSettings.cancel'),
-        this.options.buttonSettings.showCancel
-      ]);
-    }
-    if (name === 'submit') {
-      const show = firstNonNil([
-        _.get(currentPage, 'buttonSettings.submit'),
-        this.options.buttonSettings.showSubmit
-      ]);
-      return show && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
-    }
-    return true;
   }
 
   pageId(page) {
@@ -590,11 +604,11 @@ export default class Wizard extends Webform {
     }
   }
 
-  onChange(flags, changed, modified) {
-    super.onChange(flags, changed, modified);
+  onChange(flags, changed, modified, changes) {
+    super.onChange(flags, changed, modified, changes);
     if (this.alert && !this.submitted) {
       this.checkValidity(this.submission.data, false, this.submission.data, true);
-      this.showErrors([], true);
+      this.showErrors([], true, true);
     }
 
     // If the pages change, need to redraw the header.
@@ -637,6 +651,7 @@ export default class Wizard extends Webform {
 
   focusOnComponent(key) {
     let pageIndex = 0;
+
     const [page] = this.pages.filter((page, index) => {
       if (page.getComponent(key)) {
         pageIndex = index;

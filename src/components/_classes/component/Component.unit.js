@@ -5,6 +5,7 @@ import Component from './Component';
 import Harness from '../../../../test/harness';
 import { comp1 } from './fixtures';
 import _merge from 'lodash/merge';
+import comp3 from './fixtures/comp3';
 
 describe('Component', () => {
   it('Should create a Component', (done) => {
@@ -183,6 +184,19 @@ describe('Component', () => {
           done();
         }, done)
         .catch(done);
+    });
+  });
+
+  describe('Component Modal', () => {
+    it('Modal window should stay opened after redrawing component if it was opened ont hte moment of calling', (done) => {
+      Harness.testCreate(Component, comp3).then((component) => {
+        component.componentModal.openModal();
+        component.redraw().then(() => {
+          const isVisible = !component.componentModal.refs.modalWrapper.classList.contains('component-rendering-hidden');
+          assert(isVisible);
+          done();
+        }).catch(done);
+      }).catch(done);
     });
   });
 });

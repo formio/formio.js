@@ -3,9 +3,10 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import { expect } from 'chai';
+import NativePromise from 'native-promise-only';
 
 import i18Defaults from '../lib/i18n';
-import WebformBuilder from '../lib/WebformBuilder';
+import FormBuilder from '../lib/FormBuilder';
 import AllComponents from '../lib/components';
 import Components from '../lib/components/Components';
 
@@ -13,13 +14,16 @@ Components.setComponents(AllComponents);
 
 if (process) {
   // Do not handle unhandled rejections.
-  process.on('unhandledRejection', (err, p) => {});
+  process.on('unhandledRejection', (err, p) => {
+    console.warn('Unhandled rejection!', err);
+  });
 }
 
 // Make sure that the Option is available from the window.
 global.Option = global.window.Option;
 
 // Stub out the toLocaleString method so it works in mocha.
+// eslint-disable-next-line no-extend-native
 Number.prototype.toLocaleString = function(local, options) {
   if (options && options.style === 'currency') {
     switch (local) {
@@ -61,24 +65,46 @@ function onNext(cmp, event, cb) {
 
 const Harness = {
   builderBefore(done, options = {}) {
+    var html;    // Unsure what _your code_ needs here -- using `undefined` to trigger default value
+    var opt = { url: 'http://localhost/' };
+    this.jsdom = require('jsdom-global')(html, opt);
+    window.confirm = () => true;
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new WebformBuilder(formBuilderElement, options);
-    formBuilder.form = { components: [] };
-    formBuilder.webform.ready.then(() => done());
+    formBuilder = new FormBuilder(formBuilderElement, { display: 'form', components: [] }, options);
+    formBuilder.instance.ready.then(() => done());
   },
 
-  builderAfter() {
-    formBuilder.destroy();
+  builderAfter(done) {
+    formBuilder.instance.destroy();
     document.body.removeChild(formBuilderElement);
+    done();
   },
 
-  buildComponent(type) {
+  getBuilder() {
+    return formBuilder.instance;
+  },
+
+  saveComponent() {
+    const click = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+
+    const saveBtn = formBuilder.instance.componentEdit.querySelector('[ref="saveButton"]');
+    if (saveBtn) {
+      saveBtn.dispatchEvent(click);
+    }
+  },
+
+  buildComponent(type, container) {
     // Get the builder sidebar component.
+    const webformBuilder = formBuilder.instance;
     let builderGroup = null;
     let groupName = '';
 
-    _.each(formBuilder.groups, (group, key) => {
+    _.each(webformBuilder.groups, (group, key) => {
       if (group.components[type]) {
         groupName = key;
         return false;
@@ -88,20 +114,26 @@ const Harness = {
     if (!groupName) {
       return;
     }
-    const groupBtn = document.getElementById(`group-${groupName}`);
-    const clickEvent = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true
-    });
-    groupBtn.dispatchEvent(clickEvent);
-    let component = formBuilder.element.querySelector(`span[data-type='${type}']`);
-    component = component && component.cloneNode(true);
-    const element = formBuilder.element;
-    element.appendChild(component);
-    builderGroup = document.getElementById(`group-container-${groupName}`);
-    formBuilder.onDrop(component, element, builderGroup);
-    return formBuilder;
+    const openedGroup = document.getElementById(`group-${groupName}"`);
+    if (openedGroup) {
+      openedGroup.classList.remove('in');
+    }
+    const group = document.getElementById(`group-${groupName}`);
+    group && group.classList.add('in');
+
+    let component = webformBuilder.element.querySelector(`span[data-type='${type}']`);
+    if (component) {
+      component = component && component.cloneNode(true);
+      const element = container || webformBuilder.element.querySelector('.drag-container.formio-builder-form');
+      element.appendChild(component);
+      builderGroup = document.getElementById(`group-container-${groupName}`);
+      webformBuilder.onDrop(component, element, builderGroup);
+    }
+    else {
+      return;
+    }
+
+    return webformBuilder;
   },
 
   setComponentProperty(property, before, after, cb) {
@@ -195,7 +227,15 @@ const Harness = {
     if (typeof query === 'string') {
       element = this.testElement(component, query, true);
     }
-    return element.dispatchEvent(clickEvent);
+    return element ? element.dispatchEvent(clickEvent) : null;
+  },
+  dispatchEvent(eventType, element, query, beforeDispatch) {
+    const event = new Event(eventType);
+    const el = element.querySelector(query);
+    assert(el, 'Element is not found');
+    beforeDispatch && beforeDispatch(el);
+    el.dispatchEvent(event);
+    return el;
   },
   testElements(component, query, number) {
     const elements = component.element.querySelectorAll(query);
