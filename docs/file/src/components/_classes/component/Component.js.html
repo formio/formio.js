@@ -2459,7 +2459,8 @@ export default class Component extends Element {
       Array.isArray(this.defaultValue) &amp;&amp;
       this.refs.hasOwnProperty(&apos;input&apos;) &amp;&amp;
       this.refs.input &amp;&amp;
-      (this.refs.input.length !== value.length)
+      (this.refs.input.length !== value.length) &amp;&amp;
+      this.visible
     ) {
       this.redraw();
     }
@@ -2887,6 +2888,9 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    if (this.component.validateOn === &apos;blur&apos; &amp;&amp; flags.fromSubmission) {
+      return true;
+    }
     return this.checkComponentValidity(data, isDirty, row);
   }
 

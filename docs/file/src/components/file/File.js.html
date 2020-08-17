@@ -853,7 +853,7 @@ export default class FileComponent extends Field {
             file.private = true;
           }
           const { storage, options = {} } = this.component;
-          const url = this.interpolate(this.component.url);
+          const url = this.interpolate(this.component.url, { file: fileUpload });
 
           const fileKey = this.component.fileKey || &apos;file&apos;;
           fileService.uploadFile(storage, file, fileName, dir, (evt) =&gt; {

@@ -253,7 +253,8 @@ import NestedDataComponent from &apos;./components/_classes/nesteddata/NestedDat
 import {
   fastCloneDeep,
   currentTimezone,
-  getStringFromComponentPath
+  getStringFromComponentPath,
+  searchComponents,
 } from &apos;./utils/utils&apos;;
 import { eachComponent } from &apos;./utils/formUtils&apos;;
 
@@ -1042,6 +1043,7 @@ export default class Webform extends NestedDataComponent {
     draft.state = &apos;draft&apos;;
 
     if (!this.savingDraft) {
+      this.emit(&apos;saveDraftBegin&apos;);
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) =&gt; {
         // Set id to submission to avoid creating new draft submission
@@ -1445,7 +1447,7 @@ export default class Webform extends NestedDataComponent {
         if (err.messages &amp;&amp; err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message }, index) =&gt; {
-            const text = this.t(&apos;alertMessage&apos;, { label: component.label, message });
+            const text = this.t(&apos;alertMessage&apos;, { label: this.t(component.label), message });
             createListItem(text, index);
           });
         }
@@ -1782,12 +1784,12 @@ export default class Webform extends NestedDataComponent {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = this.components.find((component) =&gt; {
-      return component.component.type === &apos;recaptcha&apos; &amp;&amp;
-        component.component.eventType === &apos;formLoad&apos;;
+    const recaptchaComponent = searchComponents(this.components, {
+      &apos;component.type&apos;: &apos;recaptcha&apos;,
+      &apos;component.eventType&apos;: &apos;formLoad&apos;
     });
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.form.name ? this.form.name : &apos;form&apos;}Load`);
+    if (recaptchaComponent.length &gt; 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : &apos;form&apos;}Load`);
     }
   }
 

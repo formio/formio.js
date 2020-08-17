@@ -7794,6 +7794,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#initrows",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-initRows",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#initRows",
+    "member"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#iteratablerows",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-iteratableRows",
     "src/components/datagrid/DataGrid.js~DataGridComponent#iteratableRows",
@@ -10977,6 +10983,12 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#onscroll",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-onScroll",
     "src/components/select/Select.js~SelectComponent#onScroll",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#overlayoptions",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-overlayOptions",
+    "src/components/select/Select.js~SelectComponent#overlayOptions",
     "member"
   ],
   [

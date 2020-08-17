@@ -246,6 +246,7 @@ import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import { getRandomComponentId } from &apos;../../utils/utils&apos;;
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -253,6 +254,7 @@ export default class SelectComponent extends Field {
       type: &apos;select&apos;,
       label: &apos;Select&apos;,
       key: &apos;select&apos;,
+      idPath: &apos;id&apos;,
       data: {
         values: [],
         json: &apos;&apos;,
@@ -371,6 +373,10 @@ export default class SelectComponent extends Field {
     return {};
   }
 
+  get overlayOptions() {
+    return this.parent &amp;&amp; this.parent.component &amp;&amp; this.parent.component.type === &apos;table&apos;;
+  }
+
   get valueProperty() {
     if (this.component.valueProperty) {
       return this.component.valueProperty;
@@ -457,6 +463,7 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
+      id: id || getRandomComponentId(),
       value: _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
         ? this.normalizeSingleValue(value)
         : _.isObject(value)
@@ -585,6 +592,19 @@ export default class SelectComponent extends Field {
     else {
       this.downloadedResources = items || [];
       this.selectOptions = [];
+      // If there is new select option with same id as already selected, set the new one
+      if (this.dataValue &amp;&amp; this.component.idPath) {
+        const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
+        const newOptionWithSameId = !_.isNil(selectedOptionId) &amp;&amp; items.find(item =&gt; {
+          const itemId = _.get(item, this.component.idPath);
+
+          return itemId === selectedOptionId;
+        });
+
+        if (newOptionWithSameId) {
+          this.setValue(newOptionWithSameId);
+        }
+      }
     }
 
     // Add the value options.
@@ -600,11 +620,30 @@ export default class SelectComponent extends Field {
     _.each(items, (item, index) =&gt; {
       // preventing references of the components inside the form to the parent form when building forms
       if (this.root &amp;&amp; this.root.options.editForm &amp;&amp; this.root.options.editForm._id &amp;&amp; this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
     });
 
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
+
+      if (this.overlayOptions) {
+        const { element: optionsDropdown } = this.choices.dropdown;
+
+        optionsDropdown.style.position = &apos;fixed&apos;;
+
+        const recalculatePosition = () =&gt; {
+          const { top, height, width } = this.element.getBoundingClientRect();
+
+          optionsDropdown.style.top = `${top + height}px`;
+          optionsDropdown.style.width = `${width}px`;
+        };
+
+        recalculatePosition();
+
+        [&apos;scroll&apos;, &apos;resize&apos;].forEach(
+          eventType =&gt; this.addEventListener(window, eventType, recalculatePosition)
+        );
+      }
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -814,6 +853,9 @@ export default class SelectComponent extends Field {
 
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
+    this.itemsLoaded = new NativePromise((resolve) =&gt; {
+      this.itemsLoadedResolve = resolve;
+    });
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
       this.itemsLoadedResolve();
@@ -974,11 +1016,25 @@ export default class SelectComponent extends Field {
 
   render() {
     const info = this.inputInfo;
+    const styles = this.overlayOptions
+      ? {
+        position: &apos;fixed&apos;,
+        display: &apos;block&apos;,
+        width: &apos;400px&apos;,
+        height: &apos;100%&apos;,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        &apos;z-index&apos;: 2
+      }
+      : null;
     info.attr = info.attr || {};
     info.multiple = this.component.multiple;
     return super.render(this.wrapElement(this.renderTemplate(&apos;select&apos;, {
       input: info,
       selectOptions: &apos;&apos;,
+      styles,
       index: null,
     })));
   }

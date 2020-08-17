@@ -574,6 +574,7 @@ export default class Formio {
         }
         return this.makeRequest(&apos;form&apos;, this.vUrl + query, &apos;get&apos;, null, opts)
           .then((revisionForm) =&gt; {
+            currentForm._vid = revisionForm._vid;
             currentForm.components = revisionForm.components;
             currentForm.settings = revisionForm.settings;
             // Using object.assign so we don&apos;t cross polinate multiple form loads.
