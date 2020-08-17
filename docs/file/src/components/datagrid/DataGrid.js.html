@@ -387,7 +387,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   getRowChunks(groups, rows) {
     const [, chunks] = groups.reduce(
       ([startIndex, acc], size) =&gt; {
-        const endIndex = startIndex +  size;
+        const endIndex = startIndex + size;
         return [endIndex, [...acc, [startIndex, endIndex]]];
       }, [0, []]
     );
@@ -544,7 +544,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       this.refs[`${this.datagridKey}-group-header`].forEach((header, index) =&gt; {
         this.addEventListener(header, &apos;click&apos;, () =&gt; this.toggleGroup(header, index));
       });
-     }
+    }
 
     const columns = this.getColumns();
     const rowLength = columns.length;
@@ -595,6 +595,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
     this.checkConditions();
+    this.triggerChange();
     this.redraw();
   }
 
@@ -602,6 +603,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
     _.each(row, (component) =&gt; this.removeComponent(component));
+    this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
   }
 
@@ -642,7 +644,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      const component = this.createComponent(col, options, row);
+      const component = this.createComponent({ ...col, id: (col.id + rowIndex) }, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;

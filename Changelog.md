@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.3-rc.1
+#### Fixed
+ - Issue where DataGrid would not reset correctly.
+ - Issue where the datagrid would remove all components when row is removed.
+ - Added a triggerUpdate when a row is added.
+
 ### 4.11.2
 #### Fixed
  - Issue with flatpickr where date/time would not show time picker.
