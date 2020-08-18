@@ -308,7 +308,6 @@ export * from "./formUtils";
  */
 export const firstNonNil: any;
 import jsonLogic from "json-logic-js";
-import * as moment from "moment-timezone/moment-timezone";
 import Evaluator from "./Evaluator";
 export const interpolate: (rawTemplate: any, data: any) => any;
 export { jsonLogic, moment, Evaluator };

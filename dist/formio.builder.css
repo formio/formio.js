@@ -65,7 +65,7 @@
 .flatpickr-calendar .hasWeeks .dayContainer {
   border-left: 0; }
 
-.flatpickr-calendar.showTimeInput.hasTime .flatpickr-time {
+.flatpickr-calendar.hasTime .flatpickr-time {
   height: 40px;
   border-top: 1px solid #e6e6e6; }
 
@@ -82,9 +82,13 @@
   width: 0;
   left: 22px; }
 
-.flatpickr-calendar.rightMost:before, .flatpickr-calendar.rightMost:after {
+.flatpickr-calendar.rightMost:before, .flatpickr-calendar.arrowRight:before, .flatpickr-calendar.rightMost:after, .flatpickr-calendar.arrowRight:after {
   left: auto;
   right: 22px; }
+
+.flatpickr-calendar.arrowCenter:before, .flatpickr-calendar.arrowCenter:after {
+  left: 50%;
+  right: 50%; }
 
 .flatpickr-calendar:before {
   border-width: 5px;
@@ -163,9 +167,7 @@
 .flatpickr-months .flatpickr-prev-month.flatpickr-prev-month, .flatpickr-months .flatpickr-next-month.flatpickr-prev-month {
   /*
       /*rtl:begin:ignore*/
-  left: 0;
-  /*
-      /*rtl:end:ignore*/ }
+  left: 0; }
 
 /*
       /*rtl:begin:ignore*/
@@ -174,9 +176,7 @@
 .flatpickr-months .flatpickr-prev-month.flatpickr-next-month, .flatpickr-months .flatpickr-next-month.flatpickr-next-month {
   /*
       /*rtl:begin:ignore*/
-  right: 0;
-  /*
-      /*rtl:end:ignore*/ }
+  right: 0; }
 
 /*
       /*rtl:begin:ignore*/
@@ -2004,6 +2004,104 @@ div[data-oembed-url] {
 
 div[read-only="true"] .formio-component-textarea div[ref="input"] {
   white-space: pre-wrap; }
+
+@keyframes formio-classic-wizard-circle {
+  0% {
+    border-color: #e9ecef; }
+  100% {
+    border-color: #007bff; } }
+
+@keyframes formio-classic-wizard-circle-reverted {
+  0% {
+    border-color: #007bff; }
+  100% {
+    border-color: #e9ecef; } }
+
+.formio-classic-wizard {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 21px 0;
+  padding: 0 15px; }
+  .formio-classic-wizard > .formio-classic-wizard-wrapper {
+    width: 100%;
+    position: relative; }
+  .formio-classic-wizard-steps {
+    display: flex;
+    justify-content: space-between; }
+  .formio-classic-wizard .formio-classic-wizard-progress {
+    background: #e9ecef;
+    top: 34px;
+    position: absolute;
+    height: 10px;
+    width: 100%; }
+    .formio-classic-wizard .formio-classic-wizard-progress > .formio-classic-wizard-progress-fill {
+      height: 100%;
+      position: relative;
+      background: #007bff;
+      width: 0;
+      left: 0;
+      transition: width 0.4s ease-in-out;
+      transform-origin: left; }
+  .formio-classic-wizard-step {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    line-height: 12px;
+    position: relative; }
+    .formio-classic-wizard-step:first-child {
+      right: 15px; }
+    .formio-classic-wizard-step:last-child {
+      left: 15px; }
+    .formio-classic-wizard-step > .formio-classic-wizard-header {
+      margin-bottom: 12px; }
+    .formio-classic-wizard-step > .formio-classic-wizard-circle {
+      cursor: pointer;
+      border: 7.5px solid #e9ecef;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      background-color: #e9ecef;
+      transition: border-color 0.4s ease; }
+      .formio-classic-wizard-step > .formio-classic-wizard-circle:hover {
+        border-color: #90a0af; }
+      .formio-classic-wizard-step > .formio-classic-wizard-circle.reverted {
+        animation: formio-classic-wizard-circle-reverted 0.4s linear; }
+    .formio-classic-wizard-step.active > .formio-classic-wizard-circle {
+      border-color: #007bff; }
+      .formio-classic-wizard-step.active > .formio-classic-wizard-circle.animated {
+        animation: formio-classic-wizard-circle 0.4s linear; }
+      .formio-classic-wizard-step.active > .formio-classic-wizard-circle:hover {
+        border-color: #0062cc; }
+
+.formio-wizard-header_default {
+  width: 100%; }
+
+.formio-wizard-header__cells {
+  height: 6px;
+  display: flex;
+  flex-wrap: nowrap; }
+
+.formio-wizard-header__cell {
+  flex: 1;
+  margin: 0 2px;
+  background-color: #e9ecef; }
+  .formio-wizard-header__cell:first-child {
+    margin-left: 0; }
+  .formio-wizard-header__cell:last-child {
+    margin-right: 0; }
+  .formio-wizard-header__cell.active {
+    background-color: #007bff; }
+
+.formio-wizard-header__info {
+  line-height: 18px;
+  margin: 12px 0; }
+
+.formio-wizard-header__title {
+  font-weight: bold;
+  font-size: 18px; }
 
 .gu-mirror {
   position: fixed !important;

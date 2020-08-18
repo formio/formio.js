@@ -15,6 +15,7 @@ export class Wizard extends Webform {
     currentPanel: any;
     currentNextPage: number;
     _seenPages: number[];
+    _prevPageNum: any;
     getPages(args?: {}): any[];
     get wizardKey(): string;
     get buttons(): {};
@@ -24,14 +25,17 @@ export class Wizard extends Webform {
         panels: any[];
         buttons: {};
         currentPage: number;
+        prevPage: any;
     };
+    set prevPageNum(arg: any);
+    get prevPageNum(): any;
     prepareNavigationSettings(ctx: any): any;
     prepareHeaderSettings(ctx: any): any;
     redrawNavigation(): void;
     redrawHeader(): void;
     isBreadcrumbClickable(): any;
     attachNav(): void;
-    attachHeader(): void;
+    attachHeader(): string;
     detachNav(): void;
     detachHeader(): void;
     establishPages(): any[];
