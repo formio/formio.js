@@ -37,7 +37,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -595,6 +594,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
     this.checkConditions();
+    this.triggerChange();
     this.redraw();
   }
 
@@ -643,7 +643,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      const component = this.createComponent(col, options, row);
+      const component = this.createComponent({ ...col, id: (col.id + rowIndex) }, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
