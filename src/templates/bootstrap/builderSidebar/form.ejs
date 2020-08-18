@@ -1,5 +1,8 @@
 <div id="{{ctx.groupId}}" class="accordion builder-sidebar{{ctx.scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
-  {% ctx.groups.forEach(function(group) { %}
-    {{ group }}
-  {% }) %}
+  <input class="form-control builder-sidebar_search" type="text" ref="sidebar-search" placeholder="Search field(s)" />
+  <div ref="sidebar-groups">
+    {% ctx.groups.forEach(function(group) { %}
+      {{ group }}
+    {% }) %}
+  </div>
 </div>
