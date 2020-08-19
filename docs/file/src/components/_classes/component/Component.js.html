@@ -37,7 +37,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -71,8 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -886,13 +884,24 @@ export default class Component extends Element {
 
   getLabelInfo() {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isLeftPosition = this.labelPositions[0] === &apos;left&apos;;
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
+
+    let contentMargin = &apos;&apos;;
+    if (this.component.hideLabel) {
+      const margin = this.labelWidth + this.labelMargin;
+      contentMargin = isRightPosition ? `margin-right: ${margin}%` : &apos;&apos;;
+      contentMargin = isLeftPosition ? `margin-left: ${margin}%` : &apos;&apos;;
+    }
+
     const labelStyles = `
       flex: ${this.labelWidth};
-      ${isRightPosition ? &apos;margin-left&apos; : &apos;margin-right&apos;}:${this.labelMargin}%;
+      ${isRightPosition ? &apos;margin-left&apos; : &apos;margin-right&apos;}: ${this.labelMargin}%;
     `;
     const contentStyles = `
       flex: ${100 - this.labelWidth - this.labelMargin};
+      ${contentMargin};
+      ${this.component.hideLabel ? `max-width: ${100 - this.labelWidth - this.labelMargin}` : &apos;&apos;};
     `;
 
     return {
@@ -966,9 +975,9 @@ export default class Component extends Element {
 
   labelIsHidden() {
     return !this.component.label ||
-      (!this.inDataGrid &amp;&amp; this.component.hideLabel) ||
+      ((!this.inDataGrid &amp;&amp; this.component.hideLabel) ||
       (this.inDataGrid &amp;&amp; !this.component.dataGridLabel) ||
-      this.options.inputsOnly;
+      this.options.inputsOnly) &amp;&amp; !this.builderMode;
   }
 
   get transform() {
@@ -1193,7 +1202,7 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     return this.renderTemplate(&apos;modalPreview&apos;, {
-      previewText: this.getValueAsString(this.dataValue) || this.t(&apos;Click to set value&apos;)
+      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t(&apos;Click to set value&apos;)
     });
   }
 
@@ -2439,9 +2448,6 @@ export default class Component extends Element {
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
-    if (this.componentModal &amp;&amp; flags &amp;&amp; flags.fromSubmission) {
-      this.componentModal.setValue(value);
-    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -2452,7 +2458,8 @@ export default class Component extends Element {
       Array.isArray(this.defaultValue) &amp;&amp;
       this.refs.hasOwnProperty(&apos;input&apos;) &amp;&amp;
       this.refs.input &amp;&amp;
-      (this.refs.input.length !== value.length)
+      (this.refs.input.length !== value.length) &amp;&amp;
+      this.visible
     ) {
       this.redraw();
     }
@@ -2538,6 +2545,9 @@ export default class Component extends Element {
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
+    }
+    if (this.componentModal &amp;&amp; flags &amp;&amp; flags.fromSubmission) {
+      this.componentModal.setValue(value);
     }
     return changed;
   }
@@ -2684,7 +2694,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission) {
+    if (flags.fromSubmission &amp;&amp; this.component.persistent === true) {
       this.calculatedValue = calculatedValue;
       return false;
     }
@@ -2702,7 +2712,9 @@ export default class Component extends Element {
       return true;
     }
     // Set the new value.
-    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
+    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
+    ? false
+    : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
     return changed;
   }
@@ -2875,6 +2887,9 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    if (this.component.validateOn === &apos;blur&apos; &amp;&amp; flags.fromSubmission) {
+      return true;
+    }
     return this.checkComponentValidity(data, isDirty, row);
   }
 

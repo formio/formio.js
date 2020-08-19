@@ -643,13 +643,24 @@ export default class Component extends Element {
 
   getLabelInfo() {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isLeftPosition = this.labelPositions[0] === 'left';
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
+
+    let contentMargin = '';
+    if (this.component.hideLabel) {
+      const margin = this.labelWidth + this.labelMargin;
+      contentMargin = isRightPosition ? `margin-right: ${margin}%` : '';
+      contentMargin = isLeftPosition ? `margin-left: ${margin}%` : '';
+    }
+
     const labelStyles = `
       flex: ${this.labelWidth};
-      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+      ${isRightPosition ? 'margin-left' : 'margin-right'}: ${this.labelMargin}%;
     `;
     const contentStyles = `
       flex: ${100 - this.labelWidth - this.labelMargin};
+      ${contentMargin};
+      ${this.component.hideLabel ? `max-width: ${100 - this.labelWidth - this.labelMargin}` : ''};
     `;
 
     return {
@@ -723,9 +734,9 @@ export default class Component extends Element {
 
   labelIsHidden() {
     return !this.component.label ||
-      (!this.inDataGrid && this.component.hideLabel) ||
+      ((!this.inDataGrid && this.component.hideLabel) ||
       (this.inDataGrid && !this.component.dataGridLabel) ||
-      this.options.inputsOnly;
+      this.options.inputsOnly) && !this.builderMode;
   }
 
   get transform() {
@@ -950,7 +961,7 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
@@ -2196,9 +2207,6 @@ export default class Component extends Element {
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
-    if (this.componentModal && flags && flags.fromSubmission) {
-      this.componentModal.setValue(value);
-    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -2209,7 +2217,8 @@ export default class Component extends Element {
       Array.isArray(this.defaultValue) &&
       this.refs.hasOwnProperty('input') &&
       this.refs.input &&
-      (this.refs.input.length !== value.length)
+      (this.refs.input.length !== value.length) &&
+      this.visible
     ) {
       this.redraw();
     }
@@ -2295,6 +2304,9 @@ export default class Component extends Element {
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
+    }
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
     }
     return changed;
   }
@@ -2441,7 +2453,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission) {
+    if (flags.fromSubmission && this.component.persistent === true) {
       this.calculatedValue = calculatedValue;
       return false;
     }
@@ -2459,7 +2471,9 @@ export default class Component extends Element {
       return true;
     }
     // Set the new value.
-    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
+    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
+    ? false
+    : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
     return changed;
   }
@@ -2632,6 +2646,9 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    if (this.component.validateOn === 'blur' && flags.fromSubmission) {
+      return true;
+    }
     return this.checkComponentValidity(data, isDirty, row);
   }
 

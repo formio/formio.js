@@ -41,8 +41,8 @@ describe('EditGrid Component', () => {
         const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
         const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
 
-        assert.equal(firstValue, '[Complex Data]');
-        assert.equal(secondValue, '[Complex Data]');
+        assert.equal(firstValue, '55555');
+        assert.equal(secondValue, '666666');
         done();
       }, 600);
     });

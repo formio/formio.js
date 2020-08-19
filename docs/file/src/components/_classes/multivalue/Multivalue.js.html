@@ -37,7 +37,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -71,8 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -242,6 +240,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/multivalue/Multivalue.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Field from &apos;../field/Field&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import _ from &apos;lodash&apos;;
 
 export default class Multivalue extends Field {
@@ -329,9 +328,14 @@ export default class Multivalue extends Field {
       select: &apos;multiple&apos;,
     });
 
-    this.refs.input.forEach(this.attachElement.bind(this));
+    const promises = [];
+
+    this.refs.input.forEach((element, index) =&gt; {
+      promises.push(this.attachElement.call(this, element, index));
+    });
+
     if (!this.component.multiple) {
-      return;
+      return NativePromise.all(promises);
     }
 
     this.refs.removeRow.forEach((removeButton, index) =&gt; {
@@ -348,7 +352,9 @@ export default class Multivalue extends Field {
         this.addValue();
       });
     });
-    return superAttach;
+    return superAttach.then(() =&gt; {
+      return NativePromise.all(promises);
+    });
   }
 
   detach() {

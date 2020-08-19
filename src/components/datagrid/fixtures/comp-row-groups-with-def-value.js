@@ -75,5 +75,6 @@ export default {
       'numberOfRows': 1
     }
   ],
-  'groupToggle': false
+  'groupToggle': false,
+  'noFirstRow': false
 };

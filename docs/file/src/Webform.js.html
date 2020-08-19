@@ -37,7 +37,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -71,8 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -254,7 +252,8 @@ import NestedDataComponent from &apos;./components/_classes/nesteddata/NestedDat
 import {
   fastCloneDeep,
   currentTimezone,
-  getStringFromComponentPath
+  getStringFromComponentPath,
+  searchComponents,
 } from &apos;./utils/utils&apos;;
 import { eachComponent } from &apos;./utils/formUtils&apos;;
 
@@ -877,6 +876,18 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   setForm(form, flags) {
+    try {
+      // Do not set the form again if it has been already set
+      if (JSON.stringify(this._form) === JSON.stringify(form)) {
+        return NativePromise.resolve();
+      }
+    }
+    catch (err) {
+      console.warn(err);
+      // If provided form is not a valid JSON object, do not set it too
+      return NativePromise.resolve();
+    }
+
     // Create the form.
     this._form = form;
 
@@ -1031,6 +1042,7 @@ export default class Webform extends NestedDataComponent {
     draft.state = &apos;draft&apos;;
 
     if (!this.savingDraft) {
+      this.emit(&apos;saveDraftBegin&apos;);
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) =&gt; {
         // Set id to submission to avoid creating new draft submission
@@ -1434,7 +1446,7 @@ export default class Webform extends NestedDataComponent {
         if (err.messages &amp;&amp; err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message }, index) =&gt; {
-            const text = this.t(&apos;alertMessage&apos;, { label: component.label, message });
+            const text = this.t(&apos;alertMessage&apos;, { label: this.t(component.label), message });
             createListItem(text, index);
           });
         }
@@ -1771,12 +1783,12 @@ export default class Webform extends NestedDataComponent {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = this.components.find((component) =&gt; {
-      return component.component.type === &apos;recaptcha&apos; &amp;&amp;
-        component.component.eventType === &apos;formLoad&apos;;
+    const recaptchaComponent = searchComponents(this.components, {
+      &apos;component.type&apos;: &apos;recaptcha&apos;,
+      &apos;component.eventType&apos;: &apos;formLoad&apos;
     });
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.form.name ? this.form.name : &apos;form&apos;}Load`);
+    if (recaptchaComponent.length &gt; 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : &apos;form&apos;}Load`);
     }
   }
 

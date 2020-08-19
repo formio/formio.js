@@ -37,7 +37,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -71,8 +70,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -281,7 +279,9 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
-    this.createRows(true);
+    if (this.initRows) {
+      this.createRows(true);
+    }
     this.visibleColumns = {};
     this.checkColumns();
   }
@@ -300,6 +300,10 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   get defaultSchema() {
     return DataGridComponent.schema();
+  }
+  // Checks if should init the first row (only when no defaultValue and just one row set)
+  get initRows() {
+    return this.builderMode || !_.isEqual(this.defaultValue, this.emptyValue) || !this.component.noFirstRow;
   }
 
   get emptyValue() {
@@ -382,7 +386,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   getRowChunks(groups, rows) {
     const [, chunks] = groups.reduce(
       ([startIndex, acc], size) =&gt; {
-        const endIndex = startIndex +  size;
+        const endIndex = startIndex + size;
         return [endIndex, [...acc, [startIndex, endIndex]]];
       }, [0, []]
     );
@@ -539,7 +543,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       this.refs[`${this.datagridKey}-group-header`].forEach((header, index) =&gt; {
         this.addEventListener(header, &apos;click&apos;, () =&gt; this.toggleGroup(header, index));
       });
-     }
+    }
 
     const columns = this.getColumns();
     const rowLength = columns.length;
@@ -590,6 +594,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
     this.checkConditions();
+    this.triggerChange();
     this.redraw();
   }
 
@@ -597,6 +602,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
     _.each(row, (component) =&gt; this.removeComponent(component));
+    this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
   }
 
@@ -637,7 +643,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      const component = this.createComponent(col, options, row);
+      const component = this.createComponent({ ...col, id: (col.id + rowIndex) }, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
@@ -740,8 +746,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    this.createRows();
+    if (this.initRows) {
+      this.dataValue = value;
+      this.createRows();
+    }
     this.rows.forEach((row, rowIndex) =&gt; {
       if (value.length &lt;= rowIndex) {
         return;

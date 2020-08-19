@@ -4,6 +4,7 @@ import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
+import { getRandomComponentId } from '../../utils/utils';
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -11,6 +12,7 @@ export default class SelectComponent extends Field {
       type: 'select',
       label: 'Select',
       key: 'select',
+      idPath: 'id',
       data: {
         values: [],
         json: '',
@@ -129,6 +131,10 @@ export default class SelectComponent extends Field {
     return {};
   }
 
+  get overlayOptions() {
+    return this.parent && this.parent.component && this.parent.component.type === 'table';
+  }
+
   get valueProperty() {
     if (this.component.valueProperty) {
       return this.component.valueProperty;
@@ -188,11 +194,12 @@ export default class SelectComponent extends Field {
     }
 
     if (data.data) {
-      data.data = this.isEntireObjectDisplay() && _.isObject(data.data)
+      // checking additional fields in the template for the selected Entire Object option
+      const hasNestedFields = this.component.template.match(/(?<=item\.data.)\w*/g)[0];
+      data.data = this.isEntireObjectDisplay() && _.isObject(data.data) && !hasNestedFields
         ? JSON.stringify(data.data)
         : data.data;
     }
-
     const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
@@ -214,6 +221,7 @@ export default class SelectComponent extends Field {
     if (_.isNil(label)) return;
 
     const option = {
+      id: id || getRandomComponentId(),
       value: _.isObject(value) && this.isEntireObjectDisplay()
         ? this.normalizeSingleValue(value)
         : _.isObject(value)
@@ -342,6 +350,19 @@ export default class SelectComponent extends Field {
     else {
       this.downloadedResources = items || [];
       this.selectOptions = [];
+      // If there is new select option with same id as already selected, set the new one
+      if (this.dataValue && this.component.idPath) {
+        const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
+        const newOptionWithSameId = !_.isNil(selectedOptionId) && items.find(item => {
+          const itemId = _.get(item, this.component.idPath);
+
+          return itemId === selectedOptionId;
+        });
+
+        if (newOptionWithSameId) {
+          this.setValue(newOptionWithSameId);
+        }
+      }
     }
 
     // Add the value options.
@@ -357,11 +378,30 @@ export default class SelectComponent extends Field {
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
       if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
     });
 
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+
+      if (this.overlayOptions) {
+        const { element: optionsDropdown } = this.choices.dropdown;
+
+        optionsDropdown.style.position = 'fixed';
+
+        const recalculatePosition = () => {
+          const { top, height, width } = this.element.getBoundingClientRect();
+
+          optionsDropdown.style.top = `${top + height}px`;
+          optionsDropdown.style.width = `${width}px`;
+        };
+
+        recalculatePosition();
+
+        ['scroll', 'resize'].forEach(
+          eventType => this.addEventListener(window, eventType, recalculatePosition)
+        );
+      }
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -571,6 +611,9 @@ export default class SelectComponent extends Field {
 
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
+    this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
       this.itemsLoadedResolve();
@@ -731,11 +774,25 @@ export default class SelectComponent extends Field {
 
   render() {
     const info = this.inputInfo;
+    const styles = this.overlayOptions
+      ? {
+        position: 'fixed',
+        display: 'block',
+        width: '400px',
+        height: '100%',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        'z-index': 2
+      }
+      : null;
     info.attr = info.attr || {};
     info.multiple = this.component.multiple;
     return super.render(this.wrapElement(this.renderTemplate('select', {
       input: info,
       selectOptions: '',
+      styles,
       index: null,
     })));
   }
@@ -974,7 +1031,8 @@ export default class SelectComponent extends Field {
         groupId: -1,
         customProperties: null,
         placeholder: true,
-        keyCode: null });
+        keyCode: null
+      });
     }
   }
 
@@ -1156,7 +1214,7 @@ export default class SelectComponent extends Field {
         const numberValue = Number(this.value);
         const isEquivalent = value.toString() === numberValue.toString();
 
-        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !=='' && isEquivalent) {
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !== '' && isEquivalent) {
           this.value = numberValue;
         }
 
@@ -1167,7 +1225,7 @@ export default class SelectComponent extends Field {
         if (
           _.isString(this.value)
           && (this.value.toLowerCase() === 'true'
-          || this.value.toLowerCase() === 'false')
+            || this.value.toLowerCase() === 'false')
         ) {
           this.value = (this.value.toLowerCase() === 'true');
         }
@@ -1267,11 +1325,11 @@ export default class SelectComponent extends Field {
 
   isInitApiCallNeeded(hasValue) {
     return this.component.lazyLoad &&
-    !this.lazyLoadInit &&
-    !this.active &&
-    !this.selectOptions.length &&
-    hasValue &&
-    this.visible && (this.component.searchField || this.component.valueProperty);
+      !this.lazyLoadInit &&
+      !this.active &&
+      !this.selectOptions.length &&
+      hasValue &&
+      this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
   setChoicesValue(value, hasPreviousValue) {
@@ -1280,7 +1338,7 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-          this.choices.removeActiveItems();
+        this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
@@ -1390,14 +1448,14 @@ export default class SelectComponent extends Field {
         items,
         valueProperty,
       } = this.component.dataSrc === 'values'
-        ? {
-          items: convertToString(this.getNormalizedValues(), 'value'),
-          valueProperty: 'value',
-        }
-        : {
-          items: convertToString(this.getCustomItems(), this.valueProperty),
-          valueProperty: this.valueProperty,
-        };
+          ? {
+            items: convertToString(this.getNormalizedValues(), 'value'),
+            valueProperty: 'value',
+          }
+          : {
+            items: convertToString(this.getCustomItems(), this.valueProperty),
+            valueProperty: this.valueProperty,
+          };
 
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))

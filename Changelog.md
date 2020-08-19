@@ -4,6 +4,79 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.4
+#### Fixed
+ - Fixed issue where DataGrid would remove all components on remove row.
+
+#### Changed
+ - Change the display of panels for nested wizards inside parent wizards
+
+### 4.12.0-rc.3
+#### Fixed
+ - UIP-239: select options overlayed over tables.
+ - FJS-1044: 'OnBlur' Valdation is not working for email and phone number inputs
+ - FJS-1111: fixes the Stack Overflow error which occures when multiple TextArea is inside conditionally shown component
+ - Pass "locale" (not "language") Flatpickr setting: #3129
+ - Fixed getting component in NestedArrayComponent when rowIndex is not provided.
+ - Fix reCaptcha loading on Wizard form
+
+#### Added
+ - FJS-1128: added translation for label in form error alert
+ - Adding the vid to the currentForm when revision is loaded.
+ - FOR-2725: added possibility to use file name inside interpolated url in file component
+ - Add saveDraftBegin event
+
+#### Changed
+ - Make sure checkData is called on Wizard pages after every page is set.
+
+### 4.12.0-rc.2
+#### Fixed
+ - FJS-1118: fixes an issue where initially collapsed panels are opened when have required component inside
+ - FJS-1041: added possibility to interpolate dataGrid max/min length
+ - FOR-2714: Fix Webhook Action authentication part autocompleting
+ - FJS-1058: fixes an issuewhere the Signature has different dimensions in the View and Edit modes
+ - FJS-1035: Fix Conditional add button for EditGrid
+
+### 4.12.0-rc.1
+#### Fixed
+ - FJS-1109: replaced scope with alternative selector for working in IE11
+ - FJS-1079: fixes an issue where label width ignored when label is hidden
+ - FJS-947: fixes an issue where forms' controllers are executed twice
+ - FJS-1117: added support for old default values in survey component
+ - FJS-1117: fixed number min-max validation
+ - PDF-106: Add flag to determine new component creation
+ - FJS-1034: Made Data Components' value's preview be displayed as a simple table
+ - Fix conditional wizard pages not getting values set correctly.
+ - FJS-1104: added label position for address
+ - FJS-1028: Date Time Component showing up in ISO Date Format 
+ - FJS-1097: fixes an issue where error message is not shown under the Submit button
+ - FJS-1082: EditGrid: fix viewing nested submission data issue
+ - Fixes an issue where value of non-persistent component is not calculated and shown in the View/Edit mode
+ - FJS-1033: Fixes an issue where data of some components with 'modalEdit' option is not shown in the 'view' mode
+ - FJS-1072: fix index computation after deleting rows in the EditGrid
+ - FJS-1060: fix template detail for Select when using Entire Object option
+ - Do not override the defaultValue field for hidden components: #3070
+ - FJS-1065: Maximum call stack size exceeded infinite loop error
+ - Fix (TextArea): Fixes an issue where images do not fit the editor's box in readOnly mode
+ - FJS-1040: fix recalculation of row numbers for DataGrid
+ - Fix (TextArea): Fixes an issue where images are not uploaded to the storage provider in the Quill editor and then an error occures
+ - FJS-1022: fixed an issue where row alert errors list is not updated when editing editGrid modal row
+
+#### Changed
+ - FJS-1006: Remove 'Table View' setting for layout components
+ - VPAT-498 Changed flatpickr to be lazy-loaded and removed dependencies
+ - Reverted EditGrid default template back to where it was before to adhere to 80% usecases
+
+#### Added
+ - VPAT-502 Added 'for' attributes for labels and IDs for inputs
+ - Adding config upload only option to file.edit
+ - Retain key if provided when drag/dropping an element
+ - FJS-1050: added hide label option for panel component
+
+### 4.11.1
+#### Changes
+ - No changes. Released 4.11.1-rc.9 as official release.
+
 ### 4.11.1-rc.9
 #### Fixed
  - FJS-1117: fixed an issue where validation error is shown for valid value when component has invalid default value

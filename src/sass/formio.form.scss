@@ -739,10 +739,6 @@ body.formio-dialog-open {
   flex-direction: row;
 }
 
-.formio-component-submit .has-error {
-  display: none;
-}
-
 .formio-component-submit button[disabled]+.has-error {
   display: block;
 }
@@ -1214,3 +1210,11 @@ div[read-only="true"] {
     }
   }
 }
+
+
+.formio-editor-read-only-content {
+  img {
+    max-width: 100%;
+  }
+}
+
