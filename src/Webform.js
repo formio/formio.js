@@ -11,6 +11,7 @@ import NestedDataComponent from './components/_classes/nesteddata/NestedDataComp
 import {
   fastCloneDeep,
   currentTimezone,
+  unescapeHTML,
   getStringFromComponentPath,
   searchComponents,
 } from './utils/utils';
@@ -1190,7 +1191,10 @@ export default class Webform extends NestedDataComponent {
             'aria-label': `${message}. Click to navigate to the field with following error.`
           };
           const li = this.ce('li', params);
-          this.setContent(li, message);
+          const p = this.ce('p');
+
+          this.setContent(p, unescapeHTML(message));
+          this.appendTo(p, li);
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
