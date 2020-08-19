@@ -379,7 +379,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.setImagesUrl(images)
         .then( () => {
           value = htmlDoc.getElementsByTagName('body')[0].innerHTML;
-          return new XMLSerializer().serializeToString(value);
+          return value;
         });
     }
     else {
