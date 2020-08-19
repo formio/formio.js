@@ -2734,6 +2734,9 @@ export default class Component extends Element {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
+      if (this.refs.modalMessageContainer) {
+        this.empty(this.refs.modalMessageContainer);
+      }
       this.error = null;
       if (inputRefs) {
         this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
