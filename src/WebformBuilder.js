@@ -113,6 +113,7 @@ export default class WebformBuilder extends Component {
           }
           info.components[key] = comp === true ? componentInfo[key] : comp;
           info.components[key].key = key;
+          this.fieldsList.components[key] = info.components[key];
         }
       }
     }
@@ -653,6 +654,10 @@ export default class WebformBuilder extends Component {
       'sidebar-container': 'multiple',
     });
 
+    this.updateDragAndDrop();
+  }
+
+  updateDragAndDrop() {
     if (this.dragDropEnabled) {
       this.initDragula();
     }
