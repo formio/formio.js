@@ -117,20 +117,31 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   render() {
+    let groupOrder = this.groupOrder;
+    let groups = this.groups;
+    const isSearch = !_.isEmpty(this.searchGroup);
+    if (isSearch) {
+      groupOrder = ['result'];
+      groups = {
+        result: this.searchGroup
+      };
+    }
     return this.renderTemplate('builderWizard', {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
-        groupOrder: this.groupOrder,
+        groupOrder: groupOrder,
         groupId: `builder-sidebar-${this.id}`,
-        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
-          group: this.groups[groupKey],
+        groups: groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+          group: groups[groupKey],
           groupKey,
           groupId: `builder-sidebar-${this.id}`,
-          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+          isSearch,
+          subgroups: groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
             group,
             groupKey: group.key,
             groupId: `builder-sidebar-${groupKey}`,
-            subgroups: []
+            subgroups: [],
+            isSearch,
           })),
         })),
       }),

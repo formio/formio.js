@@ -1,4 +1,12 @@
 <div id="{{ctx.groupId}}" class="accordion builder-sidebar{{ctx.scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
+  <div class="form-group">
+    <input
+      type="text"
+      class="form-control"
+      ref="sidebar-search"
+      placeholder="{{ctx.t('Type to search component')}}"
+      >
+  </div>
   {% ctx.groups.forEach(function(group) { %}
     {{ group }}
   {% }) %}

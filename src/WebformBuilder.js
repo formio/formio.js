@@ -11,6 +11,7 @@ import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import Templates from './templates/Templates';
+import Fuse from 'fuse.js';
 require('./components/builder');
 
 export default class WebformBuilder extends Component {
@@ -48,7 +49,8 @@ export default class WebformBuilder extends Component {
     }
 
     this.dragDropEnabled = true;
-
+    this.searchGroup = {};
+    this.searchValue = '';
     // Setup the builder options.
     this.builder = _.defaultsDeep({}, this.options.builder, this.defaultGroups);
 
@@ -511,20 +513,32 @@ export default class WebformBuilder extends Component {
   }
 
   render() {
+    let groupOrder = this.groupOrder;
+    let groups = this.groups;
+    const isSearch = !_.isEmpty(this.searchGroup);
+    if (isSearch) {
+      groupOrder = ['result'];
+      groups = {
+        result: this.searchGroup
+      };
+    }
+
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
-        groupOrder: this.groupOrder,
+        groupOrder: groupOrder,
         groupId: `builder-sidebar-${this.id}`,
-        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
-          group: this.groups[groupKey],
+        groups: groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+          group: groups[groupKey],
           groupKey,
           groupId: `builder-sidebar-${this.id}`,
-          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+          isSearch,
+          subgroups: groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
             group,
             groupKey: group.key,
             groupId: `group-container-${groupKey}`,
-            subgroups: []
+            subgroups: [],
+            isSearch,
           })),
         })),
       }),
@@ -544,7 +558,74 @@ export default class WebformBuilder extends Component {
         'sidebar-anchor': 'multiple',
         'sidebar-group': 'multiple',
         'sidebar-container': 'multiple',
+        'sidebar-search': 'single'
       });
+
+      const search = _.get(this, 'refs["sidebar-search"]');
+
+      if (search) {
+        search.value = this.searchValue;
+
+        const listener = () => {
+          if (search) {
+            const { value } = search;
+            this.searchGroup = {
+              key: 'result',
+              title: 'Result',
+              componentOrder: [],
+              subgroups: [],
+              weight: 10,
+              components: {},
+              default: true,
+            };
+
+            const allComponents = [];
+
+            _.forEach(this.builder, ({ components, subgroups }) => {
+              if (_.isArray(subgroups)) {
+                this.searchGroup.subgroups.push(...subgroups);
+              }
+              _.forEach(components, (value) => {
+                const component = _.clone(value);
+                component.group = 'result';
+                allComponents.push(component);
+              });
+            });
+
+            const options = {
+              threshold: 0.1,
+              keys: ['key', 'title']
+            };
+
+            const fuse = new Fuse( allComponents, options);
+            const result = fuse.search(value);
+
+            result.forEach(({ item }) => {
+              if (item && item.key) {
+                this.searchGroup.componentOrder.push(item.key);
+                this.searchGroup.components[item.key] = _.clone(item);
+              }
+            });
+
+            if (!value) {
+              this.searchGroup = {};
+            }
+
+            if (this.searchValue !== value) {
+              this.searchValue = value;
+              this.redraw().then(() => {
+                const nextSearch = _.get(this, 'refs["sidebar-search"]');
+
+                if (nextSearch) {
+                  nextSearch.focus();
+                }
+              });
+            }
+          }
+        };
+
+        this.addEventListener(search, 'keyup', _.debounce(listener, 300));
+      }
 
       if (this.sideBarScroll && Templates.current.handleBuilderSidebarScroll) {
         Templates.current.handleBuilderSidebarScroll.call(this, this);
