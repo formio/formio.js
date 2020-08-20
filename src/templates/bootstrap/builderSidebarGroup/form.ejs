@@ -23,6 +23,14 @@
     aria-labelledby="heading-{{ctx.groupKey}}"
     ref="sidebar-group"
   >
+  {% if (_.isEmpty(ctx.group.components) && ctx.isSearch) { %}
+    <div class="card-body">
+      <span
+      class="text-center btn-sm btn-block"
+      draggable="false"
+      >{{ctx.t('Not found')}}</span>
+    </div>
+  {% } else { %}
     <div id="group-container-{{ctx.groupKey}}" class="card-body no-drop p-2" ref="sidebar-container">
       {% !ctx.group.componentOrder || ctx.group.componentOrder.forEach(function(componentKey) { %}
       <span
@@ -39,5 +47,6 @@
       {% }) %}
       {{ctx.subgroups.join('')}}
     </div>
+    {% } %}
   </div>
 </div>
