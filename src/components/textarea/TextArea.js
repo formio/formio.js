@@ -166,7 +166,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               };
             }
             quill.root.spellcheck = this.component.spellcheck;
-            if (this.options.readOnly || this.component.disabled) {
+            if (this.options.readOnly || this.disabled) {
               quill.disable();
             }
 
@@ -186,7 +186,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               let dataValue = this.dataValue;
               dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
               const value = this.setConvertedValue(dataValue, index);
-              const isReadOnly = this.options.readOnly || this.component.disabled;
+              const isReadOnly = this.options.readOnly || this.disabled;
 
               if (getIEBrowserVersion()) {
                 editor.on('instanceReady', () => {
