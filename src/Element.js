@@ -108,6 +108,20 @@ export default class Element {
   }
 
   /**
+   * Removes the listener that will be fired when any event is emitted.
+   *
+   * @param cb
+   * @returns {this}
+   */
+  offAny(cb) {
+    if (!this.events) {
+      return;
+    }
+
+    return this.events.offAny(cb);
+  }
+
+  /**
    * Removes all listeners for a certain event.
    *
    * @param event
