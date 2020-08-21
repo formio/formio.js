@@ -169,7 +169,9 @@ export default class PDFBuilder extends WebformBuilder {
     // Normal PDF Builder
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
-        iframeDropzone: 'single', 'sidebar-container': 'multiple'
+        iframeDropzone: 'single',
+        'sidebar-container': 'multiple',
+        'sidebar-loader': 'single',
       });
 
       this.afterAttach();
@@ -184,6 +186,11 @@ export default class PDFBuilder extends WebformBuilder {
     this.on('removeComponent', (component) => {
       this.webform.postMessage({ name: 'removeElement', data: component });
     });
+    if (this.refs['sidebar-loader']) {
+      this.webform.on('iframe-ready', () => {
+        this.refs['sidebar-loader'].remove();
+      }, true);
+    }
     this.initIframeEvents();
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
@@ -228,6 +235,7 @@ export default class PDFBuilder extends WebformBuilder {
   createForm(options) {
     // Instantiate the webform from the PDF class instead of Webform
     options.skipInit = false;
+    options.hideLoader = true;
     this.webform = new PDF(this.element, options);
     this.webform.on('attach', () => {
       // If the dropzone exists but has been removed in a PDF rebuild, reinstate it

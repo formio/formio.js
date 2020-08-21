@@ -184,6 +184,10 @@ export default class PDF extends Webform {
       params.push('builder=1');
     }
 
+    if (this.options.hideLoader) {
+      params.push(`hide-loader=${this.options.hideLoader}`);
+    }
+
     if (params.length) {
       iframeSrc += `?${params.join('&')}`;
     }
