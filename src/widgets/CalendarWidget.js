@@ -219,11 +219,19 @@ export default class CalendarWidget extends InputWidget {
   }
 
   addSuffix(suffix) {
-    this.addEventListener(suffix, 'click', () => {
-      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-        this.calendar.open();
+    this.addEventListener(suffix, 'click', (event) => {
+      event.stopPropagation();
+
+      if (this.calendar) {
+        if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+          this.calendar.open();
+        }
+        else if (this.calendar.isOpen) {
+          this.calendar.close();
+        }
       }
     });
+
     return suffix;
   }
 
