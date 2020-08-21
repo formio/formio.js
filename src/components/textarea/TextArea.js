@@ -91,7 +91,7 @@ export default class TextAreaComponent extends TextFieldComponent {
    * @param newValue
    */
   updateEditorValue(index, newValue) {
-    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    newValue = this.getConvertedValue(this.trimBlanks(newValue));
     const dataValue = this.dataValue;
     if (this.component.multiple && Array.isArray(dataValue)) {
       const newArray = _.clone(dataValue);
@@ -166,7 +166,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               };
             }
             quill.root.spellcheck = this.component.spellcheck;
-            if (this.options.readOnly || this.component.disabled) {
+            if (this.options.readOnly || this.disabled) {
               quill.disable();
             }
 
@@ -186,7 +186,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               let dataValue = this.dataValue;
               dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
               const value = this.setConvertedValue(dataValue, index);
-              const isReadOnly = this.options.readOnly || this.component.disabled;
+              const isReadOnly = this.options.readOnly || this.disabled;
 
               if (getIEBrowserVersion()) {
                 editor.on('instanceReady', () => {
@@ -379,7 +379,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.setImagesUrl(images)
         .then( () => {
           value = htmlDoc.getElementsByTagName('body')[0].innerHTML;
-          return new XMLSerializer().serializeToString(value);
+          return value;
         });
     }
     else {
@@ -483,24 +483,26 @@ export default class TextAreaComponent extends TextFieldComponent {
     update();
   }
 
-  removeBlanks(value) {
+  trimBlanks(value) {
     if (!value) {
       return value;
     }
-    const removeBlanks = function(input) {
-      if (typeof input !== 'string') {
-        return input;
-      }
-      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '').trim();
+
+    const trimBlanks = (value) => {
+      const nbsp = '<p>&nbsp;</p>';
+      const br = '<p><br></p>';
+      const brNbsp = '<p><br>&nbsp;</p>';
+      const regExp = new RegExp(`^${nbsp}|${nbsp}$|^${br}|${br}$|^${brNbsp}|${brNbsp}$`, 'g');
+      return typeof value === 'string' ? value.replace(regExp, '').trim() : value;
     };
 
     if (Array.isArray(value)) {
       value.forEach((input, index) => {
-        value[index] = removeBlanks(input);
+        value[index] = trimBlanks(input);
       });
     }
     else {
-      value = removeBlanks(value);
+      value = trimBlanks(value);
     }
     return value;
   }
@@ -512,11 +514,11 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   hasChanged(newValue, oldValue) {
-    return super.hasChanged(this.removeBlanks(newValue), this.removeBlanks(oldValue));
+    return super.hasChanged(this.trimBlanks(newValue), this.trimBlanks(oldValue));
   }
 
   isEmpty(value = this.dataValue) {
-    return super.isEmpty(this.removeBlanks(value));
+    return super.isEmpty(this.trimBlanks(value));
   }
 
   get defaultValue() {

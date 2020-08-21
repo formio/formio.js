@@ -264,6 +264,15 @@ export default [
   {
     type: 'textfield',
     input: true,
+    key: 'idPath',
+    weight: 12,
+    label: 'ID Path',
+    placeholder: 'id',
+    tooltip: 'Path to the select option id.'
+  },
+  {
+    type: 'textfield',
+    input: true,
     label: 'Value Property',
     key: 'valueProperty',
     skipMerge: true,

@@ -217,11 +217,12 @@ export default class SelectComponent extends Field {
    * @param value
    * @param label
    */
-  addOption(value, label, attrs = {}, id) {
+  addOption(value, label, attrs = {}, id = getRandomComponentId()) {
     if (_.isNil(label)) return;
-
+    const idPath = this.component.idPath
+      ? this.component.idPath.split('.').reduceRight((obj, key) => ({ [key]: obj }), id)
+      : {};
     const option = {
-      id: id || getRandomComponentId(),
       value: _.isObject(value) && this.isEntireObjectDisplay()
         ? this.normalizeSingleValue(value)
         : _.isObject(value)
@@ -229,7 +230,8 @@ export default class SelectComponent extends Field {
           : _.isNull(value)
             ? this.emptyValue
             : String(this.normalizeSingleValue(value)),
-      label: label
+      label: label,
+      ...idPath
     };
 
     const skipOption = this.component.uniqueOptions
@@ -351,7 +353,7 @@ export default class SelectComponent extends Field {
       this.downloadedResources = items || [];
       this.selectOptions = [];
       // If there is new select option with same id as already selected, set the new one
-      if (this.dataValue && this.component.idPath) {
+      if (!_.isEmpty(this.dataValue) && this.component.idPath) {
         const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
         const newOptionWithSameId = !_.isNil(selectedOptionId) && items.find(item => {
           const itemId = _.get(item, this.component.idPath);

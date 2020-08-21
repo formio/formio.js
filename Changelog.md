@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.6
+#### Fixed
+ - FJS-1119: added wrapper to alert message unescaping HTML characters
+ - Fixes an issue where images are not appended to the TextArea in some cases
+ - FJS-1137: Fixes an issue where the CKEditor is editable when inside of disabled panel
+ - Fixed an issue where all the blank lines are removed from the text editor
+ - Fix/id path setting for Select Components.
+ - FJS-1172: fixed an issue where date is chosen only after second click in calendar
+ - FJS-1171: fixed calendar opening on suffix click
+
+#### Changed
+ - FJS-1050: added hideLabel option for panel
+
+#### Added
+ - Added an offAny method wich removes the listener that will be fired when any event is emitted
+ - FIN-027: Mechanism to indicate once the PDF has completely Loaded
+
 ### 4.12.0-rc.5
 #### Fixed
  - Issue where Panels were written for Bootstrap 3 instead of 4.
