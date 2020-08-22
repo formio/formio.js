@@ -2453,7 +2453,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission && this.component.persistent === true) {
+    if (flags.fromSubmission && allowOverride && this.component.persistent === true) {
       this.calculatedValue = calculatedValue;
       return false;
     }
