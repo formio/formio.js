@@ -1491,6 +1491,7 @@ export default class SelectComponent extends Field {
 
   focus() {
     if (this.focusableElement) {
+      super.focus.call(this);
       this.focusableElement.focus();
     }
   }
