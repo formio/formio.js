@@ -232,8 +232,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -458,11 +457,12 @@ export default class SelectComponent extends Field {
    * @param value
    * @param label
    */
-  addOption(value, label, attrs = {}, id) {
+  addOption(value, label, attrs = {}, id = getRandomComponentId()) {
     if (_.isNil(label)) return;
-
+    const idPath = this.component.idPath
+      ? this.component.idPath.split(&apos;.&apos;).reduceRight((obj, key) =&gt; ({ [key]: obj }), id)
+      : {};
     const option = {
-      id: id || getRandomComponentId(),
       value: _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
         ? this.normalizeSingleValue(value)
         : _.isObject(value)
@@ -470,7 +470,8 @@ export default class SelectComponent extends Field {
           : _.isNull(value)
             ? this.emptyValue
             : String(this.normalizeSingleValue(value)),
-      label: label
+      label: label,
+      ...idPath
     };
 
     const skipOption = this.component.uniqueOptions
@@ -592,7 +593,7 @@ export default class SelectComponent extends Field {
       this.downloadedResources = items || [];
       this.selectOptions = [];
       // If there is new select option with same id as already selected, set the new one
-      if (this.dataValue &amp;&amp; this.component.idPath) {
+      if (!_.isEmpty(this.dataValue) &amp;&amp; this.component.idPath) {
         const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
         const newOptionWithSameId = !_.isNil(selectedOptionId) &amp;&amp; items.find(item =&gt; {
           const itemId = _.get(item, this.component.idPath);

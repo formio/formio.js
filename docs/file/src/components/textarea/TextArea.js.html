@@ -232,8 +232,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -332,7 +331,7 @@ export default class TextAreaComponent extends TextFieldComponent {
    * @param newValue
    */
   updateEditorValue(index, newValue) {
-    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    newValue = this.getConvertedValue(this.trimBlanks(newValue));
     const dataValue = this.dataValue;
     if (this.component.multiple &amp;&amp; Array.isArray(dataValue)) {
       const newArray = _.clone(dataValue);
@@ -407,7 +406,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               };
             }
             quill.root.spellcheck = this.component.spellcheck;
-            if (this.options.readOnly || this.component.disabled) {
+            if (this.options.readOnly || this.disabled) {
               quill.disable();
             }
 
@@ -427,7 +426,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               let dataValue = this.dataValue;
               dataValue = (this.component.multiple &amp;&amp; Array.isArray(dataValue)) ? dataValue[index] : dataValue;
               const value = this.setConvertedValue(dataValue, index);
-              const isReadOnly = this.options.readOnly || this.component.disabled;
+              const isReadOnly = this.options.readOnly || this.disabled;
 
               if (getIEBrowserVersion()) {
                 editor.on(&apos;instanceReady&apos;, () =&gt; {
@@ -620,7 +619,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.setImagesUrl(images)
         .then( () =&gt; {
           value = htmlDoc.getElementsByTagName(&apos;body&apos;)[0].innerHTML;
-          return new XMLSerializer().serializeToString(value);
+          return value;
         });
     }
     else {
@@ -724,24 +723,26 @@ export default class TextAreaComponent extends TextFieldComponent {
     update();
   }
 
-  removeBlanks(value) {
+  trimBlanks(value) {
     if (!value) {
       return value;
     }
-    const removeBlanks = function(input) {
-      if (typeof input !== &apos;string&apos;) {
-        return input;
-      }
-      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;).trim();
+
+    const trimBlanks = (value) =&gt; {
+      const nbsp = &apos;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&apos;;
+      const br = &apos;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&apos;;
+      const brNbsp = &apos;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&apos;;
+      const regExp = new RegExp(`^${nbsp}|${nbsp}$|^${br}|${br}$|^${brNbsp}|${brNbsp}$`, &apos;g&apos;);
+      return typeof value === &apos;string&apos; ? value.replace(regExp, &apos;&apos;).trim() : value;
     };
 
     if (Array.isArray(value)) {
       value.forEach((input, index) =&gt; {
-        value[index] = removeBlanks(input);
+        value[index] = trimBlanks(input);
       });
     }
     else {
-      value = removeBlanks(value);
+      value = trimBlanks(value);
     }
     return value;
   }
@@ -753,11 +754,11 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   hasChanged(newValue, oldValue) {
-    return super.hasChanged(this.removeBlanks(newValue), this.removeBlanks(oldValue));
+    return super.hasChanged(this.trimBlanks(newValue), this.trimBlanks(oldValue));
   }
 
   isEmpty(value = this.dataValue) {
-    return super.isEmpty(this.removeBlanks(value));
+    return super.isEmpty(this.trimBlanks(value));
   }
 
   get defaultValue() {

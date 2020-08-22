@@ -232,8 +232,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -410,7 +409,9 @@ export default class PDFBuilder extends WebformBuilder {
     // Normal PDF Builder
     return super.attach(element).then(() =&gt; {
       this.loadRefs(this.element, {
-        iframeDropzone: &apos;single&apos;, &apos;sidebar-container&apos;: &apos;multiple&apos;
+        iframeDropzone: &apos;single&apos;,
+        &apos;sidebar-container&apos;: &apos;multiple&apos;,
+        &apos;sidebar-loader&apos;: &apos;single&apos;,
       });
 
       this.afterAttach();
@@ -425,6 +426,11 @@ export default class PDFBuilder extends WebformBuilder {
     this.on(&apos;removeComponent&apos;, (component) =&gt; {
       this.webform.postMessage({ name: &apos;removeElement&apos;, data: component });
     });
+    if (this.refs[&apos;sidebar-loader&apos;]) {
+      this.webform.on(&apos;iframe-ready&apos;, () =&gt; {
+        this.refs[&apos;sidebar-loader&apos;].remove();
+      }, true);
+    }
     this.initIframeEvents();
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
@@ -469,6 +475,7 @@ export default class PDFBuilder extends WebformBuilder {
   createForm(options) {
     // Instantiate the webform from the PDF class instead of Webform
     options.skipInit = false;
+    options.hideLoader = true;
     this.webform = new PDF(this.element, options);
     this.webform.on(&apos;attach&apos;, () =&gt; {
       // If the dropzone exists but has been removed in a PDF rebuild, reinstate it

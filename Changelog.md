@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.7
+#### Fixed
+ - Issue with allowOverride not working correctly.
+
 ### 4.12.0-rc.6
 #### Fixed
  - FJS-1119: added wrapper to alert message unescaping HTML characters
