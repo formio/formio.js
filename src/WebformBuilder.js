@@ -617,6 +617,9 @@ export default class WebformBuilder extends Component {
   }
 
   searchFields(searchString) {
+    if (!this.refs['sidebar-groups']) {
+      return;
+    }
     if (searchString) {
       const filteredComponentsOrder = [];
       for (const type in this.fieldsList.components) {
