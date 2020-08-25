@@ -94,6 +94,11 @@ export default class FormComponent extends Component {
     if (this.component.revision || this.component.revision === 0) {
       this.formSrc += `/v/${this.component.revision}`;
     }
+
+    if (this.component.disabled) {
+      this.options.readOnly = true;
+    }
+
     return this.createSubForm().then(() => {
       setTimeout(() => {
         if (this.root && this.root.subWizards) {
