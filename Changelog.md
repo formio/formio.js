@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.3-rc.3
+#### Fixed
+ - Fixed an issue where components inside DataGrid are not removable and impossible to save their settings
+
 ### 4.11.3-rc.2
 #### Fixed
  - FJS-1172: fixed an issue where date is chosen only after second click in calendar
