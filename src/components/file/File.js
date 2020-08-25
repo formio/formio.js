@@ -633,12 +633,12 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
-          fileService.uploadFile(groupPermissions, groupResourceId, storage, file, fileName, dir, (evt) => {
+          fileService.uploadFile(storage, file, fileName, dir, (evt) => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             this.redraw();
-          }, url, options, fileKey)
+          }, url, options, fileKey, groupPermissions, groupResourceId)
             .then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
