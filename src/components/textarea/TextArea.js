@@ -497,14 +497,14 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   removeBlanks(value) {
-    if (!value) {
+    if (!value || !this.component.wysiwyg) {
       return value;
     }
     const removeBlanks = function(input) {
       if (typeof input !== 'string') {
         return input;
       }
-      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '').trim();
+      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '');
     };
 
     if (Array.isArray(value)) {
