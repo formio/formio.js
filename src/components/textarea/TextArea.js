@@ -484,7 +484,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   trimBlanks(value) {
-    if (!value) {
+    if (!value || !this.component.wysiwyg) {
       return value;
     }
 
@@ -493,7 +493,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       const br = '<p><br></p>';
       const brNbsp = '<p><br>&nbsp;</p>';
       const regExp = new RegExp(`^${nbsp}|${nbsp}$|^${br}|${br}$|^${brNbsp}|${brNbsp}$`, 'g');
-      return typeof value === 'string' ? value.replace(regExp, '').trim() : value;
+      return typeof value === 'string' ? value.replace(regExp, '') : value;
     };
 
     if (Array.isArray(value)) {
