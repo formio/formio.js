@@ -412,6 +412,9 @@ export default class Wizard extends Webform {
 
   addComponents() {
     this.establishPages();
+    if (this.pages && this.pages.length) {
+      this.component = this.pages[this.page].component;
+    }
   }
 
   setPage(num) {
