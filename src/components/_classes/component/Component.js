@@ -495,6 +495,7 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
+    this._visible = this.conditionallyVisible(null, null);
   }
 
   destroy() {
@@ -2927,7 +2928,7 @@ export default class Component extends Element {
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
             }
-            this.redraw();
+            this.rebuild();
           }
         }, true);
       }
