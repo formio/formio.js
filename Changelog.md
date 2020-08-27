@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1063: Unable to see all values of a select field if it is inside a panel inside of a table
  - Fixed an issue where the text areas would delete spaces as you type them.
  - FJS-1187: fixed an issue where today date is not chosen on first click in calendar
+ - Modified has nested field logic in Select.js #3185
+ - FJS-1179: fixes an issue where the Value components is updated when editing the Key Component, disables editing the Key Component
 
 #### Changed
  - Upgrade @babel/core@7.11.4, chance@1.1.7, mocha@8.1.2, i18next@19.7.0
