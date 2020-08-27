@@ -3359,6 +3359,9 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .formio-editor-read-only-content img {
   max-width: 100%; }
 
+.table-responsive[ref=component] {
+  overflow-x: visible; }
+
 .formbuilder {
   position: relative; }
 
@@ -3477,6 +3480,10 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .builder-sidebar_scroll {
   position: sticky;
   top: 15px; }
+
+.builder-sidebar_search {
+  margin-bottom: 10px;
+  appearance: auto; }
 
 .formio-wizard-builder-component-title {
   color: #6c757d;
