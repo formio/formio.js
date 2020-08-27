@@ -1,3 +1,5 @@
+import Templates from './Templates';
+
 const renders = require('../../test/renders');
 const forms = require('../../test/formtest');
 const pretty = require('pretty');
@@ -122,5 +124,29 @@ describe('Rendering Tests', () => {
         });
       });
     });
+  });
+});
+
+describe('Issues', () => {
+  it('has resolved issue #3178', () => {
+    Templates.addTemplate('test', {
+      form: 'test component'
+    });
+
+    Templates.extendTemplate('test', {
+      extend: 'extend',
+    });
+
+    class TestComponent extends Components.components.base {
+      render() {
+        return super.render(this.renderTemplate('test', {}));
+      }
+    }
+
+    const html = new TestComponent().render();
+    const rendered = html.includes('test component');
+
+    assert.equal(Templates.current.test.extend, 'extend');
+    assert.equal(rendered, true);
   });
 });

@@ -10,11 +10,11 @@ export default class Templates {
   }
 
   static addTemplate(name, template) {
-    Templates.templates[name] = template;
+    Templates.current[name] = template;
   }
 
   static extendTemplate(name, template) {
-    Templates.templates[name] = _.merge({}, Templates.templates[name], template);
+    Templates.current[name] = _.merge({}, Templates.current[name], template);
   }
 
   static setTemplate(name, template) {
