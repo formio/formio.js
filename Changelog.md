@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.3
+#### Changed
+ - No changes. Releasing RC3 as official build.
+
 ### 4.11.3-rc.3
 #### Fixed
  - Fixed an issue where components inside DataGrid are not removable and impossible to save their settings
