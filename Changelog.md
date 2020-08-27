@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.10
+#### Fixed
+ - FJS-1179: fixes an issue where the Value components is updated when editing the Key Component, disables editing the Key Component
+ - Modified has nested field logic in Select.js #3185
+
 ### 4.12.0-rc.9
 #### Added
  - FOR-2699: now passing groupId and groupPermissions to file upload
