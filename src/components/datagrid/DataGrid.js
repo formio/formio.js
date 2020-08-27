@@ -402,7 +402,10 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      const component = this.createComponent({ ...col, id: (col.id + rowIndex) }, options, row);
+      if (col.id) {
+        col.id = col.id + rowIndex;
+      }
+      const component = this.createComponent(col, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
@@ -534,6 +537,17 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (_.isNumber(key) && remainingPath.length) {
       const compKey = remainingPath.pop();
       result = this.rows[key][compKey];
+      // If the component is inside a Layout Component, try to find it among all the row's components
+      if (!result) {
+        Object.entries(this.rows[key]).forEach(([, comp]) => {
+          if ('getComponent' in comp) {
+            const possibleResult = comp.getComponent([compKey], fn);
+            if (possibleResult) {
+              result = possibleResult;
+            }
+          }
+        });
+      }
       if (result && _.isFunction(fn)) {
         fn(result, this.getComponents());
       }

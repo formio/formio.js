@@ -351,6 +351,11 @@ export default class PDFBuilder extends WebformBuilder {
     this.addEventListener(this.refs.iframeDropzone, 'drop', this.onDropzoneDrop.bind(this));
   }
 
+  updateDragAndDrop() {
+    this.initDropzoneEvents();
+    this.prepSidebarComponentsForDrag();
+  }
+
   prepSidebarComponentsForDrag() {
     if (!this.refs['sidebar-container']) {
       return;

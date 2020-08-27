@@ -47,6 +47,16 @@ export default class WebformBuilder extends Component {
       }
     }
 
+    this.fieldsList = {
+      title: 'Result fields',
+      key: 'searchFields',
+      weight: 0,
+      subgroups: [],
+      default: true,
+      components: {},
+      componentOrder: []
+    };
+
     this.dragDropEnabled = true;
 
     // Setup the builder options.
@@ -103,6 +113,7 @@ export default class WebformBuilder extends Component {
           }
           info.components[key] = comp === true ? componentInfo[key] : comp;
           info.components[key].key = key;
+          this.fieldsList.components[key] = info.components[key];
         }
       }
     }
@@ -394,6 +405,7 @@ export default class WebformBuilder extends Component {
             }
           }
         );
+        this.fieldsList.components[component.key] = subgroup.components[component.key];
       }, true);
 
       this.groups.resource.subgroups.push(subgroup);
@@ -540,6 +552,8 @@ export default class WebformBuilder extends Component {
       this.loadRefs(element, {
         form: 'single',
         sidebar: 'single',
+        'sidebar-search': 'single',
+        'sidebar-groups': 'single',
         'container': 'multiple',
         'sidebar-anchor': 'multiple',
         'sidebar-group': 'multiple',
@@ -587,6 +601,11 @@ export default class WebformBuilder extends Component {
         });
       }
 
+      this.addEventListener(this.refs['sidebar-search'], 'input', (e) => {
+        const searchString = e.target.value;
+        this.searchFields(searchString);
+      });
+
       if (this.dragDropEnabled) {
         this.initDragula();
       }
@@ -595,6 +614,59 @@ export default class WebformBuilder extends Component {
         return this.webform.attach(this.refs.form);
       }
     });
+  }
+
+  searchFields(searchString) {
+    if (!this.refs['sidebar-groups']) {
+      return;
+    }
+    if (searchString) {
+      const filteredComponentsOrder = [];
+      for (const type in this.fieldsList.components) {
+        const builderInfo = this.fieldsList.components[type];
+        if (builderInfo.title.toLowerCase().indexOf(searchString) !== -1) {
+          filteredComponentsOrder.push(type);
+        }
+      }
+      this.fieldsList.componentOrder = filteredComponentsOrder;
+      this.refs['sidebar-groups'].innerHTML = this.renderTemplate('builderSidebarGroup', {
+        group: this.fieldsList,
+        groupKey: 'searchFields',
+        groupId: `builder-sidebar-${this.id}`,
+        subgroups: []
+      });
+    }
+    else {
+      this.refs['sidebar-groups'].innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+        group: this.groups[groupKey],
+        groupKey,
+        groupId: `builder-sidebar-${this.id}`,
+        subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+          group,
+          groupKey: group.key,
+          groupId: `group-container-${groupKey}`,
+          subgroups: []
+        })),
+      })).join('');
+    }
+
+    this.loadRefs(this.element, {
+      'sidebar-groups': 'single',
+      'sidebar-anchor': 'multiple',
+      'sidebar-group': 'multiple',
+      'sidebar-container': 'multiple',
+    });
+
+    this.updateDragAndDrop();
+  }
+
+  updateDragAndDrop() {
+    if (this.dragDropEnabled) {
+      this.initDragula();
+    }
+    if (this.refs.form) {
+      return this.webform.attach(this.refs.form);
+    }
   }
 
   initDragula() {
@@ -1321,6 +1393,7 @@ export default class WebformBuilder extends Component {
     if (!groupInfo.components.hasOwnProperty(component.key)) {
       groupInfo.components[component.key] = component;
     }
+    this.fieldsList.components[component.key] = component;
     return component;
   }
 
