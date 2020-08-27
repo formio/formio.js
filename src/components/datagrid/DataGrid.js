@@ -537,6 +537,17 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (_.isNumber(key) && remainingPath.length) {
       const compKey = remainingPath.pop();
       result = this.rows[key][compKey];
+      // If the component is inside a Layout Component, try to find it among all the row's components
+      if (!result) {
+        Object.entries(this.rows[key]).forEach(([, comp]) => {
+          if ('getComponent' in comp) {
+            const possibleResult = comp.getComponent([compKey], fn);
+            if (possibleResult) {
+              result = possibleResult;
+            }
+          }
+        });
+      }
       if (result && _.isFunction(fn)) {
         fn(result, this.getComponents());
       }
