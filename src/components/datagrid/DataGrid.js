@@ -38,9 +38,11 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
+
     if (this.initRows) {
       this.createRows(true);
     }
+
     this.visibleColumns = {};
     this.checkColumns();
   }
@@ -60,9 +62,9 @@ export default class DataGridComponent extends NestedArrayComponent {
   get defaultSchema() {
     return DataGridComponent.schema();
   }
-  // Checks if should init the first row (only when no defaultValue and just one row set)
+
   get initRows() {
-    return this.builderMode || !_.isEqual(this.defaultValue, this.emptyValue) || !this.component.noFirstRow;
+    return this.builderMode || this.path === 'defaultValue' || !this.component.initEmpty;
   }
 
   get emptyValue() {
@@ -503,7 +505,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Make sure we always have at least one row.
     // NOTE: Removing this will break "Public Configurations" in portal. ;)
-    if (value && !value.length && !this.component.noFirstRow) {
+    if (value && !value.length && !this.component.initEmpty) {
       value.push({});
     }
 
