@@ -1413,35 +1413,35 @@
     "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 416,
+        "lineNumber": 418,
         "line": "  /**"
       },
       {
-        "lineNumber": 417,
+        "lineNumber": 419,
         "line": "   * Checks the validity of this datagrid."
       },
       {
-        "lineNumber": 418,
+        "lineNumber": 420,
         "line": "   *"
       },
       {
-        "lineNumber": 419,
+        "lineNumber": 421,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 420,
+        "lineNumber": 422,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 421,
+        "lineNumber": 423,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 422,
+        "lineNumber": 424,
         "line": "   */"
       },
       {
-        "lineNumber": 423,
+        "lineNumber": 425,
         "line": "  checkValidity(data, dirty, row, silentCheck) {"
       }
     ],
@@ -1486,7 +1486,7 @@
       },
       {
         "lineNumber": 214,
-        "line": "  addOption(value, label, attrs = {}, id) {"
+        "line": "  addOption(value, label, attrs = {}, id = getRandomComponentId()) {"
       }
     ],
     "codeParams": [
@@ -1505,23 +1505,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 1043,
+        "lineNumber": 1045,
         "line": "  /**"
       },
       {
-        "lineNumber": 1044,
+        "lineNumber": 1046,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 1045,
+        "lineNumber": 1047,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 1046,
+        "lineNumber": 1048,
         "line": "   */"
       },
       {
-        "lineNumber": 1047,
+        "lineNumber": 1049,
         "line": "  addCurrentChoices(values, items, keyValue) {"
       }
     ],

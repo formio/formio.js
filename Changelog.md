@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.11.4-rc.2
+#### Fixed
+ - EditGrid: fix viewing nested submission data issue
+
+#### Added
+ - ID Path to the Select dropdown.
+ - Feat/datagrid initialize empty
+
 ### 4.11.4-rc.1
 #### Fixed
  - Fixed an issue where the text areas would delete spaces as you type them.
