@@ -566,10 +566,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     super.focus();
     switch (this.component.editor) {
       case 'ckeditor': {
-        if (this.editors[0].ui?.focusTracker) {
-          this.editors[0].ui.focusTracker.isFocused = true;
-          this.element.scrollIntoView();
+        if (this.editors[0].editing?.view?.focus) {
+          this.editors[0].editing.view.focus();
         }
+        this.element.scrollIntoView();
         break;
       }
       case 'ace': {
