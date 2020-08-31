@@ -1,8 +1,8 @@
 /*!
- * Bootstrap Reboot v4.5.2 (https://getbootstrap.com/)
+ * Bootstrap Reboot v4.5.0 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
  * Copyright 2011-2020 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md)
  */
 *,
@@ -133,12 +133,12 @@ a:hover {
   text-decoration: underline;
 }
 
-a:not([href]):not([class]) {
+a:not([href]) {
   color: inherit;
   text-decoration: none;
 }
 
-a:not([href]):not([class]):hover {
+a:not([href]):hover {
   color: inherit;
   text-decoration: none;
 }

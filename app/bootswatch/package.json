@@ -1,42 +1,44 @@
 {
-  "_from": "bootswatch@^4.5.1",
-  "_id": "bootswatch@4.5.2",
+  "_args": [
+    [
+      "bootswatch@4.5.0",
+      "C:\\Users\\Asus\\OneDrive\\work\\Formio\\formio.js"
+    ]
+  ],
+  "_development": true,
+  "_from": "bootswatch@4.5.0",
+  "_id": "bootswatch@4.5.0",
   "_inBundle": false,
-  "_integrity": "sha512-Dfco9gxVtBhh8CVXkMjGLm/vNr2xjSK74agSvPVr3rrVhxFuvB/VELaLAqNH8sLeKVWBMNGwHUJS1gT3J2NYDQ==",
+  "_integrity": "sha512-kAfYTTWIsgUOA5nybJNM4yvOpwxm37eIb1DFZlD5jLgPttK+bLJTt9UpKWAoMQZRBQbWfC1O1w1P5PGU7lz83Q==",
   "_location": "/bootswatch",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "bootswatch@^4.5.1",
+    "raw": "bootswatch@4.5.0",
     "name": "bootswatch",
     "escapedName": "bootswatch",
-    "rawSpec": "^4.5.1",
+    "rawSpec": "4.5.0",
     "saveSpec": null,
-    "fetchSpec": "^4.5.1"
+    "fetchSpec": "4.5.0"
   },
   "_requiredBy": [
     "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.5.2.tgz",
-  "_shasum": "da2d7b5cf37b07763e2e86c67bc30256821522a4",
-  "_spec": "bootswatch@^4.5.1",
-  "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
+  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.5.0.tgz",
+  "_spec": "4.5.0",
+  "_where": "C:\\Users\\Asus\\OneDrive\\work\\Formio\\formio.js",
   "author": {
     "name": "Thomas Park"
   },
   "bugs": {
     "url": "https://github.com/thomaspark/bootswatch/issues"
   },
-  "bundleDependencies": false,
-  "dependencies": {
-    "websocket-driver": "^0.7.4"
-  },
-  "deprecated": false,
+  "dependencies": {},
   "description": "Bootswatch is a collection of themes for Bootstrap.",
   "devDependencies": {
     "autoprefixer": "^7.1.2",
-    "bootstrap": "^4.5.2",
+    "bootstrap": "^4.5.0",
     "font-awesome": "~4.7.0",
     "grunt": "^1.0.4",
     "grunt-contrib-clean": "^1.0.0",
@@ -49,7 +51,7 @@
     "grunt-sass": "^3.0.2",
     "jquery": "^3.5.1",
     "node-sass": "^4.14.1",
-    "popper.js": "^1.16.1",
+    "popper.js": "^1.16.0",
     "postcss-cli": "^7.1.1"
   },
   "engines": {
@@ -65,5 +67,5 @@
   "scripts": {
     "postcss": "postcss --no-map --use autoprefixer --config build/js/postcss.js --replace dist/*/bootstrap.css"
   },
-  "version": "4.5.2"
+  "version": "4.5.0"
 }
