@@ -484,7 +484,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   trimBlanks(value) {
-    if (!value || !this.component.wysiwyg) {
+    if (!value || this.isPlain) {
       return value;
     }
 
