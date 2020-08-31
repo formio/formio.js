@@ -616,8 +616,8 @@ export default class FileComponent extends Field {
           let groupPermissions = null;
 
           //Iterate through form components to find group resource if one exists
-          eachComponent(this.currentForm.components, (element) => {
-            if (element.component && (element.component.submissionAccess || element.component.defaultPermission)) {
+          this.root.everyComponent((element) => {
+            if (element.component?.submissionAccess || element.component?.defaultPermission) {
               groupPermissions = !element.component.submissionAccess ? [
                 {
                   type: element.component.defaultPermission,
