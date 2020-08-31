@@ -195,8 +195,7 @@ export default class SelectComponent extends Field {
 
     if (data.data) {
       // checking additional fields in the template for the selected Entire Object option
-      const matchResult = this.component.template.match(/(?<=item\.data.)\w*/g);
-      const hasNestedFields = matchResult && matchResult[0];
+      const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
       data.data = this.isEntireObjectDisplay() && _.isObject(data.data) && !hasNestedFields
         ? JSON.stringify(data.data)
         : data.data;
