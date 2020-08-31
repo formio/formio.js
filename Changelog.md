@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.11
+#### Fixed
+ - Regression: fixes an issue where File is not working inside Wizard
+ - Fix formio.js file not loading in IE
+ - FJS-1144 #3: Fixes an issue where html5 Select does not show value/placeholder after opening EditGrid's row
+ - Fixed an issue where Required Error is not triggered for Quill
+ - FJS-1147: Fixes an issue where CKEditor shows only outline on focus and not set the cursor
+ - FJS-1143: fixes an issue where the Result form is not rendered in the Custom Component example
+
+#### Changed
+ - Upgrade dompurify@2.0.14, mocha@8.1.3, file-loader@6.1.0, webpack-stream@6.0.0
+
 ### 4.12.0-rc.10
 #### Fixed
  - FJS-1179: fixes an issue where the Value components is updated when editing the Key Component, disables editing the Key Component

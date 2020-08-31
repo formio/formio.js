@@ -73,8 +73,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
@@ -432,8 +431,7 @@ export default class SelectComponent extends Field {
 
     if (data.data) {
       // checking additional fields in the template for the selected Entire Object option
-      const matchResult = this.component.template.match(/(?&lt;=item\.data.)\w*/g);
-      const hasNestedFields = matchResult &amp;&amp; matchResult[0];
+      const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
       data.data = this.isEntireObjectDisplay() &amp;&amp; _.isObject(data.data) &amp;&amp; !hasNestedFields
         ? JSON.stringify(data.data)
         : data.data;
@@ -1118,6 +1116,7 @@ export default class SelectComponent extends Field {
 
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate();
+      this.setItems(this.selectOptions || []);
       this.focusableElement = input;
       this.addEventListener(input, &apos;focus&apos;, () =&gt; this.update());
       this.addEventListener(input, &apos;keydown&apos;, (event) =&gt; {

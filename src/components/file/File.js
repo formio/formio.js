@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { eachComponent, uniqueName } from '../../utils/utils';
+import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
