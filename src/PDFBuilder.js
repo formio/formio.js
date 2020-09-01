@@ -261,11 +261,14 @@ export default class PDFBuilder extends WebformBuilder {
   // 888 888     888    "Y888888 888  888  888  "Y8888        "Y8888    Y88P    "Y8888  888  888  "Y888  88888P'
   getParentContainer(component) {
     let container = [];
-    const originalComponent = this.webform._form.components.find(comp => comp.id === component.component.id);
-    if (originalComponent) {
-      container = this.webform._form.components;
-    }
-
+    let originalComponent = null;
+    eachComponent(this.webform._form.components, (comp, path, components) => {
+      if (comp.id === component.component.id) {
+        container = components;
+        originalComponent = comp;
+        return true;
+      }
+    });
     return {
       formioComponent: component.parent,
       formioContainer: container,
