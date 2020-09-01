@@ -235,6 +235,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/button/Button.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
 import { flattenComponents } from &apos;../../utils/utils&apos;;
@@ -627,7 +628,7 @@ export default class ButtonComponent extends Field {
             return;
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
-          let requestPromise = Promise.resolve();
+          let requestPromise = NativePromise.resolve();
           if (_.has(this, &apos;root.form.config.oauth&apos;) &amp;&amp; this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
             params.redirectURI = window.location.origin;

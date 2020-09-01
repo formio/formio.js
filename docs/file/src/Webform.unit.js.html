@@ -263,6 +263,7 @@ import {
   calculatedNotPersistentValue,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
+  propertyActions,
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
@@ -1776,13 +1777,39 @@ describe(&apos;Webform tests&apos;, function() {
         const textarea = form.getComponent([&apos;textArea2&apos;]);
         const panel = form.getComponent([&apos;behavioralIssues&apos;]);
         assert.equal(panel.visible, true, &apos;Should be visible&apos;);
-        console.log({ formData: form._data });
         assert.deepEqual(textarea.dataValue, [&apos;test&apos;], &apos;Should set the value from the submission&apos;);
         const inputRows = textarea.element.querySelectorAll(&apos;[ref=&quot;input&quot;]&apos;);
         assert.equal(inputRows.length, 1, &apos;Should render all the rows of the Textarea&apos;);
         done();
       }, 750);
     }).catch(done);
+  });
+
+  describe(&apos;Custom Logic&apos;, () =&gt; {
+    it(&apos;Should rerender components using updated properties&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(propertyActions).then(() =&gt; {
+        form.emit(&apos;disabled&apos;);
+        form.emit(&apos;hide&apos;);
+        form.emit(&apos;require&apos;);
+        setTimeout(() =&gt; {
+          const textFieldDisabled = form.getComponent([&apos;textField&apos;]);
+          const textFieldHidden = form.getComponent([&apos;textField1&apos;]);
+          const textFieldRequired = form.getComponent([&apos;textField2&apos;]);
+          assert.equal(textFieldDisabled.component.disabled, true, &apos;Should be disabled&apos;);
+          assert.equal(textFieldHidden.component.hidden, true, &apos;Should be hidden&apos;);
+          assert.equal(textFieldRequired.component.validate.required, true, &apos;Should be required&apos;);
+          const disabledInput = textFieldDisabled.element.querySelector(&apos;[ref=&quot;input&quot;]&apos;);
+          assert.equal(disabledInput.disabled, true, &apos;Should found a disabled input&apos;);
+          const hiddenInput = textFieldHidden.element.querySelector(&apos;[ref=&quot;input&quot;]&apos;);
+          assert(!hiddenInput, &apos;Should not found a hidden input&apos;);
+          const requiredFieldLabel = textFieldRequired.element.querySelector(&apos;label&apos;);
+          assert(requiredFieldLabel.classList.contains(&apos;field-required&apos;), &apos;Should mark a field as required&apos;);
+          done();
+        }, 550);
+      }).catch(done);
+    });
   });
 
   each(FormTests, (formTest) =&gt; {
