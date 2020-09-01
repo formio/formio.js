@@ -4,6 +4,7 @@ import assert from 'power-assert';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
 import wizard1 from '../test/forms/wizardValidationOnNextBtn';
 import wizard2 from '../test/forms/wizardWithEditGrid';
+import wizard3 from '../test/forms/wizardWithHiddenPage';
 
 describe('Wizard tests', () => {
   it('Should display editGrid submission data in readOnly mode', (done) => {
@@ -105,5 +106,26 @@ describe('Wizard tests', () => {
       assert.equal(aInput.errors.length, 0);
       done();
     });
+  });
+
+  it('Shouldn\'t display breadcrumb on first step if it set to "Hidden"', (done) => {
+    const formElement = document.createElement('div');
+    const wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizard3).then(() => {
+      setTimeout(() => {
+        assert.equal(wizardForm.element.querySelectorAll(`#${wizardForm.wizardKey}-header`).length, 0);
+        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-next`]);
+        setTimeout(() => {
+          assert.equal(wizardForm.page, 1);
+          assert.equal(wizardForm.element.querySelectorAll(`#${wizardForm.wizardKey}-header`).length, 1);
+          Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
+          setTimeout(() => {
+            assert.equal(wizardForm.element.querySelectorAll(`#${wizardForm.wizardKey}-header`).length, 0);
+            done();
+          });
+        });
+      });
+    })
+    .catch((err) => done(err));
   });
 });
