@@ -27,6 +27,7 @@ const modalEditComponents = require('./modalEditComponents.json');
 const calculatedNotPersistentValue = require('./calculatedNotPersistentValue.json');
 const initiallyCollapsedPanel = require('./initiallyCollapsedPanel.json');
 const multipleTextareaInsideConditionalComponent = require('./multipleTextareaInsideConditionalComponent.json');
+const propertyActions = require('./propertyActions.json');
 
 module.exports = {
   advanced,
@@ -58,4 +59,5 @@ module.exports = {
   calculatedNotPersistentValue,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
+  propertyActions,
 };
