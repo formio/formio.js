@@ -63,8 +63,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     return DataGridComponent.schema();
   }
 
+  get initEmpty() {
+    return this.component.initEmpty || this.component.noFirstRow;
+  }
+
   get initRows() {
-    return this.builderMode || this.path === 'defaultValue' || !this.component.initEmpty;
+    return this.builderMode || this.path === 'defaultValue' || !this.initEmpty;
   }
 
   get emptyValue() {
@@ -505,7 +509,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Make sure we always have at least one row.
     // NOTE: Removing this will break "Public Configurations" in portal. ;)
-    if (value && !value.length && !this.component.initEmpty) {
+    if (value && !value.length && !this.initEmpty) {
       value.push({});
     }
 
