@@ -533,6 +533,23 @@ export default class FormComponent extends Component {
     return changed;
   }
 
+  isEmpty(value = this.dataValue) {
+    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty();
+  }
+
+  areAllComponentsEmpty() {
+    let res = true;
+    if (this.subForm) {
+      this.subForm.everyComponent((comp) => {
+        res &= comp.isEmpty();
+      });
+    }
+    else {
+      res = false;
+    }
+    return res;
+  }
+
   getValue() {
     if (this.subForm) {
       return this.subForm.getValue();

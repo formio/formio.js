@@ -99,6 +99,10 @@ export default class Wizard extends Webform {
     const onReady = super.init();
     this.setComponentSchema();
 
+    if (this.pages && this.pages.length) {
+      this.component = this.pages[this.page].component;
+    }
+
     this.on('subWizardsUpdated', () => {
       if (this.subWizards.length) {
         this.transformPages();

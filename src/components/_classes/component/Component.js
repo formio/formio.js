@@ -495,6 +495,7 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
+    this._visible = this.conditionallyVisible(null, null);
   }
 
   destroy() {
@@ -1112,6 +1113,9 @@ export default class Component extends Element {
 
   checkRefreshOn(changes, flags) {
     changes = changes || [];
+    if (!changes.length && flags?.changed) {
+      changes = [flags.changed];
+    }
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
@@ -2927,7 +2931,7 @@ export default class Component extends Element {
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
             }
-            this.redraw();
+            this.rebuild();
           }
         }, true);
       }

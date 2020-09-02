@@ -195,7 +195,7 @@ export default class SelectComponent extends Field {
 
     if (data.data) {
       // checking additional fields in the template for the selected Entire Object option
-      const hasNestedFields = this.component.template.match(/(?<=item\.data.)\w*/g)[0];
+      const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
       data.data = this.isEntireObjectDisplay() && _.isObject(data.data) && !hasNestedFields
         ? JSON.stringify(data.data)
         : data.data;
@@ -880,6 +880,7 @@ export default class SelectComponent extends Field {
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
+      this.setItems(this.selectOptions || []);
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {

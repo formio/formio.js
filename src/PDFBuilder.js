@@ -268,7 +268,7 @@ export default class PDFBuilder extends WebformBuilder {
         originalComponent = comp;
         return true;
       }
-    });
+    }, true);
     return {
       formioComponent: component.parent,
       formioContainer: container,
@@ -349,6 +349,11 @@ export default class PDFBuilder extends WebformBuilder {
     });
 
     this.addEventListener(this.refs.iframeDropzone, 'drop', this.onDropzoneDrop.bind(this));
+  }
+
+  updateDragAndDrop() {
+    this.initDropzoneEvents();
+    this.prepSidebarComponentsForDrag();
   }
 
   prepSidebarComponentsForDrag() {
