@@ -27,6 +27,7 @@ import {
   calculatedNotPersistentValue,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
+  disabledNestedForm,
   propertyActions,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
@@ -1546,6 +1547,17 @@ describe('Webform tests', function() {
         assert.equal(inputRows.length, 1, 'Should render all the rows of the Textarea');
         done();
       }, 750);
+    }).catch(done);
+  });
+
+  it('Should disable all the components inside Nested Form if it is disabled', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(disabledNestedForm).then(() => {
+      assert.equal(form.components[0].disabled, false, 'Component that is outside of disabled Nested Form should be editable');
+      const subFormComponents = form.components[1].subForm.components;
+      assert.deepEqual([subFormComponents[0].disabled, subFormComponents[1].disabled], [true, true], 'Components that are inside of disabled Nested Form should be disabled');
+      done();
     }).catch(done);
   });
 
