@@ -145,11 +145,11 @@ export default [
     conditional: { json: { var: 'data.enableRowGroups' } }
   },
   {
-    label: 'Do not initially show first row',
+    label: 'Initialize Empty',
     type: 'checkbox',
     input: true,
-    key: 'noFirstRow',
-    tooltip: 'The DataGrid will not have the first row visible when initialized.',
+    key: 'initEmpty',
+    tooltip: 'The DataGrid will have no visible rows when initialized.',
     weight: 450
   }
 ];
