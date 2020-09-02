@@ -1050,6 +1050,13 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
+    const isFocused = this.root?.focusedComponent?.path === this.path;
+    if (isFocused) {
+      this.loadRefs(this.element, { input: 'multiple' });
+      this.focus();
+      this.restoreCaretPosition();
+    }
+
     return NativePromise.resolve();
   }
 
@@ -1458,12 +1465,31 @@ export default class Component extends Element {
     return false;
   }
 
+  saveCaretPosition() {
+    const selection = document.getSelection();
+    this.root.currentSelection = [selection.focusNode, selection.focusOffset];
+  }
+
+  restoreCaretPosition() {
+    if (this.root.currentSelection?.length) {
+      let focusNode = this.root.currentSelection[0];
+      if (focusNode?.getAttribute('ref')) {
+        focusNode = this.refs[focusNode.getAttribute('ref')] || this.element;
+        if (Array.isArray(focusNode)) {
+          focusNode = focusNode[0];
+        }
+      }
+      document.getSelection().collapse(focusNode, this.root.currentSelection[1]);
+    }
+  }
+
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element || !this.element.parentNode) {
       // Return a non-resolving promise.
       return NativePromise.resolve();
     }
+    this.saveCaretPosition();
     this.detach();
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
@@ -2968,7 +2994,8 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode && !this.options.preview) {
+    const hasAutofocus = this.component.autofocus && !this.builderMode && !this.options.preview;
+    if (hasAutofocus) {
       this.on('render', () => this.focus(), true);
     }
   }
