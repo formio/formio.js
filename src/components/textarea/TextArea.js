@@ -548,11 +548,11 @@ export default class TextAreaComponent extends TextFieldComponent {
         editor.destroy();
       }
     });
-    super.detach();
     this.editors = [];
     this.editorsReady = [];
     this.updateSizes.forEach(updateSize => this.removeEventListener(window, 'resize', updateSize));
     this.updateSizes = [];
+    super.detach();
   }
 
   getValue() {
