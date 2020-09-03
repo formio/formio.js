@@ -254,10 +254,14 @@ export default class Wizard extends Webform {
     this.attachNav();
     this.attachHeader();
     return promises.then(() => this.emit('render', { component: this.currentPage, page: this.page })).then(() => {
-      if (this.currentPage?.component?.scrollToTop) {
-        this.refs[this.wizardKey]?.scrollIntoView(true);
-      }
+      this.scrollPageToTop();
     });
+  }
+
+  scrollPageToTop() {
+    if (this.currentPage?.component?.scrollToTop) {
+      this.refs[this.wizardKey]?.scrollIntoView(true);
+    }
   }
 
   isBreadcrumbClickable() {
