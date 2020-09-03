@@ -304,8 +304,6 @@ describe(&apos;Time Component&apos;, () =&gt; {
     const form = new Webform(formElement);
     form.setForm(timeForm2).then(() =&gt; {
       const component = form.components[0];
-      // eslint-disable-next-line no-debugger
-      debugger;
       Harness.setInputValue(component, &apos;data[time]&apos;, &apos;89:19&apos;);
       setTimeout(() =&gt; {
         assert.equal(component.error.message, &apos;Invalid time&apos;, &apos;Should have an error&apos;);

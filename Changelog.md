@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.13
+#### Changed
+ - Fixed DataGrid initialized as empty.
+ - FJS-1136: Fixes an issue where all the components inside a Nested Form are editable when Disabled is checked
+
+#### Added
+ - Adding a redraw event to the renderer.
+ - Add test to ensure wizard conditional pages keep their value during validation.
+
 ### 4.12.0-rc.12
 #### Fixed
  - Use NativePromise instead of Promise so it will not break Angular.

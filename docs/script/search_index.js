@@ -5748,6 +5748,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#initempty",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-initEmpty",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#initEmpty",
+    "member"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#initrows",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-initRows",
     "src/components/datagrid/DataGrid.js~DataGridComponent#initRows",
