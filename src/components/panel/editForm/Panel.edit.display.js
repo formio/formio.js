@@ -123,6 +123,15 @@ export default [
           cancel: true,
           next: true
         },
+      },
+      {
+        weight: 50,
+        label: 'Scroll To Top On Open',
+        type: 'checkbox',
+        key: 'scrollToTop',
+        input: true,
+        inputType: 'checkbox',
+        defaultValue: false,
       }
     ],
     customConditional(context) {
