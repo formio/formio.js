@@ -843,7 +843,6 @@ export default class Component extends Element {
     ];
 
     // Allow template alters.
-    // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`, data);
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),
@@ -1050,14 +1049,18 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
+    this.restoreFocus();
+
+    return NativePromise.resolve();
+  }
+
+  restoreFocus() {
     const isFocused = this.root?.focusedComponent?.path === this.path;
     if (isFocused) {
       this.loadRefs(this.element, { input: 'multiple' });
-      this.focus();
+      this.focus(this.root.currentSelection?.index);
       this.restoreCaretPosition();
     }
-
-    return NativePromise.resolve();
   }
 
   addShortcut(element, shortcut) {
@@ -1465,21 +1468,20 @@ export default class Component extends Element {
     return false;
   }
 
-  saveCaretPosition() {
-    const selection = document.getSelection();
-    this.root.currentSelection = [selection.focusNode, selection.focusOffset];
-  }
-
   restoreCaretPosition() {
-    if (this.root.currentSelection?.length) {
-      let focusNode = this.root.currentSelection[0];
-      if (focusNode?.getAttribute('ref')) {
-        focusNode = this.refs[focusNode.getAttribute('ref')] || this.element;
-        if (Array.isArray(focusNode)) {
-          focusNode = focusNode[0];
+    if (this.root?.currentSelection) {
+      if (this.refs.input?.length) {
+        const { selection, index } = this.root.currentSelection;
+        let input = this.refs.input[index];
+        if (input) {
+          input.setSelectionRange(...selection);
+        }
+        else {
+          input = this.refs.input[this.refs.input.length];
+          const lastCharacter = input.value?.length || 0;
+          input.setSelectionRange(lastCharacter, lastCharacter);
         }
       }
-      document.getSelection().collapse(focusNode, this.root.currentSelection[1]);
     }
   }
 
@@ -1489,7 +1491,6 @@ export default class Component extends Element {
       // Return a non-resolving promise.
       return NativePromise.resolve();
     }
-    this.saveCaretPosition();
     this.detach();
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
@@ -3000,12 +3001,17 @@ export default class Component extends Element {
     }
   }
 
-  focus() {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-    if (this.refs.input && this.refs.input[0]) {
-      this.refs.input[0].focus();
+    if (this.refs.input?.length) {
+      if (typeof index === 'number' && this.refs.input[index]) {
+        this.refs.input[index].focus();
+      }
+      else {
+        this.refs.input[this.refs.input.length - 1].focus();
+      }
     }
     if (this.refs.openModal) {
       this.refs.openModal.focus();
