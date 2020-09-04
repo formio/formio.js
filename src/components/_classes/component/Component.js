@@ -2628,18 +2628,10 @@ export default class Component extends Element {
     this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit) {
-      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
-        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
-      }
       return true;
     }
 
-    // We need to perform a test to see if they provided a default value that is not valid and immediately show
-    // an error if that is the case.
-    let isDirty = !this.builderMode &&
-      !this.options.preview &&
-      !this.isEmpty(this.defaultValue) &&
-      this.isEqual(this.defaultValue, this.dataValue);
+    let isDirty = false;
 
     // We need to set dirty if they explicitly set noValidate to false.
     if (this.options.alwaysDirty || flags.dirty) {
