@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-834: fixes an issue where focus and caret positions are lost after redrawing component
  - FJS-1117: fixed an issue where validation errors are shown for invalid default value on form load
  - FJS-1103: Manually changing the year on the textfield does not save correctly
+ - Fixed regression with custom wizards not moving onto the Thank You page.
 
 ### 4.12.0-rc.13
 #### Changed
