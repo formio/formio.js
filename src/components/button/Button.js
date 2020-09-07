@@ -246,6 +246,7 @@ export default class ButtonComponent extends Field {
     if (element && this.refs.button) {
       this.removeShortcut(this.refs.button);
     }
+    super.detach();
   }
 
   onClick(event) {
