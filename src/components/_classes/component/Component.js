@@ -2628,6 +2628,9 @@ export default class Component extends Element {
     this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit) {
+      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
+        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+      }
       return true;
     }
 
