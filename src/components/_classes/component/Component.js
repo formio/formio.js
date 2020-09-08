@@ -844,7 +844,6 @@ export default class Component extends Element {
     ];
 
     // Allow template alters.
-    // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`, data);
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),
@@ -1051,7 +1050,18 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
+    this.restoreFocus();
+
     return NativePromise.resolve();
+  }
+
+  restoreFocus() {
+    const isFocused = this.root?.focusedComponent?.path === this.path;
+    if (isFocused) {
+      this.loadRefs(this.element, { input: 'multiple' });
+      this.focus(this.root.currentSelection?.index);
+      this.restoreCaretPosition();
+    }
   }
 
   addShortcut(element, shortcut) {
@@ -1460,6 +1470,23 @@ export default class Component extends Element {
       return true;
     }
     return false;
+  }
+
+  restoreCaretPosition() {
+    if (this.root?.currentSelection) {
+      if (this.refs.input?.length) {
+        const { selection, index } = this.root.currentSelection;
+        let input = this.refs.input[index];
+        if (input) {
+          input.setSelectionRange(...selection);
+        }
+        else {
+          input = this.refs.input[this.refs.input.length];
+          const lastCharacter = input.value?.length || 0;
+          input.setSelectionRange(lastCharacter, lastCharacter);
+        }
+      }
+    }
   }
 
   redraw() {
@@ -2638,12 +2665,7 @@ export default class Component extends Element {
       return true;
     }
 
-    // We need to perform a test to see if they provided a default value that is not valid and immediately show
-    // an error if that is the case.
-    let isDirty = !this.builderMode &&
-      !this.options.preview &&
-      !this.isEmpty(this.defaultValue) &&
-      this.isEqual(this.defaultValue, this.dataValue);
+    let isDirty = false;
 
     // We need to set dirty if they explicitly set noValidate to false.
     if (this.options.alwaysDirty || flags.dirty) {
@@ -2977,17 +2999,23 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode && !this.options.preview) {
+    const hasAutofocus = this.component.autofocus && !this.builderMode && !this.options.preview;
+    if (hasAutofocus) {
       this.on('render', () => this.focus(), true);
     }
   }
 
-  focus() {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-    if (this.refs.input && this.refs.input[0]) {
-      this.refs.input[0].focus();
+    if (this.refs.input?.length) {
+      if (typeof index === 'number' && this.refs.input[index]) {
+        this.refs.input[index].focus();
+      }
+      else {
+        this.refs.input[this.refs.input.length - 1].focus();
+      }
     }
     if (this.refs.openModal) {
       this.refs.openModal.focus();

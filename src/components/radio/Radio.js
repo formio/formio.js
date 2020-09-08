@@ -96,6 +96,7 @@ export default class RadioComponent extends Field {
         this.removeShortcut(input, this.component.values[index].shortcut);
       });
     }
+    super.detach();
   }
 
   getValue() {
