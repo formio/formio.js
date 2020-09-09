@@ -1799,6 +1799,8 @@ export default class Component extends Element {
       messages = [messages];
     }
 
+    messages = _.uniqBy(messages, message => message.message);
+
     if (this.refs.messageContainer) {
       this.setContent(this.refs.messageContainer, messages.map((message) =>
         this.renderTemplate('message', message)
