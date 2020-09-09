@@ -9,6 +9,7 @@ import {
   uniqueKey,
   eachComponent
 } from './utils/utils';
+import ComponentModal from './components/_classes/componentModal/ComponentModal';
 
 export default class Wizard extends Webform {
   /**
@@ -145,7 +146,7 @@ export default class Wizard extends Webform {
     return {
       wizardKey: this.wizardKey,
       isBreadcrumbClickable: this.isBreadcrumbClickable(),
-      isSubForm: !!this.parent,
+      isSubForm: !!this.parent && !this.root?.component?.type === 'wizard',
       panels: this.allPages.length ? this.allPages.map(page => page.component) : this.pages.map(page => page.component),
       buttons: this.buttons,
       currentPage: this.page,
@@ -691,6 +692,13 @@ export default class Wizard extends Webform {
     if (currentNextPage !== this.getNextPage()) {
       this.redrawNavigation();
     }
+  }
+
+  redraw() {
+    if (this.parent?.component?.modalEdit) {
+      return this.parent.redraw();
+    }
+    return super.redraw();
   }
 
   checkValidity(data, dirty, row, currentPageOnly) {
