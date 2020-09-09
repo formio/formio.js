@@ -9,7 +9,6 @@ import {
   uniqueKey,
   eachComponent
 } from './utils/utils';
-import ComponentModal from './components/_classes/componentModal/ComponentModal';
 
 export default class Wizard extends Webform {
   /**
