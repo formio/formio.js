@@ -96,6 +96,17 @@ export default [
         }
       },
       {
+        input: true,
+        type: 'checkbox',
+        label: 'Allow Previous',
+        key: 'allowPrevious',
+        defaultValue: false,
+        tooltip: 'Determines if the breadcrumb bar is clickable or not for visited tabs.',
+        conditional: {
+          json: { '===': [{ var: 'data.breadcrumbClickable' }, false] }
+        }
+      },
+      {
         weight: 50,
         label: 'Panel Navigation Buttons',
         optionsLabelPosition: 'right',
