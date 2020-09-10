@@ -150,6 +150,14 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
+      this.on('fileUploadingStart', () => {
+        this.disabled = true;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
+      this.on('fileUploadingEnd', () => {
+        this.disabled = false;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         if (isValid) {
