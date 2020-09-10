@@ -5,6 +5,8 @@ import Input from '../_classes/input/Input';
 import { flattenComponents } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
+  filesUloading = [];
+
   static schema(...extend) {
     return Input.schema({
       type: 'button',
@@ -150,12 +152,17 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
-      this.on('fileUploadingStart', () => {
+      this.on('fileUploadingStart', (filePromise) => {
+        this.filesUloading.push(filePromise);
         this.disabled = true;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
-      this.on('fileUploadingEnd', () => {
-        this.disabled = !this.isDisabledOnInvalid && !this.shouldDisabled ? false : true;
+      this.on('fileUploadingEnd', (filePromise) => {
+        const index = this.filesUloading.findIndex(filePromise);
+        if (index !== -1) {
+          this.filesUloading.splice(index, 1);
+        }
+        this.disabled = !this.isDisabledOnInvalid && !this.shouldDisabled && !this.filesUloading.length ? false : true;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
       onChange = (value, isValid) => {
