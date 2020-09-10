@@ -155,7 +155,7 @@ export default class ButtonComponent extends Field {
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
       this.on('fileUploadingEnd', () => {
-        this.disabled = false;
+        this.disabled = !this.isDisabledOnInvalid && !this.shouldDisabled ? false : true;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
       onChange = (value, isValid) => {
@@ -198,7 +198,8 @@ export default class ButtonComponent extends Field {
         flags.rootValidity = isValid;
       }
       this.loading = false;
-      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
+      this.isDisabledOnInvalid = this.component.disableOnInvalid && !isValid;
+      this.disabled = this.shouldDisabled || (this.isDisabledOnInvalid);
       this.setDisabled(this.refs.button, this.disabled);
 
       if (onChange) {
