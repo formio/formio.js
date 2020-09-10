@@ -1,6 +1,8 @@
 import Harness from '../test/harness';
 import Wizard from './Wizard';
+import Formio from './Formio';
 import assert from 'power-assert';
+import wizardCond from '../test/forms/wizardConditionalPages';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
 import wizard1 from '../test/forms/wizardValidationOnNextBtn';
 import wizard2 from '../test/forms/wizardWithEditGrid';
@@ -10,7 +12,7 @@ describe('Wizard tests', () => {
     const formElement = document.createElement('div');
     const wizardForm = new Wizard(formElement, { readOnly: true });
     wizardForm.setForm(wizard2).then(() => {
-      wizardForm.setValue({ data:{ editGrid:[{ textField: '111' }], number: 222 } });
+      wizardForm.setValue({ data: { editGrid: [{ textField: '111' }], number: 222 } });
       setTimeout(() => {
         assert.equal(wizardForm.element.querySelector('[name="data[number]"]').value, '222');
 
@@ -25,15 +27,15 @@ describe('Wizard tests', () => {
         }, 300);
       }, 100);
     })
-    .catch((err) => done(err));
+      .catch((err) => done(err));
   });
 
   let wizardForm = null;
   it('Should set components errors if they are after page was changed with navigation', (done) => {
-      const formElement = document.createElement('div');
-      wizardForm = new Wizard(formElement);
-      wizardForm.setForm(wizard).then(() => {
-        Harness.testErrors(wizardForm, {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizard).then(() => {
+      Harness.testErrors(wizardForm, {
           data: {
             a: '1',
             c: '',
@@ -44,20 +46,20 @@ describe('Wizard tests', () => {
           component: 'a',
           message: 'a must have at least 4 characters.'
         }], done);
-        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
-        assert.equal(wizardForm.page, 2);
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
+      assert.equal(wizardForm.page, 2);
+      setTimeout(() => {
+        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
+        assert.equal(wizardForm.page, 0);
         setTimeout(() => {
-          Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
-          assert.equal(wizardForm.page, 0);
-          setTimeout(() => {
-            const aInput = wizardForm.currentPage.getComponent('a');
-            assert.equal(aInput.errors.length, 1);
-            assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
-            done();
-          }, 100);
+          const aInput = wizardForm.currentPage.getComponent('a');
+          assert.equal(aInput.errors.length, 1);
+          assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
+          done();
         }, 100);
+      }, 100);
     })
-    .catch((err) => done(err));
+      .catch((err) => done(err));
   });
 
   it('Should leave errors for invalid fields after validation on next button and entering valid data in one of the fields', function(done) {
@@ -82,7 +84,7 @@ describe('Wizard tests', () => {
         }, 250);
       }, 250);
     })
-    .catch((err) => done(err));
+      .catch((err) => done(err));
   });
 
   it('Should not set components errors if in readOnly mode', (done) => {
@@ -105,5 +107,44 @@ describe('Wizard tests', () => {
       assert.equal(aInput.errors.length, 0);
       done();
     });
+  });
+
+  it('Should keep values during validation that are conditionally visible', async() => {
+    const submission = {
+      data: {
+        a: true,
+        b: 'b',
+        c: 'c'
+      }
+    };
+
+    const form = await Formio.createForm(wizardCond, {});
+
+    form.validator.config = {
+      db: {},
+      token: '',
+      form: wizardCond,
+      submission: submission
+    };
+
+    // Set the submission data
+    form.data = submission.data;
+
+    // Perform calculations and conditions.
+    form.calculateValue();
+    form.checkConditions();
+
+    // Reset the data
+    form.data = {};
+
+    form.setValue(submission, {
+      sanitize: true
+    });
+
+    // Check the validity of the form.
+    const valid = await form.checkAsyncValidity(null, true);
+
+    assert(valid, 'Should be valid');
+    assert.equal(form.data.c, 'c', 'Should keep the value of a conditionally visible page.');
   });
 });

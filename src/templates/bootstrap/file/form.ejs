@@ -94,6 +94,8 @@
               <span class="sr-only">{{status.progress}}% {{ctx.t('Complete')}}</span>
             </div>
           </div>
+        {% } else if (status.status === 'error') { %}
+          <div class="alert alert-danger bg-{{status.status}}">{{ctx.t(status.message)}}</div>
         {% } else { %}
           <div class="bg-{{status.status}}">{{ctx.t(status.message)}}</div>
         {% } %}

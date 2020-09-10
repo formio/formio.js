@@ -1,6 +1,7 @@
 import Multivalue from '../multivalue/Multivalue';
 import { delay, convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -35,6 +36,10 @@ export default class Input extends Multivalue {
 
     if (this.disabled) {
       attr.disabled = 'disabled';
+    }
+
+    if (this.component.autocomplete) {
+      attr.autocomplete = this.component.autocomplete;
     }
 
     _.defaults(attr, this.component.attributes);
@@ -226,9 +231,10 @@ export default class Input extends Multivalue {
       element.widget.destroy();
     }
     // Attach the widget.
+    let promise = NativePromise.resolve();
     element.widget = this.createWidget(index);
     if (element.widget) {
-      element.widget.attach(element);
+      promise = element.widget.attach(element);
       if (this.refs.prefix && this.refs.prefix[index]) {
         element.widget.addPrefix(this.refs.prefix[index]);
       }
@@ -250,6 +256,7 @@ export default class Input extends Multivalue {
         }
       });
     }
+    return promise;
   }
 
   /**

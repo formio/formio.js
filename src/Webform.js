@@ -12,7 +12,9 @@ import NestedDataComponent from './components/_classes/nesteddata/NestedDataComp
 import {
   fastCloneDeep,
   currentTimezone,
-  getStringFromComponentPath
+  unescapeHTML,
+  getStringFromComponentPath,
+  searchComponents,
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -642,6 +644,18 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   setForm(form, flags) {
+    try {
+      // Do not set the form again if it has been already set
+      if (JSON.stringify(this._form) === JSON.stringify(form)) {
+        return NativePromise.resolve();
+      }
+    }
+    catch (err) {
+      console.warn(err);
+      // If provided form is not a valid JSON object, do not set it too
+      return NativePromise.resolve();
+    }
+
     // Create the form.
     this._form = form;
 
@@ -796,6 +810,7 @@ export default class Webform extends NestedDataComponent {
     draft.state = 'draft';
 
     if (!this.savingDraft) {
+      this.emit('saveDraftBegin');
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
         // Set id to submission to avoid creating new draft submission
@@ -1231,7 +1246,7 @@ export default class Webform extends NestedDataComponent {
           const mainMessage = this.ce('span');
           const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
 
-          this.setContent(mainMessage, this.t(message));
+          this.setContent(mainMessage, unescapeHTML(message));
           this.setContent(helpMessage, this.t('errorListHelpMessage'));
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
@@ -1251,7 +1266,7 @@ export default class Webform extends NestedDataComponent {
           const { component } = err;
           err.messages.forEach(({ message }, index) => {
             const additionalPeriod = message.charAt(message.length - 1) === '.' ? '' : '.';
-            const text = this.t('alertMessage', { label: component.label, message: `${message}${additionalPeriod}` });
+            const text = this.t('alertMessage', { label: this.t(component.label), message: `${message}${additionalPeriod}` });
             createListItem(text, index);
           });
         }
@@ -1589,12 +1604,12 @@ export default class Webform extends NestedDataComponent {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = this.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
-        component.component.eventType === 'formLoad';
+    const recaptchaComponent = searchComponents(this.components, {
+      'component.type': 'recaptcha',
+      'component.eventType': 'formLoad'
     });
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    if (recaptchaComponent.length > 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
 

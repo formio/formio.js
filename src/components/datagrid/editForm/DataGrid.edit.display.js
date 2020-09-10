@@ -143,4 +143,13 @@ export default [
     key: 'groupToggle',
     weight: 442,
     conditional: { json: { var: 'data.enableRowGroups' } }
-  }];
+  },
+  {
+    label: 'Initialize Empty',
+    type: 'checkbox',
+    input: true,
+    key: 'initEmpty',
+    tooltip: 'The DataGrid will have no visible rows when initialized.',
+    weight: 450
+  }
+];

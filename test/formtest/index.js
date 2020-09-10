@@ -23,6 +23,12 @@ const columnsForm = require('./columnsForm.json');
 const calculateZeroValue = require('./calculateZeroValue.json');
 const formWithEditGridModalDrafts = require('./editGridModalDraftsTest.json');
 const formWithBlurValidationInsidePanel = require('./blurValidationInsidePanel.json');
+const modalEditComponents = require('./modalEditComponents.json');
+const calculatedNotPersistentValue = require('./calculatedNotPersistentValue.json');
+const initiallyCollapsedPanel = require('./initiallyCollapsedPanel.json');
+const multipleTextareaInsideConditionalComponent = require('./multipleTextareaInsideConditionalComponent.json');
+const disabledNestedForm = require('./disabledNestedForm.json');
+const propertyActions = require('./propertyActions.json');
 
 module.exports = {
   advanced,
@@ -49,5 +55,11 @@ module.exports = {
   formWithCalculatedValueWithoutOverriding,
   formWithTimeComponent,
   formWithEditGridModalDrafts,
-  formWithBlurValidationInsidePanel
+  formWithBlurValidationInsidePanel,
+  modalEditComponents,
+  calculatedNotPersistentValue,
+  initiallyCollapsedPanel,
+  multipleTextareaInsideConditionalComponent,
+  disabledNestedForm,
+  propertyActions,
 };
