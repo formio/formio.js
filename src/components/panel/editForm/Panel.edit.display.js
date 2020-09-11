@@ -123,16 +123,6 @@ export default [
           cancel: true,
           next: true
         },
-      },
-      {
-        weight: 50,
-        label: 'Scroll to the top when open',
-        type: 'checkbox',
-        key: 'scrollToTop',
-        input: true,
-        inputType: 'checkbox',
-        defaultValue: false,
-        tooltip: 'Scroll to the top of the page when user navigates to it'
       }
     ],
     customConditional(context) {

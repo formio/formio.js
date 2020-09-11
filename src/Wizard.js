@@ -259,9 +259,7 @@ export default class Wizard extends Webform {
   }
 
   scrollPageToTop() {
-    if (this.currentPage?.component?.scrollToTop) {
-      this.refs[this.wizardKey]?.scrollIntoView(true);
-    }
+    this.refs[this.wizardKey]?.scrollIntoView(true);
   }
 
   isBreadcrumbClickable() {
