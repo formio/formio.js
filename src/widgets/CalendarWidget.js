@@ -163,7 +163,7 @@ export default class CalendarWidget extends InputWidget {
 
             if (this._input) {
               // Create a new flatpickr.
-              this.calendar = new Flatpickr(this._input, this.settings);
+              this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
               this.calendar.altInput.addEventListener('input', (event) => {
                 if (this.settings.allowInput) {
                   this.settings.manualInputValue = event.target.value;
