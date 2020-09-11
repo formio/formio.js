@@ -1192,10 +1192,11 @@ export default class Webform extends NestedDataComponent {
             'aria-label': `${message}. Click to navigate to the field with following error.`
           };
           const li = this.ce('li', params);
-          const p = this.ce('p');
+          const span = this.ce('span');
+          li.style='cursor:pointer';
 
-          this.setContent(p, unescapeHTML(message));
-          this.appendTo(p, li);
+          this.setContent(span, unescapeHTML(message));
+          this.appendTo(span, li);
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
