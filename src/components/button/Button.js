@@ -5,7 +5,7 @@ import Input from '../_classes/input/Input';
 import { flattenComponents } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
-  filesUloading = [];
+  filesUploading = [];
 
   static schema(...extend) {
     return Input.schema({
@@ -154,15 +154,15 @@ export default class ButtonComponent extends Field {
       }, true);
 
       this.on('fileUploadingStart', (filePromise) => {
-        this.filesUloading.push(filePromise);
+        this.filesUploading.push(filePromise);
         this.disabled = true;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
 
       this.on('fileUploadingEnd', (filePromise) => {
-        const index = this.filesUloading.indexOf(filePromise);
+        const index = this.filesUploading.indexOf(filePromise);
         if (index !== -1) {
-          this.filesUloading.splice(index, 1);
+          this.filesUploading.splice(index, 1);
         }
         this.disabled = this.shouldDisabled ? true : false;
         this.setDisabled(this.refs.button, this.disabled);
@@ -249,7 +249,7 @@ export default class ButtonComponent extends Field {
   }
 
   get shouldDisabled() {
-    return super.shouldDisabled || !!this.filesUloading.length || this.isDisabledOnInvalid;
+    return super.shouldDisabled || !!this.filesUploading.length || this.isDisabledOnInvalid;
   }
 
   attach(element) {
