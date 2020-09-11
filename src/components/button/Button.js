@@ -5,8 +5,6 @@ import Input from '../_classes/input/Input';
 import { flattenComponents } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
-  filesUploading = [];
-
   static schema(...extend) {
     return Input.schema({
       type: 'button',
@@ -33,6 +31,11 @@ export default class ButtonComponent extends Field {
       weight: 110,
       schema: ButtonComponent.schema()
     };
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.filesUploading = [];
   }
 
   get defaultSchema() {
@@ -249,7 +252,7 @@ export default class ButtonComponent extends Field {
   }
 
   get shouldDisabled() {
-    return super.shouldDisabled || !!this.filesUploading.length || this.isDisabledOnInvalid;
+    return super.shouldDisabled || !!this.filesUploading?.length || this.isDisabledOnInvalid;
   }
 
   attach(element) {
