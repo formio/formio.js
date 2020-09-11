@@ -7,7 +7,6 @@ import wizard from '../test/forms/wizardValidationOnPageChanged';
 import wizard1 from '../test/forms/wizardValidationOnNextBtn';
 import wizard2 from '../test/forms/wizardWithEditGrid';
 import wizardWithHighPages from '../test/forms/wizardWithHighPages';
-import 'scroll-behavior-polyfill';
 
 describe('Wizard tests', () => {
   it('Should display editGrid submission data in readOnly mode', (done) => {
@@ -156,7 +155,7 @@ describe('Wizard tests', () => {
     wizardForm = new Wizard(formElement);
     wizardForm.setForm(wizardWithHighPages)
     .then(() => {
-      wizardForm.refs[`${wizardForm.wizardKey}-next`].scrollIntoView(true);
+      wizardForm.scrollIntoView(wizardForm.refs[`${wizardForm.wizardKey}-next`]);
       wizardForm.setPage(1);
       setTimeout(() => {
         assert.equal(wizardForm.refs[wizardForm.wizardKey].scrollTop, 0, 'The top edge of the page should be aligned to the top edge of the window');
