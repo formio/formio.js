@@ -50,6 +50,13 @@ export default class Element {
     });
 
     this.defaultMask = null;
+
+    /**
+     * Conditional to show or hide helplinks in editForm
+     *
+     * @type {*|boolean}
+     */
+    this.helplinks = this.options.helplinks || true;
   }
 
   /**
