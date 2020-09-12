@@ -48,7 +48,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: 'http://help.form.io/userguide/#file',
+      documentation: '/userguide/#file',
       weight: 100,
       schema: FileComponent.schema(),
     };

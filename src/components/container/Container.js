@@ -22,7 +22,7 @@ export default class ContainerComponent extends NestedDataComponent {
       title: 'Container',
       icon: 'folder-open',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#container',
+      documentation: '/userguide/#container',
       weight: 10,
       schema: ContainerComponent.schema()
     };

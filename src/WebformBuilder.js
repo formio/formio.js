@@ -1234,7 +1234,7 @@ export default class WebformBuilder extends Component {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
-      helplinks: this.options.helplinks,
+      helplinks: this.helplinks,
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));

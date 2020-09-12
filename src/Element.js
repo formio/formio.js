@@ -56,7 +56,7 @@ export default class Element {
      *
      * @type {*|boolean}
      */
-    this.helplinks = this.options.helplinks || true;
+    this.helplinks = this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
   }
 
   /**

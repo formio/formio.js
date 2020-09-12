@@ -22,7 +22,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       title: 'Data Grid',
       icon: 'th',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#datagrid',
+      documentation: '/userguide/#datagrid',
       weight: 30,
       schema: DataGridComponent.schema()
     };
