@@ -144,6 +144,10 @@ export default class DateTimeComponent extends Input {
     return '';
   }
 
+  get momentFormat() {
+    return FormioUtils.convertFormatToMoment(this.component.format);
+  }
+
   isEmpty(value = this.dataValue) {
     if (value && (value.toString() === 'Invalid Date')) {
       return true;
@@ -157,9 +161,8 @@ export default class DateTimeComponent extends Input {
   }
 
   isEqual(valueA, valueB = this.dataValue) {
-    const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
-      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);
+      || moment.utc(valueA).format(this.momentFormat) === moment.utc(valueB).format(this.momentFormat);
   }
 
   createWrapper() {
@@ -184,5 +187,10 @@ export default class DateTimeComponent extends Input {
         sibling.focus();
       }
     }
+  }
+
+
+  getValueAsString(value) {
+    return (value ? moment(value).format(this.momentFormat) : value) || '';
   }
 }
