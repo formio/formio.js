@@ -6,8 +6,35 @@ import wizardCond from '../test/forms/wizardConditionalPages';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
 import wizard1 from '../test/forms/wizardValidationOnNextBtn';
 import wizard2 from '../test/forms/wizardWithEditGrid';
+import wizard3 from '../test/forms/conditionalWizardPages';
 
 describe('Wizard tests', () => {
+  it('Should show conditional wizard page', function(done) {
+    const formElement = document.createElement('div');
+    const wizardWithConditionalPage = new Wizard(formElement);
+
+    wizardWithConditionalPage.setForm(wizard3).then(() => {
+      setTimeout(() => {
+        assert.equal(wizardWithConditionalPage.pages.length, 1);
+        assert.equal(wizardWithConditionalPage.components.length, 1);
+
+        const inputEvent = new Event('input');
+        const numberComponent = wizardWithConditionalPage.element.querySelector('[name="data[number]"]');
+
+        numberComponent.value = 5;
+        numberComponent.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(wizardWithConditionalPage.pages.length, 2);
+          assert.equal(wizardWithConditionalPage.components.length, 2);
+
+          done();
+        }, 300);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should display editGrid submission data in readOnly mode', (done) => {
     const formElement = document.createElement('div');
     const wizardForm = new Wizard(formElement, { readOnly: true });
