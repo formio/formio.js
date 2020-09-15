@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
 import NativePromise from 'native-promise-only';
+import Formio from './../../Formio';
 
 import {
   comp1,
@@ -127,6 +128,39 @@ describe('TextField Component', () => {
         Harness.testValid(component, 'Tom')
       ];
     });
+  });
+
+  it('Should provide one custom error message', (done) => {
+    const formJson =  {
+      components: [{
+          label: 'Text Field',
+          tableView: true,
+          validate: {
+            pattern: '^[0-9]*$]',
+            customMessage: 'Custom Error Message',
+            minWords: 10
+          },
+          key: 'textField',
+          type: 'textfield',
+          input: true
+       }]
+    };
+    const element = document.createElement('div');
+    Formio.createForm(element, formJson)
+      .then(form => {
+        form.submission = {
+          data: {
+            textField: 'textField'
+          }
+        };
+        const textField = form.getComponent('textField');
+        setTimeout(() => {
+          assert.equal(textField.refs.messageContainer.children.length, 1);
+          assert.equal(textField.refs.messageContainer.children[0].innerHTML, 'Custom Error Message');
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 
   it('Should provide json validation', () => {
