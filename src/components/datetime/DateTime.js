@@ -184,8 +184,7 @@ export default class DateTimeComponent extends Input {
     }
   }
 
-
   getValueAsString(value) {
-    return (value ? moment(value).format(this.momentFormat) : value) || '';
+    return value ? this.widget?.getValueAsString(value) : '';
   }
 }
