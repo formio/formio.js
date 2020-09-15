@@ -81,6 +81,10 @@ export default class DayComponent extends Field {
     return DayComponent.schema();
   }
 
+  get shouldDisabled() {
+    return super.shouldDisabled || this.parentDisabled;
+  }
+
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -289,6 +293,8 @@ export default class DayComponent extends Field {
       }));
     }
     this.setValue(this.dataValue);
+    // Force the disabled state with getters and setters.
+    this.disabled = this.shouldDisabled;
     return superAttach;
   }
 
