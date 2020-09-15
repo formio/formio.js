@@ -2,14 +2,14 @@ import NativePromise from 'native-promise-only';
 import XHR from './xhr';
 const s3 = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
-    return XHR.upload(formio, "s3", (xhr, response) => {
+    return XHR.upload(formio, 's3', (xhr, response) => {
       response.data.fileName = fileName;
       response.data.key = XHR.path([response.data.key, dir, fileName]);
       const setXhrHeaders = (xhrToSet) => {
         const { headers } = formio.options;
         if (headers) {
           const ValidHeaders = {
-            "Content-Disposition": true,
+            'Content-Disposition': true,
           }
           for (const header in headers) {
             if (ValidHeaders[header]) {
@@ -19,8 +19,8 @@ const s3 = (formio) => ({
         }
       }
       if (response.signed) {
-        xhr.open("PUT", response.signed);
-        xhr.setRequestHeader("Content-Type", file.type);
+        xhr.open('PUT', response.signed);
+        xhr.setRequestHeader('Content-Type', file.type);
         setXhrHeaders(xhr);
         return file;
       } else {
@@ -28,14 +28,14 @@ const s3 = (formio) => ({
         for (const key in response.data) {
           fd.append(key, response.data[key]);
         }
-        fd.append("file", file);
-        xhr.open("POST", response.url);
+        fd.append('file', file);
+        xhr.open('POST', response.url);
         setXhrHeaders(xhr);
         return fd;
       }
     }, file, fileName, dir, progressCallback, groupPermissions, groupId).then((response) => {
       return {
-        storage: "s3",
+        storage: 's3',
         name: fileName,
         bucket: response.bucket,
         key: response.data.key,
@@ -47,8 +47,8 @@ const s3 = (formio) => ({
     });
   },
   downloadFile(file) {
-    if (file.acl !== "public-read") {
-      return formio.makeRequest("file", `${formio.formUrl}/storage/s3?bucket=${XHR.trim(file.bucket)}&key=${XHR.trim(file.key)}`, "GET");
+    if (file.acl !== 'public-read') {
+      return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${XHR.trim(file.bucket)}&key=${XHR.trim(file.key)}`, 'GET');
     } else {
       return NativePromise.resolve(file);
     }
