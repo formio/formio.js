@@ -19,12 +19,12 @@ describe('DateTime Component', () => {
       const formattedValue = '2020-09-22';
       const input = dateTime.element.querySelector('[ref="input"]');
       assert.equal(input.getAttribute('placeholder'), dateTime.component.format, 'Placeholder should be equal to the format');
-      input.widget.setValue(value);
+      dateTime.setValue(value);
       setTimeout(() => {
         assert.equal(input.value, formattedValue, 'Value should be formatted');
         assert.equal(dateTime.getValueAsString(value), formattedValue, 'getValueAsString should return formatted value');
         done();
-      }, 100);
+      }, 250);
       done();
     }).catch(done);
   });

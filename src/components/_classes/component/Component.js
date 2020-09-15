@@ -11,6 +11,7 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
+import Widgets from '../../../widgets';
 
 const isIEBrowser = FormioUtils.getIEBrowserVersion();
 const CKEDITOR_URL = isIEBrowser
@@ -884,6 +885,11 @@ export default class Component extends Element {
     return input;
   }
 
+  get widget() {
+    const widget = this.component.widget && Widgets[this.component.widget.type] ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    return widget;
+  }
+
   getBrowserLanguage() {
     const nav = window.navigator;
     const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
@@ -1213,7 +1219,12 @@ export default class Component extends Element {
   getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
-      return value;
+      if (!this.widget) {
+        return value;
+      }
+      else {
+        return this.widget.getValueAsString(value);
+      }
     }
     if (Array.isArray(value)) {
       const values = [];
