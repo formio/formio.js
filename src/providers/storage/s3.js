@@ -23,8 +23,9 @@ const s3 = (formio) => ({
         xhr.setRequestHeader('Content-Type', file.type);
         setXhrHeaders(xhr);
         return file;
-      } else {
-        const fd = new FormData()
+      }
+      else {
+        const fd = new FormData();
         for (const key in response.data) {
           fd.append(key, response.data[key]);
         }
@@ -49,7 +50,8 @@ const s3 = (formio) => ({
   downloadFile(file) {
     if (file.acl !== 'public-read') {
       return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${XHR.trim(file.bucket)}&key=${XHR.trim(file.key)}`, 'GET');
-    } else {
+    }
+    else {
       return NativePromise.resolve(file);
     }
   }
