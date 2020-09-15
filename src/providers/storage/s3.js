@@ -3,38 +3,35 @@ import XHR from './xhr';
 const s3 = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
     return XHR.upload(formio, "s3", (xhr, response) => {
-      response.data.fileName = fileName
-      response.data.key = XHR.path([response.data.key, dir, fileName])
+      response.data.fileName = fileName;
+      response.data.key = XHR.path([response.data.key, dir, fileName]);
       const setXhrHeaders = (xhrToSet) => {
-        const { headers } = formio.options
+        const { headers } = formio.options;
         if (headers) {
           const ValidHeaders = {
             "Content-Disposition": true,
           }
           for (const header in headers) {
             if (ValidHeaders[header]) {
-              xhrToSet.setRequestHeader(
-                header,
-                headers[header]
-              )
+              xhrToSet.setRequestHeader(header, headers[header]);
             }
           }
         }
       }
       if (response.signed) {
-        xhr.open("PUT", response.signed)
-        xhr.setRequestHeader("Content-Type", file.type)
-        setXhrHeaders(xhr)
-        return file
+        xhr.open("PUT", response.signed);
+        xhr.setRequestHeader("Content-Type", file.type);
+        setXhrHeaders(xhr);
+        return file;
       } else {
         const fd = new FormData()
         for (const key in response.data) {
-          fd.append(key, response.data[key])
+          fd.append(key, response.data[key]);
         }
-        fd.append("file", file)
-        xhr.open("POST", response.url)
-        setXhrHeaders(xhr)
-        return fd
+        fd.append("file", file);
+        xhr.open("POST", response.url);
+        setXhrHeaders(xhr);
+        return fd;
       }
     }, file, fileName, dir, progressCallback, groupPermissions, groupId).then((response) => {
       return {
@@ -46,8 +43,8 @@ const s3 = (formio) => ({
         acl: response.data.acl,
         size: file.size,
         type: file.type
-      }
-    })
+      };
+    });
   },
   downloadFile(file) {
     if (file.acl !== "public-read") {
@@ -56,7 +53,7 @@ const s3 = (formio) => ({
       return NativePromise.resolve(file);
     }
   }
-})
+});
 
-s3.title = "S3"
-export default s3
+s3.title = 'S3';
+export default s3;
