@@ -533,14 +533,14 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty();
+    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty(value.data);
   }
 
-  areAllComponentsEmpty() {
+  areAllComponentsEmpty(data) {
     let res = true;
     if (this.subForm) {
       this.subForm.everyComponent((comp) => {
-        res &= comp.isEmpty();
+        res &= comp.isEmpty(_.get(data, comp.key) || comp.dataValue);
       });
     }
     else {
