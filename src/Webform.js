@@ -1050,9 +1050,9 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
-   * @param {string} classes - Styling classes for alert.
+   * @param {string} options
    */
-  setAlert(type, message, classes) {
+  setAlert(type, message, options) {
     const hotkeyListener = (e) => {
       const { keyCode, key, ctrlKey, altKey } = e;
         if ((key === 'x' || keyCode === 88) && ctrlKey && altKey) {
@@ -1100,7 +1100,7 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: classes || `alert alert-${type}`,
+        class: (options && options.classes) || `alert alert-${type}`,
         id: `error-list-${this.id}`,
       });
       if (message instanceof HTMLElement) {
@@ -1116,19 +1116,21 @@ export default class Webform extends NestedDataComponent {
 
     this.loadRefs(this.alert, { errorRef: 'multiple', errorTooltip: 'single' });
 
-    if (this.refs && this.refs.errorTooltip) {
-      const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
-      this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: title,
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
+    if (!(options && !options.tooltipRender)) {
+      if (this.refs && this.refs.errorTooltip) {
+        const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
+        this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
+          trigger: 'hover click focus',
+          placement: 'right',
+          html: true,
+          title: title,
+          template: `
+            <div class="tooltip" style="opacity: 1;" role="tooltip">
+              <div class="tooltip-arrow"></div>
+              <div class="tooltip-inner"></div>
+            </div>`,
+        });
+      }
     }
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
