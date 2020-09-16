@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.14
+#### Fixed
+ - Nested: fix panel collapse validation triggered with dirty=false
+ - FJS-834: fixes an issue where focus and caret positions are lost after redrawing component
+ - FJS-1117: fixed an issue where validation errors are shown for invalid default value on form load
+ - FJS-1103: Manually changing the year on the textfield does not save correctly
+ - Fixed regression with custom wizards not moving onto the Thank You page.
+
+### 4.12.0-rc.13
+#### Changed
+ - Fixed DataGrid initialized as empty.
+ - FJS-1136: Fixes an issue where all the components inside a Nested Form are editable when Disabled is checked
+
+#### Added
+ - Adding a redraw event to the renderer.
+ - Add test to ensure wizard conditional pages keep their value during validation.
+
+### 4.12.0-rc.12
+#### Fixed
+ - Use NativePromise instead of Promise so it will not break Angular.
+ - FJS-1165, FJS-1184: Fixes an issue where default value is not set correctly to the Nested Form
+ - FJS-1131: Wizard Breadcrumb visible on first step even though set to "Hidden"
+ - FJS-1180: fixes an issue where the component is not disabled/hidden through Property Action
+ - PDF-128: Fix html element excluding from callback
+
 ### 4.12.0-rc.11
 #### Fixed
  - Regression: fixes an issue where File is not working inside Wizard

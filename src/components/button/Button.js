@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
 import { flattenComponents } from '../../utils/utils';
@@ -245,6 +246,7 @@ export default class ButtonComponent extends Field {
     if (element && this.refs.button) {
       this.removeShortcut(this.refs.button);
     }
+    super.detach();
   }
 
   onClick(event) {
@@ -391,7 +393,7 @@ export default class ButtonComponent extends Field {
             return;
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
-          let requestPromise = Promise.resolve();
+          let requestPromise = NativePromise.resolve();
           if (_.has(this, 'root.form.config.oauth') && this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
             params.redirectURI = window.location.origin;

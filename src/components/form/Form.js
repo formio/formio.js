@@ -94,6 +94,7 @@ export default class FormComponent extends Component {
     if (this.component.revision || this.component.revision === 0) {
       this.formSrc += `/v/${this.component.revision}`;
     }
+
     return this.createSubForm().then(() => {
       setTimeout(() => {
         if (this.root && this.root.subWizards) {
@@ -152,8 +153,8 @@ export default class FormComponent extends Component {
     if (this.options.project) {
       options.project = this.options.project;
     }
-    if (this.options.readOnly) {
-      options.readOnly = this.options.readOnly;
+    if (this.options.readOnly || this.component.disabled) {
+      options.readOnly = this.options.readOnly || this.component.disabled;
     }
     if (this.options.breadcrumbSettings) {
       options.breadcrumbSettings = this.options.breadcrumbSettings;

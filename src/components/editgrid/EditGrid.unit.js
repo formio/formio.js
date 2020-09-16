@@ -420,8 +420,6 @@ describe('EditGrid Component', () => {
           setTimeout(() => {
             const confirmationDialog2 = document.querySelector('[ref="confirmationDialog"]');
             assert(confirmationDialog2, 'Should open again a conformation dialog');
-            // eslint-disable-next-line no-debugger
-            debugger;
             Harness.dispatchEvent('click', confirmationDialog2, '[ref="dialogYesButton"]');
             setTimeout(() => {
               assert.equal(component.editRows.length, 0, 'Data should be cleared');

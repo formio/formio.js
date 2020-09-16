@@ -268,7 +268,7 @@ export default class PDFBuilder extends WebformBuilder {
         originalComponent = comp;
         return true;
       }
-    });
+    }, true);
     return {
       formioComponent: component.parent,
       formioContainer: container,

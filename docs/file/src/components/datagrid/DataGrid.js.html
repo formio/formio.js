@@ -44,7 +44,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
@@ -274,9 +273,11 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
+
     if (this.initRows) {
       this.createRows(true);
     }
+
     this.visibleColumns = {};
     this.checkColumns();
   }
@@ -296,9 +297,13 @@ export default class DataGridComponent extends NestedArrayComponent {
   get defaultSchema() {
     return DataGridComponent.schema();
   }
-  // Checks if should init the first row (only when no defaultValue and just one row set)
+
+  get initEmpty() {
+    return this.component.initEmpty || this.component.noFirstRow;
+  }
+
   get initRows() {
-    return this.builderMode || !_.isEqual(this.defaultValue, this.emptyValue) || !this.component.noFirstRow;
+    return this.builderMode || this.path === &apos;defaultValue&apos; || !this.initEmpty;
   }
 
   get emptyValue() {
@@ -739,7 +744,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Make sure we always have at least one row.
     // NOTE: Removing this will break &quot;Public Configurations&quot; in portal. ;)
-    if (value &amp;&amp; !value.length &amp;&amp; !this.component.noFirstRow) {
+    if (value &amp;&amp; !value.length &amp;&amp; !this.initEmpty) {
       value.push({});
     }
 

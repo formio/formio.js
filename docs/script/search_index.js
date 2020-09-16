@@ -366,12 +366,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/components/_classes/multivalue/multivalue.js~multivalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html",
-    "<span>Multivalue</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/multivalue/Multivalue.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/_classes/nested/nestedcomponent.form.js~nestedcomponent",
     "function/index.html#static-function-NestedComponent",
     "<span>NestedComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nested/NestedComponent.form.js</span>",
@@ -3966,120 +3960,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/multivalue/multivalue.js",
-    "file/src/components/_classes/multivalue/Multivalue.js.html",
-    "src/components/_classes/multivalue/Multivalue.js",
-    "file"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#addanother",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-get-addAnother",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#addAnother",
-    "member"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#addnewvalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-addNewValue",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#addNewValue",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#addvalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-addValue",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#addValue",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#attach",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-attach",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#attach",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#attachelement",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-attachElement",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#attachElement",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#attachmultimask",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-attachMultiMask",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#attachMultiMask",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#datavalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-get-dataValue",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#dataValue",
-    "member"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#datavalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-set-dataValue",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#dataValue",
-    "member"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#defaultvalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-get-defaultValue",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#defaultValue",
-    "member"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#detach",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-detach",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#detach",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#getmaskpattern",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-getMaskPattern",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#getMaskPattern",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#multimasks",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-member-multiMasks",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#multiMasks",
-    "member"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#onselectmaskhandler",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-onSelectMaskHandler",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#onSelectMaskHandler",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#render",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-render",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#render",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#renderelement",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-renderElement",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#renderElement",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#renderrow",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-renderRow",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#renderRow",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#updatemask",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-updateMask",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#updateMask",
-    "method"
-  ],
-  [
-    "src/components/_classes/multivalue/multivalue.js~multivalue#usewrapper",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-useWrapper",
-    "src/components/_classes/multivalue/Multivalue.js~Multivalue#useWrapper",
-    "method"
-  ],
-  [
     "src/components/_classes/nested/nestedcomponent.form.js",
     "file/src/components/_classes/nested/NestedComponent.form.js.html",
     "src/components/_classes/nested/NestedComponent.form.js",
@@ -5748,6 +5628,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#initempty",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-initEmpty",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#initEmpty",
+    "member"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#initrows",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-initRows",
     "src/components/datagrid/DataGrid.js~DataGridComponent#initRows",
@@ -6984,6 +6870,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/form/form.js~formcomponent#areallcomponentsempty",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-areAllComponentsEmpty",
+    "src/components/form/Form.js~FormComponent#areAllComponentsEmpty",
+    "method"
+  ],
+  [
     "src/components/form/form.js~formcomponent#asstring",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-asString",
     "src/components/form/Form.js~FormComponent#asString",
@@ -7161,6 +7053,12 @@ window.esdocSearchIndex = [
     "src/components/form/form.js~formcomponent#init",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-init",
     "src/components/form/Form.js~FormComponent#init",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#isempty",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-isEmpty",
+    "src/components/form/Form.js~FormComponent#isEmpty",
     "method"
   ],
   [

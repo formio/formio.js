@@ -28,6 +28,8 @@ const calculatedNotPersistentValue = require('./calculatedNotPersistentValue.jso
 const initiallyCollapsedPanel = require('./initiallyCollapsedPanel.json');
 const multipleTextareaInsideConditionalComponent = require('./multipleTextareaInsideConditionalComponent.json');
 const formComponentWithConditionalRenderingForm = require('./formComponentWithConditionalRenderingForm.json');
+const disabledNestedForm = require('./disabledNestedForm.json');
+const propertyActions = require('./propertyActions.json');
 
 module.exports = {
   advanced,
@@ -60,4 +62,6 @@ module.exports = {
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   formComponentWithConditionalRenderingForm,
+  disabledNestedForm,
+  propertyActions,
 };

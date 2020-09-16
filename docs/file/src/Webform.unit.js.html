@@ -44,7 +44,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
@@ -263,6 +262,8 @@ import {
   calculatedNotPersistentValue,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
+  disabledNestedForm,
+  propertyActions,
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 // import Formio from &apos;./Formio&apos;;
@@ -1776,13 +1777,50 @@ describe(&apos;Webform tests&apos;, function() {
         const textarea = form.getComponent([&apos;textArea2&apos;]);
         const panel = form.getComponent([&apos;behavioralIssues&apos;]);
         assert.equal(panel.visible, true, &apos;Should be visible&apos;);
-        console.log({ formData: form._data });
         assert.deepEqual(textarea.dataValue, [&apos;test&apos;], &apos;Should set the value from the submission&apos;);
         const inputRows = textarea.element.querySelectorAll(&apos;[ref=&quot;input&quot;]&apos;);
         assert.equal(inputRows.length, 1, &apos;Should render all the rows of the Textarea&apos;);
         done();
       }, 750);
     }).catch(done);
+  });
+
+  it(&apos;Should disable all the components inside Nested Form if it is disabled&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(disabledNestedForm).then(() =&gt; {
+      assert.equal(form.components[0].disabled, false, &apos;Component that is outside of disabled Nested Form should be editable&apos;);
+      const subFormComponents = form.components[1].subForm.components;
+      assert.deepEqual([subFormComponents[0].disabled, subFormComponents[1].disabled], [true, true], &apos;Components that are inside of disabled Nested Form should be disabled&apos;);
+      done();
+    }).catch(done);
+  });
+
+  describe(&apos;Custom Logic&apos;, () =&gt; {
+    it(&apos;Should rerender components using updated properties&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(propertyActions).then(() =&gt; {
+        form.emit(&apos;disabled&apos;);
+        form.emit(&apos;hide&apos;);
+        form.emit(&apos;require&apos;);
+        setTimeout(() =&gt; {
+          const textFieldDisabled = form.getComponent([&apos;textField&apos;]);
+          const textFieldHidden = form.getComponent([&apos;textField1&apos;]);
+          const textFieldRequired = form.getComponent([&apos;textField2&apos;]);
+          assert.equal(textFieldDisabled.component.disabled, true, &apos;Should be disabled&apos;);
+          assert.equal(textFieldHidden.component.hidden, true, &apos;Should be hidden&apos;);
+          assert.equal(textFieldRequired.component.validate.required, true, &apos;Should be required&apos;);
+          const disabledInput = textFieldDisabled.element.querySelector(&apos;[ref=&quot;input&quot;]&apos;);
+          assert.equal(disabledInput.disabled, true, &apos;Should found a disabled input&apos;);
+          const hiddenInput = textFieldHidden.element.querySelector(&apos;[ref=&quot;input&quot;]&apos;);
+          assert(!hiddenInput, &apos;Should not found a hidden input&apos;);
+          const requiredFieldLabel = textFieldRequired.element.querySelector(&apos;label&apos;);
+          assert(requiredFieldLabel.classList.contains(&apos;field-required&apos;), &apos;Should mark a field as required&apos;);
+          done();
+        }, 550);
+      }).catch(done);
+    });
   });
 
   each(FormTests, (formTest) =&gt; {
