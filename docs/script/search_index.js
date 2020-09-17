@@ -6108,12 +6108,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#getvalueasstring",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getValueAsString",
-    "src/components/datetime/DateTime.js~DateTimeComponent#getValueAsString",
-    "method"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent#isempty",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-isEmpty",
     "src/components/datetime/DateTime.js~DateTimeComponent#isEmpty",
