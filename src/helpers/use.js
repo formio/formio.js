@@ -12,6 +12,7 @@ import {
   Transformers,
   ValueSources
 } from '../validator';
+import Evaluator from '../utils/Evaluator';
 
 const registerPlugin = (plugin) => {
   // Sanity check.
@@ -71,6 +72,9 @@ const registerPlugin = (plugin) => {
         break;
       case 'valueSources':
         ValueSources.addValueSources(plugin.valueSources);
+        break;
+      case 'evaluator':
+        Evaluator.registerEvaluator(plugin.evaluator);
         break;
       default:
         console.log('Unknown plugin option', key);
