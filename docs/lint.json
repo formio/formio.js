@@ -255,31 +255,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1287,
+        "lineNumber": 1288,
         "line": "  /**"
       },
       {
-        "lineNumber": 1288,
+        "lineNumber": 1289,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 1289,
+        "lineNumber": 1290,
         "line": "   *"
       },
       {
-        "lineNumber": 1290,
+        "lineNumber": 1291,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 1291,
+        "lineNumber": 1292,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1292,
+        "lineNumber": 1293,
         "line": "   */"
       },
       {
-        "lineNumber": 1293,
+        "lineNumber": 1294,
         "line": "  onChange(flags, changed, modified, changes) {"
       }
     ],
@@ -299,87 +299,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1479,
+        "lineNumber": 1480,
         "line": "  /**"
       },
       {
-        "lineNumber": 1480,
+        "lineNumber": 1481,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1481,
-        "line": "   *"
-      },
-      {
         "lineNumber": 1482,
-        "line": "   * @example"
+        "line": "   *"
       },
       {
         "lineNumber": 1483,
-        "line": "   * import Webform from 'formiojs/Webform';"
+        "line": "   * @example"
       },
       {
         "lineNumber": 1484,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 1485,
-        "line": "   * form.src = 'https://examples.form.io/example';"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 1486,
-        "line": "   * form.submission = {data: {"
+        "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
         "lineNumber": 1487,
-        "line": "   *   firstName: 'Joe',"
+        "line": "   * form.submission = {data: {"
       },
       {
         "lineNumber": 1488,
-        "line": "   *   lastName: 'Smith',"
+        "line": "   *   firstName: 'Joe',"
       },
       {
         "lineNumber": 1489,
-        "line": "   *   email: 'joe@example.com'"
+        "line": "   *   lastName: 'Smith',"
       },
       {
         "lineNumber": 1490,
-        "line": "   * }};"
+        "line": "   *   email: 'joe@example.com'"
       },
       {
         "lineNumber": 1491,
-        "line": "   * form.submit().then((submission) => {"
+        "line": "   * }};"
       },
       {
         "lineNumber": 1492,
-        "line": "   *   console.log(submission);"
+        "line": "   * form.submit().then((submission) => {"
       },
       {
         "lineNumber": 1493,
-        "line": "   * });"
+        "line": "   *   console.log(submission);"
       },
       {
         "lineNumber": 1494,
-        "line": "   *"
+        "line": "   * });"
       },
       {
         "lineNumber": 1495,
-        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
-      },
-      {
-        "lineNumber": 1496,
         "line": "   *"
       },
       {
+        "lineNumber": 1496,
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+      },
+      {
         "lineNumber": 1497,
-        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+        "line": "   *"
       },
       {
         "lineNumber": 1498,
-        "line": "   */"
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
         "lineNumber": 1499,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1500,
         "line": "  submit(before, options) {"
       }
     ],

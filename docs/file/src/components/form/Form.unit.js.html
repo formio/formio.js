@@ -244,6 +244,7 @@ import {
 } from &apos;./fixtures&apos;;
 import Webform from &apos;../../Webform&apos;;
 import formModalEdit from &apos;./fixtures/formModalEdit&apos;;
+import { formComponentWithConditionalRenderingForm } from &apos;../../../test/formtest&apos;;
 
 describe(&apos;Form Component&apos;, () =&gt; {
   it(&apos;Should build a form component&apos;, () =&gt; {
@@ -376,6 +377,35 @@ describe(&apos;Form Component&apos;, () =&gt; {
       }).catch(done);
     });
   });
+
+  describe(&apos;Conditional rendering&apos;, () =&gt; {
+    it(&apos;Should render and set submission to conditional form component&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(formComponentWithConditionalRenderingForm).then(() =&gt; {
+        form.setSubmission({
+          data: {
+            checkbox: true,
+            form: {
+              data: {
+                textField: &apos;test&apos;
+              }
+            }
+          }
+        }).then(() =&gt; {
+          setTimeout(() =&gt; {
+            const checkbox = formElement.querySelector(&apos;input[name=&quot;data[checkbox]&quot;]&apos;);
+            const textField = formElement.querySelector(&apos;input[name=&quot;data[textField]&quot;]&apos;);
+            expect(checkbox).to.not.be.null;
+            assert.equal(checkbox.checked, true);
+            expect(textField).to.not.be.null;
+            assert.equal(textField.value, &apos;test&apos;);
+            done();
+          }, 250);
+        });
+      }).catch(done);
+    });
+  });
 });
 
 describe(&apos;Wizard Component&apos;, () =&gt; {
@@ -390,7 +420,6 @@ describe(&apos;Wizard Component&apos;, () =&gt; {
     });
   });
 });
-
 </code></pre>
 
 </div>
