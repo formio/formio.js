@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.15
+#### Fixed
+ - FJS-1205: fixed an issue with line break between error messages and added cursor pointer for navigation
+ - FJS-1206: fixed an issue where conditional wizard pages are not shown/hidden if wizard contains nested form
+ - FJS-1220: fix display of additional components in nested wizard forms
+ - PDF-156: Update empty value validating for form component
+
 ### 4.12.0-rc.14
 #### Fixed
  - Nested: fix panel collapse validation triggered with dirty=false
