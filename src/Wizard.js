@@ -317,6 +317,7 @@ export default class Wizard extends Webform {
 
   transformPages() {
     const allComponents = [];
+    let defferedComponents = [];
     this.allPages = [];
 
     // Get all components including all nested components and line up in the correct order
@@ -324,6 +325,7 @@ export default class Wizard extends Webform {
       let hasNested = false;
       const nestedPages = [];
       const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp.components || [];
+      const additionalComponents = components.filter(comp => !comp.subForm);
 
       eachComponent(components, (comp) => {
         if (comp.component.type === 'panel' && !getAllComponents(comp, compsArr, false)) {
@@ -338,13 +340,19 @@ export default class Wizard extends Webform {
         }
       }, true);
 
-      if (nestedComp.component.type === 'panel' && !hasNested) {
-        if (pushAllowed) {
+      if (nestedComp.component.type === 'panel') {
+        if (!hasNested && pushAllowed) {
           compsArr.push(nestedComp);
+        }
+        if (hasNested && additionalComponents.length) {
+          const newComp = _.clone(nestedComp);
+          newComp.components = additionalComponents;
+          defferedComponents.push(newComp);
         }
       }
       if (pushAllowed) {
-        compsArr.push(...nestedPages);
+        compsArr.push(...defferedComponents, ...nestedPages);
+        defferedComponents = [];
       }
       return hasNested;
     };
