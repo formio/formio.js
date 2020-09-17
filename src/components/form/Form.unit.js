@@ -9,6 +9,7 @@ import {
 } from './fixtures';
 import Webform from '../../Webform';
 import formModalEdit from './fixtures/formModalEdit';
+import { formComponentWithConditionalRenderingForm } from '../../../test/formtest';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {
@@ -141,6 +142,35 @@ describe('Form Component', () => {
       }).catch(done);
     });
   });
+
+  describe('Conditional rendering', () => {
+    it('Should render and set submission to conditional form component', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(formComponentWithConditionalRenderingForm).then(() => {
+        form.setSubmission({
+          data: {
+            checkbox: true,
+            form: {
+              data: {
+                textField: 'test'
+              }
+            }
+          }
+        }).then(() => {
+          setTimeout(() => {
+            const checkbox = formElement.querySelector('input[name="data[checkbox]"]');
+            const textField = formElement.querySelector('input[name="data[textField]"]');
+            expect(checkbox).to.not.be.null;
+            assert.equal(checkbox.checked, true);
+            expect(textField).to.not.be.null;
+            assert.equal(textField.value, 'test');
+            done();
+          }, 250);
+        });
+      }).catch(done);
+    });
+  });
 });
 
 describe('Wizard Component', () => {
@@ -155,4 +185,3 @@ describe('Wizard Component', () => {
     });
   });
 });
-
