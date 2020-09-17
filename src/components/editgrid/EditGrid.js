@@ -294,7 +294,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       const editRow = this.editRows[rowIndex];
       if (this.isOpen(editRow)) {
         this.attachComponents(row, editRow.components);
-        this.addEventListener(this.saveRowElements[openRowCount], 'click', () => this.saveRow(rowIndex));
+        this.addEventListener(this.saveRowElements[openRowCount], 'click', () => this.saveRow(rowIndex, true));
         this.addEventListener(this.cancelRowElements[openRowCount], 'click', () => this.cancelRow(rowIndex));
         openRowCount++;
       }
@@ -304,7 +304,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           {
             className: 'removeRow',
             event: 'click',
-            action: () => this.removeRow(rowIndex),
+            action: () => this.removeRow(rowIndex, true),
           },
           {
             className: 'editRow',
@@ -503,7 +503,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (this.validateRow(editRow, true) || this.component.rowDrafts) {
           editRow.willBeSaved = true;
           dialog.close();
-          this.saveRow(rowIndex);
+          this.saveRow(rowIndex, true);
         }
         else {
           this.alert.showErrors(editRow.errors, false);
@@ -633,7 +633,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
   }
 
-  saveRow(rowIndex) {
+  saveRow(rowIndex, modified) {
     const editRow = this.editRows[rowIndex];
 
     if (this.options.readOnly) {
@@ -671,7 +671,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.backup = null;
 
     this.updateValue();
-    this.triggerChange();
+    this.triggerChange({ modified });
     if (this.component.rowDrafts) {
       editRow.components.forEach(comp => comp.setPristine(this.pristine));
     }
@@ -718,7 +718,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     return editRow;
   }
 
-  removeRow(rowIndex) {
+  removeRow(rowIndex, modified) {
     if (this.options.readOnly) {
       return;
     }
@@ -728,7 +728,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows.splice(rowIndex, 1);
     this.updateRowsComponents(rowIndex);
     this.updateValue();
-    this.triggerChange();
+    this.triggerChange({ modified });
     this.checkValidity(null, true);
     this.checkData();
     this.redraw();
