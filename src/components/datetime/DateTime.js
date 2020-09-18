@@ -185,4 +185,9 @@ export default class DateTimeComponent extends Input {
       }
     }
   }
+
+  getValueAsString(value) {
+    const format = FormioUtils.convertFormatToMoment(this.component.format);
+    return (value ? moment(value).format(format) : value) || '';
+  }
 }
