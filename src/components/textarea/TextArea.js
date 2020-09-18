@@ -90,7 +90,7 @@ export default class TextAreaComponent extends TextFieldComponent {
    *
    * @param newValue
    */
-  updateEditorValue(index, newValue) {
+  updateEditorValue(index, newValue, modified) {
     newValue = this.getConvertedValue(this.trimBlanks(newValue));
     const dataValue = this.dataValue;
     if (this.component.multiple && Array.isArray(dataValue)) {
@@ -101,7 +101,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if ((!_.isEqual(newValue, dataValue)) && (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
-        modified: !this.autoModified
+        modified: modified || !this.autoModified
       }, index);
     }
     this.autoModified = false;
@@ -135,7 +135,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             settings = {};
           }
           settings.mode = this.component.as;
-          this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
+          this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue, true)).then((ace) => {
             this.editors[index] = ace;
             let dataValue = this.dataValue;
             dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
@@ -154,7 +154,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           // Add the quill editor.
           this.addQuill(
             element,
-            settings, () => this.updateEditorValue(index, this.editors[index].root.innerHTML)
+            settings, () => this.updateEditorValue(index, this.editors[index].root.innerHTML, true)
           ).then((quill) => {
             this.editors[index] = quill;
             if (this.component.isUploadEnabled) {
@@ -180,7 +180,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         case 'ckeditor':
           settings = settings || {};
           settings.rows = this.component.rows;
-          this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue))
+          this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue, true))
             .then((editor) => {
               this.editors[index] = editor;
               let dataValue = this.dataValue;
