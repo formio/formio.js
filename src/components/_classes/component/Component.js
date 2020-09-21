@@ -1219,7 +1219,7 @@ export default class Component extends Element {
   getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
-      if (!this.widget) {
+      if (!this.widget || !value) {
         return value;
       }
       else {

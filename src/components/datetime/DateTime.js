@@ -185,6 +185,6 @@ export default class DateTimeComponent extends Input {
   }
 
   getValueAsString(value) {
-    return value ? this.widget?.getValueAsString(value) : '';
+    return super.getValueAsString(value);
   }
 }
