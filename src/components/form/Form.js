@@ -97,7 +97,7 @@ export default class FormComponent extends Component {
 
     return this.createSubForm().then((subForm) => {
       setTimeout(() => {
-        if (this.root && this.root.subWizards && subForm._form.display === 'wizard') {
+        if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
           this.root.subWizards.push(this);
           this.emit('subWizardsUpdated');
         }

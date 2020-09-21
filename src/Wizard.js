@@ -55,10 +55,12 @@ export default class Wizard extends Webform {
 
   getPages(args = {}) {
     const { all = false } = args;
-    const pages = this.pages
+    const hasExtraPages = !_.isEmpty(this.subWizards) && !_.isEqual(this.pages, this.components);
+    const pages = hasExtraPages ? this.components : this.pages;
+    const filteredPages = pages
       .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
 
-    return pages;
+    return filteredPages;
   }
 
   get data() {
@@ -106,7 +108,6 @@ export default class Wizard extends Webform {
 
     this.on('subWizardsUpdated', () => {
       if (this.subWizards.length) {
-        this.transformPages();
         this.establishPages();
         this.redraw();
       }
@@ -318,14 +319,33 @@ export default class Wizard extends Webform {
 
   transformPages() {
     const allComponents = [];
+    const currentPages = {};
+    const components = [];
     let defferedComponents = [];
     this.allPages = [];
+
+    if (this.components && this.components.length) {
+      this.components.map(page => {
+        if (page.component.type === 'panel') {
+          currentPages[page.component.key || page.component.title] = page;
+        }
+      });
+    }
+
+    this.originalComponents?.forEach((item) => {
+      if (!item.key) {
+        item.key = item.title;
+      }
+      if (currentPages[item.key]) {
+        components.push(currentPages[item.key]);
+      }
+    });
 
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
       let hasNested = false;
       const nestedPages = [];
-      const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp.components || [];
+      const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp?.components || [];
       const additionalComponents = components.filter(comp => !comp.subForm);
 
       eachComponent(components, (comp) => {
@@ -358,7 +378,7 @@ export default class Wizard extends Webform {
       return hasNested;
     };
 
-    this.components.forEach((component) => {
+    components.forEach((component) => {
       getAllComponents(component, allComponents);
     }, []);
 
@@ -416,6 +436,7 @@ export default class Wizard extends Webform {
       });
     }
 
+    this.transformPages();
     if (this.allPages && this.allPages.length) {
       this.pages = this.allPages;
     }
@@ -506,8 +527,7 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const hasExtraPages = !_.isEmpty(this.subWizards) && !_.isEqual(this.pages, this.components);
-    const pages = hasExtraPages ? this.getComponents() : this.getPages();
+    const pages = this.getPages();
 
     return NativePromise.all(pages.map((page) => {
       page.options.beforeSubmit = true;
