@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.18
+#### Fixed
+ - Build to include fixes.
+
 ### 4.12.0-rc.17
 #### Fixed
  - FJS-1230 & FJS-1231: fixed an issue where conditional wizard pages and their values are not displayed after setting submission
