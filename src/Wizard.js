@@ -35,6 +35,7 @@ export default class Wizard extends Webform {
     this.originalComponents = [];
     this.page = 0;
     this.currentPanel = null;
+    this.currentPanels = null;
     this.currentNextPage = 0;
     this._seenPages = [0];
     this.subWizards = [];
@@ -693,12 +694,14 @@ export default class Wizard extends Webform {
     }
 
     // If the pages change, need to redraw the header.
-    const currentPanels = this.pages.map(page => page.component.key);
+    const currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
     const panels = this.establishPages().map(panel => panel.key);
     const currentNextPage = this.currentNextPage;
     if (!_.isEqual(panels, currentPanels) || (flags && flags.fromSubmission)) {
       this.redrawHeader();
     }
+
+    this.currentPanels = panels;
 
     // If the next page changes, then make sure to redraw navigation.
     if (currentNextPage !== this.getNextPage()) {
