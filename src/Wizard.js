@@ -626,6 +626,11 @@ export default class Wizard extends Webform {
 
   setValue(submission, flags = {}) {
     this._submission = submission;
+
+    if (flags && flags.fromSubmission && submission) {
+      this._data = submission.data;
+    }
+
     this.establishPages(submission.data);
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
@@ -691,7 +696,7 @@ export default class Wizard extends Webform {
     const currentPanels = this.pages.map(page => page.component.key);
     const panels = this.establishPages().map(panel => panel.key);
     const currentNextPage = this.currentNextPage;
-    if (!_.isEqual(panels, currentPanels)) {
+    if (!_.isEqual(panels, currentPanels) || (flags && flags.fromSubmission)) {
       this.redrawHeader();
     }
 
