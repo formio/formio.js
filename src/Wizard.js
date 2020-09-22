@@ -55,12 +55,15 @@ export default class Wizard extends Webform {
 
   getPages(args = {}) {
     const { all = false } = args;
-    const hasExtraPages = !_.isEmpty(this.subWizards) && !_.isEqual(this.pages, this.components);
-    const pages = hasExtraPages ? this.components : this.pages;
+    const pages = this.hasExtraPages ? this.components : this.pages;
     const filteredPages = pages
       .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
 
     return filteredPages;
+  }
+
+  get hasExtraPages() {
+    return !_.isEmpty(this.subWizards) && !_.isEqual(this.pages, this.components);
   }
 
   get data() {
@@ -346,10 +349,10 @@ export default class Wizard extends Webform {
       let hasNested = false;
       const nestedPages = [];
       const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp?.components || [];
-      const additionalComponents = components.filter(comp => !comp.subForm);
+      const additionalComponents = components.filter(comp => !comp.subForm && comp._visible);
 
       eachComponent(components, (comp) => {
-        if (comp.component.type === 'panel' && !getAllComponents(comp, compsArr, false)) {
+        if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
           if (pushAllowed) {
             nestedPages.push(comp);
           }
@@ -714,14 +717,23 @@ export default class Wizard extends Webform {
     }
 
     // If the pages change, need to redraw the header.
-    const currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
-    const panels = this.establishPages().map(panel => panel.key);
+    let currentPanels;
+    let panels;
     const currentNextPage = this.currentNextPage;
+    if (this.hasExtraPages) {
+      currentPanels = this.pages.map(page => page.component.key);
+      this.establishPages();
+      panels = this.pages.map(page => page.component.key);
+    }
+    else {
+      currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
+      panels = this.establishPages().map(panel => panel.key);
+      this.currentPanels = panels;
+    }
+
     if (!_.isEqual(panels, currentPanels) || (flags && flags.fromSubmission)) {
       this.redrawHeader();
     }
-
-    this.currentPanels = panels;
 
     // If the next page changes, then make sure to redraw navigation.
     if (currentNextPage !== this.getNextPage()) {
