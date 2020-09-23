@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.1
+#### Changed
+ - PDF-162: Prevent calculating value in read only mode
+
+### 4.12.0
+#### Changed 
+ - No changes: Released RC.19
+
 ### 4.12.0-rc.19
 #### Fixed
  - FJS-1236: add condition for panel components in wizards
