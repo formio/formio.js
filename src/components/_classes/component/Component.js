@@ -2434,7 +2434,7 @@ export default class Component extends Element {
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (!this.component.calculateValue || shouldBeCleared) {
+    if (this.options.readOnly || !this.component.calculateValue || shouldBeCleared) {
       return false;
     }
 
