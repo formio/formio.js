@@ -6,6 +6,7 @@ declare var _default: ({
     weight: number;
     tooltip: string;
     persistent?: undefined;
+    skipMerge?: undefined;
     enableTime?: undefined;
     placeholder?: undefined;
     title?: undefined;
@@ -21,6 +22,7 @@ declare var _default: ({
     persistent: boolean;
     weight: number;
     tooltip: string;
+    skipMerge?: undefined;
     enableTime?: undefined;
     placeholder?: undefined;
     title?: undefined;
@@ -32,6 +34,7 @@ declare var _default: ({
     type: string;
     input: boolean;
     key: string;
+    skipMerge: boolean;
     label: string;
     weight: number;
     tooltip: string;
@@ -52,6 +55,7 @@ declare var _default: ({
     input: boolean;
     enableTime: boolean;
     key: string;
+    skipMerge: boolean;
     label: string;
     tooltip: string;
     customConditional({ data, component }: {
@@ -75,6 +79,7 @@ declare var _default: ({
     tooltip: string;
     weight: number;
     persistent?: undefined;
+    skipMerge?: undefined;
     enableTime?: undefined;
     title?: undefined;
     collapsible?: undefined;
@@ -109,6 +114,7 @@ declare var _default: ({
     weight?: undefined;
     tooltip?: undefined;
     persistent?: undefined;
+    skipMerge?: undefined;
     enableTime?: undefined;
     placeholder?: undefined;
 })[];
