@@ -74,6 +74,10 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
+      if (Evaluator.noeval) {
+        return Evaluator.evaluate(func, args);
+      }
+
       func = Evaluator.evaluator(func, args);
       args = _.values(args);
     }
