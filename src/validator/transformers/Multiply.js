@@ -21,9 +21,9 @@ export class MultiplyTransformer extends Transformer {
 
   transform(value, args) {
     const {
-      Multiplier,
+      multiplier,
     } = args;
 
-    return value * Multiplier;
+    return value * multiplier;
   }
 }
