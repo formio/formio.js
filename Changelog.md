@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - FJS-1070: Data is showing blank when is set to renderMode: 'html'
+ - Fixes an issue where modalEdit Nested Wizard is rendered as a simple component after changing the page
+ - FJS-1197: Custom Error displaying twice when validating form
+ - FJS-1106: Date Time Component Receiving Uncaught TypeError
+ - Update component dataValue to update preview and component in builder
+ - Component: fix validation alerts for pdf errors not gone
+ - Disable Day component if parent component is disabled
+ - Fixed an issue where "modified" is false when saving a row of the EditGrid
+ - Fixes Formtype when File component is disabled with advanced logic
+ - FJS-1028: Date Time Component showing up in ISO Date Format in the submission grid
+
+#### Added
+ - Conditional to disable helplinks in builder
+ - Added possibility to use evaluator plugin.
+
 ### 4.12.1-rc.1
 #### Changed
  - PDF-162: Prevent calculating value in read only mode
