@@ -2254,6 +2254,10 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
+    if (this.options.renderMode === 'html') {
+      this.redraw();
+      return changed;
+    }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value, flags);
