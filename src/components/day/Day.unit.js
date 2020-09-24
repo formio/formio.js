@@ -6,8 +6,10 @@ import DayComponent from './Day';
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4
 } from './fixtures';
+import PanelComponent from '../panel/Panel';
 
 describe('Day Component', () => {
   it('Should build a day component', () => {
@@ -163,6 +165,13 @@ describe('Day Component', () => {
   it('should normalize min-max dates on dayFirst', () => {
     Harness.testCreate(DayComponent, comp3).then((component) => {
       assert.equal(component.normalizeMinMaxDates(), ['04/02/2020', '09/02/2020']);
+    });
+  });
+
+  it('Should disable day component if parent component is disabled', (done) => {
+    Harness.testCreate(PanelComponent, comp4).then((component) => {
+      Harness.testElements(component, '[disabled]', 4);
+      done();
     });
   });
 });
