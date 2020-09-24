@@ -18,7 +18,7 @@ export default class TagsComponent extends Input {
       title: 'Tags',
       icon: 'tags',
       group: 'advanced',
-      documentation: 'http://help.form.io/userguide/#tags',
+      documentation: '/userguide/#tags',
       weight: 30,
       schema: TagsComponent.schema()
     };

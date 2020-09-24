@@ -19,7 +19,7 @@ export default class ResourceComponent extends SelectComponent {
       group: 'premium',
       icon: 'files-o',
       weight: 90,
-      documentation: 'http://help.form.io/userguide/#resource',
+      documentation: '/userguide/#resource',
       schema: ResourceComponent.schema(),
     };
   }
