@@ -234,14 +234,23 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/DateTime.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import DateTimeComponent from &apos;./DateTime&apos;;
+import assert from &apos;power-assert&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DateTime Component&apos;, () =&gt; {
   it(&apos;Should build a date time component&apos;, () =&gt; {
     return Harness.testCreate(DateTimeComponent, comp1);
+  });
+
+  it(&apos;Should format value&apos;, () =&gt; {
+    return Harness.testCreate(DateTimeComponent, comp2)
+      .then((dateTime) =&gt; {
+        assert.equal(dateTime.getValueAsString(&apos;2020-09-18T12:12:00&apos;), &apos;2020-09-18 12:12 PM&apos;);
+      });
   });
 });
 </code></pre>

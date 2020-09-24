@@ -237,6 +237,7 @@ import _ from &apos;lodash&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import TextFieldComponent from &apos;./TextField&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import Formio from &apos;./../../Formio&apos;;
 
 import {
   comp1,
@@ -361,6 +362,39 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         Harness.testValid(component, &apos;Tom&apos;)
       ];
     });
+  });
+
+  it(&apos;Should provide one custom error message&apos;, (done) =&gt; {
+    const formJson =  {
+      components: [{
+          label: &apos;Text Field&apos;,
+          tableView: true,
+          validate: {
+            pattern: &apos;^[0-9]*$]&apos;,
+            customMessage: &apos;Custom Error Message&apos;,
+            minWords: 10
+          },
+          key: &apos;textField&apos;,
+          type: &apos;textfield&apos;,
+          input: true
+       }]
+    };
+    const element = document.createElement(&apos;div&apos;);
+    Formio.createForm(element, formJson)
+      .then(form =&gt; {
+        form.submission = {
+          data: {
+            textField: &apos;textField&apos;
+          }
+        };
+        const textField = form.getComponent(&apos;textField&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(textField.refs.messageContainer.children.length, 1);
+          assert.equal(textField.refs.messageContainer.children[0].innerHTML, &apos;Custom Error Message&apos;);
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 
   it(&apos;Should provide json validation&apos;, () =&gt; {

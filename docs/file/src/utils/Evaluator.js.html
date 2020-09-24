@@ -305,6 +305,12 @@ const Evaluator = {
   }
 };
 
+Evaluator.registerEvaluator = (evaluator) =&gt; {
+  Object.keys(evaluator).forEach((key) =&gt; {
+    Evaluator[key] = evaluator[key];
+  });
+};
+
 export default Evaluator;
 </code></pre>
 
