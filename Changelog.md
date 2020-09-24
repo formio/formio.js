@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.1
+#### Changed
+ - PDF-162: Prevent calculating value in read only mode
+
+### 4.12.0
+#### Changed 
+ - No changes: Released RC.19
+
+### 4.12.0-rc.19
+#### Fixed
+ - FJS-1236: add condition for panel components in wizards
+
+### 4.12.0-rc.18
+#### Fixed
+ - Build to include fixes.
+
+### 4.12.0-rc.17
+#### Fixed
+ - FJS-1230 & FJS-1231: fixed an issue where conditional wizard pages and their values are not displayed after setting submission
+ - FJS-1220: fix composing data objects in nested wizard forms
+
+### 4.12.0-rc.16
+#### Changed
+ - Revert https://github.com/formio/formio.js/pull/3092: FJS-1028: Date Time Component showing up in ISO Date Format
+
+### 4.12.0-rc.15
+#### Fixed
+ - FJS-1205: fixed an issue with line break between error messages and added cursor pointer for navigation
+ - FJS-1206: fixed an issue where conditional wizard pages are not shown/hidden if wizard contains nested form
+ - FJS-1220: fix display of additional components in nested wizard forms
+ - PDF-156: Update empty value validating for form component
+
+### 4.12.0-rc.14
+#### Fixed
+ - Nested: fix panel collapse validation triggered with dirty=false
+ - FJS-834: fixes an issue where focus and caret positions are lost after redrawing component
+ - FJS-1117: fixed an issue where validation errors are shown for invalid default value on form load
+ - FJS-1103: Manually changing the year on the textfield does not save correctly
+ - Fixed regression with custom wizards not moving onto the Thank You page.
+
 ### 4.12.0-rc.13
 #### Changed
  - Fixed DataGrid initialized as empty.

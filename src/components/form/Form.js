@@ -95,9 +95,9 @@ export default class FormComponent extends Component {
       this.formSrc += `/v/${this.component.revision}`;
     }
 
-    return this.createSubForm().then(() => {
+    return this.createSubForm().then((subForm) => {
       setTimeout(() => {
-        if (this.root && this.root.subWizards) {
+        if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
           this.root.subWizards.push(this);
           this.emit('subWizardsUpdated');
         }
@@ -534,14 +534,14 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty();
+    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty(value.data);
   }
 
-  areAllComponentsEmpty() {
+  areAllComponentsEmpty(data) {
     let res = true;
     if (this.subForm) {
       this.subForm.everyComponent((comp) => {
-        res &= comp.isEmpty();
+        res &= comp.isEmpty(_.get(data, comp.key) || comp.dataValue);
       });
     }
     else {

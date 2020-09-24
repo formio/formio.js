@@ -35,6 +35,7 @@ export default class Wizard extends Webform {
     this.originalComponents = [];
     this.page = 0;
     this.currentPanel = null;
+    this.currentPanels = null;
     this.currentNextPage = 0;
     this._seenPages = [0];
     this.subWizards = [];
@@ -54,10 +55,15 @@ export default class Wizard extends Webform {
 
   getPages(args = {}) {
     const { all = false } = args;
-    const pages = this.pages
+    const pages = this.hasExtraPages ? this.components : this.pages;
+    const filteredPages = pages
       .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
 
-    return pages;
+    return filteredPages;
+  }
+
+  get hasExtraPages() {
+    return !_.isEmpty(this.subWizards) && !_.isEqual(this.pages, this.components);
   }
 
   get data() {
@@ -105,7 +111,6 @@ export default class Wizard extends Webform {
 
     this.on('subWizardsUpdated', () => {
       if (this.subWizards.length) {
-        this.transformPages();
         this.establishPages();
         this.redraw();
       }
@@ -328,16 +333,37 @@ export default class Wizard extends Webform {
 
   transformPages() {
     const allComponents = [];
+    const currentPages = {};
+    const components = [];
+    let defferedComponents = [];
     this.allPages = [];
+
+    if (this.components && this.components.length) {
+      this.components.map(page => {
+        if (page.component.type === 'panel') {
+          currentPages[page.component.key || page.component.title] = page;
+        }
+      });
+    }
+
+    this.originalComponents?.forEach((item) => {
+      if (!item.key) {
+        item.key = item.title;
+      }
+      if (currentPages[item.key]) {
+        components.push(currentPages[item.key]);
+      }
+    });
 
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
       let hasNested = false;
       const nestedPages = [];
-      const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp.components || [];
+      const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp?.components || [];
+      const additionalComponents = components.filter(comp => !comp.subForm && comp._visible);
 
       eachComponent(components, (comp) => {
-        if (comp.component.type === 'panel' && !getAllComponents(comp, compsArr, false)) {
+        if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
           if (pushAllowed) {
             nestedPages.push(comp);
           }
@@ -349,18 +375,24 @@ export default class Wizard extends Webform {
         }
       }, true);
 
-      if (nestedComp.component.type === 'panel' && !hasNested) {
-        if (pushAllowed) {
+      if (nestedComp.component.type === 'panel') {
+        if (!hasNested && pushAllowed) {
           compsArr.push(nestedComp);
+        }
+        if (hasNested && additionalComponents.length) {
+          const newComp = _.clone(nestedComp);
+          newComp.components = additionalComponents;
+          defferedComponents.push(newComp);
         }
       }
       if (pushAllowed) {
-        compsArr.push(...nestedPages);
+        compsArr.push(...defferedComponents, ...nestedPages);
+        defferedComponents = [];
       }
       return hasNested;
     };
 
-    this.components.forEach((component) => {
+    components.forEach((component) => {
       getAllComponents(component, allComponents);
     }, []);
 
@@ -418,6 +450,7 @@ export default class Wizard extends Webform {
       });
     }
 
+    this.transformPages();
     if (this.allPages && this.allPages.length) {
       this.pages = this.allPages;
     }
@@ -508,8 +541,7 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const hasExtraPages = !_.isEmpty(this.subWizards) && !_.isEqual(this.pages, this.components);
-    const pages = hasExtraPages ? this.getComponents() : this.getPages();
+    const pages = this.getPages();
 
     return NativePromise.all(pages.map((page) => {
       page.options.beforeSubmit = true;
@@ -628,6 +660,12 @@ export default class Wizard extends Webform {
   }
 
   setValue(submission, flags = {}) {
+    this._submission = submission;
+
+    if (flags && flags.fromSubmission && submission) {
+      this._data = submission.data;
+    }
+
     this.establishPages(submission.data);
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
@@ -690,10 +728,21 @@ export default class Wizard extends Webform {
     }
 
     // If the pages change, need to redraw the header.
-    const currentPanels = this.pages.map(page => page.component.key);
-    const panels = this.establishPages().map(panel => panel.key);
+    let currentPanels;
+    let panels;
     const currentNextPage = this.currentNextPage;
-    if (!_.isEqual(panels, currentPanels)) {
+    if (this.hasExtraPages) {
+      currentPanels = this.pages.map(page => page.component.key);
+      this.establishPages();
+      panels = this.pages.map(page => page.component.key);
+    }
+    else {
+      currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
+      panels = this.establishPages().map(panel => panel.key);
+      this.currentPanels = panels;
+    }
+
+    if (!_.isEqual(panels, currentPanels) || (flags && flags.fromSubmission)) {
       this.redrawHeader();
     }
 

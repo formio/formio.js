@@ -185,8 +185,4 @@ export default class DateTimeComponent extends Input {
       }
     }
   }
-
-  getValueAsString(value) {
-    return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
-  }
 }

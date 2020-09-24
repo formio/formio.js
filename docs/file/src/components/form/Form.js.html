@@ -44,7 +44,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
@@ -331,9 +330,9 @@ export default class FormComponent extends Component {
       this.formSrc += `/v/${this.component.revision}`;
     }
 
-    return this.createSubForm().then(() =&gt; {
+    return this.createSubForm().then((subForm) =&gt; {
       setTimeout(() =&gt; {
-        if (this.root &amp;&amp; this.root.subWizards) {
+        if (this.root &amp;&amp; this.root.subWizards &amp;&amp; subForm._form.display === &apos;wizard&apos;) {
           this.root.subWizards.push(this);
           this.emit(&apos;subWizardsUpdated&apos;);
         }
@@ -770,14 +769,14 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty();
+    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty(value.data);
   }
 
-  areAllComponentsEmpty() {
+  areAllComponentsEmpty(data) {
     let res = true;
     if (this.subForm) {
       this.subForm.everyComponent((comp) =&gt; {
-        res &amp;= comp.isEmpty();
+        res &amp;= comp.isEmpty(_.get(data, comp.key) || comp.dataValue);
       });
     }
     else {
