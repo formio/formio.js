@@ -2660,7 +2660,7 @@ export default class Component extends Element {
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
 
-    if (flags.noValidate && !flags.validateOnInit) {
+    if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
         this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
       }
