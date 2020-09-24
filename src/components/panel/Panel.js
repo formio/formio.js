@@ -22,7 +22,7 @@ export default class PanelComponent extends NestedComponent {
       title: 'Panel',
       icon: 'list-alt',
       group: 'layout',
-      documentation: 'http://help.form.io/userguide/#panels',
+      documentation: '/userguide/#panels',
       weight: 30,
       schema: PanelComponent.schema()
     };

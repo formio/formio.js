@@ -34,7 +34,7 @@ export default class DayComponent extends Field {
       title: 'Day',
       group: 'advanced',
       icon: 'calendar',
-      documentation: 'http://help.form.io/userguide/#day',
+      documentation: '/userguide/#day',
       weight: 50,
       schema: DayComponent.schema()
     };

@@ -50,7 +50,7 @@ export default class SelectComponent extends Field {
       group: 'basic',
       icon: 'th-list',
       weight: 70,
-      documentation: 'http://help.form.io/userguide/#select',
+      documentation: '/userguide/#select',
       schema: SelectComponent.schema()
     };
   }

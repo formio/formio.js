@@ -11,8 +11,81 @@ import wizard2 from '../test/forms/wizardWithEditGrid';
 import wizard3 from '../test/forms/conditionalWizardPages';
 import wizard4 from '../test/forms/wizardWithAddWizardPage';
 import wizard5 from '../test/forms/wizardWithAddWizardPageField';
+import wizard6 from '../test/forms/wizardWithSimpleConditionalPage';
+import wizard7 from '../test/forms/wizardWithCustomConditionalPage';
 
 describe('Wizard tests', () => {
+  it('Should display conditional page after setting submission', function(done) {
+    const formElement = document.createElement('div');
+    const wizardWithSimpleConditionalPage = new Wizard(formElement);
+
+    wizardWithSimpleConditionalPage.setForm(wizard4).then(() => {
+      setTimeout(() => {
+        assert.equal(wizardWithSimpleConditionalPage.pages.length, 1);
+        assert.equal(wizardWithSimpleConditionalPage.components.length, 1);
+        const submissionData = { checkbox: true, number: 555 };
+        wizardWithSimpleConditionalPage.setSubmission({ data:submissionData });
+
+        setTimeout(() => {
+          assert.equal(wizardWithSimpleConditionalPage.pages.length, 2);
+          assert.equal(wizardWithSimpleConditionalPage.components.length, 2);
+          assert.equal(wizardWithSimpleConditionalPage.data, submissionData);
+          done();
+        }, 500);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should display submission data on page with custom conditional logic in readOnly', function(done) {
+    const formElement = document.createElement('div');
+    const wizardWithCustomConditionalPage = new Wizard(formElement);
+
+    wizardWithCustomConditionalPage.setForm(wizard5).then(() => {
+      setTimeout(() => {
+        wizardWithCustomConditionalPage.disabled = true;
+
+        if (wizardWithCustomConditionalPage.options) {
+          wizardWithCustomConditionalPage.options.readOnly = true;
+        }
+        else {
+          wizardWithCustomConditionalPage.options = { readOnly: true };
+        }
+
+        setTimeout(() => {
+          assert.equal(wizardWithCustomConditionalPage.pages.length, 1);
+          assert.equal(wizardWithCustomConditionalPage.components.length, 1);
+
+          const submissionData = { checkbox: true, number: 555 };
+
+          wizardWithCustomConditionalPage.setSubmission({ data:submissionData });
+
+          setTimeout(() => {
+            assert.equal(wizardWithCustomConditionalPage.pages.length, 2);
+            assert.equal(wizardWithCustomConditionalPage.components.length, 2);
+            assert.equal(wizardWithCustomConditionalPage.data, submissionData);
+
+            const clickEvent = new Event('click');
+            const secondPageBtn = wizardWithCustomConditionalPage.refs[`${wizardWithCustomConditionalPage.wizardKey}-link`][1];
+
+            secondPageBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              assert.equal(wizardWithCustomConditionalPage.page, 1);
+
+              const numberComponent = wizardWithCustomConditionalPage.element.querySelector('[name="data[number]"]');
+
+              assert.equal(numberComponent.value, 555);
+
+              done();
+            }, 400);
+          }, 300);
+        }, 200);
+      }, 100);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should show conditional wizard page', function(done) {
     const formElement = document.createElement('div');
     const wizardWithConditionalPage = new Wizard(formElement);
@@ -182,8 +255,8 @@ describe('Wizard tests', () => {
   it('Should replace components of the current page with addWizardPage component', (done) => {
     const formElement = document.createElement('div');
     wizardForm = new Wizard(formElement);
-    const editGrid = new EditGrid(wizard5);
-    wizardForm.setForm(wizard4).then(() => {
+    const editGrid = new EditGrid(wizard7);
+    wizardForm.setForm(wizard6).then(() => {
       wizardForm.prevPageState = _.clone(wizardForm.currentPage.components);
       wizardForm.emit('renderRows', editGrid);
 

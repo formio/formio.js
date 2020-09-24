@@ -31,7 +31,7 @@ export default class FormComponent extends Component {
       title: 'Nested Form',
       icon: 'wpforms',
       group: 'premium',
-      documentation: 'http://help.form.io/userguide/#form',
+      documentation: '/userguide/#form',
       weight: 110,
       schema: FormComponent.schema()
     };
@@ -97,7 +97,7 @@ export default class FormComponent extends Component {
 
     return this.createSubForm().then((subForm) => {
       setTimeout(() => {
-        if (this.root && this.root.subWizards && subForm._form.display === 'wizard') {
+        if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
           this.root.subWizards.push(this);
           this.emit('subWizardsUpdated');
         }

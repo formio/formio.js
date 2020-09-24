@@ -1799,6 +1799,8 @@ export default class Component extends Element {
       messages = [messages];
     }
 
+    messages = _.uniqBy(messages, message => message.message);
+
     if (this.refs.messageContainer) {
       this.setContent(this.refs.messageContainer, messages.map((message) =>
         this.renderTemplate('message', message)
@@ -2254,6 +2256,10 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
+    if (this.options.renderMode === 'html') {
+      this.redraw();
+      return changed;
+    }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value, flags);
@@ -2434,7 +2440,7 @@ export default class Component extends Element {
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (!this.component.calculateValue || shouldBeCleared) {
+    if (this.options.readOnly || !this.component.calculateValue || shouldBeCleared) {
       return false;
     }
 
@@ -2654,7 +2660,7 @@ export default class Component extends Element {
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
 
-    if (flags.noValidate && !flags.validateOnInit) {
+    if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
         this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
       }

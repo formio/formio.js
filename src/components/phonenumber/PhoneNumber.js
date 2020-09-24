@@ -17,7 +17,7 @@ export default class PhoneNumberComponent extends TextFieldComponent {
       group: 'advanced',
       icon: 'phone-square',
       weight: 30,
-      documentation: 'http://help.form.io/userguide/#phonenumber',
+      documentation: '/userguide/#phonenumber',
       schema: PhoneNumberComponent.schema()
     };
   }

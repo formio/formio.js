@@ -73,8 +73,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
@@ -242,8 +241,81 @@ import wizard from &apos;../test/forms/wizardValidationOnPageChanged&apos;;
 import wizard1 from &apos;../test/forms/wizardValidationOnNextBtn&apos;;
 import wizard2 from &apos;../test/forms/wizardWithEditGrid&apos;;
 import wizard3 from &apos;../test/forms/conditionalWizardPages&apos;;
+import wizard4 from &apos;../test/forms/wizardWithSimpleConditionalPage&apos;;
+import wizard5 from &apos;../test/forms/wizardWithCustomConditionalPage&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
+  it(&apos;Should display conditional page after setting submission&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizardWithSimpleConditionalPage = new Wizard(formElement);
+
+    wizardWithSimpleConditionalPage.setForm(wizard4).then(() =&gt; {
+      setTimeout(() =&gt; {
+        assert.equal(wizardWithSimpleConditionalPage.pages.length, 1);
+        assert.equal(wizardWithSimpleConditionalPage.components.length, 1);
+        const submissionData = { checkbox: true, number: 555 };
+        wizardWithSimpleConditionalPage.setSubmission({ data:submissionData });
+
+        setTimeout(() =&gt; {
+          assert.equal(wizardWithSimpleConditionalPage.pages.length, 2);
+          assert.equal(wizardWithSimpleConditionalPage.components.length, 2);
+          assert.equal(wizardWithSimpleConditionalPage.data, submissionData);
+          done();
+        }, 500);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should display submission data on page with custom conditional logic in readOnly&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizardWithCustomConditionalPage = new Wizard(formElement);
+
+    wizardWithCustomConditionalPage.setForm(wizard5).then(() =&gt; {
+      setTimeout(() =&gt; {
+        wizardWithCustomConditionalPage.disabled = true;
+
+        if (wizardWithCustomConditionalPage.options) {
+          wizardWithCustomConditionalPage.options.readOnly = true;
+        }
+        else {
+          wizardWithCustomConditionalPage.options = { readOnly: true };
+        }
+
+        setTimeout(() =&gt; {
+          assert.equal(wizardWithCustomConditionalPage.pages.length, 1);
+          assert.equal(wizardWithCustomConditionalPage.components.length, 1);
+
+          const submissionData = { checkbox: true, number: 555 };
+
+          wizardWithCustomConditionalPage.setSubmission({ data:submissionData });
+
+          setTimeout(() =&gt; {
+            assert.equal(wizardWithCustomConditionalPage.pages.length, 2);
+            assert.equal(wizardWithCustomConditionalPage.components.length, 2);
+            assert.equal(wizardWithCustomConditionalPage.data, submissionData);
+
+            const clickEvent = new Event(&apos;click&apos;);
+            const secondPageBtn = wizardWithCustomConditionalPage.refs[`${wizardWithCustomConditionalPage.wizardKey}-link`][1];
+
+            secondPageBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() =&gt; {
+              assert.equal(wizardWithCustomConditionalPage.page, 1);
+
+              const numberComponent = wizardWithCustomConditionalPage.element.querySelector(&apos;[name=&quot;data[number]&quot;]&apos;);
+
+              assert.equal(numberComponent.value, 555);
+
+              done();
+            }, 400);
+          }, 300);
+        }, 200);
+      }, 100);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should show conditional wizard page&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const wizardWithConditionalPage = new Wizard(formElement);
