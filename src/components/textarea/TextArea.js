@@ -27,7 +27,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       title: 'Text Area',
       group: 'basic',
       icon: 'font',
-      documentation: 'http://help.form.io/userguide/#textarea',
+      documentation: '/userguide/#textarea',
       weight: 20,
       schema: TextAreaComponent.schema()
     };

@@ -17,7 +17,7 @@ export default class PasswordComponent extends TextFieldComponent {
       title: 'Password',
       icon: 'asterisk',
       group: 'basic',
-      documentation: 'http://help.form.io/userguide/#password',
+      documentation: '/userguide/#password',
       weight: 40,
       schema: PasswordComponent.schema()
     };

@@ -1057,6 +1057,10 @@ export default class WebformBuilder extends Component {
           newComp.build(defaultValueComponent.element);
         }
       }
+      else {
+        this.preview._data[changed.instance._data.key] = changed.value;
+        this.webform._data[changed.instance._data.key] = changed.value;
+      }
     }
 
     // Called when we update a component.
@@ -1234,6 +1238,7 @@ export default class WebformBuilder extends Component {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
+      helplinks: this.helplinks,
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));

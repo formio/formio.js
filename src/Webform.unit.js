@@ -31,8 +31,7 @@ import {
   propertyActions,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
-// import Formio from './Formio';
-// import { APIMock } from '../test/APIMock';
+import nestedModalWizard from '../test/forms/nestedModalWizard';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -1080,6 +1079,22 @@ describe('Webform tests', function() {
 
           done();
         }, 250);
+      }, 250);
+    }).catch(done);
+  });
+
+  it('Should render Nested Modal Wizard Form correclty', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement);
+    form.setForm(nestedModalWizard).then(() => {
+      const openModalRef = form.element.querySelector('[ref="openModal"]');
+      assert(openModalRef, 'Should render Open Modal button');
+      const wizard = form.components[1].subForm;
+      wizard.setPage(1);
+      setTimeout(() => {
+        const openModalRef = form.element.querySelector('[ref="openModal"]');
+        assert(openModalRef, 'Should render Open Modal button after the page was changed');
+        done();
       }, 250);
     }).catch(done);
   });

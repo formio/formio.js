@@ -71,4 +71,10 @@ const Evaluator = {
   }
 };
 
+Evaluator.registerEvaluator = (evaluator) => {
+  Object.keys(evaluator).forEach((key) => {
+    Evaluator[key] = evaluator[key];
+  });
+};
+
 export default Evaluator;

@@ -2,6 +2,7 @@ import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import Webform from '../../Webform';
 import DateTimeComponent from './DateTime';
+import assert from 'power-assert';
 
 import {
   comp1,
@@ -14,7 +15,8 @@ describe('DateTime Component', () => {
   });
 
   it('Test formatting', (done) => {
-    Harness.testCreate(DateTimeComponent, comp2).then((dateTime) => {
+    comp2.widget.format = 'yyyy-MM-dd';
+    Harness.testCreate(DateTimeComponent, comp2.one).then((dateTime) => {
       const value = '2020-09-22T00:00:00';
       const formattedValue = '2020-09-22';
       const input = dateTime.element.querySelector('[ref="input"]');
@@ -25,5 +27,13 @@ describe('DateTime Component', () => {
         done();
       }, 250);
     }).catch(done);
+  });
+
+  it('Should format value', () => {
+    comp2.widget.format = 'yyyy-MM-dd hh:mm a';
+    return Harness.testCreate(DateTimeComponent, comp2)
+      .then((dateTime) => {
+        assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');
+      });
   });
 });

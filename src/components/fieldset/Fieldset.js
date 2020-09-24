@@ -18,7 +18,7 @@ export default class FieldsetComponent extends NestedComponent {
       title: 'Field Set',
       icon: 'th-large',
       group: 'layout',
-      documentation: 'http://help.form.io/userguide/#fieldset',
+      documentation: '/userguide/#fieldset',
       weight: 20,
       schema: FieldsetComponent.schema()
     };
