@@ -1057,6 +1057,10 @@ export default class WebformBuilder extends Component {
           newComp.build(defaultValueComponent.element);
         }
       }
+      else {
+        this.preview._data[changed.instance._data.key] = changed.value;
+        this.webform._data[changed.instance._data.key] = changed.value;
+      }
     }
 
     // Called when we update a component.
