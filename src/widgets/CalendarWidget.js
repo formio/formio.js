@@ -188,7 +188,7 @@ export default class CalendarWidget extends InputWidget {
               // Make sure we commit the value after a blur event occurs.
               this.addEventListener(this.calendar._input, 'blur', (event) => {
                 if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
-                  this.calendar.setDate(this.calendar.input.value, true, this.settings.altFormat);
+                  this.calendar.setDate(new Date(this.calendar.input.value), true, this.settings.altFormat);
                 }
               });
 
