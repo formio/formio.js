@@ -360,7 +360,10 @@ export default class Wizard extends Webform {
         }
 
         if (comp && comp.subForm) {
-          hasNested = getAllComponents(comp, nestedPages, pushAllowed);
+          const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
+          if (!hasNested) {
+            hasNested = hasNestedForm;
+          }
         }
       }, true);
 
