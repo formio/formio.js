@@ -1,8 +1,6 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
-import Webform from '../../Webform';
 import DateTimeComponent from './DateTime';
-import assert from 'power-assert';
 
 import {
   comp1,
