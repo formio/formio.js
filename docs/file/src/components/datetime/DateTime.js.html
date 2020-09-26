@@ -281,7 +281,7 @@ export default class DateTimeComponent extends Input {
       title: &apos;Date / Time&apos;,
       group: &apos;advanced&apos;,
       icon: &apos;calendar&apos;,
-      documentation: &apos;http://help.form.io/userguide/#datetime&apos;,
+      documentation: &apos;/userguide/#datetime&apos;,
       weight: 40,
       schema: DateTimeComponent.schema()
     };
@@ -418,6 +418,11 @@ export default class DateTimeComponent extends Input {
         sibling.focus();
       }
     }
+  }
+
+  getValueAsString(value) {
+    const format = FormioUtils.convertFormatToMoment(this.component.format);
+    return (value ? moment(value).format(format) : value) || &apos;&apos;;
   }
 }
 </code></pre>

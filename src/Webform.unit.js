@@ -32,6 +32,7 @@ import {
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
+import disableSubmitButton from '../test/forms/disableSubmitButton';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -1095,6 +1096,48 @@ describe('Webform tests', function() {
         const openModalRef = form.element.querySelector('[ref="openModal"]');
         assert(openModalRef, 'Should render Open Modal button after the page was changed');
         done();
+      }, 250);
+    }).catch(done);
+  });
+
+  it('Should set calculated value correctly', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement);
+    form.setForm(disableSubmitButton).then(() => {
+      const textField = form.getComponent(['textField']);
+      const fileA = form.getComponent(['upload']);
+      const fileB = form.getComponent(['file']);
+      const submitButton = form.getComponent(['submit']);
+      assert.equal(submitButton.disabled, false, 'Button should be enabled at the beginning');
+
+      const simulateFileUploading = (comp, debounce = 250) => {
+        const filePromise = new Promise((resolve) => {
+          setTimeout(() => resolve(), debounce);
+        });
+        filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));
+        comp.emit('fileUploadingStart', filePromise);
+      };
+
+      simulateFileUploading(fileA, 1000);
+      textField.setValue('12345');
+      setTimeout(() => {
+        assert.equal(submitButton.filesUploading.length, 1);
+        assert.equal(submitButton.isDisabledOnInvalid, true, 'Should be disabled on invalid due to the invalid TextField\'s value');
+        assert.equal(submitButton.disabled, true, 'Should be disabled');
+        simulateFileUploading(fileB, 500);
+        setTimeout(() => {
+          assert.equal(submitButton.filesUploading.length, 2);
+          assert.equal(submitButton.disabled, true, 'Should be disabled');
+          setTimeout(() => {
+            assert.equal(submitButton.filesUploading.length, 0);
+            assert.equal(submitButton.disabled, true, 'Should be disabled since TextField is still invalid');
+            textField.setValue('123');
+            setTimeout(() => {
+              assert.equal(submitButton.disabled, false, 'Should be enabled');
+              done();
+            }, 250);
+          }, 650);
+        }, 100);
       }, 250);
     }).catch(done);
   });

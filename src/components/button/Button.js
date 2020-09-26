@@ -33,6 +33,11 @@ export default class ButtonComponent extends Field {
     };
   }
 
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.filesUploading = [];
+  }
+
   get defaultSchema() {
     return ButtonComponent.schema();
   }
@@ -150,6 +155,22 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
+
+      this.on('fileUploadingStart', (filePromise) => {
+        this.filesUploading.push(filePromise);
+        this.disabled = true;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
+
+      this.on('fileUploadingEnd', (filePromise) => {
+        const index = this.filesUploading.indexOf(filePromise);
+        if (index !== -1) {
+          this.filesUploading.splice(index, 1);
+        }
+        this.disabled = this.shouldDisabled ? true : false;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
+
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         if (isValid) {
@@ -190,7 +211,8 @@ export default class ButtonComponent extends Field {
         flags.rootValidity = isValid;
       }
       this.loading = false;
-      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
+      this.isDisabledOnInvalid = this.component.disableOnInvalid && !isValid;
+      this.disabled = this.shouldDisabled;
       this.setDisabled(this.refs.button, this.disabled);
 
       if (onChange) {
@@ -227,6 +249,10 @@ export default class ButtonComponent extends Field {
         this.openOauth(this.oauthConfig);
       }
     }
+  }
+
+  get shouldDisabled() {
+    return super.shouldDisabled || !!this.filesUploading?.length || this.isDisabledOnInvalid;
   }
 
   attach(element) {

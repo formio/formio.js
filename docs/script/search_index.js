@@ -6102,6 +6102,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#getvalueasstring",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getValueAsString",
+    "src/components/datetime/DateTime.js~DateTimeComponent#getValueAsString",
+    "method"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent#isempty",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-isEmpty",
     "src/components/datetime/DateTime.js~DateTimeComponent#isEmpty",
@@ -6171,6 +6177,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/fixtures/comp1.js",
     "file/src/components/datetime/fixtures/comp1.js.html",
     "src/components/datetime/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp2.js",
+    "file/src/components/datetime/fixtures/comp2.js.html",
+    "src/components/datetime/fixtures/comp2.js",
     "file"
   ],
   [
@@ -6396,6 +6408,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/day/day.js~daycomponent#shoulddisabled",
+    "class/src/components/day/Day.js~DayComponent.html#instance-get-shouldDisabled",
+    "src/components/day/Day.js~DayComponent#shouldDisabled",
+    "member"
+  ],
+  [
     "src/components/day/day.js~daycomponent#showday",
     "class/src/components/day/Day.js~DayComponent.html#instance-get-showDay",
     "src/components/day/Day.js~DayComponent#showDay",
@@ -6519,6 +6537,12 @@ window.esdocSearchIndex = [
     "src/components/day/fixtures/comp3.js",
     "file/src/components/day/fixtures/comp3.js.html",
     "src/components/day/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/day/fixtures/comp4.js",
+    "file/src/components/day/fixtures/comp4.js.html",
+    "src/components/day/fixtures/comp4.js",
     "file"
   ],
   [

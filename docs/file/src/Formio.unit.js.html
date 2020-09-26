@@ -2511,6 +2511,45 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         });
       assert.ok(plugin.wrapStaticRequestPromise.calledOnce, &apos;wrapStaticRequestPromise should be called once&apos;);
     });
+
+    it(&apos;Should render after form submission if renderMode = \&apos;html\&apos;&apos;, (done) =&gt; {
+      const formJson =  {
+        components: [{
+          label: &apos;Text Field&apos;,
+          tableView: true,
+          key: &apos;textField&apos;,
+          type: &apos;textfield&apos;,
+          input: true
+        },
+        {
+          label: &apos;Phone Number&apos;,
+          tableView: true,
+          key: &apos;phoneNumber&apos;,
+          type: &apos;phoneNumber&apos;,
+          input: true
+        }]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      Formio.createForm(element, formJson, { renderMode: &apos;html&apos; })
+        .then(form =&gt; {
+          const textField = form.getComponent(&apos;textField&apos;);
+          const phoneNumber = form.getComponent(&apos;phoneNumber&apos;);
+          assert.equal(textField.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          assert.equal(phoneNumber.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          form.submission = {
+            data: {
+              textField: &apos;textField&apos;,
+              phoneNumber: &apos;88005553535&apos;
+            }
+          };
+          setTimeout(() =&gt; {
+            assert.equal(textField.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;textField&apos;);
+            assert.equal(phoneNumber.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;88005553535&apos;);
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
   });
 });
 </code></pre>
