@@ -47,8 +47,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
@@ -243,6 +242,7 @@ import wizard2 from &apos;../test/forms/wizardWithEditGrid&apos;;
 import wizard3 from &apos;../test/forms/conditionalWizardPages&apos;;
 import wizard4 from &apos;../test/forms/wizardWithSimpleConditionalPage&apos;;
 import wizard5 from &apos;../test/forms/wizardWithCustomConditionalPage&apos;;
+import wizardWithAllowPrevious from &apos;../test/forms/wizardWithAllowPrevious&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
   it(&apos;Should display conditional page after setting submission&apos;, function(done) {
@@ -370,12 +370,12 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
     wizardForm = new Wizard(formElement);
     wizardForm.setForm(wizard).then(() =&gt; {
       Harness.testErrors(wizardForm, {
-          data: {
-            a: &apos;1&apos;,
-            c: &apos;&apos;,
-            textField: &apos;&apos;
-          }
-        },
+        data: {
+          a: &apos;1&apos;,
+          c: &apos;&apos;,
+          textField: &apos;&apos;
+        }
+      },
         [{
           component: &apos;a&apos;,
           message: &apos;a must have at least 4 characters.&apos;
@@ -480,6 +480,26 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
 
     assert(valid, &apos;Should be valid&apos;);
     assert.equal(form.data.c, &apos;c&apos;, &apos;Should keep the value of a conditionally visible page.&apos;);
+  });
+
+  it(&apos;If allowPrevious is given, the breadcrumb bar should be clickable for visited tabs.&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    wizardForm = new Wizard(formElement, { allowPrevious: true });
+    wizardForm.setForm(wizardWithAllowPrevious)
+      .then(() =&gt; {
+        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][1]);
+
+        setTimeout(() =&gt; {
+          assert.equal(wizardForm.page, 0, &apos;Should be disabled for unvisited tabs.&apos;);
+          Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-next`]);
+
+          setTimeout(() =&gt; {
+            assert.equal(wizardForm.enabledIndex, 1, &apos;Should be clickable for visited tabs.&apos;);
+            done();
+          }, 100);
+        }, 100);
+      })
+      .catch(done);
   });
 });
 </code></pre>

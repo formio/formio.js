@@ -4,8 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.12.1-rc.2
 #### Fixed
+ - FJS-1216: Checkbox Shortcut key is not working correctly
+ - Fixed an issue where it is not possible to hide label of some components inside data grid
  - FOR-2725: added possibility to use file name in interpolated file url in file component
  - FJS-1244: fix display of simple nested forms
  - Fixing situation where custom conditionals would reset the evaluations.

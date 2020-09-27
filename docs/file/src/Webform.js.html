@@ -47,8 +47,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
@@ -1241,7 +1240,7 @@ export default class Webform extends NestedDataComponent {
     this.element = element;
     this.loadRefs(element, { webform: &apos;single&apos; });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.addEventListener(this.element, &apos;keydown&apos;, this.executeShortcuts);
+    this.addEventListener(document, &apos;keydown&apos;, this.executeShortcuts);
     this.currentForm = this;
     return childPromise.then(() =&gt; {
       this.emit(&apos;render&apos;, this.element);
@@ -1427,7 +1426,7 @@ export default class Webform extends NestedDataComponent {
           };
           const li = this.ce(&apos;li&apos;, params);
           const span = this.ce(&apos;span&apos;);
-          li.style=&apos;cursor:pointer&apos;;
+          li.style.cursor = &apos;pointer&apos;;
 
           this.setContent(span, unescapeHTML(message));
           this.appendTo(span, li);
