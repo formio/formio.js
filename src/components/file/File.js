@@ -611,7 +611,7 @@ export default class FileComponent extends Field {
             file.private = true;
           }
           const { storage, options = {} } = this.component;
-          const url = this.interpolate(this.component.url);
+          const url = this.interpolate(this.component.url, { file: fileUpload });
           let groupKey = null;
           let groupPermissions = null;
 
@@ -633,31 +633,35 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
-          fileService.uploadFile(storage, file, fileName, dir, (evt) => {
-            fileUpload.status = 'progress';
-            fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
-            delete fileUpload.message;
-            this.redraw();
-          }, url, options, fileKey, groupPermissions, groupResourceId)
-            .then((fileInfo) => {
-              const index = this.statuses.indexOf(fileUpload);
-              if (index !== -1) {
-                this.statuses.splice(index, 1);
-              }
-              fileInfo.originalName = file.name;
-              if (!this.hasValue()) {
-                this.dataValue = [];
-              }
-              this.dataValue.push(fileInfo);
+          const filePromise = fileService.uploadFile(storage, file, fileName, dir, (evt) => {
+              fileUpload.status = 'progress';
+              fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
+              delete fileUpload.message;
               this.redraw();
-              this.triggerChange();
-            })
-            .catch((response) => {
-              fileUpload.status = 'error';
-              fileUpload.message = response;
-              delete fileUpload.progress;
-              this.redraw();
-            });
+            }, url, options, fileKey, groupPermissions, groupResourceId)
+              .then((fileInfo) => {
+                const index = this.statuses.indexOf(fileUpload);
+                if (index !== -1) {
+                  this.statuses.splice(index, 1);
+                }
+                fileInfo.originalName = file.name;
+                if (!this.hasValue()) {
+                  this.dataValue = [];
+                }
+                this.dataValue.push(fileInfo);
+                this.redraw();
+                this.triggerChange();
+              })
+              .catch((response) => {
+                fileUpload.status = 'error';
+                fileUpload.message = response;
+                delete fileUpload.progress;
+                this.redraw();
+              })
+              .finally(() => {
+                this.emit('fileUploadingEnd', filePromise);
+              });
+            this.emit('fileUploadingStart', filePromise);
         }
       });
     }

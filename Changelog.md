@@ -6,7 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased]
 #### Fixed
+ - FOR-2725: added possibility to use file name in interpolated file url in file component
+ - FJS-1244: fix display of simple nested forms
+ - Fixing situation where custom conditionals would reset the evaluations.
+ - FJS-1178: adding an ability to use click on previous pages using breadcrumbs even when they are disabled
+ - FJS-1103: When you hit the enter button, then you see the field not saving the year correctly.
  - FJS-1070: Data is showing blank when is set to renderMode: 'html'
+ - FJS-1054: disables Subbmit button while uploading files
+ - FJS-1205: fixed an issue where error alerts do not work in IE
  - Fixes an issue where modalEdit Nested Wizard is rendered as a simple component after changing the page
  - FJS-1197: Custom Error displaying twice when validating form
  - FJS-1106: Date Time Component Receiving Uncaught TypeError

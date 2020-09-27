@@ -9,6 +9,7 @@ import wizard2 from '../test/forms/wizardWithEditGrid';
 import wizard3 from '../test/forms/conditionalWizardPages';
 import wizard4 from '../test/forms/wizardWithSimpleConditionalPage';
 import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
+import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 
 describe('Wizard tests', () => {
   it('Should display conditional page after setting submission', function(done) {
@@ -136,12 +137,12 @@ describe('Wizard tests', () => {
     wizardForm = new Wizard(formElement);
     wizardForm.setForm(wizard).then(() => {
       Harness.testErrors(wizardForm, {
-          data: {
-            a: '1',
-            c: '',
-            textField: ''
-          }
-        },
+        data: {
+          a: '1',
+          c: '',
+          textField: ''
+        }
+      },
         [{
           component: 'a',
           message: 'a must have at least 4 characters.'
@@ -246,5 +247,25 @@ describe('Wizard tests', () => {
 
     assert(valid, 'Should be valid');
     assert.equal(form.data.c, 'c', 'Should keep the value of a conditionally visible page.');
+  });
+
+  it('If allowPrevious is given, the breadcrumb bar should be clickable for visited tabs.', (done) => {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement, { allowPrevious: true });
+    wizardForm.setForm(wizardWithAllowPrevious)
+      .then(() => {
+        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][1]);
+
+        setTimeout(() => {
+          assert.equal(wizardForm.page, 0, 'Should be disabled for unvisited tabs.');
+          Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-next`]);
+
+          setTimeout(() => {
+            assert.equal(wizardForm.enabledIndex, 1, 'Should be clickable for visited tabs.');
+            done();
+          }, 100);
+        }, 100);
+      })
+      .catch(done);
   });
 });
