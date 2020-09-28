@@ -1,34 +1,35 @@
 export default {
-  'label': 'Date / Time',
-  'displayInTimezone': 'location',
-  'tableView': true,
-  'enableMinDateInput': false,
-  'datePicker': {
-    'disableWeekends': false,
-    'disableWeekdays': false
-  },
-  'enableMaxDateInput': false,
-  'key': 'dateTime',
   'type': 'datetime',
-  'timezone': 'America/Los_Angeles',
-  'input': true,
-  'widget': {
-    'type': 'calendar',
-    'timezone': 'America/Los_Angeles',
-    'displayInTimezone': 'location',
-    'locale': 'en',
-    'useLocaleSettings': false,
-    'allowInput': true,
-    'mode': 'single',
-    'enableTime': true,
-    'noCalendar': false,
-    'format': 'yyyy-MM-dd hh:mm a',
-    'hourIncrement': 1,
-    'minuteIncrement': 1,
-    'time_24hr': false,
-    'minDate': null,
-    'disableWeekends': false,
-    'disableWeekdays': false,
-    'maxDate': null
-  }
+  'validate': {
+    'custom': '',
+    'required': false
+  },
+  'persistent': true,
+  'protected': false,
+  'timePicker': {
+    'arrowkeys': true,
+    'mousewheel': true,
+    'readonlyInput': false,
+    'showMeridian': true,
+    'minuteStep': 1,
+    'hourStep': 1
+  },
+  'datePicker': {
+    'datepickerMode': 'day',
+    'yearRange': '20',
+    'maxMode': 'year',
+    'minMode': 'day',
+    'initDate': '',
+    'startingDay': 0,
+    'showWeeks': true
+  },
+  'datepickerMode': 'day',
+  'defaultDate': '',
+  'enableTime': true,
+  'enableDate': true,
+  'format': 'yyyy-MM-dd',
+  'key': 'date',
+  'label': 'Date',
+  'tableView': true,
+  'input': true
 };
