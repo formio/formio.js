@@ -13,8 +13,7 @@ describe('DateTime Component', () => {
   });
 
   it('Test formatting', (done) => {
-    comp2.widget.format = 'yyyy-MM-dd';
-    Harness.testCreate(DateTimeComponent, comp2.one).then((dateTime) => {
+    Harness.testCreate(DateTimeComponent, comp2).then((dateTime) => {
       const value = '2020-09-22T00:00:00';
       const formattedValue = '2020-09-22';
       const input = dateTime.element.querySelector('[ref="input"]');
@@ -28,7 +27,7 @@ describe('DateTime Component', () => {
   });
 
   it('Should format value', () => {
-    comp2.widget.format = 'yyyy-MM-dd hh:mm a';
+    comp2.format = 'yyyy-MM-dd hh:mm a';
     return Harness.testCreate(DateTimeComponent, comp2)
       .then((dateTime) => {
         assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');
