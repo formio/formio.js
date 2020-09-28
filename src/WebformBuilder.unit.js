@@ -7,9 +7,7 @@ import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm
 describe('WebformBuilder tests', function() {
   this.retries(3);
   before((done) => Harness.builderBefore(done));
-  afterEach((done) => {
-    Harness.getBuilder().setForm({ display: 'form', components: [] }).then(() => done());
-  });
+  afterEach(() => Harness.getBuilder().setForm({ display: 'form', components: [] }));
   after((done) => Harness.builderAfter(done));
   it('Should create a new form builder class', (done) => {
     const builder = Harness.getBuilder();
