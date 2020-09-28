@@ -235,7 +235,7 @@
 import moment from &apos;moment&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
 import FormioUtils from &apos;../../utils&apos;;
-import Widgets from &apos;../../widgets&apos;;
+
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -355,11 +355,6 @@ export default class DateTimeComponent extends Input {
     return input;
   }
 
-  get widget() {
-    const widget = this.component.widget ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
-    return widget;
-  }
-
   get defaultSchema() {
     return DateTimeComponent.schema();
   }
@@ -377,6 +372,10 @@ export default class DateTimeComponent extends Input {
     return &apos;&apos;;
   }
 
+  get momentFormat() {
+    return FormioUtils.convertFormatToMoment(this.component.format);
+  }
+
   isEmpty(value = this.dataValue) {
     if (value &amp;&amp; (value.toString() === &apos;Invalid Date&apos;)) {
       return true;
@@ -390,9 +389,8 @@ export default class DateTimeComponent extends Input {
   }
 
   isEqual(valueA, valueB = this.dataValue) {
-    const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (this.isEmpty(valueA) &amp;&amp; this.isEmpty(valueB))
-      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);
+      || moment.utc(valueA).format(this.momentFormat) === moment.utc(valueB).format(this.momentFormat);
   }
 
   createWrapper() {

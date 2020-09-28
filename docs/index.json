@@ -17801,7 +17801,7 @@
     "__docId__": 929,
     "kind": "file",
     "name": "src/components/datetime/DateTime.js",
-    "content": "import _ from 'lodash';\nimport moment from 'moment';\nimport Input from '../_classes/input/Input';\nimport FormioUtils from '../../utils';\nimport Widgets from '../../widgets';\nexport default class DateTimeComponent extends Input {\n  static schema(...extend) {\n    return Input.schema({\n      type: 'datetime',\n      label: 'Date / Time',\n      key: 'dateTime',\n      format: 'yyyy-MM-dd hh:mm a',\n      useLocaleSettings: false,\n      allowInput: true,\n      enableDate: true,\n      enableTime: true,\n      defaultValue: '',\n      defaultDate: '',\n      displayInTimezone: 'viewer',\n      timezone: '',\n      datepickerMode: 'day',\n      datePicker: {\n        showWeeks: true,\n        startingDay: 0,\n        initDate: '',\n        minMode: 'day',\n        maxMode: 'year',\n        yearRows: 4,\n        yearColumns: 5,\n        minDate: null,\n        maxDate: null\n      },\n      timePicker: {\n        hourStep: 1,\n        minuteStep: 1,\n        showMeridian: true,\n        readonlyInput: false,\n        mousewheel: true,\n        arrowkeys: true\n      },\n      customOptions: {},\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Date / Time',\n      group: 'advanced',\n      icon: 'calendar',\n      documentation: '/userguide/#datetime',\n      weight: 40,\n      schema: DateTimeComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    const timezone = (this.component.timezone || this.options.timezone);\n    const time24hr = !_.get(this.component, 'timePicker.showMeridian', true);\n\n    // Change the format to map to the settings.\n    if (!this.component.enableDate) {\n      this.component.format = this.component.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.component.enableTime) {\n      this.component.format = this.component.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (time24hr) {\n      this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n    else {\n      this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');\n    }\n\n    let customOptions = this.component.customOptions || {};\n\n    if (typeof customOptions === 'string') {\n      try {\n        customOptions = JSON.parse(customOptions);\n      }\n      catch (err) {\n        console.warn(err.message);\n        customOptions = {};\n      }\n    }\n\n    /* eslint-disable camelcase */\n    this.component.widget = {\n      type: 'calendar',\n      timezone,\n      displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),\n      submissionTimezone: this.submissionTimezone,\n      locale: this.options.language,\n      useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),\n      allowInput: _.get(this.component, 'allowInput', true),\n      mode: 'single',\n      enableTime: _.get(this.component, 'enableTime', true),\n      noCalendar: !_.get(this.component, 'enableDate', true),\n      format: this.component.format,\n      hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),\n      minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),\n      time_24hr: time24hr,\n      readOnly: this.options.readOnly,\n      minDate: _.get(this.component, 'datePicker.minDate'),\n      disabledDates: _.get(this.component, 'datePicker.disable'),\n      disableWeekends: _.get(this.component, 'datePicker.disableWeekends'),\n      disableWeekdays: _.get(this.component, 'datePicker.disableWeekdays'),\n      disableFunction: _.get(this.component, 'datePicker.disableFunction'),\n      maxDate: _.get(this.component, 'datePicker.maxDate'),\n      ...customOptions,\n    };\n    /* eslint-enable camelcase */\n\n    // Add the validators date.\n    this.validators.push('date');\n  }\n\n  performInputMapping(input) {\n    if (input.widget && input.widget.settings) {\n      input.widget.settings.submissionTimezone = this.submissionTimezone;\n    }\n    return input;\n  }\n\n  get widget() {\n    const widget = this.component.widget ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;\n    return widget;\n  }\n\n  get defaultSchema() {\n    return DateTimeComponent.schema();\n  }\n\n  get defaultValue() {\n    let defaultValue = super.defaultValue;\n    if (!defaultValue && this.component.defaultDate) {\n      defaultValue = FormioUtils.getDateSetting(this.component.defaultDate);\n      defaultValue = defaultValue ? defaultValue.toISOString() : '';\n    }\n    return defaultValue;\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  isEmpty(value = this.dataValue) {\n    if (value && (value.toString() === 'Invalid Date')) {\n      return true;\n    }\n    return super.isEmpty(value);\n  }\n\n  formatValue(input) {\n    const result = moment.utc(input).toISOString();\n    return result === 'Invalid date' ? input : result;\n  }\n\n  isEqual(valueA, valueB = this.dataValue) {\n    const format = FormioUtils.convertFormatToMoment(this.component.format);\n    return (this.isEmpty(valueA) && this.isEmpty(valueB))\n      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);\n  }\n\n  createWrapper() {\n    return false;\n  }\n\n  checkValidity(data, dirty, rowData) {\n    if (this.refs.input) {\n      this.refs.input.forEach((input) => {\n        if (input.widget && input.widget.enteredDate) {\n          dirty = true;\n        }\n      });\n    }\n    return super.checkValidity(data, dirty, rowData);\n  }\n\n  focus() {\n    if (this.refs.input && this.refs.input[0]) {\n      const sibling = this.refs.input[0].nextSibling;\n      if (sibling) {\n        sibling.focus();\n      }\n    }\n  }\n\n  getValueAsString(value) {\n    const format = FormioUtils.convertFormatToMoment(this.component.format);\n    return (value ? moment(value).format(format) : value) || '';\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport moment from 'moment';\nimport Input from '../_classes/input/Input';\nimport FormioUtils from '../../utils';\n\nexport default class DateTimeComponent extends Input {\n  static schema(...extend) {\n    return Input.schema({\n      type: 'datetime',\n      label: 'Date / Time',\n      key: 'dateTime',\n      format: 'yyyy-MM-dd hh:mm a',\n      useLocaleSettings: false,\n      allowInput: true,\n      enableDate: true,\n      enableTime: true,\n      defaultValue: '',\n      defaultDate: '',\n      displayInTimezone: 'viewer',\n      timezone: '',\n      datepickerMode: 'day',\n      datePicker: {\n        showWeeks: true,\n        startingDay: 0,\n        initDate: '',\n        minMode: 'day',\n        maxMode: 'year',\n        yearRows: 4,\n        yearColumns: 5,\n        minDate: null,\n        maxDate: null\n      },\n      timePicker: {\n        hourStep: 1,\n        minuteStep: 1,\n        showMeridian: true,\n        readonlyInput: false,\n        mousewheel: true,\n        arrowkeys: true\n      },\n      customOptions: {},\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Date / Time',\n      group: 'advanced',\n      icon: 'calendar',\n      documentation: '/userguide/#datetime',\n      weight: 40,\n      schema: DateTimeComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    const timezone = (this.component.timezone || this.options.timezone);\n    const time24hr = !_.get(this.component, 'timePicker.showMeridian', true);\n\n    // Change the format to map to the settings.\n    if (!this.component.enableDate) {\n      this.component.format = this.component.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.component.enableTime) {\n      this.component.format = this.component.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (time24hr) {\n      this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n    else {\n      this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');\n    }\n\n    let customOptions = this.component.customOptions || {};\n\n    if (typeof customOptions === 'string') {\n      try {\n        customOptions = JSON.parse(customOptions);\n      }\n      catch (err) {\n        console.warn(err.message);\n        customOptions = {};\n      }\n    }\n\n    /* eslint-disable camelcase */\n    this.component.widget = {\n      type: 'calendar',\n      timezone,\n      displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),\n      submissionTimezone: this.submissionTimezone,\n      locale: this.options.language,\n      useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),\n      allowInput: _.get(this.component, 'allowInput', true),\n      mode: 'single',\n      enableTime: _.get(this.component, 'enableTime', true),\n      noCalendar: !_.get(this.component, 'enableDate', true),\n      format: this.component.format,\n      hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),\n      minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),\n      time_24hr: time24hr,\n      readOnly: this.options.readOnly,\n      minDate: _.get(this.component, 'datePicker.minDate'),\n      disabledDates: _.get(this.component, 'datePicker.disable'),\n      disableWeekends: _.get(this.component, 'datePicker.disableWeekends'),\n      disableWeekdays: _.get(this.component, 'datePicker.disableWeekdays'),\n      disableFunction: _.get(this.component, 'datePicker.disableFunction'),\n      maxDate: _.get(this.component, 'datePicker.maxDate'),\n      ...customOptions,\n    };\n    /* eslint-enable camelcase */\n\n    // Add the validators date.\n    this.validators.push('date');\n  }\n\n  performInputMapping(input) {\n    if (input.widget && input.widget.settings) {\n      input.widget.settings.submissionTimezone = this.submissionTimezone;\n    }\n    return input;\n  }\n\n  get defaultSchema() {\n    return DateTimeComponent.schema();\n  }\n\n  get defaultValue() {\n    let defaultValue = super.defaultValue;\n    if (!defaultValue && this.component.defaultDate) {\n      defaultValue = FormioUtils.getDateSetting(this.component.defaultDate);\n      defaultValue = defaultValue ? defaultValue.toISOString() : '';\n    }\n    return defaultValue;\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  get momentFormat() {\n    return FormioUtils.convertFormatToMoment(this.component.format);\n  }\n\n  isEmpty(value = this.dataValue) {\n    if (value && (value.toString() === 'Invalid Date')) {\n      return true;\n    }\n    return super.isEmpty(value);\n  }\n\n  formatValue(input) {\n    const result = moment.utc(input).toISOString();\n    return result === 'Invalid date' ? input : result;\n  }\n\n  isEqual(valueA, valueB = this.dataValue) {\n    return (this.isEmpty(valueA) && this.isEmpty(valueB))\n      || moment.utc(valueA).format(this.momentFormat) === moment.utc(valueB).format(this.momentFormat);\n  }\n\n  createWrapper() {\n    return false;\n  }\n\n  checkValidity(data, dirty, rowData) {\n    if (this.refs.input) {\n      this.refs.input.forEach((input) => {\n        if (input.widget && input.widget.enteredDate) {\n          dirty = true;\n        }\n      });\n    }\n    return super.checkValidity(data, dirty, rowData);\n  }\n\n  focus() {\n    if (this.refs.input && this.refs.input[0]) {\n      const sibling = this.refs.input[0].nextSibling;\n      if (sibling) {\n        sibling.focus();\n      }\n    }\n  }\n\n  getValueAsString(value) {\n    const format = FormioUtils.convertFormatToMoment(this.component.format);\n    return (value ? moment(value).format(format) : value) || '';\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/datetime/DateTime.js",
     "access": "public",
@@ -17918,12 +17918,12 @@
   {
     "__docId__": 935,
     "kind": "get",
-    "name": "widget",
+    "name": "defaultSchema",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/components/datetime/DateTime.js~DateTimeComponent#widget",
+    "longname": "src/components/datetime/DateTime.js~DateTimeComponent#defaultSchema",
     "access": "public",
     "description": null,
     "lineNumber": 125,
@@ -17937,15 +17937,15 @@
   {
     "__docId__": 936,
     "kind": "get",
-    "name": "defaultSchema",
+    "name": "defaultValue",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/components/datetime/DateTime.js~DateTimeComponent#defaultSchema",
+    "longname": "src/components/datetime/DateTime.js~DateTimeComponent#defaultValue",
     "access": "public",
     "description": null,
-    "lineNumber": 130,
+    "lineNumber": 129,
     "undocument": true,
     "type": {
       "types": [
@@ -17956,25 +17956,6 @@
   {
     "__docId__": 937,
     "kind": "get",
-    "name": "defaultValue",
-    "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/components/datetime/DateTime.js~DateTimeComponent#defaultValue",
-    "access": "public",
-    "description": null,
-    "lineNumber": 134,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 938,
-    "kind": "get",
     "name": "emptyValue",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
     "generator": false,
@@ -17983,11 +17964,30 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#emptyValue",
     "access": "public",
     "description": null,
-    "lineNumber": 143,
+    "lineNumber": 138,
     "undocument": true,
     "type": {
       "types": [
         "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 938,
+    "kind": "get",
+    "name": "momentFormat",
+    "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/components/datetime/DateTime.js~DateTimeComponent#momentFormat",
+    "access": "public",
+    "description": null,
+    "lineNumber": 142,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
       ]
     }
   },
@@ -18002,7 +18002,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#isEmpty",
     "access": "public",
     "description": null,
-    "lineNumber": 147,
+    "lineNumber": 146,
     "undocument": true,
     "params": [
       {
@@ -18030,7 +18030,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#formatValue",
     "access": "public",
     "description": null,
-    "lineNumber": 154,
+    "lineNumber": 153,
     "undocument": true,
     "params": [
       {
@@ -18057,7 +18057,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#isEqual",
     "access": "public",
     "description": null,
-    "lineNumber": 159,
+    "lineNumber": 158,
     "undocument": true,
     "params": [
       {
@@ -18091,7 +18091,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#createWrapper",
     "access": "public",
     "description": null,
-    "lineNumber": 165,
+    "lineNumber": 163,
     "undocument": true,
     "params": [],
     "return": {
@@ -18111,7 +18111,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#checkValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 169,
+    "lineNumber": 167,
     "undocument": true,
     "params": [
       {
@@ -18150,7 +18150,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#focus",
     "access": "public",
     "description": null,
-    "lineNumber": 180,
+    "lineNumber": 178,
     "undocument": true,
     "params": [],
     "return": null
@@ -18166,7 +18166,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#getValueAsString",
     "access": "public",
     "description": null,
-    "lineNumber": 189,
+    "lineNumber": 187,
     "undocument": true,
     "params": [
       {
@@ -18186,7 +18186,7 @@
     "__docId__": 946,
     "kind": "file",
     "name": "src/components/datetime/DateTime.unit.js",
-    "content": "import Harness from '../../../test/harness';\nimport DateTimeComponent from './DateTime';\nimport assert from 'power-assert';\n\nimport {\n  comp1,\n  comp2,\n} from './fixtures';\n\ndescribe('DateTime Component', () => {\n  it('Should build a date time component', () => {\n    return Harness.testCreate(DateTimeComponent, comp1);\n  });\n\n  it('Should format value', () => {\n    return Harness.testCreate(DateTimeComponent, comp2)\n      .then((dateTime) => {\n        assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');\n      });\n  });\n});\n",
+    "content": "import assert from 'power-assert';\nimport Harness from '../../../test/harness';\nimport DateTimeComponent from './DateTime';\n\nimport {\n  comp1,\n  comp2,\n} from './fixtures';\n\ndescribe('DateTime Component', () => {\n  it('Should build a date time component', () => {\n    return Harness.testCreate(DateTimeComponent, comp1);\n  });\n\n  it('Test formatting', (done) => {\n    Harness.testCreate(DateTimeComponent, comp2).then((dateTime) => {\n      const value = '2020-09-22T00:00:00';\n      const formattedValue = '2020-09-22';\n      const input = dateTime.element.querySelector('[ref=\"input\"]');\n      assert.equal(input.getAttribute('placeholder'), dateTime.component.format, 'Placeholder should be equal to the format');\n      dateTime.setValue(value);\n      setTimeout(() => {\n        assert.equal(dateTime.getValueAsString(value), formattedValue, 'getValueAsString should return formatted value');\n        done();\n      }, 250);\n    }).catch(done);\n  });\n\n  it('Should format value', () => {\n    comp2.format = 'yyyy-MM-dd hh:mm a';\n    return Harness.testCreate(DateTimeComponent, comp2)\n      .then((dateTime) => {\n        assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');\n      });\n  });\n});\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/datetime/DateTime.unit.js",
     "access": "public",
@@ -18252,7 +18252,7 @@
     "__docId__": 952,
     "kind": "file",
     "name": "src/components/datetime/fixtures/comp2.js",
-    "content": "export default {\n  'label': 'Date / Time',\n  'displayInTimezone': 'location',\n  'tableView': true,\n  'enableMinDateInput': false,\n  'datePicker': {\n    'disableWeekends': false,\n    'disableWeekdays': false\n  },\n  'enableMaxDateInput': false,\n  'key': 'dateTime',\n  'type': 'datetime',\n  'timezone': 'America/Los_Angeles',\n  'input': true,\n  'widget': {\n    'type': 'calendar',\n    'timezone': 'America/Los_Angeles',\n    'displayInTimezone': 'location',\n    'locale': 'en',\n    'useLocaleSettings': false,\n    'allowInput': true,\n    'mode': 'single',\n    'enableTime': true,\n    'noCalendar': false,\n    'format': 'yyyy-MM-dd hh:mm a',\n    'hourIncrement': 1,\n    'minuteIncrement': 1,\n    'time_24hr': false,\n    'minDate': null,\n    'disableWeekends': false,\n    'disableWeekdays': false,\n    'maxDate': null\n  }\n};\n",
+    "content": "export default {\n  'type': 'datetime',\n  'validate': {\n    'custom': '',\n    'required': false\n  },\n  'persistent': true,\n  'protected': false,\n  'timePicker': {\n    'arrowkeys': true,\n    'mousewheel': true,\n    'readonlyInput': false,\n    'showMeridian': true,\n    'minuteStep': 1,\n    'hourStep': 1\n  },\n  'datePicker': {\n    'datepickerMode': 'day',\n    'yearRange': '20',\n    'maxMode': 'year',\n    'minMode': 'day',\n    'initDate': '',\n    'startingDay': 0,\n    'showWeeks': true\n  },\n  'datepickerMode': 'day',\n  'defaultDate': '',\n  'enableTime': true,\n  'enableDate': true,\n  'format': 'yyyy-MM-dd',\n  'key': 'date',\n  'label': 'Date',\n  'tableView': true,\n  'input': true\n};\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/datetime/fixtures/comp2.js",
     "access": "public",
@@ -45075,7 +45075,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.12.1-rc.2\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.6.6\",\n    \"@formio/semantic\": \"^2.4.5\",\n    \"autocompleter\": \"^6.0.3\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^9.0.1\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"3.5.0\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.2\",\n    \"dompurify\": \"2.0.11\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^6.4.3\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"i18next\": \"^19.7.0\",\n    \"idb\": \"^5.0.6\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^2.2.0\",\n    \"lodash\": \"^4.17.20\",\n    \"moment\": \"^2.29.0\",\n    \"moment-timezone\": \"^0.5.31\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.0\",\n    \"vanilla-picker\": \"^2.10.1\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.11.6\",\n    \"@babel/core\": \"^7.11.6\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.10.4\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.10.4\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.11.0\",\n    \"@babel/polyfill\": \"^7.11.5\",\n    \"@babel/preset-env\": \"^7.11.5\",\n    \"@babel/register\": \"^7.11.5\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.1.0\",\n    \"bootstrap\": \"^4.5.1\",\n    \"bootswatch\": \"^4.5.1\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^4.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.10.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.10.6\",\n    \"file-loader\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.3\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.4.0\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^5.2.3\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^1.1.1\",\n    \"mocha\": \"^8.1.3\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.1\",\n    \"sinon\": \"^9.0.3\",\n    \"webpack\": \"^4.44.2\",\n    \"webpack-stream\": \"^6.1.0\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.12.1-rc.3\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.6.6\",\n    \"@formio/semantic\": \"^2.4.5\",\n    \"autocompleter\": \"^6.0.3\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^9.0.1\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"3.5.0\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.2\",\n    \"dompurify\": \"2.0.11\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^6.4.3\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"i18next\": \"^19.7.0\",\n    \"idb\": \"^5.0.6\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^2.2.0\",\n    \"lodash\": \"^4.17.20\",\n    \"moment\": \"^2.29.0\",\n    \"moment-timezone\": \"^0.5.31\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.0\",\n    \"vanilla-picker\": \"^2.10.1\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.11.6\",\n    \"@babel/core\": \"^7.11.6\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.10.4\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.10.4\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.11.0\",\n    \"@babel/polyfill\": \"^7.11.5\",\n    \"@babel/preset-env\": \"^7.11.5\",\n    \"@babel/register\": \"^7.11.5\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.1.0\",\n    \"bootstrap\": \"^4.5.1\",\n    \"bootswatch\": \"^4.5.1\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^4.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.10.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.10.6\",\n    \"file-loader\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.3\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.4.0\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^5.2.3\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^1.2.0\",\n    \"mocha\": \"^8.1.3\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.1\",\n    \"sinon\": \"^9.0.3\",\n    \"webpack\": \"^4.44.2\",\n    \"webpack-stream\": \"^6.1.0\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,

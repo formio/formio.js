@@ -232,38 +232,39 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/fixtures/comp2.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default {
-  &apos;label&apos;: &apos;Date / Time&apos;,
-  &apos;displayInTimezone&apos;: &apos;location&apos;,
-  &apos;tableView&apos;: true,
-  &apos;enableMinDateInput&apos;: false,
-  &apos;datePicker&apos;: {
-    &apos;disableWeekends&apos;: false,
-    &apos;disableWeekdays&apos;: false
-  },
-  &apos;enableMaxDateInput&apos;: false,
-  &apos;key&apos;: &apos;dateTime&apos;,
   &apos;type&apos;: &apos;datetime&apos;,
-  &apos;timezone&apos;: &apos;America/Los_Angeles&apos;,
-  &apos;input&apos;: true,
-  &apos;widget&apos;: {
-    &apos;type&apos;: &apos;calendar&apos;,
-    &apos;timezone&apos;: &apos;America/Los_Angeles&apos;,
-    &apos;displayInTimezone&apos;: &apos;location&apos;,
-    &apos;locale&apos;: &apos;en&apos;,
-    &apos;useLocaleSettings&apos;: false,
-    &apos;allowInput&apos;: true,
-    &apos;mode&apos;: &apos;single&apos;,
-    &apos;enableTime&apos;: true,
-    &apos;noCalendar&apos;: false,
-    &apos;format&apos;: &apos;yyyy-MM-dd hh:mm a&apos;,
-    &apos;hourIncrement&apos;: 1,
-    &apos;minuteIncrement&apos;: 1,
-    &apos;time_24hr&apos;: false,
-    &apos;minDate&apos;: null,
-    &apos;disableWeekends&apos;: false,
-    &apos;disableWeekdays&apos;: false,
-    &apos;maxDate&apos;: null
-  }
+  &apos;validate&apos;: {
+    &apos;custom&apos;: &apos;&apos;,
+    &apos;required&apos;: false
+  },
+  &apos;persistent&apos;: true,
+  &apos;protected&apos;: false,
+  &apos;timePicker&apos;: {
+    &apos;arrowkeys&apos;: true,
+    &apos;mousewheel&apos;: true,
+    &apos;readonlyInput&apos;: false,
+    &apos;showMeridian&apos;: true,
+    &apos;minuteStep&apos;: 1,
+    &apos;hourStep&apos;: 1
+  },
+  &apos;datePicker&apos;: {
+    &apos;datepickerMode&apos;: &apos;day&apos;,
+    &apos;yearRange&apos;: &apos;20&apos;,
+    &apos;maxMode&apos;: &apos;year&apos;,
+    &apos;minMode&apos;: &apos;day&apos;,
+    &apos;initDate&apos;: &apos;&apos;,
+    &apos;startingDay&apos;: 0,
+    &apos;showWeeks&apos;: true
+  },
+  &apos;datepickerMode&apos;: &apos;day&apos;,
+  &apos;defaultDate&apos;: &apos;&apos;,
+  &apos;enableTime&apos;: true,
+  &apos;enableDate&apos;: true,
+  &apos;format&apos;: &apos;yyyy-MM-dd&apos;,
+  &apos;key&apos;: &apos;date&apos;,
+  &apos;label&apos;: &apos;Date&apos;,
+  &apos;tableView&apos;: true,
+  &apos;input&apos;: true
 };
 </code></pre>
 

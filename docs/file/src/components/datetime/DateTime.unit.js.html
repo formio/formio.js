@@ -231,9 +231,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/DateTime.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+import Harness from &apos;../../../test/harness&apos;;
 import DateTimeComponent from &apos;./DateTime&apos;;
-import assert from &apos;power-assert&apos;;
 
 import {
   comp1,
@@ -245,7 +245,22 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
     return Harness.testCreate(DateTimeComponent, comp1);
   });
 
+  it(&apos;Test formatting&apos;, (done) =&gt; {
+    Harness.testCreate(DateTimeComponent, comp2).then((dateTime) =&gt; {
+      const value = &apos;2020-09-22T00:00:00&apos;;
+      const formattedValue = &apos;2020-09-22&apos;;
+      const input = dateTime.element.querySelector(&apos;[ref=&quot;input&quot;]&apos;);
+      assert.equal(input.getAttribute(&apos;placeholder&apos;), dateTime.component.format, &apos;Placeholder should be equal to the format&apos;);
+      dateTime.setValue(value);
+      setTimeout(() =&gt; {
+        assert.equal(dateTime.getValueAsString(value), formattedValue, &apos;getValueAsString should return formatted value&apos;);
+        done();
+      }, 250);
+    }).catch(done);
+  });
+
   it(&apos;Should format value&apos;, () =&gt; {
+    comp2.format = &apos;yyyy-MM-dd hh:mm a&apos;;
     return Harness.testCreate(DateTimeComponent, comp2)
       .then((dateTime) =&gt; {
         assert.equal(dateTime.getValueAsString(&apos;2020-09-18T12:12:00&apos;), &apos;2020-09-18 12:12 PM&apos;);

@@ -5946,16 +5946,16 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#momentformat",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-momentFormat",
+    "src/components/datetime/DateTime.js~DateTimeComponent#momentFormat",
+    "member"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent#performinputmapping",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-performInputMapping",
     "src/components/datetime/DateTime.js~DateTimeComponent#performInputMapping",
     "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#widget",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-widget",
-    "src/components/datetime/DateTime.js~DateTimeComponent#widget",
-    "member"
   ],
   [
     "src/components/datetime/datetime.js~datetimecomponent.builderinfo",
