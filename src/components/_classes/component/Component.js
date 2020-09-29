@@ -1110,6 +1110,7 @@ export default class Component extends Element {
 
   checkRefresh(refreshData, changed, flags) {
     const changePath = _.get(changed, 'instance.path', false);
+    const changeKey = changed && changed.component && changed.component.key;
     // Don't let components change themselves.
     if (changePath && this.path === changePath) {
       return;
@@ -1118,7 +1119,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && changePath === refreshData) && changed && changed.instance &&
+      ((changePath && changePath === refreshData) || (changeKey && changeKey === refreshData)) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
