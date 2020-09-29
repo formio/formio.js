@@ -6,11 +6,11 @@ import {
   getDateSetting,
   escapeRegExCharacters,
   interpolate,
-  convertFormatToMoment,
+  convertFormatToDayjs,
   getArrayFromComponentPath,
   unescapeHTML,
 } from '../utils/utils';
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 const { fetch, Headers, Request } = fetchPonyfill({
@@ -626,7 +626,7 @@ class ValidationChecker {
           const date = getDateSetting(setting);
           return component.t(component.errorMessage('maxDate'), {
             field: component.errorLabel,
-            maxDate: moment(date).format(component.format),
+            maxDate: dayjs(date).format(component.format),
           });
         },
         check(component, setting, value) {
@@ -634,7 +634,7 @@ class ValidationChecker {
           if (component.isPartialDay && component.isPartialDay(value)) {
             return true;
           }
-          const date = moment(value);
+          const date = dayjs(value);
           const maxDate = getDateSetting(setting);
 
           if (_.isNull(maxDate)) {
@@ -653,7 +653,7 @@ class ValidationChecker {
           const date = getDateSetting(setting);
           return component.t(component.errorMessage('minDate'), {
             field: component.errorLabel,
-            minDate: moment(date).format(component.format),
+            minDate: dayjs(date).format(component.format),
           });
         },
         check(component, setting, value) {
@@ -661,7 +661,7 @@ class ValidationChecker {
           if (component.isPartialDay && component.isPartialDay(value)) {
             return true;
           }
-          const date = moment(value);
+          const date = dayjs(value);
           const minDate = getDateSetting(setting);
           if (_.isNull(minDate)) {
             return true;
@@ -719,7 +719,7 @@ class ValidationChecker {
         message(component) {
           return component.t(component.errorMessage(this.validators.calendar.messageText), {
             field: component.errorLabel,
-            maxDate: moment(component.dataValue).format(component.format),
+            maxDate: dayjs(component.dataValue).format(component.format),
           });
         },
         check(component, setting, value, data, index) {
@@ -730,14 +730,14 @@ class ValidationChecker {
           }
           const { settings, enteredDate } = widget;
           const { minDate, maxDate, format } = settings;
-          const momentFormat = [convertFormatToMoment(format)];
+          const dayjsFormat = [convertFormatToDayjs(format)];
 
-          if (momentFormat[0].match(/M{3,}/g)) {
-            momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));
+          if (dayjsFormat[0].match(/M{3,}/g)) {
+            dayjsFormat.push(dayjsFormat[0].replace(/M{3,}/g, 'MM'));
           }
 
           if (!value && enteredDate) {
-            const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
+            const { message, result } = checkInvalidDate(enteredDate, dayjsFormat, minDate, maxDate);
 
             if (!result) {
               this.validators.calendar.messageText = message;
@@ -746,7 +746,7 @@ class ValidationChecker {
           }
 
           if (value && enteredDate) {
-            if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() && enteredDate.match(/_/gi)) {
+            if (dayjs(value).format() !== dayjs(enteredDate, dayjsFormat, true).format() && enteredDate.match(/_/gi)) {
               this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
               return false;
             }
@@ -767,7 +767,7 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           if (component.isEmpty(value)) return true;
-          return moment(value, component.component.format).isValid();
+          return dayjs(value, component.component.format).isValid();
         }
       },
     };

@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Operator } from './Operator';
 
@@ -30,6 +30,8 @@ export class IsDaylightSavingTimeOperator extends Operator {
       date,
     } = args;
 
-    return moment(date).isDST();
+    // TODO: Implement isDST method as dayjs plugin
+    // return dayjs(date).isDST();
+    return false;
   }
 }

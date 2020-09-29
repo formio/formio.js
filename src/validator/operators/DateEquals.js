@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Operator } from './Operator';
 
@@ -42,6 +42,6 @@ export class DateEqualsOperator extends Operator {
       granularity = 'millisecond',
     } = args;
 
-    return moment(left).isSame(right, granularity);
+    return dayjs(left).isSame(right, granularity);
   }
 }

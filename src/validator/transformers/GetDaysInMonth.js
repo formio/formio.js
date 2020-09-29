@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -12,6 +12,6 @@ export class GetDaysInMonthTransformer extends Transformer {
   }
 
   transform(value) {
-    return moment(value).daysInMonth();
+    return dayjs(value).daysInMonth();
   }
 }

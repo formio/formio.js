@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import {
-  convertFormatToMoment,
+  convertFormatToDayjs,
   getDateSetting,
   superGet,
 } from '../../utils/utils';
@@ -158,14 +158,18 @@ export default class DateTimeComponent extends Input {
   }
 
   formatValue(input) {
-    const result = moment.utc(input).toISOString();
-    return result === 'Invalid date' ? input : result;
+    const utcResult = dayjs.utc(input);
+    if (!utcResult.isValid()) {
+      return input;
+    }
+
+    return utcResult.toISOString();
   }
 
   isEqual(valueA, valueB = this.dataValue) {
-    const format = convertFormatToMoment(this.component.format);
+    const format = convertFormatToDayjs(this.component.format);
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
-      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);
+      || dayjs.utc(valueA).format(format) === dayjs.utc(valueB).format(format);
   }
 
   createWrapper() {

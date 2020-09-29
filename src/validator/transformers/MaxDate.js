@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -12,6 +12,6 @@ export class MaxDateTransformer extends Transformer {
   }
 
   transform(value) {
-    return moment.max(value);
+    return dayjs.max(value);
   }
 }

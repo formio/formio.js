@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Operator } from './Operator';
 
@@ -87,6 +87,6 @@ export class DateBetweenOperator extends Operator {
       excludeTo = false,
     } = opts;
 
-    return moment(value).isBetween(from, to, granularity, `${excludeFrom ? '(' : '['}${excludeTo ? ')' : ']'}`);
+    return dayjs(value).isBetween(from, to, granularity, `${excludeFrom ? '(' : '['}${excludeTo ? ')' : ']'}`);
   }
 }

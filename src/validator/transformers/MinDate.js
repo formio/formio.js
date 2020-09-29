@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -12,6 +12,6 @@ export class MinDateTransformer extends Transformer {
   }
 
   transform(value) {
-    return moment.min(value);
+    return dayjs.min(value);
   }
 }

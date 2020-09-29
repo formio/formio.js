@@ -2,7 +2,7 @@ import compareVersions from 'compare-versions';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import i18next from 'i18next';
 import _ from 'lodash';
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 import NativePromise from 'native-promise-only';
 
 import { Formio } from '../../Formio';
@@ -1371,7 +1371,7 @@ export class Webform extends NestedDataComponent {
     submission.metadata = submission.metadata || {};
     _.defaults(submission.metadata, {
       timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-      offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+      offset: parseInt(_.get(this, '_submission.metadata.offset', dayjs().utcOffset()), 10),
       origin: document.location.origin,
       referrer: document.referrer,
       browserName: navigator.appName,

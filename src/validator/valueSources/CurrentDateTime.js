@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { ValueSource } from './ValueSource';
 
@@ -16,6 +16,6 @@ export class CurrentDateTimeValueSource extends ValueSource {
   }
 
   getValue() {
-    return moment();
+    return dayjs();
   }
 }

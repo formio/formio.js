@@ -1,8 +1,9 @@
-import { getDateSetting } from '../../utils/utils';
-import moment from 'moment';
 import _ from 'lodash';
+import * as dayjs from 'dayjs';
 
+import { getDateSetting } from '../../utils/utils';
 import { Rule } from './Rule';
+
 export class MinDate extends Rule {
   defaultMessage = '{{field}} should not contain date before {{settings.dateLimit}}';
 
@@ -11,7 +12,7 @@ export class MinDate extends Rule {
       return true;
     }
 
-    const date = moment(value);
+    const date = dayjs(value);
     const minDate = getDateSetting(this.settings.dateLimit);
 
     if (_.isNull(minDate)) {
@@ -21,6 +22,6 @@ export class MinDate extends Rule {
       minDate.setHours(0, 0, 0, 0);
     }
 
-    return date.isAfter(minDate) || date.isSame(minDate);
+    return date.isSameOfAfter(minDate);
   }
 }

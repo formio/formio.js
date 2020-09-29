@@ -65,7 +65,7 @@ const EditFormUtils = {
       '<tr><th>component</th><td>The current component JSON</td></tr>' +
       '<tr><th>instance</th><td>The current component instance.</td></tr>' +
       '<tr><th>value</th><td>The current value of the component.</td></tr>' +
-      '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' +
+      '<tr><th>dayjs</th><td>The day.js library for date manipulation.</td></tr>' +
       '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.</td></tr>' +
       '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a> object.</td></tr>' +
       '<tr><th>util</th><td>An alias for "utils".</td></tr>' +

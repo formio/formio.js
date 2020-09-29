@@ -3,7 +3,7 @@ import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 import maskInput from 'vanilla-text-mask';
 
 /**
@@ -489,7 +489,8 @@ export default class Base {
       utils: FormioUtils,
       util: FormioUtils,
       user: Formio.getUser(),
-      moment,
+      moment: dayjs, // Form JSON backward compatibility
+      dayjs,
       instance: this,
       self: this,
       token: Formio.getToken({

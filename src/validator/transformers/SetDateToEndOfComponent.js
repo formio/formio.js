@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -26,6 +26,6 @@ export class SetDateToEndOfComponentTransformer extends Transformer {
       unit,
     } = args;
 
-    return moment(value).endOf(unit);
+    return dayjs(value).endOf(unit);
   }
 }
