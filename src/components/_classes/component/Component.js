@@ -1110,7 +1110,7 @@ export default class Component extends Element {
 
   checkRefresh(refreshData, changed, flags) {
     const changePath = _.get(changed, 'instance.path', false);
-    const changeKey = changed && changed.component && changed.component.key;
+    const changeKey = _.get(changed, 'component.key', false);
     // Don't let components change themselves.
     if (changePath && this.path === changePath) {
       return;
