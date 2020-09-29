@@ -44,6 +44,7 @@ export default class Wizard extends Webform {
     this.lastPromise = NativePromise.resolve();
     this.enabledIndex = 0;
     this.editMode = false;
+    this.firstRender = true;
   }
 
   isLastPage() {
@@ -265,6 +266,13 @@ export default class Wizard extends Webform {
     ]);
     this.attachNav();
     this.attachHeader();
+
+    if (this.firstRender) {
+      // will run once if the first page contains dynamicWizard component
+      this.firstRender = false;
+      this.setChangingMode();
+    }
+
     return promises.then(() => this.emit('render', { component: this.currentPage, page: this.page }));
   }
 
@@ -323,6 +331,7 @@ export default class Wizard extends Webform {
             event.preventDefault();
             return this.setPage(index).then(() => {
               this.emit('wizardPageSelected', this.pages[index], index);
+              this.setChangingMode();
             });
           });
         }
@@ -601,6 +610,7 @@ export default class Wizard extends Webform {
           }
 
           this.emit('nextPage', { page: this.page, submission: this.submission });
+          this.setChangingMode();
         });
       });
     }
@@ -718,17 +728,19 @@ export default class Wizard extends Webform {
       next = this.options.buttonSettings.showNext
     } = _.get(this.currentPage, 'component.buttonSettings', {});
 
-    switch (name) {
-      case 'previous':
-        return previous && (this.getPreviousPage() > -1);
-      case 'next':
-        return next && (nextPage !== null) && (nextPage !== -1);
-      case 'cancel':
-        return cancel;
-      case 'submit':
-        return submit && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
-      default:
-        return true;
+    if (this.options.readOnly || !this.hasDynamicWizard()) {
+      switch (name) {
+        case 'previous':
+          return previous && (this.getPreviousPage() > -1);
+        case 'next':
+          return next && (nextPage !== null) && (nextPage !== -1);
+        case 'cancel':
+          return cancel;
+        case 'submit':
+          return submit && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
+        default:
+          return true;
+      }
     }
   }
 
@@ -830,6 +842,30 @@ export default class Wizard extends Webform {
       });
     }
     return super.focusOnComponent(key);
+  }
+
+  setChangingMode() {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    const dynamicWizardComponent = this.hasDynamicWizard();
+    // If the current page contains dynamicWizard component
+    if (dynamicWizardComponent) {
+      this.emit('setChangingMode', dynamicWizardComponent.id);
+
+      if (this?.element && !this.element.classList.contains('dynamicWizard-changingMode')) {
+        this.element.classList.add('dynamicWizard-changingMode');
+        this.redraw();
+      }
+    }
+    else if (this.element && this.element.classList.contains('dynamicWizard-changingMode')) {
+      this.element.classList.remove('dynamicWizard-changingMode');
+    }
+  }
+
+  hasDynamicWizard() {
+    return this.currentPage.components.find((comp) => comp.component.type === 'dynamicWizard');
   }
 }
 

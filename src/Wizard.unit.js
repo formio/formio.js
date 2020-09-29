@@ -1,15 +1,18 @@
+import _ from 'lodash';
 import Harness from '../test/harness';
 import Wizard from './Wizard';
 import Formio from './Formio';
 import assert from 'power-assert';
+import { expect } from 'chai';
 import wizardCond from '../test/forms/wizardConditionalPages';
+import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
 import wizard1 from '../test/forms/wizardValidationOnNextBtn';
 import wizard2 from '../test/forms/wizardWithEditGrid';
 import wizard3 from '../test/forms/conditionalWizardPages';
 import wizard4 from '../test/forms/wizardWithSimpleConditionalPage';
 import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
-import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
+import wizard6 from '../test/forms/wizardWithDynamicWizard';
 
 describe('Wizard tests', () => {
   it('Should display conditional page after setting submission', function(done) {
@@ -267,5 +270,25 @@ describe('Wizard tests', () => {
         }, 100);
       })
       .catch(done);
+  });
+
+  it('Should hide auxiliary components if there is a DynamicWizard component', (done) => {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizard6).then(() => {
+      wizardForm.prevPageState = _.clone(wizardForm.currentPage.components);
+      wizardForm.setChangingMode();
+      expect(formElement.classList.contains('dynamicWizard-changingMode')).to.be.true;
+
+      setTimeout(() => {
+        wizardForm.nextPage();
+
+        setTimeout(() => {
+          expect(wizardForm.element.classList.contains('dynamicWizard-changingMode')).to.be.false;
+          done();
+        }, 200);
+      }, 100);
+    })
+      .catch((err) => done(err));
   });
 });
