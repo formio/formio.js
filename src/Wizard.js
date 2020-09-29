@@ -73,8 +73,13 @@ export default class Wizard extends Webform {
     return super.data;
   }
 
+  checkConditions(data, flags, row) {
+    this.establishPages(data);
+    return super.checkConditions(data, flags, row);
+  }
+
   set data(value) {
-    this.establishPages(value);
+    this._data = value;
     _.each(this.getPages({ all: true }), (component) => {
       component.data = this.componentContext(component);
     });
@@ -680,6 +685,11 @@ export default class Wizard extends Webform {
     this.setComponentSchema();
     return super.setForm(form, flags);
   }
+
+  // checkConditions(data, flags, row) {
+  //   this.establishPages(data);
+  //   return super.checkConditions(data, flags, row);
+  // }
 
   setValue(submission, flags = {}) {
     this._submission = submission;
