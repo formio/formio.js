@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.4
+#### Fixed
+ - Fixed an issue where data on conditional Wizard pages is not saved
+ - FJS-1240: fixed an issue where address submission data is not shown inside dataGrid
+ - FJS-1158: hiding Password under bullets in a Modal button
+
+#### Changed
+ - Upgrade dragula@3.7.3
+
 ### 4.12.1-rc.3
 #### Fixed
  - FJS-1133, FJS-1028, FJS-1242: fixes an issue where DateTime's value has incorrect formatting on Data Tab
