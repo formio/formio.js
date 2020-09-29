@@ -960,8 +960,10 @@ export default class Component extends Element {
   }
 
   getModalPreviewTemplate() {
+    const dataValue = this.component.type === 'password' ? this.dataValue.replace(/./g, '•') : this.dataValue;
+
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
+      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
