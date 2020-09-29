@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Operator } from './Operator';
 
@@ -30,6 +30,6 @@ export class IsLeapYearOperator extends Operator {
       date,
     } = args;
 
-    return moment(date).isLeapYear();
+    return dayjs(date).isLeapYear();
   }
 }

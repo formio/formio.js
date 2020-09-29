@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -26,6 +26,6 @@ export class SetDateToStartOfComponentTransformer extends Transformer {
       unit,
     } = args;
 
-    return moment(value).startOf(unit);
+    return dayjs(value).startOf(unit);
   }
 }

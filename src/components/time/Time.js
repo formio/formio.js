@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { superGet } from '../../utils/utils';
 
@@ -139,11 +139,11 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getStringAsValue(view) {
-    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
+    return view ? dayjs(view, this.component.format).format(this.component.dataFormat) : view;
   }
 
   getValueAsString(value) {
-    return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
+    return (value ? dayjs(value, this.component.dataFormat).format(this.component.format) : value) || '';
   }
 
   getInputMaskFromFormat(format) {

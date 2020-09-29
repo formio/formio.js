@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -32,6 +32,6 @@ export class SubtractDateComponentTransformer extends Transformer {
       unit,
     } = args;
 
-    return moment(value).subtract(valueToSubtract, unit);
+    return dayjs(value).subtract(valueToSubtract, unit);
   }
 }

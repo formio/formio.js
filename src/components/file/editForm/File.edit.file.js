@@ -125,7 +125,7 @@ export default [
     key: 'fileNameTemplate',
     label: 'File Name Template',
     placeholder: '(optional) {{{name}}-{{guid}}}}}',
-    tooltip: 'Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `moment` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.',
+    tooltip: 'Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `dayjs` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.',
     weight: 25,
   },
   {

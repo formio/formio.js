@@ -1,20 +1,17 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import {
   convertFormatToFlatpickr,
   convertFormatToMask,
-  convertFormatToMoment,
+  convertFormatToDayjs,
   currentTimezone,
   formatDate,
   formatOffset,
   getDateSetting,
   getLocaleDateFormatInfo,
-  momentDate,
-  zonesLoaded,
-  shouldLoadZones,
-  loadZones,
+  dayjsDate,
   superGet,
   superSet,
 } from '../utils/utils';
@@ -67,24 +64,6 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
-  /**
-   * Load the timezones.
-   *
-   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.
-   */
-  loadZones() {
-    const timezone = this.timezone;
-    if (!zonesLoaded() && shouldLoadZones(timezone)) {
-      loadZones(timezone).then(() => this.emit('redraw'));
-
-      // Return zones are loading.
-      return true;
-    }
-
-    // Zones are already loaded.
-    return false;
-  }
-
   attach(input) {
     const superAttach = super.attach(input);
     this.setPlaceholder(input);
@@ -98,7 +77,7 @@ export default class CalendarWidget extends InputWidget {
     this.closedOn = 0;
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
 
-    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
+    this.valueDayjsFormat = convertFormatToDayjs(this.valueFormat);
     this.settings.minDate = getDateSetting(this.settings.minDate);
     this.settings.disable = this.disabledDates;
     this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
@@ -146,7 +125,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
+        if (this.settings.saveAs === 'text' || !this.settings.enableTime) {
           return Flatpickr.formatDate(date, format);
         }
 
@@ -301,7 +280,7 @@ export default class CalendarWidget extends InputWidget {
    * @return {string}
    */
   getDateValue(date, format) {
-    return moment(date).format(convertFormatToMoment(format));
+    return dayjs(date).format(convertFormatToDayjs(format));
   }
 
   /**
@@ -338,11 +317,11 @@ export default class CalendarWidget extends InputWidget {
       return super.setValue(value);
     }
     if (value) {
-      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {
-        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
+      if ((this.settings.saveAs !== 'text') && this.settings.readOnly) {
+        this.calendar.setDate(dayjsDate(value, this.valueFormat, this.timezone).toDate(), false);
       }
       else {
-        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);
+        this.calendar.setDate(dayjs(value, this.valueDayjsFormat).toDate(), false);
       }
     }
     else {

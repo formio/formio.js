@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Rule } from './Rule';
 
@@ -7,6 +7,6 @@ export class Time extends Rule {
 
   check(value) {
     if (this.component.isEmpty(value)) return true;
-    return moment(value, this.component.component.format).isValid();
+    return dayjs(value, this.component.component.format).isValid();
   }
 }

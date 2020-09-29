@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -12,6 +12,6 @@ export class GetWeeksInYearTransformer extends Transformer {
   }
 
   transform(value) {
-    return moment(value).isoWeeksInYear();
+    return dayjs(value).isoWeeksInYear();
   }
 }

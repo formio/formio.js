@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Transformer } from './Transformer';
 
@@ -46,6 +46,6 @@ export class GetDateDifferenceTransformer extends Transformer {
       preciseResult = false,
     } = opts;
 
-    return moment(value).diff(differentDate, unit, preciseResult);
+    return dayjs(value).diff(differentDate, unit, preciseResult);
   }
 }

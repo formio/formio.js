@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Operator } from './Operator';
 
@@ -38,6 +38,6 @@ export class DateGreaterThanOrEqualOperator extends Operator {
       granularity = 'millisecond',
     } = args;
 
-    return moment(left).isSameOrAfter(right, granularity);
+    return dayjs(left).isSameOrAfter(right, granularity);
   }
 }

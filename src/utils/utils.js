@@ -3,17 +3,34 @@
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
 import jsonLogic from 'json-logic-js';
-import * as moment from 'moment-timezone/moment-timezone';
-import jtz from 'jstimezonedetect';
+
+import * as dayjs from 'dayjs';
+import * as dayjsIsLeapYear from 'dayjs/plugin/isLeapYear';
+import * as dayjsIsSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import * as dayjsIsSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import * as dayjsIsoWeeksInYear from 'dayjs/plugin/isoWeeksInYear';
+import * as dayjsMinMax from 'dayjs/plugin/minMax';
+import * as dayjsTimezone from 'dayjs/plugin/timezone';
+import * as dayjsUtc from 'dayjs/plugin/utc';
+
 import { lodashOperators } from './jsonlogic/operators';
 import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import Evaluator from './Evaluator';
+
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
+
+dayjs.extend(dayjsIsLeapYear);
+dayjs.extend(dayjsIsSameOrAfter);
+dayjs.extend(dayjsIsSameOrBefore);
+dayjs.extend(dayjsIsoWeeksInYear);
+dayjs.extend(dayjsMinMax);
+dayjs.extend(dayjsTimezone);
+dayjs.extend(dayjsUtc);
 
 export * from './formUtils';
 
@@ -22,20 +39,20 @@ lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
 // Retrieve Any Date
 jsonLogic.add_operation('getDate', (date) => {
-  return moment(date).toISOString();
+  return dayjs(date).toISOString();
 });
 
 // Set Relative Minimum Date
 jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
-  return moment().subtract(relativeMinDate, 'days').toISOString();
+  return dayjs().subtract(relativeMinDate, 'days').toISOString();
 });
 
 // Set Relative Maximum Date
 jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
-  return moment().add(relativeMaxDate, 'days').toISOString();
+  return dayjs().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment };
+export { jsonLogic, dayjs };
 
 /**
  * Evaluate a method.
@@ -445,22 +462,31 @@ export function getDateSetting(date) {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  // Backward compatibility with moment in JSON
+  let libName = '';
+  if (date.indexOf('moment(') !== -1) {
+    libName = 'moment';
+  } else if (date.indexOf('dayjs(') !== -1) {
+    libName = 'dayjs';
+  }
+
+  let dateSetting = ((typeof date !== 'string') || !libName) ? dayjs(date) : null;
+
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
 
   dateSetting = null;
   try {
-    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
+    const value = Evaluator.evaluator(`return ${date};`, libName)(dayjs);
     if (typeof value === 'string') {
-      dateSetting = moment(value);
+      dateSetting = dayjs(value);
     }
     else if (typeof value.toDate === 'function') {
-      dateSetting = moment(value.toDate().toUTCString());
+      dateSetting = dayjs(value.toDate().toUTCString());
     }
     else if (value instanceof Date) {
-      dateSetting = moment(value);
+      dateSetting = dayjs(value);
     }
   }
   catch (e) {
@@ -489,12 +515,12 @@ export function isValidDate(date) {
  * @return {string}
  */
 export function currentTimezone() {
-  if (moment.currentTimezone) {
-    return moment.currentTimezone;
+  if (dayjs.currentTimezone) {
+    return dayjs.currentTimezone;
   }
   // eslint-disable-next-line no-import-assign
-  moment.currentTimezone = jtz.determine().name();
-  return moment.currentTimezone;
+  dayjs.currentTimezone = dayjs.tz.guess();
+  return dayjs.currentTimezone;
 }
 
 /**
@@ -511,83 +537,30 @@ export function offsetDate(date, timezone) {
       abbr: 'UTC'
     };
   }
-  const dateMoment = moment(date).tz(timezone);
+  const dateDayjs = dayjs(date).tz(timezone);
   return {
-    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
-    abbr: dateMoment.format('z')
+    date: new Date(date.getTime() + ((dateDayjs.utcOffset() + date.getTimezoneOffset()) * 60000)),
+    abbr: dateDayjs.format('z')
   };
 }
 
 /**
- * Returns if the zones are loaded.
- *
- * @return {boolean}
- */
-export function zonesLoaded() {
-  return moment.zonesLoaded;
-}
-
-/**
- * Returns if we should load the zones.
- *
- * @param timezone
- * @return {boolean}
- */
-export function shouldLoadZones(timezone) {
-  if (timezone === currentTimezone() || timezone === 'UTC') {
-    return false;
-  }
-  return true;
-}
-
-/**
- * Externally load the timezone data.
- *
- * @return {Promise<any> | *}
- */
-export function loadZones(timezone) {
-  if (timezone && !shouldLoadZones(timezone)) {
-    // Return non-resolving promise.
-    return new NativePromise(_.noop);
-  }
-
-  if (moment.zonesPromise) {
-    return moment.zonesPromise;
-  }
-  // eslint-disable-next-line no-import-assign
-  return moment.zonesPromise = fetch(
-    'https://cdn.form.io/moment-timezone/data/packed/latest.json',
-  ).then(resp => resp.json().then(zones => {
-    moment.tz.load(zones);
-    // eslint-disable-next-line no-import-assign
-    moment.zonesLoaded = true;
-
-    // Trigger a global event that the timezones have finished loading.
-    if (document && document.createEvent && document.body && document.body.dispatchEvent) {
-      var event = document.createEvent('Event');
-      event.initEvent('zonesLoaded', true, true);
-      document.body.dispatchEvent(event);
-    }
-  }));
-}
-
-/**
- * Get the moment date object for translating dates with timezones.
+ * Get the dayjs date object for translating dates with timezones.
  *
  * @param value
  * @param format
  * @param timezone
  * @return {*}
  */
-export function momentDate(value, format, timezone) {
-  const momentDate = moment(value);
+export function dayjsDate(value, format, timezone) {
+  const dayjsDate = dayjs(value);
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
-  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && moment.zonesLoaded) {
-    return momentDate.tz(timezone);
+  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/)))) {
+    return dayjsDate.tz(timezone);
   }
-  return momentDate;
+  return dayjsDate;
 }
 
 /**
@@ -599,34 +572,26 @@ export function momentDate(value, format, timezone) {
  * @return {string}
  */
 export function formatDate(value, format, timezone) {
-  const momentDate = moment(value);
+  const dayjsDate = dayjs(value);
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {
-      loadZones();
-      if (moment.zonesLoaded) {
-        return momentDate.tz(timezone).format(convertFormatToMoment(format));
-      }
-      else {
-        return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
-      }
+      return dayjsDate.tz(timezone).format(convertFormatToDayjs(format));
     }
 
     // Return the standard format.
-    return momentDate.format(convertFormatToMoment(format));
+    return dayjsDate.format(convertFormatToDayjs(format));
   }
   if (timezone === 'UTC') {
-    const offset = offsetDate(momentDate.toDate(), 'UTC');
-    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+    const offset = offsetDate(dayjsDate.toDate(), 'UTC');
+    return `${dayjs(offset.date).format(convertFormatToDayjs(format))} UTC`;
   }
 
-  // Load the zones since we need timezone information.
-  loadZones();
-  if (moment.zonesLoaded && timezone) {
-    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  if (timezone) {
+    return dayjsDate.tz(timezone).format(`${convertFormatToDayjs(format)} z`);
   }
   else {
-    return momentDate.format(convertFormatToMoment(format));
+    return dayjsDate.format(convertFormatToDayjs(format));
   }
 }
 
@@ -647,15 +612,8 @@ export function formatOffset(formatFn, date, format, timezone) {
     return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
   }
 
-  // Load the zones since we need timezone information.
-  loadZones();
-  if (moment.zonesLoaded) {
-    const offset = offsetDate(date, timezone);
-    return `${formatFn(offset.date, format)} ${offset.abbr}`;
-  }
-  else {
-    return formatFn(date, format);
-  }
+  const offset = offsetDate(date, timezone);
+  return `${formatFn(offset.date, format)} ${offset.abbr}`;
 }
 
 export function getLocaleDateFormatInfo(locale) {
@@ -708,11 +666,11 @@ export function convertFormatToFlatpickr(format) {
 }
 
 /**
- * Convert the format from the angular-datepicker module to moment format.
+ * Convert the format from the angular-datepicker module to dayjs format.
  * @param format
  * @return {string}
  */
-export function convertFormatToMoment(format) {
+export function convertFormatToDayjs(format) {
   return format
   // Year conversion.
     .replace(/y/g, 'Y')

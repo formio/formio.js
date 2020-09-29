@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 import _ from 'lodash';
 
 export const CALENDAR_ERROR_MESSAGES = {
@@ -31,10 +31,10 @@ function buildResponse(message, result) {
 /**
  * Checks the value for a min date and max date.
  *
- * @param {moment} value
+ * @param {dayjs} value
  *   The value to check.
  * @param {[String]} format
- *   A moment formats.
+ *   A dayjs formats.
  * @param {Date} maxDate
  *   The max date.
  * @param {Date} minDate
@@ -46,19 +46,19 @@ export function lessOrGreater(value, format, maxDate, minDate) {
   let result = true;
 
   if (maxDate && value.isValid()) {
-    const maxDateMoment = moment(maxDate, format);
+    const maxDateDayjs = dayjs(maxDate, format);
 
-    if (value >  maxDateMoment) {
-      message = CALENDAR_ERROR_MESSAGES.greater(maxDateMoment, format);
+    if (value >  maxDateDayjs) {
+      message = CALENDAR_ERROR_MESSAGES.greater(maxDateDayjs, format);
       result = false;
     }
   }
 
   if (minDate && value.isValid()) {
-    const minDateMoment = moment(minDate, format);
+    const minDateDayjs = dayjs(minDate, format);
 
-    if (value < minDateMoment) {
-      message = CALENDAR_ERROR_MESSAGES.less(minDateMoment, format);
+    if (value < minDateDayjs) {
+      message = CALENDAR_ERROR_MESSAGES.less(minDateDayjs, format);
       result = false;
     }
   }
@@ -75,7 +75,7 @@ export function lessOrGreater(value, format, maxDate, minDate) {
  * @param {String} value
  *   The value to check.
  * @param {[String]} format
- *   A moment formats.
+ *   A dayjs formats.
  * @param {Date} maxDate
  *   The max date.
  * @param {Date} minDate
@@ -83,7 +83,7 @@ export function lessOrGreater(value, format, maxDate, minDate) {
  * * @return {{message: string, result: boolean}}
  */
 export function checkInvalidDate(value, format, minDate, maxDate) {
-  const date = moment(value, format, true);
+  const date = dayjs(value, format, true);
   const isValidDate = date.isValid();
 
   if (!isValidDate) {
@@ -116,7 +116,7 @@ export function checkInvalidDate(value, format, minDate, maxDate) {
         return partValue;
       });
 
-      const problemDate = moment(modifiedParts.join(''), format, true);
+      const problemDate = dayjs(modifiedParts.join(''), format, true);
 
       if (problemDate.isValid()) {
         const checkedLessOrGreater = lessOrGreater(problemDate, format[0], maxDate, minDate);
