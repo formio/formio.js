@@ -33,10 +33,30 @@ import {
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
 import disableSubmitButton from '../test/forms/disableSubmitButton';
+import formWithAddressComponent from '../test/forms/formWithAddressComponent';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should show address submission data inside dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const formWithAddress = new Webform(formElement);
+
+    formWithAddress.setForm(formWithAddressComponent.form).then(() => {
+      formWithAddress.setSubmission({ data: formWithAddressComponent.submission });
+
+      setTimeout(() => {
+        const addressInput = formWithAddress.element.querySelector('[name = "data[dataGrid][0][address]"]');
+
+        assert.equal(addressInput.value, formWithAddressComponent.submission.dataGrid[0].address['formatted_address']);
+
+        done();
+      }, 300);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should validate field on blur inside panel', function(done) {
     const formElement = document.createElement('div');
     const formWithBlurValidation = new Webform(formElement);
