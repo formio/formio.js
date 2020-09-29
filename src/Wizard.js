@@ -686,11 +686,6 @@ export default class Wizard extends Webform {
     return super.setForm(form, flags);
   }
 
-  // checkConditions(data, flags, row) {
-  //   this.establishPages(data);
-  //   return super.checkConditions(data, flags, row);
-  // }
-
   setValue(submission, flags = {}) {
     this._submission = submission;
 
