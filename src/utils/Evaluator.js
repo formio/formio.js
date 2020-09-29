@@ -67,8 +67,19 @@ const Evaluator = {
     return template;
   },
   evaluate(func, args) {
+    if (Evaluator.noeval) {
+      console.warn('No evaluations allowed for this renderer.');
+      return null;
+    }
+
     return Array.isArray(args) ? func(...args) : func(args);
   }
+};
+
+Evaluator.registerEvaluator = (evaluator) => {
+  Object.keys(evaluator).forEach((key) => {
+    Evaluator[key] = evaluator[key];
+  });
 };
 
 export default Evaluator;
