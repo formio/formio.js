@@ -197,7 +197,7 @@ export default class DataGridComponent extends NestedComponent {
           if (comp.validate && comp.validate.required) {
             th.setAttribute('class', 'field-required');
           }
-          const title = comp.label || comp.title;
+          const title = comp.hideLabel ? '' : (comp.label || comp.title);
           if (title && !comp.dataGridLabel) {
             needsHeader = true;
             th.appendChild(this.text(title));
