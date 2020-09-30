@@ -1,26 +1,32 @@
 {
-  "_from": "bootswatch@^4.5.1",
+  "_args": [
+    [
+      "bootswatch@4.5.2",
+      "/Users/travistidwell/Documents/formio/modules/formio.js"
+    ]
+  ],
+  "_development": true,
+  "_from": "bootswatch@4.5.2",
   "_id": "bootswatch@4.5.2",
   "_inBundle": false,
   "_integrity": "sha512-Dfco9gxVtBhh8CVXkMjGLm/vNr2xjSK74agSvPVr3rrVhxFuvB/VELaLAqNH8sLeKVWBMNGwHUJS1gT3J2NYDQ==",
   "_location": "/bootswatch",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "bootswatch@^4.5.1",
+    "raw": "bootswatch@4.5.2",
     "name": "bootswatch",
     "escapedName": "bootswatch",
-    "rawSpec": "^4.5.1",
+    "rawSpec": "4.5.2",
     "saveSpec": null,
-    "fetchSpec": "^4.5.1"
+    "fetchSpec": "4.5.2"
   },
   "_requiredBy": [
     "#DEV:/"
   ],
   "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.5.2.tgz",
-  "_shasum": "da2d7b5cf37b07763e2e86c67bc30256821522a4",
-  "_spec": "bootswatch@^4.5.1",
+  "_spec": "4.5.2",
   "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
   "author": {
     "name": "Thomas Park"
@@ -28,11 +34,9 @@
   "bugs": {
     "url": "https://github.com/thomaspark/bootswatch/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "websocket-driver": "^0.7.4"
   },
-  "deprecated": false,
   "description": "Bootswatch is a collection of themes for Bootstrap.",
   "devDependencies": {
     "autoprefixer": "^7.1.2",

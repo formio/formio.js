@@ -464,9 +464,18 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
     // Set the submission data
     form.data = submission.data;
 
+    assert.deepEqual(form.data, submission.data, &apos;Should set data properly&apos;);
     // Perform calculations and conditions.
     form.calculateValue();
     form.checkConditions();
+
+    assert(form.components[2], &apos;Should contain the 3rd page&apos;);
+    assert.equal(form.components[2].visible, true, &apos;Should be visible&apos;);
+
+    const textField = form.components[2].components[0];
+
+    assert.equal(textField.visible, true, &apos;Inner components of the 3rd page should be visible&apos;);
+    assert.equal(textField.parentVisible, true, &apos;parentVisible of the 3rd page\&apos;s child components should be equal to true&apos;);
 
     // Reset the data
     form.data = {};

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.5
+#### Fixed
+ - Fixing anomaly with calculated value checks to make them so they will handle changing calculated values between passes.
+ - FJS-1251: Unable to open/close field tabs in builder after search/filtering fields
+ - FJS-1157: fix showing error after closing a modal dialog window
+
 ### 4.12.1-rc.4
 #### Fixed
  - Fixed an issue where data on conditional Wizard pages is not saved
