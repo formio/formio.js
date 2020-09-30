@@ -2514,8 +2514,8 @@ export default class Component extends Element {
       allowOverride &&
       firstPass &&
       !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue)) &&
-      !_.isEqual(calculatedValue, this.convertNumberOrBoolToString(calculatedValue))
+      !_.isEqual(dataValue, newCalculatedValue) &&
+      !_.isEqual(currentCalculatedValue, newCalculatedValue)
     ) {
       // Return that we have a change so it will perform another pass.
       this.calculatedValue = calculatedValue;
