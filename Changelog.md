@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.19
+### Fixed
+ - Fixed an issue where hide label is not working inside dataGrid
+
 ## 3.29.18
 ### Fixed
  - Fixed issue where _vid is not getting set on currentForm when revisions are loaded.
