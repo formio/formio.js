@@ -158,7 +158,6 @@ export default class ComponentModal {
     this.closeModal();
     if (!this.component.disabled) {
       this.component.setValue(this.currentValue, { resetValue: true });
-      this.component.redraw();
     }
   }
 
