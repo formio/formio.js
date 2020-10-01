@@ -61,5 +61,38 @@ export default [
     description: 'Use formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
     tooltip: 'The date format for displaying the datetime value.',
     weight: 52
+  },
+  {
+    type: 'editgrid',
+    input: true,
+    key: 'shortcutButtons',
+    label: 'Shortcut Buttons',
+    description: 'You can specify few buttons which will be shown above the calendar. Use Label to specify the name of the button and onClick to specify which date/time will be set when user clicks the button. E.g, date = new Date()',
+    templates: {
+      header: '<div class="row">\n  <div class="col-sm-3">Label</div>\n  <div class="col-sm-6">onClick</div>\n</div>',
+      row: '<div class="row">\n      <div class="col-sm-3">\n        {{ flattenedComponents.label.getView(row.label) }}\n      </div>\n      <div class="col-sm-6">\n        {{ flattenedComponents.onClick.getView(row.onClick) }}\n      </div>\n      {% if (!instance.disabled) { %}\n        <div class="col-sm-3">\n          <div class="btn-group pull-right">\n            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass("edit") }}"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass("trash") }}"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>'
+    },
+    components: [
+      {
+        label: 'Label',
+        key: 'label',
+        type: 'textfield',
+        input: true,
+        validate: {
+          required: true
+        }
+      },
+      {
+        label: 'onClick',
+        key: 'onClick',
+        type: 'textarea',
+        editor: 'ace',
+        input: true,
+        validate: {
+          required: true
+        }
+      }
+    ],
+    defaultValue: []
   }
 ];

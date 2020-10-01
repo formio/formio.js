@@ -16,9 +16,14 @@ import {
 } from '../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
+
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 const CDN_URL = 'https://cdn.form.io/';
+const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
+const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
+const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
+const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */
@@ -140,76 +145,44 @@ export default class CalendarWidget extends InputWidget {
       }
     };
 
-    Formio.requireLibrary('flatpickr-css', 'flatpickr-css', [
+    Formio.requireLibrary('flatpickr-css', 'flatpickr', [
       { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
     ], true);
 
+    this.component.shortcutButtons = this.component.shortcutButtons
+      ? this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick)
+      : [];
+
+    if (this.component.shortcutButtons?.length) {
+      Formio.requireLibrary('shortcut-buttons-flatpickr-css', 'ShortcutButtonsPlugin', [
+        { type: 'styles', src: SHORTCUT_BUTTONS_CSS }
+      ], true);
+    }
+
     return superAttach
       .then(() => {
+        if (this.component.shortcutButtons?.length) {
+          return Formio.requireLibrary(
+            'shortcut-buttons-flatpickr', 'ShortcutButtonsPlugin', SHORTCUT_BUTTONS_PLUGIN, true
+          );
+        }
+      })
+      .then((ShortcutButtonsPlugin) => {
         return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
-            this.settings.formatDate = (date, format) => {
-              // Only format this if this is the altFormat and the form is readOnly.
-              if (this.settings.readOnly && (format === this.settings.altFormat)) {
-                if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
-                  return Flatpickr.formatDate(date, format);
-                }
+            if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
+              this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
+            }
 
-                return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
-              }
-
-              return Flatpickr.formatDate(date, format);
-            };
+            this.settings.formatDate = this.getFlatpickrFormatDate(Flatpickr);
 
             if (this._input) {
-              const dateValue = this._input.value;
-              // Create a new flatpickr.
-              this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
-
-              if (dateValue) {
-                this.calendar.setDate(dateValue, false, this.settings.altFormat);
-              }
-              this.calendar.altInput.addEventListener('input', (event) => {
-                if (this.settings.allowInput) {
-                  this.settings.manualInputValue = event.target.value;
-                  this.settings.isManuallyOverriddenValue = true;
-                }
-
-                if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
-                  this.settings.wasDefaultValueChanged = true;
-                  this.settings.defaultValue = event.target.value;
-                  this.calendar.clear();
-                }
-                else {
-                  this.settings.wasDefaultValueChanged = false;
-                }
-              });
-
-              if (!this.settings.readOnly) {
-                // Enforce the input mask of the format.
-                this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
-              }
-
-              // Make sure we commit the value after a blur event occurs.
-              this.addEventListener(this.calendar._input, 'blur', (event) => {
-                if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
-                  const inputValue = this.calendar.input.value;
-                  const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
-
-                  this.calendar.setDate(dateValue, true, this.settings.altFormat);
-                }
-              });
-
-              // FJS-1103: When hit the enter button, the field not saving the year correctly
-              this.addEventListener(this.calendar.altInput, 'keydown', (event) => {
-                if (event.keyCode === 13) {
-                  this.calendar.altInput.blur();
-                  this.calendar.close();
-                  event.stopPropagation();
-                }
-              });
+              this.initFlatpickr(Flatpickr);
             }
           });
+      })
+      .catch((err) => {
+        console.warn(err);
       });
   }
 
@@ -416,6 +389,87 @@ export default class CalendarWidget extends InputWidget {
       return new Date(value);
     }
     return value.map(val => new Date(val));
+  }
+
+  initFlatpickr(Flatpickr) {
+    // Create a new flatpickr.
+    this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
+
+    const dateValue = this._input.value;
+
+    if (dateValue) {
+      this.calendar.setDate(dateValue, false, this.settings.altFormat);
+    }
+
+    this.calendar.altInput.addEventListener('input', (event) => {
+      if (this.settings.allowInput) {
+        this.settings.manualInputValue = event.target.value;
+        this.settings.isManuallyOverriddenValue = true;
+      }
+
+      if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
+        this.settings.wasDefaultValueChanged = true;
+        this.settings.defaultValue = event.target.value;
+        this.calendar.clear();
+      }
+      else {
+        this.settings.wasDefaultValueChanged = false;
+      }
+    });
+
+    if (!this.settings.readOnly) {
+      // Enforce the input mask of the format.
+      this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+    }
+
+    // Make sure we commit the value after a blur event occurs.
+    this.addEventListener(this.calendar._input, 'blur', (event) => {
+      if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+        const inputValue = this.calendar.input.value;
+        const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+
+        this.calendar.setDate(dateValue, true, this.settings.altFormat);
+      }
+    });
+
+    // FJS-1103: When hit the enter button, the field not saving the year correctly
+    this.addEventListener(this.calendar.altInput, 'keydown', (event) => {
+      if (event.keyCode === 13) {
+        this.calendar.altInput.blur();
+        this.calendar.close();
+        event.stopPropagation();
+      }
+    });
+  }
+
+  initShortcutButtonsPlugin(ShortcutButtonsPlugin) {
+    this.settings.plugins = [
+      // eslint-disable-next-line new-cap
+      ShortcutButtonsPlugin({
+        button: this.component.shortcutButtons.map((btn) => ({ label: btn.label, attributes: btn.attribute })),
+        onClick: (index, fp) => {
+          const getValue = this.component.shortcutButtons[index].onClick;
+          const date = this.evaluate(getValue, { date: new Date() }, 'date');
+          fp.setDate(date);
+          fp.close();
+        }
+      })
+    ];
+  }
+
+  getFlatpickrFormatDate(Flatpickr) {
+    return (date, format) => {
+      // Only format this if this is the altFormat and the form is readOnly.
+      if (this.settings.readOnly && (format === this.settings.altFormat)) {
+        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
+          return Flatpickr.formatDate(date, format);
+        }
+
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
+      }
+
+      return Flatpickr.formatDate(date, format);
+    };
   }
 
   destroy() {
