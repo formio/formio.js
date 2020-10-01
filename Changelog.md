@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### 4.12.1-rc.6
+### 4.12.1-rc.7, 4.12.1-rc.6
 #### Fixed
  - Adding calculateServer handling and also restructure calculated value handling.
  - FJS-1145: fix logic for close button in the Modal Edit dialog
