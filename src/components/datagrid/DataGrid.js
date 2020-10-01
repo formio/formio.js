@@ -72,7 +72,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get emptyValue() {
-    return [{}];
+    return this.initEmpty ? [] : [{}];
   }
 
   get addAnotherPosition() {
@@ -89,10 +89,13 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
+    const isBuilderMode = this.builderMode;
+    const isEmptyInit = this.initEmpty;
     // Ensure we have one and only one row in builder mode.
-    if (this.builderMode) {
-      return [{}];
+    if (isBuilderMode || (isEmptyInit && !this.dataValue.length)) {
+      return isEmptyInit && !isBuilderMode ? [] : [{}];
     }
+
     const value = super.defaultValue;
     let defaultValue;
 
@@ -357,7 +360,19 @@ export default class DataGridComponent extends NestedArrayComponent {
       this.dataValue.push({});
     }
 
-    this.rows[index] = this.createRowComponents(this.dataValue[index], index);
+    let row;
+    const dataValue = this.dataValue;
+    const defaultValue =  this.defaultValue;
+
+    if (this.initEmpty && defaultValue[index]) {
+      row = defaultValue[index];
+      dataValue[index] = row;
+    }
+    else {
+      row = dataValue[index];
+    }
+
+    this.rows[index] = this.createRowComponents(row, index);
     this.checkConditions();
     this.triggerChange();
     this.redraw();
@@ -512,9 +527,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (value && !value.length && !this.initEmpty) {
       value.push({});
     }
-
+    const isSettingSubmission = flags.fromSubmission && !_.isEqual(value, this.emptyValue);
     const changed = this.hasChanged(value, this.dataValue);
-    if (this.initRows) {
+    if (this.initRows || isSettingSubmission) {
       this.dataValue = value;
       this.createRows();
     }

@@ -34,10 +34,76 @@ import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
 import disableSubmitButton from '../test/forms/disableSubmitButton';
 import formWithAddressComponent from '../test/forms/formWithAddressComponent';
+import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should show dataGrid rows when viewing submission in dataGrid with initEmpty option', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDataGridInitEmptyOption = new Webform(formElement);
+
+    formWithDataGridInitEmptyOption.setForm(formWithDataGridInitEmpty.form).then(() => {
+      formWithDataGridInitEmptyOption.setSubmission(formWithDataGridInitEmpty.submission2);
+
+      setTimeout(() => {
+        const dataGridRows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+        const dataGrid1Rows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+
+        assert.equal(dataGrid1Rows.length, 1);
+        assert.equal(dataGridRows.length, 1);
+
+        formWithDataGridInitEmptyOption.setSubmission(formWithDataGridInitEmpty.submission3);
+
+        setTimeout(() => {
+          const dataGridRows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+          const dataGrid1Rows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+          const dataGridSecondRowComponentValue = formWithDataGridInitEmptyOption.element.querySelector('[name = "data[dataGrid][1][textField]"]');
+          const dataGrid1FirstRowComponentValue = formWithDataGridInitEmptyOption.element.querySelector('[name = "data[dataGrid1][0][textArea]"]');
+          const dataGrid1SecondRowComponentValue = formWithDataGridInitEmptyOption.element.querySelector('[name = "data[dataGrid1][1][number]"]');
+
+          assert.equal(dataGrid1Rows1.length, 2);
+          assert.equal(dataGridRows1.length, 2);
+          assert.equal(dataGridSecondRowComponentValue.value, 'test2');
+          assert.equal(dataGrid1FirstRowComponentValue.textContent, 'test3');
+          assert.equal(dataGrid1SecondRowComponentValue.value, 222);
+
+          done();
+        }, 300);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should not show dataGrid rows when empty submission is set for dataGrid with initEmpty', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDataGridInitEmptyOption = new Webform(formElement);
+
+    formWithDataGridInitEmptyOption.setForm(formWithDataGridInitEmpty.form).then(() => {
+      formWithDataGridInitEmptyOption.setSubmission(formWithDataGridInitEmpty.submission1);
+
+      setTimeout(() => {
+        const dataGridRows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+        const dataGrid1Rows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+
+        assert.equal(dataGridRows.length, 0);
+        assert.equal(dataGrid1Rows.length, 0);
+
+        formWithDataGridInitEmptyOption.setSubmission({ data: {} });
+        setTimeout(() => {
+          const dataGridRows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+          const dataGrid1Rows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+
+          assert.equal(dataGridRows1.length, 0);
+          assert.equal(dataGrid1Rows1.length, 0);
+
+          done();
+        }, 300);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
 
   it('Should show address submission data inside dataGrid', function(done) {
     const formElement = document.createElement('div');
