@@ -274,6 +274,12 @@ export default class Wizard extends Webform {
   }
 
   isBreadcrumbClickable() {
+    const { clickable } = this.options.breadcrumbSettings || {};
+
+    if (!clickable) {
+      return clickable;
+    }
+
     let currentPage = null;
     this.pages.map(page => {
       if (_.isEqual(this.currentPage.component, page.component)) {
