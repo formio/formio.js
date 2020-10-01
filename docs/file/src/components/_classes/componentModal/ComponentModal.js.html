@@ -315,7 +315,7 @@ export default class ComponentModal {
   removeEventListeners() {
     this.component.removeEventListener(this.refs.openModal, &apos;click&apos;, this.openModalListener);
     this.component.removeEventListener(this.refs.modalOverlay, &apos;click&apos;, this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
-    this.component.removeEventListener(this.refs.modalClose, &apos;click&apos;, this.closeModalListener);
+    this.component.removeEventListener(this.refs.modalClose, &apos;click&apos;, this.showDialogListener);
     this.component.removeEventListener(this.refs.modalSave, &apos;click&apos;, this.saveModalListener);
   }
 
@@ -323,7 +323,7 @@ export default class ComponentModal {
     this.removeEventListeners();
     this.component.addEventListener(this.refs.openModal, &apos;click&apos;, this.openModalListener);
     this.component.addEventListener(this.refs.modalOverlay, &apos;click&apos;, this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
-    this.component.addEventListener(this.refs.modalClose, &apos;click&apos;, this.closeModalListener);
+    this.component.addEventListener(this.refs.modalClose, &apos;click&apos;, this.showDialogListener);
     this.component.addEventListener(this.refs.modalSave, &apos;click&apos;, this.saveModalListener);
   }
 
