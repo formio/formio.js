@@ -2480,7 +2480,7 @@ export default class Component extends Element {
     const changed = !_.isEqual(dataValue, calculatedValue);
 
     // Do not override calculations on server if they have calculateServer set.
-    if (!this.options.server && this.component.allowCalculateOverride) {
+    if (this.component.allowCalculateOverride) {
       const firstPass = (this.calculatedValue === undefined);
       if (firstPass) {
         this.calculatedValue = null;
