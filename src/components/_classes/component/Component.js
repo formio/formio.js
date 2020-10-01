@@ -2453,21 +2453,18 @@ export default class Component extends Element {
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (this.options.readOnly || !this.component.calculateValue || shouldBeCleared) {
+    // Handle all cases when calculated values should not fire.
+    if (
+      this.options.readOnly ||
+      !this.component.calculateValue ||
+      shouldBeCleared ||
+      (this.options.server && !this.component.calculateServer) ||
+      flags.dataSourceInitialLoading
+    ) {
       return false;
     }
 
-    // If this component allows overrides.
-    const allowOverride = this.component.allowCalculateOverride;
-
-    let firstPass = false;
     const dataValue = this.dataValue;
-
-    // First pass, the calculatedValue is undefined.
-    if (this.calculatedValue === undefined) {
-      firstPass = true;
-      this.calculatedValue = null;
-    }
 
     // Calculate the new value.
     let calculatedValue = this.evaluate(this.component.calculateValue, {
@@ -2480,53 +2477,41 @@ export default class Component extends Element {
       calculatedValue = this.emptyValue;
     }
 
-    // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
-    if (flags.isReordered && allowOverride) {
+    const changed = !_.isEqual(dataValue, calculatedValue);
+
+    // Do not override calculations on server if they have calculateServer set.
+    if (!this.options.server && this.component.allowCalculateOverride) {
+      const firstPass = (this.calculatedValue === undefined);
+      if (firstPass) {
+        this.calculatedValue = null;
+      }
+      const newCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(calculatedValue));
+      const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
+      const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
+      const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
+
+      // Check to ensure that the calculated value is different than the previously calculated value.
+      if (this.calculatedValue && previousChanged && !calculationChanged) {
+        return false;
+      }
+
+      if (flags.isReordered || !calculationChanged) {
+        return false;
+      }
+
       this.calculatedValue = calculatedValue;
+      if (flags.fromSubmission && this.component.persistent === true) {
+        return false;
+      }
+
+      // If this is the firstPass, and the dataValue is different than to the calculatedValue.
+      if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
+        // Return that we have a change so it will perform another pass.
+        return true;
+      }
     }
 
-    const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
-    const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
-
-    const normCurr = this.normalizeValue(currentCalculatedValue);
-    const normNew = this.normalizeValue(newCalculatedValue);
-
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      this.calculatedValue &&
-      !_.isEqual(dataValue, currentCalculatedValue) &&
-      _.isEqual(newCalculatedValue, currentCalculatedValue)) {
-      return false;
-    }
-
-    if (_.isEqual(normCurr, normNew) && allowOverride) {
-      return false;
-    }
-
-    if (flags.fromSubmission && allowOverride && this.component.persistent === true) {
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
-
-    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
-    if (
-      allowOverride &&
-      firstPass &&
-      !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, newCalculatedValue) &&
-      !_.isEqual(currentCalculatedValue, newCalculatedValue)
-    ) {
-      // Return that we have a change so it will perform another pass.
-      this.calculatedValue = calculatedValue;
-      return true;
-    }
-    // Set the new value.
-    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
-    ? false
-    : this.setValue(calculatedValue, flags);
-    this.calculatedValue = calculatedValue;
-    return changed;
+    return changed ? this.setValue(calculatedValue, flags) : false;
   }
 
   /**
