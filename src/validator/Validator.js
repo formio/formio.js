@@ -280,10 +280,13 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           const min = parseFloat(setting);
-          if (Number.isNaN(min) || (!_.isNumber(value))) {
+          const parsedValue = parseFloat(value);
+
+          if (Number.isNaN(min) || Number.isNaN(parsedValue)) {
             return true;
           }
-          return parseFloat(value) >= min;
+
+          return parsedValue >= min;
         }
       },
       max: {
@@ -297,10 +300,13 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           const max = parseFloat(setting);
-          if (Number.isNaN(max) || (!_.isNumber(value))) {
+          const parsedValue = parseFloat(value);
+
+          if (Number.isNaN(max) || Number.isNaN(parsedValue)) {
             return true;
           }
-          return parseFloat(value) <= max;
+
+          return parsedValue <= max;
         }
       },
       minSelectedCount: {
@@ -764,7 +770,8 @@ class ValidationChecker {
             field: component.errorLabel
           });
         },
-        check(component, setting, value, data, index) {
+        check(component, setting, value) {
+          if (component.isEmpty(value)) return true;
           return moment(value, component.component.format).isValid();
         }
       },

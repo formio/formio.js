@@ -14,7 +14,7 @@ import Templates from './templates/Templates';
 require('./components/builder');
 
 export default class WebformBuilder extends Component {
-// eslint-disable-next-line max-statements
+  // eslint-disable-next-line max-statements
   constructor() {
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
@@ -46,6 +46,16 @@ export default class WebformBuilder extends Component {
         componentInfo[type] = component.builderInfo;
       }
     }
+
+    this.fieldsList = {
+      title: 'Result fields',
+      key: 'searchFields',
+      weight: 0,
+      subgroups: [],
+      default: true,
+      components: {},
+      componentOrder: []
+    };
 
     this.dragDropEnabled = true;
 
@@ -103,6 +113,7 @@ export default class WebformBuilder extends Component {
           }
           info.components[key] = comp === true ? componentInfo[key] : comp;
           info.components[key].key = key;
+          this.fieldsList.components[key] = info.components[key];
         }
       }
     }
@@ -132,6 +143,7 @@ export default class WebformBuilder extends Component {
 
       return this.renderTemplate('builderComponent', {
         html,
+        disableBuilderActions: self?.component?.disableBuilderActions,
       });
     };
 
@@ -326,7 +338,7 @@ export default class WebformBuilder extends Component {
             this.groups.resource = {
               title: resourceOptions ? resourceOptions.title : 'Existing Resource Fields',
               key: 'resource',
-              weight: resourceOptions ? resourceOptions.weight :  50,
+              weight: resourceOptions ? resourceOptions.weight : 50,
               subgroups: [],
               components: [],
               componentOrder: []
@@ -394,6 +406,7 @@ export default class WebformBuilder extends Component {
             }
           }
         );
+        this.fieldsList.components[component.key] = subgroup.components[component.key];
       }, true);
 
       this.groups.resource.subgroups.push(subgroup);
@@ -540,6 +553,8 @@ export default class WebformBuilder extends Component {
       this.loadRefs(element, {
         form: 'single',
         sidebar: 'single',
+        'sidebar-search': 'single',
+        'sidebar-groups': 'single',
         'container': 'multiple',
         'sidebar-anchor': 'multiple',
         'sidebar-group': 'multiple',
@@ -581,11 +596,16 @@ export default class WebformBuilder extends Component {
                   groupId === clickedParentId ||
                   groupIndex === index
                 )
-                ? 'inherit' : 'none';
+                  ? 'inherit' : 'none';
             });
           }, true);
         });
       }
+
+      this.addEventListener(this.refs['sidebar-search'], 'input', (e) => {
+        const searchString = e.target.value;
+        this.searchFields(searchString);
+      });
 
       if (this.dragDropEnabled) {
         this.initDragula();
@@ -595,6 +615,59 @@ export default class WebformBuilder extends Component {
         return this.webform.attach(this.refs.form);
       }
     });
+  }
+
+  searchFields(searchString) {
+    if (!this.refs['sidebar-groups']) {
+      return;
+    }
+    if (searchString) {
+      const filteredComponentsOrder = [];
+      for (const type in this.fieldsList.components) {
+        const builderInfo = this.fieldsList.components[type];
+        if (builderInfo.title.toLowerCase().indexOf(searchString) !== -1) {
+          filteredComponentsOrder.push(type);
+        }
+      }
+      this.fieldsList.componentOrder = filteredComponentsOrder;
+      this.refs['sidebar-groups'].innerHTML = this.renderTemplate('builderSidebarGroup', {
+        group: this.fieldsList,
+        groupKey: 'searchFields',
+        groupId: `builder-sidebar-${this.id}`,
+        subgroups: []
+      });
+    }
+    else {
+      this.refs['sidebar-groups'].innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+        group: this.groups[groupKey],
+        groupKey,
+        groupId: `builder-sidebar-${this.id}`,
+        subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+          group,
+          groupKey: group.key,
+          groupId: `group-container-${groupKey}`,
+          subgroups: []
+        })),
+      })).join('');
+    }
+
+    this.loadRefs(this.element, {
+      'sidebar-groups': 'single',
+      'sidebar-anchor': 'multiple',
+      'sidebar-group': 'multiple',
+      'sidebar-container': 'multiple',
+    });
+
+    this.updateDragAndDrop();
+  }
+
+  updateDragAndDrop() {
+    if (this.dragDropEnabled) {
+      this.initDragula();
+    }
+    if (this.refs.form) {
+      return this.webform.attach(this.refs.form);
+    }
   }
 
   initDragula() {
@@ -669,6 +742,7 @@ export default class WebformBuilder extends Component {
 
     if (info) {
       info.key = _.camelCase(
+        info.key ||
         info.title ||
         info.label ||
         info.placeholder ||
@@ -688,8 +762,8 @@ export default class WebformBuilder extends Component {
     let tabIndex = 0;
     switch (parent.type) {
       case 'table':
-        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key  === component.key)));
-        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key  === component.key)));
+        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key === component.key)));
+        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key === component.key)));
         path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         break;
       case 'columns':
@@ -697,7 +771,7 @@ export default class WebformBuilder extends Component {
         path = `columns[${columnIndex}].components`;
         break;
       case 'tabs':
-        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key  === component.key));
+        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key === component.key));
         path = `components[${tabIndex}].components`;
         break;
     }
@@ -781,7 +855,7 @@ export default class WebformBuilder extends Component {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 
-    if (isNew && !this.options.noNewEdit) {
+    if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
       this.editComponent(info, target, isNew);
     }
 
@@ -811,8 +885,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
-      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit);
-      if (!isNew || this.options.noNewEdit) {
+      this.emit('addComponent', info, parent, path, index, isNew && !this.options.noNewEdit && !info.noNewEdit);
+      if (!isNew || this.options.noNewEdit || info.noNewEdit) {
         this.emit('change', this.form);
       }
     });
@@ -841,7 +915,8 @@ export default class WebformBuilder extends Component {
     }
 
     if (this.webform) {
-      const shouldRebuild = !this.webform.form.components;
+      const shouldRebuild = !this.webform.form.components ||
+        (form.components.length !== this.webform.form.components.length);
       return this.webform.setForm(form).then(() => {
         if (this.refs.form) {
           this.builderHeight = this.refs.form.offsetHeight;
@@ -917,14 +992,16 @@ export default class WebformBuilder extends Component {
   updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
-      this.preview.form = { components: [_.omit(component, [
-        'hidden',
-        'conditional',
-        'calculateValue',
-        'logic',
-        'autofocus',
-        'customConditional',
-      ])] };
+      this.preview.form = {
+        components: [_.omit(component, [
+          'hidden',
+          'conditional',
+          'calculateValue',
+          'logic',
+          'autofocus',
+          'customConditional',
+        ])]
+      };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
         this.setContent(previewElement, this.preview.render());
@@ -934,7 +1011,7 @@ export default class WebformBuilder extends Component {
 
     // Change the "default value" field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-    if (defaultValueComponent) {
+    if (defaultValueComponent && component.type !== 'hidden') {
       const defaultChanged = changed && (
         (changed.component && changed.component.key === 'defaultValue')
         || (changed.instance && defaultValueComponent.hasComponent && defaultValueComponent.hasComponent(changed.instance))
@@ -1061,7 +1138,7 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        const schema = parentContainer ? parentContainer[index]: (comp ? comp.schema : []);
+        const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
         this.emit('saveComponent',
           schema,
           originalComp,
@@ -1136,8 +1213,8 @@ export default class WebformBuilder extends Component {
         componentJson: instance.component
       },
     } : {
-      data: instance.component,
-    };
+        data: instance.component,
+      };
 
     if (this.preview) {
       this.preview.destroy();
@@ -1317,6 +1394,7 @@ export default class WebformBuilder extends Component {
     if (!groupInfo.components.hasOwnProperty(component.key)) {
       groupInfo.components[component.key] = component;
     }
+    this.fieldsList.components[component.key] = component;
     return component;
   }
 

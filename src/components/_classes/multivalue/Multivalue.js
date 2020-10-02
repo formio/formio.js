@@ -1,4 +1,5 @@
 import Field from '../field/Field';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Multivalue extends Field {
@@ -86,9 +87,14 @@ export default class Multivalue extends Field {
       select: 'multiple',
     });
 
-    this.refs.input.forEach(this.attachElement.bind(this));
+    const promises = [];
+
+    this.refs.input.forEach((element, index) => {
+      promises.push(this.attachElement.call(this, element, index));
+    });
+
     if (!this.component.multiple) {
-      return;
+      return NativePromise.all(promises);
     }
 
     this.refs.removeRow.forEach((removeButton, index) => {
@@ -105,7 +111,9 @@ export default class Multivalue extends Field {
         this.addValue();
       });
     });
-    return superAttach;
+    return superAttach.then(() => {
+      return NativePromise.all(promises);
+    });
   }
 
   detach() {
@@ -158,6 +166,9 @@ export default class Multivalue extends Field {
           element.selectionEnd = selectionEnd;
         }
       }
+
+      this.saveCaretPosition(element, index);
+
       // If a mask is present, delay the update to allow mask to update first.
       if (element.mask) {
         setTimeout(() => {
@@ -175,6 +186,13 @@ export default class Multivalue extends Field {
 
     if (!this.attachMultiMask(index)) {
       this.setInputMask(element);
+    }
+  }
+
+  // Saves current caret position to restore it after the component is redrawn
+  saveCaretPosition(element, index) {
+    if (this.root?.focusedComponent?.path === this.path) {
+      this.root.currentSelection = { selection: [element.selectionStart, element.selectionEnd], index };
     }
   }
 

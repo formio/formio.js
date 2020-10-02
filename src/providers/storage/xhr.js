@@ -7,7 +7,7 @@ const XHR = {
   path(items) {
     return items.filter(item => !!item).map(XHR.trim).join('/');
   },
-  upload(formio, type, xhrCb, file, fileName, dir, progressCallback) {
+  upload(formio, type, xhrCb, file, fileName, dir, progressCallback, groupPermissions, groupId) {
     return new NativePromise(((resolve, reject) => {
       // Send the pre response to sign the upload.
       const pre = new XMLHttpRequest();
@@ -74,7 +74,9 @@ const XHR = {
       pre.send(JSON.stringify({
         name: XHR.path([dir, fileName]),
         size: file.size,
-        type: file.type
+        type: file.type,
+        groupPermissions,
+        groupId,
       }));
     }));
   }

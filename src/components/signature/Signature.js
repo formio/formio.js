@@ -79,6 +79,11 @@ export default class SignatureComponent extends Input {
         this.triggerChange();
       }
     }
+
+    if (this.signaturePad && this.dataValue && this.signaturePad.isEmpty()) {
+      this.setDataToSigaturePad();
+    }
+
     return changed;
   }
 
@@ -109,7 +114,7 @@ export default class SignatureComponent extends Input {
         if (this.refs.refresh) {
           this.refs.refresh.classList.add('disabled');
         }
-        if (this.refs.signatureImage) {
+        if (this.refs.signatureImage && this.dataValue) {
           this.refs.signatureImage.setAttribute('src', this.dataValue);
         }
       }
@@ -136,7 +141,7 @@ export default class SignatureComponent extends Input {
       this.signaturePad.clear();
 
       if (this.dataValue) {
-        this.signaturePad.fromDataURL(this.dataValue);
+        this.setDataToSigaturePad();
       }
     }
   }
@@ -225,5 +230,13 @@ export default class SignatureComponent extends Input {
 
   focus() {
     this.refs.padBody.focus();
+  }
+
+  setDataToSigaturePad() {
+    this.signaturePad.fromDataURL(this.dataValue, {
+      ratio: 1,
+      width: this.refs.canvas.width,
+      height: this.refs.canvas.height,
+    });
   }
 }

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
 import { flattenComponents } from '../../utils/utils';
@@ -99,6 +100,17 @@ export default class ButtonComponent extends Field {
     return className;
   }
 
+  get oauthConfig() {
+    if (_.has(this, 'root.form.config.oauth') && this.component.oauthProvider) {
+      return this.root.form.config.oauth[this.component.oauthProvider];
+    }
+    // Legacy oauth location.
+    if (this.component.oauth) {
+      return this.component.oauth;
+    }
+    return false;
+  }
+
   render() {
     if (this.viewOnly || this.options.hideButtons) {
       this._visible = false;
@@ -128,7 +140,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('error'));
+        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('submitError'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -140,12 +152,14 @@ export default class ButtonComponent extends Field {
       }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
-        this.removeClass(this.refs.button, 'btn-danger submit-fail');
-        if (isValid && this.hasError) {
-          this.hasError = false;
-          this.setContent(this.refs.buttonMessage, '');
-          this.removeClass(this.refs.buttonMessageContainer, 'has-success');
-          this.removeClass(this.refs.buttonMessageContainer, 'has-error');
+        if (isValid) {
+          this.removeClass(this.refs.button, 'btn-danger submit-fail');
+          if (this.hasError) {
+            this.hasError = false;
+            this.setContent(this.refs.buttonMessage, '');
+            this.removeClass(this.refs.buttonMessageContainer, 'has-success');
+            this.removeClass(this.refs.buttonMessageContainer, 'has-error');
+          }
         }
       };
       onError = () => {
@@ -154,7 +168,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
+        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('submitError')));
       };
     }
 
@@ -170,13 +184,15 @@ export default class ButtonComponent extends Field {
 
     this.on('change', (value, flags) => {
       let isValid = value.isValid;
-      if (flags && flags.noValidate) {
+      //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
+      if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
         isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
         flags.rootValidity = isValid;
       }
       this.loading = false;
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
       this.setDisabled(this.refs.button, this.disabled);
+
       if (onChange) {
         onChange(value, isValid);
       }
@@ -205,10 +221,10 @@ export default class ButtonComponent extends Field {
     }
 
     // If this is an OpenID Provider initiated login, perform the click event immediately
-    if ((this.component.action === 'oauth') && this.component.oauth && this.component.oauth.authURI) {
+    if ((this.component.action === 'oauth') && this.oauthConfig && !this.oauthConfig.error) {
       const iss = getUrlParameter('iss');
-      if (iss && (this.component.oauth.authURI.indexOf(iss) === 0)) {
-        this.openOauth();
+      if (iss && (this.oauthConfig.authURI.indexOf(iss) === 0)) {
+        this.openOauth(this.oauthConfig);
       }
     }
   }
@@ -230,6 +246,7 @@ export default class ButtonComponent extends Field {
     if (element && this.refs.button) {
       this.removeShortcut(this.refs.button);
     }
+    super.detach();
   }
 
   onClick(event) {
@@ -309,30 +326,28 @@ export default class ButtonComponent extends Field {
         }
 
         // Display Alert if OAuth config is missing
-        if (!this.component.oauth) {
-          this.root.setAlert('danger', 'You must assign this button to an OAuth action before it will work.');
+        if (!this.oauthConfig) {
+          this.root.setAlert('danger', 'OAuth not configured. You must configure oauth for your project before it will work.');
           break;
         }
 
         // Display Alert if oAuth has an error is missing
-        if (this.component.oauth.error) {
-          this.root.setAlert('danger', `The Following Error Has Occured${this.component.oauth.error}`);
+        if (this.oauthConfig.error) {
+          this.root.setAlert('danger', `The Following Error Has Occured ${this.oauthConfig.error}`);
           break;
         }
 
-        this.openOauth(this.component.oauth);
+        this.openOauth(this.oauthConfig);
 
         break;
     }
   }
 
-  openOauth() {
+  openOauth(settings) {
     if (!this.root.formio) {
       console.warn('You must attach a Form API url to your form in order to use OAuth buttons.');
       return;
     }
-
-    const settings = this.component.oauth;
 
     /*eslint-disable camelcase */
     let params = {
@@ -377,12 +392,21 @@ export default class ButtonComponent extends Field {
             this.root.setAlert('danger', 'OAuth state does not match. Please try logging in again.');
             return;
           }
-          const submission = { data: {}, oauth: {} };
-          submission.oauth[settings.provider] = params;
-          submission.oauth[settings.provider].redirectURI = window.location.origin
-            || `${window.location.protocol}//${window.location.host}`;
-          this.root.formio.saveSubmission(submission)
-            .then((result) => {
+          // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
+          let requestPromise = NativePromise.resolve();
+          if (_.has(this, 'root.form.config.oauth') && this.root.form.config.oauth[this.component.oauthProvider]) {
+            params.provider = settings.provider;
+            params.redirectURI = window.location.origin;
+            requestPromise = this.root.formio.makeRequest('oauth', `${this.root.formio.projectUrl}/oauth2`, 'POST', params);
+          }
+          else {
+            const submission = { data: {}, oauth: {} };
+            submission.oauth[settings.provider] = params;
+            submission.oauth[settings.provider].redirectURI = window.location.origin
+              || `${window.location.protocol}//${window.location.host}`;
+            requestPromise = this.root.formio.saveSubmission(submission);
+          }
+          requestPromise.then((result) => {
               this.root.onSubmit(result, true);
             })
             .catch((err) => {

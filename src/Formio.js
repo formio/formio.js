@@ -332,6 +332,7 @@ export default class Formio {
         }
         return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
           .then((revisionForm) => {
+            currentForm._vid = revisionForm._vid;
             currentForm.components = revisionForm.components;
             currentForm.settings = revisionForm.settings;
             // Using object.assign so we don't cross polinate multiple form loads.
@@ -515,7 +516,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -532,7 +533,7 @@ export default class Formio {
               const Provider = Providers.getProvider('storage', storage);
               if (Provider) {
                 const provider = new Provider(this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId);
               }
               else {
                 throw ('Storage provider not found');
@@ -997,7 +998,6 @@ export default class Formio {
       Formio.tokens = {};
     }
 
-    Formio.tokens[tokenName] = token;
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1010,10 +1010,12 @@ export default class Formio {
       catch (err) {
         cookies.erase(tokenName, { path: '/' });
       }
-      return Promise.resolve(null);
+      Formio.tokens[tokenName] = token;
+      return NativePromise.resolve(null);
     }
 
     if (Formio.tokens[tokenName] !== token) {
+      Formio.tokens[tokenName] = token;
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         localStorage.setItem(tokenName, token);

@@ -1,38 +1,38 @@
 <div id="" class="formio-component formio-component-form  formio-component-label-hidden" ref="component">
   <div class="formio-form" ref="webform" novalidate>
     <div id="text" class="form-group has-feedback formio-component formio-component-textfield formio-component-text " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="text-text">
         Text
       </label>
       <div ref="element">
-        <input ref="input" name="data[text]" type="text" class="form-control" lang="en" spellcheck="true" value="Text Default"></input>
+        <input ref="input" name="data[text]" type="text" class="form-control" lang="en" spellcheck="true" value="Text Default" id="text-text"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="text2" class="form-group has-feedback formio-component formio-component-textfield formio-component-text2 " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="text2-text2">
         Text
       </label>
       <div ref="element">
-        <input ref="input" name="data[text2]" type="text" class="form-control" lang="en" spellcheck="true" value="Text Calculated Default"></input>
+        <input ref="input" name="data[text2]" type="text" class="form-control" lang="en" spellcheck="true" value="Text Calculated Default" id="text2-text2"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="number" class="form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="number-number">
         Number
       </label>
       <div ref="element">
-        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" aria-label="Number, numeric only" inputmode="numeric" value="1"></input>
+        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="decimal" value="1" id="number-number"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="textArea-textArea">
         Text Area
       </label>
       <div ref="element">
-        <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" spellcheck="true" rows="3">Area default</textarea>
+        <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" spellcheck="true" rows="3" id="textArea-textArea">Area default</textarea>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -57,7 +57,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="selectBoxes-selectBoxes">
         Select Boxes
       </label>
       <div class="form-radio radio">
@@ -83,7 +83,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="radio-radio">
         Radio
       </label>
       <div class="form-radio radio">
@@ -109,23 +109,23 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="select" class="form-group has-feedback formio-component formio-component-select formio-component-select " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="select-select">
         Select
       </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en"></select>
+      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select"></select>
       <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="dateTime-dateTime">
         Date / Time
       </label>
       <div ref="element">
         <div class="input-group">
-          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-03T17:53:52.000Z"></input>
+          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-Fr 00:00 am" id="dateTime-dateTime"></input>
           <div class="input-group-append" ref="suffix">
             <span class="input-group-text">
-    <i ref="icon" class="fa fa-calendar" style=""></i>
+      <i ref="icon" class="fa fa-calendar" style=""></i>
   </span>
           </div>
         </div>
@@ -133,16 +133,16 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="time" class="form-group has-feedback formio-component formio-component-time formio-component-time " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="time-time">
         Time
       </label>
       <div ref="element">
-        <input ref="input" name="data[time]" type="time" class="form-control" lang="en" spellcheck="true" value="13:57"></input>
+        <input ref="input" name="data[time]" type="time" class="form-control" lang="en" spellcheck="true" value="13:57" id="time-time"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="day" class="form-group has-feedback formio-component formio-component-day formio-component-day " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="day-day">
         Day
       </label>
       <div class="row">
@@ -194,13 +194,13 @@
         <div class="col col-xs-3">
           <label for="day-day" class="">Day</label>
           <div>
-            <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31"></input>
+            <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="day-day"></input>
           </div>
         </div>
         <div class="col col-xs-5">
           <label for="day-year" class="">Year</label>
           <div>
-            <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030"></input>
+            <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="day-day"></input>
           </div>
         </div>
       </div>
@@ -208,20 +208,20 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="currency" class="form-group has-feedback formio-component formio-component-currency formio-component-currency " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="currency-currency">
         Currency
       </label>
       <div ref="element">
-        <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" aria-label="Currency, numeric only" inputmode="numeric" value="$100.01"></input>
+        <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" inputmode="decimal" value="$100.01" id="currency-currency"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="signature" class="form-group has-feedback formio-component formio-component-signature formio-component-signature  signature-pad" ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="signature-signature">
         Signature
       </label>
       <div ref="element">
-        <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="Yes"></input>
+        <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="Yes" id="signature-signature"></input>
         <div class="signature-pad-body" style="width: 100%;height: 150;padding:0;margin:0;" tabindex="0" ref="padBody">
           <a class="btn btn-sm btn-light signature-pad-refresh" ref="refresh">
             <i class="fa fa-refresh"></i>
@@ -236,16 +236,16 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="tags" class="form-group has-feedback formio-component formio-component-tags formio-component-tags " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="tags-tags">
         Tags
       </label>
       <div ref="element">
-        <input ref="input" name="data[tags]" type="text" class="form-control" lang="en" value="one,two,three"></input>
+        <input ref="input" name="data[tags]" type="text" class="form-control" lang="en" value="one,two,three" id="tags-tags"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="survey" class="form-group has-feedback formio-component formio-component-survey formio-component-survey " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="survey-survey">
         Survey
       </label>
       <table class="table table-striped table-bordered">
@@ -287,11 +287,11 @@
     col-md-pull-0
   " ref="column-columns">
         <div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField " ref="component">
-          <label class="col-form-label ">
+          <label class="col-form-label " for="textField-textField">
             Text Field
           </label>
           <div ref="element">
-            <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" spellcheck="true" value="Column Default"></input>
+            <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" spellcheck="true" value="Column Default" id="textField-textField"></input>
           </div>
           <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
         </div>
@@ -309,11 +309,11 @@
       <fieldset>
         <div class="fieldset-body" ref="nested-fieldSet">
           <div id="textField2" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField2 " ref="component">
-            <label class="col-form-label ">
+            <label class="col-form-label " for="textField2-textField2">
               Text Field
             </label>
             <div ref="element">
-              <input ref="input" name="data[textField2]" type="text" class="form-control" lang="en" spellcheck="true" value="Fieldset Default"></input>
+              <input ref="input" name="data[textField2]" type="text" class="form-control" lang="en" spellcheck="true" value="Fieldset Default" id="textField2-textField2"></input>
             </div>
             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
           </div>
@@ -329,11 +329,11 @@
         </div>
         <div class="card-body" ref="nested-panel">
           <div id="textField3" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField3 " ref="component">
-            <label class="col-form-label ">
+            <label class="col-form-label " for="textField3-textField3">
               Text Field
             </label>
             <div ref="element">
-              <input ref="input" name="data[textField3]" type="text" class="form-control" lang="en" spellcheck="true" value="Panel Default"></input>
+              <input ref="input" name="data[textField3]" type="text" class="form-control" lang="en" spellcheck="true" value="Panel Default" id="textField3-textField3"></input>
             </div>
             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
           </div>
@@ -350,11 +350,11 @@
             </td>
             <td ref="table-table-0">
               <div id="textField4" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField4 " ref="component">
-                <label class="col-form-label ">
+                <label class="col-form-label " for="textField4-textField4">
                   Text Field
                 </label>
                 <div ref="element">
-                  <input ref="input" name="data[textField4]" type="text" class="form-control" lang="en" spellcheck="true" value="Table Default"></input>
+                  <input ref="input" name="data[textField4]" type="text" class="form-control" lang="en" spellcheck="true" value="Table Default" id="textField4-textField4"></input>
                 </div>
                 <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
               </div>
@@ -386,11 +386,11 @@
       <div class="card card-body bg-light">
         <div ref="nested-well">
           <div id="textField5" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField5 " ref="component">
-            <label class="col-form-label ">
+            <label class="col-form-label " for="textField5-textField5">
               Text Field
             </label>
             <div ref="element">
-              <input ref="input" name="data[textField5]" type="text" class="form-control" lang="en" spellcheck="true" value="Well Default"></input>
+              <input ref="input" name="data[textField5]" type="text" class="form-control" lang="en" spellcheck="true" value="Well Default" id="textField5-textField5"></input>
             </div>
             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
           </div>
@@ -401,11 +401,11 @@
     <div id="container" class="form-group has-feedback formio-component formio-component-container formio-component-container  formio-component-label-hidden" ref="component">
       <div ref="nested-container">
         <div id="textField6" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField6 " ref="component">
-          <label class="col-form-label ">
+          <label class="col-form-label " for="textField6-textField6">
             Text Field
           </label>
           <div ref="element">
-            <input ref="input" name="data[container][textField6]" type="text" class="form-control" lang="en" spellcheck="true" value="Container Default"></input>
+            <input ref="input" name="data[container][textField6]" type="text" class="form-control" lang="en" spellcheck="true" value="Container Default" id="textField6-textField6"></input>
           </div>
           <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
         </div>
@@ -413,7 +413,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="dataGrid" class="form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid " ref="component">
-      <label class="col-form-label ">
+      <label class="col-form-label " for="dataGrid-dataGrid">
         Data Grid
       </label>
       <table class="table datagrid-table table-bordered
@@ -432,7 +432,7 @@
             <td ref="datagrid-dataGrid">
               <div id="textField7" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField7  formio-component-label-hidden" ref="component">
                 <div ref="element">
-                  <input ref="input" name="data[dataGrid][0][textField7]" type="text" class="form-control" lang="en" spellcheck="true" value="Datagrid Default"></input>
+                  <input ref="input" name="data[dataGrid][0][textField7]" type="text" class="form-control" lang="en" spellcheck="true" value="Datagrid Default" id="textField7-textField7"></input>
                 </div>
                 <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
               </div>

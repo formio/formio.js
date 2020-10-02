@@ -3,6 +3,7 @@ import moment from 'moment';
 import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
+import i18nDefaults from './i18n';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
@@ -11,7 +12,9 @@ import NestedDataComponent from './components/_classes/nesteddata/NestedDataComp
 import {
   fastCloneDeep,
   currentTimezone,
-  getStringFromComponentPath
+  unescapeHTML,
+  getStringFromComponentPath,
+  searchComponents,
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -86,7 +89,7 @@ export default class Webform extends NestedDataComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('./i18n').default;
+    let i18n = i18nDefaults;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
@@ -306,6 +309,10 @@ export default class Webform extends NestedDataComponent {
         return reject(err);
       }
     });
+  }
+
+  get componentComponents() {
+    return this.form.components;
   }
 
   /**
@@ -637,6 +644,18 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   setForm(form, flags) {
+    try {
+      // Do not set the form again if it has been already set
+      if (JSON.stringify(this._form) === JSON.stringify(form)) {
+        return NativePromise.resolve();
+      }
+    }
+    catch (err) {
+      console.warn(err);
+      // If provided form is not a valid JSON object, do not set it too
+      return NativePromise.resolve();
+    }
+
     // Create the form.
     this._form = form;
 
@@ -791,6 +810,7 @@ export default class Webform extends NestedDataComponent {
     draft.state = 'draft';
 
     if (!this.savingDraft) {
+      this.emit('saveDraftBegin');
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
         // Set id to submission to avoid creating new draft submission
@@ -1030,9 +1050,9 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
-   * @param {string} classes - Styling classes for alert.
+   * @param {string} options
    */
-  setAlert(type, message, classes) {
+  setAlert(type, message, options) {
     const hotkeyListener = (e) => {
       const { keyCode, key, ctrlKey, altKey } = e;
         if ((key === 'x' || keyCode === 88) && ctrlKey && altKey) {
@@ -1080,7 +1100,7 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: classes || `alert alert-${type}`,
+        class: (options && options.classes) || `alert alert-${type}`,
         id: `error-list-${this.id}`,
       });
       if (message instanceof HTMLElement) {
@@ -1096,19 +1116,21 @@ export default class Webform extends NestedDataComponent {
 
     this.loadRefs(this.alert, { errorRef: 'multiple', errorTooltip: 'single' });
 
-    if (this.refs && this.refs.errorTooltip) {
-      const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
-      this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: title,
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
+    if (!(options && !options.tooltipRender)) {
+      if (this.refs && this.refs.errorTooltip) {
+        const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
+        this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
+          trigger: 'hover click focus',
+          placement: 'right',
+          html: true,
+          title: title,
+          template: `
+            <div class="tooltip" style="opacity: 1;" role="tooltip">
+              <div class="tooltip-arrow"></div>
+              <div class="tooltip-inner"></div>
+            </div>`,
+        });
+      }
     }
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
@@ -1120,6 +1142,7 @@ export default class Webform extends NestedDataComponent {
         });
         this.addEventListener(el, 'keydown', (e) => {
           if (e.keyCode === 13) {
+            e.preventDefault();
             const key = e.currentTarget.dataset.componentKey;
             this.focusOnComponent(key);
           }
@@ -1152,7 +1175,8 @@ export default class Webform extends NestedDataComponent {
    * @param {string} messageClass - A specific class for the help message.
    * @returns {*}
    */
-  showErrors(error, triggerEvent, messageClass) {
+  /* eslint-disable no-unused-vars */
+  showErrors(error, triggerEvent, onChange, messageClass) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1224,7 +1248,7 @@ export default class Webform extends NestedDataComponent {
           const mainMessage = this.ce('span');
           const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
 
-          this.setContent(mainMessage, this.t(message));
+          this.setContent(mainMessage, unescapeHTML(message));
           this.setContent(helpMessage, this.t('errorListHelpMessage'));
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
@@ -1241,13 +1265,11 @@ export default class Webform extends NestedDataComponent {
         };
 
         if (err.messages && err.messages.length) {
-          const errLabel = this.t(err.component.label);
-          err.messages.forEach(({ message }, index) => createListItem(`${errLabel}. ${message}`, index));
-        }
-        else if (err.messages && err.messages.length) {
-            err.messages.forEach(({ message }) => {
+          const { component } = err;
+          err.messages.forEach(({ message }, index) => {
             const additionalPeriod = message.charAt(message.length - 1) === '.' ? '' : '.';
-            createListItem(`${err.component.label}. ${message}${additionalPeriod} `);
+            const text = this.t('alertMessage', { label: this.t(component.label), message: `${message}${additionalPeriod}` });
+            createListItem(text, index);
           });
         }
         else if (err) {
@@ -1266,6 +1288,7 @@ export default class Webform extends NestedDataComponent {
 
     return errors;
   }
+  /* eslint-enable no-unused-vars */
 
   /**
    * Called when the submission has completed, or if the submission needs to be sent to an external library.
@@ -1562,17 +1585,15 @@ export default class Webform extends NestedDataComponent {
       });
     }
     if (API_URL && settings) {
-      try {
         Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() => {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
+        }).catch((e) => {
+          this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
         });
-      }
-      catch (e) {
-        this.showErrors(`${e.statusText} ${e.status}`);
-        this.emit('error',`${e.statusText} ${e.status}`);
-        console.error(`${e.statusText} ${e.status}`);
-      }
     }
     else {
       this.emit('error', 'You should add a URL to this button.');
@@ -1585,12 +1606,12 @@ export default class Webform extends NestedDataComponent {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = this.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
-        component.component.eventType === 'formLoad';
+    const recaptchaComponent = searchComponents(this.components, {
+      'component.type': 'recaptcha',
+      'component.eventType': 'formLoad'
     });
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    if (recaptchaComponent.length > 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
 

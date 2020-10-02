@@ -41,8 +41,8 @@ describe('EditGrid Component', () => {
         const firstValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[0].querySelector('.col-sm-2').textContent.trim();
         const secondValue = component.element.querySelectorAll('[ref="editgrid-editGrid-row"]')[1].querySelector('.col-sm-2').textContent.trim();
 
-        assert.equal(firstValue, '[Complex Data]');
-        assert.equal(secondValue, '[Complex Data]');
+        assert.equal(firstValue, '55555');
+        assert.equal(secondValue, '666666');
         done();
       }, 600);
     });
@@ -420,8 +420,6 @@ describe('EditGrid Component', () => {
           setTimeout(() => {
             const confirmationDialog2 = document.querySelector('[ref="confirmationDialog"]');
             assert(confirmationDialog2, 'Should open again a conformation dialog');
-            // eslint-disable-next-line no-debugger
-            debugger;
             Harness.dispatchEvent('click', confirmationDialog2, '[ref="dialogYesButton"]');
             setTimeout(() => {
               assert.equal(component.editRows.length, 0, 'Data should be cleared');

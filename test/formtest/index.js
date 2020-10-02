@@ -17,9 +17,18 @@ const formWithAdvancedLogic = require('./advancedLogicForm.json');
 const formWithConditionalLogic = require('./conditionalLogicForm.json');
 const formWithPatternValidation = require('./patternValidation.json');
 const formWithCalculatedValueWithoutOverriding = require('./calculatedValueForm.json');
+const formWithTimeComponent = require('./formWithTimeComponent.json');
 const calculatedSelectboxes = require('./calculatedSelectboxes.json');
 const columnsForm = require('./columnsForm.json');
 const calculateZeroValue = require('./calculateZeroValue.json');
+const formWithEditGridModalDrafts = require('./editGridModalDraftsTest.json');
+const formWithBlurValidationInsidePanel = require('./blurValidationInsidePanel.json');
+const modalEditComponents = require('./modalEditComponents.json');
+const calculatedNotPersistentValue = require('./calculatedNotPersistentValue.json');
+const initiallyCollapsedPanel = require('./initiallyCollapsedPanel.json');
+const multipleTextareaInsideConditionalComponent = require('./multipleTextareaInsideConditionalComponent.json');
+const disabledNestedForm = require('./disabledNestedForm.json');
+const propertyActions = require('./propertyActions.json');
 
 module.exports = {
   advanced,
@@ -43,5 +52,14 @@ module.exports = {
   columnsForm,
   calculateZeroValue,
   formWithConditionalLogic,
-  formWithCalculatedValueWithoutOverriding
+  formWithCalculatedValueWithoutOverriding,
+  formWithTimeComponent,
+  formWithEditGridModalDrafts,
+  formWithBlurValidationInsidePanel,
+  modalEditComponents,
+  calculatedNotPersistentValue,
+  initiallyCollapsedPanel,
+  multipleTextareaInsideConditionalComponent,
+  disabledNestedForm,
+  propertyActions,
 };

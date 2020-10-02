@@ -1,0 +1,35 @@
+<div id="" class="formio-component formio-component-form  formio-component-label-hidden" ref="component">
+  <div class="formio-form" ref="webform" novalidate>
+    <div id="panel" class="formio-component formio-component-panel formio-component-panel " ref="component">
+      <div class="mb-2 card border">
+        <div class="card-header bg-default" ref="header">
+          <span class="mb-0 card-title ">
+      Panel
+    </span>
+        </div>
+        <div class="card-body" ref="nested-panel">
+          <div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField " ref="component">
+            <label class="col-form-label " for="textField-textField">
+              Text Field
+            </label>
+            <div ref="element">
+              <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="textField-textField"></input>
+            </div>
+            <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+          </div>
+        </div>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+    </div>
+    <div id="submit" class="form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+      <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">
+        Submit
+      </button>
+      <div ref="buttonMessageContainer">
+        <span class="help-block" ref="buttonMessage"></span>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+    </div>
+  </div>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

@@ -739,10 +739,6 @@ body.formio-dialog-open {
   flex-direction: row;
 }
 
-.formio-component-submit .has-error {
-  display: none;
-}
-
 .formio-component-submit button[disabled]+.has-error {
   display: block;
 }
@@ -1213,4 +1209,15 @@ div[read-only="true"] {
       white-space: pre-wrap;
     }
   }
+}
+
+
+.formio-editor-read-only-content {
+  img {
+    max-width: 100%;
+  }
+}
+
+.table-responsive[ref=component] {
+  overflow-x: visible;
 }

@@ -1,6 +1,7 @@
 import Multivalue from '../multivalue/Multivalue';
-import { delay } from '../../../utils/utils';
+import { delay, convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -35,6 +36,10 @@ export default class Input extends Multivalue {
 
     if (this.disabled) {
       attr.disabled = 'disabled';
+    }
+
+    if (this.component.autocomplete) {
+      attr.autocomplete = this.component.autocomplete;
     }
 
     _.defaults(attr, this.component.attributes);
@@ -90,6 +95,27 @@ export default class Input extends Multivalue {
     return maxWords - wordCount;
   }
 
+  get prefix() {
+    return this.component.prefix;
+  }
+
+  get suffix() {
+    if (this.component.widget && this.component.widget.type === 'calendar') {
+      const calendarIcon = this.renderTemplate('icon', {
+        ref: 'icon',
+        // After font-awesome would be updated to v5.x, "clock-o" should be replaced with "clock"
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'clock-o'),
+        styles: '',
+        content: ''
+      }).trim();
+      if (this.component.prefix !== calendarIcon) {
+        // converting string to HTML markup to render correctly DateTime component in portal.form.io
+        return convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
+      }
+    }
+    return this.component.suffix;
+  }
+
   renderElement(value, index) {
     // Double quotes cause the input value to close so replace them with html quote char.
     if (value && typeof value === 'string') {
@@ -101,19 +127,6 @@ export default class Input extends Multivalue {
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
     }
-    // This should be in the calendar widget but it doesn't have access to renderTemplate.
-    if (this.component.widget && this.component.widget.type === 'calendar') {
-      const calendarIcon = this.renderTemplate('icon', {
-        ref: 'icon',
-        // After font-awesome would be updated to v5.x, "clock-o" should be replaced with "clock"
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'clock-o'),
-        styles: '',
-        content: ''
-      }).trim();
-      if (this.component.prefix !== calendarIcon) {
-        this.component.suffix = calendarIcon;
-      }
-    }
 
     return this.isMultipleMasksField
       ? this.renderTemplate('multipleMasksInput', {
@@ -123,6 +136,8 @@ export default class Input extends Multivalue {
         selectOptions: this.getMaskOptions() || [],
       })
       : this.renderTemplate('input', {
+        prefix: this.prefix,
+        suffix: this.suffix,
         input: info,
         value: this.formatValue(this.parseValue(value)),
         index
@@ -216,9 +231,10 @@ export default class Input extends Multivalue {
       element.widget.destroy();
     }
     // Attach the widget.
+    let promise = NativePromise.resolve();
     element.widget = this.createWidget(index);
     if (element.widget) {
-      element.widget.attach(element);
+      promise = element.widget.attach(element);
       if (this.refs.prefix && this.refs.prefix[index]) {
         element.widget.addPrefix(this.refs.prefix[index]);
       }
@@ -240,6 +256,7 @@ export default class Input extends Multivalue {
         }
       });
     }
+    return promise;
   }
 
   /**

@@ -146,6 +146,11 @@
   }
 }
 
+.builder-sidebar_search {
+  margin-bottom: 10px;
+  appearance: auto;
+}
+
 .formio-wizard-builder-component-title {
   color:#6c757d;
   text-align:center;
@@ -203,4 +208,13 @@
 .component-edit-tabs.col-sm-12 .editForm {
   height: calc(100% - 4em);
   overflow-y: auto;
+}
+
+.progress.pdf-progress {
+  height: 1rem;
+}
+
+.progress.pdf-progress .progress-bar {
+  font-size: 0.7rem;
+  line-height: 1rem;
 }

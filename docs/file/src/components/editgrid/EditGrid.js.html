@@ -185,6 +185,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
@@ -197,6 +198,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
@@ -420,6 +422,16 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.type = &apos;editgrid&apos;;
   }
 
+  loadRefs(element, refs) {
+    super.loadRefs(element, refs);
+
+    const massageContainerRef = &apos;messageContainer&apos;;
+
+    if (refs[`${ massageContainerRef }`] === &apos;single&apos;) {
+      this.refs[`${ massageContainerRef }`] = element.querySelector(`:scope &gt; [ref=&quot;${ massageContainerRef }&quot;]`);
+    }
+  }
+
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &amp;&amp;
       !this.options.readOnly &amp;&amp;
@@ -535,7 +547,17 @@ export default class EditGridComponent extends NestedArrayComponent {
           {
             className: &apos;editRow&apos;,
             event: &apos;click&apos;,
-            action: () =&gt; this.editRow(rowIndex),
+            action: () =&gt; {
+              this.editRow(rowIndex).then(()=&gt; {
+                if (this.component.rowDrafts) {
+                  this.validateRow(editRow, false);
+
+                  if (this.component.modal &amp;&amp; editRow.errors &amp;&amp; !!editRow.errors.length ) {
+                    this.alert.showErrors(editRow.errors, false);
+                  }
+                }
+              });
+            },
           },
         ].forEach(({
           className,
@@ -775,7 +797,11 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
     editRow.prevState = editRow.state;
-    editRow.state = EditRowState.Editing;
+
+    if (!this.options.readOnly) {
+      editRow.state = EditRowState.Editing;
+    }
+
     const dataSnapshot = fastCloneDeep(editRow.data);
 
     if (this.inlineEditMode) {
@@ -831,20 +857,25 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.data = editRow.backup;
         editRow.backup = null;
         this.restoreRowContext(editRow);
-        this.clearErrors(rowIndex);
+        if (!this.component.rowDrafts) {
+          this.clearErrors(rowIndex);
+        }
         break;
       }
     }
 
     this.checkValidity(null, true);
     this.redraw();
+
+    if (this.component.rowDrafts) {
+      this.checkValidity(this.data, false);
+    }
   }
 
   saveRow(rowIndex) {
     const editRow = this.editRows[rowIndex];
 
     if (this.options.readOnly) {
-      editRow.state = EditRowState.Saved;
       return;
     }
 
@@ -880,6 +911,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.updateValue();
     this.triggerChange();
+    if (this.component.rowDrafts) {
+      editRow.components.forEach(comp =&gt; comp.setPristine(this.pristine));
+    }
     this.checkValidity(null, true);
     this.redraw();
 
@@ -962,13 +996,20 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  hasOpenRows() {
+    return this.editRows.some(row =&gt; this.isOpen(row));
+  }
+
   validateRow(editRow, dirty) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
 
-    if (editRow.state === EditRowState.Editing || dirty) {
+    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft &amp;&amp; !this.pristine &amp;&amp; !this.root.pristine &amp;&amp; !this.hasOpenRows())) {
       editRow.components.forEach(comp =&gt; {
-        comp.setPristine(!dirty);
+        if (!this.component.rowDrafts) {
+          comp.setPristine(!dirty);
+        }
+
         valid &amp;= comp.checkValidity(null, dirty, editRow.data);
       });
     }
@@ -990,9 +1031,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    if (!valid) {
-      editRow.errors = this.errors.filter((err) =&gt; !errorsSnapshot.includes(err));
-    }
+    editRow.errors = !valid ? this.errors.filter((err) =&gt; !errorsSnapshot.includes(err)) : null;
+
     return !!valid;
   }
 
@@ -1019,18 +1059,32 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     let rowsValid = true;
     let rowsEditing = false;
-    this.editRows.forEach((editRow) =&gt; {
+
+    this.editRows.forEach((editRow, index) =&gt; {
       // Trigger all errors on the row.
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &amp;= rowValid;
 
+      const rowRefs = this.refs[`editgrid-${this.component.key}-row`];
+
+      if (rowRefs) {
+        const rowContainer = rowRefs[index];
+
+        if (rowContainer) {
+          const errorContainer = rowContainer.querySelector(&apos;.editgrid-row-error&apos;);
+
+          if (!rowValid ) {
+            errorContainer.textContent = &apos;Invalid row. Please correct it or delete.&apos;;
+          }
+        }
+      }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
       rowsEditing |= (dirty &amp;&amp; this.isOpen(editRow));
     });
 
     if (!rowsValid) {
-      this.setCustomValidity(&apos;Please correct rows before proceeding.&apos;, dirty);
+      this.setCustomValidity(&apos;Please correct invalid rows before proceeding.&apos;, dirty);
       return false;
     }
     else if (rowsEditing &amp;&amp; this.saveEditMode) {

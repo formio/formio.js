@@ -10,6 +10,7 @@ const EditRowState = {
   New: 'new',
   Editing: 'editing',
   Saved: 'saved',
+  Viewing: 'viewing',
   Removed: 'removed',
   Draft: 'draft',
 };
@@ -50,34 +51,38 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   static get defaultHeaderTemplate() {
     return `<div class="row">
-  {% (component.components || []).forEach(function(component) { %}
-    <div class="col-sm-2">{{ component.label }}</div>
-  {% }) %}
-</div>`;
+      {% util.eachComponent(components, function(component) { %}
+        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+          <div class="col-sm-2">{{ component.label }}</div>
+        {% } %}
+      {% }) %}
+    </div>`;
   }
 
   static get defaultRowTemplate() {
     return `<div class="row">
-  {% instance.eachComponent(function(component) { %}
-    <div class="col-sm-2">
-      {{ component.getView(component.dataValue) }}
-    </div>
-  {% }, rowIndex) %}
-  {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
-    <div class="col-sm-2">
-      <div class="btn-group pull-right">
-        <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
-        {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
-          <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
+      {% util.eachComponent(components, function(component) { %}
+        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+          <div class="col-sm-2">
+            {{ getView(component, row[component.key]) }}
+          </div>
         {% } %}
-      </div>
-    </div>
-  {% } %}
-</div>`;
+      {% }) %}
+      {% if (!instance.disabled) { %}
+        <div class="col-sm-2">
+          <div class="btn-group pull-right">
+            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
+            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
+              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
+            {% } %}
+          </div>
+        </div>
+      {% } %}
+    </div>`;
   }
 
   get defaultDialogTemplate() {
-    return  `
+    return `
     <h3 ref="dialogHeader">${this.t('Do you want to clear data?')}</h3>
     <div style="display:flex; justify-content: flex-end;">
       <button ref="dialogCancelButton" class="btn btn-secondary">${this.t('Cancel')}</button>
@@ -179,6 +184,16 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.type = 'editgrid';
   }
 
+  loadRefs(element, refs) {
+    super.loadRefs(element, refs);
+
+    const massageContainerRef = 'messageContainer';
+
+    if (refs[`${massageContainerRef}`] === 'single') {
+      this.refs[`${massageContainerRef}`] = [...element.children].filter(elem => elem.attributes?.ref?.value === massageContainerRef)[0];
+    }
+  }
+
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
@@ -225,7 +240,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   isOpen(editRow) {
-    return [EditRowState.New, EditRowState.Editing].includes(editRow.state);
+    return [EditRowState.New, EditRowState.Editing, EditRowState.Viewing].includes(editRow.state);
   }
 
   render(children) {
@@ -294,7 +309,18 @@ export default class EditGridComponent extends NestedArrayComponent {
           {
             className: 'editRow',
             event: 'click',
-            action: () => this.editRow(rowIndex),
+            action: () => {
+              this.editRow(rowIndex).then(() => {
+                if (this.component.rowDrafts) {
+                  this.validateRow(editRow, false);
+
+                  if (this.component.modal && editRow.errors && !!editRow.errors.length) {
+                    this.alert.showErrors(editRow.errors, false);
+                    editRow.alerts = true;
+                  }
+                }
+              });
+            },
           },
         ].forEach(({
           className,
@@ -356,7 +382,7 @@ export default class EditGridComponent extends NestedArrayComponent {
             const instance = flattenedComponents[component.key];
             let view = instance ? instance.getView(data || instance.dataValue) : '';
 
-            if (instance && instance.widget && (view !== '--- PROTECTED ---' )) {
+            if (instance && instance.widget && (view !== '--- PROTECTED ---')) {
               if (_.isArray(view)) {
                 view = view.map((value) => instance.widget.getValueAsString(value));
               }
@@ -449,7 +475,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   addRowModal(rowIndex) {
-    const modalContent =  this.ce('div');
+    const modalContent = this.ce('div');
     const editRow = this.editRows[rowIndex];
     editRow.willBeSaved = false;
     const { components } = editRow;
@@ -481,6 +507,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
         else {
           this.alert.showErrors(editRow.errors, false);
+          editRow.alerts = true;
         }
       },
     }, this.component.saveRow || 'Save'));
@@ -495,7 +522,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const wrapper = this.ce('div', { ref: 'confirmationDialog' });
-    const dialogContent =this.component.dialogTemplate || this.defaultDialogTemplate;
+    const dialogContent = this.component.dialogTemplate || this.defaultDialogTemplate;
 
     wrapper.innerHTML = dialogContent;
     wrapper.refs = {};
@@ -534,7 +561,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
     editRow.prevState = editRow.state;
-    editRow.state = EditRowState.Editing;
+    editRow.state = this.options.readOnly ? EditRowState.Viewing : EditRowState.Editing;
+
     const dataSnapshot = fastCloneDeep(editRow.data);
 
     if (this.inlineEditMode) {
@@ -590,20 +618,25 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.data = editRow.backup;
         editRow.backup = null;
         this.restoreRowContext(editRow);
-        this.clearErrors(rowIndex);
+        if (!this.component.rowDrafts) {
+          this.clearErrors(rowIndex);
+        }
         break;
       }
     }
 
     this.checkValidity(null, true);
     this.redraw();
+
+    if (this.component.rowDrafts) {
+      this.checkValidity(this.data, false);
+    }
   }
 
   saveRow(rowIndex) {
     const editRow = this.editRows[rowIndex];
 
     if (this.options.readOnly) {
-      editRow.state = EditRowState.Saved;
       return;
     }
 
@@ -639,8 +672,15 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.updateValue();
     this.triggerChange();
+    if (this.component.rowDrafts) {
+      editRow.components.forEach(comp => comp.setPristine(this.pristine));
+    }
     this.checkValidity(null, true);
     this.redraw();
+
+    if (editRow.alerts) {
+      editRow.alerts = false;
+    }
 
     return true;
   }
@@ -665,7 +705,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   updateRowsComponents(rowIndex) {
     this.editRows.slice(rowIndex).forEach((row, index) => {
-      this.updateComponentsRowIndex(row.components, index);
+      this.updateComponentsRowIndex(row.components, rowIndex + index);
     });
   }
 
@@ -705,6 +745,13 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (this.inlineEditMode) {
           this.triggerRootChange(flags, changed, modified);
         }
+        else if (editRow?.alerts) {
+          this.checkData(null, {
+            ...flags,
+            changed,
+            rowIndex,
+          }, this.data);
+        }
         else if (editRow) {
           this.checkRow('checkData', null, {
             ...flags,
@@ -721,13 +768,20 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  hasOpenRows() {
+    return this.editRows.some(row => this.isOpen(row));
+  }
+
   validateRow(editRow, dirty) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
 
-    if (editRow.state === EditRowState.Editing || dirty) {
+    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft && !this.pristine && !this.root.pristine && !this.hasOpenRows())) {
       editRow.components.forEach(comp => {
-        comp.setPristine(!dirty);
+        if (!this.component.rowDrafts) {
+          comp.setPristine(!dirty);
+        }
+
         valid &= comp.checkValidity(null, dirty, editRow.data);
       });
     }
@@ -749,10 +803,25 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    if (!valid) {
-      editRow.errors = this.errors.filter((err) => !errorsSnapshot.includes(err));
-    }
+    editRow.errors = !valid ? this.errors.filter((err) => !errorsSnapshot.includes(err)) : null;
+
+    this.showRowErrorAlerts(editRow, !!valid);
+
     return !!valid;
+  }
+
+  showRowErrorAlerts(editRow, valid) {
+    if (editRow.alerts) {
+      if (this.alert) {
+        if (editRow.errors?.length && !valid) {
+          this.alert.showErrors(editRow.errors, false);
+          editRow.alerts = true;
+        }
+        else {
+          this.alert.clear();
+        }
+      }
+    }
   }
 
   checkValidity(data, dirty, row) {
@@ -778,18 +847,32 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     let rowsValid = true;
     let rowsEditing = false;
-    this.editRows.forEach((editRow) => {
+
+    this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(editRow, dirty);
+      const rowValid = this.validateRow(editRow, editRow.alerts || dirty);
 
       rowsValid &= rowValid;
 
+      const rowRefs = this.refs[`editgrid-${this.component.key}-row`];
+
+      if (rowRefs) {
+        const rowContainer = rowRefs[index];
+
+        if (rowContainer) {
+          const errorContainer = rowContainer.querySelector('.editgrid-row-error');
+
+          if (!rowValid) {
+            errorContainer.textContent = 'Invalid row. Please correct it or delete.';
+          }
+        }
+      }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
     if (!rowsValid) {
-      this.setCustomValidity('Please correct rows before proceeding.', dirty);
+      this.setCustomValidity('Please correct invalid rows before proceeding.', dirty);
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {

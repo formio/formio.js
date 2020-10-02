@@ -95,6 +95,7 @@ export default class CheckBoxComponent extends Field {
     if (element && this.input) {
       this.removeShortcut(this.input);
     }
+    super.detach();
   }
 
   get emptyValue() {
