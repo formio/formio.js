@@ -194,6 +194,16 @@ export default class Component extends Element {
   }
 
   /**
+   * Return the validator as part of the component.
+   *
+   * @return {ValidationChecker}
+   * @constructor
+   */
+  static get Validator() {
+    return Validator;
+  }
+
+  /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.
    *
@@ -485,6 +495,7 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
+    this._visible = this.conditionallyVisible(null, null);
   }
 
   destroy() {
@@ -633,13 +644,24 @@ export default class Component extends Element {
 
   getLabelInfo() {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isLeftPosition = this.labelPositions[0] === 'left';
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
+
+    let contentMargin = '';
+    if (this.component.hideLabel) {
+      const margin = this.labelWidth + this.labelMargin;
+      contentMargin = isRightPosition ? `margin-right: ${margin}%` : '';
+      contentMargin = isLeftPosition ? `margin-left: ${margin}%` : '';
+    }
+
     const labelStyles = `
       flex: ${this.labelWidth};
-      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+      ${isRightPosition ? 'margin-left' : 'margin-right'}: ${this.labelMargin}%;
     `;
     const contentStyles = `
       flex: ${100 - this.labelWidth - this.labelMargin};
+      ${contentMargin};
+      ${this.component.hideLabel ? `max-width: ${100 - this.labelWidth - this.labelMargin}` : ''};
     `;
 
     return {
@@ -713,9 +735,9 @@ export default class Component extends Element {
 
   labelIsHidden() {
     return !this.component.label ||
-      (!this.inDataGrid && this.component.hideLabel) ||
+      ((!this.inDataGrid && this.component.hideLabel) ||
       (this.inDataGrid && !this.component.dataGridLabel) ||
-      this.options.inputsOnly;
+      this.options.inputsOnly) && !this.builderMode;
   }
 
   get transform() {
@@ -822,7 +844,6 @@ export default class Component extends Element {
     ];
 
     // Allow template alters.
-    // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`, data);
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),
@@ -940,7 +961,7 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
@@ -1029,7 +1050,18 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
+    this.restoreFocus();
+
     return NativePromise.resolve();
+  }
+
+  restoreFocus() {
+    const isFocused = this.root?.focusedComponent?.path === this.path;
+    if (isFocused) {
+      this.loadRefs(this.element, { input: 'multiple' });
+      this.focus(this.root.currentSelection?.index);
+      this.restoreCaretPosition();
+    }
   }
 
   addShortcut(element, shortcut) {
@@ -1091,6 +1123,9 @@ export default class Component extends Element {
 
   checkRefreshOn(changes, flags) {
     changes = changes || [];
+    if (!changes.length && flags?.changed) {
+      changes = [flags.changed];
+    }
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
@@ -1437,6 +1472,23 @@ export default class Component extends Element {
     return false;
   }
 
+  restoreCaretPosition() {
+    if (this.root?.currentSelection) {
+      if (this.refs.input?.length) {
+        const { selection, index } = this.root.currentSelection;
+        let input = this.refs.input[index];
+        if (input) {
+          input.setSelectionRange(...selection);
+        }
+        else {
+          input = this.refs.input[this.refs.input.length];
+          const lastCharacter = input.value?.length || 0;
+          input.setSelectionRange(lastCharacter, lastCharacter);
+        }
+      }
+    }
+  }
+
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element || !this.element.parentNode) {
@@ -1444,6 +1496,7 @@ export default class Component extends Element {
       return NativePromise.resolve();
     }
     this.detach();
+    this.emit('redraw');
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
@@ -2201,9 +2254,6 @@ export default class Component extends Element {
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
-    if (this.componentModal && flags && flags.fromSubmission) {
-      this.componentModal.setValue(value);
-    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -2214,7 +2264,8 @@ export default class Component extends Element {
       Array.isArray(this.defaultValue) &&
       this.refs.hasOwnProperty('input') &&
       this.refs.input &&
-      (this.refs.input.length !== value.length)
+      (this.refs.input.length !== value.length) &&
+      this.visible
     ) {
       this.redraw();
     }
@@ -2300,6 +2351,9 @@ export default class Component extends Element {
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
+    }
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
     }
     return changed;
   }
@@ -2446,7 +2500,7 @@ export default class Component extends Element {
       return false;
     }
 
-    if (flags.fromSubmission) {
+    if (flags.fromSubmission && allowOverride && this.component.persistent === true) {
       this.calculatedValue = calculatedValue;
       return false;
     }
@@ -2464,7 +2518,9 @@ export default class Component extends Element {
       return true;
     }
     // Set the new value.
-    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
+    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
+    ? false
+    : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
     return changed;
   }
@@ -2551,9 +2607,10 @@ export default class Component extends Element {
     if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
-    else {
+    else if (!silentCheck) {
       this.setCustomValidity('');
     }
+
     return !hasErrors;
   }
 
@@ -2611,16 +2668,15 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+
     if (flags.noValidate && !flags.validateOnInit) {
+      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
+        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+      }
       return true;
     }
 
-    // We need to perform a test to see if they provided a default value that is not valid and immediately show
-    // an error if that is the case.
-    let isDirty = !this.builderMode &&
-      !this.options.preview &&
-      !this.isEmpty(this.defaultValue) &&
-      this.isEqual(this.defaultValue, this.dataValue);
+    let isDirty = false;
 
     // We need to set dirty if they explicitly set noValidate to false.
     if (this.options.alwaysDirty || flags.dirty) {
@@ -2632,6 +2688,9 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    if (this.component.validateOn === 'blur' && flags.fromSubmission) {
+      return true;
+    }
     return this.checkComponentValidity(data, isDirty, row);
   }
 
@@ -2733,6 +2792,9 @@ export default class Component extends Element {
     else if (this.error && this.error.external === !!external && !hasErrors) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
+      }
+      if (this.refs.modalMessageContainer) {
+        this.empty(this.refs.modalMessageContainer);
       }
       this.error = null;
       if (inputRefs) {
@@ -2932,7 +2994,7 @@ export default class Component extends Element {
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
             }
-            this.redraw();
+            this.rebuild();
           }
         }, true);
       }
@@ -2973,17 +3035,35 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode && !this.options.preview) {
+    const hasAutofocus = this.component.autofocus && !this.builderMode && !this.options.preview;
+    if (hasAutofocus) {
       this.on('render', () => this.focus(), true);
     }
   }
 
-  focus() {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-    if (this.refs.input && this.refs.input[0]) {
-      this.refs.input[0].focus();
+    if (this.refs.input?.length) {
+      if (typeof index === 'number' && this.refs.input[index]) {
+        this.refs.input[index].focus();
+      }
+      else {
+        this.refs.input[this.refs.input.length - 1].focus();
+      }
+    }
+    if (this.refs.openModal) {
+      this.refs.openModal.focus();
+    }
+    if (this.parent.refs.openModal) {
+      this.parent.refs.openModal.focus();
+    }
+    if (this.refs.openModal) {
+      this.refs.openModal.focus();
+    }
+    if (this.parent.refs.openModal) {
+      this.parent.refs.openModal.focus();
     }
   }
 

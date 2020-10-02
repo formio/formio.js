@@ -61,7 +61,7 @@ describe('Button Component', () => {
       .catch(done);
   });
 
-  it('Should disable on invalid', (done) => {
+  it('Test on error', (done) => {
     const element = document.createElement('div');
     Formio.createForm(element, {
       components: [
@@ -85,7 +85,12 @@ describe('Button Component', () => {
       form.on('change', () => {
         const button = form.getComponent('submit');
         assert(button.disabled, 'Button should be disabled');
-        done();
+        button.emit('submitError');
+        setTimeout(() => {
+          console.log('Text Content: ', button.refs.buttonMessage.innerHTML);
+          assert.equal(button.refs.buttonMessage.textContent, 'Please check the form and correct all errors before submitting.');
+          done();
+        }, 100);
       });
       form.submission = { data: {} };
     }).catch(done);

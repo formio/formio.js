@@ -186,9 +186,11 @@ export default class CalendarWidget extends InputWidget {
               }
 
               // Make sure we commit the value after a blur event occurs.
-              this.addEventListener(this.calendar._input, 'blur', () =>
-                this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
-              );
+              this.addEventListener(this.calendar._input, 'blur', (event) => {
+                if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+                  this.calendar.setDate(this.calendar.input.value, true, this.settings.altFormat);
+                }
+              });
             }
           });
       });
@@ -230,11 +232,19 @@ export default class CalendarWidget extends InputWidget {
   }
 
   addSuffix(suffix) {
-    this.addEventListener(suffix, 'click', () => {
-      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-        this.calendar.open();
+    this.addEventListener(suffix, 'click', (event) => {
+      event.stopPropagation();
+
+      if (this.calendar) {
+        if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+          this.calendar.open();
+        }
+        else if (this.calendar.isOpen) {
+          this.calendar.close();
+        }
       }
     });
+
     return suffix;
   }
 

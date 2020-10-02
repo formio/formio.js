@@ -4,6 +4,176 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.0-rc.14
+#### Fixed
+ - Nested: fix panel collapse validation triggered with dirty=false
+ - FJS-834: fixes an issue where focus and caret positions are lost after redrawing component
+ - FJS-1117: fixed an issue where validation errors are shown for invalid default value on form load
+ - FJS-1103: Manually changing the year on the textfield does not save correctly
+ - Fixed regression with custom wizards not moving onto the Thank You page.
+
+### 4.12.0-rc.13
+#### Changed
+ - Fixed DataGrid initialized as empty.
+ - FJS-1136: Fixes an issue where all the components inside a Nested Form are editable when Disabled is checked
+
+#### Added
+ - Adding a redraw event to the renderer.
+ - Add test to ensure wizard conditional pages keep their value during validation.
+
+### 4.12.0-rc.12
+#### Fixed
+ - Use NativePromise instead of Promise so it will not break Angular.
+ - FJS-1165, FJS-1184: Fixes an issue where default value is not set correctly to the Nested Form
+ - FJS-1131: Wizard Breadcrumb visible on first step even though set to "Hidden"
+ - FJS-1180: fixes an issue where the component is not disabled/hidden through Property Action
+ - PDF-128: Fix html element excluding from callback
+
+### 4.12.0-rc.11
+#### Fixed
+ - Regression: fixes an issue where File is not working inside Wizard
+ - Fix formio.js file not loading in IE
+ - FJS-1144 #3: Fixes an issue where html5 Select does not show value/placeholder after opening EditGrid's row
+ - Fixed an issue where Required Error is not triggered for Quill
+ - FJS-1147: Fixes an issue where CKEditor shows only outline on focus and not set the cursor
+ - FJS-1143: fixes an issue where the Result form is not rendered in the Custom Component example
+
+#### Changed
+ - Upgrade dompurify@2.0.14, mocha@8.1.3, file-loader@6.1.0, webpack-stream@6.0.0
+
+### 4.12.0-rc.10
+#### Fixed
+ - FJS-1179: fixes an issue where the Value components is updated when editing the Key Component, disables editing the Key Component
+ - Modified has nested field logic in Select.js #3185
+
+### 4.12.0-rc.9
+#### Added
+ - FOR-2699: now passing groupId and groupPermissions to file upload
+ - FIN-007: Add an Intuitive/dynamic search box in the Custom Fields List
+ - FJS-1147: Fixes an issue where user cannot focus on the invalid Text Editor
+
+#### Fixed
+ - FJS-1162, FJS-1163: Fixes an issue where it is unable to focus on the component that is inside a Layout Component which is inside a DataGrid
+ - FJS-1144: Fixes an issue where the Select that is in the EditGrid is not cleared on refresh
+ - FJS-1063: Unable to see all values of a select field if it is inside a panel inside of a table
+ - Fixed an issue where the text areas would delete spaces as you type them.
+ - FJS-1187: fixed an issue where today date is not chosen on first click in calendar
+ - Modified has nested field logic in Select.js #3185
+ - FJS-1179: fixes an issue where the Value components is updated when editing the Key Component, disables editing the Key Component
+
+#### Changed
+ - Upgrade @babel/core@7.11.4, chance@1.1.7, mocha@8.1.2, i18next@19.7.0
+
+### 4.12.0-rc.8
+#### Fixed
+ - VPAT/USWDS 1.9.x essential commits
+ - PDF - 135: Fix the issue with second form saving
+
+### 4.12.0-rc.7
+#### Fixed
+ - Issue with allowOverride not working correctly.
+
+### 4.12.0-rc.6
+#### Fixed
+ - FJS-1119: added wrapper to alert message unescaping HTML characters
+ - Fixes an issue where images are not appended to the TextArea in some cases
+ - FJS-1137: Fixes an issue where the CKEditor is editable when inside of disabled panel
+ - Fixed an issue where all the blank lines are removed from the text editor
+ - Fix/id path setting for Select Components.
+ - FJS-1172: fixed an issue where date is chosen only after second click in calendar
+ - FJS-1171: fixed calendar opening on suffix click
+
+#### Changed
+ - FJS-1050: added hideLabel option for panel
+
+#### Added
+ - Added an offAny method wich removes the listener that will be fired when any event is emitted
+ - FIN-027: Mechanism to indicate once the PDF has completely Loaded
+
+### 4.12.0-rc.5
+#### Fixed
+ - Issue where Panels were written for Bootstrap 3 instead of 4.
+
+### 4.12.0-rc.4
+#### Fixed
+ - Fixed issue where DataGrid would remove all components on remove row.
+
+#### Changed
+ - Change the display of panels for nested wizards inside parent wizards
+
+### 4.12.0-rc.3
+#### Fixed
+ - UIP-239: select options overlayed over tables.
+ - FJS-1044: 'OnBlur' Valdation is not working for email and phone number inputs
+ - FJS-1111: fixes the Stack Overflow error which occures when multiple TextArea is inside conditionally shown component
+ - Pass "locale" (not "language") Flatpickr setting: #3129
+ - Fixed getting component in NestedArrayComponent when rowIndex is not provided.
+ - Fix reCaptcha loading on Wizard form
+
+#### Added
+ - FJS-1128: added translation for label in form error alert
+ - Adding the vid to the currentForm when revision is loaded.
+ - FOR-2725: added possibility to use file name inside interpolated url in file component
+ - Add saveDraftBegin event
+
+#### Changed
+ - Make sure checkData is called on Wizard pages after every page is set.
+
+### 4.12.0-rc.2
+#### Fixed
+ - FJS-1118: fixes an issue where initially collapsed panels are opened when have required component inside
+ - FJS-1041: added possibility to interpolate dataGrid max/min length
+ - FOR-2714: Fix Webhook Action authentication part autocompleting
+ - FJS-1058: fixes an issuewhere the Signature has different dimensions in the View and Edit modes
+ - FJS-1035: Fix Conditional add button for EditGrid
+
+### 4.12.0-rc.1
+#### Fixed
+ - FJS-1109: replaced scope with alternative selector for working in IE11
+ - FJS-1079: fixes an issue where label width ignored when label is hidden
+ - FJS-947: fixes an issue where forms' controllers are executed twice
+ - FJS-1117: added support for old default values in survey component
+ - FJS-1117: fixed number min-max validation
+ - PDF-106: Add flag to determine new component creation
+ - FJS-1034: Made Data Components' value's preview be displayed as a simple table
+ - Fix conditional wizard pages not getting values set correctly.
+ - FJS-1104: added label position for address
+ - FJS-1028: Date Time Component showing up in ISO Date Format 
+ - FJS-1097: fixes an issue where error message is not shown under the Submit button
+ - FJS-1082: EditGrid: fix viewing nested submission data issue
+ - Fixes an issue where value of non-persistent component is not calculated and shown in the View/Edit mode
+ - FJS-1033: Fixes an issue where data of some components with 'modalEdit' option is not shown in the 'view' mode
+ - FJS-1072: fix index computation after deleting rows in the EditGrid
+ - FJS-1060: fix template detail for Select when using Entire Object option
+ - Do not override the defaultValue field for hidden components: #3070
+ - FJS-1065: Maximum call stack size exceeded infinite loop error
+ - Fix (TextArea): Fixes an issue where images do not fit the editor's box in readOnly mode
+ - FJS-1040: fix recalculation of row numbers for DataGrid
+ - Fix (TextArea): Fixes an issue where images are not uploaded to the storage provider in the Quill editor and then an error occures
+ - FJS-1022: fixed an issue where row alert errors list is not updated when editing editGrid modal row
+
+#### Changed
+ - FJS-1006: Remove 'Table View' setting for layout components
+ - VPAT-498 Changed flatpickr to be lazy-loaded and removed dependencies
+ - Reverted EditGrid default template back to where it was before to adhere to 80% usecases
+
+#### Added
+ - VPAT-502 Added 'for' attributes for labels and IDs for inputs
+ - Adding config upload only option to file.edit
+ - Retain key if provided when drag/dropping an element
+ - FJS-1050: added hide label option for panel component
+
+### 4.11.1
+#### Changes
+ - No changes. Released 4.11.1-rc.9 as official release.
+
+### 4.11.1-rc.9
+#### Fixed
+ - FJS-1117: fixed an issue where validation error is shown for valid value when component has invalid default value
+
+#### Added
+ - More entry points for external libraries to reference components within the renderer.
+
 ### 4.11.1-rc.8
 #### Fixed
  - FJS-1083: Add polyfill for :scope CSS pseudo-class to fix IE11.

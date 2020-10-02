@@ -646,14 +646,33 @@ export default class FileComponent extends Field {
           }
           const { storage, options = {} } = this.component;
           const url = this.interpolate(this.component.url);
+          let groupKey = null;
+          let groupPermissions = null;
+
+          //Iterate through form components to find group resource if one exists
+          this.root.everyComponent((element) => {
+            if (element.component?.submissionAccess || element.component?.defaultPermission) {
+              groupPermissions = !element.component.submissionAccess ? [
+                {
+                  type: element.component.defaultPermission,
+                  roles: [],
+                },
+              ] : element.component.submissionAccess;
+
+              groupPermissions.forEach((permission) => {
+                groupKey = ['admin', 'write', 'create'].includes(permission.type) ? element.component.key : null;
+              });
+            }
+          });
 
           const fileKey = this.component.fileKey || 'file';
+          const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
           fileService.uploadFile(storage, file, fileName, dir, (evt) => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             this.redraw();
-          }, url, options, fileKey)
+          }, url, options, fileKey, groupPermissions, groupResourceId)
             .then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {

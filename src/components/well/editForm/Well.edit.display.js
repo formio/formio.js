@@ -27,4 +27,8 @@ export default [
     key: 'tabindex',
     ignore: true
   },
+  {
+    key: 'tableView',
+    ignore: true
+  },
 ];

@@ -28,6 +28,10 @@ export default [
     ignore: true
   },
   {
+    key: 'tableView',
+    ignore: true
+  },
+  {
     weight: 150,
     type: 'datagrid',
     input: true,

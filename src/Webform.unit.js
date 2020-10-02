@@ -7,6 +7,7 @@ import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
+import 'flatpickr';
 import {
   settingErrors,
   clearOnHide,
@@ -21,7 +22,13 @@ import {
   formWithCalculatedValueWithoutOverriding,
   formWithTimeComponent,
   formWithEditGridModalDrafts,
-  formWithBlurValidationInsidePanel
+  formWithBlurValidationInsidePanel,
+  modalEditComponents,
+  calculatedNotPersistentValue,
+  initiallyCollapsedPanel,
+  multipleTextareaInsideConditionalComponent,
+  disabledNestedForm,
+  propertyActions,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 // import Formio from './Formio';
@@ -86,7 +93,8 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it('Should show validation errors when openning edit grid rows in draft modal mode after pushing submit btn', function(done) {
+  it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
+  in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement);
 
@@ -146,17 +154,44 @@ describe('Webform tests', function() {
                 //checking if alert with errors list appeared inside the modal
                 assert.equal(!!alertWithErrorText, true);
 
-                const numberComponent = rowModalAfterValidation.querySelector('.formio-component-number');
-                const numberComponentError = numberComponent.querySelector('.error').textContent;
+                const alertErrorMessages = rowModalAfterValidation.querySelectorAll('[ref="messageRef"]');
+                assert.equal(alertErrorMessages.length, 1);
+
+                const numberComponentError = rowModalAfterValidation.querySelector('.formio-component-number').querySelector('.error').textContent;
                 //checking if error was shown for empty required field
                 assert.equal(numberComponentError, 'Number is required');
 
-                done();
-              }, 350);
-            }, 300);
-          }, 200);
-        }, 150);
-      }, 100);
+                const numberInput = rowModalAfterValidation.querySelector('[name="data[editGrid][0][number]"]');
+                numberInput.value = 123;
+                //input value to make the field valid
+                numberInput.dispatchEvent(inputEvent);
+
+                setTimeout(() => {
+                  const rowModalWithValidFields = document.querySelector('.formio-dialog-content');
+                  const alertErrorMessagesAfterInputtingValidValues = rowModalWithValidFields.querySelectorAll('[ref="messageRef"]');
+                  assert.equal(alertErrorMessagesAfterInputtingValidValues.length, 0);
+
+                  //input values to make all row fields invalid
+                  const validNumberInput = rowModalWithValidFields.querySelector('[name="data[editGrid][0][number]"]');
+                  validNumberInput.value = null;
+                  validNumberInput.dispatchEvent(inputEvent);
+
+                  const validTextInput = rowModalWithValidFields.querySelector('[name="data[editGrid][0][textField]"]');
+                  validTextInput.value = '';
+                  validTextInput.dispatchEvent(inputEvent);
+
+                  setTimeout(() => {
+                    const alertErrorMessagesAfterInputtingInvalidValues = document.querySelector('.formio-dialog-content').querySelectorAll('[ref="messageRef"]');
+                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length,2);
+
+                    done();
+                  }, 280);
+                }, 240);
+              }, 200);
+            }, 160);
+          }, 120);
+        }, 80);
+      }, 50);
     }).catch((err) => done(err));
   });
 
@@ -1397,6 +1432,158 @@ describe('Webform tests', function() {
             done();
           }, 250);
         }, 250);
+      }).catch(done);
+    });
+  });
+
+  describe('Modal Edit', () => {
+    const submission = {
+      state: 'submitted',
+      data: {
+        checkbox: true,
+        selectBoxes: {
+          a: true,
+          b: true
+        },
+        select: 'f',
+        submit: true
+      }
+    };
+    const componentsKeys = ['checkbox', 'selectBoxes', 'select'];
+    const expectedValues = {
+      checkbox: 'Yes',
+      selectBoxes: 'a, b',
+      select: 'f'
+    };
+    it('Test rendering previews after the submission is set', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(modalEditComponents).then(() => {
+        return form.setSubmission(submission, { fromSubmission: true }).then(() => {
+          componentsKeys.forEach((key) => {
+            const comp = form.getComponent([key]);
+            assert(comp);
+            const preview = comp.componentModal.refs.openModal;
+            assert(preview);
+            assert.equal(preview.textContent.replace(/\n|\t/g, '').trim(), expectedValues[key]);
+          });
+          done();
+        });
+      }).catch(done);
+    });
+  });
+
+  describe('Initially Collapsed Panel', () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(initiallyCollapsedPanel).then(() => {
+      it('Should be collapsed', (done) => {
+        try {
+          const panelBody = form.element.querySelector('[ref=nested-panel]');
+          assert.equal(panelBody, null, 'Should not render the panel\'s body when initially collapsed');
+          done();
+        }
+        catch (err) {
+          done(err);
+        }
+      });
+      it('Should open when an Error occured', (done) => {
+        form.executeSubmit().catch(() => {
+          try {
+            const panelBody = form.element.querySelector('[ref=nested-panel]');
+            assert(panelBody, 'Should open the panel when an error occured');
+            done();
+          }
+          catch (err) {
+            done(err);
+          }
+        });
+      });
+    }).catch((err) => console.error(err));
+  });
+
+  describe('Calculate Value', () => {
+    it('Should calculate value when set submission if the component is not persistent', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(calculatedNotPersistentValue).then(() => {
+        form.setSubmission({
+          data:
+            {
+              a: 'testValue'
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const persistentField = form.getComponent(['a']);
+          assert.equal(persistentField.dataValue, 'testValue', 'Should set the value from the submission');
+          const notPersistentFieldInput = form.element.querySelector('input[name="data[textField]"]');
+          assert.equal(notPersistentFieldInput.value, 'testValue', 'Should calculate the value');
+          done();
+        }, 550);
+      }).catch(done);
+    });
+  });
+
+  it('Should render components properly', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(multipleTextareaInsideConditionalComponent).then(() => {
+      form.setSubmission({
+        data: {
+          textArea2: [
+            'test'
+          ],
+          didAnyBehavioralIssuesOccurOnYourShift: 'yes',
+          submit: false,
+        }
+      });
+      setTimeout(() => {
+        const textarea = form.getComponent(['textArea2']);
+        const panel = form.getComponent(['behavioralIssues']);
+        assert.equal(panel.visible, true, 'Should be visible');
+        assert.deepEqual(textarea.dataValue, ['test'], 'Should set the value from the submission');
+        const inputRows = textarea.element.querySelectorAll('[ref="input"]');
+        assert.equal(inputRows.length, 1, 'Should render all the rows of the Textarea');
+        done();
+      }, 750);
+    }).catch(done);
+  });
+
+  it('Should disable all the components inside Nested Form if it is disabled', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(disabledNestedForm).then(() => {
+      assert.equal(form.components[0].disabled, false, 'Component that is outside of disabled Nested Form should be editable');
+      const subFormComponents = form.components[1].subForm.components;
+      assert.deepEqual([subFormComponents[0].disabled, subFormComponents[1].disabled], [true, true], 'Components that are inside of disabled Nested Form should be disabled');
+      done();
+    }).catch(done);
+  });
+
+  describe('Custom Logic', () => {
+    it('Should rerender components using updated properties', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(propertyActions).then(() => {
+        form.emit('disabled');
+        form.emit('hide');
+        form.emit('require');
+        setTimeout(() => {
+          const textFieldDisabled = form.getComponent(['textField']);
+          const textFieldHidden = form.getComponent(['textField1']);
+          const textFieldRequired = form.getComponent(['textField2']);
+          assert.equal(textFieldDisabled.component.disabled, true, 'Should be disabled');
+          assert.equal(textFieldHidden.component.hidden, true, 'Should be hidden');
+          assert.equal(textFieldRequired.component.validate.required, true, 'Should be required');
+          const disabledInput = textFieldDisabled.element.querySelector('[ref="input"]');
+          assert.equal(disabledInput.disabled, true, 'Should found a disabled input');
+          const hiddenInput = textFieldHidden.element.querySelector('[ref="input"]');
+          assert(!hiddenInput, 'Should not found a hidden input');
+          const requiredFieldLabel = textFieldRequired.element.querySelector('label');
+          assert(requiredFieldLabel.classList.contains('field-required'), 'Should mark a field as required');
+          done();
+        }, 550);
       }).catch(done);
     });
   });
