@@ -1,5 +1,6 @@
 import { ExtendedComponentSchema } from './schema';
 import { Component } from './_classes/component/component';
+import { ComponentModal } from './_classes/componentmodal/componentmodal';
 import { Field } from './_classes/field/field';
 import { Input } from './_classes/input/input';
 import { Multivalue } from './_classes/multivalue/multivalue';
@@ -15,6 +16,7 @@ export namespace Components {
   function create(component: any, options: Object, data?: any, flag?: any): Object;
   namespace components {
     class base extends Component {}
+    class componentmodal extends ComponentModal {}
     class input extends Input {}
     class nested extends NestedComponent {}
     class multivalue extends Multivalue {}
