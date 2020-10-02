@@ -447,11 +447,10 @@ export default class CalendarWidget extends InputWidget {
       // eslint-disable-next-line new-cap
       ShortcutButtonsPlugin({
         button: this.component.shortcutButtons.map((btn) => ({ label: btn.label, attributes: btn.attribute })),
-        onClick: (index, fp) => {
+        onClick: (index) => {
           const getValue = this.component.shortcutButtons[index].onClick;
           const date = this.evaluate(getValue, { date: new Date() }, 'date');
-          fp.setDate(date);
-          fp.close();
+          this.calendar.setDate(date, true);
         }
       })
     ];
