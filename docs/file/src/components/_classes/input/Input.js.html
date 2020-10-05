@@ -532,6 +532,7 @@ export default class Input extends Multivalue {
         }
       }
     }
+    this.refs.input = [];
   }
 
   addFocusBlurEvents(element) {
@@ -553,12 +554,12 @@ export default class Input extends Multivalue {
     this.addEventListener(element, &apos;blur&apos;, () =&gt; {
       this.root.pendingBlur = delay(() =&gt; {
         this.emit(&apos;blur&apos;, this);
-        if (this.component.validateOn === &apos;blur&apos;) {
-          this.root.triggerChange({}, {
+        if (this.component.validateOn === &apos;blur&apos; ) {
+          this.root.triggerChange({ fromBlur: true }, {
             instance: this,
             component: this.component,
             value: this.dataValue,
-            flags: {}
+            flags: { fromBlur: true }
           });
         }
         this.root.focusedComponent = null;

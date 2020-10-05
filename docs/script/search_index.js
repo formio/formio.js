@@ -4050,6 +4050,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#clear",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-clear",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#clear",
+    "method"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#clearonhide",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-clearOnHide",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#clearOnHide",

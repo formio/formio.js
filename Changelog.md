@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.9
+#### Fixed
+ - Fixed an issue where WebformBuilder's components/widgets are not detached
+ - FJS-1115: fix ordering for nested wizards with conditional logic
+
+#### Added
+ - FJS-1196: added Refresh on Component Blur option to DataSource
+
 ### 4.12.1-rc.8
 #### Changed
  - VPAT-000 Added types for further extension of ComponentModal for 2.0 VPAT release
