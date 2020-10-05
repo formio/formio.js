@@ -3,7 +3,7 @@ import NativePromise from 'native-promise-only';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from '../../utils/utils';
+import { fastCloneDeep, Evaluator, getArrayFromComponentPath, translateHTMLTemplate } from '../../utils/utils';
 import templates from './templates';
 
 const EditRowState = {
@@ -250,6 +250,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const dataValue = this.dataValue || [];
     const headerTemplate = Evaluator.noeval ? templates.header : _.get(this.component, 'templates.header');
+    const footerTemplate = _.get(this.component, 'templates.footer');
     return super.render(children || this.renderTemplate('editgrid', {
       ref: {
         row: this.rowRef,
@@ -257,11 +258,11 @@ export default class EditGridComponent extends NestedArrayComponent {
         saveRow: this.saveRowRef,
         cancelRow: this.cancelRowRef,
       },
-      header: this.renderString(headerTemplate, {
+      header: this.renderString(translateHTMLTemplate(headerTemplate, this), {
         components: this.component.components,
         value: dataValue,
       }),
-      footer: this.renderString(_.get(this.component, 'templates.footer'), {
+      footer: this.renderString(translateHTMLTemplate(footerTemplate, this), {
         components: this.component.components,
         value: dataValue,
       }),
@@ -371,7 +372,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
 
       return this.renderString(
-        rowTemplate,
+        translateHTMLTemplate(rowTemplate, this),
         {
           row: dataValue[rowIndex] || {},
           data: this.data,

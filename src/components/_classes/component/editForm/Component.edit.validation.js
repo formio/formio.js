@@ -1,5 +1,6 @@
 import EditFormUtils from './utils';
 import Evaluator from '../../../../utils/Evaluator';
+import { translateHTMLTemplate } from '../../../../utils/utils';
 
 /* eslint-disable quotes, max-len */
 export default [
@@ -65,7 +66,7 @@ export default [
       return !Evaluator.noeval;
     },
     components: [
-      EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
+      EditFormUtils.logicVariablesTable('<tr><th>input</th><td><translate>The value that was input into this component</translate></td></tr>'),
       {
         type: 'textarea',
         key: 'validate.custom',
@@ -77,13 +78,14 @@ export default [
       {
         type: 'htmlelement',
         tag: 'div',
-        content: `
+        content: ({ instance }) => translateHTMLTemplate(`
           <small>
-            <p>Enter custom validation code.</p>
-            <p>You must assign the <strong>valid</strong> variable as either <strong>true</strong> or an error message if validation fails.</p>
-            <h5>Example:</h5>
-            <pre>valid = (input === 'Joe') ? true : 'Your name must be "Joe"';</pre>
-          </small>`
+            <p><translate>Enter custom validation code.</translate></p>
+            <p><translate>You must assign the <strong>valid</strong> variable as either <strong>true</strong> or an error message if validation fails.</translate></p>
+            <h5><translate>Example:</translate></h5>
+            <pre>valid = (input === 'Joe') ? true : '<translate>Your name must be "Joe"</translate>';</pre>
+          </small>
+        `, instance)
       },
       {
         type: 'well',
@@ -113,15 +115,17 @@ export default [
         type: 'htmlelement',
         tag: 'div',
         /* eslint-disable prefer-template */
-        content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
-          '<h5>Example:</h5>' +
+        content: ({ instance }) => translateHTMLTemplate(
+          '<p><translate>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</translate></p>' +
+          '<h5><translate>Example:</translate></h5>' +
           '<pre>' + JSON.stringify({
             "if": [
               { "===": [{ "var": "input" }, "Bob"] },
               true,
-              "Your name must be 'Bob'!"
+              "<translate>Your name must be 'Bob'!</translate>"
             ]
-          }, null, 2) + '</pre>'
+          }, null, 2) + '</pre>', instance
+        )
         /* eslint-enable prefer-template */
       },
       {

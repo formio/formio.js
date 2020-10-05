@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Evaluator from '../../../../utils/Evaluator';
+import { translateHTMLTemplate } from '../../../../utils/utils';
 const EditFormUtils = {
   sortAndFilterComponents(components) {
     return _.filter(_.sortBy(components, 'weight'), (item) => !item.ignore);
@@ -37,25 +38,30 @@ const EditFormUtils = {
   },
   logicVariablesTable(additional) {
     additional = additional || '';
+    const tableData = [
+      { key: 'form', value: 'The complete form JSON object.' },
+      { key: 'submission', value: 'The complete submission object.' },
+      { key: 'data', value: 'The complete submission data object.' },
+      { key: 'row', value: 'Contextual "row" data, used within DataGrid, EditGrid, and Container components.' },
+      { key: 'component', value: 'The current component JSON.' },
+      { key: 'instance', value: 'The current component instance.' },
+      { key: 'value', value: 'The current value of the component.' },
+      { key: 'moment', value: 'The moment.js library for date manipulation.' },
+      { key: '_', value: 'An instance of <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.' },
+      { key: 'utils', value: 'An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a> object.' },
+      { key: 'util', value: 'An alias for "utils".' }
+    ];
     return {
       type: 'htmlelement',
       tag: 'div',
       /* eslint-disable prefer-template */
-      content: '<p>The following variables are available in all scripts.</p>' +
-      '<table class="table table-bordered table-condensed table-striped">' +
-      additional +
-      '<tr><th>form</th><td>The complete form JSON object</td></tr>' +
-      '<tr><th>submission</th><td>The complete submission object.</td></tr>' +
-      '<tr><th>data</th><td>The complete submission data object.</td></tr>' +
-      '<tr><th>row</th><td>Contextual "row" data, used within DataGrid, EditGrid, and Container components</td></tr>' +
-      '<tr><th>component</th><td>The current component JSON</td></tr>' +
-      '<tr><th>instance</th><td>The current component instance.</td></tr>' +
-      '<tr><th>value</th><td>The current value of the component.</td></tr>' +
-      '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' +
-      '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.</td></tr>' +
-      '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a> object.</td></tr>' +
-      '<tr><th>util</th><td>An alias for "utils".</td></tr>' +
-      '</table><br/>'
+      content: ({ instance }) => translateHTMLTemplate(
+        '<p><translate>The following variables are available in all scripts.</translate></p>' +
+        '<table class="table table-bordered table-condensed table-striped">' +
+        additional + tableData.reduce((template, { key, value }) => template + `<tr><th>${key}</th><td><translate>${value}</translate></td></tr>`, '') +
+        '</table><br/>',
+        instance
+      )
       /* eslint-enable prefer-template */
     };
   },
@@ -92,7 +98,7 @@ const EditFormUtils = {
             {
               type: 'htmlelement',
               tag: 'div',
-              content: `<p>Enter custom javascript code.</p>${exampleHTML}`
+              content: ({ instance }) => translateHTMLTemplate(`<p><translate>Enter custom javascript code.</translate></p>${exampleHTML}`, instance)
             }
           ]
         },
@@ -107,9 +113,9 @@ const EditFormUtils = {
               type: 'htmlelement',
               tag: 'div',
               /* eslint-disable prefer-template */
-              content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
-                '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
-                 exampleJSON
+              content: ({ instance }) => translateHTMLTemplate('<p><translate>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</translate></p>' +
+              '<p><translate>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as </translate><code>{"_sum": {var: "data.a"}}</code></p>' +
+               exampleJSON, instance)
               /* eslint-enable prefer-template */
             },
             {
