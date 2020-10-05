@@ -1070,6 +1070,48 @@ export function getContextComponents(context) {
 }
 
 /**
+ * Applies translation to the value inside <translate> tag
+ *
+ * @param {string} tagValue - content inside <translate> tag
+ * @param {object} instance - instance of the component with i18next translate function
+ * @returns {string} - translated value
+ */
+function translateTagValue(tagValue, instance) {
+  const getLinksRegExp = new RegExp('<a[^>]*>(.*?)</a>', 'g');
+  const links = tagValue.match(getLinksRegExp);
+  const tempElem = document.createElement('div');
+  tempElem.innerHTML = tagValue;
+  const textToTranslate = tempElem.textContent || tempElem.innerText || null;
+  const translatedText = instance.t(textToTranslate);
+  return translatedText !== textToTranslate
+    ? `${translatedText} ${links ? links.join(', ') : ''}`
+    : textToTranslate;
+}
+
+/**
+ * Applies translations to the html template
+ *
+ * @param {string} html - html template
+ * @param {object} instance - instance of the component with i18next translate function
+ * @returns {string} - html template with translated values
+ */
+export function translateHTMLTemplate(html, instance) {
+  const valuesToTranslateRegExp = new RegExp('(?<=(<translate>))(.*?)(?=(</translate>))', 'gm');
+  const valuesToTranslate = html.match(valuesToTranslateRegExp);
+  if (!valuesToTranslate) {
+    return html;
+  }
+  const translatedValues = valuesToTranslate.map(value => translateTagValue(value, instance));
+  const valuesToReplaceWithTranslatedRegExp = new RegExp('<translate>(.*?)</translate>', 'gm');
+  let counter = 0;
+  const translatedHtml = html.replaceAll(
+    valuesToReplaceWithTranslatedRegExp,
+    () => translatedValues[counter++]
+  );
+  return translatedHtml;
+}
+
+/**
  * Sanitize an html string.
  *
  * @param string
