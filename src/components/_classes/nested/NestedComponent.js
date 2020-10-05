@@ -634,6 +634,13 @@ export default class NestedComponent extends Field {
     super.detach();
   }
 
+  clear() {
+    this.components.forEach(component => {
+      component.clear();
+    });
+    super.clear();
+  }
+
   destroy() {
     this.destroyComponents();
     super.destroy();

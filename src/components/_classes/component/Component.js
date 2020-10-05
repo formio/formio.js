@@ -1528,7 +1528,6 @@ export default class Component extends Element {
     super.removeEventListeners();
     this.tooltips.forEach(tooltip => tooltip.dispose());
     this.tooltips = [];
-    this.refs.input = [];
   }
 
   hasClass(element, className) {
