@@ -349,36 +349,18 @@ export default class Wizard extends Webform {
 
   transformPages() {
     const allComponents = [];
-    const currentPages = {};
-    const components = [];
+    const components = this.getSortedComponents(this);
     let defferedComponents = [];
     this.allPages = [];
 
-    if (this.components && this.components.length) {
-      this.components.map(page => {
-        if (page.component.type === 'panel') {
-          currentPages[page.component.key || page.component.title] = page;
-        }
-      });
-    }
-
-    this.originalComponents?.forEach((item) => {
-      if (!item.key) {
-        item.key = item.title;
-      }
-      if (currentPages[item.key]) {
-        components.push(currentPages[item.key]);
-      }
-    });
-
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
-      let hasNested = false;
       const nestedPages = [];
-      const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp?.components || [];
-      const additionalComponents = components.filter(comp => !comp.subForm && comp._visible);
+      const currentComponents = nestedComp?.subForm ? this.getSortedComponents(nestedComp.subForm) : nestedComp?.components || [];
+      const additionalComponents = currentComponents.filter(comp => !comp.subForm && comp._visible);
+      let hasNested = false;
 
-      eachComponent(components, (comp) => {
+      eachComponent(currentComponents, (comp) => {
         if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
           if (pushAllowed) {
             nestedPages.push(comp);
@@ -416,6 +398,30 @@ export default class Wizard extends Webform {
     }, []);
 
     this.allPages = allComponents;
+  }
+
+  getSortedComponents({ components, originalComponents }) { // sorts components if they were shuffled after the conditional logic
+    const currentComponents = [];
+    const currentPages = [];
+
+    if (components && components.length) {
+      components.map(page => {
+        if (page.component.type === 'panel') {
+          currentPages[page.component.key || page.component.title] = page;
+        }
+      });
+    }
+
+    originalComponents?.forEach((item) => {
+      if (!item.key) {
+        item.key = item.title;
+      }
+      if (currentPages[item.key]) {
+        currentComponents.push(currentPages[item.key]);
+      }
+    });
+
+    return currentComponents;
   }
 
   establishPages(data = this.data) {
