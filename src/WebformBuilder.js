@@ -1413,6 +1413,12 @@ export default class WebformBuilder extends Component {
     return super.init();
   }
 
+  clear() {
+    if (this.webform.initialized) {
+      this.webform.clear();
+    }
+  }
+
   destroy(deleteFromGlobal) {
     if (this.webform.initialized) {
       this.webform.destroy(deleteFromGlobal);

@@ -299,6 +299,7 @@ export default class Input extends Multivalue {
         }
       }
     }
+    this.refs.input = [];
   }
 
   addFocusBlurEvents(element) {
