@@ -1104,7 +1104,7 @@ export function translateHTMLTemplate(html, instance) {
   const translatedValues = valuesToTranslate.map(value => translateTagValue(value, instance));
   const valuesToReplaceWithTranslatedRegExp = new RegExp('<translate>(.*?)</translate>', 'gm');
   let counter = 0;
-  const translatedHtml = html.replaceAll(
+  const translatedHtml = html.replace(
     valuesToReplaceWithTranslatedRegExp,
     () => translatedValues[counter++]
   );
