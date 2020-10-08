@@ -1221,3 +1221,7 @@ div[read-only="true"] {
 .table-responsive[ref=component] {
   overflow-x: visible;
 }
+
+.pull-right:not(:last-child) {
+  padding-left: 12px;
+}
