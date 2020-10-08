@@ -662,7 +662,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.backup = null;
 
     this.updateValue();
-    this.triggerChange({ modified });
+    this.triggerChange({ modified, draft: this.component.rowDrafts });
     if (this.component.rowDrafts) {
       editRow.components.forEach(comp => comp.setPristine(this.pristine));
     }
@@ -719,7 +719,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows.splice(rowIndex, 1);
     this.updateRowsComponents(rowIndex);
     this.updateValue();
-    this.triggerChange({ modified });
+    this.triggerChange({ modified, draft: this.component.rowDrafts });
     this.checkValidity(null, true);
     this.checkData();
     this.redraw();
@@ -815,7 +815,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
   }
 
-  checkValidity(data, dirty, row) {
+  checkValidity(data, dirty, row, silentCheck = false) {
     data = data || this.rootValue;
     row = row || this.data;
 
@@ -824,11 +824,13 @@ export default class EditGridComponent extends NestedArrayComponent {
       return true;
     }
 
-    return this.checkComponentValidity(data, dirty, row);
+    return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
-  checkComponentValidity(data, dirty, row) {
-    if (!super.checkComponentValidity(data, dirty, row)) {
+  checkComponentValidity(data, dirty, row, options = {}) {
+    const silentCheck = options.silentCheck || false;
+
+    if (!super.checkComponentValidity(data, dirty, row, options)) {
       return false;
     }
 
@@ -853,7 +855,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (rowContainer) {
           const errorContainer = rowContainer.querySelector('.editgrid-row-error');
 
-          if (!rowValid) {
+          if (!rowValid && !silentCheck) {
             errorContainer.textContent = 'Invalid row. Please correct it or delete.';
           }
         }
@@ -862,17 +864,20 @@ export default class EditGridComponent extends NestedArrayComponent {
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
-    if (!rowsValid) {
+    if (!rowsValid && !silentCheck) {
       this.setCustomValidity('Please correct invalid rows before proceeding.', dirty);
       return false;
     }
-    else if (rowsEditing && this.saveEditMode) {
+    else if (rowsEditing && this.saveEditMode && !silentCheck) {
       this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }
 
-    const message = this.invalid || this.invalidMessage(data, dirty);
-    this.setCustomValidity(message, dirty);
+    if (!silentCheck) {
+      const message = this.invalid || this.invalidMessage(data, dirty);
+      this.setCustomValidity(message, dirty);
+    }
+
     return true;
   }
 

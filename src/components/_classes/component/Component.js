@@ -2665,6 +2665,7 @@ export default class Component extends Element {
     }
 
     let isDirty = false;
+    let silentCheck = false;
 
     // We need to set dirty if they explicitly set noValidate to false.
     if (this.options.alwaysDirty || flags.dirty) {
@@ -2676,10 +2677,14 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    if (flags.draft) {
+      silentCheck = true;
+    }
+
     if (this.component.validateOn === 'blur' && flags.fromSubmission) {
       return true;
     }
-    return this.checkComponentValidity(data, isDirty, row);
+    return this.checkComponentValidity(data, isDirty, row, { silentCheck });
   }
 
   get validationValue() {
