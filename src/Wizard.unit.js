@@ -26,7 +26,7 @@ describe('Wizard tests', () => {
         setTimeout(() => {
           assert.equal(wizardWithSimpleConditionalPage.pages.length, 2);
           assert.equal(wizardWithSimpleConditionalPage.components.length, 2);
-          assert.equal(wizardWithSimpleConditionalPage.data, submissionData);
+          assert.deepEqual(wizardWithSimpleConditionalPage.data, submissionData);
           done();
         }, 500);
       }, 200);
@@ -60,7 +60,7 @@ describe('Wizard tests', () => {
           setTimeout(() => {
             assert.equal(wizardWithCustomConditionalPage.pages.length, 2);
             assert.equal(wizardWithCustomConditionalPage.components.length, 2);
-            assert.equal(wizardWithCustomConditionalPage.data, submissionData);
+            assert.deepEqual(wizardWithCustomConditionalPage.data, submissionData);
 
             const clickEvent = new Event('click');
             const secondPageBtn = wizardWithCustomConditionalPage.refs[`${wizardWithCustomConditionalPage.wizardKey}-link`][1];

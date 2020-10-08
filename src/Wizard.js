@@ -695,7 +695,11 @@ export default class Wizard extends Webform {
   setValue(submission, flags = {}) {
     this._submission = submission;
 
-    if (flags && flags.fromSubmission && submission) {
+    if (!this.editMode && submission._id && !this.options.readOnly) {
+      this.editMode = true;
+    }
+
+    if (flags && flags.fromSubmission && (this.options.readOnly || this.editMode)) {
       this._data = submission.data;
     }
 
@@ -704,11 +708,6 @@ export default class Wizard extends Webform {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
     this.pageFieldLogic(this.page);
-
-    if (!this.editMode && submission._id) {
-      this.editMode = true;
-      this.redraw();
-    }
 
     return changed;
   }
