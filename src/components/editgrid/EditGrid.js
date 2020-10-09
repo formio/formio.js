@@ -560,7 +560,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.backup = dataSnapshot;
     }
     else {
-      editRow.backup = editRow.data;
+      editRow.backup = fastCloneDeep(editRow.data);
       editRow.data = dataSnapshot;
       this.restoreRowContext(editRow);
     }
