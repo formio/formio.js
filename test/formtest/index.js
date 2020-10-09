@@ -30,7 +30,7 @@ const multipleTextareaInsideConditionalComponent = require('./multipleTextareaIn
 const formComponentWithConditionalRenderingForm = require('./formComponentWithConditionalRenderingForm.json');
 const disabledNestedForm = require('./disabledNestedForm.json');
 const propertyActions = require('./propertyActions.json');
-const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedFrom.json');
+const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedForm.json');
 
 module.exports = {
   advanced,
