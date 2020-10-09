@@ -1871,7 +1871,9 @@ export default class Component extends Element {
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
-      this.pristine = false;
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
       this.addClass(this.getElement(), 'formio-modified');
     }
 
