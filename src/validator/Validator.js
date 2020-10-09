@@ -61,8 +61,8 @@ class ValidationChecker {
             return true;
           }
 
-          // Skip if value is empty
-          if (!value || _.isEmpty(value)) {
+          // Skip if value is empty object or falsy
+          if (!value || _.isObjectLike(value) && _.isEmpty(value)) {
             return true;
           }
 
@@ -101,10 +101,9 @@ class ValidationChecker {
             else if (_.isArray(value)) {
               query[path] = { $all: value };
             }
-            else if (_.isObject(value)) {
+            else if (_.isObject(value) || _.isNumber(value)) {
               query[path] = { $eq: value };
             }
-
             // Only search for non-deleted items
             query.deleted = { $eq: null };
 
