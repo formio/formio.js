@@ -106,7 +106,7 @@ export default [
     style: { 'margin-bottom': '10px' },
     key: 'panel-disable-function',
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || Evaluator.protectedEval;
     },
     components: [
       EditFormUtils.logicVariablesTable('<tr><th>date</th><td>The date object.</td></tr>'),

@@ -132,6 +132,53 @@ describe('Webform tests', function() {
    }).catch((err) => done(err));
  });
 
+  it('Should not show validation errors when saving invalid draft row in dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDraftModals = new Webform(formElement);
+
+    formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() => {
+      const clickEvent = new Event('click');
+      const inputEvent = new Event('input');
+
+      const addRowBtn =  formWithDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
+      //click to open row in modal view
+      addRowBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const rowModal = document.querySelector('.formio-dialog-content');
+        //checking if row modal was openned
+        assert.equal(!!rowModal, true);
+
+        const textFieldInput = rowModal.querySelector('[name="data[editGrid][0][textField]"]');
+        textFieldInput.value = 'test';
+        //input value in one of required row fields
+        textFieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          //checking if the value was set inside the field
+          assert.equal(textFieldInput.value, 'test');
+
+          const saveModalBtn = rowModal.querySelector('.btn-primary');
+          //clicking save button to save row draft
+          saveModalBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const editGridRows = formWithDraftModals.element.querySelectorAll( '[ref="editgrid-editGrid-row"]');
+            //checking if the editGrid row was created
+            assert.equal(editGridRows.length, 1);
+            const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
+            const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error');
+
+            assert.equal(!!rowError, false);
+            assert.equal(!!editGridError, false);
+
+            done();
+          }, 200);
+        }, 100);
+      }, 50);
+    }).catch((err) => done(err));
+  });
+
   it('Should show dataGrid rows when viewing submission in dataGrid with initEmpty option', function(done) {
     const formElement = document.createElement('div');
     const formWithDataGridInitEmptyOption = new Webform(formElement);
