@@ -295,7 +295,7 @@ export default [
     key: &apos;custom-validation-js&apos;,
     weight: 300,
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || Evaluator.protectedEval;
     },
     components: [
       EditFormUtils.logicVariablesTable(&apos;&lt;tr&gt;&lt;th&gt;input&lt;/th&gt;&lt;td&gt;The value that was input into this component&lt;/td&gt;&lt;/tr&gt;&apos;),

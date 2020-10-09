@@ -339,7 +339,7 @@ export default [
     style: { &apos;margin-bottom&apos;: &apos;10px&apos; },
     key: &apos;panel-disable-function&apos;,
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || Evaluator.protectedEval;
     },
     components: [
       EditFormUtils.logicVariablesTable(&apos;&lt;tr&gt;&lt;th&gt;date&lt;/th&gt;&lt;td&gt;The date object.&lt;/td&gt;&lt;/tr&gt;&apos;),

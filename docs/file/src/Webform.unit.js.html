@@ -262,6 +262,7 @@ import {
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
   propertyActions,
+  formWithEditGridAndNestedDraftModalRow
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
@@ -272,6 +273,144 @@ import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(`Should show confirmation alert when clicking X btn or clicking outside modal window after editing
+  editGrid modal draft row`, function(done) {
+   const formElement = document.createElement(&apos;div&apos;);
+   const formWithNestedDraftModals = new Webform(formElement);
+
+   formWithNestedDraftModals.setForm(formWithEditGridAndNestedDraftModalRow).then(() =&gt; {
+     const clickEvent = new Event(&apos;click&apos;);
+     const inputEvent = new Event(&apos;input&apos;);
+
+     const addRowBtn = formWithNestedDraftModals.element.querySelector( &apos;[ref=&quot;editgrid-editGrid-addRow&quot;]&apos;);
+     //click to open row in modal view
+     addRowBtn.dispatchEvent(clickEvent);
+
+     setTimeout(() =&gt; {
+       const rowModal = document.querySelector(&apos;.formio-dialog-content&apos;);
+       //checking if row modal was openned
+       assert.equal(!!rowModal, true);
+
+       const textField = rowModal.querySelector(&apos;[name=&quot;data[textField]&quot;]&apos;);
+       textField.value = &apos;test&apos;;
+       //input value
+       textField.dispatchEvent(inputEvent);
+
+       setTimeout(() =&gt; {
+         //checking if the value was set inside the field
+         assert.equal(textField.value, &apos;test&apos;);
+
+         const saveModalBtn = rowModal.querySelector(&apos;.btn-primary&apos;);
+         //clicking save button to save row draft
+         saveModalBtn.dispatchEvent(clickEvent);
+
+         setTimeout(() =&gt; {
+          const editGridRows = formWithNestedDraftModals.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;);
+          //checking if the editGrid row was created
+          assert.equal(editGridRows.length, 1);
+
+          const editRowBtn =  editGridRows[0].querySelector(&apos;.editRow&apos;);
+          //click the edit btn to open the row again
+          editRowBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            const rowModalForEditing = document.querySelector(&apos;.formio-dialog-content&apos;);
+            const textFieldInputForEditing = rowModalForEditing.querySelector(&apos;[name=&quot;data[textField]&quot;]&apos;);
+            textFieldInputForEditing.value = &apos;changed value&apos;;
+            //changing textfield value
+            textFieldInputForEditing.dispatchEvent(inputEvent);
+
+            setTimeout(() =&gt; {
+              //checking if the textfield value was changed
+              const inputValue = textFieldInputForEditing.value;
+              assert.equal(inputValue, &apos;changed value&apos;);
+
+              const XCloseBtn = rowModalForEditing.querySelector(&apos;[ref=&quot;dialogClose&quot;]&apos;);
+              //clicking modal close btn
+              XCloseBtn.dispatchEvent(clickEvent);
+
+                setTimeout(() =&gt; {
+                  const dialogWindows = document.querySelectorAll(&apos;.formio-dialog-content&apos;);
+                  //checking if confirmation dialog is openned
+                  assert.equal(dialogWindows.length, 2);
+
+                  const dialogCancelBtn = document.querySelector(&apos;[ref=&quot;dialogCancelButton&quot;]&apos;);
+                  //closing confirmation dialog
+                  dialogCancelBtn.dispatchEvent(clickEvent);
+
+                  setTimeout(() =&gt; {
+                    const dialogWindowsAfterClosingConfirmation = document.querySelectorAll(&apos;.formio-dialog-content&apos;);
+                    //checking if confirmation dialig is closed
+                    assert.equal(dialogWindowsAfterClosingConfirmation.length, 1);
+
+                    const overlay = document.querySelector(&apos;[ref=&quot;dialogOverlay&quot;]&apos;);
+                    //clocking model overlay to open confirmation dialog again
+                    overlay.dispatchEvent(clickEvent);
+
+                    setTimeout(() =&gt; {
+                      const dialogWindowsAfterClickingOverlay = document.querySelectorAll(&apos;.formio-dialog-content&apos;);
+                      assert.equal(dialogWindowsAfterClickingOverlay.length, 2);
+
+                      document.body.innerHTML = &apos;&apos;;
+                      done();
+                     }, 190);
+                   }, 170);
+                 }, 150);
+              }, 130);
+            }, 110);
+         }, 90);
+       }, 70);
+     }, 50);
+   }).catch((err) =&gt; done(err));
+ });
+
+  it(&apos;Should not show validation errors when saving invalid draft row in dataGrid&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithDraftModals = new Webform(formElement);
+
+    formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+      const inputEvent = new Event(&apos;input&apos;);
+
+      const addRowBtn =  formWithDraftModals.element.querySelector( &apos;[ref=&quot;editgrid-editGrid-addRow&quot;]&apos;);
+      //click to open row in modal view
+      addRowBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        const rowModal = document.querySelector(&apos;.formio-dialog-content&apos;);
+        //checking if row modal was openned
+        assert.equal(!!rowModal, true);
+
+        const textFieldInput = rowModal.querySelector(&apos;[name=&quot;data[editGrid][0][textField]&quot;]&apos;);
+        textFieldInput.value = &apos;test&apos;;
+        //input value in one of required row fields
+        textFieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          //checking if the value was set inside the field
+          assert.equal(textFieldInput.value, &apos;test&apos;);
+
+          const saveModalBtn = rowModal.querySelector(&apos;.btn-primary&apos;);
+          //clicking save button to save row draft
+          saveModalBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            const editGridRows = formWithDraftModals.element.querySelectorAll( &apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;);
+            //checking if the editGrid row was created
+            assert.equal(editGridRows.length, 1);
+            const rowError = formWithDraftModals.element.querySelector(&apos;.editgrid-row-error&apos;).textContent.trim();
+            const editGridError = formWithDraftModals.element.querySelector(&apos;[ref=&quot;messageContainer&quot;]&apos;).querySelector(&apos;.error&apos;);
+
+            assert.equal(!!rowError, false);
+            assert.equal(!!editGridError, false);
+
+            done();
+          }, 200);
+        }, 100);
+      }, 50);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should show dataGrid rows when viewing submission in dataGrid with initEmpty option&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
@@ -501,7 +640,8 @@ describe(&apos;Webform tests&apos;, function() {
 
                   setTimeout(() =&gt; {
                     const alertErrorMessagesAfterInputtingInvalidValues = document.querySelector(&apos;.formio-dialog-content&apos;).querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
-                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length,2);
+                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
+                    document.body.innerHTML = &apos;&apos;;
 
                     done();
                   }, 280);

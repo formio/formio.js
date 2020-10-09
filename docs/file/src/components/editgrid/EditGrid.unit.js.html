@@ -266,6 +266,23 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should set correct values after reset&apos;, (done) =&gt; {
+    Harness.testCreate(EditGridComponent, comp5)
+      .then((component) =&gt; {
+        assert.equal(component.components.length, 0);
+
+        component.setValue([
+          { textField: &apos;textField1&apos; },
+          { textField: &apos;textField2&apos; }
+        ], { resetValue: true });
+
+        setTimeout(() =&gt; {
+          assert.equal(component.components.length, 2);
+          done();
+        }, 300);
+      });
+  });
+
   it(&apos;Should display saved values if there are more then 1 nested components&apos;, (done) =&gt; {
     Harness.testCreate(EditGridComponent, comp3).then((component) =&gt; {
       component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);

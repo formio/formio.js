@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.10
+#### Added
+ - Added protectedEval option to Evaluator
+
+#### Fixed
+ - FJS-1192: fixed excessive calls of conditional logic on change event
+ - FOR-2776: fix | currency. User was able to submit non-unique data twice and more when field is unique
+ - FOR-2419: search field for form builder can search a field by the label name
+ - FJS-1273: Space between character and word counter
+ - FJS-1286: fix setValue for PDF form in wizards
+ - Fixed an issue where validation errors where shown after saving invalid modal draft row in dataGrid
+ - Fixed an issue where confirmation alert is not shown after editing editGrid modal draft row
+ - FJS-1202: Wrong number of rows display in the Modal view of Edit-Grid
+ - FJS-1293: Fixed signature infinite loop in html render mode
+
 ### 4.12.1-rc.9
 #### Fixed
  - Fixed an issue where WebformBuilder's components/widgets are not detached

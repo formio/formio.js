@@ -243,8 +243,29 @@ import wizard3 from &apos;../test/forms/conditionalWizardPages&apos;;
 import wizard4 from &apos;../test/forms/wizardWithSimpleConditionalPage&apos;;
 import wizard5 from &apos;../test/forms/wizardWithCustomConditionalPage&apos;;
 import wizardWithAllowPrevious from &apos;../test/forms/wizardWithAllowPrevious&apos;;
+import formWithSignature from &apos;../test/forms/formWithSignature&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
+  it(&apos;Should show signature submission in HTML render mode&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithSignatureHTMLMode = new Wizard(formElement, {
+      readOnly: true,
+      renderMode: &apos;html&apos;
+    });
+
+    formWithSignatureHTMLMode.setForm(formWithSignature.form).then(() =&gt; {
+      formWithSignatureHTMLMode.setSubmission(formWithSignature.submission);
+
+      setTimeout(() =&gt; {
+        const signatureImage = formWithSignatureHTMLMode.element.querySelector(&apos;[ref=&quot;signatureImage&quot;]&apos;);
+        assert.equal(signatureImage.src === formWithSignature.submission.data.signature, true);
+
+        done();
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should display conditional page after setting submission&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const wizardWithSimpleConditionalPage = new Wizard(formElement);
@@ -259,7 +280,7 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         setTimeout(() =&gt; {
           assert.equal(wizardWithSimpleConditionalPage.pages.length, 2);
           assert.equal(wizardWithSimpleConditionalPage.components.length, 2);
-          assert.equal(wizardWithSimpleConditionalPage.data, submissionData);
+          assert.deepEqual(wizardWithSimpleConditionalPage.data, submissionData);
           done();
         }, 500);
       }, 200);
@@ -293,7 +314,7 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
           setTimeout(() =&gt; {
             assert.equal(wizardWithCustomConditionalPage.pages.length, 2);
             assert.equal(wizardWithCustomConditionalPage.components.length, 2);
-            assert.equal(wizardWithCustomConditionalPage.data, submissionData);
+            assert.deepEqual(wizardWithCustomConditionalPage.data, submissionData);
 
             const clickEvent = new Event(&apos;click&apos;);
             const secondPageBtn = wizardWithCustomConditionalPage.refs[`${wizardWithCustomConditionalPage.wizardKey}-link`][1];
