@@ -2270,7 +2270,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.options.renderMode === 'html') {
+    if (this.options.renderMode === 'html' && changed) {
       this.redraw();
       return changed;
     }
