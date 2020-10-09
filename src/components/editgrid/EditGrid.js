@@ -428,7 +428,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const components = this.getComponents(rowIndex).slice();
-    components.forEach((comp) => comp.destroy());
+    components.forEach((comp) => this.removeComponent(comp, this.components));
   }
 
   addRow() {
