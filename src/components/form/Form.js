@@ -102,6 +102,8 @@ export default class FormComponent extends Component {
           this.emit('subWizardsUpdated');
         }
       }, 0);
+
+      return subForm;
     });
   }
 
