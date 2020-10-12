@@ -643,7 +643,7 @@ export default class WebformBuilder extends Component {
       sidebarGroups.innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
         group: this.groups[groupKey],
         groupKey,
-        groupId: sidebar.id,
+        groupId: sidebar.id || sidebarGroups.id,
         subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
           group,
           groupKey: group.key,
