@@ -188,7 +188,10 @@ export default class PDFBuilder extends WebformBuilder {
     });
     if (this.refs['sidebar-loader']) {
       this.webform.on('iframe-ready', () => {
-        this.refs['sidebar-loader'].remove();
+        const sidebarLoader = this.refs['sidebar-loader'];
+        if (sidebarLoader && sidebarLoader.parentNode) {
+          sidebarLoader.parentNode.removeChild(sidebarLoader);
+        }
       }, true);
     }
     this.initIframeEvents();
