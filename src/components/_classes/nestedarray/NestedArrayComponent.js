@@ -65,11 +65,19 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   checkRow(method, data, opts, row, components, silentCheck) {
-    return _.reduce(
+    if (opts?.isolateRow) {
+      silentCheck = true;
+      opts.noRefresh = true;
+    }
+    const valid = _.reduce(
       components,
       (valid, component) => component[method](data, opts, row, silentCheck) && valid,
       true,
     );
+    if (opts?.noRefresh) {
+      delete opts.noRefresh;
+    }
+    return valid;
   }
 
   hasAddButton() {
