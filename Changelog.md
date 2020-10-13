@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.12
+#### Fixed
+ - FJS-1324: fixed an issue where component calculatedValue property is not assigned
+
 ### 4.12.1-rc.11
 #### Fixed
  - PDF-177: Update element removing for IE 11 compatibility
