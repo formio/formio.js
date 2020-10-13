@@ -279,6 +279,25 @@ describe('Wizard tests', () => {
     assert.equal(form.data.c, 'c', 'Should keep the value of a conditionally visible page.');
   });
 
+  it('Should hide conditional pages after "Cancel"', (done) => {
+    const formElement = document.createElement('div');
+    const wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizardCond)
+      .then(() => {
+        wizardForm.setValue({ data: { a: true } });
+
+        setTimeout(() => {
+          assert.equal(wizardForm.currentPanels.length, 3);
+
+          wizardForm.cancel(true)
+            .then(() => {
+              assert.equal(wizardForm.currentPanels.length, 2);
+              done();
+            });
+        }, 300);
+      });
+  });
+
   it('If allowPrevious is given, the breadcrumb bar should be clickable for visited tabs.', (done) => {
     const formElement = document.createElement('div');
     wizardForm = new Wizard(formElement, { allowPrevious: true });
