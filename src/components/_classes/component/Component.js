@@ -2500,7 +2500,6 @@ export default class Component extends Element {
         return false;
       }
 
-      this.calculatedValue = calculatedValue;
       if (flags.fromSubmission && this.component.persistent === true) {
         return false;
       }
@@ -2511,6 +2510,8 @@ export default class Component extends Element {
         return true;
       }
     }
+
+    this.calculatedValue = calculatedValue;
 
     return changed ? this.setValue(calculatedValue, flags) : false;
   }
