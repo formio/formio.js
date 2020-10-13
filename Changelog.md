@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.11
+#### Fixed
+ - PDF-177: Update element removing for IE 11 compatibility
+ - FJS-1264: Additional tabs don't hide after clicking wizard "Cancel" button
+
+#### Changed
+ - WebformBuilder: add check for sidebar id attr for bootstrap3 compatibility
+ - Upgrade @formio/bootstrap3@2.6.8
+
 ### 4.12.1-rc.10
 #### Added
  - Added protectedEval option to Evaluator
