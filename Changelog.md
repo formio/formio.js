@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.13
+#### Fixed
+ - FJS-1330: fixed an issue where date value is not set or incorrectly set in dateTime/textArea component after openning collapsed panel
+
+#### Changed
+ - Upgrade bootstrap@4.5.3, eslint@7.11.0, webpack@5.1.0
+
 ### 4.12.1-rc.12
 #### Fixed
  - FJS-1324: fixed an issue where component calculatedValue property is not assigned
