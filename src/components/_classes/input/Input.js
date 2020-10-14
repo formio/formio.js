@@ -221,10 +221,6 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value, options) {
-    return super.getValueAsString(value, options);
-  }
-
   attachElement(element, index) {
     super.attachElement(element, index);
     if (element.widget) {
