@@ -222,7 +222,7 @@ export default class Input extends Multivalue {
   }
 
   getValueAsString(value, options) {
-    return super.getValueAsString(this.getWidgetValueAsString(value, options), options);
+    return super.getValueAsString(value, options);
   }
 
   attachElement(element, index) {
