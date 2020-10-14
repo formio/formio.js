@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.14
+#### Changed
+ - FJS-1116: add methods so that premium can override them
+
 ### 4.12.1-rc.13
 #### Fixed
  - FJS-1330: fixed an issue where date value is not set or incorrectly set in dateTime/textArea component after openning collapsed panel
