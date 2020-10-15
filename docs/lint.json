@@ -1255,43 +1255,43 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 294,
+        "lineNumber": 301,
         "line": "/**"
       },
       {
-        "lineNumber": 295,
+        "lineNumber": 302,
         "line": " * Test a trigger on a component."
       },
       {
-        "lineNumber": 296,
+        "lineNumber": 303,
         "line": " *"
       },
       {
-        "lineNumber": 297,
+        "lineNumber": 304,
         "line": " * @param component"
       },
       {
-        "lineNumber": 298,
+        "lineNumber": 305,
         "line": " * @param action"
       },
       {
-        "lineNumber": 299,
+        "lineNumber": 306,
         "line": " * @param data"
       },
       {
-        "lineNumber": 300,
+        "lineNumber": 307,
         "line": " * @param row"
       },
       {
-        "lineNumber": 301,
+        "lineNumber": 308,
         "line": " * @returns {mixed}"
       },
       {
-        "lineNumber": 302,
+        "lineNumber": 309,
         "line": " */"
       },
       {
-        "lineNumber": 303,
+        "lineNumber": 310,
         "line": "export function checkTrigger(component, trigger, row, data, form, instance) {"
       }
     ],
@@ -1315,35 +1315,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 907,
+        "lineNumber": 914,
         "line": "/**"
       },
       {
-        "lineNumber": 908,
+        "lineNumber": 915,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 909,
+        "lineNumber": 916,
         "line": " *"
       },
       {
-        "lineNumber": 910,
+        "lineNumber": 917,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 911,
+        "lineNumber": 918,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 912,
+        "lineNumber": 919,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 913,
+        "lineNumber": 920,
         "line": " */"
       },
       {
-        "lineNumber": 914,
+        "lineNumber": 921,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],
@@ -1362,35 +1362,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 981,
+        "lineNumber": 988,
         "line": "/**"
       },
       {
-        "lineNumber": 982,
+        "lineNumber": 989,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 983,
+        "lineNumber": 990,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 984,
+        "lineNumber": 991,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 985,
+        "lineNumber": 992,
         "line": " *"
       },
       {
-        "lineNumber": 986,
+        "lineNumber": 993,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 987,
+        "lineNumber": 994,
         "line": " */"
       },
       {
-        "lineNumber": 988,
+        "lineNumber": 995,
         "line": "export function unfold(e) {"
       }
     ],
@@ -1406,31 +1406,31 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 1071,
+        "lineNumber": 1078,
         "line": "/**"
       },
       {
-        "lineNumber": 1072,
+        "lineNumber": 1079,
         "line": " * Sanitize an html string."
       },
       {
-        "lineNumber": 1073,
+        "lineNumber": 1080,
         "line": " *"
       },
       {
-        "lineNumber": 1074,
+        "lineNumber": 1081,
         "line": " * @param string"
       },
       {
-        "lineNumber": 1075,
+        "lineNumber": 1082,
         "line": " * @returns {*}"
       },
       {
-        "lineNumber": 1076,
+        "lineNumber": 1083,
         "line": " */"
       },
       {
-        "lineNumber": 1077,
+        "lineNumber": 1084,
         "line": "export function sanitize(string, options) {"
       }
     ],

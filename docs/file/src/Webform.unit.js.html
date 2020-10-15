@@ -185,8 +185,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getArrayFromComponentPath">getArrayFromComponentPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponentPathWithoutIndicies">getComponentPathWithoutIndicies</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDataParentComponent">getDataParentComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
@@ -262,7 +264,8 @@ import {
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
   propertyActions,
-  formWithEditGridAndNestedDraftModalRow
+  formWithEditGridAndNestedDraftModalRow,
+  formWithDateTimeComponents
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
@@ -273,6 +276,62 @@ import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should correctly set date after collapsing and openning the panel&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithDate = new Webform(formElement);
+
+    formWithDate.setForm(formWithDateTimeComponents).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+
+      const dateTimeCompInputWidget = formWithDate.element.querySelector(&apos;.formio-component-dateTime1&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+      const dateTimeAltFormat = dateTimeCompInputWidget.calendar.config.altFormat;
+      dateTimeCompInputWidget.calendar.setDate(&apos;05-05-2020T00:00:00&apos;, true, dateTimeAltFormat);
+
+      const textFieldDateCompWidget = formWithDate.element.querySelector(&apos;.formio-component-textField1&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+      const textFieldDateAltFormat = textFieldDateCompWidget.calendar.config.altFormat;
+      textFieldDateCompWidget.calendar.setDate(&apos;04-04-2020T00:00:00&apos;, true, textFieldDateAltFormat);
+
+      setTimeout(() =&gt; {
+      const dateTimeCompAltInput = formWithDate.element.querySelector(&apos;.formio-component-dateTime1&apos;).querySelector(&apos;.flatpickr-input&apos;);
+      const textFieldDateCompAltInput = formWithDate.element.querySelector(&apos;.formio-component-textField1&apos;).querySelector(&apos;.flatpickr-input&apos;);
+
+      const dateTimeComp = formWithDate.element.querySelector(&apos;.formio-component-dateTime1&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+      const textFieldDateComp = formWithDate.element.querySelector(&apos;.formio-component-textField1&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+      assert.equal(dateTimeCompAltInput.value,&apos;2020-05-05T00:00:00&apos;);
+      assert.equal(textFieldDateCompAltInput.value,&apos;2020-04-04T00:00:00&apos;);
+
+      assert.equal(dateTimeComp.value,&apos;05-05-2020&apos;);
+      assert.equal(textFieldDateComp.value,&apos;04-04-2020&apos;);
+
+      const panelCollapseBtn = formWithDate.element.querySelector(&apos;.formio-collapse-icon&apos;);
+      panelCollapseBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        const panelBody = formWithDate.element.querySelector(&apos;.panel-body&apos;);
+        assert.equal(!!panelBody, false);
+
+        formWithDate.element.querySelector(&apos;.formio-collapse-icon&apos;).dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          const dateTimeCompAfterOpenningPanel = formWithDate.element.querySelector(&apos;.formio-component-dateTime1&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+          const textFieldDateCompAfterOpenningPanel = formWithDate.element.querySelector(&apos;.formio-component-textField1&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+          const dateTimeCompAltInputAfterOpenningPanel = formWithDate.element.querySelector(&apos;.formio-component-dateTime1&apos;).querySelector(&apos;.flatpickr-input&apos;);
+          const textFieldDateCompAltInputAfterOpenningPanel = formWithDate.element.querySelector(&apos;.formio-component-textField1&apos;).querySelector(&apos;.flatpickr-input&apos;);
+
+          assert.equal(dateTimeCompAltInputAfterOpenningPanel.value,&apos;2020-05-05T00:00:00&apos;);
+          assert.equal(textFieldDateCompAltInputAfterOpenningPanel.value,&apos;2020-04-04T00:00:00&apos;);
+
+          assert.equal(dateTimeCompAfterOpenningPanel.value,&apos;05-05-2020&apos;);
+          assert.equal(textFieldDateCompAfterOpenningPanel.value,&apos;04-04-2020&apos;);
+          done();
+         }, 250);
+       }, 150);
+      }, 50);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(`Should show confirmation alert when clicking X btn or clicking outside modal window after editing
   editGrid modal draft row`, function(done) {

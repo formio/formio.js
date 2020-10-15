@@ -185,8 +185,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getArrayFromComponentPath">getArrayFromComponentPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponentPathWithoutIndicies">getComponentPathWithoutIndicies</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDataParentComponent">getDataParentComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
@@ -511,14 +513,21 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
  * @returns {boolean}
  */
 export function checkCondition(component, row, data, form, instance) {
-  if (component.customConditional) {
-    return checkCustomConditional(component, component.customConditional, row, data, form, &apos;show&apos;, true, instance);
+  const { customConditional, conditional } = component;
+  if (customConditional) {
+    return checkCustomConditional(component, customConditional, row, data, form, &apos;show&apos;, true, instance);
   }
-  else if (component.conditional &amp;&amp; component.conditional.when) {
-    return checkSimpleConditional(component, component.conditional, row, data);
+  else if (conditional &amp;&amp; conditional.when) {
+    const dataParent = getDataParentComponent(instance);
+    if (dataParent &amp;&amp; conditional.when.startsWith(dataParent.path)) {
+      const newRow = {};
+      _.set(newRow, dataParent.path, row);
+      row = newRow;
+    }
+    return checkSimpleConditional(component, conditional, row, data);
   }
-  else if (component.conditional &amp;&amp; component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form, true);
+  else if (conditional &amp;&amp; conditional.json) {
+    return checkJsonConditional(component, conditional.json, row, data, form, true);
   }
 
   // Default to show.
@@ -1416,6 +1425,28 @@ export function getIEBrowserVersion() {
   }
 
   return document[&apos;documentMode&apos;];
+}
+
+export function getComponentPathWithoutIndicies(path = &apos;&apos;) {
+  return path.replace(/\[\d+\]/, &apos;&apos;);
+}
+
+/**
+ * Returns a parent component of the passed component instance skipping all the Layout components
+ * @param {*} componentInstance
+ * @return {(Component|undefined)}
+ */
+export function getDataParentComponent(componentInstance) {
+  if (!componentInstance) {
+    return;
+  }
+  const { parent } = componentInstance;
+  if (parent &amp;&amp; parent.isInputComponent) {
+    return parent;
+  }
+  else {
+    return getDataParentComponent(parent);
+  }
 }
 </code></pre>
 

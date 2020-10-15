@@ -185,8 +185,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getArrayFromComponentPath">getArrayFromComponentPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponentPathWithoutIndicies">getComponentPathWithoutIndicies</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDataParentComponent">getDataParentComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
@@ -1555,7 +1557,7 @@ export default class SelectComponent extends Field {
 
     // Add the value options.
     this.addValueOptions();
-    this.setChoicesValue(value, hasPreviousValue);
+    this.setChoicesValue(value, hasPreviousValue, flags);
     return changed;
   }
 
@@ -1568,7 +1570,7 @@ export default class SelectComponent extends Field {
       this.visible &amp;&amp; (this.component.searchField || this.component.valueProperty);
   }
 
-  setChoicesValue(value, hasPreviousValue) {
+  setChoicesValue(value, hasPreviousValue, flags = {}) {
     const hasValue = Array.isArray(value) ? value.length : value;
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
@@ -1582,7 +1584,7 @@ export default class SelectComponent extends Field {
         }
         this.choices.setChoiceByValue(value);
       }
-      else if (hasPreviousValue) {
+      else if (hasPreviousValue || flags.resetValue) {
         this.choices.removeActiveItems();
       }
     }

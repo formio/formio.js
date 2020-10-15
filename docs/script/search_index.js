@@ -888,6 +888,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~getcomponentpathwithoutindicies",
+    "function/index.html#static-function-getComponentPathWithoutIndicies",
+    "<span>getComponentPathWithoutIndicies</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~getcontextcomponents",
     "function/index.html#static-function-getContextComponents",
     "<span>getContextComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -897,6 +903,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~getcurrencyaffixes",
     "function/index.html#static-function-getCurrencyAffixes",
     "<span>getCurrencyAffixes</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~getdataparentcomponent",
+    "function/index.html#static-function-getDataParentComponent",
+    "<span>getDataParentComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [

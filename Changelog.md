@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.15
+#### Fixed
+ - Fix untouched panel collapse and then open triggered validation
+ - FJS-1304: Fixed an issue where clearOnHide does not work for components inside EditGrid
+ - Fixing issue where forms with columns makes pdf builder not work.
+ - FJS-1144: Fixed an issue where Select inside EditGrid is not refreshed when the other EditGrid's child changed
+ - Fixed an issue where conditions do not work for components inside EditGrid
+
+#### Changed
+ - Clear choices if resetValue flag passed
+
 ### 4.12.1-rc.14
 #### Changed
  - FJS-1116: add methods so that premium can override them
