@@ -29,7 +29,8 @@ import {
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
   propertyActions,
-  formWithEditGridAndNestedDraftModalRow
+  formWithEditGridAndNestedDraftModalRow,
+  formWithDateTimeComponents
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
@@ -40,6 +41,62 @@ import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should correctly set date after collapsing and openning the panel', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDate = new Webform(formElement);
+
+    formWithDate.setForm(formWithDateTimeComponents).then(() => {
+      const clickEvent = new Event('click');
+
+      const dateTimeCompInputWidget = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('.flatpickr-input').widget;
+      const dateTimeAltFormat = dateTimeCompInputWidget.calendar.config.altFormat;
+      dateTimeCompInputWidget.calendar.setDate('05-05-2020T00:00:00', true, dateTimeAltFormat);
+
+      const textFieldDateCompWidget = formWithDate.element.querySelector('.formio-component-textField1').querySelector('.flatpickr-input').widget;
+      const textFieldDateAltFormat = textFieldDateCompWidget.calendar.config.altFormat;
+      textFieldDateCompWidget.calendar.setDate('04-04-2020T00:00:00', true, textFieldDateAltFormat);
+
+      setTimeout(() => {
+      const dateTimeCompAltInput = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('.flatpickr-input');
+      const textFieldDateCompAltInput = formWithDate.element.querySelector('.formio-component-textField1').querySelector('.flatpickr-input');
+
+      const dateTimeComp = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('[type="text"]');
+      const textFieldDateComp = formWithDate.element.querySelector('.formio-component-textField1').querySelector('[type="text"]');
+
+      assert.equal(dateTimeCompAltInput.value,'2020-05-05T00:00:00');
+      assert.equal(textFieldDateCompAltInput.value,'2020-04-04T00:00:00');
+
+      assert.equal(dateTimeComp.value,'05-05-2020');
+      assert.equal(textFieldDateComp.value,'04-04-2020');
+
+      const panelCollapseBtn = formWithDate.element.querySelector('.formio-collapse-icon');
+      panelCollapseBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const panelBody = formWithDate.element.querySelector('.panel-body');
+        assert.equal(!!panelBody, false);
+
+        formWithDate.element.querySelector('.formio-collapse-icon').dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const dateTimeCompAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('[type="text"]');
+          const textFieldDateCompAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-textField1').querySelector('[type="text"]');
+
+          const dateTimeCompAltInputAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('.flatpickr-input');
+          const textFieldDateCompAltInputAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-textField1').querySelector('.flatpickr-input');
+
+          assert.equal(dateTimeCompAltInputAfterOpenningPanel.value,'2020-05-05T00:00:00');
+          assert.equal(textFieldDateCompAltInputAfterOpenningPanel.value,'2020-04-04T00:00:00');
+
+          assert.equal(dateTimeCompAfterOpenningPanel.value,'05-05-2020');
+          assert.equal(textFieldDateCompAfterOpenningPanel.value,'04-04-2020');
+          done();
+         }, 250);
+       }, 150);
+      }, 50);
+    }).catch((err) => done(err));
+  });
 
   it(`Should show confirmation alert when clicking X btn or clicking outside modal window after editing
   editGrid modal draft row`, function(done) {
