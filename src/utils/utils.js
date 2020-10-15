@@ -1192,6 +1192,10 @@ export function getIEBrowserVersion() {
   return document['documentMode'];
 }
 
+export function getComponentPathWithoutIndicies(path = '') {
+  return path.replace(/\[\d+\]/, '');
+}
+
 /**
  * Returns a parent component of the passed component instance skipping all the Layout components
  * @param {*} componentInstance
