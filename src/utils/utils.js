@@ -278,14 +278,20 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
  * @returns {boolean}
  */
 export function checkCondition(component, row, data, form, instance) {
-  if (component.customConditional) {
-    return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
+  const { customConditional, conditional } = component;
+  if (customConditional) {
+    return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-  else if (component.conditional && component.conditional.when) {
-    return checkSimpleConditional(component, component.conditional, row, data);
+  else if (conditional && conditional.when) {
+    if (instance.parent && conditional.when.startsWith(instance.parent.path)) {
+      const newRow = {};
+      _.set(newRow, instance.parent.path, row);
+      row = newRow;
+    }
+    return checkSimpleConditional(component, conditional, row, data);
   }
-  else if (component.conditional && component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form, true);
+  else if (conditional && conditional.json) {
+    return checkJsonConditional(component, conditional.json, row, data, form, true);
   }
 
   // Default to show.
