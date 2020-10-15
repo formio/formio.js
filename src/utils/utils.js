@@ -283,9 +283,10 @@ export function checkCondition(component, row, data, form, instance) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
   else if (conditional && conditional.when) {
-    if (instance?.parent && conditional.when.startsWith(instance.parent.path)) {
+    const dataParent = getDataParentComponent(instance);
+    if (dataParent && conditional.when.startsWith(dataParent.path)) {
       const newRow = {};
-      _.set(newRow, instance.parent.path, row);
+      _.set(newRow, dataParent.path, row);
       row = newRow;
     }
     return checkSimpleConditional(component, conditional, row, data);
@@ -1189,4 +1190,22 @@ export function getIEBrowserVersion() {
   }
 
   return document['documentMode'];
+}
+
+/**
+ * Returns a parent component of the passed component instance skipping all the Layout components
+ * @param {*} componentInstance
+ * @return {(Component|undefined)}
+ */
+export function getDataParentComponent(componentInstance) {
+  if (!componentInstance) {
+    return;
+  }
+  const { parent } = componentInstance;
+  if (parent && parent.isInputComponent) {
+    return parent;
+  }
+  else {
+    return getDataParentComponent(parent);
+  }
 }
