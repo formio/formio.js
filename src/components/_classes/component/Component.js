@@ -1845,7 +1845,8 @@ export default class Component extends Element {
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
-      !this.rootPristine &&
+      // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
+      (!this.rootPristine || this.parent?.hasScopedChildren) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -2503,7 +2504,6 @@ export default class Component extends Element {
         return false;
       }
 
-      this.calculatedValue = calculatedValue;
       if (flags.fromSubmission && this.component.persistent === true) {
         return false;
       }
@@ -2514,6 +2514,8 @@ export default class Component extends Element {
         return true;
       }
     }
+
+    this.calculatedValue = calculatedValue;
 
     return changed ? this.setValue(calculatedValue, flags) : false;
   }

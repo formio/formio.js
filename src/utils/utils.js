@@ -278,14 +278,21 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
  * @returns {boolean}
  */
 export function checkCondition(component, row, data, form, instance) {
-  if (component.customConditional) {
-    return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
+  const { customConditional, conditional } = component;
+  if (customConditional) {
+    return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-  else if (component.conditional && component.conditional.when) {
-    return checkSimpleConditional(component, component.conditional, row, data);
+  else if (conditional && conditional.when) {
+    const dataParent = getDataParentComponent(instance);
+    if (dataParent && conditional.when.startsWith(dataParent.path)) {
+      const newRow = {};
+      _.set(newRow, dataParent.path, row);
+      row = newRow;
+    }
+    return checkSimpleConditional(component, conditional, row, data);
   }
-  else if (component.conditional && component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form, true);
+  else if (conditional && conditional.json) {
+    return checkJsonConditional(component, conditional.json, row, data, form, true);
   }
 
   // Default to show.
@@ -1187,4 +1194,22 @@ export function getIEBrowserVersion() {
 
 export function getComponentPathWithoutIndicies(path = '') {
   return path.replace(/\[\d+\]/, '');
+}
+
+/**
+ * Returns a parent component of the passed component instance skipping all the Layout components
+ * @param {*} componentInstance
+ * @return {(Component|undefined)}
+ */
+export function getDataParentComponent(componentInstance) {
+  if (!componentInstance) {
+    return;
+  }
+  const { parent } = componentInstance;
+  if (parent && parent.isInputComponent) {
+    return parent;
+  }
+  else {
+    return getDataParentComponent(parent);
+  }
 }

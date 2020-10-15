@@ -3840,12 +3840,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/input/input.js~input#getvalueasstring",
-    "class/src/components/_classes/input/Input.js~Input.html#instance-method-getValueAsString",
-    "src/components/_classes/input/Input.js~Input#getValueAsString",
-    "method"
-  ],
-  [
     "src/components/_classes/input/input.js~input#getvalueat",
     "class/src/components/_classes/input/Input.js~Input.html#instance-method-getValueAt",
     "src/components/_classes/input/Input.js~Input#getValueAt",

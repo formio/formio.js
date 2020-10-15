@@ -31,6 +31,7 @@ const formComponentWithConditionalRenderingForm = require('./formComponentWithCo
 const disabledNestedForm = require('./disabledNestedForm.json');
 const propertyActions = require('./propertyActions.json');
 const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedForm.json');
+const formWithDateTimeComponents = require('./formWithDateTimeComponents');
 
 module.exports = {
   advanced,
@@ -65,5 +66,6 @@ module.exports = {
   formComponentWithConditionalRenderingForm,
   disabledNestedForm,
   propertyActions,
-  formWithEditGridAndNestedDraftModalRow
+  formWithEditGridAndNestedDraftModalRow,
+  formWithDateTimeComponents
 };

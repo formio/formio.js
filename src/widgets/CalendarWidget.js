@@ -162,8 +162,13 @@ export default class CalendarWidget extends InputWidget {
             };
 
             if (this._input) {
+              const dateValue = this._input.value;
               // Create a new flatpickr.
               this.calendar = new Flatpickr(this._input, this.settings);
+              if (dateValue) {
+                this.calendar.setDate(dateValue, true, this.settings.altFormat);
+              }
+
               this.calendar.altInput.addEventListener('input', (event) => {
                 if (this.settings.allowInput) {
                   this.settings.manualInputValue = event.target.value;

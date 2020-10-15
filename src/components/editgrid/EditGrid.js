@@ -91,6 +91,13 @@ export default class EditGridComponent extends NestedArrayComponent {
   `;
   }
 
+  /**
+   * Returns true if the component has nested components which don't trigger changes on the root level
+   */
+  get hasScopedChildren() {
+    return !this.inlineEditMode;
+  }
+
   get defaultSchema() {
     return EditGridComponent.schema();
   }

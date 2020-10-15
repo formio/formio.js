@@ -317,6 +317,10 @@ export default class Wizard extends Webform {
     });
   }
 
+  emitWizardPageSelected(index) {
+    this.emit('wizardPageSelected', this.pages[index], index);
+  }
+
   attachHeader() {
     const isAllowPrevious = this.isAllowPrevious();
 
@@ -327,7 +331,7 @@ export default class Wizard extends Webform {
             this.emit('wizardNavigationClicked', this.pages[index]);
             event.preventDefault();
             return this.setPage(index).then(() => {
-              this.emit('wizardPageSelected', this.pages[index], index);
+              this.emitWizardPageSelected(index);
             });
           });
         }
@@ -593,6 +597,10 @@ export default class Wizard extends Webform {
     });
   }
 
+  emitNextPage() {
+    this.emit('nextPage', { page: this.page, submission: this.submission });
+  }
+
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
@@ -611,7 +619,7 @@ export default class Wizard extends Webform {
             this.redraw();
           }
 
-          this.emit('nextPage', { page: this.page, submission: this.submission });
+          this.emitNextPage();
         });
       });
     }
@@ -621,10 +629,14 @@ export default class Wizard extends Webform {
     }
   }
 
+  emitPrevPage() {
+    this.emit('prevPage', { page: this.page, submission: this.submission });
+  }
+
   prevPage() {
     return this.beforePage().then(() => {
       return this.setPage(this.getPreviousPage()).then(() => {
-        this.emit('prevPage', { page: this.page, submission: this.submission });
+        this.emitPrevPage();
       });
     });
   }
@@ -636,6 +648,7 @@ export default class Wizard extends Webform {
         if (this.enabledIndex) {
           this.enabledIndex = 0;
         }
+        this.onChange();
         this.redraw();
         return this.page;
       });
