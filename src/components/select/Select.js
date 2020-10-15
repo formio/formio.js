@@ -877,6 +877,7 @@ export default class SelectComponent extends Field {
     this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
       modified: true
     }));
+    this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
@@ -1022,6 +1023,14 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  attachRefreshOnBlur() {
+    if (this.component.refreshOnBlur) {
+      this.on('blur', (instance) => {
+        this.checkRefreshOn([{ instance, value: instance.dataValue }], {});
+      });
+    }
   }
 
   addPlaceholderItem(placeholderValue) {
