@@ -8,7 +8,7 @@ import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue, getAbstractComponentPath } from '../../../utils/utils';
+import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
@@ -1120,7 +1120,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && getAbstractComponentPath(changePath) === refreshData) && changed && changed.instance &&
+      (changePath && getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)

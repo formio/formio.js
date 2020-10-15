@@ -1185,6 +1185,6 @@ export function getIEBrowserVersion() {
   return document['documentMode'];
 }
 
-export function getAbstractComponentPath(path = '') {
+export function getComponentPathWithoutIndicies(path = '') {
   return path.replace(/\[\d+\]/, '');
 }
