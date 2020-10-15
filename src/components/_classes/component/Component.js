@@ -1842,7 +1842,7 @@ export default class Component extends Element {
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
-      !this.rootPristine &&
+      (!this.rootPristine || this.parent?.hasScopedChildren) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields

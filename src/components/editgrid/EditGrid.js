@@ -91,6 +91,10 @@ export default class EditGridComponent extends NestedArrayComponent {
   `;
   }
 
+  get hasScopedChildren() {
+    return true;
+  }
+
   get defaultSchema() {
     return EditGridComponent.schema();
   }
