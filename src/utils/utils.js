@@ -283,7 +283,7 @@ export function checkCondition(component, row, data, form, instance) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
   else if (conditional && conditional.when) {
-    if (instance.parent && conditional.when.startsWith(instance.parent.path)) {
+    if (instance?.parent && conditional.when.startsWith(instance.parent.path)) {
       const newRow = {};
       _.set(newRow, instance.parent.path, row);
       row = newRow;
