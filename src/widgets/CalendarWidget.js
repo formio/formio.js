@@ -140,13 +140,13 @@ export default class CalendarWidget extends InputWidget {
       }
     };
 
-    Formio.requireLibrary('flatpickr-css', 'flatpickr-css', [
+    Formio.requireLibrary('flatpickr-css', 'Flatpickr', [
       { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
     ], true);
 
     return superAttach
       .then(() => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
+        return Formio.requireLibrary('flatpickr', 'Flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
             this.settings.formatDate = (date, format) => {
               // Only format this if this is the altFormat and the form is readOnly.
