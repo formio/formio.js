@@ -36,7 +36,7 @@ export default class NestedComponent extends Field {
   set collapsed(value) {
     this._collapsed = value;
     this.redraw();
-    if (!value) {
+    if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
   }
