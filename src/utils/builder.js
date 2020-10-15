@@ -15,7 +15,7 @@ export default {
     eachComponent(container, (comp) => {
       formKeys[comp.key] = true;
 
-      if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
+      if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(comp.type) || comp.tree || comp.arrayTree) {
         return true;
       }
     }, true);
