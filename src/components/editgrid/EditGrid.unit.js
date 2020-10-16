@@ -2,7 +2,7 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp4, comp3, comp5, comp6 } from './fixtures';
+import { comp1, comp4, comp3, comp5, comp6, comp7 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
@@ -490,12 +490,59 @@ describe('EditGrid Component', () => {
     // });
   });
 
-  // TODO: Need to fix editing rows and conditionals.
-  // it('Should calculate conditional logic and default values when adding row', () => {
-  //   return Harness.testCreate(EditGridComponent, comp2).then(component => {
-  //     Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
-  //     Harness.testVisibility(component, '.formio-component-field2', false);
-  //     Harness.getInputValue(component, 'data[editgrid][0][field1]', 'bar');
-  //   });
-  // });
+  it('Test simple conditions based on the EditGrid\'s child\'s value and default values when adding rows', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm({ display: 'form', components: [comp7], type: 'form' }).then(() => {
+      const component = form.getComponent(['editGrid']);
+      component.addRow();
+      setTimeout(() => {
+        // eslint-disable-next-line no-debugger
+        debugger;
+        Harness.getInputValue(component, 'data[editGrid][0][checkbox]', true, 'checked');
+        Harness.testComponentVisibility(component, '.formio-component-editGridChild', true);
+        Harness.testComponentVisibility(component, '.formio-component-panelChild', true);
+        done();
+      }, 250);
+    }).catch(done);
+  });
+
+  it('Test clearOnHide inside EditGrid', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm({ display: 'form', components: [comp7], type: 'form' }).then(() => {
+      form.submission = {
+        data: {
+          editGrid: [
+            {
+              checkbox: true,
+              editGridChild: 'Has Value',
+              panelChild: 'Has Value Too',
+            }
+          ]
+        }
+      };
+      setTimeout(() => {
+        const editGrid = form.getComponent(['editGrid']);
+        editGrid.editRow(0).then(() => {
+          // eslint-disable-next-line no-debugger
+          debugger;
+          Harness.dispatchEvent('click', editGrid.element, '[name="data[editGrid][0][checkbox]"]', el => el.checked = false);
+          setTimeout(() => {
+            // eslint-disable-next-line no-debugger
+            debugger;
+            Harness.testComponentVisibility(editGrid, '.formio-component-editGridChild', false);
+            Harness.testComponentVisibility(editGrid, '.formio-component-panelChild', false);
+            editGrid.saveRow(0, true);
+            setTimeout(() => {
+              console.log({ data: form.data.editGrid[0] });
+              assert(!form.data.editGrid[0].editGridChild, 'Should be cleared');
+              assert(!form.data.editGrid[0].panelChild, 'Should be cleared');
+              done();
+            }, 250);
+          }, 150);
+        }, 150);
+        });
+    }).catch(done);
+  });
 });
