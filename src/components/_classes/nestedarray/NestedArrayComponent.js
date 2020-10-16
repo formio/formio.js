@@ -71,7 +71,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
     }
     const valid = _.reduce(
       components,
-      (valid, component) => component[method](data, opts, row, null, silentCheck) && valid,
+      (valid, component) => component[method](data, opts, row, silentCheck) && valid,
       true,
     );
     if (opts?.noRefresh) {
