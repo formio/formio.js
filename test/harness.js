@@ -217,6 +217,17 @@ const Harness = {
       assert(element.style.visibility === 'hidden', 'Element must be hidden');
     }
   },
+  testComponentVisibility(component, query, visible) {
+    const element = component.element.querySelector(query);
+    assert(element, `${query} not found`);
+    const isHidden = element.className.includes('formio-hidden');
+    if (visible) {
+      assert(!isHidden, 'Element must be visible');
+    }
+    else {
+      assert(isHidden, 'Element must be hidden');
+    }
+  },
   clickElement(component, query) {
     const clickEvent = new MouseEvent('click', {
       view: window,
@@ -285,10 +296,10 @@ const Harness = {
     element.value = value;
     return element.dispatchEvent(inputEvent);
   },
-  getInputValue(component, name, value) {
+  getInputValue(component, name, value, valueProperty = 'value') {
     const element = component.element.querySelector(`[name="${name}"]`);
     assert(element, `${name} input not found`);
-    assert.equal(value, element.value);
+    assert.equal(value, element[valueProperty]);
   },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);

@@ -2,7 +2,7 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp4, comp3, comp5, comp6, comp7 } from './fixtures';
+import { comp1, comp4, comp3, comp5, comp6, comp7, comp8 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
@@ -525,24 +525,41 @@ describe('EditGrid Component', () => {
       setTimeout(() => {
         const editGrid = form.getComponent(['editGrid']);
         editGrid.editRow(0).then(() => {
-          // eslint-disable-next-line no-debugger
-          debugger;
           Harness.dispatchEvent('click', editGrid.element, '[name="data[editGrid][0][checkbox]"]', el => el.checked = false);
           setTimeout(() => {
-            // eslint-disable-next-line no-debugger
-            debugger;
             Harness.testComponentVisibility(editGrid, '.formio-component-editGridChild', false);
             Harness.testComponentVisibility(editGrid, '.formio-component-panelChild', false);
             editGrid.saveRow(0, true);
             setTimeout(() => {
-              console.log({ data: form.data.editGrid[0] });
               assert(!form.data.editGrid[0].editGridChild, 'Should be cleared');
               assert(!form.data.editGrid[0].panelChild, 'Should be cleared');
               done();
-            }, 250);
+            }, 150);
           }, 150);
         }, 150);
         });
+    }).catch(done);
+  });
+
+  it('Test refreshing inside EditGrid', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm({ display: 'form', components: [comp8], type: 'form' }).then(() => {
+      const editGrid = form.getComponent(['editGrid1']);
+      editGrid.addRow();
+      const makeSelect = form.getComponent(['editGrid1', 0, 'make']);
+      const modelSelect = form.getComponent(['editGrid1', 0, 'model']);
+      makeSelect.setValue('ford');
+      setTimeout(() => {
+        modelSelect.setValue('Focus');
+        setTimeout(() => {
+          editGrid.saveRow(0, true);
+          setTimeout(() => {
+            assert.equal(form.data.editGrid1[0].model, 'Focus', 'Should be saved properly');
+            done();
+          }, 150);
+        }, 100);
+      }, 150);
     }).catch(done);
   });
 });
