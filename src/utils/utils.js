@@ -597,8 +597,8 @@ export function momentDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatDate(value, format, timezone) {
-  const momentDate = moment(value);
+export function formatDate(value, format, timezone, flatPickrInputFormat) {
+  const momentDate = moment(value, flatPickrInputFormat || undefined);
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {

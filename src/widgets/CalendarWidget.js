@@ -193,7 +193,10 @@ export default class CalendarWidget extends InputWidget {
               // Make sure we commit the value after a blur event occurs.
               this.addEventListener(this.calendar._input, 'blur', (event) => {
                 if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
-                  this.calendar.setDate(new Date(this.calendar.input.value), true, this.settings.altFormat);
+                  const inputValue = this.calendar.input.value;
+                  const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+
+                  this.calendar.setDate(dateValue, true, this.settings.altFormat);
                 }
               });
 
@@ -385,8 +388,7 @@ export default class CalendarWidget extends InputWidget {
     if (this.settings.saveAs === 'text') {
       return this.getDateValue(value, format);
     }
-
-    return formatDate(value, format, this.timezone);
+    return formatDate(value, format, this.timezone, convertFormatToMoment(this.settings.dateFormat));
   }
 
   setPlaceholder(input) {
