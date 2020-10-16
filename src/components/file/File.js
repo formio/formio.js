@@ -369,6 +369,9 @@ export default class FileComponent extends Field {
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
       this.addEventListener(fileStatusRemove, 'click', (event) => {
         event.preventDefault();
+        if (this.abortUpload) {
+          this.abortUpload();
+        }
         this.statuses.splice(index, 1);
         this.redraw();
       });
@@ -651,17 +654,30 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
-          const filePromise = fileService.uploadFile(storage, file, fileName, dir, (evt) => {
-              fileUpload.status = 'progress';
-              fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
-              delete fileUpload.message;
-              this.redraw();
-            }, url, options, fileKey, groupPermissions, groupResourceId,
-              () => {
+          const filePromise = fileService.uploadFile(
+            {
+              storage,
+              file,
+              fileName,
+              dir,
+              url,
+              options,
+              fileKey,
+              groupPermissions,
+              groupId: groupResourceId,
+              progressCallback: (evt) => {
+                fileUpload.status = 'progress';
+                fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
+                delete fileUpload.message;
+                this.redraw();
+              },
+              abortCallback: (abort) => this.abortUpload = abort,
+              uploadStartCallback: () => {
                 this.fileDropHidden = true;
                 this.emit('fileUploadingStart', filePromise);
-              }
-            )
+              },
+            }
+          )
               .then((fileInfo) => {
                 const index = this.statuses.indexOf(fileUpload);
                 if (index !== -1) {
