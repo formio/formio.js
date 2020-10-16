@@ -238,16 +238,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
     let requestData;
     this.fileService
-      .uploadFile(
-        uploadStorage,
-        files[0],
-        uniqueName(files[0].name),
-        uploadDir || '', //should pass empty string if undefined
-        null,
-        uploadUrl,
-        uploadOptions,
+      .uploadFile({
+        storage: uploadStorage,
+        file: files[0],
+        fileName: uniqueName(files[0].name),
+        dir: uploadDir || '', //should pass empty string if undefined
+        url: uploadUrl,
+        options: uploadOptions,
         fileKey
-      )
+      })
       .then(result => {
         requestData = result;
         return this.fileService.downloadFile(result);
