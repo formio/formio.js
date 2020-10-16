@@ -7,7 +7,7 @@ const XHR = {
   path(items) {
     return items.filter(item => !!item).map(XHR.trim).join('/');
   },
-  upload(formio, type, xhrCb, file, fileName, dir, progressCallback, groupPermissions, groupId) {
+  upload(formio, type, xhrCb, file, fileName, dir, progressCallback, abortCallback, groupPermissions, groupId) {
     return new NativePromise(((resolve, reject) => {
       // Send the pre response to sign the upload.
       const pre = new XMLHttpRequest();
@@ -28,6 +28,10 @@ const XHR = {
 
           if (typeof progressCallback === 'function') {
             xhr.upload.onprogress = progressCallback;
+          }
+
+          if (typeof abortCallback === 'function') {
+            abortCallback(() => xhr.abort());
           }
 
           // Fire on network error.

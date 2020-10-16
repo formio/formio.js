@@ -2,7 +2,7 @@ import NativePromise from 'native-promise-only';
 const base64 = () => ({
   title: 'Base64',
   name: 'base64',
-  uploadFile(file, fileName) {
+  uploadFile({ file, fileName }) {
     const reader = new FileReader();
 
     return new NativePromise((resolve, reject) => {

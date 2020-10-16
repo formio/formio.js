@@ -1,13 +1,18 @@
 import NativePromise from 'native-promise-only';
 
 const url = (formio) => {
-  const xhrRequest = (url, name, query, data, options, onprogress) => {
+  const xhrRequest = (url, name, query, data, options, progressCallback, abortCallback) => {
     return new NativePromise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const json = (typeof data === 'string');
       const fd = new FormData();
-      if (typeof onprogress === 'function') {
-        xhr.upload.onprogress = onprogress;
+
+      if (typeof progressCallback === 'function') {
+        xhr.upload.onprogress = progressCallback;
+      }
+
+      if (typeof abortCallback === 'function') {
+        abortCallback(() => xhr.abort());
       }
 
       if (!json) {
@@ -76,7 +81,7 @@ const url = (formio) => {
   return {
     title: 'Url',
     name: 'url',
-    uploadFile(file, name, dir, progressCallback, url, options, fileKey) {
+    uploadFile({ file, name, dir, progressCallback, abortCallback, url, options, fileKey }) {
       const uploadRequest = function(form) {
         return xhrRequest(url, name, {
           baseUrl: encodeURIComponent(formio.projectUrl),
@@ -86,7 +91,7 @@ const url = (formio) => {
           [fileKey]:file,
           name,
           dir
-        }, options, progressCallback).then(response => {
+        }, options, progressCallback, abortCallback).then(response => {
           // Store the project and form url along with the metadata.
           response.data = response.data || {};
           response.data.baseUrl = formio.projectUrl;

@@ -1,12 +1,16 @@
 import NativePromise from 'native-promise-only';
 const dropbox = (formio) => ({
-  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
+  uploadFile({ file, fileName, dir, progressCallback, abortCallback, groupPermissions, groupId }) {
     return new NativePromise(((resolve, reject) => {
       // Send the file with data.
       const xhr = new XMLHttpRequest();
 
       if (typeof progressCallback === 'function') {
         xhr.upload.onprogress = progressCallback;
+      }
+
+      if (typeof abortCallback === 'function') {
+        abortCallback(() => xhr.abort());
       }
 
       const fd = new FormData();

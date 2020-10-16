@@ -204,16 +204,26 @@ export default class PDFBuilder extends WebformBuilder {
     const formio = new Formio(this.projectUrl);
     this.refs.dragDropText.style.display = 'none';
     this.refs.uploadProgressWrapper.style.display = 'inherit';
-    formio.uploadFile('url', file, file, '', (event) => {
-      const progress = Math.floor((event.loaded / event.total) * 100);
-      this.refs.uploadProgress.style.width = `${progress}%`;
-      if (progress > 98) {
-        this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
-      }
-      else {
-        this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
-      }
-    }, `${this.projectUrl}/upload`, {}, 'file')
+    const uploadArgs = {
+      storage: 'url',
+      file,
+      fileName: file,
+      dir: '',
+      progressCallback: (event) => {
+        const progress = Math.floor((event.loaded / event.total) * 100);
+        this.refs.uploadProgress.style.width = `${progress}%`;
+        if (progress > 98) {
+          this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
+        }
+        else {
+          this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+        }
+      },
+      url: `${this.projectUrl}/upload`,
+      options: {},
+      fileKey: 'file'
+    };
+    formio.uploadFile(uploadArgs)
       .then((result) => {
         _.set(this.webform.form, 'settings.pdf', {
           id: result.data.file,
