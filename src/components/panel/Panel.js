@@ -1,4 +1,5 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
+import { hasInvalidComponent } from '../../utils/utils';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
@@ -55,15 +56,9 @@ export default class PanelComponent extends NestedComponent {
     this.noField = true;
     this.on('componentError', () => {
       //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
-      if (this.hasInvalidComponent() && this.collapsed) {
+      if (hasInvalidComponent(this) && this.collapsed) {
         this.collapsed = false;
       }
-    });
-  }
-
-  hasInvalidComponent() {
-    return this.getComponents().some((comp) => {
-      return comp.error;
     });
   }
 }

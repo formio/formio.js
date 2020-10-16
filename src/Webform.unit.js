@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-import { expect } from 'chai';
+import { AssertionError, expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 import each from 'lodash/each';
@@ -30,7 +30,8 @@ import {
   disabledNestedForm,
   propertyActions,
   formWithEditGridAndNestedDraftModalRow,
-  formWithDateTimeComponents
+  formWithDateTimeComponents,
+  formWithCollapsedPanel
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
@@ -41,6 +42,24 @@ import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should open collapsed panel with invalid components inside container that is inside the panel on submit', function(done) {
+    const formElement = document.createElement('div');
+    const formWithPanel = new Webform(formElement);
+
+    formWithPanel.setForm(formWithCollapsedPanel).then(() => {
+      const clickEvent = new Event('click');
+
+      assert.equal(formWithPanel.components[0].collapsed, true);
+
+      const submitBtn = formWithPanel.element.querySelector('[name="data[submit]"]');
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(formWithPanel.components[0].collapsed, false);
+        done();
+      }, 200);
+    }).catch((err) => done(err));
+  });
 
   it('Should correctly set date after collapsing and openning the panel', function(done) {
     const formElement = document.createElement('div');

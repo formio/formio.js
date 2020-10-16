@@ -1156,6 +1156,15 @@ export function getArrayFromComponentPath(pathStr) {
     .map(part => _.defaultTo(_.toNumber(part), part));
 }
 
+export function  hasInvalidComponent(component) {
+  return component.getComponents().some((comp) => {
+    if (_.isArray(comp.components)) {
+      return hasInvalidComponent(comp);
+    }
+      return comp.error;
+  });
+}
+
 export function getStringFromComponentPath(path) {
   if (!_.isArray(path)) {
     return path;
