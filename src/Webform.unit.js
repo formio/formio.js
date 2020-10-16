@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-import { AssertionError, expect } from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 import each from 'lodash/each';
