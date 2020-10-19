@@ -211,9 +211,14 @@ export default class NestedComponent extends Field {
     originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
-    const [key, ...remainingPath] = path;
+    let key = path.shift();
+    const remainingPath = path;
     let comp = null;
     let possibleComp = null;
+
+    if (_.isNumber(key)) {
+      key = remainingPath.shift();
+    }
 
     if (!_.isString(key)) {
       return comp;
@@ -388,6 +393,12 @@ export default class NestedComponent extends Field {
       return comp;
     }
     return comp;
+  }
+
+  beforeFocus() {
+    if (this.parent && 'beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
   }
 
   render(children) {
