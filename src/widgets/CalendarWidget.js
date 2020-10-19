@@ -368,6 +368,7 @@ export default class CalendarWidget extends InputWidget {
    */
   setValue(value) {
     if (!this.calendar) {
+      value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
     if (value) {
