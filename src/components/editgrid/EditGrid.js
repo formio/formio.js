@@ -258,14 +258,14 @@ export default class EditGridComponent extends NestedArrayComponent {
         saveRow: this.saveRowRef,
         cancelRow: this.cancelRowRef,
       },
-      header: this.renderString(translateHTMLTemplate(headerTemplate, this), {
+      header: translateHTMLTemplate(this.renderString(headerTemplate, {
         components: this.component.components,
         value: dataValue,
-      }),
-      footer: this.renderString(translateHTMLTemplate(footerTemplate, this), {
+      }), this),
+      footer: translateHTMLTemplate(this.renderString(footerTemplate, {
         components: this.component.components,
         value: dataValue,
-      }),
+      }), this),
       rows: this.editRows.map(this.renderRow.bind(this)),
       openRows: this.editRows.map((row) => this.isOpen(row)),
       errors: this.editRows.map((row) => row.error),
@@ -371,8 +371,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       const flattenedComponents = this.flattenComponents(rowIndex);
       const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
 
-      return this.renderString(
-        translateHTMLTemplate(rowTemplate, this),
+      return translateHTMLTemplate(this.renderString(
+        rowTemplate,
         {
           row: dataValue[rowIndex] || {},
           data: this.data,
@@ -396,7 +396,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           },
           state: this.editRows[rowIndex].state,
         },
-      );
+      ), this);
     }
   }
 
