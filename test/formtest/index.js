@@ -32,6 +32,7 @@ const disabledNestedForm = require('./disabledNestedForm.json');
 const propertyActions = require('./propertyActions.json');
 const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedForm.json');
 const formWithDateTimeComponents = require('./formWithDateTimeComponents');
+const formWithCollapsedPanel = require('./formWithCollapsedPanel.json');
 
 module.exports = {
   advanced,
@@ -67,5 +68,6 @@ module.exports = {
   disabledNestedForm,
   propertyActions,
   formWithEditGridAndNestedDraftModalRow,
-  formWithDateTimeComponents
+  formWithDateTimeComponents,
+  formWithCollapsedPanel
 };
