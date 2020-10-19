@@ -267,7 +267,8 @@ import {
   propertyActions,
   formWithEditGridAndNestedDraftModalRow,
   formWithDateTimeComponents,
-  formWithCollapsedPanel
+  formWithCollapsedPanel,
+  formWithCustomFormatDate
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
@@ -278,6 +279,76 @@ import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should not delete/change date value in dataGrid after adding new row&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithDate = new Webform(formElement);
+
+    formWithDate.setForm(formWithCustomFormatDate).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+
+      const dateCompInputWidget = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+      const dateAltFormat = dateCompInputWidget.calendar.config.altFormat;
+      dateCompInputWidget.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat);
+
+      const dateCompInputWidget1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+      const dateAltFormat1 = dateCompInputWidget1.calendar.config.altFormat;
+      dateCompInputWidget1.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat1);
+
+      const dateCompInputWidget2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+      const dateAltFormat2 = dateCompInputWidget2.calendar.config.altFormat;
+      dateCompInputWidget2.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat2);
+
+      setTimeout(() =&gt; {
+      const dateCompAltInput = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;.flatpickr-input&apos;);
+      const dateComp = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+      const dateCompAltInput1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;.flatpickr-input&apos;);
+      const dateComp1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+      const dateCompAltInput2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;.flatpickr-input&apos;);
+      const dateComp2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+      assert.equal(dateCompAltInput.value,&apos;30-05-2020&apos;);
+      assert.equal(dateComp.value,&apos;30-05-2020&apos;);
+
+      assert.equal(dateCompAltInput1.value,&apos;2020-05-30T00:00:00&apos;);
+      assert.equal(dateComp1.value,&apos;30-05-2020&apos;);
+
+      assert.equal(dateCompAltInput2.value,&apos;2020-05-30T00:00:00&apos;);
+      assert.equal(dateComp2.value,&apos;30-05-2020&apos;);
+
+      const addNewRowBtn = formWithDate.element.querySelector(&apos;.formio-button-add-row&apos;);
+      addNewRowBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        const dataGridRows = formWithDate.element.querySelectorAll(&apos;[ref=&quot;datagrid-dataGrid-row&quot;]&apos;);
+        assert.equal(dataGridRows.length, 2);
+
+        const dateCompAltInputAfterAddingRow = formWithDate.element.querySelectorAll(&apos;.formio-component-textField&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
+        const dateCompAfterAddingRow = formWithDate.element.querySelectorAll(&apos;.formio-component-textField&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+        const dateCompAltInputAfterAddingRow1 = formWithDate.element.querySelectorAll(&apos;.formio-component-dateTime&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
+        const dateCompAfterAddingRow1 = formWithDate.element.querySelectorAll(&apos;.formio-component-dateTime&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+        const dateCompAltInputAfterAddingRow2 = formWithDate.element.querySelectorAll(&apos;.formio-component-textField2&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
+        const dateCompAfterAddingRow2 = formWithDate.element.querySelectorAll(&apos;.formio-component-textField2&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+        assert.equal(dateCompAltInputAfterAddingRow.value,&apos;30-05-2020&apos;);
+        assert.equal(dateCompAfterAddingRow.value,&apos;30-05-2020&apos;);
+
+        assert.equal(dateCompAltInputAfterAddingRow1.value,&apos;2020-05-30T00:00:00&apos;);
+        assert.equal(dateCompAfterAddingRow1.value,&apos;30-05-2020&apos;);
+
+        assert.equal(dateCompAltInputAfterAddingRow2.value,&apos;2020-05-30T00:00:00&apos;);
+        assert.equal(dateCompAfterAddingRow2.value,&apos;30-05-2020&apos;);
+
+        done();
+       }, 150);
+      }, 50);
+    }).catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should open collapsed panel with invalid components inside container that is inside the panel on submit&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithPanel = new Webform(formElement);
@@ -2041,15 +2112,17 @@ describe(&apos;Webform tests&apos;, function() {
           a: true,
           b: true
         },
+        textfield: &apos;My Text&apos;,
         select: &apos;f&apos;,
         submit: true
       }
     };
-    const componentsKeys = [&apos;checkbox&apos;, &apos;selectBoxes&apos;, &apos;select&apos;];
+    const componentsKeys = [&apos;checkbox&apos;, &apos;selectBoxes&apos;, &apos;select&apos;, &apos;textfield&apos;];
     const expectedValues = {
       checkbox: &apos;Yes&apos;,
       selectBoxes: &apos;a, b&apos;,
-      select: &apos;f&apos;
+      select: &apos;f&apos;,
+      textfield: &apos;My Text&apos;
     };
     it(&apos;Test rendering previews after the submission is set&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
@@ -2064,6 +2137,29 @@ describe(&apos;Webform tests&apos;, function() {
             assert.equal(preview.textContent.replace(/\n|\t/g, &apos;&apos;).trim(), expectedValues[key]);
           });
           done();
+        });
+      }).catch(done);
+    });
+
+    it(&apos;Test updating previews after aboting changes&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      form.setForm(modalEditComponents).then(() =&gt; {
+        return form.setSubmission(submission, { fromSubmission: true }).then(() =&gt; {
+          const comp = form.getComponent([&apos;textfield&apos;]);
+          comp.componentModal.openModal();
+          Harness.dispatchEvent(&apos;input&apos;, comp.componentModal.refs.modalContents, &apos;[name=&quot;data[textfield]&quot;]&apos;, (el) =&gt; {
+            el.value = &apos;My Text v2&apos;;
+          });
+          setTimeout(() =&gt; {
+            const fakeEvent = {
+              preventDefault: () =&gt; {}
+            };
+            comp.componentModal.closeModalHandler(fakeEvent);
+            const preview = comp.componentModal.refs.openModal;
+            assert.equal(preview.textContent.replace(/\n|\t/g, &apos;&apos;).trim(), &apos;My Text&apos;);
+            done();
+          }, 100);
         });
       }).catch(done);
     });

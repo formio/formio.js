@@ -4014,6 +4014,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#beforefocus",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-beforeFocus",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#beforeFocus",
+    "method"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#beforepage",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-beforePage",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#beforePage",

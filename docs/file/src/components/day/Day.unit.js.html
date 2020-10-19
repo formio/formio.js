@@ -400,7 +400,7 @@ describe(&apos;Day Component&apos;, () =&gt; {
 
   it(&apos;should normalize min-max dates on dayFirst&apos;, () =&gt; {
     Harness.testCreate(DayComponent, comp3).then((component) =&gt; {
-      assert.equal(component.normalizeMinMaxDates(), [&apos;04/02/2020&apos;, &apos;09/02/2020&apos;]);
+      assert.deepEqual(component.normalizeMinMaxDates(), [&apos;04/02/2020&apos;, &apos;09/02/2020&apos;]);
     });
   });
 

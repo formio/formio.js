@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
  - FJS-1330: fixed an issue where date with custom format is defined as invalid date and incorrectly set
+ - FJS-1288: Fixes an issue where changes stay in modal preview after aborting them
+ - fixed errors navigation in editGrid draft modal row
  - fixed console error when saving tabs inside editGrid
  - Fixed panel not openning when containing invalid components
 
