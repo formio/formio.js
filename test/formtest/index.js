@@ -33,6 +33,7 @@ const propertyActions = require('./propertyActions.json');
 const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedForm.json');
 const formWithDateTimeComponents = require('./formWithDateTimeComponents');
 const formWithCollapsedPanel = require('./formWithCollapsedPanel.json');
+const formWithCustomFormatDate = require('./formWithCustomFormatDate.json');
 
 module.exports = {
   advanced,
@@ -69,5 +70,6 @@ module.exports = {
   propertyActions,
   formWithEditGridAndNestedDraftModalRow,
   formWithDateTimeComponents,
-  formWithCollapsedPanel
+  formWithCollapsedPanel,
+  formWithCustomFormatDate
 };
