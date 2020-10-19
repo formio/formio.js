@@ -1805,15 +1805,17 @@ describe('Webform tests', function() {
           a: true,
           b: true
         },
+        textfield: 'My Text',
         select: 'f',
         submit: true
       }
     };
-    const componentsKeys = ['checkbox', 'selectBoxes', 'select'];
+    const componentsKeys = ['checkbox', 'selectBoxes', 'select', 'textfield'];
     const expectedValues = {
       checkbox: 'Yes',
       selectBoxes: 'a, b',
-      select: 'f'
+      select: 'f',
+      textfield: 'My Text'
     };
     it('Test rendering previews after the submission is set', (done) => {
       const formElement = document.createElement('div');
@@ -1828,6 +1830,29 @@ describe('Webform tests', function() {
             assert.equal(preview.textContent.replace(/\n|\t/g, '').trim(), expectedValues[key]);
           });
           done();
+        });
+      }).catch(done);
+    });
+
+    it('Test updating previews after aboting changes', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(modalEditComponents).then(() => {
+        return form.setSubmission(submission, { fromSubmission: true }).then(() => {
+          const comp = form.getComponent(['textfield']);
+          comp.componentModal.openModal();
+          Harness.dispatchEvent('input', comp.componentModal.refs.modalContents, '[name="data[textfield]"]', (el) => {
+            el.value = 'My Text v2';
+          });
+          setTimeout(() => {
+            const fakeEvent = {
+              preventDefault: () => {}
+            };
+            comp.componentModal.closeModalHandler(fakeEvent);
+            const preview = comp.componentModal.refs.openModal;
+            assert.equal(preview.textContent.replace(/\n|\t/g, '').trim(), 'My Text');
+            done();
+          }, 100);
         });
       }).catch(done);
     });

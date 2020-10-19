@@ -155,10 +155,10 @@ export default class ComponentModal {
 
   closeModalHandler(event) {
     event.preventDefault();
-    this.closeModal();
     if (!this.component.disabled) {
       this.component.setValue(this.currentValue, { resetValue: true });
     }
+    this.closeModal();
   }
 
   showDialog() {
