@@ -996,6 +996,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~hasinvalidcomponent",
+    "function/index.html#static-function-hasInvalidComponent",
+    "<span>hasInvalidComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/templates/bootstrap/iconclass.js~iconclass",
     "function/index.html#static-function-iconClass",
     "<span>iconClass</span> <span class=\"search-result-import-path\">formiojs/src/templates/bootstrap/iconClass.js</span>",
@@ -6468,6 +6474,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp7.js",
+    "file/src/components/editgrid/fixtures/comp7.js.html",
+    "src/components/editgrid/fixtures/comp7.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp8.js",
+    "file/src/components/editgrid/fixtures/comp8.js.html",
+    "src/components/editgrid/fixtures/comp8.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/index.js",
     "file/src/components/editgrid/fixtures/index.js.html",
     "src/components/editgrid/fixtures/index.js",
@@ -7224,12 +7242,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/panel/panel.js~panelcomponent#hasinvalidcomponent",
-    "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-hasInvalidComponent",
-    "src/components/panel/Panel.js~PanelComponent#hasInvalidComponent",
-    "method"
-  ],
-  [
     "src/components/panel/panel.js~panelcomponent#nofield",
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-member-noField",
     "src/components/panel/Panel.js~PanelComponent#noField",
@@ -7839,6 +7851,12 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#attach",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-attach",
     "src/components/select/Select.js~SelectComponent#attach",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#attachrefreshonblur",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-attachRefreshOnBlur",
+    "src/components/select/Select.js~SelectComponent#attachRefreshOnBlur",
     "method"
   ],
   [

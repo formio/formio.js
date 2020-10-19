@@ -200,6 +200,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasInvalidComponent">hasInvalidComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
@@ -832,8 +833,8 @@ export function momentDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatDate(value, format, timezone) {
-  const momentDate = moment(value);
+export function formatDate(value, format, timezone, flatPickrInputFormat) {
+  const momentDate = moment(value, flatPickrInputFormat || undefined);
   if (timezone === currentTimezone()) {
     // See if our format contains a &quot;z&quot; timezone character.
     if (format.match(/\s(z$|z\s)/)) {
@@ -1389,6 +1390,15 @@ export function getArrayFromComponentPath(pathStr) {
     .replace(/(^\.)|(\.$)/g, &apos;&apos;)
     .split(&apos;.&apos;)
     .map(part =&gt; _.defaultTo(_.toNumber(part), part));
+}
+
+export function  hasInvalidComponent(component) {
+  return component.getComponents().some((comp) =&gt; {
+    if (_.isArray(comp.components)) {
+      return hasInvalidComponent(comp);
+    }
+      return comp.error;
+  });
 }
 
 export function getStringFromComponentPath(path) {

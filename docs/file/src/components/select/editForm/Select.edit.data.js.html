@@ -200,6 +200,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasInvalidComponent">hasInvalidComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
@@ -696,6 +697,43 @@ export default [
     label: &apos;Refresh Options On&apos;,
     weight: 19,
     tooltip: &apos;Refresh data when another field changes.&apos;,
+    dataSrc: &apos;custom&apos;,
+    valueProperty: &apos;value&apos;,
+    data: {
+      custom(context) {
+        var values = [];
+        values.push({ label: &apos;Any Change&apos;, value: &apos;data&apos; });
+        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
+          if (component.key !== context.data.key) {
+            values.push({
+              label: component.label || component.key,
+              value: path
+            });
+          }
+        });
+        return values;
+      }
+    },
+    conditional: {
+      json: {
+        in: [
+          { var: &apos;data.dataSrc&apos; },
+          [
+            &apos;url&apos;,
+            &apos;resource&apos;,
+            &apos;values&apos;
+          ],
+        ],
+      },
+    },
+  },
+  {
+    type: &apos;select&apos;,
+    input: true,
+    key: &apos;refreshOnBlur&apos;,
+    label: &apos;Refresh Options On Blur&apos;,
+    weight: 19,
+    tooltip: &apos;Refresh data when another field is blured.&apos;,
     dataSrc: &apos;custom&apos;,
     valueProperty: &apos;value&apos;,
     data: {

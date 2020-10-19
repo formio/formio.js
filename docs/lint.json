@@ -715,23 +715,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 1085,
+        "lineNumber": 1094,
         "line": "  /**"
       },
       {
-        "lineNumber": 1086,
+        "lineNumber": 1095,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 1087,
+        "lineNumber": 1096,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 1088,
+        "lineNumber": 1097,
         "line": "   */"
       },
       {
-        "lineNumber": 1089,
+        "lineNumber": 1098,
         "line": "  addCurrentChoices(values, items, keyValue) {"
       }
     ],
@@ -1308,6 +1308,59 @@
       "action",
       "data",
       "row"
+    ]
+  },
+  {
+    "name": "formatDate",
+    "filePath": "src/utils/utils.js",
+    "lines": [
+      {
+        "lineNumber": 591,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 592,
+        "line": " * Format a date provided a value, format, and timezone object."
+      },
+      {
+        "lineNumber": 593,
+        "line": " *"
+      },
+      {
+        "lineNumber": 594,
+        "line": " * @param value"
+      },
+      {
+        "lineNumber": 595,
+        "line": " * @param format"
+      },
+      {
+        "lineNumber": 596,
+        "line": " * @param timezone"
+      },
+      {
+        "lineNumber": 597,
+        "line": " * @return {string}"
+      },
+      {
+        "lineNumber": 598,
+        "line": " */"
+      },
+      {
+        "lineNumber": 599,
+        "line": "export function formatDate(value, format, timezone, flatPickrInputFormat) {"
+      }
+    ],
+    "codeParams": [
+      "value",
+      "format",
+      "timezone",
+      "flatPickrInputFormat"
+    ],
+    "docParams": [
+      "value",
+      "format",
+      "timezone"
     ]
   },
   {

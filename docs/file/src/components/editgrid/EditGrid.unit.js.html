@@ -200,6 +200,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasInvalidComponent">hasInvalidComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
@@ -237,7 +238,7 @@
 
 import Harness from &apos;../../../test/harness&apos;;
 import EditGridComponent from &apos;./EditGrid&apos;;
-import { comp1, comp4, comp3, comp5, comp6 } from &apos;./fixtures&apos;;
+import { comp1, comp4, comp3, comp5, comp6, comp7, comp8 } from &apos;./fixtures&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
 import Webform from &apos;../../Webform&apos;;
@@ -725,14 +726,78 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
     // });
   });
 
-  // TODO: Need to fix editing rows and conditionals.
-  // it(&apos;Should calculate conditional logic and default values when adding row&apos;, () =&gt; {
-  //   return Harness.testCreate(EditGridComponent, comp2).then(component =&gt; {
-  //     Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
-  //     Harness.testVisibility(component, &apos;.formio-component-field2&apos;, false);
-  //     Harness.getInputValue(component, &apos;data[editgrid][0][field1]&apos;, &apos;bar&apos;);
-  //   });
-  // });
+  it(&apos;Test simple conditions based on the EditGrid\&apos;s child\&apos;s value and default values when adding rows&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm({ display: &apos;form&apos;, components: [comp7], type: &apos;form&apos; }).then(() =&gt; {
+      const component = form.getComponent([&apos;editGrid&apos;]);
+      component.addRow();
+      setTimeout(() =&gt; {
+        // eslint-disable-next-line no-debugger
+        debugger;
+        Harness.getInputValue(component, &apos;data[editGrid][0][checkbox]&apos;, true, &apos;checked&apos;);
+        Harness.testComponentVisibility(component, &apos;.formio-component-editGridChild&apos;, true);
+        Harness.testComponentVisibility(component, &apos;.formio-component-panelChild&apos;, true);
+        done();
+      }, 250);
+    }).catch(done);
+  });
+
+  it(&apos;Test clearOnHide inside EditGrid&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm({ display: &apos;form&apos;, components: [comp7], type: &apos;form&apos; }).then(() =&gt; {
+      form.submission = {
+        data: {
+          editGrid: [
+            {
+              checkbox: true,
+              editGridChild: &apos;Has Value&apos;,
+              panelChild: &apos;Has Value Too&apos;,
+            }
+          ]
+        }
+      };
+      setTimeout(() =&gt; {
+        const editGrid = form.getComponent([&apos;editGrid&apos;]);
+        editGrid.editRow(0).then(() =&gt; {
+          Harness.dispatchEvent(&apos;click&apos;, editGrid.element, &apos;[name=&quot;data[editGrid][0][checkbox]&quot;]&apos;, el =&gt; el.checked = false);
+          setTimeout(() =&gt; {
+            Harness.testComponentVisibility(editGrid, &apos;.formio-component-editGridChild&apos;, false);
+            Harness.testComponentVisibility(editGrid, &apos;.formio-component-panelChild&apos;, false);
+            editGrid.saveRow(0, true);
+            setTimeout(() =&gt; {
+              assert(!form.data.editGrid[0].editGridChild, &apos;Should be cleared&apos;);
+              assert(!form.data.editGrid[0].panelChild, &apos;Should be cleared&apos;);
+              done();
+            }, 150);
+          }, 150);
+        }, 150);
+        });
+    }).catch(done);
+  });
+
+  it(&apos;Test refreshing inside EditGrid&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm({ display: &apos;form&apos;, components: [comp8], type: &apos;form&apos; }).then(() =&gt; {
+      const editGrid = form.getComponent([&apos;editGrid1&apos;]);
+      editGrid.addRow();
+      const makeSelect = form.getComponent([&apos;editGrid1&apos;, 0, &apos;make&apos;]);
+      const modelSelect = form.getComponent([&apos;editGrid1&apos;, 0, &apos;model&apos;]);
+      makeSelect.setValue(&apos;ford&apos;);
+      setTimeout(() =&gt; {
+        modelSelect.setValue(&apos;Focus&apos;);
+        setTimeout(() =&gt; {
+          editGrid.saveRow(0, true);
+          setTimeout(() =&gt; {
+            assert.equal(form.data.editGrid1[0].model, &apos;Focus&apos;, &apos;Should be saved properly&apos;);
+            done();
+          }, 150);
+        }, 100);
+      }, 150);
+    }).catch(done);
+  });
 });
 </code></pre>
 

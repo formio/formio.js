@@ -200,6 +200,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasInvalidComponent">hasInvalidComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
@@ -1112,6 +1113,7 @@ export default class SelectComponent extends Field {
     this.addEventListener(input, this.inputInfo.changeEvent, () =&gt; this.updateValue(null, {
       modified: true
     }));
+    this.attachRefreshOnBlur();
 
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate();
@@ -1257,6 +1259,14 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  attachRefreshOnBlur() {
+    if (this.component.refreshOnBlur) {
+      this.on(&apos;blur&apos;, (instance) =&gt; {
+        this.checkRefreshOn([{ instance, value: instance.dataValue }], {});
+      });
+    }
   }
 
   addPlaceholderItem(placeholderValue) {

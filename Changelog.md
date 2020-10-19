@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.16
+#### Added
+ - FJS-1196: Added Refresh On Blur option for Select Component
+
+#### Fixed
+ - FJS-1330: fixed an issue where date with custom format is defined as invalid date and incorrectly set
+ - fixed console error when saving tabs inside editGrid
+ - Fixed panel not openning when containing invalid components
+
 ### 4.12.1-rc.15
 #### Fixed
  - Fix untouched panel collapse and then open triggered validation

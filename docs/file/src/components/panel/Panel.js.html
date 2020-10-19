@@ -200,6 +200,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasInvalidComponent">hasInvalidComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
@@ -234,6 +235,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/panel/Panel.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
+import { hasInvalidComponent } from &apos;../../utils/utils&apos;;
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
@@ -290,15 +292,9 @@ export default class PanelComponent extends NestedComponent {
     this.noField = true;
     this.on(&apos;componentError&apos;, () =&gt; {
       //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
-      if (this.hasInvalidComponent() &amp;&amp; this.collapsed) {
+      if (hasInvalidComponent(this) &amp;&amp; this.collapsed) {
         this.collapsed = false;
       }
-    });
-  }
-
-  hasInvalidComponent() {
-    return this.getComponents().some((comp) =&gt; {
-      return comp.error;
     });
   }
 }

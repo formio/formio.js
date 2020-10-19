@@ -200,6 +200,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasInvalidComponent">hasInvalidComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
@@ -265,7 +266,8 @@ import {
   disabledNestedForm,
   propertyActions,
   formWithEditGridAndNestedDraftModalRow,
-  formWithDateTimeComponents
+  formWithDateTimeComponents,
+  formWithCollapsedPanel
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
@@ -276,6 +278,24 @@ import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+  it(&apos;Should open collapsed panel with invalid components inside container that is inside the panel on submit&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithPanel = new Webform(formElement);
+
+    formWithPanel.setForm(formWithCollapsedPanel).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+
+      assert.equal(formWithPanel.components[0].collapsed, true);
+
+      const submitBtn = formWithPanel.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(formWithPanel.components[0].collapsed, false);
+        done();
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should correctly set date after collapsing and openning the panel&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
