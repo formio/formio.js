@@ -546,9 +546,30 @@ export default class NestedComponent extends Field {
     flags = flags || {};
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
-    return components.reduce((valid, comp) => {
+    const isValid = components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
+
+    this.checkModal(isValid, this.isDirty);
+    return isValid;
+  }
+
+  checkModal(isValid, dirty) {
+    if (!this.component.modalEdit || !this.componentModal) {
+      return;
+    }
+    const messages = this.errors;
+    this.clearErrorClasses(this.refs.openModalWrapper);
+    this.error = '';
+    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {
+      this.error = {
+        component: this.component,
+        level: 'hidden',
+        message: this.t('Fix the errors')
+      };
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
+    }
+    this.setOpenModalElement();
   }
 
   checkConditions(data, flags, row) {
@@ -619,10 +640,12 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    return this.getComponents().reduce(
+    const isValid = this.getComponents().reduce(
       (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
       super.checkValidity(data, dirty, row, silentCheck)
     );
+    this.checkModal(isValid, dirty);
+    return isValid;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
@@ -636,6 +659,14 @@ export default class NestedComponent extends Field {
   setPristine(pristine) {
     super.setPristine(pristine);
     this.getComponents().forEach((comp) => comp.setPristine(pristine));
+  }
+
+  get isPristine() {
+    return this.pristine && this.getComponents().every((c) => c.isPristine);
+  }
+
+  get isDirty() {
+    return this.dirty && this.getComponents().every((c) => c.isDirty);
   }
 
   detach() {
@@ -665,7 +696,9 @@ export default class NestedComponent extends Field {
 
   get errors() {
     const thisErrors = this.error ? [this.error] : [];
-    return this.getComponents().reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors);
+    return this.getComponents()
+      .reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors)
+      .filter(err => err.level !== 'hidden');
   }
 
   getValue() {

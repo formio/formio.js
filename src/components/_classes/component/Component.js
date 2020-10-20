@@ -967,9 +967,14 @@ export default class Component extends Element {
 
   getModalPreviewTemplate() {
     const dataValue = this.component.type === 'password' ? this.dataValue.replace(/./g, '•') : this.dataValue;
+    const message = this.error ? {
+      level: 'error',
+      message: this.error.message,
+    } : '';
 
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value')
+      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
+      messages: message && this.renderTemplate('message', message)
     });
   }
 
@@ -1428,6 +1433,18 @@ export default class Component extends Element {
     this.pristine = pristine;
   }
 
+  get isPristine() {
+    return this.pristine;
+  }
+
+  setDirty(dirty) {
+    this.dirty = dirty;
+  }
+
+  get isDirty() {
+    return this.dirty;
+  }
+
   /**
    * Removes a value out of the data array and rebuild the rows.
    * @param {number} index - The index of the data element to remove.
@@ -1823,7 +1840,7 @@ export default class Component extends Element {
     }
   }
 
-  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
+  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
     elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
     if (hasErrors) {
@@ -1831,14 +1848,14 @@ export default class Component extends Element {
       elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
 
       if (dirty && this.options.highlightErrors) {
-        this.addClass(this.element, this.options.componentErrorClass);
+        this.addClass(element, this.options.componentErrorClass);
       }
       else {
-        this.addClass(this.element, 'has-error');
+        this.addClass(element, 'has-error');
       }
     }
     if (hasMessages) {
-      this.addClass(this.element, 'has-message');
+      this.addClass(element, 'has-message');
     }
   }
 
@@ -2647,7 +2664,9 @@ export default class Component extends Element {
   checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row, { silentCheck });
+    const isValid = this.checkComponentValidity(data, dirty, row, { silentCheck });
+    this.checkModal();
+    return isValid;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
@@ -2694,10 +2713,21 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    this.setDirty(isDirty);
+
     if (this.component.validateOn === 'blur' && flags.fromSubmission) {
       return true;
     }
-    return this.checkComponentValidity(data, isDirty, row);
+    const isValid = this.checkComponentValidity(data, isDirty, row);
+    this.checkModal();
+    return isValid;
+  }
+
+  checkModal(isValid, dirty) {
+    if (!this.component.modalEdit || !this.componentModal) {
+      return;
+    }
+    this.setOpenModalElement();
   }
 
   get validationValue() {
@@ -2726,11 +2756,11 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  clearErrorClasses() {
-    this.removeClass(this.element, this.options.componentErrorClass);
-    this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'has-error');
-    this.removeClass(this.element, 'has-message');
+  clearErrorClasses(element = this.element) {
+    this.removeClass(element, this.options.componentErrorClass);
+    this.removeClass(element, 'alert alert-danger');
+    this.removeClass(element, 'has-error');
+    this.removeClass(element, 'has-message');
   }
 
   setCustomValidity(messages, dirty, external) {
