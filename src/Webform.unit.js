@@ -792,13 +792,20 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should treat double colons as i18next namespace separators', () => {
+  it('Should treat double colons as i18next namespace separators', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
+    form.setForm({
+      title: 'Test Form',
+      components: []
+    }).then(() => {
+      const str = 'Test: this is only a test';
 
-    const str = 'Test: this is only a test';
-    assert.equal(form.t(str), str);
-    assert.equal(form.t(`Namespace::${str}`), str);
+      assert.equal(form.t(str), str);
+      assert.equal(form.t(`Namespace::${str}`), str);
+
+      done();
+    }).catch(done);
   });
 
   it('Should translate form errors in alerts', () => {
