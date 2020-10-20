@@ -2197,15 +2197,25 @@ export default class Component extends Element {
       );
     }
 
-    if (this.defaultMask) {
-      if (typeof defaultValue === 'string') {
-        defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
-        if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
-          defaultValue = '';
+    const checkMask = (value) => {
+      if (typeof value === 'string') {
+        value = conformToMask(value, this.defaultMask).conformedValue;
+        if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
+          value = '';
         }
       }
       else {
-        defaultValue = '';
+        value = '';
+      }
+      return value;
+    };
+
+    if (this.defaultMask) {
+      if (Array.isArray(defaultValue)) {
+        defaultValue = defaultValue.map(checkMask);
+      }
+      else {
+        defaultValue = checkMask(defaultValue);
       }
     }
 
