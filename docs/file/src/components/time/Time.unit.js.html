@@ -240,6 +240,7 @@ import TimeComponent from &apos;./Time&apos;;
 import {
   comp1,
   comp2,
+  comp3,
   timeForm2,
   timeForm,
 } from &apos;./fixtures&apos;;
@@ -309,6 +310,13 @@ describe(&apos;Time Component&apos;, () =&gt; {
         assert.equal(component.error.message, &apos;Invalid time&apos;, &apos;Should have an error&apos;);
         done();
       }, 650);
+    }).catch(done);
+  });
+
+  it(&apos;Should build a time component&apos;, (done) =&gt; {
+    Harness.testCreate(TimeComponent, comp3).then((time) =&gt; {
+      assert.deepEqual(time.dataValue, [&apos;10:00:00&apos;, &apos;11:00:00&apos;], &apos;Should be set to default value&apos;);
+      done();
     }).catch(done);
   });
 });

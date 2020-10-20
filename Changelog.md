@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1196: Added Refresh On Blur option for Select Component
 
 #### Fixed
+ - FJS-1280: Fixes an issue where default value is not set for multiple Time component
  - FJS-1341: Fixes an issue where after changing tab, value set from submission is overriden by calculatedValue
  - FJS-1330: fixed an issue where date with custom format is defined as invalid date and incorrectly set
  - FJS-1288: Fixes an issue where changes stay in modal preview after aborting them
