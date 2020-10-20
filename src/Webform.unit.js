@@ -1790,6 +1790,39 @@ describe('Webform tests', function() {
   });
 
   describe('Calculate Value with allowed manual override', () => {
+    const initialSubmission = {
+      data: {
+        dataGrid: [
+          { label: 'yes', value: 'yes' },
+          { label: 'no', value: 'no' },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
+    const submissionWithOverridenValues = {
+      data: {
+        dataGrid: [
+          { label: 'yes', value: 'y' },
+          { label: 'no', value: 'n' },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
+    const submissionWithOverridenValues2 = {
+      data: {
+        dataGrid: [
+          { label: 'yes2', value: 'yes2' },
+          { label: 'no', value: 'n' },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
     it('Should reset all values correctly.', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
@@ -1797,49 +1830,28 @@ describe('Webform tests', function() {
         const dataGrid = form.getComponent('dataGrid');
         dataGrid.setValue([{ label: 'yes' }, { label: 'no' }]);
         setTimeout(() => {
-          expect(form.submission).to.deep.equal({
-            data: {
-              dataGrid: [
-                { label: 'yes', value: 'yes' },
-                { label: 'no', value: 'no' },
-              ],
-              checkbox: false,
-              submit: false
-            },
-            metadata: {}
-          });
+          expect(form.submission).to.deep.equal(initialSubmission);
           const row1Value = form.getComponent(['dataGrid', 0, 'value']);
           const row2Value = form.getComponent(['dataGrid', 1, 'value']);
           row1Value.setValue('y');
           row2Value.setValue('n');
 
           setTimeout(() => {
-            expect(form.submission).to.deep.equal({
-              data: {
-                dataGrid: [
-                  { label: 'yes', value: 'y' },
-                  { label: 'no', value: 'n' },
-                ],
-                checkbox: false,
-                submit: false
-              },
-              metadata: {}
-            });
+            expect(form.submission).to.deep.equal(submissionWithOverridenValues);
             const row1Label = form.getComponent(['dataGrid', 0, 'label']);
             row1Label.setValue('yes2');
             setTimeout(() => {
-              expect(form.submission).to.deep.equal({
-                data: {
-                  dataGrid: [
-                    { label: 'yes2', value: 'yes2' },
-                    { label: 'no', value: 'n' },
-                  ],
-                  checkbox: false,
-                  submit: false
-                },
-                metadata: {}
+              expect(form.submission).to.deep.equal(submissionWithOverridenValues2);
+              form.setSubmission(submissionWithOverridenValues).then(() => {
+                setTimeout(() => {
+                  const tabs = form.getComponent(['tabs']);
+                  tabs.setTab(1);
+                  setTimeout(() => {
+                    expect(form.submission).to.deep.equal(submissionWithOverridenValues);
+                    done();
+                  }, 250);
+                }, 150);
               });
-              done();
             }, 250);
           }, 250);
         }, 250);
