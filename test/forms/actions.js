@@ -821,7 +821,17 @@ export default {
           }
         });
         form.on('componentChange', function() {
-          assert.deepEqual(form.submission, {
+          const formSubmissionAfterChange = {
+            data:{
+              ...form.submission.data,
+              condition: {},
+              settings: {
+                url: form.submission.data.settings.url,
+              }
+            }
+          };
+
+          assert.deepEqual(formSubmissionAfterChange, {
             data: {
               priority: 0,
               name: 'webhook',
@@ -843,6 +853,8 @@ export default {
               machineName: 'ozvjjccvueotocl:webhooks:webhook'
             }
           });
+     
+          form.destroy();
           done();
         });
 
