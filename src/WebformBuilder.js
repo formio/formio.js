@@ -959,15 +959,16 @@ export default class WebformBuilder extends Component {
       return;
     }
     let remove = true;
-    if (
-      !component.skipRemoveConfirm &&
+    const removingComponentsGroup = !component.skipRemoveConfirm &&
       (
         (Array.isArray(component.components) && component.components.length) ||
         (Array.isArray(component.rows) && component.rows.length) ||
         (Array.isArray(component.columns) && component.columns.length)
-      )
-    ) {
-      const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
+      );
+
+    if (this.options.askForComponentsRemoval || removingComponentsGroup) {
+      const message = removingComponentsGroup ? 'Removing this component will also remove all of its children. Are you sure you want to do this?'
+        : 'Are you sure you want to remove this component?';
       remove = window.confirm(this.t(message));
     }
     if (!original) {
