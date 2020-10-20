@@ -29,7 +29,7 @@
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "npm run transpile && npm run templates && npm run test:unit",
-    "test:unit": "TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit",
+    "test:unit": "TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit",
     "test:updateRenders": "TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js",
     "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run"
   },

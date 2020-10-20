@@ -1028,13 +1028,20 @@ describe(&apos;Webform tests&apos;, function() {
     }).catch(done);
   });
 
-  it(&apos;Should treat double colons as i18next namespace separators&apos;, () =&gt; {
+  it(&apos;Should treat double colons as i18next namespace separators&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const form = new Webform(formElement);
+    form.setForm({
+      title: &apos;Test Form&apos;,
+      components: []
+    }).then(() =&gt; {
+      const str = &apos;Test: this is only a test&apos;;
 
-    const str = &apos;Test: this is only a test&apos;;
-    assert.equal(form.t(str), str);
-    assert.equal(form.t(`Namespace::${str}`), str);
+      assert.equal(form.t(str), str);
+      assert.equal(form.t(`Namespace::${str}`), str);
+
+      done();
+    }).catch(done);
   });
 
   it(&apos;Should translate form errors in alerts&apos;, () =&gt; {
@@ -2019,6 +2026,39 @@ describe(&apos;Webform tests&apos;, function() {
   });
 
   describe(&apos;Calculate Value with allowed manual override&apos;, () =&gt; {
+    const initialSubmission = {
+      data: {
+        dataGrid: [
+          { label: &apos;yes&apos;, value: &apos;yes&apos; },
+          { label: &apos;no&apos;, value: &apos;no&apos; },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
+    const submissionWithOverridenValues = {
+      data: {
+        dataGrid: [
+          { label: &apos;yes&apos;, value: &apos;y&apos; },
+          { label: &apos;no&apos;, value: &apos;n&apos; },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
+    const submissionWithOverridenValues2 = {
+      data: {
+        dataGrid: [
+          { label: &apos;yes2&apos;, value: &apos;yes2&apos; },
+          { label: &apos;no&apos;, value: &apos;n&apos; },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
     it(&apos;Should reset all values correctly.&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
       const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
@@ -2026,49 +2066,28 @@ describe(&apos;Webform tests&apos;, function() {
         const dataGrid = form.getComponent(&apos;dataGrid&apos;);
         dataGrid.setValue([{ label: &apos;yes&apos; }, { label: &apos;no&apos; }]);
         setTimeout(() =&gt; {
-          expect(form.submission).to.deep.equal({
-            data: {
-              dataGrid: [
-                { label: &apos;yes&apos;, value: &apos;yes&apos; },
-                { label: &apos;no&apos;, value: &apos;no&apos; },
-              ],
-              checkbox: false,
-              submit: false
-            },
-            metadata: {}
-          });
+          expect(form.submission).to.deep.equal(initialSubmission);
           const row1Value = form.getComponent([&apos;dataGrid&apos;, 0, &apos;value&apos;]);
           const row2Value = form.getComponent([&apos;dataGrid&apos;, 1, &apos;value&apos;]);
           row1Value.setValue(&apos;y&apos;);
           row2Value.setValue(&apos;n&apos;);
 
           setTimeout(() =&gt; {
-            expect(form.submission).to.deep.equal({
-              data: {
-                dataGrid: [
-                  { label: &apos;yes&apos;, value: &apos;y&apos; },
-                  { label: &apos;no&apos;, value: &apos;n&apos; },
-                ],
-                checkbox: false,
-                submit: false
-              },
-              metadata: {}
-            });
+            expect(form.submission).to.deep.equal(submissionWithOverridenValues);
             const row1Label = form.getComponent([&apos;dataGrid&apos;, 0, &apos;label&apos;]);
             row1Label.setValue(&apos;yes2&apos;);
             setTimeout(() =&gt; {
-              expect(form.submission).to.deep.equal({
-                data: {
-                  dataGrid: [
-                    { label: &apos;yes2&apos;, value: &apos;yes2&apos; },
-                    { label: &apos;no&apos;, value: &apos;n&apos; },
-                  ],
-                  checkbox: false,
-                  submit: false
-                },
-                metadata: {}
+              expect(form.submission).to.deep.equal(submissionWithOverridenValues2);
+              form.setSubmission(submissionWithOverridenValues).then(() =&gt; {
+                setTimeout(() =&gt; {
+                  const tabs = form.getComponent([&apos;tabs&apos;]);
+                  tabs.setTab(1);
+                  setTimeout(() =&gt; {
+                    expect(form.submission).to.deep.equal(submissionWithOverridenValues);
+                    done();
+                  }, 250);
+                }, 150);
               });
-              done();
             }, 250);
           }, 250);
         }, 250);

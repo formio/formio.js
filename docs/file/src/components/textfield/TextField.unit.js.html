@@ -238,7 +238,6 @@
 import _ from &apos;lodash&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import TextFieldComponent from &apos;./TextField&apos;;
-import NativePromise from &apos;native-promise-only&apos;;
 import Formio from &apos;./../../Formio&apos;;
 
 import {
@@ -359,10 +358,9 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         custom: &apos;valid = (input !== &quot;Joe&quot;) ? true : &quot;You cannot be Joe&quot;&apos;
       }
     })).then((component) =&gt; {
-      return NativePromise.all[
-        Harness.testInvalid(component, &apos;Joe&apos;, &apos;firstName&apos;, &apos;You cannot be Joe&apos;),
-        Harness.testValid(component, &apos;Tom&apos;)
-      ];
+      return Harness.testInvalid(component, &apos;Joe&apos;, &apos;firstName&apos;, &apos;You cannot be Joe&apos;).then(() =&gt; component);
+    }).then((component) =&gt; {
+      return Harness.testValid(component, &apos;Tom&apos;).then(() =&gt; component);
     });
   });
 
@@ -416,10 +414,9 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         }
       }
     })).then((component) =&gt; {
-      return NativePromise.all[
-        Harness.testInvalid(component, &apos;Tom&apos;, &apos;firstName&apos;, &apos;You must be Joe&apos;),
-        Harness.testValid(component, &apos;Joe&apos;)
-      ];
+      return Harness.testInvalid(component, &apos;Tom&apos;, &apos;firstName&apos;, &apos;You must be Joe&apos;).then(() =&gt; component);
+    }).then((component) =&gt; {
+      return Harness.testValid(component, &apos;Joe&apos;).then(() =&gt; component);
     });
   });
 });
