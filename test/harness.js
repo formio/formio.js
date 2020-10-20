@@ -327,7 +327,7 @@ const Harness = {
 
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
-    form.submit();
+    form.submit().catch(() => console.log('Expected error when executing submit in errors test'));
   },
   testValid(component, value) {
     return new Promise((resolve, reject) => {
