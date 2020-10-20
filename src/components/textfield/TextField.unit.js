@@ -2,7 +2,6 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
-import NativePromise from 'native-promise-only';
 import Formio from './../../Formio';
 
 import {
@@ -123,10 +122,9 @@ describe('TextField Component', () => {
         custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
       }
     })).then((component) => {
-      return NativePromise.all[
-        Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe'),
-        Harness.testValid(component, 'Tom')
-      ];
+      return Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe').then(() => component);
+    }).then((component) => {
+      return Harness.testValid(component, 'Tom').then(() => component);
     });
   });
 
@@ -180,10 +178,9 @@ describe('TextField Component', () => {
         }
       }
     })).then((component) => {
-      return NativePromise.all[
-        Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe'),
-        Harness.testValid(component, 'Joe')
-      ];
+      return Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe').then(() => component);
+    }).then((component) => {
+      return Harness.testValid(component, 'Joe').then(() => component);
     });
   });
 });
