@@ -2494,9 +2494,8 @@ export default class Component extends Element {
       const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
       const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
       const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
-
       // Check to ensure that the calculated value is different than the previously calculated value.
-      if (this.calculatedValue && previousChanged && !calculationChanged) {
+      if (previousCalculatedValue && previousChanged && !calculationChanged) {
         return false;
       }
 
@@ -2505,6 +2504,8 @@ export default class Component extends Element {
       }
 
       if (flags.fromSubmission && this.component.persistent === true) {
+        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+        this.calculatedValue = calculatedValue;
         return false;
       }
 
