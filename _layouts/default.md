@@ -67,9 +67,10 @@
 <hr />
 <div>
   <h4 class="text-center text-muted">powered by <img src="{{ site.baseurl }}/app/logo.png" class="mr-2" style="height: 1.2em;" /></h4>
-  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2019. All rights reserved</p>
+  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2020. All rights reserved</p>
 </div>
 <p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
+<script src="{{ site.baseurl }}/dist/formio.full.js"></script>
 <script type="text/javascript">
   document.getElementById('renderer-version').innerHTML = Formio.version;
 </script>
