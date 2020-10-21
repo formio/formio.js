@@ -317,7 +317,7 @@ export default class Input extends Multivalue {
     this.addEventListener(element, 'blur', () => {
       this.root.pendingBlur = delay(() => {
         this.emit('blur', this);
-        if (this.component.validateOn === 'blur' ) {
+        if (this.component.validateOn === 'blur') {
           this.root.triggerChange({ fromBlur: true }, {
             instance: this,
             component: this.component,
