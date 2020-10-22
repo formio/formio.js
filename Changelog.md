@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.17
+#### Fixed
+ - Fixes an issue where refresh can be called multiple times if some components have on Blur validation
+ - FJS-1245: fixed an issue where empty submission data comes from 7.x server for dataGrid with initEmpty option
+ - FJS-1289: fixes an issue where confirmation dialog is not show for modal DataGrid after first time closing modal without making changes
+
 ### 4.12.1-rc.16
 #### Added
  - FJS-1196: Added Refresh On Blur option for Select Component
