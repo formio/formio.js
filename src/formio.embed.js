@@ -9,8 +9,7 @@ while (i--) {
 }
 
 if (thisScript) {
-  const Form = require('./formio.form').Form;
-  const Formio = window.Formio || require('./formio.form').Formio;
+  const { Form, Formio } = require('./formio.form');
 
   Formio.loadModules();
   const query = {};
