@@ -9,6 +9,7 @@ import wizard2 from '../test/forms/wizardWithEditGrid';
 import wizard3 from '../test/forms/conditionalWizardPages';
 import wizard4 from '../test/forms/wizardWithSimpleConditionalPage';
 import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
+import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import formWithSignature from '../test/forms/formWithSignature';
 
@@ -126,6 +127,41 @@ describe('Wizard tests', () => {
           done();
         }, 300);
       }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should show first conditional wizard page', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizard6).then(() => {
+      assert.equal(wizard.pages.length, 1);
+      assert.equal(wizard.components.length, 1);
+      assert.equal(wizard.page, 0);
+      assert.equal(wizard.refs[`wizard-${wizard.id}-previous`], null);
+      assert.equal(
+        wizard.refs[
+          `wizard-${wizard.id}-link`
+        ][0].parentElement.classList.contains('active'),
+        true
+      );
+      wizard.setValue({
+        data: { b: 'true' },
+      });
+      setTimeout(() => {
+        assert.equal(wizard.pages.length, 2);
+        assert.equal(wizard.components.length, 2);
+        assert.equal(wizard.page, 1);
+        assert.notEqual(wizard.refs[`wizard-${wizard.id}-previous`], null);
+        assert.equal(
+          wizard.refs[
+            `wizard-${wizard.id}-link`
+          ][1].parentElement.classList.contains('active'),
+          true
+        );
+        done();
+      }, 300);
     })
     .catch((err) => done(err));
   });

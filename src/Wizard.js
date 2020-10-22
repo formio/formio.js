@@ -791,6 +791,9 @@ export default class Wizard extends Webform {
       currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
       panels = this.establishPages().map(panel => panel.key);
       this.currentPanels = panels;
+      if (this.currentPanel && this.currentPanel.key) {
+        this.setPage(this.currentPanels.findIndex(panel => panel === this.currentPanel.key));
+      }
     }
 
     if (!_.isEqual(panels, currentPanels) || (flags && flags.fromSubmission)) {
