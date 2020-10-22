@@ -2667,7 +2667,10 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changes, flags);
+    // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
+    if (!flags.fromBlur) {
+      this.checkRefreshOn(flags.changes, flags);
+    }
 
     if (flags.noCheck) {
       return true;

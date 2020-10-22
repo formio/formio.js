@@ -1028,7 +1028,7 @@ export default class SelectComponent extends Field {
   attachRefreshOnBlur() {
     if (this.component.refreshOnBlur) {
       this.on('blur', (instance) => {
-        this.checkRefreshOn([{ instance, value: instance.dataValue }], {});
+        this.checkRefreshOn([{ instance, value: instance.dataValue }], { fromBlur: true });
       });
     }
   }
