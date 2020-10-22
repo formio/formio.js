@@ -1215,7 +1215,7 @@ export function getDataParentComponent(componentInstance) {
     return;
   }
   const { parent } = componentInstance;
-  if (parent && parent.isInputComponent) {
+  if (parent && (parent.isInputComponent || parent.input)) {
     return parent;
   }
   else {
