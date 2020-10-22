@@ -615,11 +615,13 @@ export default class Component extends Element {
   }
 
   get labelWidth() {
-    return this.component.labelWidth || 30;
+    const width = this.component.labelWidth;
+    return width >= 0 ? width : 30;
   }
 
   get labelMargin() {
-    return this.component.labelMargin || 3;
+    const margin = this.component.labelMargin;
+    return margin >= 0 ? margin : 3;
   }
 
   get isAdvancedLabel() {
