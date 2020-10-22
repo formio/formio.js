@@ -529,8 +529,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
     const isSettingSubmission = flags.fromSubmission && !_.isEqual(value, this.emptyValue);
     const changed = this.hasChanged(value, this.dataValue);
+
+    this.dataValue = value;
+
     if (this.initRows || isSettingSubmission) {
-      this.dataValue = value;
       this.createRows();
     }
     this.rows.forEach((row, rowIndex) => {
