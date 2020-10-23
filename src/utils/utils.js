@@ -1124,6 +1124,10 @@ export function sanitize(string, options) {
   if (options.sanitizeConfig && options.sanitizeConfig.allowedUriRegex) {
     sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
   }
+  // Allow to extend the existing array of elements that are safe for URI-like values
+  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addUriSafeAttr) && options.sanitizeConfig.addUriSafeAttr.length > 0) {
+    sanitizeOptions.ADD_URI_SAFE_ATTR = options.sanitizeConfig.addUriSafeAttr;
+  }
   return dompurify.sanitize(string, sanitizeOptions);
 }
 
