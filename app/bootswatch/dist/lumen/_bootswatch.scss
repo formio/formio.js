@@ -1,4 +1,4 @@
-// Lumen 4.5.2
+// Lumen 4.5.3
 // Bootswatch
 
 
@@ -6,6 +6,8 @@
 
 $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" !default;
 @import url($web-font-path);
+
+// Mixins ======================================================================
 
 @mixin shadow($width: 4px){
   border-style: solid;
@@ -27,8 +29,8 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 }
 
 .bg-light {
-  background-color: #fff !important;
-  border-color: darken(#fff, 5%);
+  background-color: $white !important;
+  border-color: darken($white, 5%);
 }
 
 // Buttons =====================================================================
@@ -47,13 +49,7 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
     border-bottom-width: 2px;
     @include box-shadow(none);
   }
-}
 
-[class*="btn-outline"] {
-  border-top-width: 1px;
-}
-
-.btn {
   &-primary {
     border-color: darken($primary, 5%);
   }
@@ -87,6 +83,10 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
   }
 }
 
+[class*="btn-outline"] {
+  border-top-width: 1px;
+}
+
 .btn-group-vertical {
   .btn + .btn {
     &:hover {
@@ -114,13 +114,12 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 // Tables ======================================================================
 
 .table {
-
   &-primary,
   &-success,
   &-info,
   &-warning,
   &-danger {
-    color: #fff;
+    color: $white;
   }
 
   &-hover tbody {
@@ -130,116 +129,151 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
     .table-warning:hover,
     .table-danger:hover,
     .table-dark:hover {
-      color: #fff;
+      color: $white;
     }
   }
 
   &-primary {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $primary;
     }
   }
 
   &-secondary {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $secondary;
     }
   }
 
   &-light {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $light;
     }
   }
 
   &-dark {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $dark;
     }
   }
 
   &-success {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $success;
     }
   }
 
   &-info {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $info;
     }
   }
 
   &-danger {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $danger;
     }
   }
 
   &-warning {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $warning;
     }
   }
 
   &-active {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $table-active-bg;
     }
   }
 
   &-hover {
-
     .table-primary:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($primary, 5%);
       }
     }
 
     .table-secondary:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($secondary, 5%);
       }
     }
 
     .table-light:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($light, 5%);
       }
     }
 
     .table-dark:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($dark, 5%);
       }
     }
 
     .table-success:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($success, 5%);
       }
     }
 
     .table-info:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($info, 5%);
       }
     }
 
     .table-danger:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($danger, 5%);
       }
     }
 
     .table-warning:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($warning, 5%);
       }
     }
 
     .table-active:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: $table-active-bg;
       }
     }
@@ -250,7 +284,7 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 // Forms =======================================================================
 
 .form-control {
-  box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 2px 0 rgba(0, 0, 0, .075);
 }
 
 .input-group-sm {
@@ -273,7 +307,6 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 }
 
 .nav-tabs {
-
   .nav-link {
     color: $body-color;
 
@@ -283,13 +316,13 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
     &.disabled:focus {
       margin-top: 6px;
       border-color: $nav-tabs-border-color;
-      transition: all 0.2s ease-in-out;
+      transition: padding-bottom .2s ease-in-out, margin-top .2s ease-in-out, border-bottom .2s ease-in-out;
     }
 
     &:not(.disabled):hover,
     &:not(.disabled):focus,
     &.active {
-      padding-bottom: calc(0.5rem + 6px);
+      padding-bottom: add(.5rem, 6px);
       border-bottom-color: transparent;
       margin-top: 0;
     }
@@ -313,7 +346,6 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 }
 
 .pagination {
-
   > li > a,
   > li > span {
     position: relative;
@@ -321,7 +353,7 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
     @include shadow();
     color: $pagination-color;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
 
     &:hover,
@@ -339,7 +371,6 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 
   > .disabled > a,
   > .disabled > span {
-
     &:hover {
       top: 0;
       @include shadow();
@@ -353,12 +384,10 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 }
 
 .pager {
-
   > li > a,
   > li > span,
   > .disabled > a,
   > .disabled > span {
-
     &,
     &:hover,
     &:active {
@@ -372,7 +401,7 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
 
 .close {
   text-decoration: none;
-  opacity: 0.4;
+  opacity: .4;
 
   &:hover,
   &:focus {
@@ -425,16 +454,16 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
   }
 
   .alert-link {
-    font-weight: normal;
-    color: #fff;
+    font-weight: 400;
+    color: $white;
     text-decoration: underline;
   }
 
   &-secondary,
   &-light {
     &,
-    & a,
-    & .alert-link {
+    a,
+    .alert-link {
       color: $body-color;
     }
   }
@@ -447,12 +476,9 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,w
   }
 }
 
-// Progress bars ===============================================================
-
 // Containers ==================================================================
 
 a.list-group-item {
-
   &-success {
     &.active {
       background-color: $success;
@@ -489,12 +515,11 @@ a.list-group-item {
 
 .jumbotron {
   border: 1px solid $gray-200;
-  box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 0 rgba(0, 0, 0, .05);
 }
 
 .modal,
 .toast {
-
   .close {
     color: $black;
 

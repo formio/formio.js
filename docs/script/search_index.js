@@ -702,93 +702,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~boolvalue",
-    "function/index.html#static-function-boolValue",
-    "<span>boolValue</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~bootstrapversion",
-    "function/index.html#static-function-bootstrapVersion",
-    "<span>bootstrapVersion</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~checkcalculated",
-    "function/index.html#static-function-checkCalculated",
-    "<span>checkCalculated</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~checkcondition",
-    "function/index.html#static-function-checkCondition",
-    "<span>checkCondition</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~checkcustomconditional",
-    "function/index.html#static-function-checkCustomConditional",
-    "<span>checkCustomConditional</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/calendarutils.js~checkinvaliddate",
     "function/index.html#static-function-checkInvalidDate",
     "<span>checkInvalidDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/calendarUtils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~checkjsonconditional",
-    "function/index.html#static-function-checkJsonConditional",
-    "<span>checkJsonConditional</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~checksimpleconditional",
-    "function/index.html#static-function-checkSimpleConditional",
-    "<span>checkSimpleConditional</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~checktrigger",
-    "function/index.html#static-function-checkTrigger",
-    "<span>checkTrigger</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~convertformattoflatpickr",
-    "function/index.html#static-function-convertFormatToFlatpickr",
-    "<span>convertFormatToFlatpickr</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~convertformattomask",
-    "function/index.html#static-function-convertFormatToMask",
-    "<span>convertFormatToMask</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~convertformattomoment",
-    "function/index.html#static-function-convertFormatToMoment",
-    "<span>convertFormatToMoment</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~convertstringtohtmlelement",
-    "function/index.html#static-function-convertStringToHTMLElement",
-    "<span>convertStringToHTMLElement</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~currenttimezone",
-    "function/index.html#static-function-currentTimezone",
-    "<span>currentTimezone</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~delay",
-    "function/index.html#static-function-delay",
-    "<span>delay</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -810,24 +726,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~evaluate",
-    "function/index.html#static-function-evaluate",
-    "<span>evaluate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~fastclonedeep",
-    "function/index.html#static-function-fastCloneDeep",
-    "<span>fastCloneDeep</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~fielddata",
-    "function/index.html#static-function-fieldData",
-    "<span>fieldData</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/formutils.js~findcomponent",
     "function/index.html#static-function-findComponent",
     "<span>findComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -838,12 +736,6 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-findComponents",
     "<span>findComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~firstnonnil",
-    "variable/index.html#static-variable-firstNonNil",
-    "<span>firstNonNil</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "variable"
   ],
   [
     "formiojs/src/utils/formutils.js~flattencomponents",
@@ -858,117 +750,15 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~formatdate",
-    "function/index.html#static-function-formatDate",
-    "<span>formatDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~formatoffset",
-    "function/index.html#static-function-formatOffset",
-    "<span>formatOffset</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/formutils.js~generateformchange",
     "function/index.html#static-function-generateFormChange",
     "<span>generateFormChange</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~getarrayfromcomponentpath",
-    "function/index.html#static-function-getArrayFromComponentPath",
-    "<span>getArrayFromComponentPath</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/formutils.js~getcomponent",
     "function/index.html#static-function-getComponent",
     "<span>getComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getcomponentpathwithoutindicies",
-    "function/index.html#static-function-getComponentPathWithoutIndicies",
-    "<span>getComponentPathWithoutIndicies</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getcontextcomponents",
-    "function/index.html#static-function-getContextComponents",
-    "<span>getContextComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getcurrencyaffixes",
-    "function/index.html#static-function-getCurrencyAffixes",
-    "<span>getCurrencyAffixes</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getdataparentcomponent",
-    "function/index.html#static-function-getDataParentComponent",
-    "<span>getDataParentComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getdatesetting",
-    "function/index.html#static-function-getDateSetting",
-    "<span>getDateSetting</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getelementrect",
-    "function/index.html#static-function-getElementRect",
-    "<span>getElementRect</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getiebrowserversion",
-    "function/index.html#static-function-getIEBrowserVersion",
-    "<span>getIEBrowserVersion</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getinputmask",
-    "function/index.html#static-function-getInputMask",
-    "<span>getInputMask</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getlocaledateformatinfo",
-    "function/index.html#static-function-getLocaleDateFormatInfo",
-    "<span>getLocaleDateFormatInfo</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getnumberdecimallimit",
-    "function/index.html#static-function-getNumberDecimalLimit",
-    "<span>getNumberDecimalLimit</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getnumberseparators",
-    "function/index.html#static-function-getNumberSeparators",
-    "<span>getNumberSeparators</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getpropertyvalue",
-    "function/index.html#static-function-getPropertyValue",
-    "<span>getPropertyValue</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getrandomcomponentid",
-    "function/index.html#static-function-getRandomComponentId",
-    "<span>getRandomComponentId</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~getstringfromcomponentpath",
-    "function/index.html#static-function-getStringFromComponentPath",
-    "<span>getStringFromComponentPath</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -984,21 +774,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~guid",
-    "function/index.html#static-function-guid",
-    "<span>guid</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/formutils.js~hascondition",
     "function/index.html#static-function-hasCondition",
     "<span>hasCondition</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~hasinvalidcomponent",
-    "function/index.html#static-function-hasInvalidComponent",
-    "<span>hasInvalidComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -1014,51 +792,15 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~interpolate",
-    "variable/index.html#static-variable-interpolate",
-    "<span>interpolate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "variable"
-  ],
-  [
-    "formiojs/src/utils/utils.js~isinputcomponent",
-    "function/index.html#static-function-isInputComponent",
-    "<span>isInputComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/formutils.js~islayoutcomponent",
     "function/index.html#static-function-isLayoutComponent",
     "<span>isLayoutComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~ismongoid",
-    "function/index.html#static-function-isMongoId",
-    "<span>isMongoId</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~isvaliddate",
-    "function/index.html#static-function-isValidDate",
-    "<span>isValidDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~iteratekey",
-    "function/index.html#static-function-iterateKey",
-    "<span>iterateKey</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/calendarutils.js~lessorgreater",
     "function/index.html#static-function-lessOrGreater",
     "<span>lessOrGreater</span> <span class=\"search-result-import-path\">formiojs/src/utils/calendarUtils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~loadzones",
-    "function/index.html#static-function-loadZones",
-    "<span>loadZones</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -1074,18 +816,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~matchinputmask",
-    "function/index.html#static-function-matchInputMask",
-    "<span>matchInputMask</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~momentdate",
-    "function/index.html#static-function-momentDate",
-    "<span>momentDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/components/select/fixtures/comp3.js~multiselect",
     "variable/index.html#static-variable-multiSelect",
     "<span>multiSelect</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp3.js</span>",
@@ -1096,18 +826,6 @@ window.esdocSearchIndex = [
     "variable/index.html#static-variable-multiSelectOptions",
     "<span>multiSelectOptions</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp3.js</span>",
     "variable"
-  ],
-  [
-    "formiojs/src/utils/utils.js~observeoverload",
-    "function/index.html#static-function-observeOverload",
-    "<span>observeOverload</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~offsetdate",
-    "function/index.html#static-function-offsetDate",
-    "<span>offsetDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
   ],
   [
     "formiojs/src/utils/formutils.js~parsefloatext",
@@ -1122,21 +840,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~round",
-    "function/index.html#static-function-round",
-    "<span>round</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/providers/storage/s3.js~s3",
     "function/index.html#static-function-s3",
     "<span>s3</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/s3.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~sanitize",
-    "function/index.html#static-function-sanitize",
-    "<span>sanitize</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -1146,57 +852,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~setactionproperty",
-    "function/index.html#static-function-setActionProperty",
-    "<span>setActionProperty</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~shouldloadzones",
-    "function/index.html#static-function-shouldLoadZones",
-    "<span>shouldLoadZones</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~unescapehtml",
-    "function/index.html#static-function-unescapeHTML",
-    "<span>unescapeHTML</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~unfold",
-    "function/index.html#static-function-unfold",
-    "<span>unfold</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~uniquekey",
-    "function/index.html#static-function-uniqueKey",
-    "<span>uniqueKey</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~uniquename",
-    "function/index.html#static-function-uniqueName",
-    "<span>uniqueName</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/providers/storage/url.js~url",
     "function/index.html#static-function-url",
     "<span>url</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/url.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~withswitch",
-    "function/index.html#static-function-withSwitch",
-    "<span>withSwitch</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/utils/utils.js~zonesloaded",
-    "function/index.html#static-function-zonesLoaded",
-    "<span>zonesLoaded</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -5643,6 +5301,12 @@ window.esdocSearchIndex = [
     "src/components/datagrid/fixtures/comp4.js",
     "file/src/components/datagrid/fixtures/comp4.js.html",
     "src/components/datagrid/fixtures/comp4.js",
+    "file"
+  ],
+  [
+    "src/components/datagrid/fixtures/comp5.js",
+    "file/src/components/datagrid/fixtures/comp5.js.html",
+    "src/components/datagrid/fixtures/comp5.js",
     "file"
   ],
   [
@@ -11841,12 +11505,6 @@ window.esdocSearchIndex = [
     "src/utils/jsonlogic/operators.spec.js",
     "file/src/utils/jsonlogic/operators.spec.js.html",
     "src/utils/jsonlogic/operators.spec.js",
-    "file"
-  ],
-  [
-    "src/utils/utils.js",
-    "file/src/utils/utils.js.html",
-    "src/utils/utils.js",
     "file"
   ],
   [

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixes an issue where refresh can be called multiple times if some components have on Blur validation
  - FJS-1245: fixed an issue where empty submission data comes from 7.x server for dataGrid with initEmpty option
  - FJS-1289: fixes an issue where confirmation dialog is not show for modal DataGrid after first time closing modal without making changes
+ - Fixes an issue where values of conditionally visible components inside EditGrid are not saved on the 6.x server
+ - Fixed console error for container component
+ - FJS-1299: Wizard is being rendered incorrectly when a Simple Conditional is applied
+
+#### Added
+ - utils: add 'ADD_URI_SAFE_ATTR' sanitize option for dompurify
 
 ### 4.12.1-rc.16
 #### Added
