@@ -37,6 +37,14 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
 
 export { jsonLogic, moment };
 
+function setPathToComponentAndPerentSchema(component) {
+  component.path = getComponentPath(component);
+  const dataParent = getDataParentComponent(component);
+  if (dataParent && typeof dataParent === 'object') {
+    dataParent.path = getComponentPath(dataParent);
+  }
+}
+
 /**
  * Evaluate a method.
  *
@@ -283,10 +291,16 @@ export function checkCondition(component, row, data, form, instance) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
   else if (conditional && conditional.when) {
+    // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
+    if (!instance) {
+      instance = _.cloneDeep(component);
+      setPathToComponentAndPerentSchema(instance);
+    }
     const dataParent = getDataParentComponent(instance);
-    if (dataParent && conditional.when.startsWith(dataParent.path)) {
+    const parentPathWithoutIndicies = dataParent?.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
+    if (dataParent && conditional.when.startsWith(parentPathWithoutIndicies)) {
       const newRow = {};
-      _.set(newRow, dataParent.path, row);
+      _.set(newRow, parentPathWithoutIndicies, row);
       row = newRow;
     }
     return checkSimpleConditional(component, conditional, row, data);
@@ -1206,6 +1220,18 @@ export function getComponentPathWithoutIndicies(path = '') {
 }
 
 /**
+ * Returns a path to the component which based on its schema
+ * @param {*} component is a component's schema containing link to its parent's schema in the 'parent' property
+ */
+export function getComponentPath(component, path = '') {
+  if (!component || !component.key) {
+    return path;
+  }
+  path = component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
+  return getComponentPath(component.parent, path);
+}
+
+/**
  * Returns a parent component of the passed component instance skipping all the Layout components
  * @param {*} componentInstance
  * @return {(Component|undefined)}
@@ -1215,7 +1241,7 @@ export function getDataParentComponent(componentInstance) {
     return;
   }
   const { parent } = componentInstance;
-  if (parent && parent.isInputComponent) {
+  if (parent && (parent.isInputComponent || parent.input)) {
     return parent;
   }
   else {
