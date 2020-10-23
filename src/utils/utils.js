@@ -297,9 +297,10 @@ export function checkCondition(component, row, data, form, instance) {
       setPathToComponentAndPerentSchema(instance);
     }
     const dataParent = getDataParentComponent(instance);
-    if (dataParent && conditional.when.startsWith(dataParent.path)) {
+    const parentPathWithoutIndicies = dataParent?.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
+    if (dataParent && conditional.when.startsWith(parentPathWithoutIndicies)) {
       const newRow = {};
-      _.set(newRow, dataParent.path, row);
+      _.set(newRow, parentPathWithoutIndicies, row);
       row = newRow;
     }
     return checkSimpleConditional(component, conditional, row, data);
