@@ -86,7 +86,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     <h3 ref="dialogHeader">${this.t('Do you want to clear data?')}</h3>
     <div style="display:flex; justify-content: flex-end;">
       <button ref="dialogCancelButton" class="btn btn-secondary">${this.t('Cancel')}</button>
-      <button ref="dialogYesButton" class="btn btn-primary">${this.t('Yes, delete it')}</button>
+      <button ref="dialogYesButton" class="btn btn-danger">${this.t('Yes, delete it')}</button>
     </div>
   `;
   }
