@@ -941,6 +941,16 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.setNestedValue(component, editRow.data, flags);
     });
   }
+
+  emptyRows() {
+    this.editRows.forEach((editRow, index) => this.destroyComponents(index));
+    this.editRows = [];
+  }
+
+  resetValue() {
+    super.resetValue();
+    this.emptyRows();
+  }
 }
 
 EditGridComponent.prototype.hasChanged = Component.prototype.hasChanged;
