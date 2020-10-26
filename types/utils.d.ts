@@ -4,6 +4,7 @@ export type AnyForJSON = { [key: string]: any } | any;
 
 export namespace Utils {
   const Evaluator: any;
+  const _: any;
   function evaluate(
     func: any,
     args: { component: any; form: any; instance: any; row: any; data: any } | any,
