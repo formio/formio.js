@@ -123,7 +123,7 @@ export default class WebformBuilder extends Component {
       if (this.groups[group] && this.groups[group].components) {
         this.groups[group].componentOrder = Object.keys(this.groups[group].components)
           .map(key => this.groups[group].components[key])
-          .filter(component => component && !component.ignore)
+          .filter(component => component && !component.ignore && component.key !== 'dynamicWizard')
           .sort((a, b) => a.weight - b.weight)
           .map(component => component.key);
       }
