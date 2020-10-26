@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.18
+#### Fixed
+ - Fixed focus for file component
+ - Fix Ace in webpack environments
+
+#### Changed
+ - Export lodash so other libraries can use the form.io version and save space.
+
 ### 4.12.1-rc.17
 #### Fixed
  - Fixes an issue where refresh can be called multiple times if some components have on Blur validation
