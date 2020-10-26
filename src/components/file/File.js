@@ -694,6 +694,10 @@ export default class FileComponent extends Field {
   }
 
   focus() {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+
     if (this.refs.fileBrowse) {
       this.refs.fileBrowse.focus();
     }
