@@ -70,7 +70,9 @@
   <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2020. All rights reserved</p>
 </div>
 <p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
+{% if Formio == undefined %}
 <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+{% endif %}
 <script type="text/javascript">
   document.getElementById('renderer-version').innerHTML = Formio.version;
 </script>
