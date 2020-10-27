@@ -283,10 +283,8 @@ As an example, you can import the Contributed Components into your application u
       });
       builder.on('change', function(schema) {
         if (schema.components) {
-          var schemaCopy = Object.assign({}, schema);
-          schemaCopy.components = schema.components.slice();
           instance.resetValue();
-          instance.form = schemaCopy;
+          instance.form = schema;
         }
       });
     });

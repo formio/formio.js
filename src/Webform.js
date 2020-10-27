@@ -649,7 +649,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     // Create the form.
-    this._form = form;
+    this._form = _.cloneDeep(form);
 
     // Allow the form to provide component overrides.
     if (form && form.settings && form.settings.components) {
