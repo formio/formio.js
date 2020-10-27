@@ -332,6 +332,7 @@ export default class Formio {
         }
         return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
           .then((revisionForm) => {
+            currentForm._vid = revisionForm._vid;
             currentForm.components = revisionForm.components;
             currentForm.settings = revisionForm.settings;
             // Using object.assign so we don't cross polinate multiple form loads.
@@ -515,7 +516,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -532,7 +533,7 @@ export default class Formio {
               const Provider = Providers.getProvider('storage', storage);
               if (Provider) {
                 const provider = new Provider(this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId);
               }
               else {
                 throw ('Storage provider not found');
@@ -1010,7 +1011,7 @@ export default class Formio {
         cookies.erase(tokenName, { path: '/' });
       }
       Formio.tokens[tokenName] = token;
-      return Promise.resolve(null);
+      return NativePromise.resolve(null);
     }
 
     if (Formio.tokens[tokenName] !== token) {

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
 import { flattenComponents } from '../../utils/utils';
@@ -26,10 +27,15 @@ export default class ButtonComponent extends Field {
       title: 'Button',
       group: 'basic',
       icon: 'stop',
-      documentation: 'http://help.form.io/userguide/#button',
+      documentation: '/userguide/#button',
       weight: 110,
       schema: ButtonComponent.schema()
     };
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.filesUploading = [];
   }
 
   get defaultSchema() {
@@ -139,7 +145,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('error'));
+        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('submitError'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -149,6 +155,22 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
+
+      this.on('fileUploadingStart', (filePromise) => {
+        this.filesUploading.push(filePromise);
+        this.disabled = true;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
+
+      this.on('fileUploadingEnd', (filePromise) => {
+        const index = this.filesUploading.indexOf(filePromise);
+        if (index !== -1) {
+          this.filesUploading.splice(index, 1);
+        }
+        this.disabled = this.shouldDisabled ? true : false;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
+
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         if (isValid) {
@@ -167,7 +189,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
+        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('submitError')));
       };
     }
 
@@ -189,7 +211,8 @@ export default class ButtonComponent extends Field {
         flags.rootValidity = isValid;
       }
       this.loading = false;
-      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
+      this.isDisabledOnInvalid = this.component.disableOnInvalid && !isValid;
+      this.disabled = this.shouldDisabled;
       this.setDisabled(this.refs.button, this.disabled);
 
       if (onChange) {
@@ -228,6 +251,10 @@ export default class ButtonComponent extends Field {
     }
   }
 
+  get shouldDisabled() {
+    return super.shouldDisabled || !!this.filesUploading?.length || this.isDisabledOnInvalid;
+  }
+
   attach(element) {
     this.loadRefs(element, {
       button: 'single',
@@ -245,6 +272,7 @@ export default class ButtonComponent extends Field {
     if (element && this.refs.button) {
       this.removeShortcut(this.refs.button);
     }
+    super.detach();
   }
 
   onClick(event) {
@@ -391,7 +419,7 @@ export default class ButtonComponent extends Field {
             return;
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
-          let requestPromise = Promise.resolve();
+          let requestPromise = NativePromise.resolve();
           if (_.has(this, 'root.form.config.oauth') && this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
             params.redirectURI = window.location.origin;

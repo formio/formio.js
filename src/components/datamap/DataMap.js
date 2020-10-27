@@ -33,7 +33,7 @@ export default class DataMapComponent extends DataGridComponent {
       title: 'Data Map',
       icon: 'th-list',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#datamap',
+      documentation: '/userguide/#datamap',
       weight: 20,
       schema: DataMapComponent.schema()
     };
@@ -103,6 +103,7 @@ export default class DataMapComponent extends DataGridComponent {
       hideLabel: true,
       label: this.component.keyLabel || 'Key',
       key: '__key',
+      disableBuilderActions: true,
     };
   }
 
@@ -219,7 +220,10 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   saveChildComponent(component) {
-    this.component.valueComponent = component;
+    // Update the Value Component, the Key Component is not allowed to edit
+    if (component.key === this.valueKey) {
+      this.component.valueComponent = component;
+    }
   }
 
   removeChildComponent() {

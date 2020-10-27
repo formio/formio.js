@@ -35,7 +35,7 @@ export default class TimeComponent extends TextFieldComponent {
       title: 'Time',
       icon: 'clock-o',
       group: 'advanced',
-      documentation: 'http://help.form.io/userguide/#time',
+      documentation: '/userguide/#time',
       weight: 55,
       schema: TimeComponent.schema(),
     };
@@ -136,7 +136,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getStringAsValue(view) {
-    return view && this.component.inputType !=='text' ? moment(view, this.component.format).format(this.component.dataFormat) : view;
+    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
   }
 
   getValueAsString(value) {

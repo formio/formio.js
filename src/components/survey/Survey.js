@@ -19,7 +19,7 @@ export default class SurveyComponent extends Field {
       group: 'advanced',
       icon: 'list',
       weight: 110,
-      documentation: 'http://help.form.io/userguide/#survey',
+      documentation: '/userguide/#survey',
       schema: SurveyComponent.schema()
     };
   }
@@ -66,6 +66,22 @@ export default class SurveyComponent extends Field {
 
   get emptyValue() {
     return {};
+  }
+
+  get defaultValue() {
+    const defaultValue = super.defaultValue;
+    //support for default values created in old formio.js versions
+    if (defaultValue && !_.isObject(defaultValue) && this.component.values.some(value => value.value === defaultValue)) {
+      const adoptedDefaultValue = {};
+
+      this.component.questions.forEach(question => {
+        adoptedDefaultValue[question.value] = defaultValue;
+      });
+
+      return adoptedDefaultValue;
+    }
+
+    return defaultValue;
   }
 
   getValue() {

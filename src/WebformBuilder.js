@@ -47,6 +47,16 @@ export default class WebformBuilder extends Component {
       }
     }
 
+    this.fieldsList = {
+      title: 'Result fields',
+      key: 'searchFields',
+      weight: 0,
+      subgroups: [],
+      default: true,
+      components: {},
+      componentOrder: []
+    };
+
     this.dragDropEnabled = true;
 
     // Setup the builder options.
@@ -103,6 +113,7 @@ export default class WebformBuilder extends Component {
           }
           info.components[key] = comp === true ? componentInfo[key] : comp;
           info.components[key].key = key;
+          this.fieldsList.components[key] = info.components[key];
         }
       }
     }
@@ -132,6 +143,7 @@ export default class WebformBuilder extends Component {
 
       return this.renderTemplate('builderComponent', {
         html,
+        disableBuilderActions: self?.component?.disableBuilderActions,
       });
     };
 
@@ -394,6 +406,7 @@ export default class WebformBuilder extends Component {
             }
           }
         );
+        this.fieldsList.components[component.key] = subgroup.components[component.key];
       }, true);
 
       this.groups.resource.subgroups.push(subgroup);
@@ -540,6 +553,8 @@ export default class WebformBuilder extends Component {
       this.loadRefs(element, {
         form: 'single',
         sidebar: 'single',
+        'sidebar-search': 'single',
+        'sidebar-groups': 'single',
         'container': 'multiple',
         'sidebar-anchor': 'multiple',
         'sidebar-group': 'multiple',
@@ -587,6 +602,11 @@ export default class WebformBuilder extends Component {
         });
       }
 
+      this.addEventListener(this.refs['sidebar-search'], 'input', (e) => {
+        const searchString = e.target.value;
+        this.searchFields(searchString);
+      });
+
       if (this.dragDropEnabled) {
         this.initDragula();
       }
@@ -595,6 +615,61 @@ export default class WebformBuilder extends Component {
         return this.webform.attach(this.refs.form);
       }
     });
+  }
+
+  searchFields(searchString) {
+    const sidebar = this.refs['sidebar'];
+    const sidebarGroups = this.refs['sidebar-groups'];
+    if (!sidebar || !sidebarGroups) {
+      return;
+    }
+    if (searchString) {
+      const filteredComponentsOrder = [];
+      for (const type in this.fieldsList.components) {
+        const builderInfo = this.fieldsList.components[type];
+        if (builderInfo.title.toLowerCase().indexOf(searchString.toLowerCase()) !== -1) {
+          filteredComponentsOrder.push(type);
+        }
+      }
+      this.fieldsList.componentOrder = filteredComponentsOrder;
+      sidebarGroups.innerHTML = this.renderTemplate('builderSidebarGroup', {
+        group: this.fieldsList,
+        groupKey: 'searchFields',
+        groupId: `builder-sidebar-${this.id}`,
+        subgroups: []
+      });
+    }
+    else {
+      sidebarGroups.innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+        group: this.groups[groupKey],
+        groupKey,
+        groupId: sidebar.id || sidebarGroups.id,
+        subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+          group,
+          groupKey: group.key,
+          groupId: `group-container-${groupKey}`,
+          subgroups: []
+        })),
+      })).join('');
+    }
+
+    this.loadRefs(this.element, {
+      'sidebar-groups': 'single',
+      'sidebar-anchor': 'multiple',
+      'sidebar-group': 'multiple',
+      'sidebar-container': 'multiple',
+    });
+
+    this.updateDragAndDrop();
+  }
+
+  updateDragAndDrop() {
+    if (this.dragDropEnabled) {
+      this.initDragula();
+    }
+    if (this.refs.form) {
+      return this.webform.attach(this.refs.form);
+    }
   }
 
   initDragula() {
@@ -669,6 +744,7 @@ export default class WebformBuilder extends Component {
 
     if (info) {
       info.key = _.camelCase(
+        info.key ||
         info.title ||
         info.label ||
         info.placeholder ||
@@ -895,7 +971,7 @@ export default class WebformBuilder extends Component {
       remove = window.confirm(this.t(message));
     }
     if (!original) {
-      original = parent.formioContainer.find((comp) => comp.key === component.key);
+      original = parent.formioContainer.find((comp) => comp.id === component.id);
     }
     const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
     if (remove && index !== -1) {
@@ -937,7 +1013,7 @@ export default class WebformBuilder extends Component {
 
     // Change the "default value" field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-    if (defaultValueComponent) {
+    if (defaultValueComponent && component.type !== 'hidden') {
       const defaultChanged = changed && (
         (changed.component && changed.component.key === 'defaultValue')
         || (changed.instance && defaultValueComponent.hasComponent && defaultValueComponent.hasComponent(changed.instance))
@@ -982,6 +1058,10 @@ export default class WebformBuilder extends Component {
           newComp.checkValidity = () => true;
           newComp.build(defaultValueComponent.element);
         }
+      }
+      else {
+        this.preview._data[changed.instance._data.key] = changed.value;
+        this.webform._data[changed.instance._data.key] = changed.value;
       }
     }
 
@@ -1160,6 +1240,7 @@ export default class WebformBuilder extends Component {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
+      helplinks: this.helplinks,
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
@@ -1186,7 +1267,8 @@ export default class WebformBuilder extends Component {
                     event.data.label ||
                     event.data.placeholder ||
                     event.data.type
-                  ));
+                  ).replace(/^[0-9]*/, ''));
+
                   return false;
                 }
               });
@@ -1320,6 +1402,7 @@ export default class WebformBuilder extends Component {
     if (!groupInfo.components.hasOwnProperty(component.key)) {
       groupInfo.components[component.key] = component;
     }
+    this.fieldsList.components[component.key] = component;
     return component;
   }
 
@@ -1328,6 +1411,12 @@ export default class WebformBuilder extends Component {
       this.webform.init();
     }
     return super.init();
+  }
+
+  clear() {
+    if (this.webform.initialized) {
+      this.webform.clear();
+    }
   }
 
   destroy(deleteFromGlobal) {

@@ -50,6 +50,13 @@ export default class Element {
     });
 
     this.defaultMask = null;
+
+    /**
+     * Conditional to show or hide helplinks in editForm
+     *
+     * @type {*|boolean}
+     */
+    this.helplinks = this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
   }
 
   /**
@@ -105,6 +112,20 @@ export default class Element {
     }
 
     return this.events.onAny(cb);
+  }
+
+  /**
+   * Removes the listener that will be fired when any event is emitted.
+   *
+   * @param cb
+   * @returns {this}
+   */
+  offAny(cb) {
+    if (!this.events) {
+      return;
+    }
+
+    return this.events.offAny(cb);
   }
 
   /**

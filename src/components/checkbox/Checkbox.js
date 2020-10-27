@@ -19,7 +19,7 @@ export default class CheckBoxComponent extends Field {
       title: 'Checkbox',
       group: 'basic',
       icon: 'check-square',
-      documentation: 'http://help.form.io/userguide/#checkbox',
+      documentation: '/userguide/#checkbox',
       weight: 50,
       schema: CheckBoxComponent.schema()
     };
@@ -95,6 +95,7 @@ export default class CheckBoxComponent extends Field {
     if (element && this.input) {
       this.removeShortcut(this.input);
     }
+    super.detach();
   }
 
   get emptyValue() {

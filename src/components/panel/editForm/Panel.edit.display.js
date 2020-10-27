@@ -12,11 +12,11 @@ export default [
     ignore: true
   },
   {
-    key: 'hideLabel',
+    key: 'autofocus',
     ignore: true
   },
   {
-    key: 'autofocus',
+    key: 'tableView',
     ignore: true
   },
   {
@@ -93,6 +93,17 @@ export default [
         defaultValue: true,
         conditional: {
           json: { '!==': [{ var: 'data.breadcrumb' }, 'none'] }
+        }
+      },
+      {
+        input: true,
+        type: 'checkbox',
+        label: 'Allow Previous',
+        key: 'allowPrevious',
+        defaultValue: false,
+        tooltip: 'Determines if the breadcrumb bar is clickable or not for visited tabs.',
+        conditional: {
+          json: { '===': [{ var: 'data.breadcrumbClickable' }, false] }
         }
       },
       {

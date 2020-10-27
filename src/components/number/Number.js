@@ -24,7 +24,7 @@ export default class NumberComponent extends Input {
       title: 'Number',
       icon: 'hashtag',
       group: 'basic',
-      documentation: 'http://help.form.io/userguide/#number',
+      documentation: '/userguide/#number',
       weight: 30,
       schema: NumberComponent.schema()
     };
@@ -76,8 +76,7 @@ export default class NumberComponent extends Input {
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
       decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
       allowNegative: _.get(this.component, 'allowNegative', true),
-      allowDecimal: _.get(this.component, 'allowDecimal',
-        !(this.component.validate && this.component.validate.integer))
+      allowDecimal: this.isDecimalAllowed(),
     });
   }
 
@@ -91,6 +90,10 @@ export default class NumberComponent extends Input {
       defaultValue = this.component.defaultValue;
     }
     return defaultValue;
+  }
+
+  isDecimalAllowed() {
+    return _.get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer));
   }
 
   parseNumber(value) {
@@ -125,7 +128,7 @@ export default class NumberComponent extends Input {
     else {
       info.attr.type = 'text';
     }
-    info.attr.inputmode = 'numeric';
+    info.attr.inputmode = this.isDecimalAllowed() ? 'decimal' : 'numeric';
     info.changeEvent = 'input';
     return info;
   }
@@ -173,7 +176,7 @@ export default class NumberComponent extends Input {
   focus() {
     const input = this.refs.input[0];
     if (input) {
-      input.focus();
+      super.focus.call(this);
       input.setSelectionRange(0, input.value.length);
     }
   }

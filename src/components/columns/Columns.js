@@ -25,7 +25,7 @@ export default class ColumnsComponent extends NestedComponent {
       title: 'Columns',
       icon: 'columns',
       group: 'layout',
-      documentation: 'http://help.form.io/userguide/#columns',
+      documentation: '/userguide/#columns',
       weight: 10,
       schema: ColumnsComponent.schema()
     };
@@ -99,9 +99,11 @@ export default class ColumnsComponent extends NestedComponent {
   attach(element) {
     this.loadRefs(element, { [this.columnKey]: 'multiple' });
     const superAttach = super.attach(element);
-    this.refs[this.columnKey].forEach((column, index) =>
-      this.attachComponents(column, this.columns[index], this.component.columns[index].components)
-    );
+    if (this.refs[this.columnKey]) {
+      this.refs[this.columnKey].forEach((column, index) =>
+        this.attachComponents(column, this.columns[index], this.component.columns[index].components)
+      );
+    }
     return superAttach;
   }
 

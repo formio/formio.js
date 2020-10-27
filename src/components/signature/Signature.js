@@ -24,7 +24,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: 'http://help.form.io/userguide/#signature',
+      documentation: '/userguide/#signature',
       schema: SignatureComponent.schema()
     };
   }
@@ -79,6 +79,11 @@ export default class SignatureComponent extends Input {
         this.triggerChange();
       }
     }
+
+    if (this.signaturePad && this.dataValue && this.signaturePad.isEmpty()) {
+      this.setDataToSigaturePad();
+    }
+
     return changed;
   }
 
@@ -123,26 +128,12 @@ export default class SignatureComponent extends Input {
     }
   }
 
-  changeCanvasDimensions(force, scale, sizeChanged) {
-    const currentWidth = this.currentWidth;
-    const canvasAddedWidth = this.refs.canvas.offsetWidth - this.refs.canvas.width;
-    const expectedCanvasWidth = (currentWidth * this.scale) - canvasAddedWidth;
-
-    let isSizeChanged = sizeChanged || false;
-
-    if (force || this.refs.padBody.clientWidth !== currentWidth || (this.refs.canvas.width !== expectedCanvasWidth && !this.disabled)  ) {
-      this.scale = force ? scale : this.scale;
-      this.currentWidth = this.refs.padBody.clientWidth;
-      this.refs.canvas.width = (this.currentWidth * this.scale) - canvasAddedWidth;
-      this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
-      isSizeChanged = this.changeCanvasDimensions(force, scale, true);
-    }
-
-    return isSizeChanged;
-  }
-
   checkSize(force, scale) {
-    if (this.changeCanvasDimensions(force, scale)) {
+    if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
+      this.scale = force ? scale : this.scale;
+      this.currentWidth = this.refs.padBody.offsetWidth;
+      this.refs.canvas.width = this.currentWidth * this.scale;
+      this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
       const ctx = this.refs.canvas.getContext('2d');
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
@@ -151,7 +142,7 @@ export default class SignatureComponent extends Input {
       this.signaturePad.clear();
 
       if (this.dataValue) {
-        this.signaturePad.fromDataURL(this.dataValue);
+        this.setDataToSigaturePad();
       }
     }
   }
@@ -240,5 +231,13 @@ export default class SignatureComponent extends Input {
 
   focus() {
     this.refs.padBody.focus();
+  }
+
+  setDataToSigaturePad() {
+    this.signaturePad.fromDataURL(this.dataValue, {
+      ratio: 1,
+      width: this.refs.canvas.width,
+      height: this.refs.canvas.height,
+    });
   }
 }

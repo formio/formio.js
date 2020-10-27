@@ -217,6 +217,17 @@ const Harness = {
       assert(element.style.visibility === 'hidden', 'Element must be hidden');
     }
   },
+  testComponentVisibility(component, query, visible) {
+    const element = component.element.querySelector(query);
+    assert(element, `${query} not found`);
+    const isHidden = element.className.includes('formio-hidden');
+    if (visible) {
+      assert(!isHidden, 'Element must be visible');
+    }
+    else {
+      assert(isHidden, 'Element must be hidden');
+    }
+  },
   clickElement(component, query) {
     const clickEvent = new MouseEvent('click', {
       view: window,
@@ -285,10 +296,10 @@ const Harness = {
     element.value = value;
     return element.dispatchEvent(inputEvent);
   },
-  getInputValue(component, name, value) {
+  getInputValue(component, name, value, valueProperty = 'value') {
     const element = component.element.querySelector(`[name="${name}"]`);
     assert(element, `${name} input not found`);
-    assert.equal(value, element.value);
+    assert.equal(value, element[valueProperty]);
   },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
@@ -307,7 +318,8 @@ const Harness = {
     form.on('error', (err) => {
       _.each(errors, (error, index) => {
         error.component = form.getComponent(error.component).component;
-        assert.deepEqual(err[index], error);
+        assert.deepEqual(err[index].component, error.component);
+        assert.equal(err[index].message, error.message);
       });
       form.off('error');
       done();
@@ -315,7 +327,7 @@ const Harness = {
 
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
-    form.submit();
+    form.submit().catch(() => console.log('Expected error when executing submit in errors test'));
   },
   testValid(component, value) {
     return new Promise((resolve, reject) => {
