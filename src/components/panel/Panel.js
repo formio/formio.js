@@ -1,5 +1,7 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
 import { hasInvalidComponent } from '../../utils/utils';
+import Wizard from '../../Wizard';
+import FormComponent from '../form/Form';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
@@ -60,5 +62,12 @@ export default class PanelComponent extends NestedComponent {
         this.collapsed = false;
       }
     });
+  }
+
+  getComponent(path, fn, originalPath) {
+    if (this.parent instanceof Wizard && this.parent.parent instanceof FormComponent) {
+      path = path.replace(this._parentPath, '');
+    }
+    return super.getComponent(path, fn, originalPath);
   }
 }
