@@ -644,7 +644,7 @@ export default class Webform extends NestedDataComponent {
       }
 
       // Create the form.
-      this._form = _.cloneDeep(form);
+      this._form = form;
     }
     catch (err) {
       console.warn(err);
