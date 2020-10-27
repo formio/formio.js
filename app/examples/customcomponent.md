@@ -218,7 +218,9 @@ As an example, you can import the Contributed Components into your application u
       }
     }
   }).then(function(builder) {
-    Formio.createForm(document.getElementById('formio'), {}).then(function(instance) {
+    var builderFormCopy = Object.assign({}, builder.form);
+    builderFormCopy.components = builder.form.components.slice();
+    Formio.createForm(document.getElementById('formio'), builderFormCopy).then(function(instance) {
       var json = document.getElementById('json');
       instance.on('change', function() {
         json.innerHTML = '';
@@ -226,7 +228,10 @@ As an example, you can import the Contributed Components into your application u
       });
       builder.on('change', function(schema) {
         if (schema.components) {
-          instance.form = schema;
+          var schemaCopy = Object.assign({}, schema);
+          schemaCopy.components = schema.components.slice();
+          instance.resetValue();
+          instance.form = schemaCopy;
         }
       });
     });
@@ -252,7 +257,6 @@ As an example, you can import the Contributed Components into your application u
   <pre id="json"></pre>
 </div>
 <script type="text/javascript">
-  debugger;
   Formio.builder(document.getElementById('builder'), {}, {
     builder: {
       basic: false,
