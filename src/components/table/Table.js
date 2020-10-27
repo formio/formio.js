@@ -41,7 +41,7 @@ export default class TableComponent extends NestedComponent {
       group: 'layout',
       icon: 'table',
       weight: 40,
-      documentation: 'http://help.form.io/userguide/#table',
+      documentation: '/userguide/#table',
       schema: TableComponent.schema()
     };
   }

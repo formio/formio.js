@@ -1,4 +1,5 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
+import { hasInvalidComponent } from '../../utils/utils';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
@@ -22,7 +23,7 @@ export default class PanelComponent extends NestedComponent {
       title: 'Panel',
       icon: 'list-alt',
       group: 'layout',
-      documentation: 'http://help.form.io/userguide/#panels',
+      documentation: '/userguide/#panels',
       weight: 30,
       schema: PanelComponent.schema()
     };
@@ -40,10 +41,6 @@ export default class PanelComponent extends NestedComponent {
 
     return this.getComponents().reduce(
       (check, comp) => {
-        //change collapsed value only in case when the panel is collapsed to avoid additional redrawing that prevents validation messages
-        if (!comp.checkValidity(data, dirty, row, silentCheck) && this.collapsed) {
-          this.collapsed = false;
-        }
         return comp.checkValidity(data, dirty, row, silentCheck) && check;
       },
       super.checkValidity(data, dirty, row, silentCheck)
@@ -57,5 +54,11 @@ export default class PanelComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.noField = true;
+    this.on('componentError', () => {
+      //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
+      if (hasInvalidComponent(this) && this.collapsed) {
+        this.collapsed = false;
+      }
+    });
   }
 }

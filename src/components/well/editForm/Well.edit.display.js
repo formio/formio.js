@@ -12,10 +12,6 @@ export default [
     ignore: true
   },
   {
-    key: 'hideLabel',
-    ignore: true
-  },
-  {
     key: 'autofocus',
     ignore: true
   },
@@ -25,6 +21,10 @@ export default [
   },
   {
     key: 'tabindex',
+    ignore: true
+  },
+  {
+    key: 'tableView',
     ignore: true
   },
 ];

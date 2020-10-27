@@ -31,7 +31,7 @@ export default class FormComponent extends Component {
       title: 'Nested Form',
       icon: 'wpforms',
       group: 'premium',
-      documentation: 'http://help.form.io/userguide/#form',
+      documentation: '/userguide/#form',
       weight: 110,
       schema: FormComponent.schema()
     };
@@ -95,7 +95,16 @@ export default class FormComponent extends Component {
       this.formSrc += `/v/${this.component.revision}`;
     }
 
-    return this.createSubForm();
+    return this.createSubForm().then((subForm) => {
+      setTimeout(() => {
+        if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
+          this.root.subWizards.push(this);
+          this.emit('subWizardsUpdated');
+        }
+      }, 0);
+
+      return subForm;
+    });
   }
 
   get dataReady() {
@@ -146,8 +155,8 @@ export default class FormComponent extends Component {
     if (this.options.project) {
       options.project = this.options.project;
     }
-    if (this.options.readOnly) {
-      options.readOnly = this.options.readOnly;
+    if (this.options.readOnly || this.component.disabled) {
+      options.readOnly = this.options.readOnly || this.component.disabled;
     }
     if (this.options.breadcrumbSettings) {
       options.breadcrumbSettings = this.options.breadcrumbSettings;
@@ -231,6 +240,9 @@ export default class FormComponent extends Component {
             this.subForm.attach(element);
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
+            }
+            else {
+              this.restoreValue();
             }
           }
           if (!this.builderMode && this.component.modalEdit) {
@@ -335,7 +347,7 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.restoreValue();
-        this.valueChanged = false;
+        this.valueChanged = this.hasSetValue;
         return this.subForm;
       });
     });
@@ -389,7 +401,7 @@ export default class FormComponent extends Component {
       return visible;
     }
 
-    if (this.subForm && this.subForm.hasCondition()) {
+    if (this.subForm) {
       return this.subForm.checkConditions(this.dataValue.data);
     }
 
@@ -521,6 +533,23 @@ export default class FormComponent extends Component {
       }
     }
     return changed;
+  }
+
+  isEmpty(value = this.dataValue) {
+    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty(value.data);
+  }
+
+  areAllComponentsEmpty(data) {
+    let res = true;
+    if (this.subForm) {
+      this.subForm.everyComponent((comp) => {
+        res &= comp.isEmpty(_.get(data, comp.key) || comp.dataValue);
+      });
+    }
+    else {
+      res = false;
+    }
+    return res;
   }
 
   getValue() {

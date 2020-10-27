@@ -48,7 +48,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: 'http://help.form.io/userguide/#file',
+      documentation: '/userguide/#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -325,7 +325,9 @@ export default class FileComponent extends Field {
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
-
+        if (!this.component.multiple && this.statuses.some(fileUpload => fileUpload.status === 'progress')) {
+          return;
+        }
         this.browseFiles(this.browseOptions)
           .then((files) => {
             this.upload(files);
@@ -427,7 +429,7 @@ export default class FileComponent extends Field {
     }
 
     this.refs.fileType.forEach((fileType, index) => {
-      this.dataValue[index].fileType = this.component.fileTypes[0].label;
+      this.dataValue[index].fileType = this.dataValue[index].fileType || this.component.fileTypes[0].label;
 
       this.addEventListener(fileType, 'change', (event) => {
         event.preventDefault();
@@ -611,34 +613,57 @@ export default class FileComponent extends Field {
             file.private = true;
           }
           const { storage, options = {} } = this.component;
-          const url = this.interpolate(this.component.url);
+          const url = this.interpolate(this.component.url, { file: fileUpload });
+          let groupKey = null;
+          let groupPermissions = null;
+
+          //Iterate through form components to find group resource if one exists
+          this.root.everyComponent((element) => {
+            if (element.component?.submissionAccess || element.component?.defaultPermission) {
+              groupPermissions = !element.component.submissionAccess ? [
+                {
+                  type: element.component.defaultPermission,
+                  roles: [],
+                },
+              ] : element.component.submissionAccess;
+
+              groupPermissions.forEach((permission) => {
+                groupKey = ['admin', 'write', 'create'].includes(permission.type) ? element.component.key : null;
+              });
+            }
+          });
 
           const fileKey = this.component.fileKey || 'file';
-          fileService.uploadFile(storage, file, fileName, dir, (evt) => {
-            fileUpload.status = 'progress';
-            fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
-            delete fileUpload.message;
-            this.redraw();
-          }, url, options, fileKey)
-            .then((fileInfo) => {
-              const index = this.statuses.indexOf(fileUpload);
-              if (index !== -1) {
-                this.statuses.splice(index, 1);
-              }
-              fileInfo.originalName = file.name;
-              if (!this.hasValue()) {
-                this.dataValue = [];
-              }
-              this.dataValue.push(fileInfo);
+          const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
+          const filePromise = fileService.uploadFile(storage, file, fileName, dir, (evt) => {
+              fileUpload.status = 'progress';
+              fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
+              delete fileUpload.message;
               this.redraw();
-              this.triggerChange();
-            })
-            .catch((response) => {
-              fileUpload.status = 'error';
-              fileUpload.message = response;
-              delete fileUpload.progress;
-              this.redraw();
-            });
+            }, url, options, fileKey, groupPermissions, groupResourceId)
+              .then((fileInfo) => {
+                const index = this.statuses.indexOf(fileUpload);
+                if (index !== -1) {
+                  this.statuses.splice(index, 1);
+                }
+                fileInfo.originalName = file.name;
+                if (!this.hasValue()) {
+                  this.dataValue = [];
+                }
+                this.dataValue.push(fileInfo);
+                this.redraw();
+                this.triggerChange();
+              })
+              .catch((response) => {
+                fileUpload.status = 'error';
+                fileUpload.message = response;
+                delete fileUpload.progress;
+                this.redraw();
+              })
+              .finally(() => {
+                this.emit('fileUploadingEnd', filePromise);
+              });
+            this.emit('fileUploadingStart', filePromise);
         }
       });
     }
@@ -671,6 +696,10 @@ export default class FileComponent extends Field {
   }
 
   focus() {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+
     if (this.refs.fileBrowse) {
       this.refs.fileBrowse.focus();
     }

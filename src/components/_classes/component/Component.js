@@ -8,9 +8,10 @@ import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
+import Widgets from '../../../widgets';
 
 const isIEBrowser = FormioUtils.getIEBrowserVersion();
 const CKEDITOR_URL = isIEBrowser
@@ -191,6 +192,16 @@ export default class Component extends Element {
       properties: {},
       allowMultipleMasks: false
     }, ...sources);
+  }
+
+  /**
+   * Return the validator as part of the component.
+   *
+   * @return {ValidationChecker}
+   * @constructor
+   */
+  static get Validator() {
+    return Validator;
   }
 
   /**
@@ -485,6 +496,7 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
+    this._visible = this.conditionallyVisible(null, null);
   }
 
   destroy() {
@@ -633,13 +645,24 @@ export default class Component extends Element {
 
   getLabelInfo() {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isLeftPosition = this.labelPositions[0] === 'left';
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
+
+    let contentMargin = '';
+    if (this.component.hideLabel) {
+      const margin = this.labelWidth + this.labelMargin;
+      contentMargin = isRightPosition ? `margin-right: ${margin}%` : '';
+      contentMargin = isLeftPosition ? `margin-left: ${margin}%` : '';
+    }
+
     const labelStyles = `
       flex: ${this.labelWidth};
-      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+      ${isRightPosition ? 'margin-left' : 'margin-right'}: ${this.labelMargin}%;
     `;
     const contentStyles = `
       flex: ${100 - this.labelWidth - this.labelMargin};
+      ${contentMargin};
+      ${this.component.hideLabel ? `max-width: ${100 - this.labelWidth - this.labelMargin}` : ''};
     `;
 
     return {
@@ -713,9 +736,9 @@ export default class Component extends Element {
 
   labelIsHidden() {
     return !this.component.label ||
-      (!this.inDataGrid && this.component.hideLabel) ||
+      ((!this.inDataGrid && this.component.hideLabel) ||
       (this.inDataGrid && !this.component.dataGridLabel) ||
-      this.options.inputsOnly;
+      this.options.inputsOnly) && !this.builderMode;
   }
 
   get transform() {
@@ -822,7 +845,6 @@ export default class Component extends Element {
     ];
 
     // Allow template alters.
-    // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`, data);
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),
@@ -861,6 +883,11 @@ export default class Component extends Element {
 
   performInputMapping(input) {
     return input;
+  }
+
+  get widget() {
+    const widget = this.component.widget && Widgets[this.component.widget.type] ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    return widget;
   }
 
   getBrowserLanguage() {
@@ -939,8 +966,10 @@ export default class Component extends Element {
   }
 
   getModalPreviewTemplate() {
+    const dataValue = this.component.type === 'password' ? this.dataValue.replace(/./g, '•') : this.dataValue;
+
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue) || this.t('Click to set value')
+      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
@@ -1029,7 +1058,18 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
+    this.restoreFocus();
+
     return NativePromise.resolve();
+  }
+
+  restoreFocus() {
+    const isFocused = this.root?.focusedComponent?.path === this.path;
+    if (isFocused) {
+      this.loadRefs(this.element, { input: 'multiple' });
+      this.focus(this.root.currentSelection?.index);
+      this.restoreCaretPosition();
+    }
   }
 
   addShortcut(element, shortcut) {
@@ -1080,7 +1120,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && changePath === refreshData) && changed && changed.instance &&
+      (changePath && getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
@@ -1089,9 +1129,15 @@ export default class Component extends Element {
     }
   }
 
-  checkRefreshOn(changes, flags) {
+  checkRefreshOn(changes, flags = {}) {
     changes = changes || [];
-    const refreshOn = this.component.refreshOn || this.component.redrawOn;
+    if (flags.noRefresh) {
+      return;
+    }
+    if (!changes.length && flags.changed) {
+      changes = [flags.changed];
+    }
+    const refreshOn = flags.fromBlur ? this.component.refreshOnBlur : this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
@@ -1178,7 +1224,12 @@ export default class Component extends Element {
   getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
-      return value;
+      if (!this.widget || !value) {
+        return value;
+      }
+      else {
+        return this.widget.getValueAsString(value);
+      }
     }
     if (Array.isArray(value)) {
       const values = [];
@@ -1437,6 +1488,23 @@ export default class Component extends Element {
     return false;
   }
 
+  restoreCaretPosition() {
+    if (this.root?.currentSelection) {
+      if (this.refs.input?.length) {
+        const { selection, index } = this.root.currentSelection;
+        let input = this.refs.input[index];
+        if (input) {
+          input.setSelectionRange(...selection);
+        }
+        else {
+          input = this.refs.input[this.refs.input.length];
+          const lastCharacter = input.value?.length || 0;
+          input.setSelectionRange(lastCharacter, lastCharacter);
+        }
+      }
+    }
+  }
+
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element || !this.element.parentNode) {
@@ -1444,6 +1512,7 @@ export default class Component extends Element {
       return NativePromise.resolve();
     }
     this.detach();
+    this.emit('redraw');
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
@@ -1462,7 +1531,6 @@ export default class Component extends Element {
     super.removeEventListeners();
     this.tooltips.forEach(tooltip => tooltip.dispose());
     this.tooltips = [];
-    this.refs.input = [];
   }
 
   hasClass(element, className) {
@@ -1746,6 +1814,8 @@ export default class Component extends Element {
       messages = [messages];
     }
 
+    messages = _.uniqBy(messages, message => message.message);
+
     if (this.refs.messageContainer) {
       this.setContent(this.refs.messageContainer, messages.map((message) =>
         this.renderTemplate('message', message)
@@ -1775,7 +1845,8 @@ export default class Component extends Element {
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
-      !this.rootPristine &&
+      // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
+      (!this.rootPristine || getDataParentComponent(this)?.hasScopedChildren) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -1804,7 +1875,9 @@ export default class Component extends Element {
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
-      this.pristine = false;
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
       this.addClass(this.getElement(), 'formio-modified');
     }
 
@@ -1995,7 +2068,7 @@ export default class Component extends Element {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
         editor.setOptions(settings);
-        editor.getSession().setMode(`ace/mode/${settings.mode}`);
+        editor.getSession().setMode(settings.mode);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
       });
@@ -2124,15 +2197,25 @@ export default class Component extends Element {
       );
     }
 
-    if (this.defaultMask) {
-      if (typeof defaultValue === 'string') {
-        defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
-        if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
-          defaultValue = '';
+    const checkMask = (value) => {
+      if (typeof value === 'string') {
+        value = conformToMask(value, this.defaultMask).conformedValue;
+        if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
+          value = '';
         }
       }
       else {
-        defaultValue = '';
+        value = '';
+      }
+      return value;
+    };
+
+    if (this.defaultMask) {
+      if (Array.isArray(defaultValue)) {
+        defaultValue = defaultValue.map(checkMask);
+      }
+      else {
+        defaultValue = checkMask(defaultValue);
       }
     }
 
@@ -2186,9 +2269,6 @@ export default class Component extends Element {
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
-    if (this.componentModal && flags && flags.fromSubmission) {
-      this.componentModal.setValue(value);
-    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -2199,9 +2279,14 @@ export default class Component extends Element {
       Array.isArray(this.defaultValue) &&
       this.refs.hasOwnProperty('input') &&
       this.refs.input &&
-      (this.refs.input.length !== value.length)
+      (this.refs.input.length !== value.length) &&
+      this.visible
     ) {
       this.redraw();
+    }
+    if (this.options.renderMode === 'html' && changed) {
+      this.redraw();
+      return changed;
     }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
@@ -2285,6 +2370,9 @@ export default class Component extends Element {
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
+    }
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
     }
     return changed;
   }
@@ -2380,21 +2468,18 @@ export default class Component extends Element {
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (!this.component.calculateValue || shouldBeCleared) {
+    // Handle all cases when calculated values should not fire.
+    if (
+      this.options.readOnly ||
+      !this.component.calculateValue ||
+      shouldBeCleared ||
+      (this.options.server && !this.component.calculateServer) ||
+      flags.dataSourceInitialLoading
+    ) {
       return false;
     }
 
-    // If this component allows overrides.
-    const allowOverride = this.component.allowCalculateOverride;
-
-    let firstPass = false;
     const dataValue = this.dataValue;
-
-    // First pass, the calculatedValue is undefined.
-    if (this.calculatedValue === undefined) {
-      firstPass = true;
-      this.calculatedValue = null;
-    }
 
     // Calculate the new value.
     let calculatedValue = this.evaluate(this.component.calculateValue, {
@@ -2407,51 +2492,43 @@ export default class Component extends Element {
       calculatedValue = this.emptyValue;
     }
 
-    // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
-    if (flags.isReordered && allowOverride) {
-      this.calculatedValue = calculatedValue;
+    const changed = !_.isEqual(dataValue, calculatedValue);
+
+    // Do not override calculations on server if they have calculateServer set.
+    if (this.component.allowCalculateOverride) {
+      const firstPass = (this.calculatedValue === undefined);
+      if (firstPass) {
+        this.calculatedValue = null;
+      }
+      const newCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(calculatedValue));
+      const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
+      const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
+      const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
+      // Check to ensure that the calculated value is different than the previously calculated value.
+      if (previousCalculatedValue && previousChanged && !calculationChanged) {
+        return false;
+      }
+
+      if (flags.isReordered || !calculationChanged) {
+        return false;
+      }
+
+      if (flags.fromSubmission && this.component.persistent === true) {
+        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+        this.calculatedValue = calculatedValue;
+        return false;
+      }
+
+      // If this is the firstPass, and the dataValue is different than to the calculatedValue.
+      if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
+        // Return that we have a change so it will perform another pass.
+        return true;
+      }
     }
 
-    const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
-    const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
-
-    const normCurr = this.normalizeValue(currentCalculatedValue);
-    const normNew = this.normalizeValue(newCalculatedValue);
-
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      this.calculatedValue &&
-      !_.isEqual(dataValue, currentCalculatedValue) &&
-      _.isEqual(newCalculatedValue, currentCalculatedValue)) {
-      return false;
-    }
-
-    if (_.isEqual(normCurr, normNew) && allowOverride) {
-      return false;
-    }
-
-    if (flags.fromSubmission) {
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
-
-    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
-    if (
-      allowOverride &&
-      firstPass &&
-      !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue)) &&
-      !_.isEqual(calculatedValue, this.convertNumberOrBoolToString(calculatedValue))
-    ) {
-      // Return that we have a change so it will perform another pass.
-      this.calculatedValue = calculatedValue;
-      return true;
-    }
-    // Set the new value.
-    const changed = flags.dataSourceInitialLoading ? false : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
-    return changed;
+
+    return changed ? this.setValue(calculatedValue, flags) : false;
   }
 
   /**
@@ -2536,9 +2613,10 @@ export default class Component extends Element {
     if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
-    else {
+    else if (!silentCheck) {
       this.setCustomValidity('');
     }
+
     return !hasErrors;
   }
 
@@ -2589,23 +2667,25 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changes, flags);
+    // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
+    if (!flags.fromBlur) {
+      this.checkRefreshOn(flags.changes, flags);
+    }
 
     if (flags.noCheck) {
       return true;
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    if (flags.noValidate && !flags.validateOnInit) {
+
+    if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
+      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
+        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+      }
       return true;
     }
 
-    // We need to perform a test to see if they provided a default value that is not valid and immediately show
-    // an error if that is the case.
-    let isDirty = !this.builderMode &&
-      !this.options.preview &&
-      !this.isEmpty(this.defaultValue) &&
-      this.isEqual(this.defaultValue, this.dataValue);
+    let isDirty = false;
 
     // We need to set dirty if they explicitly set noValidate to false.
     if (this.options.alwaysDirty || flags.dirty) {
@@ -2617,6 +2697,9 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    if (this.component.validateOn === 'blur' && flags.fromSubmission) {
+      return true;
+    }
     return this.checkComponentValidity(data, isDirty, row);
   }
 
@@ -2693,6 +2776,9 @@ export default class Component extends Element {
     else if (this.error && this.error.external === !!external) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
+      }
+      if (this.refs.modalMessageContainer) {
+        this.empty(this.refs.modalMessageContainer);
       }
       this.error = null;
       if (inputRefs) {
@@ -2892,7 +2978,7 @@ export default class Component extends Element {
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
             }
-            this.redraw();
+            this.rebuild();
           }
         }, true);
       }
@@ -2933,17 +3019,29 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus && !this.builderMode && !this.options.preview) {
+    const hasAutofocus = this.component.autofocus && !this.builderMode && !this.options.preview;
+    if (hasAutofocus) {
       this.on('render', () => this.focus(), true);
     }
   }
 
-  focus() {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-    if (this.refs.input && this.refs.input[0]) {
-      this.refs.input[0].focus();
+    if (this.refs.input?.length) {
+      if (typeof index === 'number' && this.refs.input[index]) {
+        this.refs.input[index].focus();
+      }
+      else {
+        this.refs.input[this.refs.input.length - 1].focus();
+      }
+    }
+    if (this.refs.openModal) {
+      this.refs.openModal.focus();
+    }
+    if (this.parent.refs.openModal) {
+      this.parent.refs.openModal.focus();
     }
   }
 

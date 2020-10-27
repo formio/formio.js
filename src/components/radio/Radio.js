@@ -19,7 +19,7 @@ export default class RadioComponent extends Field {
       group: 'basic',
       icon: 'dot-circle-o',
       weight: 80,
-      documentation: 'http://help.form.io/userguide/#radio',
+      documentation: '/userguide/#radio',
       schema: RadioComponent.schema()
     };
   }
@@ -96,6 +96,7 @@ export default class RadioComponent extends Field {
         this.removeShortcut(input, this.component.values[index].shortcut);
       });
     }
+    super.detach();
   }
 
   getValue() {

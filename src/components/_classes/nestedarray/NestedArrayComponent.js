@@ -28,27 +28,56 @@ export default class NestedArrayComponent extends NestedDataComponent {
     this._rowIndex = value;
   }
 
+  init() {
+    super.init();
+    this.prevHasAddButton = this.hasAddButton();
+  }
+
+  checkAddButtonChanged() {
+    const isAddButton = this.hasAddButton();
+    if (isAddButton !== this.prevHasAddButton) {
+      this.prevHasAddButton = isAddButton;
+      this.redraw();
+    }
+  }
+
   checkData(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+    this.checkAddButtonChanged();
 
     return this.checkRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
   }
 
   checkRows(method, data, opts, defaultValue, silentCheck) {
     return this.iteratableRows.reduce(
-      (valid, row) => this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid,
+      (valid, row, rowIndex) => {
+        if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
+          return this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid;
+        }
+        else {
+          return valid;
+        }
+      },
       defaultValue,
     );
   }
 
   checkRow(method, data, opts, row, components, silentCheck) {
-    return _.reduce(
+    if (opts?.isolateRow) {
+      silentCheck = true;
+      opts.noRefresh = true;
+    }
+    const valid = _.reduce(
       components,
       (valid, component) => component[method](data, opts, row, silentCheck) && valid,
       true,
     );
+    if (opts?.noRefresh) {
+      delete opts.noRefresh;
+    }
+    return valid;
   }
 
   hasAddButton() {
@@ -92,7 +121,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
         else if (fn) {
           fn(component, components);
         }
-        result = rowIndex !== null ? comp : result.concat(comp);
+        result = rowIndex !== null ? comp : result.concat(comp || possibleComp);
       }
     }, rowIndex);
     if ((!result || result.length === 0) && possibleComp) {
@@ -133,7 +162,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
             <tr>
       `);
 
-      this.component.components.forEach((component) => {
+      this.component.components?.forEach((component) => {
         const label = component.label || component.key;
         result += `<th style="padding: 5px 10px;">${label}</th>`;
       });
@@ -162,6 +191,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
       `);
 
       return result;
+    }
+
+    if (!value || !value.length) {
+      return '';
     }
 
     return super.getValueAsString(value, options);

@@ -78,7 +78,7 @@ const EditFormUtils = {
           style: { 'margin-bottom': '10px' },
           key: `${property}-js`,
           customConditional() {
-            return !Evaluator.noeval;
+            return !Evaluator.noeval || Evaluator.protectedEval;
           },
           components: [
             {

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 const Rule = require('./Rule');
 
 module.exports = class Max extends Rule {
@@ -7,9 +5,12 @@ module.exports = class Max extends Rule {
 
   check(value) {
     const max = parseFloat(this.settings.limit);
-    if (Number.isNaN(max) || (!_.isNumber(value))) {
+    const parsedValue = parseFloat(value);
+
+    if (Number.isNaN(max) || Number.isNaN(parsedValue)) {
       return true;
     }
-    return parseFloat(value) <= max;
+
+    return parsedValue <= max;
   }
 };

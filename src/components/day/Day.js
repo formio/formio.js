@@ -34,7 +34,7 @@ export default class DayComponent extends Field {
       title: 'Day',
       group: 'advanced',
       icon: 'calendar',
-      documentation: 'http://help.form.io/userguide/#day',
+      documentation: '/userguide/#day',
       weight: 50,
       schema: DayComponent.schema()
     };
@@ -79,6 +79,10 @@ export default class DayComponent extends Field {
 
   get defaultSchema() {
     return DayComponent.schema();
+  }
+
+  get shouldDisabled() {
+    return super.shouldDisabled || this.parentDisabled;
   }
 
   get inputInfo() {
@@ -243,6 +247,8 @@ export default class DayComponent extends Field {
     }
     else {
       return this.renderTemplate('input', {
+        prefix: this.prefix,
+        suffix: this.suffix,
         input: this.inputDefinition(name)
       });
     }
@@ -287,6 +293,8 @@ export default class DayComponent extends Field {
       }));
     }
     this.setValue(this.dataValue);
+    // Force the disabled state with getters and setters.
+    this.disabled = this.shouldDisabled;
     return superAttach;
   }
 

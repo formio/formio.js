@@ -2,6 +2,7 @@ import _ from 'lodash';
 import stringHash from 'string-hash';
 const Evaluator = {
   noeval: false,
+  protectedEval: false, // This property can be customized only by plugins
   cache: {},
   templateSettings: {
     evaluate: /\{%([\s\S]+?)%\}/g,
@@ -69,6 +70,12 @@ const Evaluator = {
   evaluate(func, args) {
     return Array.isArray(args) ? func(...args) : func(args);
   }
+};
+
+Evaluator.registerEvaluator = (evaluator) => {
+  Object.keys(evaluator).forEach((key) => {
+    Evaluator[key] = evaluator[key];
+  });
 };
 
 export default Evaluator;

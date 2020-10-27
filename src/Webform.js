@@ -11,7 +11,9 @@ import NestedDataComponent from './components/_classes/nesteddata/NestedDataComp
 import {
   fastCloneDeep,
   currentTimezone,
-  getStringFromComponentPath
+  unescapeHTML,
+  getStringFromComponentPath,
+  searchComponents,
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -634,8 +636,23 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   setForm(form, flags) {
-    // Create the form.
-    this._form = form;
+    const isFormAlreadySet = this._form && this._form.components?.length;
+    try {
+      const formString = JSON.stringify(form);
+
+      // Do not set the form again if it has been already set
+      if (isFormAlreadySet && JSON.stringify(this._form) === formString) {
+        return NativePromise.resolve();
+      }
+
+      // Create the form.
+      this._form = JSON.parse(formString);
+    }
+    catch (err) {
+      console.warn(err);
+      // If provided form is not a valid JSON object, do not set it too
+      return NativePromise.resolve();
+    }
 
     // Allow the form to provide component overrides.
     if (form && form.settings && form.settings.components) {
@@ -788,6 +805,7 @@ export default class Webform extends NestedDataComponent {
     draft.state = 'draft';
 
     if (!this.savingDraft) {
+      this.emit('saveDraftBegin');
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
         // Set id to submission to avoid creating new draft submission
@@ -992,7 +1010,7 @@ export default class Webform extends NestedDataComponent {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.addEventListener(this.element, 'keydown', this.executeShortcuts);
+    this.addEventListener(document, 'keydown', this.executeShortcuts);
     this.currentForm = this;
     return childPromise.then(() => {
       this.emit('render', this.element);
@@ -1088,8 +1106,9 @@ export default class Webform extends NestedDataComponent {
           const key = e.currentTarget.dataset.componentKey;
           this.focusOnComponent(key);
         });
-        this.addEventListener(el, 'keypress', (e) => {
+        this.addEventListener(el, 'keydown', (e) => {
           if (e.keyCode === 13) {
+            e.preventDefault();
             const key = e.currentTarget.dataset.componentKey;
             this.focusOnComponent(key);
           }
@@ -1176,7 +1195,11 @@ export default class Webform extends NestedDataComponent {
             'aria-label': `${message}. Click to navigate to the field with following error.`
           };
           const li = this.ce('li', params);
-          this.setContent(li, message);
+          const span = this.ce('span');
+          li.style.cursor = 'pointer';
+
+          this.setContent(span, unescapeHTML(message));
+          this.appendTo(span, li);
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
@@ -1191,7 +1214,7 @@ export default class Webform extends NestedDataComponent {
         if (err.messages && err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message }, index) => {
-            const text = this.t('alertMessage', { label: component.label, message });
+            const text = this.t('alertMessage', { label: this.t(component.label), message });
             createListItem(text, index);
           });
         }
@@ -1301,7 +1324,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (!flags || !flags.noEmit) {
-      this.emit('change', value, flags);
+      this.emit('change', value, flags, modified);
       isChangeEventEmitted = true;
     }
 
@@ -1507,17 +1530,15 @@ export default class Webform extends NestedDataComponent {
       });
     }
     if (API_URL && settings) {
-      try {
         Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() => {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
+        }).catch((e) => {
+          this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
         });
-      }
-      catch (e) {
-        this.showErrors(`${e.statusText} ${e.status}`);
-        this.emit('error',`${e.statusText} ${e.status}`);
-        console.error(`${e.statusText} ${e.status}`);
-      }
     }
     else {
       this.emit('error', 'You should add a URL to this button.');
@@ -1530,12 +1551,12 @@ export default class Webform extends NestedDataComponent {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = this.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
-        component.component.eventType === 'formLoad';
+    const recaptchaComponent = searchComponents(this.components, {
+      'component.type': 'recaptcha',
+      'component.eventType': 'formLoad'
     });
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    if (recaptchaComponent.length > 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
 

@@ -8,8 +8,8 @@ module.exports = class Unique extends Rule {
   defaultMessage = '{{field}} must be unique';
 
   check(value) {
-    // Skip if value is empty
-    if (!value || _.isEmpty(value)) {
+    // Skip if value is empty object or falsy
+    if (!value || _.isObjectLike(value) && _.isEmpty(value)) {
       return true;
     }
 
@@ -47,7 +47,7 @@ module.exports = class Unique extends Rule {
       else if (_.isArray(value)) {
         query[path] = { $all: value };
       }
-      else if (_.isObject(value)) {
+      else if (_.isObject(value) || _.isNumber(value)) {
         query[path] = { $eq: value };
       }
 

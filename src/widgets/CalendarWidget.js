@@ -1,4 +1,4 @@
-import Flatpickr from 'flatpickr';
+import Formio from '../Formio';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
@@ -18,6 +18,7 @@ import moment from 'moment';
 import _ from 'lodash';
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
+const CDN_URL = 'https://cdn.form.io/';
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */
@@ -82,9 +83,7 @@ export default class CalendarWidget extends InputWidget {
 
   attach(input) {
     const superAttach = super.attach(input);
-    if (input && !input.getAttribute('placeholder')) {
-      input.setAttribute('placeholder', this.settings.format);
-    }
+    this.setPlaceholder(input);
 
     const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);
     this.defaultFormat = {
@@ -140,49 +139,78 @@ export default class CalendarWidget extends InputWidget {
         this.emit('blur');
       }
     };
-    this.settings.formatDate = (date, format) => {
-      // Only format this if this is the altFormat and the form is readOnly.
-      if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
-          return Flatpickr.formatDate(date, format);
-        }
 
-        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
-      }
+    Formio.requireLibrary('flatpickr-css', 'flatpickr-css', [
+      { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
+    ], true);
 
-      return Flatpickr.formatDate(date, format);
-    };
+    return superAttach
+      .then(() => {
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
+          .then((Flatpickr) => {
+            this.settings.formatDate = (date, format) => {
+              // Only format this if this is the altFormat and the form is readOnly.
+              if (this.settings.readOnly && (format === this.settings.altFormat)) {
+                if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
+                  return Flatpickr.formatDate(date, format);
+                }
 
-    if (this._input) {
-      // Create a new flatpickr.
-      this.calendar = new Flatpickr(this._input, this.settings);
-      this.calendar.altInput.addEventListener('input', (event) => {
-        if (this.settings.allowInput) {
-          this.settings.manualInputValue = event.target.value;
-          this.settings.isManuallyOverriddenValue = true;
-        }
+                return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
+              }
 
-        if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
-          this.settings.wasDefaultValueChanged = true;
-          this.settings.defaultValue = event.target.value;
-          this.calendar.clear();
-        }
-        else {
-          this.settings.wasDefaultValueChanged = false;
-        }
+              return Flatpickr.formatDate(date, format);
+            };
+
+            if (this._input) {
+              const dateValue = this._input.value;
+              // Create a new flatpickr.
+              this.calendar = new Flatpickr(this._input, this.settings);
+              if (dateValue) {
+                this.calendar.setDate(dateValue, true, this.settings.altFormat);
+              }
+
+              this.calendar.altInput.addEventListener('input', (event) => {
+                if (this.settings.allowInput) {
+                  this.settings.manualInputValue = event.target.value;
+                  this.settings.isManuallyOverriddenValue = true;
+                }
+
+                if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
+                  this.settings.wasDefaultValueChanged = true;
+                  this.settings.defaultValue = event.target.value;
+                  this.calendar.clear();
+                }
+                else {
+                  this.settings.wasDefaultValueChanged = false;
+                }
+              });
+
+              if (!this.settings.readOnly) {
+                // Enforce the input mask of the format.
+                this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+              }
+
+              // Make sure we commit the value after a blur event occurs.
+              this.addEventListener(this.calendar._input, 'blur', (event) => {
+                if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+                  const inputValue = this.calendar.input.value;
+                  const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+
+                  this.calendar.setDate(dateValue, true, this.settings.altFormat);
+                }
+              });
+
+              // FJS-1103: When hit the enter button, the field not saving the year correctly
+              this.addEventListener(this.calendar.altInput, 'keydown', (event) => {
+                if (event.keyCode === 13) {
+                  this.calendar.altInput.blur();
+                  this.calendar.close();
+                  event.stopPropagation();
+                }
+              });
+            }
+          });
       });
-
-      if (!this.settings.readOnly) {
-        // Enforce the input mask of the format.
-        this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
-      }
-
-      // Make sure we commit the value after a blur event occurs.
-      this.addEventListener(this.calendar._input, 'blur', () =>
-        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
-      );
-    }
-    return superAttach;
   }
 
   get disableWeekends() {
@@ -221,11 +249,19 @@ export default class CalendarWidget extends InputWidget {
   }
 
   addSuffix(suffix) {
-    this.addEventListener(suffix, 'click', () => {
-      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-        this.calendar.open();
+    this.addEventListener(suffix, 'click', (event) => {
+      event.stopPropagation();
+
+      if (this.calendar) {
+        if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+          this.calendar.open();
+        }
+        else if (this.calendar.isOpen) {
+          this.calendar.close();
+        }
       }
     });
+
     return suffix;
   }
 
@@ -253,7 +289,7 @@ export default class CalendarWidget extends InputWidget {
       return disabledDates.map((item) => {
         const dateMask = /\d{4}-\d{2}-\d{2}/g;
         const dates = item.match(dateMask);
-        if (dates.length) {
+        if (dates && dates.length) {
           return dates.length === 1 ?  item.match(dateMask)[0] : {
             from: item.match(dateMask)[0],
             to: item.match(dateMask)[1],
@@ -297,6 +333,10 @@ export default class CalendarWidget extends InputWidget {
     return moment(date).format(convertFormatToMoment(format));
   }
 
+  get flatpickrType() {
+    return 'flatpickr';
+  }
+
   /**
    * Return the value of the selected date.
    *
@@ -328,6 +368,7 @@ export default class CalendarWidget extends InputWidget {
    */
   setValue(value) {
     if (!this.calendar) {
+      value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
     if (value) {
@@ -348,8 +389,13 @@ export default class CalendarWidget extends InputWidget {
     if (this.settings.saveAs === 'text') {
       return this.getDateValue(value, format);
     }
+    return formatDate(value, format, this.timezone, convertFormatToMoment(this.settings.dateFormat));
+  }
 
-    return formatDate(value, format, this.timezone);
+  setPlaceholder(input) {
+    if (input && !input.getAttribute('placeholder')) {
+      input.setAttribute('placeholder', this.settings.format);
+    }
   }
 
   validationValue(value) {

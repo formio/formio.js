@@ -33,7 +33,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
           method: 'POST',
           mode: 'cors',
         })
-        .then(response => {
+        .then(function(response) {
           form.emit('submitDone', submission)
           response.json()
         })
@@ -62,7 +62,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
           method: 'POST',
           mode: 'cors',
         })
-        .then(response => {
+        .then(function(response) {
           form.emit('submitDone', submission)
           response.json()
         })
