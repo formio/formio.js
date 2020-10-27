@@ -647,9 +647,8 @@ export default class Webform extends NestedDataComponent {
       // If provided form is not a valid JSON object, do not set it too
       return NativePromise.resolve();
     }
-
     // Create the form.
-    this._form = _.cloneDeep(form);
+    this._form = _.fastCloneDeep(form);
 
     // Allow the form to provide component overrides.
     if (form && form.settings && form.settings.components) {
