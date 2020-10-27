@@ -325,7 +325,9 @@ export default class FileComponent extends Field {
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
-
+        if (!this.component.multiple && this.statuses.some(fileUpload => fileUpload.status === 'progress')) {
+          return;
+        }
         this.browseFiles(this.browseOptions)
           .then((files) => {
             this.upload(files);
