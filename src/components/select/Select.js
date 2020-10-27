@@ -880,7 +880,7 @@ export default class SelectComponent extends Field {
     this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
-      this.triggerUpdate();
+      this.triggerUpdate(null, true);
       this.setItems(this.selectOptions || []);
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
