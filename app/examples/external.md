@@ -59,7 +59,7 @@ Formio.createForm(document.getElementById('formio'), {
         },
         valueProperty: 'Model_Name',
         template: '<span>{% raw %}{{ item.Model_Name }}{% endraw %}</span>',
-        refreshOn: 'make',
+        refreshOn: 'cars.make',
         clearOnRefresh: true,
         selectValues: 'Results',
         validate: {
@@ -124,7 +124,7 @@ Formio.createForm(document.getElementById('formio'), {
         },
         valueProperty: 'Model_Name',
         template: '<span>{% raw %}{{ item.Model_Name }}{% endraw %}</span>',
-        refreshOn: 'make',
+        refreshOn: 'cars.make',
         clearOnRefresh: true,
         selectValues: 'Results',
         validate: {
