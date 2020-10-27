@@ -1222,7 +1222,9 @@ div[read-only="true"] {
   overflow-x: visible;
 }
 
-.formio-component-textfield {
+.formio-component-textfield,
+.formio-component-textarea,
+.formio-component-password {
   .pull-right:not(:last-child) {
     padding-left: 12px;
   }
