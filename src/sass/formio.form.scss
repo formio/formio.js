@@ -744,6 +744,7 @@ body.formio-dialog-open {
 }
 
 .formio-choices.form-group {
+  min-width: 200px;
   margin-bottom: 0;
 }
 
@@ -1216,10 +1217,6 @@ div[read-only="true"] {
   img {
     max-width: 100%;
   }
-}
-
-.table-responsive[ref=component] {
-  overflow-x: visible;
 }
 
 .formio-component-textfield,
