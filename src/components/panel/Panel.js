@@ -65,7 +65,7 @@ export default class PanelComponent extends NestedComponent {
   }
 
   getComponent(path, fn, originalPath) {
-    if (this.parent instanceof Wizard && this.parent.parent instanceof FormComponent) {
+    if (this.root?.parent instanceof FormComponent) {
       path = path.replace(this._parentPath, '');
     }
     return super.getComponent(path, fn, originalPath);
