@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1348: remove the DynamicWizard component from the Webform builder
  - FJS-1382: fixed an issue where date value is changed when reopening modal row in editGrid after setting submission
  - FJS-1355: add disableSiblings logic for the builder
+ - FJS-1349: fix EditGrid reset after cancel
+ - FOR-2815 : Fixes an issue where scripts passed to TextArea/TextField are executed while rendering
 
 ### 4.12.1-rc.18
 #### Fixed

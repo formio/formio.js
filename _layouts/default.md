@@ -28,7 +28,6 @@
   {% if page.noFormio == nil %}
     <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
   {% endif %}
-  <script src="https://cdn.form.io/ace/ace.js"></script>
   <script src="{{ site.baseurl }}/app/jquery/jquery.slim.min.js"></script>
   <script src="{{ site.baseurl }}/app/bootstrap/js/bootstrap.min.js"></script>
   {% if page.noFormio == nil %}
