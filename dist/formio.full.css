@@ -3365,6 +3365,9 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .formio-component-password .pull-right:not(:last-child) {
   padding-left: 12px; }
 
+.formio-form > div > nav > ul.pagination {
+  flex-flow: wrap row; }
+
 .formbuilder {
   position: relative; }
 

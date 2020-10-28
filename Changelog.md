@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1355: add disableSiblings logic for the builder
  - FJS-1349: fix EditGrid reset after cancel
  - FOR-2815 : Fixes an issue where scripts passed to TextArea/TextField are executed while rendering
+ - FJS-1092: Wizard form page navigation bar needs to be responsive
 
 ### 4.12.1-rc.18
 #### Fixed
