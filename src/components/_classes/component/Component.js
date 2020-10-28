@@ -1260,7 +1260,8 @@ export default class Component extends Element {
     if (value === null || value === undefined) {
       return '';
     }
-    return value.toString();
+    const stringValue = value.toString();
+    return this.sanitize(stringValue);
   }
 
   getView(value, options) {
