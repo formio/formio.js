@@ -389,7 +389,7 @@ export default class CalendarWidget extends InputWidget {
     if (this.settings.saveAs === 'text') {
       return this.getDateValue(value, format);
     }
-    return formatDate(value, format, this.timezone, convertFormatToMoment(this.settings.dateFormat));
+    return formatDate(value, format, this.timezone, convertFormatToMoment(this.calendar ? this.valueFormat : this.settings.dateFormat));
   }
 
   setPlaceholder(input) {
