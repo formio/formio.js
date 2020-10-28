@@ -822,6 +822,24 @@ export default class WebformBuilder extends Component {
       return;
     }
 
+    // Show an error if siblings are disabled for a component and such a component already exists.
+    const draggableComponent = this.groups[group].components[key];
+
+    if (draggableComponent.disableSiblings) {
+      let isCompAlreadyExists = false;
+      eachComponent(this.webform.components, (component) => {
+        if (component.key === draggableComponent.key) {
+          isCompAlreadyExists = true;
+          return;
+        }
+      }, true);
+      if (isCompAlreadyExists) {
+        this.webform.redraw();
+        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.key} component to one page.`);
+        return;
+      }
+    }
+
     if (target !== source) {
       // Ensure the key remains unique in its new container.
       BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent.component), info);
