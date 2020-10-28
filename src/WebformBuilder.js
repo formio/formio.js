@@ -823,7 +823,7 @@ export default class WebformBuilder extends Component {
     }
 
     // Show an error if siblings are disabled for a component and such a component already exists.
-    const draggableComponent = this.groups[group].components[key];
+    const draggableComponent = this.groups[group]?.components[key] || {};
 
     if (draggableComponent.disableSiblings) {
       let isCompAlreadyExists = false;
