@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.19
+#### Fixed
+ - FJS-1301 & FJS-1302 Regressions on examples of github (Problem with Formio global object)
+ - FJS-1273: Space between character and word counter
+ - FJS-1375: Fixes an issue where Model is not cleared when Make is changed in examples
+ - FJS-1372: Fixes an issue where Rendered Form and Submission are not updated when the form is changed
+ - UIP-251: Fix multiple files disabled allowed to browse during upload
+ - PDF-197: Apply select component force update on attach step
+ - FJS-1372: Fixes an issue where Rendered Form and Submission are not updated when form is changed
+ - FJS-1311: Clicking on the errors not redirected to the corresponding field in the Child Wizard
+ - FJS-1348: remove the DynamicWizard component from the Webform builder
+ - FJS-1382: fixed an issue where date value is changed when reopening modal row in editGrid after setting submission
+ - FJS-1355: add disableSiblings logic for the builder
+
 ### 4.12.1-rc.18
 #### Fixed
  - Fixed focus for file component

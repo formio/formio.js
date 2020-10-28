@@ -25,11 +25,15 @@
   {% if page.template == nil %}
     <link href="https://bootswatch.com/4/cosmo/bootstrap.min.css" rel="stylesheet">
   {% endif %}
-  <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% if page.noFormio == nil %}
+    <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% endif %}
   <script src="https://cdn.form.io/ace/ace.js"></script>
   <script src="{{ site.baseurl }}/app/jquery/jquery.slim.min.js"></script>
   <script src="{{ site.baseurl }}/app/bootstrap/js/bootstrap.min.js"></script>
-  <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% if page.noFormio == nil %}
+    <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% endif %}
   {% if page.contrib %}
     <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}
@@ -70,9 +74,6 @@
   <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2020. All rights reserved</p>
 </div>
 <p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
-{% if page.noFormio %}
-<script src="{{ site.baseurl }}/dist/formio.full.js"></script>
-{% endif %}
 <script type="text/javascript">
   document.getElementById('renderer-version').innerHTML = Formio.version;
 </script>

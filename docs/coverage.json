@@ -1,7 +1,7 @@
 {
-  "coverage": "10.03%",
-  "expectCount": 1564,
-  "actualCount": 157,
+  "coverage": "7.53%",
+  "expectCount": 1460,
+  "actualCount": 110,
   "files": {
     "src/EventEmitter.js": {
       "expectCount": 3,
@@ -244,60 +244,6 @@
         466
       ]
     },
-    "src/Webform.js": {
-      "expectCount": 95,
-      "actualCount": 47,
-      "undocumentLines": [
-        26,
-        33,
-        78,
-        132,
-        133,
-        134,
-        135,
-        136,
-        138,
-        144,
-        252,
-        274,
-        306,
-        351,
-        367,
-        399,
-        426,
-        450,
-        684,
-        689,
-        848,
-        855,
-        863,
-        869,
-        886,
-        890,
-        911,
-        918,
-        939,
-        956,
-        971,
-        981,
-        989,
-        996,
-        1006,
-        1011,
-        1021,
-        1034,
-        1309,
-        1335,
-        1370,
-        1385,
-        1473,
-        1510,
-        1547,
-        1560,
-        1561,
-        1565
-      ]
-    },
     "src/WizardBuilder.js": {
       "expectCount": 18,
       "actualCount": 0,
@@ -306,20 +252,20 @@
         7,
         21,
         27,
-        82,
-        86,
-        90,
-        95,
-        108,
-        112,
+        93,
+        97,
+        101,
+        106,
         119,
-        142,
-        165,
-        175,
-        185,
-        204,
-        212,
-        222
+        123,
+        130,
+        153,
+        176,
+        186,
+        196,
+        215,
+        223,
+        233
       ]
     },
     "src/builders/Builders.js": {
@@ -1038,21 +984,6 @@
       "actualCount": 0,
       "undocumentLines": [
         6
-      ]
-    },
-    "src/components/panel/Panel.js": {
-      "expectCount": 9,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        5,
-        21,
-        32,
-        36,
-        50,
-        54,
-        56,
-        60
       ]
     },
     "src/components/panel/editForm/Panel.edit.conditional.js": {
@@ -1787,9 +1718,9 @@
       "expectCount": 3,
       "actualCount": 0,
       "undocumentLines": [
+        1,
         2,
-        3,
-        4
+        3
       ]
     },
     "src/formio.form.js": {
