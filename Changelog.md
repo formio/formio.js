@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.20
+#### Fixed
+ - Sanitize method to not execute if the sanitize method is not defined (node.js)
+
 ### 4.12.1-rc.19
 #### Fixed
  - FJS-1301 & FJS-1302 Regressions on examples of github (Problem with Formio global object)
