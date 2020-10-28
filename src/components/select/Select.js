@@ -200,7 +200,7 @@ export default class SelectComponent extends Field {
         ? JSON.stringify(data.data)
         : data.data;
     }
-    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
+    const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       if (!label || !this.t(label)) return;
