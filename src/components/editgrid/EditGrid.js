@@ -932,6 +932,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     if (changed || flags.resetValue) {
       this.rebuild();
     }
+    this.redraw();
+
     return changed;
   }
 
