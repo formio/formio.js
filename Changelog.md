@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.22
+#### Fixed
+ - FJS-1306: Fixes an issue where JSON Select example is not loaded in IE11
+ - FJS-1306: Fixes small issues with Select and improves its performance
+ - FJS-1378: fix the display for editRows for the first render
+
 ### 4.12.1-rc.21
 #### Fixed
  - Problem where the form JSON would remove function based evals.

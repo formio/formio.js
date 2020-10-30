@@ -745,6 +745,7 @@ export default class SelectComponent extends Field {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
+      return;
     }
 
     this.updateItems(null, true);
@@ -930,21 +931,36 @@ export default class SelectComponent extends Field {
    * Activate this select control.
    */
   activate() {
+    if (this.loading || !this.active) {
+      this.setLoadingItem();
+    }
     if (this.active) {
       return;
     }
     this.activated = true;
+    this.triggerUpdate();
+  }
+
+  setLoadingItem(addToCurrentList = false) {
     if (this.choices) {
-      this.choices.setChoices([{
-        value: &apos;&apos;,
-        label: `&lt;i class=&quot;${this.iconClass(&apos;refresh&apos;)}&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/i&gt;`,
-        disabled: true,
-      }], &apos;value&apos;, &apos;label&apos;, true);
+      if (addToCurrentList) {
+        this.choices.setChoices([{
+          value: `${this.id}-loading`,
+          label: &apos;Loading...&apos;,
+          disabled: true,
+        }], &apos;value&apos;, &apos;label&apos;);
+      }
+      else {
+        this.choices.setChoices([{
+          value: &apos;&apos;,
+          label: `&lt;i class=&quot;${this.iconClass(&apos;refresh&apos;)}&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/i&gt;`,
+          disabled: true,
+        }], &apos;value&apos;, &apos;label&apos;, true);
+      }
     }
     else if (this.component.dataSrc === &apos;url&apos; || this.component.dataSrc === &apos;resource&apos;) {
       this.addOption(&apos;&apos;, this.t(&apos;loading...&apos;));
     }
-    this.triggerUpdate();
   }
 
   get active() {
@@ -1082,11 +1098,6 @@ export default class SelectComponent extends Field {
     const choicesOptions = this.choicesOptions();
     this.choices = new Choices(input, choicesOptions);
 
-    this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
-      this.choices.input.element.value = &apos;&apos;;
-      this.updateItems(null, true);
-    });
-
     if (this.selectOptions &amp;&amp; this.selectOptions.length) {
       this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
     }
@@ -1104,22 +1115,7 @@ export default class SelectComponent extends Field {
 
     if (this.isInfiniteScrollProvided) {
       this.scrollList = this.choices.choiceList.element;
-      this.onScroll = () =&gt; {
-        const isLoadingAvailable = !this.isScrollLoading
-          &amp;&amp; this.additionalResourcesAvailable
-          &amp;&amp; ((this.scrollList.scrollTop + this.scrollList.clientHeight) &gt;= this.scrollList.scrollHeight);
-
-        if (isLoadingAvailable) {
-          this.isScrollLoading = true;
-          this.choices.setChoices([{
-            value: `${this.id}-loading`,
-            label: &apos;Loading...&apos;,
-            disabled: true,
-          }], &apos;value&apos;, &apos;label&apos;);
-          this.triggerUpdate(this.choices.input.element.value);
-        }
-      };
-      this.addEventListener(this.scrollList, &apos;scroll&apos;, this.onScroll);
+      this.addEventListener(this.scrollList, &apos;scroll&apos;, () =&gt; this.onScroll());
     }
 
     this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);
@@ -1149,14 +1145,13 @@ export default class SelectComponent extends Field {
       });
       this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
+      this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
+        this.choices.input.element.value = &apos;&apos;;
+        this.updateItems(null, true);
+      });
     }
 
-    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; {
-      if (this.dataValue) {
-        this.triggerUpdate();
-      }
-      this.update();
-    });
+    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
 
     if (choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
@@ -1200,6 +1195,18 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  get isLoadingAvailable() {
+    return !this.isScrollLoading &amp;&amp; this.additionalResourcesAvailable;
+  }
+
+  onScroll() {
+    if (this.isLoadingAvailable) {
+      this.isScrollLoading = true;
+      this.setLoadingItem(true);
+      this.triggerUpdate(this.choices.input.element.value);
+    }
   }
 
   attachRefreshOnBlur() {

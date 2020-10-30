@@ -7068,6 +7068,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/select/select.js~selectcomponent#isloadingavailable",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-isLoadingAvailable",
+    "src/components/select/Select.js~SelectComponent#isLoadingAvailable",
+    "member"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#isscrollloading",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-isScrollLoading",
     "src/components/select/Select.js~SelectComponent#isScrollLoading",
@@ -7135,9 +7141,9 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#onscroll",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-onScroll",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-onScroll",
     "src/components/select/Select.js~SelectComponent#onScroll",
-    "member"
+    "method"
   ],
   [
     "src/components/select/select.js~selectcomponent#overlayoptions",
@@ -7221,6 +7227,12 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#setitems",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-setItems",
     "src/components/select/Select.js~SelectComponent#setItems",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#setloadingitem",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setLoadingItem",
+    "src/components/select/Select.js~SelectComponent#setLoadingItem",
     "method"
   ],
   [
