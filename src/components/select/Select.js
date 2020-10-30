@@ -502,7 +502,6 @@ export default class SelectComponent extends Field {
     // Make the request.
     options.header = headers;
     this.loading = true;
-    this.setLoadingItem();
 
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
@@ -755,6 +754,9 @@ export default class SelectComponent extends Field {
    * Activate this select control.
    */
   activate() {
+    if (this.loading || !this.active) {
+      this.setLoadingItem();
+    }
     if (this.active) {
       return;
     }
@@ -762,13 +764,22 @@ export default class SelectComponent extends Field {
     this.triggerUpdate();
   }
 
-  setLoadingItem() {
+  setLoadingItem(addToCurrentList = false) {
     if (this.choices) {
-      this.choices.setChoices([{
-        value: '',
-        label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`,
-        disabled: true,
-      }], 'value', 'label', true);
+      if (addToCurrentList) {
+        this.choices.setChoices([{
+          value: `${this.id}-loading`,
+          label: 'Loading...',
+          disabled: true,
+        }], 'value', 'label');
+      }
+      else {
+        this.choices.setChoices([{
+          value: '',
+          label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`,
+          disabled: true,
+        }], 'value', 'label', true);
+      }
     }
     else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
       this.addOption('', this.t('loading...'));
@@ -927,22 +938,7 @@ export default class SelectComponent extends Field {
 
     if (this.isInfiniteScrollProvided) {
       this.scrollList = this.choices.choiceList.element;
-      this.onScroll = () => {
-        const isLoadingAvailable = !this.isScrollLoading
-          && this.additionalResourcesAvailable
-          && ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight);
-
-        if (isLoadingAvailable) {
-          this.isScrollLoading = true;
-          this.choices.setChoices([{
-            value: `${this.id}-loading`,
-            label: 'Loading...',
-            disabled: true,
-          }], 'value', 'label');
-          this.triggerUpdate(this.choices.input.element.value);
-        }
-      };
-      this.addEventListener(this.scrollList, 'scroll', this.onScroll);
+      this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
     }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);
@@ -978,9 +974,7 @@ export default class SelectComponent extends Field {
       });
     }
 
-    this.addEventListener(input, 'showDropdown', () => {
-      this.update();
-    });
+    this.addEventListener(input, 'showDropdown', () => this.update());
 
     if (choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
@@ -1024,6 +1018,18 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  get isLoadingAvailable() {
+    return !this.isScrollLoading && this.additionalResourcesAvailable;
+  }
+
+  onScroll() {
+    if (this.isLoadingAvailable) {
+      this.isScrollLoading = true;
+      this.setLoadingItem(true);
+      this.triggerUpdate(this.choices.input.element.value);
+    }
   }
 
   attachRefreshOnBlur() {
