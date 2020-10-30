@@ -120,12 +120,12 @@ Formio.createForm(document.getElementById('json-values'), {
             key: "selectjson",
             placeholder: "Select one",
             data: {
-              json: `[
-                {"value":"a","label":"A"},
-                {"value":"b","label":"B"},
-                {"value":"c","label":"C"},
-                {"value":"d","label":"D"}
-              ]`
+              json: '[' +
+                '{"value":"a","label":"A"},' +
+                '{"value":"b","label":"B"},' + 
+                '{"value":"c","label":"C"},' +
+                '{"value":"d","label":"D"}' +
+              ']'
             },
             dataSrc: "json",
             template: "<span>{% raw %}{{ item.label }}{% endraw %}</span>",
@@ -244,6 +244,7 @@ Formio.createForm(document.getElementById('url-select'), {
             placeholder: 'Select your model',
             dataSrc: 'url',
             defaultValue: 'Pilot',
+            lazyLoad: false,
             data: {
               url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/honda?format=json'
             },
