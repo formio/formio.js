@@ -182,7 +182,6 @@ workflow.form = {
   <div id="workflow"></div>
   <script type="text/javascript">
   {% raw %}
-  debugger;
   Formio.createForm(document.getElementById('workflow'), {
     display: 'wizard',
     components: [
