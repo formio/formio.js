@@ -502,6 +502,7 @@ export default class SelectComponent extends Field {
     // Make the request.
     options.header = headers;
     this.loading = true;
+    this.setLoadingItem();
 
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
@@ -757,6 +758,10 @@ export default class SelectComponent extends Field {
       return;
     }
     this.activated = true;
+    this.triggerUpdate();
+  }
+
+  setLoadingItem() {
     if (this.choices) {
       this.choices.setChoices([{
         value: '',
@@ -767,7 +772,6 @@ export default class SelectComponent extends Field {
     else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
       this.addOption('', this.t('loading...'));
     }
-    this.triggerUpdate();
   }
 
   get active() {
@@ -905,11 +909,6 @@ export default class SelectComponent extends Field {
     const choicesOptions = this.choicesOptions();
     this.choices = new Choices(input, choicesOptions);
 
-    this.addEventListener(input, 'hideDropdown', () => {
-      this.choices.input.element.value = '';
-      this.updateItems(null, true);
-    });
-
     if (this.selectOptions && this.selectOptions.length) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
     }
@@ -972,12 +971,13 @@ export default class SelectComponent extends Field {
       });
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
+      this.addEventListener(input, 'hideDropdown', () => {
+        this.choices.input.element.value = '';
+        this.updateItems(null, true);
+      });
     }
 
     this.addEventListener(input, 'showDropdown', () => {
-      if (this.dataValue) {
-        this.triggerUpdate();
-      }
       this.update();
     });
 
