@@ -223,6 +223,7 @@ Formio.createForm(document.getElementById('url-select'), {
       placeholder: 'Select your model',
       dataSrc: 'url',
       defaultValue: 'Pilot',
+      lazyLoad: false,
       data: {
         url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/honda?format=json'
       },
