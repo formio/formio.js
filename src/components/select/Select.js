@@ -569,6 +569,7 @@ export default class SelectComponent extends Field {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
+      return;
     }
 
     this.updateItems(null, true);
