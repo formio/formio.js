@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.23
+#### Fixed
+ - VPAT-664 Changed setAlert signature to more flexible extension in VPAT
+
 ### 4.12.1-rc.22
 #### Fixed
  - FJS-1306: Fixes an issue where JSON Select example is not loaded in IE11
