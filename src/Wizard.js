@@ -705,6 +705,10 @@ export default class Wizard extends Webform {
     return super.setForm(form, flags);
   }
 
+  pageFieldLogicHandler() {
+    this.pageFieldLogic(this.page);
+  }
+
   setValue(submission, flags = {}) {
     this._submission = submission;
 
@@ -720,7 +724,7 @@ export default class Wizard extends Webform {
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
-    this.pageFieldLogic(this.page);
+    this.pageFieldLogicHandler();
 
     return changed;
   }
