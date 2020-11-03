@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.24
+#### Changed
+ - FJS-1379: changes for more flexible inheritance
+
 ### 4.12.1-rc.23
 #### Fixed
  - VPAT-664 Changed setAlert signature to more flexible extension in VPAT
