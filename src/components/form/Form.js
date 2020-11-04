@@ -128,11 +128,22 @@ export default class FormComponent extends Component {
     return this.subFormReady || NativePromise.resolve();
   }
 
+  get useOriginalRevision() {
+    return this.component?.useOriginalRevision && !!this.formObj?.revisions;
+  }
+
   setFormRevision(rev) {
-    this.subFormRevision = rev;
     // Remove current revisions from src if it is
-    this.formSrc.replace(/\/v\/\d*/, '');
-    this.formSrc += `/v/${rev}`;
+    this.formSrc = this.formSrc.replace(/\/v\/\d*/, '');
+    const revNumber = Number.parseInt(rev);
+
+    if (!isNaN(revNumber)) {
+      this.subFormRevision = rev;
+      this.formSrc += `/v/${rev}`;
+    }
+    else {
+      this.subFormRevision = undefined;
+    }
   }
 
   getComponent(path, fn) {
@@ -290,6 +301,12 @@ export default class FormComponent extends Component {
     });
   }
 
+  get isRevisionChanged() {
+    return _.isNumber(this.subFormRevision)
+      && _.isNumber(this.formObj._vid)
+      && this.formObj._vid !== this.subFormRevision;
+  }
+
   destroy() {
     if (this.subForm) {
       this.subForm.destroy();
@@ -380,11 +397,7 @@ export default class FormComponent extends Component {
       return NativePromise.resolve();
     }
 
-    const isRevisionChanged = _.isNumber(this.subFormRevision)
-      && _.isNumber(this.formObj._vid)
-      && this.formObj._vid !== this.subFormRevision;
-
-    if (this.hasLoadedForm && !isRevisionChanged) {
+    if (this.hasLoadedForm && !this.isRevisionChanged) {
       // Pass config down to sub forms.
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
         this.formObj.config = this.root.form.config;
@@ -535,7 +548,7 @@ export default class FormComponent extends Component {
     const changed = super.setValue(submission, flags);
     this.valueChanged = true;
     if (this.subForm) {
-      const shouldLoadOriginalRevision = this.component.useOriginalRevision
+      const shouldLoadOriginalRevision = this.useOriginalRevision
         && _.isNumber(submission._fvid)
         && _.isNumber(this.subForm.form?._vid)
         && submission._fvid !== this.subForm.form._vid;
