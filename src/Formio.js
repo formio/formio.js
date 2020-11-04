@@ -40,7 +40,7 @@ function cloneResponse(response) {
  *
  *   let formio = new Formio('https://examples.form.io/example');
  */
-export default class Formio {
+class Formio {
   /* eslint-disable max-statements */
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
@@ -154,7 +154,21 @@ export default class Formio {
     };
 
     if (!this.projectUrl || (this.projectUrl === this.base)) {
-      this.projectUrl = hostName;
+      // If a project uses Subdirectories path type, we need to specify a projectUrl
+      if (!this.projectUrl && !isProjectUrl && Formio.pathType === 'Subdirectories') {
+        const regex = `^${hostName.replace(/\//g, '\\/')}.[^/]+`;
+        const match = project.match(new RegExp(regex));
+        this.projectUrl = match ? match[0] : hostName;
+      }
+      else {
+        this.projectUrl = hostName;
+      }
+    }
+    // Check if we have a specified path type.
+    let isNotSubdomainType = false;
+
+    if (Formio.pathType) {
+      isNotSubdomainType = Formio.pathType !== 'Subdomains';
     }
 
     if (!this.noProject) {
@@ -176,7 +190,7 @@ export default class Formio {
       }
       else {
         // Get project id from subdomain.
-        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.includes('localhost'))) {
+        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.includes('localhost')) && !isNotSubdomainType) {
           this.projectUrl = hostName;
           this.projectId = hostparts[2].split('.')[0];
         }
@@ -1477,6 +1491,16 @@ export default class Formio {
       global.Formio = Formio;
     }
   }
+
+  static setPathType(type) {
+    if (typeof type === 'string') {
+      Formio.pathType = type;
+    }
+  }
+
+  static getPathType() {
+    return Formio.pathType;
+  }
 }
 
 // Define all the static properties.
@@ -1492,6 +1516,7 @@ Formio.plugins = [];
 Formio.cache = {};
 Formio.Providers = Providers;
 Formio.version = '---VERSION---';
+Formio.pathType = '';
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
@@ -1503,3 +1528,14 @@ if (typeof global !== 'undefined') {
 if (typeof window !== 'undefined') {
   Formio.addToGlobal(window);
 }
+
+// It makes sure that we use global Formio.
+function getFormio() {
+  if (typeof (window || global) === 'object' && typeof (window || global).Formio !== 'undefined') {
+    return (window || global).Formio;
+  }
+
+  return Formio;
+}
+
+export default getFormio();
