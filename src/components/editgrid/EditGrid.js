@@ -295,7 +295,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       [this.cancelRowRef]: 'multiple',
       [this.rowRef]: 'multiple',
     });
-
     this.addRowElements.forEach((addButton) => {
       this.addEventListener(addButton, 'click', () => this.addRow());
     });
@@ -333,6 +332,18 @@ export default class EditGridComponent extends NestedArrayComponent {
               });
             },
           },
+          {
+            className: 'row',
+            event: 'click',
+            action: () => {
+              row.classList.toggle('selected');
+              const eventName = Array.from(row.classList).includes('selected') ? 'editGridSelectRow' : 'editGridUnSelectRow';
+              this.emit(eventName, {
+                component: this.component,
+                data: this.dataValue[rowIndex]
+              });
+            },
+          }
         ].forEach(({
           className,
           event,
