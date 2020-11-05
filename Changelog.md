@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.25
+#### Fixed
+ - FOR-2838/2839/2843: Fixes an issue with incorrect projectUrl when using not Subdomain path type. Also made that we always use global Formio.
+
 ### 4.12.1-rc.24
 #### Changed
  - FJS-1379: changes for more flexible inheritance
