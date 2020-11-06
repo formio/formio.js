@@ -478,13 +478,11 @@ export default class FormComponent extends Component {
 
   /**
    * Submit the form before the next page is triggered.
+   * @param {boolean} next
    */
   beforePage(next) {
     // Should not submit child forms if we are going to the previous page
-    if (!next) {
-      return super.beforePage(next);
-    }
-    return this.submitSubForm(true).then(() => super.beforePage(next));
+    super.beforePage(next);
   }
 
   /**
@@ -498,11 +496,7 @@ export default class FormComponent extends Component {
       this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
-    return this.submitSubForm(false)
-      .then(() => {
-        return this.dataValue;
-      })
-      .then(() => super.beforeSubmit());
+    return super.beforeSubmit();
   }
 
   isHidden() {
