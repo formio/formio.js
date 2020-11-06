@@ -533,7 +533,9 @@ export default class Formio {
               const Provider = Providers.getProvider('storage', storage);
               if (Provider) {
                 const provider = new Provider(this);
-                uploadStartCallback();
+                if (uploadStartCallback) {
+                  uploadStartCallback();
+                }
                 return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId);
               }
               else {
