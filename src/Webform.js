@@ -1250,7 +1250,7 @@ export default class Webform extends NestedDataComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
-    this.emit('submit', submission);
+    this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
     }
