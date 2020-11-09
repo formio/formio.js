@@ -640,7 +640,9 @@ export default class FileComponent extends Field {
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
               delete fileUpload.message;
               this.redraw();
-            }, url, options, fileKey, groupPermissions, groupResourceId)
+            }, url, options, fileKey, groupPermissions, groupResourceId,
+              () => this.emit('fileUploadingStart', filePromise)
+            )
               .then((fileInfo) => {
                 const index = this.statuses.indexOf(fileUpload);
                 if (index !== -1) {
@@ -653,17 +655,15 @@ export default class FileComponent extends Field {
                 this.dataValue.push(fileInfo);
                 this.redraw();
                 this.triggerChange();
+                this.emit('fileUploadingEnd', filePromise);
               })
               .catch((response) => {
                 fileUpload.status = 'error';
                 fileUpload.message = response;
                 delete fileUpload.progress;
                 this.redraw();
-              })
-              .finally(() => {
                 this.emit('fileUploadingEnd', filePromise);
               });
-            this.emit('fileUploadingStart', filePromise);
         }
       });
     }
