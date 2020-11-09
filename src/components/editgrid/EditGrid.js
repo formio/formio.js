@@ -302,6 +302,9 @@ export default class EditGridComponent extends NestedArrayComponent {
     let openRowCount = 0;
     this.rowElements.forEach((row, rowIndex) => {
       const editRow = this.editRows[rowIndex];
+      if (this.dataValue[rowIndex].isRowSelected) {
+        row.classList.add('selected');
+      }
       if (this.isOpen(editRow)) {
         this.attachComponents(row, editRow.components);
         this.addEventListener(this.saveRowElements[openRowCount], 'click', () => this.saveRow(rowIndex, true));
@@ -337,7 +340,15 @@ export default class EditGridComponent extends NestedArrayComponent {
             event: 'click',
             action: () => {
               row.classList.toggle('selected');
-              const eventName = Array.from(row.classList).includes('selected') ? 'editGridSelectRow' : 'editGridUnSelectRow';
+              let eventName = 'editGridSelectRow';
+              if (Array.from(row.classList).includes('selected')) {
+                this.dataValue[rowIndex].isRowSelected = true;
+              }
+              else {
+                delete this.dataValue[rowIndex].isRowSelected;
+                eventName = 'editGridUnSelectRow';
+              }
+
               this.emit(eventName, {
                 component: this.component,
                 data: this.dataValue[rowIndex]
