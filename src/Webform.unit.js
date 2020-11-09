@@ -39,6 +39,7 @@ import nestedModalWizard from '../test/forms/nestedModalWizard';
 import disableSubmitButton from '../test/forms/disableSubmitButton';
 import formWithAddressComponent from '../test/forms/formWithAddressComponent';
 import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
+import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -2033,6 +2034,22 @@ describe('Webform tests', function() {
       const subFormComponents = form.components[1].subForm.components;
       assert.deepEqual([subFormComponents[0].disabled, subFormComponents[1].disabled], [true, true], 'Components that are inside of disabled Nested Form should be disabled');
       done();
+    }).catch(done);
+  });
+
+  it('Should restore value correctly if NestedForm is saved as reference', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(nestedFormInsideDataGrid).then(() => {
+      const nestedForm = form.getComponent(['dataGrid', 0, 'form1']);
+      const submissionWithIdOnly = { _id: '1232', data: {} };
+      nestedForm.dataValue = { ...submissionWithIdOnly };
+      nestedForm.restoreValue();
+
+      setTimeout(() => {
+        assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, 'Should not set to defaultValue after restore');
+        done();
+      }, 150);
     }).catch(done);
   });
 
