@@ -99,7 +99,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
         component.columns.forEach((column) => {
           const components = Array.isArray(column) ? column : column.components;
           return eachComponent(components, fn, includeAll, subPath(), parent ? component : null);
-        }
+        });
       }
 
       else if (hasRows) {
