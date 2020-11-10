@@ -1024,6 +1024,7 @@ export default class Component extends Element {
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
     if (this.element.id) {
       this.id = this.element.id;
+      this.component.id = this.id;
     }
 
     this.loadRefs(element, {
