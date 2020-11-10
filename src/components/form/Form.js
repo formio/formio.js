@@ -95,16 +95,7 @@ export default class FormComponent extends Component {
       this.formSrc += `/v/${this.component.revision}`;
     }
 
-    return this.createSubForm().then((subForm) => {
-      setTimeout(() => {
-        if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
-          this.root.subWizards.push(this);
-          this.emit('subWizardsUpdated');
-        }
-      }, 0);
-
-      return subForm;
-    });
+    return this.createSubForm();
   }
 
   get dataReady() {
@@ -350,6 +341,13 @@ export default class FormComponent extends Component {
         this.valueChanged = this.hasSetValue;
         return this.subForm;
       });
+    }).then((subForm) => {
+      if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
+        this.root.subWizards.push(this);
+        this.emit('subWizardsUpdated');
+      }
+
+      return subForm;
     });
     return this.subFormReady;
   }
