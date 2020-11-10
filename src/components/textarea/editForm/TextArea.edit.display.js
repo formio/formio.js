@@ -77,8 +77,14 @@ export default [
             '===': [
               { var: 'data.editor' },
               'quill'
-            ]
+            ],
           },
+          {
+            '===': [
+              { var: 'data.editor' },
+              'ckeditor'
+            ],
+          }
         ]
       }
     }

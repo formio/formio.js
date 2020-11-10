@@ -989,8 +989,15 @@ body.formio-dialog-open {
     text-align: right;
   }
 }
-.formio-component-textarea .alert .ck-editor__editable{
-  color: inherit;
+
+.formio-component-textarea {
+  .alert .ck-editor__editable {
+    color: inherit;
+  }
+  
+  .ck.ck-editor__editable .image .ck-progress-bar {
+    height: 4px;
+  }
 }
 
 div[data-oembed-url] {
