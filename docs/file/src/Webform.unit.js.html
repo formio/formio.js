@@ -215,6 +215,7 @@ import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
 import disableSubmitButton from &apos;../test/forms/disableSubmitButton&apos;;
 import formWithAddressComponent from &apos;../test/forms/formWithAddressComponent&apos;;
 import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&apos;;
+import nestedFormInsideDataGrid from &apos;../test/forms/dataGrid-nestedForm&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -2209,6 +2210,22 @@ describe(&apos;Webform tests&apos;, function() {
       const subFormComponents = form.components[1].subForm.components;
       assert.deepEqual([subFormComponents[0].disabled, subFormComponents[1].disabled], [true, true], &apos;Components that are inside of disabled Nested Form should be disabled&apos;);
       done();
+    }).catch(done);
+  });
+
+  it(&apos;Should restore value correctly if NestedForm is saved as reference&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    form.setForm(nestedFormInsideDataGrid).then(() =&gt; {
+      const nestedForm = form.getComponent([&apos;dataGrid&apos;, 0, &apos;form1&apos;]);
+      const submissionWithIdOnly = { _id: &apos;1232&apos;, data: {} };
+      nestedForm.dataValue = { ...submissionWithIdOnly };
+      nestedForm.restoreValue();
+
+      setTimeout(() =&gt; {
+        assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, &apos;Should not set to defaultValue after restore&apos;);
+        done();
+      }, 150);
     }).catch(done);
   });
 

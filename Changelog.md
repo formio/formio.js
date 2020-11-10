@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.1-rc.27
+#### Fixed
+ - FJS-1426: Fixes an issue where NestedForm's data is not shown when it is inside DataGrid
+
+#### Changed
+ - Upgrade json-logic-js@2.0.0 which resolves https://www.npmjs.com/advisories/1542
+ - Upgrade marked@1.2.3, jwt-decode@3.1.1, eslint@7.13.0
+
 ### 4.12.1-rc.26
 #### Added
  - Pass along the saved flag to the submit event.
