@@ -449,7 +449,7 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const isVisible = checkCondition(item, data, data, this.component, this);
+          const isVisible = checkCondition(item, data, data, this.component, this) && !item.hidden;
           if (isVisible) {
             visible.push(item);
             if (page) {
