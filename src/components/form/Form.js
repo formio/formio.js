@@ -344,7 +344,7 @@ export default class FormComponent extends Component {
     }).then((subForm) => {
       if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
         this.root.subWizards.push(this);
-        this.emit('subWizardsUpdated');
+        this.emit('subWizardsUpdated', subForm);
       }
 
       return subForm;
