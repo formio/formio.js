@@ -499,6 +499,10 @@ export default class Wizard extends Webform {
       });
     }
 
+    if (this.pages.length) {
+      this.emit('pagesChanged');
+    }
+
     this.transformPages();
     if (this.allPages && this.allPages.length) {
       this.pages = this.allPages;
