@@ -381,9 +381,13 @@ export default class DataGridComponent extends NestedArrayComponent {
   removeRow(index) {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
-    _.each(row, (component) => this.removeComponent(component));
+    this.removeRowComponents(row);
     this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
+  }
+
+  removeRowComponents(row) {
+    _.each(row, (component) => this.removeComponent(component));
   }
 
   getRowValues() {
@@ -410,7 +414,13 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
     });
     // Delete any extra rows.
-    const removed = !!this.rows.splice(rowValues.length).length;
+    const removedRows = this.rows.splice(rowValues.length);
+    const removed = !!removedRows.length;
+    // Delete components of extra rows (to make sure that this.components contain only components of exisiting rows)
+    if (removed) {
+      removedRows.forEach(row => this.removeRowComponents(row));
+    }
+
     if (!init && (added || removed)) {
       this.redraw();
     }
