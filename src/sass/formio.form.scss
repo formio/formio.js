@@ -1204,14 +1204,11 @@ div[data-oembed-url] {
 }
 
 //show textarea submission in read-only mode and PDF view with initial line and space formatting
-div[read-only="true"] {
-  .formio-component-textarea {
-    div[ref="input"] {
-      white-space: pre-wrap;
-    }
+.formio-component-textarea {
+  div.formio-editor-read-only-content[ref="input"] {
+    white-space: pre-wrap;
   }
 }
-
 
 .formio-editor-read-only-content {
   img {
