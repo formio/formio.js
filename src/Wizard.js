@@ -50,7 +50,7 @@ export default class Wizard extends Webform {
     const next = this.getNextPage();
 
     if (_.isNumber(next)) {
-      return 0 < next && next >= this.pages.length;
+      return next === -1;
     }
 
     return _.isNull(next);
