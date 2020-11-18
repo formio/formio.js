@@ -971,6 +971,18 @@ div[data-oembed-url] {
   border-left: 0;
   border-right: solid 5px #cccccc; }
 
+.formio-component-content .text-tiny {
+  font-size: 0.7em; }
+
+.formio-component-content .text-small {
+  font-size: 0.85em; }
+
+.formio-component-content .text-big {
+  font-size: 1.4em; }
+
+.formio-component-content .text-huge {
+  font-size: 1.8em; }
+
 .formio-component-address.formio-component-label-hidden > label.field-required {
   z-index: 1; }
   .formio-component-address.formio-component-label-hidden > label.field-required ~ .address-autocomplete-container .address-autocomplete-remove-value-icon {
@@ -1087,11 +1099,13 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-content,
-.formbuilder .formio-component-form {
+.formbuilder .formio-component-form,
+.formbuilder .formio-component-datasource {
   border: 2px dashed #ddd; }
 
 .formbuilder .formio-component-form,
-.formbuilder .formio-component-hidden {
+.formbuilder .formio-component-hidden,
+.formbuilder .formio-component-datasource {
   height: 3em;
   text-align: center;
   color: #aaa;

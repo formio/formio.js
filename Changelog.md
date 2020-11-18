@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - VPAT-431 Fixed issue when CKEditor text size styles were missing in forms (content components)
  - FJS-1440: fixed an issue where hidden page is dispalyed in wizard navigation bar and wizard data is cleared after navigating to such page
 
+#### Changed
+ - Upgrade i18next@19.8.4, jwt-decode@3.1.2, marked@1.2.4, webpack-stream@6.1.1, vanilla-picker@2.11.0, babel-loader@8.2.1, dialog-polyfill@0.5.4, moment-timezone@0.5.32
+
 ### 4.12.1
 #### Changed
  - No changes. Released 4.12.1-rc.28 as official release.

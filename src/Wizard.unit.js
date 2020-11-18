@@ -41,7 +41,7 @@ describe('Wizard tests', () => {
 
           const prevPageBtn = formWithHiddenPage.refs[`${formWithHiddenPage.wizardKey}-previous`];
           prevPageBtn.dispatchEvent(clickEvent);
-          
+
           setTimeout(() => {
             assert.equal(formWithHiddenPage.page, 0);
             assert.equal(formWithHiddenPage.element.querySelector('[name="data[number]"]').value, 555);
