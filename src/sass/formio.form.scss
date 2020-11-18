@@ -1137,6 +1137,24 @@ div[data-oembed-url] {
   border-right: solid 5px hsl(0, 0%, 80%);
 }
 
+.formio-component-content {
+  & .text-tiny {
+    font-size: 0.7em;
+  }
+
+  & .text-small {
+    font-size: 0.85em;
+  }
+
+  & .text-big {
+    font-size: 1.4em;
+  }
+
+  & .text-huge {
+    font-size: 1.8em;
+  }
+}
+
 .formio-component-address.formio-component-label-hidden {
   & > label.field-required {
     z-index: 1;
