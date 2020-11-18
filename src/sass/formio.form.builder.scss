@@ -68,12 +68,14 @@
 
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-content,
-.formbuilder .formio-component-form {
+.formbuilder .formio-component-form,
+.formbuilder .formio-component-datasource {
   border: 2px dashed #ddd;
 }
 
 .formbuilder .formio-component-form,
-.formbuilder .formio-component-hidden {
+.formbuilder .formio-component-hidden,
+.formbuilder .formio-component-datasource {
   height: 3em;
   text-align: center;
   color: #aaa;
