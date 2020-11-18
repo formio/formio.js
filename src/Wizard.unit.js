@@ -10,10 +10,50 @@ import wizard3 from '../test/forms/conditionalWizardPages';
 import wizard4 from '../test/forms/wizardWithSimpleConditionalPage';
 import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
 import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
+import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import formWithSignature from '../test/forms/formWithSignature';
 
 describe('Wizard tests', () => {
+  it('Should not clear wizard data when navigating between wizard pages with hidden panel', function(done) {
+    const formElement = document.createElement('div');
+    const formWithHiddenPage = new Wizard(formElement);
+
+    formWithHiddenPage.setForm(wizardWithHiddenPanel).then(() => {
+      const clickEvent = new Event('click');
+      const inputEvent = new Event('input');
+
+      assert.equal(formWithHiddenPage.pages.length, 2);
+
+      const page1Field = formWithHiddenPage.element.querySelector('[name="data[number]"]');
+
+      page1Field.value = '555';
+      page1Field.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        assert.equal(formWithHiddenPage.element.querySelector('[name="data[number]"]').value, 555);
+
+        const nextPageBtn = formWithHiddenPage.refs[`${formWithHiddenPage.wizardKey}-next`];
+        nextPageBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(formWithHiddenPage.page, 1);
+
+          const prevPageBtn = formWithHiddenPage.refs[`${formWithHiddenPage.wizardKey}-previous`];
+          prevPageBtn.dispatchEvent(clickEvent);
+          
+          setTimeout(() => {
+            assert.equal(formWithHiddenPage.page, 0);
+            assert.equal(formWithHiddenPage.element.querySelector('[name="data[number]"]').value, 555);
+
+            done();
+          }, 250);
+        }, 200);
+      }, 100);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should show signature submission in HTML render mode', function(done) {
     const formElement = document.createElement('div');
     const formWithSignatureHTMLMode = new Wizard(formElement, {
