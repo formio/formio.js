@@ -3906,6 +3906,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#removerowcomponents",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-removeRowComponents",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#removeRowComponents",
+    "method"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#render",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-render",
     "src/components/datagrid/DataGrid.js~DataGridComponent#render",

@@ -216,10 +216,34 @@ import disableSubmitButton from &apos;../test/forms/disableSubmitButton&apos;;
 import formWithAddressComponent from &apos;../test/forms/formWithAddressComponent&apos;;
 import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&apos;;
 import nestedFormInsideDataGrid from &apos;../test/forms/dataGrid-nestedForm&apos;;
+import formWithDataGrid from &apos;../test/forms/formWithDataGrid&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should remove dataGrid extra rows and components after setting value with less row number&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithDG = new Webform(formElement);
+
+    formWithDG.setForm(formWithDataGrid.form).then(() =&gt; {
+    formWithDG.setSubmission(formWithDataGrid.submission3rows);
+
+      setTimeout(() =&gt; {
+        assert.equal(formWithDG.components[0].rows.length, 3);
+        assert.equal(formWithDG.components[0].components.length, 3);
+
+        formWithDG.setSubmission(formWithDataGrid.submission1row);
+
+        setTimeout(() =&gt; {
+          assert.equal(formWithDG.components[0].rows.length, 1);
+          assert.equal(formWithDG.components[0].components.length, 1);
+
+          done();
+        }, 200);
+      }, 100);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should not delete/change date value in dataGrid after adding new row&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);

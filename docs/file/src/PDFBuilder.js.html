@@ -266,7 +266,7 @@ export default class PDFBuilder extends WebformBuilder {
           subgroups: this.groups[groupKey].subgroups.map((group) =&gt; this.renderTemplate(&apos;builderSidebarGroup&apos;, {
             group,
             groupKey: group.key,
-            groupId: `builder-sidebar-${groupKey}`,
+            groupId: `group-container-${groupKey}`,
             subgroups: []
           })),
         })),
