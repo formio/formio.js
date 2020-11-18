@@ -231,6 +231,7 @@ export default class ButtonComponent extends Field {
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
     this.disabled = this.shouldDisabled;
+    this.setDisabled(this.refs.button, this.disabled);
 
     function getUrlParameter(name) {
       name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
