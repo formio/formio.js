@@ -103,6 +103,26 @@ export default class PDFBuilder extends WebformBuilder {
     return result;
   }
 
+  attachLoader(element) {
+    this.loadRefs(element, {
+      'sidebar-loader': 'single'
+    });
+    const sidebarLoader = this.refs['sidebar-loader'];
+    if (sidebarLoader && sidebarLoader.parentNode) {
+      sidebarLoader.parentNode.appendChild(sidebarLoader);
+    }
+  }
+
+  removeLoader(element) {
+    this.loadRefs(element, {
+      'sidebar-loader': 'single'
+    });
+    const sidebarLoader = this.refs['sidebar-loader'];
+    if (sidebarLoader && sidebarLoader.parentNode) {
+      sidebarLoader.parentNode.removeChild(sidebarLoader);
+    }
+  }
+
   attach(element) {
     // PDF Upload
     if (!this.hasPDF) {
@@ -115,6 +135,7 @@ export default class PDFBuilder extends WebformBuilder {
         'uploadProgressWrapper': 'single',
         'dragDropText': 'single'
       });
+      this.removeLoader(element);
       this.addEventListener(this.refs['pdf-upload-button'], 'click', (event) => {
         event.preventDefault();
       });
@@ -170,16 +191,16 @@ export default class PDFBuilder extends WebformBuilder {
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
         iframeDropzone: 'single',
-        'sidebar-container': 'multiple',
-        'sidebar-loader': 'single',
+        'sidebar-container': 'multiple'
       });
 
-      this.afterAttach();
+      this.afterAttach(element);
       return this.element;
     });
   }
 
-  afterAttach() {
+  afterAttach(element) {
+    this.attachLoader(element);
     this.on('saveComponent', (component) => {
       this.webform.postMessage({ name: 'updateElement', data: component });
     });
@@ -188,10 +209,7 @@ export default class PDFBuilder extends WebformBuilder {
     });
     if (this.refs['sidebar-loader']) {
       this.webform.on('iframe-ready', () => {
-        const sidebarLoader = this.refs['sidebar-loader'];
-        if (sidebarLoader && sidebarLoader.parentNode) {
-          sidebarLoader.parentNode.removeChild(sidebarLoader);
-        }
+        this.removeLoader(element);
       }, true);
     }
     this.initIframeEvents();
