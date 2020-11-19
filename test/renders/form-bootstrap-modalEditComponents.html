@@ -24,6 +24,29 @@
         </div>
       </div>
     </div>
+    <div class="formio-component-modal-wrapper formio-component-modal-wrapper-textfield" ref="componentModalWrapper">
+      <div ref="openModalWrapper"></div>
+      <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
+        <div class="formio-dialog-overlay" ref="modalOverlay"></div>
+        <div class="formio-dialog-content" ref="modalContents">
+          <div ref="modalContents">
+            <div id="textfield" class="form-group has-feedback formio-component formio-component-textfield formio-component-textfield " ref="component">
+              <label class="col-form-label " for="textfield-textfield">
+                TextField
+              </label>
+              <div ref="element">
+                <input ref="input" name="data[textfield]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="textfield-textfield"></input>
+              </div>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+            <div class="formio-dialog-buttons">
+              <button class="btn btn-success formio-dialog-button" ref="modalSave">Save</button>
+            </div>
+          </div>
+          <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="close" ref="modalClose"></button>
+        </div>
+      </div>
+    </div>
     <div class="formio-component-modal-wrapper formio-component-modal-wrapper-selectboxes" ref="componentModalWrapper">
       <div ref="openModalWrapper"></div>
       <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">

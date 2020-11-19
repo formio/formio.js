@@ -36,7 +36,7 @@ export default class NestedComponent extends Field {
   set collapsed(value) {
     this._collapsed = value;
     this.redraw();
-    if (!value) {
+    if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
   }
@@ -211,9 +211,14 @@ export default class NestedComponent extends Field {
     originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
-    const [key, ...remainingPath] = path;
+    let key = path.shift();
+    const remainingPath = path;
     let comp = null;
     let possibleComp = null;
+
+    if (_.isNumber(key)) {
+      key = remainingPath.shift();
+    }
 
     if (!_.isString(key)) {
       return comp;
@@ -390,6 +395,12 @@ export default class NestedComponent extends Field {
     return comp;
   }
 
+  beforeFocus() {
+    if (this.parent && 'beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+  }
+
   render(children) {
     // If already rendering, don't re-render.
     return super.render(children || this.renderTemplate(this.templateName, {
@@ -534,7 +545,7 @@ export default class NestedComponent extends Field {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    components = components || this.getComponents();
+    components = components && _.isArray(components) ? components : this.getComponents();
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
@@ -632,6 +643,13 @@ export default class NestedComponent extends Field {
       component.detach();
     });
     super.detach();
+  }
+
+  clear() {
+    this.components.forEach(component => {
+      component.clear();
+    });
+    super.clear();
   }
 
   destroy() {

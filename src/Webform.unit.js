@@ -29,14 +29,411 @@ import {
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
   propertyActions,
+  formWithEditGridAndNestedDraftModalRow,
+  formWithDateTimeComponents,
+  formWithCollapsedPanel,
+  formWithCustomFormatDate
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
-// import Formio from './Formio';
-// import { APIMock } from '../test/APIMock';
+import nestedModalWizard from '../test/forms/nestedModalWizard';
+import disableSubmitButton from '../test/forms/disableSubmitButton';
+import formWithAddressComponent from '../test/forms/formWithAddressComponent';
+import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
+import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
+import formWithDataGrid from '../test/forms/formWithDataGrid';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should remove dataGrid extra rows and components after setting value with less row number', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDG = new Webform(formElement);
+
+    formWithDG.setForm(formWithDataGrid.form).then(() => {
+    formWithDG.setSubmission(formWithDataGrid.submission3rows);
+
+      setTimeout(() => {
+        assert.equal(formWithDG.components[0].rows.length, 3);
+        assert.equal(formWithDG.components[0].components.length, 3);
+
+        formWithDG.setSubmission(formWithDataGrid.submission1row);
+
+        setTimeout(() => {
+          assert.equal(formWithDG.components[0].rows.length, 1);
+          assert.equal(formWithDG.components[0].components.length, 1);
+
+          done();
+        }, 200);
+      }, 100);
+    }).catch((err) => done(err));
+  });
+
+  it('Should not delete/change date value in dataGrid after adding new row', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDate = new Webform(formElement);
+
+    formWithDate.setForm(formWithCustomFormatDate).then(() => {
+      const clickEvent = new Event('click');
+
+      const dateCompInputWidget = formWithDate.element.querySelector('.formio-component-textField').querySelector('.flatpickr-input').widget;
+      const dateAltFormat = dateCompInputWidget.calendar.config.altFormat;
+      dateCompInputWidget.calendar.setDate('30-05-2020', true, dateAltFormat);
+
+      const dateCompInputWidget1 = formWithDate.element.querySelector('.formio-component-dateTime').querySelector('.flatpickr-input').widget;
+      const dateAltFormat1 = dateCompInputWidget1.calendar.config.altFormat;
+      dateCompInputWidget1.calendar.setDate('30-05-2020', true, dateAltFormat1);
+
+      const dateCompInputWidget2 = formWithDate.element.querySelector('.formio-component-textField2').querySelector('.flatpickr-input').widget;
+      const dateAltFormat2 = dateCompInputWidget2.calendar.config.altFormat;
+      dateCompInputWidget2.calendar.setDate('30-05-2020', true, dateAltFormat2);
+
+      setTimeout(() => {
+      const dateCompAltInput = formWithDate.element.querySelector('.formio-component-textField').querySelector('.flatpickr-input');
+      const dateComp = formWithDate.element.querySelector('.formio-component-textField').querySelector('[type="text"]');
+
+      const dateCompAltInput1 = formWithDate.element.querySelector('.formio-component-dateTime').querySelector('.flatpickr-input');
+      const dateComp1 = formWithDate.element.querySelector('.formio-component-dateTime').querySelector('[type="text"]');
+
+      const dateCompAltInput2 = formWithDate.element.querySelector('.formio-component-textField2').querySelector('.flatpickr-input');
+      const dateComp2 = formWithDate.element.querySelector('.formio-component-textField2').querySelector('[type="text"]');
+
+      assert.equal(dateCompAltInput.value,'30-05-2020');
+      assert.equal(dateComp.value,'30-05-2020');
+
+      assert.equal(dateCompAltInput1.value,'2020-05-30T00:00:00');
+      assert.equal(dateComp1.value,'30-05-2020');
+
+      assert.equal(dateCompAltInput2.value,'2020-05-30T00:00:00');
+      assert.equal(dateComp2.value,'30-05-2020');
+
+      const addNewRowBtn = formWithDate.element.querySelector('.formio-button-add-row');
+      addNewRowBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const dataGridRows = formWithDate.element.querySelectorAll('[ref="datagrid-dataGrid-row"]');
+        assert.equal(dataGridRows.length, 2);
+
+        const dateCompAltInputAfterAddingRow = formWithDate.element.querySelectorAll('.formio-component-textField')[0].querySelector('.flatpickr-input');
+        const dateCompAfterAddingRow = formWithDate.element.querySelectorAll('.formio-component-textField')[0].querySelector('[type="text"]');
+
+        const dateCompAltInputAfterAddingRow1 = formWithDate.element.querySelectorAll('.formio-component-dateTime')[0].querySelector('.flatpickr-input');
+        const dateCompAfterAddingRow1 = formWithDate.element.querySelectorAll('.formio-component-dateTime')[0].querySelector('[type="text"]');
+
+        const dateCompAltInputAfterAddingRow2 = formWithDate.element.querySelectorAll('.formio-component-textField2')[0].querySelector('.flatpickr-input');
+        const dateCompAfterAddingRow2 = formWithDate.element.querySelectorAll('.formio-component-textField2')[0].querySelector('[type="text"]');
+
+        assert.equal(dateCompAltInputAfterAddingRow.value,'30-05-2020');
+        assert.equal(dateCompAfterAddingRow.value,'30-05-2020');
+
+        assert.equal(dateCompAltInputAfterAddingRow1.value,'2020-05-30T00:00:00');
+        assert.equal(dateCompAfterAddingRow1.value,'30-05-2020');
+
+        assert.equal(dateCompAltInputAfterAddingRow2.value,'2020-05-30T00:00:00');
+        assert.equal(dateCompAfterAddingRow2.value,'30-05-2020');
+
+        done();
+       }, 150);
+      }, 50);
+    }).catch((err) => done(err));
+  });
+
+  it('Should open collapsed panel with invalid components inside container that is inside the panel on submit', function(done) {
+    const formElement = document.createElement('div');
+    const formWithPanel = new Webform(formElement);
+
+    formWithPanel.setForm(formWithCollapsedPanel).then(() => {
+      const clickEvent = new Event('click');
+
+      assert.equal(formWithPanel.components[0].collapsed, true);
+
+      const submitBtn = formWithPanel.element.querySelector('[name="data[submit]"]');
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(formWithPanel.components[0].collapsed, false);
+        done();
+      }, 200);
+    }).catch((err) => done(err));
+  });
+
+  it('Should correctly set date after collapsing and openning the panel', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDate = new Webform(formElement);
+
+    formWithDate.setForm(formWithDateTimeComponents).then(() => {
+      const clickEvent = new Event('click');
+
+      const dateTimeCompInputWidget = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('.flatpickr-input').widget;
+      const dateTimeAltFormat = dateTimeCompInputWidget.calendar.config.altFormat;
+      dateTimeCompInputWidget.calendar.setDate('05-05-2020T00:00:00', true, dateTimeAltFormat);
+
+      const textFieldDateCompWidget = formWithDate.element.querySelector('.formio-component-textField1').querySelector('.flatpickr-input').widget;
+      const textFieldDateAltFormat = textFieldDateCompWidget.calendar.config.altFormat;
+      textFieldDateCompWidget.calendar.setDate('04-04-2020T00:00:00', true, textFieldDateAltFormat);
+
+      setTimeout(() => {
+      const dateTimeCompAltInput = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('.flatpickr-input');
+      const textFieldDateCompAltInput = formWithDate.element.querySelector('.formio-component-textField1').querySelector('.flatpickr-input');
+
+      const dateTimeComp = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('[type="text"]');
+      const textFieldDateComp = formWithDate.element.querySelector('.formio-component-textField1').querySelector('[type="text"]');
+
+      assert.equal(dateTimeCompAltInput.value,'2020-05-05T00:00:00');
+      assert.equal(textFieldDateCompAltInput.value,'2020-04-04T00:00:00');
+
+      assert.equal(dateTimeComp.value,'05-05-2020');
+      assert.equal(textFieldDateComp.value,'04-04-2020');
+
+      const panelCollapseBtn = formWithDate.element.querySelector('.formio-collapse-icon');
+      panelCollapseBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const panelBody = formWithDate.element.querySelector('.panel-body');
+        assert.equal(!!panelBody, false);
+
+        formWithDate.element.querySelector('.formio-collapse-icon').dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const dateTimeCompAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('[type="text"]');
+          const textFieldDateCompAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-textField1').querySelector('[type="text"]');
+
+          const dateTimeCompAltInputAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-dateTime1').querySelector('.flatpickr-input');
+          const textFieldDateCompAltInputAfterOpenningPanel = formWithDate.element.querySelector('.formio-component-textField1').querySelector('.flatpickr-input');
+
+          assert.equal(dateTimeCompAltInputAfterOpenningPanel.value,'2020-05-05T00:00:00');
+          assert.equal(textFieldDateCompAltInputAfterOpenningPanel.value,'2020-04-04T00:00:00');
+
+          assert.equal(dateTimeCompAfterOpenningPanel.value,'05-05-2020');
+          assert.equal(textFieldDateCompAfterOpenningPanel.value,'04-04-2020');
+          done();
+         }, 250);
+       }, 150);
+      }, 50);
+    }).catch((err) => done(err));
+  });
+
+  it(`Should show confirmation alert when clicking X btn or clicking outside modal window after editing
+  editGrid modal draft row`, function(done) {
+   const formElement = document.createElement('div');
+   const formWithNestedDraftModals = new Webform(formElement);
+
+   formWithNestedDraftModals.setForm(formWithEditGridAndNestedDraftModalRow).then(() => {
+     const clickEvent = new Event('click');
+     const inputEvent = new Event('input');
+
+     const addRowBtn = formWithNestedDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
+     //click to open row in modal view
+     addRowBtn.dispatchEvent(clickEvent);
+
+     setTimeout(() => {
+       const rowModal = document.querySelector('.formio-dialog-content');
+       //checking if row modal was openned
+       assert.equal(!!rowModal, true);
+
+       const textField = rowModal.querySelector('[name="data[textField]"]');
+       textField.value = 'test';
+       //input value
+       textField.dispatchEvent(inputEvent);
+
+       setTimeout(() => {
+         //checking if the value was set inside the field
+         assert.equal(textField.value, 'test');
+
+         const saveModalBtn = rowModal.querySelector('.btn-primary');
+         //clicking save button to save row draft
+         saveModalBtn.dispatchEvent(clickEvent);
+
+         setTimeout(() => {
+          const editGridRows = formWithNestedDraftModals.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
+          //checking if the editGrid row was created
+          assert.equal(editGridRows.length, 1);
+
+          const editRowBtn =  editGridRows[0].querySelector('.editRow');
+          //click the edit btn to open the row again
+          editRowBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const rowModalForEditing = document.querySelector('.formio-dialog-content');
+            const textFieldInputForEditing = rowModalForEditing.querySelector('[name="data[textField]"]');
+            textFieldInputForEditing.value = 'changed value';
+            //changing textfield value
+            textFieldInputForEditing.dispatchEvent(inputEvent);
+
+            setTimeout(() => {
+              //checking if the textfield value was changed
+              const inputValue = textFieldInputForEditing.value;
+              assert.equal(inputValue, 'changed value');
+
+              const XCloseBtn = rowModalForEditing.querySelector('[ref="dialogClose"]');
+              //clicking modal close btn
+              XCloseBtn.dispatchEvent(clickEvent);
+
+                setTimeout(() => {
+                  const dialogWindows = document.querySelectorAll('.formio-dialog-content');
+                  //checking if confirmation dialog is openned
+                  assert.equal(dialogWindows.length, 2);
+
+                  const dialogCancelBtn = document.querySelector('[ref="dialogCancelButton"]');
+                  //closing confirmation dialog
+                  dialogCancelBtn.dispatchEvent(clickEvent);
+
+                  setTimeout(() => {
+                    const dialogWindowsAfterClosingConfirmation = document.querySelectorAll('.formio-dialog-content');
+                    //checking if confirmation dialig is closed
+                    assert.equal(dialogWindowsAfterClosingConfirmation.length, 1);
+
+                    const overlay = document.querySelector('[ref="dialogOverlay"]');
+                    //clocking model overlay to open confirmation dialog again
+                    overlay.dispatchEvent(clickEvent);
+
+                    setTimeout(() => {
+                      const dialogWindowsAfterClickingOverlay = document.querySelectorAll('.formio-dialog-content');
+                      assert.equal(dialogWindowsAfterClickingOverlay.length, 2);
+
+                      document.body.innerHTML = '';
+                      done();
+                     }, 190);
+                   }, 170);
+                 }, 150);
+              }, 130);
+            }, 110);
+         }, 90);
+       }, 70);
+     }, 50);
+   }).catch((err) => done(err));
+ });
+
+  it('Should not show validation errors when saving invalid draft row in dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDraftModals = new Webform(formElement);
+
+    formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() => {
+      const clickEvent = new Event('click');
+      const inputEvent = new Event('input');
+
+      const addRowBtn =  formWithDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
+      //click to open row in modal view
+      addRowBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const rowModal = document.querySelector('.formio-dialog-content');
+        //checking if row modal was openned
+        assert.equal(!!rowModal, true);
+
+        const textFieldInput = rowModal.querySelector('[name="data[editGrid][0][textField]"]');
+        textFieldInput.value = 'test';
+        //input value in one of required row fields
+        textFieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          //checking if the value was set inside the field
+          assert.equal(textFieldInput.value, 'test');
+
+          const saveModalBtn = rowModal.querySelector('.btn-primary');
+          //clicking save button to save row draft
+          saveModalBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const editGridRows = formWithDraftModals.element.querySelectorAll( '[ref="editgrid-editGrid-row"]');
+            //checking if the editGrid row was created
+            assert.equal(editGridRows.length, 1);
+            const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
+            const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error');
+
+            assert.equal(!!rowError, false);
+            assert.equal(!!editGridError, false);
+
+            done();
+          }, 200);
+        }, 100);
+      }, 50);
+    }).catch((err) => done(err));
+  });
+
+  it('Should show dataGrid rows when viewing submission in dataGrid with initEmpty option', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDataGridInitEmptyOption = new Webform(formElement);
+
+    formWithDataGridInitEmptyOption.setForm(formWithDataGridInitEmpty.form).then(() => {
+      formWithDataGridInitEmptyOption.setSubmission(formWithDataGridInitEmpty.submission2);
+
+      setTimeout(() => {
+        const dataGridRows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+        const dataGrid1Rows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+
+        assert.equal(dataGrid1Rows.length, 1);
+        assert.equal(dataGridRows.length, 1);
+
+        formWithDataGridInitEmptyOption.setSubmission(formWithDataGridInitEmpty.submission3);
+
+        setTimeout(() => {
+          const dataGridRows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+          const dataGrid1Rows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+          const dataGridSecondRowComponentValue = formWithDataGridInitEmptyOption.element.querySelector('[name = "data[dataGrid][1][textField]"]');
+          const dataGrid1FirstRowComponentValue = formWithDataGridInitEmptyOption.element.querySelector('[name = "data[dataGrid1][0][textArea]"]');
+          const dataGrid1SecondRowComponentValue = formWithDataGridInitEmptyOption.element.querySelector('[name = "data[dataGrid1][1][number]"]');
+
+          assert.equal(dataGrid1Rows1.length, 2);
+          assert.equal(dataGridRows1.length, 2);
+          assert.equal(dataGridSecondRowComponentValue.value, 'test2');
+          assert.equal(dataGrid1FirstRowComponentValue.textContent, 'test3');
+          assert.equal(dataGrid1SecondRowComponentValue.value, 222);
+
+          done();
+        }, 300);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should not show dataGrid rows when empty submission is set for dataGrid with initEmpty', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDataGridInitEmptyOption = new Webform(formElement);
+
+    formWithDataGridInitEmptyOption.setForm(formWithDataGridInitEmpty.form).then(() => {
+      formWithDataGridInitEmptyOption.setSubmission(formWithDataGridInitEmpty.submission1);
+
+      setTimeout(() => {
+        const dataGridRows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+        const dataGrid1Rows =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+
+        assert.equal(dataGridRows.length, 0);
+        assert.equal(dataGrid1Rows.length, 0);
+
+        formWithDataGridInitEmptyOption.setSubmission({ data: {} });
+        setTimeout(() => {
+          const dataGridRows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid-row"]');
+          const dataGrid1Rows1 =  formWithDataGridInitEmptyOption.element.querySelectorAll('[ref = "datagrid-dataGrid1-row"]');
+
+          assert.equal(dataGridRows1.length, 0);
+          assert.equal(dataGrid1Rows1.length, 0);
+
+          done();
+        }, 300);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should show address submission data inside dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const formWithAddress = new Webform(formElement);
+
+    formWithAddress.setForm(formWithAddressComponent.form).then(() => {
+      formWithAddress.setSubmission({ data: formWithAddressComponent.submission });
+
+      setTimeout(() => {
+        const addressInput = formWithAddress.element.querySelector('[name = "data[dataGrid][0][address]"]');
+
+        assert.equal(addressInput.value, formWithAddressComponent.submission.dataGrid[0].address['formatted_address']);
+
+        done();
+      }, 300);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should validate field on blur inside panel', function(done) {
     const formElement = document.createElement('div');
     const formWithBlurValidation = new Webform(formElement);
@@ -182,7 +579,8 @@ describe('Webform tests', function() {
 
                   setTimeout(() => {
                     const alertErrorMessagesAfterInputtingInvalidValues = document.querySelector('.formio-dialog-content').querySelectorAll('[ref="messageRef"]');
-                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length,2);
+                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
+                    document.body.innerHTML = '';
 
                     done();
                   }, 280);
@@ -419,13 +817,20 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should treat double colons as i18next namespace separators', () => {
+  it('Should treat double colons as i18next namespace separators', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
+    form.setForm({
+      title: 'Test Form',
+      components: []
+    }).then(() => {
+      const str = 'Test: this is only a test';
 
-    const str = 'Test: this is only a test';
-    assert.equal(form.t(str), str);
-    assert.equal(form.t(`Namespace::${str}`), str);
+      assert.equal(form.t(str), str);
+      assert.equal(form.t(`Namespace::${str}`), str);
+
+      done();
+    }).catch(done);
   });
 
   it('Should translate form errors in alerts', () => {
@@ -1084,6 +1489,64 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
+  it('Should render Nested Modal Wizard Form correclty', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement);
+    form.setForm(nestedModalWizard).then(() => {
+      const openModalRef = form.element.querySelector('[ref="openModal"]');
+      assert(openModalRef, 'Should render Open Modal button');
+      const wizard = form.components[1].subForm;
+      wizard.setPage(1);
+      setTimeout(() => {
+        const openModalRef = form.element.querySelector('[ref="openModal"]');
+        assert(openModalRef, 'Should render Open Modal button after the page was changed');
+        done();
+      }, 250);
+    }).catch(done);
+  });
+
+  it('Should set calculated value correctly', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement);
+    form.setForm(disableSubmitButton).then(() => {
+      const textField = form.getComponent(['textField']);
+      const fileA = form.getComponent(['upload']);
+      const fileB = form.getComponent(['file']);
+      const submitButton = form.getComponent(['submit']);
+      assert.equal(submitButton.disabled, false, 'Button should be enabled at the beginning');
+
+      const simulateFileUploading = (comp, debounce = 250) => {
+        const filePromise = new Promise((resolve) => {
+          setTimeout(() => resolve(), debounce);
+        });
+        filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));
+        comp.emit('fileUploadingStart', filePromise);
+      };
+
+      simulateFileUploading(fileA, 1000);
+      textField.setValue('12345');
+      setTimeout(() => {
+        assert.equal(submitButton.filesUploading.length, 1);
+        assert.equal(submitButton.isDisabledOnInvalid, true, 'Should be disabled on invalid due to the invalid TextField\'s value');
+        assert.equal(submitButton.disabled, true, 'Should be disabled');
+        simulateFileUploading(fileB, 500);
+        setTimeout(() => {
+          assert.equal(submitButton.filesUploading.length, 2);
+          assert.equal(submitButton.disabled, true, 'Should be disabled');
+          setTimeout(() => {
+            assert.equal(submitButton.filesUploading.length, 0);
+            assert.equal(submitButton.disabled, true, 'Should be disabled since TextField is still invalid');
+            textField.setValue('123');
+            setTimeout(() => {
+              assert.equal(submitButton.disabled, false, 'Should be enabled');
+              done();
+            }, 250);
+          }, 650);
+        }, 100);
+      }, 250);
+    }).catch(done);
+  });
+
   describe('set/get nosubmit', () => {
     it('should set/get nosubmit flag and emit nosubmit event', () => {
       const form = new Webform(null, {});
@@ -1352,6 +1815,39 @@ describe('Webform tests', function() {
   });
 
   describe('Calculate Value with allowed manual override', () => {
+    const initialSubmission = {
+      data: {
+        dataGrid: [
+          { label: 'yes', value: 'yes' },
+          { label: 'no', value: 'no' },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
+    const submissionWithOverridenValues = {
+      data: {
+        dataGrid: [
+          { label: 'yes', value: 'y' },
+          { label: 'no', value: 'n' },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
+    const submissionWithOverridenValues2 = {
+      data: {
+        dataGrid: [
+          { label: 'yes2', value: 'yes2' },
+          { label: 'no', value: 'n' },
+        ],
+        checkbox: false,
+        submit: false
+      },
+      metadata: {}
+    };
     it('Should reset all values correctly.', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
@@ -1359,49 +1855,28 @@ describe('Webform tests', function() {
         const dataGrid = form.getComponent('dataGrid');
         dataGrid.setValue([{ label: 'yes' }, { label: 'no' }]);
         setTimeout(() => {
-          expect(form.submission).to.deep.equal({
-            data: {
-              dataGrid: [
-                { label: 'yes', value: 'yes' },
-                { label: 'no', value: 'no' },
-              ],
-              checkbox: false,
-              submit: false
-            },
-            metadata: {}
-          });
+          expect(form.submission).to.deep.equal(initialSubmission);
           const row1Value = form.getComponent(['dataGrid', 0, 'value']);
           const row2Value = form.getComponent(['dataGrid', 1, 'value']);
           row1Value.setValue('y');
           row2Value.setValue('n');
 
           setTimeout(() => {
-            expect(form.submission).to.deep.equal({
-              data: {
-                dataGrid: [
-                  { label: 'yes', value: 'y' },
-                  { label: 'no', value: 'n' },
-                ],
-                checkbox: false,
-                submit: false
-              },
-              metadata: {}
-            });
+            expect(form.submission).to.deep.equal(submissionWithOverridenValues);
             const row1Label = form.getComponent(['dataGrid', 0, 'label']);
             row1Label.setValue('yes2');
             setTimeout(() => {
-              expect(form.submission).to.deep.equal({
-                data: {
-                  dataGrid: [
-                    { label: 'yes2', value: 'yes2' },
-                    { label: 'no', value: 'n' },
-                  ],
-                  checkbox: false,
-                  submit: false
-                },
-                metadata: {}
+              expect(form.submission).to.deep.equal(submissionWithOverridenValues2);
+              form.setSubmission(submissionWithOverridenValues).then(() => {
+                setTimeout(() => {
+                  const tabs = form.getComponent(['tabs']);
+                  tabs.setTab(1);
+                  setTimeout(() => {
+                    expect(form.submission).to.deep.equal(submissionWithOverridenValues);
+                    done();
+                  }, 250);
+                }, 150);
               });
-              done();
             }, 250);
           }, 250);
         }, 250);
@@ -1445,15 +1920,17 @@ describe('Webform tests', function() {
           a: true,
           b: true
         },
+        textfield: 'My Text',
         select: 'f',
         submit: true
       }
     };
-    const componentsKeys = ['checkbox', 'selectBoxes', 'select'];
+    const componentsKeys = ['checkbox', 'selectBoxes', 'select', 'textfield'];
     const expectedValues = {
       checkbox: 'Yes',
       selectBoxes: 'a, b',
-      select: 'f'
+      select: 'f',
+      textfield: 'My Text'
     };
     it('Test rendering previews after the submission is set', (done) => {
       const formElement = document.createElement('div');
@@ -1468,6 +1945,29 @@ describe('Webform tests', function() {
             assert.equal(preview.textContent.replace(/\n|\t/g, '').trim(), expectedValues[key]);
           });
           done();
+        });
+      }).catch(done);
+    });
+
+    it('Test updating previews after aboting changes', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(modalEditComponents).then(() => {
+        return form.setSubmission(submission, { fromSubmission: true }).then(() => {
+          const comp = form.getComponent(['textfield']);
+          comp.componentModal.openModal();
+          Harness.dispatchEvent('input', comp.componentModal.refs.modalContents, '[name="data[textfield]"]', (el) => {
+            el.value = 'My Text v2';
+          });
+          setTimeout(() => {
+            const fakeEvent = {
+              preventDefault: () => {}
+            };
+            comp.componentModal.closeModalHandler(fakeEvent);
+            const preview = comp.componentModal.refs.openModal;
+            assert.equal(preview.textContent.replace(/\n|\t/g, '').trim(), 'My Text');
+            done();
+          }, 100);
         });
       }).catch(done);
     });
@@ -1558,6 +2058,22 @@ describe('Webform tests', function() {
       const subFormComponents = form.components[1].subForm.components;
       assert.deepEqual([subFormComponents[0].disabled, subFormComponents[1].disabled], [true, true], 'Components that are inside of disabled Nested Form should be disabled');
       done();
+    }).catch(done);
+  });
+
+  it('Should restore value correctly if NestedForm is saved as reference', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    form.setForm(nestedFormInsideDataGrid).then(() => {
+      const nestedForm = form.getComponent(['dataGrid', 0, 'form1']);
+      const submissionWithIdOnly = { _id: '1232', data: {} };
+      nestedForm.dataValue = { ...submissionWithIdOnly };
+      nestedForm.restoreValue();
+
+      setTimeout(() => {
+        assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, 'Should not set to defaultValue after restore');
+        done();
+      }, 150);
     }).catch(done);
   });
 

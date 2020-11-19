@@ -61,8 +61,8 @@ class ValidationChecker {
             return true;
           }
 
-          // Skip if value is empty
-          if (!value || _.isEmpty(value)) {
+          // Skip if value is empty object or falsy
+          if (!value || _.isObjectLike(value) && _.isEmpty(value)) {
             return true;
           }
 
@@ -101,10 +101,9 @@ class ValidationChecker {
             else if (_.isArray(value)) {
               query[path] = { $all: value };
             }
-            else if (_.isObject(value)) {
+            else if (_.isObject(value) || _.isNumber(value)) {
               query[path] = { $eq: value };
             }
-
             // Only search for non-deleted items
             query.deleted = { $eq: null };
 
@@ -809,9 +808,9 @@ class ValidationChecker {
     }
   }
 
-  validate(component, validatorName, value, data, index, row, async) {
+  validate(component, validatorName, value, data, index, row, async, conditionallyVisible) {
     // Skip validation for conditionally hidden components
-    if (!component.conditionallyVisible()) {
+    if (!conditionallyVisible) {
       return false;
     }
 
@@ -879,7 +878,7 @@ class ValidationChecker {
 
     const validateCustom     = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
-
+    const conditionallyVisible = component.conditionallyVisible();
     // Run primary validators
     const resultsOrPromises = _(component.validators).chain()
       .map(validatorName => {
@@ -897,10 +896,10 @@ class ValidationChecker {
 
         // Handle the case when there is no values defined and it is required.
         if (validatorName === 'required' && !values.length) {
-          return [this.validate(component, validatorName, null, data, 0, row, async)];
+          return [this.validate(component, validatorName, null, data, 0, row, async, conditionallyVisible)];
         }
 
-        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row, async));
+        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row, async, conditionallyVisible));
       })
       .flatten()
       .value();
@@ -908,11 +907,11 @@ class ValidationChecker {
     // Run the "unique" pseudo-validator
     component.component.validate = component.component.validate || {};
     component.component.validate.unique = component.component.unique;
-    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data, 0, data, async));
+    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data, 0, data, async, conditionallyVisible));
 
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
-    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async));
+    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async, conditionallyVisible));
 
     // Define how results should be formatted
     const formatResults = results => {

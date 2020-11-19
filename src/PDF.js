@@ -111,6 +111,8 @@ export default class PDF extends Webform {
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
       // Post the form to the iframe
+      this.form.base = Formio.getBaseUrl();
+      this.form.projectUrl = Formio.getProjectUrl();
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden

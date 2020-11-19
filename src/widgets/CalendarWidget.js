@@ -162,8 +162,13 @@ export default class CalendarWidget extends InputWidget {
             };
 
             if (this._input) {
+              const dateValue = this._input.value;
               // Create a new flatpickr.
               this.calendar = new Flatpickr(this._input, this.settings);
+              if (dateValue) {
+                this.calendar.setDate(dateValue, true, this.settings.altFormat);
+              }
+
               this.calendar.altInput.addEventListener('input', (event) => {
                 if (this.settings.allowInput) {
                   this.settings.manualInputValue = event.target.value;
@@ -188,7 +193,19 @@ export default class CalendarWidget extends InputWidget {
               // Make sure we commit the value after a blur event occurs.
               this.addEventListener(this.calendar._input, 'blur', (event) => {
                 if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
-                  this.calendar.setDate(this.calendar.input.value, true, this.settings.altFormat);
+                  const inputValue = this.calendar.input.value;
+                  const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+
+                  this.calendar.setDate(dateValue, true, this.settings.altFormat);
+                }
+              });
+
+              // FJS-1103: When hit the enter button, the field not saving the year correctly
+              this.addEventListener(this.calendar.altInput, 'keydown', (event) => {
+                if (event.keyCode === 13) {
+                  this.calendar.altInput.blur();
+                  this.calendar.close();
+                  event.stopPropagation();
                 }
               });
             }
@@ -272,7 +289,7 @@ export default class CalendarWidget extends InputWidget {
       return disabledDates.map((item) => {
         const dateMask = /\d{4}-\d{2}-\d{2}/g;
         const dates = item.match(dateMask);
-        if (dates.length) {
+        if (dates && dates.length) {
           return dates.length === 1 ?  item.match(dateMask)[0] : {
             from: item.match(dateMask)[0],
             to: item.match(dateMask)[1],
@@ -351,6 +368,7 @@ export default class CalendarWidget extends InputWidget {
    */
   setValue(value) {
     if (!this.calendar) {
+      value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
     if (value) {
@@ -371,8 +389,7 @@ export default class CalendarWidget extends InputWidget {
     if (this.settings.saveAs === 'text') {
       return this.getDateValue(value, format);
     }
-
-    return formatDate(value, format, this.timezone);
+    return formatDate(value, format, this.timezone, convertFormatToMoment(this.calendar ? this.valueFormat : this.settings.dateFormat));
   }
 
   setPlaceholder(input) {

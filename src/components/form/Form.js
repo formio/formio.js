@@ -31,7 +31,7 @@ export default class FormComponent extends Component {
       title: 'Nested Form',
       icon: 'wpforms',
       group: 'premium',
-      documentation: 'http://help.form.io/userguide/#form',
+      documentation: '/userguide/#form',
       weight: 110,
       schema: FormComponent.schema()
     };
@@ -95,14 +95,7 @@ export default class FormComponent extends Component {
       this.formSrc += `/v/${this.component.revision}`;
     }
 
-    return this.createSubForm().then(() => {
-      setTimeout(() => {
-        if (this.root && this.root.subWizards) {
-          this.root.subWizards.push(this);
-          this.emit('subWizardsUpdated');
-        }
-      }, 0);
-    });
+    return this.createSubForm();
   }
 
   get dataReady() {
@@ -348,6 +341,13 @@ export default class FormComponent extends Component {
         this.valueChanged = this.hasSetValue;
         return this.subForm;
       });
+    }).then((subForm) => {
+      if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
+        this.root.subWizards.push(this);
+        this.emit('subWizardsUpdated', subForm);
+      }
+
+      return subForm;
     });
     return this.subFormReady;
   }
@@ -534,14 +534,14 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty();
+    return value === null || _.isEqual(value, this.emptyValue) || (this.areAllComponentsEmpty(value.data) && !value._id);
   }
 
-  areAllComponentsEmpty() {
+  areAllComponentsEmpty(data) {
     let res = true;
     if (this.subForm) {
       this.subForm.everyComponent((comp) => {
-        res &= comp.isEmpty();
+        res &= comp.isEmpty(_.get(data, comp.key) || comp.dataValue);
       });
     }
     else {

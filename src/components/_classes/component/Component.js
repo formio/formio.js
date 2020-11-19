@@ -8,9 +8,10 @@ import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
+import Widgets from '../../../widgets';
 
 const isIEBrowser = FormioUtils.getIEBrowserVersion();
 const CKEDITOR_URL = isIEBrowser
@@ -884,6 +885,11 @@ export default class Component extends Element {
     return input;
   }
 
+  get widget() {
+    const widget = this.component.widget && Widgets[this.component.widget.type] ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    return widget;
+  }
+
   getBrowserLanguage() {
     const nav = window.navigator;
     const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
@@ -960,8 +966,10 @@ export default class Component extends Element {
   }
 
   getModalPreviewTemplate() {
+    const dataValue = this.component.type === 'password' ? this.dataValue.replace(/./g, '•') : this.dataValue;
+
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
+      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value')
     });
   }
 
@@ -1016,6 +1024,7 @@ export default class Component extends Element {
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
     if (this.element.id) {
       this.id = this.element.id;
+      this.component.id = this.id;
     }
 
     this.loadRefs(element, {
@@ -1112,7 +1121,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && changePath === refreshData) && changed && changed.instance &&
+      (changePath && getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
@@ -1121,12 +1130,15 @@ export default class Component extends Element {
     }
   }
 
-  checkRefreshOn(changes, flags) {
+  checkRefreshOn(changes, flags = {}) {
     changes = changes || [];
-    if (!changes.length && flags?.changed) {
+    if (flags.noRefresh) {
+      return;
+    }
+    if (!changes.length && flags.changed) {
       changes = [flags.changed];
     }
-    const refreshOn = this.component.refreshOn || this.component.redrawOn;
+    const refreshOn = flags.fromBlur ? this.component.refreshOnBlur : this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
@@ -1213,7 +1225,12 @@ export default class Component extends Element {
   getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
-      return value;
+      if (!this.widget || !value) {
+        return value;
+      }
+      else {
+        return this.widget.getValueAsString(value);
+      }
     }
     if (Array.isArray(value)) {
       const values = [];
@@ -1244,7 +1261,8 @@ export default class Component extends Element {
     if (value === null || value === undefined) {
       return '';
     }
-    return value.toString();
+    const stringValue = value.toString();
+    return this.sanitize(stringValue);
   }
 
   getView(value, options) {
@@ -1515,7 +1533,6 @@ export default class Component extends Element {
     super.removeEventListeners();
     this.tooltips.forEach(tooltip => tooltip.dispose());
     this.tooltips = [];
-    this.refs.input = [];
   }
 
   hasClass(element, className) {
@@ -1799,6 +1816,8 @@ export default class Component extends Element {
       messages = [messages];
     }
 
+    messages = _.uniqBy(messages, message => message.message);
+
     if (this.refs.messageContainer) {
       this.setContent(this.refs.messageContainer, messages.map((message) =>
         this.renderTemplate('message', message)
@@ -1828,7 +1847,8 @@ export default class Component extends Element {
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
-      !this.rootPristine &&
+      // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
+      (!this.rootPristine || getDataParentComponent(this)?.hasScopedChildren) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -1857,7 +1877,9 @@ export default class Component extends Element {
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
-      this.pristine = false;
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
       this.addClass(this.getElement(), 'formio-modified');
     }
 
@@ -2048,7 +2070,7 @@ export default class Component extends Element {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
         editor.setOptions(settings);
-        editor.getSession().setMode(`ace/mode/${settings.mode}`);
+        editor.getSession().setMode(settings.mode);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
       });
@@ -2177,15 +2199,25 @@ export default class Component extends Element {
       );
     }
 
-    if (this.defaultMask) {
-      if (typeof defaultValue === 'string') {
-        defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
-        if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
-          defaultValue = '';
+    const checkMask = (value) => {
+      if (typeof value === 'string') {
+        value = conformToMask(value, this.defaultMask).conformedValue;
+        if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
+          value = '';
         }
       }
       else {
-        defaultValue = '';
+        value = '';
+      }
+      return value;
+    };
+
+    if (this.defaultMask) {
+      if (Array.isArray(defaultValue)) {
+        defaultValue = defaultValue.map(checkMask);
+      }
+      else {
+        defaultValue = checkMask(defaultValue);
       }
     }
 
@@ -2253,6 +2285,10 @@ export default class Component extends Element {
       this.visible
     ) {
       this.redraw();
+    }
+    if (this.options.renderMode === 'html' && changed) {
+      this.redraw();
+      return changed;
     }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
@@ -2434,21 +2470,18 @@ export default class Component extends Element {
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (!this.component.calculateValue || shouldBeCleared) {
+    // Handle all cases when calculated values should not fire.
+    if (
+      this.options.readOnly ||
+      !this.component.calculateValue ||
+      shouldBeCleared ||
+      (this.options.server && !this.component.calculateServer) ||
+      flags.dataSourceInitialLoading
+    ) {
       return false;
     }
 
-    // If this component allows overrides.
-    const allowOverride = this.component.allowCalculateOverride;
-
-    let firstPass = false;
     const dataValue = this.dataValue;
-
-    // First pass, the calculatedValue is undefined.
-    if (this.calculatedValue === undefined) {
-      firstPass = true;
-      this.calculatedValue = null;
-    }
 
     // Calculate the new value.
     let calculatedValue = this.evaluate(this.component.calculateValue, {
@@ -2461,53 +2494,43 @@ export default class Component extends Element {
       calculatedValue = this.emptyValue;
     }
 
-    // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
-    if (flags.isReordered && allowOverride) {
-      this.calculatedValue = calculatedValue;
+    const changed = !_.isEqual(dataValue, calculatedValue);
+
+    // Do not override calculations on server if they have calculateServer set.
+    if (this.component.allowCalculateOverride) {
+      const firstPass = (this.calculatedValue === undefined);
+      if (firstPass) {
+        this.calculatedValue = null;
+      }
+      const newCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(calculatedValue));
+      const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
+      const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
+      const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
+      // Check to ensure that the calculated value is different than the previously calculated value.
+      if (previousCalculatedValue && previousChanged && !calculationChanged) {
+        return false;
+      }
+
+      if (flags.isReordered || !calculationChanged) {
+        return false;
+      }
+
+      if (flags.fromSubmission && this.component.persistent === true) {
+        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+        this.calculatedValue = calculatedValue;
+        return false;
+      }
+
+      // If this is the firstPass, and the dataValue is different than to the calculatedValue.
+      if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
+        // Return that we have a change so it will perform another pass.
+        return true;
+      }
     }
 
-    const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
-    const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
-
-    const normCurr = this.normalizeValue(currentCalculatedValue);
-    const normNew = this.normalizeValue(newCalculatedValue);
-
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      this.calculatedValue &&
-      !_.isEqual(dataValue, currentCalculatedValue) &&
-      _.isEqual(newCalculatedValue, currentCalculatedValue)) {
-      return false;
-    }
-
-    if (_.isEqual(normCurr, normNew) && allowOverride) {
-      return false;
-    }
-
-    if (flags.fromSubmission && allowOverride && this.component.persistent === true) {
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
-
-    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
-    if (
-      allowOverride &&
-      firstPass &&
-      !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue)) &&
-      !_.isEqual(calculatedValue, this.convertNumberOrBoolToString(calculatedValue))
-    ) {
-      // Return that we have a change so it will perform another pass.
-      this.calculatedValue = calculatedValue;
-      return true;
-    }
-    // Set the new value.
-    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
-    ? false
-    : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
-    return changed;
+
+    return changed ? this.setValue(calculatedValue, flags) : false;
   }
 
   /**
@@ -2646,7 +2669,10 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changes, flags);
+    // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
+    if (!flags.fromBlur) {
+      this.checkRefreshOn(flags.changes, flags);
+    }
 
     if (flags.noCheck) {
       return true;
@@ -2654,7 +2680,7 @@ export default class Component extends Element {
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
 
-    if (flags.noValidate && !flags.validateOnInit) {
+    if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
         this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
       }

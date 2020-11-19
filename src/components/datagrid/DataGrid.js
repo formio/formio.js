@@ -22,7 +22,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       title: 'Data Grid',
       icon: 'th',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#datagrid',
+      documentation: '/userguide/#datagrid',
       weight: 30,
       schema: DataGridComponent.schema()
     };
@@ -72,7 +72,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get emptyValue() {
-    return [{}];
+    return this.initEmpty ? [] : [{}];
   }
 
   get addAnotherPosition() {
@@ -89,10 +89,13 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
+    const isBuilderMode = this.builderMode;
+    const isEmptyInit = this.initEmpty;
     // Ensure we have one and only one row in builder mode.
-    if (this.builderMode) {
-      return [{}];
+    if (isBuilderMode || (isEmptyInit && !this.dataValue.length)) {
+      return isEmptyInit && !isBuilderMode ? [] : [{}];
     }
+
     const value = super.defaultValue;
     let defaultValue;
 
@@ -357,7 +360,19 @@ export default class DataGridComponent extends NestedArrayComponent {
       this.dataValue.push({});
     }
 
-    this.rows[index] = this.createRowComponents(this.dataValue[index], index);
+    let row;
+    const dataValue = this.dataValue;
+    const defaultValue =  this.defaultValue;
+
+    if (this.initEmpty && defaultValue[index]) {
+      row = defaultValue[index];
+      dataValue[index] = row;
+    }
+    else {
+      row = dataValue[index];
+    }
+
+    this.rows[index] = this.createRowComponents(row, index);
     this.checkConditions();
     this.triggerChange();
     this.redraw();
@@ -366,9 +381,13 @@ export default class DataGridComponent extends NestedArrayComponent {
   removeRow(index) {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
-    _.each(row, (component) => this.removeComponent(component));
+    this.removeRowComponents(row);
     this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
+  }
+
+  removeRowComponents(row) {
+    _.each(row, (component) => this.removeComponent(component));
   }
 
   getRowValues() {
@@ -395,7 +414,13 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
     });
     // Delete any extra rows.
-    const removed = !!this.rows.splice(rowValues.length).length;
+    const removedRows = this.rows.splice(rowValues.length);
+    const removed = !!removedRows.length;
+    // Delete components of extra rows (to make sure that this.components contain only components of exisiting rows)
+    if (removed) {
+      removedRows.forEach(row => this.removeRowComponents(row));
+    }
+
     if (!init && (added || removed)) {
       this.redraw();
     }
@@ -512,10 +537,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (value && !value.length && !this.initEmpty) {
       value.push({});
     }
-
+    const isSettingSubmission = flags.fromSubmission && !_.isEqual(value, this.emptyValue);
     const changed = this.hasChanged(value, this.dataValue);
-    if (this.initRows) {
-      this.dataValue = value;
+
+    this.dataValue = value;
+
+    if (this.initRows || isSettingSubmission) {
       this.createRows();
     }
     this.rows.forEach((row, rowIndex) => {

@@ -2277,5 +2277,44 @@ describe('Formio.js Tests', () => {
         });
       assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
     });
+
+    it('Should render after form submission if renderMode = \'html\'', (done) => {
+      const formJson =  {
+        components: [{
+          label: 'Text Field',
+          tableView: true,
+          key: 'textField',
+          type: 'textfield',
+          input: true
+        },
+        {
+          label: 'Phone Number',
+          tableView: true,
+          key: 'phoneNumber',
+          type: 'phoneNumber',
+          input: true
+        }]
+      };
+      const element = document.createElement('div');
+      Formio.createForm(element, formJson, { renderMode: 'html' })
+        .then(form => {
+          const textField = form.getComponent('textField');
+          const phoneNumber = form.getComponent('phoneNumber');
+          assert.equal(textField.element.querySelector('[ref=value]').innerHTML, '-');
+          assert.equal(phoneNumber.element.querySelector('[ref=value]').innerHTML, '-');
+          form.submission = {
+            data: {
+              textField: 'textField',
+              phoneNumber: '88005553535'
+            }
+          };
+          setTimeout(() => {
+            assert.equal(textField.element.querySelector('[ref=value]').innerHTML, 'textField');
+            assert.equal(phoneNumber.element.querySelector('[ref=value]').innerHTML, '88005553535');
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
   });
 });

@@ -90,7 +90,7 @@ export default class PDFBuilder extends WebformBuilder {
           subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
             group,
             groupKey: group.key,
-            groupId: `builder-sidebar-${groupKey}`,
+            groupId: `group-container-${groupKey}`,
             subgroups: []
           })),
         })),
@@ -188,7 +188,10 @@ export default class PDFBuilder extends WebformBuilder {
     });
     if (this.refs['sidebar-loader']) {
       this.webform.on('iframe-ready', () => {
-        this.refs['sidebar-loader'].remove();
+        const sidebarLoader = this.refs['sidebar-loader'];
+        if (sidebarLoader && sidebarLoader.parentNode) {
+          sidebarLoader.parentNode.removeChild(sidebarLoader);
+        }
       }, true);
     }
     this.initIframeEvents();
@@ -429,7 +432,7 @@ export default class PDFBuilder extends WebformBuilder {
     );
 
     // Set a unique key for this component.
-    BuilderUtils.uniquify([this.webform.component], schema);
+    BuilderUtils.uniquify([this.webform._form], schema);
     this.webform._form.components.push(schema);
 
     schema.overlay = {
