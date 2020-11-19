@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
+import { boolValue } from '../../utils/utils';
 
 export default class RadioComponent extends Field {
   static schema(...extend) {
@@ -48,6 +49,11 @@ export default class RadioComponent extends Field {
 
   get isRadio() {
     return this.component.inputType === 'radio';
+  }
+
+  init() {
+    super.init();
+    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
   }
 
   render() {
@@ -110,6 +116,17 @@ export default class RadioComponent extends Field {
       }
     });
     return value;
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+    const values = this.component.values;
+    if (values) {
+      return values.findIndex(({ value: optionValue }) => this.normalizeValue(optionValue) === value) !== -1;
+    }
+    return false;
   }
 
   getValueAsString(value) {
