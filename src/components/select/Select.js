@@ -1442,7 +1442,7 @@ export default class SelectComponent extends Field {
     let rawItems = [];
     switch (this.component.dataSrc) {
       case 'values':
-        rawItems =this.component.data.values;
+        rawItems = this.component.data.values;
         break;
       case 'json':
         rawItems = this.component.data.json;
@@ -1452,7 +1452,7 @@ export default class SelectComponent extends Field {
         break;
     }
 
-    if (typeof rawItems == 'string') {
+    if (typeof rawItems === 'string') {
       try {
         rawItems = JSON.parse(rawItems);
       }
