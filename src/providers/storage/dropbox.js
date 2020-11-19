@@ -1,4 +1,5 @@
 import NativePromise from 'native-promise-only';
+import { setXhrHeaders } from './xhr';
 const dropbox = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
     return new NativePromise(((resolve, reject) => {
@@ -39,6 +40,9 @@ const dropbox = (formio) => ({
       xhr.onabort = reject;
 
       xhr.open('POST', `${formio.formUrl}/storage/dropbox`);
+
+      setXhrHeaders(formio, xhr);
+
       const token = formio.getToken();
       if (token) {
         xhr.setRequestHeader('x-jwt-token', token);

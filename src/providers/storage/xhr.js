@@ -1,5 +1,19 @@
 import NativePromise from 'native-promise-only';
 import _trim from 'lodash/trim';
+export const setXhrHeaders = (formio, xhr) => {
+  const { headers } = formio.options;
+  if (headers) {
+    const ValidHeaders = {
+      'Content-Disposition': true,
+    };
+
+    for (const header in headers) {
+      if (ValidHeaders[header]) {
+        xhr.setRequestHeader(header, headers[header]);
+      }
+    }
+  }
+};
 const XHR = {
   trim(text) {
     return _trim(text, '/');
@@ -29,6 +43,11 @@ const XHR = {
           if (typeof progressCallback === 'function') {
             xhr.upload.onprogress = progressCallback;
           }
+
+          xhr.openAndSetHeaders = (...params) => {
+            xhr.open(...params);
+            setXhrHeaders(formio, xhr);
+          };
 
           // Fire on network error.
           xhr.onerror = (err) => {

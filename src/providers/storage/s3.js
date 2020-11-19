@@ -5,23 +5,9 @@ const s3 = (formio) => ({
     return XHR.upload(formio, 's3', (xhr, response) => {
       response.data.fileName = fileName;
       response.data.key = XHR.path([response.data.key, dir, fileName]);
-      const setXhrHeaders = (xhrToSet) => {
-        const { headers } = formio.options;
-        if (headers) {
-          const ValidHeaders = {
-            'Content-Disposition': true,
-          }
-          for (const header in headers) {
-            if (ValidHeaders[header]) {
-              xhrToSet.setRequestHeader(header, headers[header]);
-            }
-          }
-        }
-      }
       if (response.signed) {
-        xhr.open('PUT', response.signed);
+        xhr.openAndSetHeaders('PUT', response.signed);
         xhr.setRequestHeader('Content-Type', file.type);
-        setXhrHeaders(xhr);
         return file;
       }
       else {
@@ -30,8 +16,7 @@ const s3 = (formio) => ({
           fd.append(key, response.data[key]);
         }
         fd.append('file', file);
-        xhr.open('POST', response.url);
-        setXhrHeaders(xhr);
+        xhr.openAndSetHeaders('POST', response.url);
         return fd;
       }
     }, file, fileName, dir, progressCallback, groupPermissions, groupId).then((response) => {
