@@ -112,6 +112,11 @@ export default class RadioComponent extends Field {
     return value;
   }
 
+  hasValue(data) {
+    const dataValue = _.get(data || this.data, this.key);
+    return super.hasValue(data) && this.component.values?.findIndex(({ value }) => value === dataValue) !== -1;
+  }
+
   getValueAsString(value) {
     if (!value) {
       return '';

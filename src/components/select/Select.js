@@ -211,6 +211,43 @@ export default class SelectComponent extends Field {
     }
   }
 
+  getOptionsValues() {
+    let rawItems = [];
+    switch (this.component.dataSrc) {
+      case 'values':
+        rawItems =this.component.data.values;
+        break;
+      case 'json':
+        rawItems = this.component.data.json;
+        break;
+      case 'custom':
+        rawItems = this.getCustomItems();
+        break;
+    }
+
+    if (typeof rawItems == 'string') {
+      try {
+        rawItems = JSON.parse(rawItems);
+      }
+      catch (err) {
+        console.warn(err.message);
+        rawItems = [];
+      }
+    }
+
+    return rawItems.map((item) => this.getOptionValue(this.itemValue(item)));
+  }
+
+  getOptionValue(value) {
+    return _.isObject(value) && this.isEntireObjectDisplay()
+    ? this.normalizeSingleValue(value)
+    : _.isObject(value)
+      ? value
+      : _.isNull(value)
+        ? this.emptyValue
+        : String(this.normalizeSingleValue(value));
+  }
+
   /**
    * Adds an option to the select dropdown.
    *
@@ -223,13 +260,7 @@ export default class SelectComponent extends Field {
       ? this.component.idPath.split('.').reduceRight((obj, key) => ({ [key]: obj }), id)
       : {};
     const option = {
-      value: _.isObject(value) && this.isEntireObjectDisplay()
-        ? this.normalizeSingleValue(value)
-        : _.isObject(value)
-          ? value
-          : _.isNull(value)
-            ? this.emptyValue
-            : String(this.normalizeSingleValue(value)),
+      value: this.getOptionValue(value),
       label: label,
       ...idPath
     };
@@ -1298,6 +1329,18 @@ export default class SelectComponent extends Field {
     }
 
     return super.normalizeValue(this.normalizeSingleValue(value));
+  }
+
+  hasValue(data) {
+    const superHasValue = super.hasValue(data);
+    if (this.isSelectResource || this.isSelectURL || !superHasValue) {
+      return superHasValue;
+    }
+
+    const optionsValues = this.getOptionsValues();
+    const dataValue = _.get(data || this.data, this.key);
+
+    return optionsValues.findIndex((value) => this.normalizeSingleValue(value) === dataValue) !== -1;
   }
 
   setValue(value, flags = {}) {
