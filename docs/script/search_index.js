@@ -1488,6 +1488,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#attachloader",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-attachLoader",
+    "src/PDFBuilder.js~PDFBuilder#attachLoader",
+    "method"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#classname",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-className",
     "src/PDFBuilder.js~PDFBuilder#className",
@@ -1606,6 +1612,12 @@ window.esdocSearchIndex = [
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-projectUrl",
     "src/PDFBuilder.js~PDFBuilder#projectUrl",
     "member"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#removeloader",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-removeLoader",
+    "src/PDFBuilder.js~PDFBuilder#removeLoader",
+    "method"
   ],
   [
     "src/pdfbuilder.js~pdfbuilder#render",

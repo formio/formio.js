@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.2-rc.2
+#### Added
+ - UIP-261: Select: add use exact search option
+
+#### Fixed
+ - UIP-251: File: hide file drop area when file is uploading
+ - FJS-1428: Fixes an issue where lazy loading Select shows item only after the second click
+ - FMG-89 | PDF form | When the PDF is being uploaded, text in the upload progress bar is too small
+ - FMG-133 (1.96.0 Regression) When switching to PDF mode, you just get the spinning circle. I am not able to add a PDF
+ - FJS-1449: Fixing issues where the DateTime component is erroneously triggering changes.
+
 ### 4.12.2-rc.1
 #### Fixed
  - FMG-86 | Edit Form page | Accordions within the Resource Fields accordion do not expand/collapse when the ‘Wizard’ or the ‘PDF’ is selected in the Form Select drop down
