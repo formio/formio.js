@@ -180,7 +180,7 @@ import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
-import { getRandomComponentId } from &apos;../../utils/utils&apos;;
+import { getRandomComponentId, boolValue } from &apos;../../utils/utils&apos;;
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -234,7 +234,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat([&apos;select&apos;]);
+    this.validators = this.validators.concat([&apos;select&apos;, &apos;onlyAvailableItems&apos;]);
 
     // Trigger an update.
     let updateArgs = [];
@@ -400,14 +400,8 @@ export default class SelectComponent extends Field {
       ? this.component.idPath.split(&apos;.&apos;).reduceRight((obj, key) =&gt; ({ [key]: obj }), id)
       : {};
     const option = {
-      value: _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
-        ? this.normalizeSingleValue(value)
-        : _.isObject(value)
-          ? value
-          : _.isNull(value)
-            ? this.emptyValue
-            : String(this.normalizeSingleValue(value)),
-      label: label,
+      value: this.getOptionValue(value),
+      label,
       ...idPath
     };
 
@@ -1570,6 +1564,88 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.getOptionsValues();
+
+    if (values) {
+      if (_.isObject(value)) {
+        const compareComplexValues = (optionValue) =&gt; {
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
+
+          if (!_.isObject(normalizedOptionValue)) {
+            return false;
+          }
+
+          try {
+            return (JSON.stringify(normalizedOptionValue) === JSON.stringify(value));
+          }
+          catch (err) {
+            console.warn.error(&apos;Error while comparing items&apos;, err);
+            return false;
+          }
+        };
+
+        return values.findIndex((optionValue) =&gt; compareComplexValues(optionValue)) !== -1;
+      }
+
+      return values.findIndex((optionValue) =&gt; this.normalizeSingleValue(optionValue) === value) !== -1;
+    }
+    return false;
+  }
+
+  /**
+   * Performs required transformations on the initial value to use in selectOptions
+   * @param {*} value
+   */
+  getOptionValue(value) {
+    return _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
+    ? this.normalizeSingleValue(value)
+    : _.isObject(value)
+      ? value
+      : _.isNull(value)
+        ? this.emptyValue
+        : String(this.normalizeSingleValue(value));
+  }
+
+  /**
+   * If component has static values (values, json) or custom values, returns an array of them
+   * @returns {Array&lt;*&gt;|undefiened}
+   */
+  getOptionsValues() {
+    let rawItems = [];
+    switch (this.component.dataSrc) {
+      case &apos;values&apos;:
+        rawItems = this.component.data.values;
+        break;
+      case &apos;json&apos;:
+        rawItems = this.component.data.json;
+        break;
+      case &apos;custom&apos;:
+        rawItems = this.getCustomItems();
+        break;
+    }
+
+    if (typeof rawItems === &apos;string&apos;) {
+      try {
+        rawItems = JSON.parse(rawItems);
+      }
+      catch (err) {
+        console.warn(err.message);
+        rawItems = [];
+      }
+    }
+
+    if (!Array.isArray(rawItems)) {
+      return;
+    }
+
+    return rawItems.map((item) =&gt; this.getOptionValue(this.itemValue(item)));
   }
 
   /**

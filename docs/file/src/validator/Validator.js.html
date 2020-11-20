@@ -223,6 +223,19 @@ class ValidationChecker {
           return !component.isEmpty(value);
         }
       },
+      onlyAvailableItems: {
+        key: &apos;validate.onlyAvailableItems&apos;,
+        method: &apos;validateValueAvailability&apos;,
+        message(component) {
+          return component.t(component.errorMessage(&apos;valueIsNotAvailable&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          return !boolValue(setting);
+        }
+      },
       unique: {
         key: &apos;validate.unique&apos;,
         message(component) {

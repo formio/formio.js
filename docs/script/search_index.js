@@ -5868,6 +5868,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/radio/radio.js~radiocomponent#init",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-init",
+    "src/components/radio/Radio.js~RadioComponent#init",
+    "method"
+  ],
+  [
     "src/components/radio/radio.js~radiocomponent#inputinfo",
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-get-inputInfo",
     "src/components/radio/Radio.js~RadioComponent#inputInfo",
@@ -5908,6 +5914,18 @@ window.esdocSearchIndex = [
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-updateValue",
     "src/components/radio/Radio.js~RadioComponent#updateValue",
     "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#validatevalueavailability",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-validateValueAvailability",
+    "src/components/radio/Radio.js~RadioComponent#validateValueAvailability",
+    "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#validators",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-member-validators",
+    "src/components/radio/Radio.js~RadioComponent#validators",
+    "member"
   ],
   [
     "src/components/radio/radio.js~radiocomponent.builderinfo",
@@ -6342,6 +6360,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/select/select.js~selectcomponent#getoptionvalue",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-getOptionValue",
+    "src/components/select/Select.js~SelectComponent#getOptionValue",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#getoptionsvalues",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-getOptionsValues",
+    "src/components/select/Select.js~SelectComponent#getOptionsValues",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#getvalue",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-getValue",
     "src/components/select/Select.js~SelectComponent#getValue",
@@ -6603,6 +6633,12 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#validatemultiple",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-validateMultiple",
     "src/components/select/Select.js~SelectComponent#validateMultiple",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#validatevalueavailability",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-validateValueAvailability",
+    "src/components/select/Select.js~SelectComponent#validateValueAvailability",
     "method"
   ],
   [

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.2-rc.3
+#### Added
+ - FJS-1380: Adds a validation which checks if the value is available within component's values setting
+
 ### 4.12.2-rc.2
 #### Added
  - UIP-261: Select: add use exact search option
