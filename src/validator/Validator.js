@@ -47,6 +47,19 @@ class ValidationChecker {
           return !component.isEmpty(value);
         }
       },
+      onlyAvailableItems: {
+        key: 'validate.onlyAvailableItems',
+        method: 'validateValueAvailability',
+        message(component) {
+          return component.t(component.errorMessage('valueIsNotAvailable'), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          return !boolValue(setting);
+        }
+      },
       unique: {
         key: 'validate.unique',
         message(component) {
