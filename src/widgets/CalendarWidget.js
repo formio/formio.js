@@ -61,6 +61,8 @@ export default class CalendarWidget extends InputWidget {
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
+
+    this.initialized = false;
   }
 
   /**
@@ -119,7 +121,9 @@ export default class CalendarWidget extends InputWidget {
         this.settings.isManuallyOverriddenValue = false;
       }
 
-      this.emit('update');
+      if (this.initialized) {
+        this.emit('update');
+      }
     };
     this.settings.onOpen = () => this.hook('onCalendarOpen');
     this.settings.onClose = () => {
@@ -208,6 +212,10 @@ export default class CalendarWidget extends InputWidget {
                   event.stopPropagation();
                 }
               });
+
+              setTimeout(() => {
+                this.initialized = true;
+              }, 0);
             }
           });
       });
