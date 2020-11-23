@@ -488,6 +488,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.alert = null;
     }
     this.alert = new Alert(dialog.refs.dialogContents, this);
+    editRow.dialog = dialog;
 
     this.addEventListener(dialog, 'close', () => {
       if (!editRow.willBeSaved) {
@@ -497,6 +498,10 @@ export default class EditGridComponent extends NestedArrayComponent {
         this.alert.clear();
         this.alert = null;
       }
+
+      // Remove references to dialog elements to prevent possible in some cases memory leaks
+      delete editRow.confirmationDialog;
+      delete editRow.dialog;
     });
 
     dialog.refs.dialogContents.appendChild(this.ce('button', {
@@ -553,6 +558,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       close(event);
       dialogResult.reject();
     });
+
+    editRow.confirmationDialog = dialog;
     return promise;
   }
 
@@ -560,7 +567,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const editRow = this.editRows[rowIndex];
     const isAlreadyEditing = editRow.state === EditRowState.Editing || editRow.state === EditRowState.New;
     if (!editRow || isAlreadyEditing) {
-      return;
+      return NativePromise.resolve();
     }
     editRow.prevState = editRow.state;
     editRow.state = this.options.readOnly ? EditRowState.Viewing : EditRowState.Editing;
@@ -777,7 +784,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   validateRow(editRow, dirty) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
-    const shouldValidateDraft = (editRow.state === EditRowState.Draft && !this.pristine && !this.root.pristine && !this.hasOpenRows());
+    const shouldValidateDraft = editRow.state === EditRowState.Draft && !this.pristine && !this.root?.pristine && !this.hasOpenRows();
 
     if (editRow.state === EditRowState.Editing || dirty || shouldValidateDraft) {
       editRow.components.forEach(comp => {

@@ -396,6 +396,7 @@ describe('EditGrid Component', () => {
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {
         const editGrid = form.components[0];
+
         form.checkValidity(form._data, true, form._data);
         assert.equal(form.errors.length, 1);
         editGrid.addRow();
@@ -481,6 +482,53 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
+    it('Should not show row errors alerts if drafts enabled', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        editGrid.addRow();
+
+        setTimeout(() => {
+          editGrid.saveRow(0);
+
+          setTimeout(() => {
+            editGrid.editRow(0).then(() => {
+              const textField = form.getComponent(['editGrid', 0, 'form', 'textField']);
+
+              textField.setValue('someValue');
+
+              setTimeout(() => {
+                Harness.dispatchEvent('click', editGrid.editRows[0].dialog, '[ref="dialogClose"]');
+                setTimeout(() => {
+                  const dialog = editGrid.editRows[0].confirmationDialog;
+
+                  Harness.dispatchEvent('click', dialog, '[ref="dialogYesButton"]');
+
+                  setTimeout(() => {
+                    editGrid.editRow(0).then(() => {
+                      textField.setValue('someValue');
+
+                      setTimeout(() => {
+                        const errorAlert = editGrid.editRows[0].dialog.querySelector(`#error-list-${editGrid.id}`);
+                        assert.equal(errorAlert, null, 'Should be valid');
+                        done();
+                      }, 100);
+                    });
+                  }, 100);
+                }, 100);
+              }, 100);
+            });
+          }, 100);
+        }, 100);
+      }).catch(done)
+      .finally(() => {
+        ModalEditGrid.components[0].rowDrafts = false;
+      });
+    });
+
     // it('', (done) => {
     //   const formElement = document.createElement('div');
     //   const form = new Webform(formElement);
@@ -497,8 +545,6 @@ describe('EditGrid Component', () => {
       const component = form.getComponent(['editGrid']);
       component.addRow();
       setTimeout(() => {
-        // eslint-disable-next-line no-debugger
-        debugger;
         Harness.getInputValue(component, 'data[editGrid][0][checkbox]', true, 'checked');
         Harness.testComponentVisibility(component, '.formio-component-editGridChild', true);
         Harness.testComponentVisibility(component, '.formio-component-panelChild', true);
