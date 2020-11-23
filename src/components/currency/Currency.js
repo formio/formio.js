@@ -68,7 +68,7 @@ export default class CurrencyComponent extends NumberComponent {
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language,
     });
-    let numberPattern = `\\${affixes.prefix}[0-9`;
+    let numberPattern = `${affixes.prefix}[0-9`;
     numberPattern += this.decimalSeparator || '';
     numberPattern += this.delimiter || '';
     numberPattern += ']*';
