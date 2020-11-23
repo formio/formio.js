@@ -777,8 +777,9 @@ export default class EditGridComponent extends NestedArrayComponent {
   validateRow(editRow, dirty) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
+    const shouldValidateDraft = (editRow.state === EditRowState.Draft && !this.pristine && !this.root.pristine && !this.hasOpenRows());
 
-    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft && !this.pristine && !this.root.pristine && !this.hasOpenRows())) {
+    if (editRow.state === EditRowState.Editing || dirty || shouldValidateDraft) {
       editRow.components.forEach(comp => {
         if (!this.component.rowDrafts) {
           comp.setPristine(!dirty);
@@ -851,8 +852,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     let rowsEditing = false;
 
     this.editRows.forEach((editRow, index) => {
+      // Do not force setting row to invalid if drafts allowed
+      const isIvalidNonDraftRow = editRow.alerts && !this.component.rowDrafts;
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(editRow, editRow.alerts || dirty);
+      const rowValid = this.validateRow(editRow, isIvalidNonDraftRow || dirty);
 
       rowsValid &= rowValid;
 
