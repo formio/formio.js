@@ -394,7 +394,7 @@ export default class EditGridComponent extends NestedArrayComponent {
             const view = instance ? instance.getView(data || instance.dataValue) : '';
             // If there is an html tag in view, don't allow it to be injected in template
             const htmlTagRegExp = new RegExp('<(.*?)>');
-            return typeof view === 'string' && view.length && htmlTagRegExp.test(view)
+            return typeof view === 'string' && view.length && !instance.component?.template && htmlTagRegExp.test(view)
               ? `<input type="text" value="${view}" readonly/>`
               : view;
           },
