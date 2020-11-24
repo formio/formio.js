@@ -458,9 +458,11 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = false;
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
+          this.subForm.showAllErrors = false;
           this.dataValue = result.submission;
           return this.dataValue;
         }).catch(err => {
+          this.subForm.showAllErrors = true;
           if (rejectOnError) {
             this.subForm.onSubmissionError(err);
             return NativePromise.reject(err);
