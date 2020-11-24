@@ -392,10 +392,11 @@ export default class EditGridComponent extends NestedArrayComponent {
           getView: (component, data) => {
             const instance = flattenedComponents[component.key];
             const view = instance ? instance.getView(data || instance.dataValue) : '';
+
             // If there is an html tag in view, don't allow it to be injected in template
             const htmlTagRegExp = new RegExp('<(.*?)>');
             return typeof view === 'string' && view.length && !instance.component?.template && htmlTagRegExp.test(view)
-              ? `<input type="text" value="${view}" readonly/>`
+              ? `<input type="text" value="${view.replace(/"/g, '&quot;')}" readonly/>`
               : view;
           },
           state: this.editRows[rowIndex].state,
