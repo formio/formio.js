@@ -501,7 +501,7 @@ describe('EditGrid Component', () => {
               textField.setValue('someValue');
 
               setTimeout(() => {
-                Harness.dispatchEvent('click', editGrid.editRows[0].dialog, '[ref="dialogClose"]');
+                Harness.dispatchEvent('click', editGrid.editRows[0].dialog, `.editgrid-row-modal-${editGrid.id} [ref="dialogClose"]`);
                 setTimeout(() => {
                   const dialog = editGrid.editRows[0].confirmationDialog;
 

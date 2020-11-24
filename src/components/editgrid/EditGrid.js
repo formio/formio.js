@@ -325,7 +325,10 @@ export default class EditGridComponent extends NestedArrayComponent {
                 if (this.component.rowDrafts) {
                   this.validateRow(editRow, false);
 
-                  if (this.component.modal && editRow.errors && !!editRow.errors.length) {
+                  const hasErrors = editRow.errors && !!editRow.errors.length;
+                  const shouldShowRowErrorsAlert = this.component.modal && hasErrors && this.root?.submitted;
+
+                  if (shouldShowRowErrorsAlert) {
                     this.alert.showErrors(editRow.errors, false);
                     editRow.alerts = true;
                   }
@@ -482,13 +485,17 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.willBeSaved = false;
     const { components } = editRow;
     modalContent.innerHTML = this.renderComponents(components);
+
     const dialog = this.component.modal ? this.createModal(modalContent, {}, () => this.showDialog(rowIndex)) : undefined;
+    dialog.classList.add(`editgrid-row-modal-${this.id}`);
+
+    editRow.dialog = dialog;
+
     if (this.alert) {
       this.alert.clear();
       this.alert = null;
     }
     this.alert = new Alert(dialog.refs.dialogContents, this);
-    editRow.dialog = dialog;
 
     this.addEventListener(dialog, 'close', () => {
       if (!editRow.willBeSaved) {
@@ -540,6 +547,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
 
     const dialog = this.createModal(wrapper);
+    dialog.classList.add(`editgrid-row-modal-confirmation-${this.id}`);
+
     const close = (event) => {
       event.preventDefault();
       dialog.close();
@@ -777,6 +786,13 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
+  shouldValidateDraft(editRow) {
+    return editRow.state === EditRowState.Draft &&
+      !this.pristine &&
+      !this.root?.pristine &&
+      !this.hasOpenRows();
+  }
+
   hasOpenRows() {
     return this.editRows.some(row => this.isOpen(row));
   }
@@ -784,7 +800,10 @@ export default class EditGridComponent extends NestedArrayComponent {
   validateRow(editRow, dirty) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
-    const shouldValidateDraft = editRow.state === EditRowState.Draft && !this.pristine && !this.root?.pristine && !this.hasOpenRows();
+    const shouldValidateDraft = editRow.state === EditRowState.Draft &&
+      !this.pristine &&
+      !this.root?.pristine &&
+      !this.hasOpenRows();
 
     if (editRow.state === EditRowState.Editing || dirty || shouldValidateDraft) {
       editRow.components.forEach(comp => {
@@ -815,7 +834,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     editRow.errors = !valid ? this.errors.filter((err) => !errorsSnapshot.includes(err)) : null;
 
-    this.showRowErrorAlerts(editRow, !!valid);
+    if (!this.component.rowDrafts || this.root?.submitted) {
+      this.showRowErrorAlerts(editRow, !!valid);
+    }
 
     return !!valid;
   }
@@ -859,10 +880,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     let rowsEditing = false;
 
     this.editRows.forEach((editRow, index) => {
-      // Do not force setting row to invalid if drafts allowed
-      const isIvalidNonDraftRow = editRow.alerts && !this.component.rowDrafts;
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(editRow, isIvalidNonDraftRow || dirty);
+      const rowValid = this.validateRow(editRow, editRow.alerts || dirty);
 
       rowsValid &= rowValid;
 
