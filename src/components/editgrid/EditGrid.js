@@ -786,13 +786,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
-  shouldValidateDraft(editRow) {
-    return editRow.state === EditRowState.Draft &&
-      !this.pristine &&
-      !this.root?.pristine &&
-      !this.hasOpenRows();
-  }
-
   hasOpenRows() {
     return this.editRows.some(row => this.isOpen(row));
   }
