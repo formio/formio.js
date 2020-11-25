@@ -991,6 +991,11 @@ export default class WebformBuilder extends Component {
     if (!original) {
       original = parent.formioContainer.find((comp) => comp.id === component.id);
     }
+
+    if (original && parent.formioContainer.indexOf(original) === -1) {
+      original = parent.formioContainer.find((comp) => comp.id === original.id);
+    }
+
     const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
     if (remove && index !== -1) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
@@ -1131,23 +1136,34 @@ export default class WebformBuilder extends Component {
    */
   saveComponent(component, parent, isNew, original) {
     this.editForm.detach();
+
     const parentContainer = parent ? parent.formioContainer : this.container;
     const parentComponent = parent ? parent.formioComponent : this;
-    this.dialog.close();
     const path = parentContainer ? this.getComponentsPath(component, parentComponent.component) : '';
+
+    this.dialog.close();
+
     if (!original) {
       original = parent.formioContainer.find((comp) => comp.id === component.id);
     }
+
+    if (original && parentContainer.indexOf(original) === -1) {
+      original = parentContainer.find((comp) => comp.id === original.id);
+    }
+
     const index = parentContainer ? parentContainer.indexOf(original) : 0;
+
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
       let comp = null;
+
       parentComponent.getComponents().forEach((component) => {
         if (component.component.key === original.key) {
           comp = component;
         }
       });
+
       const originalComp = comp.component;
       const originalComponentSchema = comp.schema;
 
@@ -1160,6 +1176,7 @@ export default class WebformBuilder extends Component {
       else if (parentComponent && parentComponent.saveChildComponent) {
         parentComponent.saveChildComponent(submissionData);
       }
+
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
