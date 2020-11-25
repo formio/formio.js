@@ -1280,7 +1280,7 @@ export default class Webform extends NestedDataComponent {
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
-      this.emit('change', { isValid: true });
+      this.emit('change', { isValid: true }, { silent: true });
       return false;
     }
 
