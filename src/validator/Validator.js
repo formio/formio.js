@@ -56,7 +56,7 @@ class ValidationChecker {
             data: component.data
           });
         },
-        check(component, setting, value) {
+        check(component, setting) {
           return !boolValue(setting);
         }
       },

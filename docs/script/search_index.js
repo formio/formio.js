@@ -2400,6 +2400,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#_visible",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-member-_visible",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#_visible",
+    "member"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#addcomponent",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-addComponent",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#addComponent",
