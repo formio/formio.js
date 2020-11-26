@@ -173,6 +173,11 @@ export default class CurrencyComponent extends NumberComponent {
   addFocusBlurEvents(element) {
     super.addFocusBlurEvents(element);
 
+    this.addEventListener(element, 'focus', () => {
+      if (element.defaultValue === element.value) {
+        element.setSelectionRange(0, element.defaultValue.length);
+      }
+    });
     this.addEventListener(element, 'blur', () => {
       element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
     });
