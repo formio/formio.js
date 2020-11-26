@@ -135,12 +135,12 @@ export default class Wizard extends Webform {
     return `wizard-${this.id}`;
   }
 
-  get form() {
-    return this.wizard;
+  get wizard() {
+    return this.form;
   }
 
-  set form(value) {
-    super.form = value;
+  set wizard(form) {
+    this.setForm(form);
   }
 
   get buttons() {
@@ -733,14 +733,9 @@ export default class Wizard extends Webform {
     if (!form) {
       return;
     }
-
-    const wizardForm = _.cloneDeep(form);
-
-    this.wizard = wizardForm;
-    this.component.components = wizardForm.components || [];
+    this.component.components = form.components || [];
     this.setComponentSchema();
-
-    return super.setForm(wizardForm, flags);
+    return super.setForm(form, flags);
   }
 
   pageFieldLogicHandler() {
