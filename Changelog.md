@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.2-rc.5
+#### Fixed
+ - FJS-1466: focus on the default value in the currency field
+ - FJS-1470: fixed infinite loop in wizard with dataGrid
+
 ### 4.12.2-rc.4
 #### Fixed
  - FJS-1297: fix editing nested wizards
