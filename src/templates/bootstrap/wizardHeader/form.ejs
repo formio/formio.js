@@ -1,7 +1,7 @@
 <nav aria-label="navigation" id="{{ ctx.wizardKey }}-header">
   <ul class="pagination">
     {% ctx.panels.forEach(function(panel, index) { %}
-    <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="">
+    <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="cursor: pointer;">
       <span class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(panel.title)}}</span>
     </li>
     {% }) %}
