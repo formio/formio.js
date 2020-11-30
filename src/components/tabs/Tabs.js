@@ -200,6 +200,6 @@ export default class TabsComponent extends NestedComponent {
     }
 
     const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) => invalidTabsIndexes.includes(tabIndex));
-    this.setErrorClasses(invalidTabs, true, true);
+    this.setErrorClasses(invalidTabs);
   }
 }
