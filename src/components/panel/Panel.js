@@ -1,4 +1,6 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
+import { hasInvalidComponent } from '../../utils/utils';
+import FormComponent from '../form/Form';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
@@ -22,7 +24,7 @@ export default class PanelComponent extends NestedComponent {
       title: 'Panel',
       icon: 'list-alt',
       group: 'layout',
-      documentation: 'http://help.form.io/userguide/#panels',
+      documentation: '/userguide/#panels',
       weight: 30,
       schema: PanelComponent.schema()
     };
@@ -55,15 +57,16 @@ export default class PanelComponent extends NestedComponent {
     this.noField = true;
     this.on('componentError', () => {
       //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
-      if (this.hasInvalidComponent() && this.collapsed) {
+      if (hasInvalidComponent(this) && this.collapsed) {
         this.collapsed = false;
       }
     });
   }
 
-  hasInvalidComponent() {
-    return this.getComponents().some((comp) => {
-      return comp.error;
-    });
+  getComponent(path, fn, originalPath) {
+    if (this.root?.parent instanceof FormComponent) {
+      path = path.replace(this._parentPath, '');
+    }
+    return super.getComponent(path, fn, originalPath);
   }
 }

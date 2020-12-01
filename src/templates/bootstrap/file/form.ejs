@@ -63,7 +63,7 @@
       <button class="btn btn-primary" ref="cameraButton"><i class="fa fa-camera"></i> {{ctx.t('Camera')}}</button>
     </div>
   {% } else if (!ctx.self.cameraMode) { %}
-    <div class="fileSelector" ref="fileDrop">
+    <div class="fileSelector" ref="fileDrop" {{ctx.fileDropHidden ? 'hidden' : ''}}>
       <i class="{{ctx.iconClass('cloud-upload')}}"></i> {{ctx.t('Drop files to attach,')}}
         {% if (ctx.self.imageUpload) { %}
           <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('Use Camera,')}}</a>

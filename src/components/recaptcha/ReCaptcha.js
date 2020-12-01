@@ -18,7 +18,7 @@ export default class ReCaptchaComponent extends Component {
       title: 'reCAPTCHA',
       group: 'premium',
       icon: 'refresh',
-      documentation: 'http://help.form.io/userguide/#recaptcha',
+      documentation: '/userguide/#recaptcha',
       weight: 40,
       schema: ReCaptchaComponent.schema()
     };

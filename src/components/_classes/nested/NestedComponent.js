@@ -36,17 +36,25 @@ export default class NestedComponent extends Field {
   set collapsed(value) {
     this._collapsed = value;
     this.redraw();
-    if (!value) {
+    if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
   }
 
   set visible(value) {
-    super.visible = value;
+    // DO NOT CALL super here.  There is an issue where clearOnHide was getting triggered with
+    // subcomponents because the "parentVisible" flag was set to false when it should really be
+    // set to true.
+    const visibilityChanged = this._visible !== value;
+    this._visible = value;
     const isVisible = this.visible;
     const forceShow = this.options.show && this.options.show[this.component.key];
     const forceHide = this.options.hide && this.options.hide[this.component.key];
     this.components.forEach(component => {
+      // Set the parent visibility first since we may have nested components within nested components
+      // and they need to be able to determine their visibility based on the parent visibility.
+      component.parentVisible = isVisible;
+
       const conditionallyVisible = component.conditionallyVisible();
       if (forceShow || conditionallyVisible) {
         component.visible = true;
@@ -58,8 +66,11 @@ export default class NestedComponent extends Field {
       if (!component.visible) {
         component.error = '';
       }
-      component.parentVisible = isVisible;
     });
+    if (visibilityChanged) {
+      this.clearOnHide();
+      this.redraw();
+    }
   }
 
   get visible() {
@@ -68,9 +79,7 @@ export default class NestedComponent extends Field {
 
   set parentVisible(value) {
     super.parentVisible = value;
-    this.components.forEach(component => {
-      component.parentVisible = this.visible;
-    });
+    this.components.forEach(component => component.parentVisible = this.visible);
   }
 
   get parentVisible() {
@@ -211,9 +220,14 @@ export default class NestedComponent extends Field {
     originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
-    const [key, ...remainingPath] = path;
+    let key = path.shift();
+    const remainingPath = path;
     let comp = null;
     let possibleComp = null;
+
+    if (_.isNumber(key)) {
+      key = remainingPath.shift();
+    }
 
     if (!_.isString(key)) {
       return comp;
@@ -390,6 +404,12 @@ export default class NestedComponent extends Field {
     return comp;
   }
 
+  beforeFocus() {
+    if (this.parent && 'beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+  }
+
   render(children) {
     // If already rendering, don't re-render.
     return super.render(children || this.renderTemplate(this.templateName, {
@@ -534,7 +554,7 @@ export default class NestedComponent extends Field {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    components = components || this.getComponents();
+    components = components && _.isArray(components) ? components : this.getComponents();
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
@@ -632,6 +652,13 @@ export default class NestedComponent extends Field {
       component.detach();
     });
     super.detach();
+  }
+
+  clear() {
+    this.components.forEach(component => {
+      component.clear();
+    });
+    super.clear();
   }
 
   destroy() {

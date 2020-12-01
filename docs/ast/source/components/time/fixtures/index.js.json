@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 130,
+  "end": 159,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 5,
+      "line": 6,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 130,
+    "end": 159,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 5,
+        "line": 6,
         "column": 0
       }
     },
@@ -169,7 +169,7 @@
       {
         "type": "ExportNamedDeclaration",
         "start": 58,
-        "end": 92,
+        "end": 86,
         "loc": {
           "start": {
             "line": 3,
@@ -177,14 +177,14 @@
           },
           "end": {
             "line": 3,
-            "column": 34
+            "column": 28
           }
         },
         "specifiers": [
           {
             "type": "ExportDefaultSpecifier",
             "start": 65,
-            "end": 73,
+            "end": 70,
             "loc": {
               "start": {
                 "line": 3,
@@ -192,13 +192,13 @@
               },
               "end": {
                 "line": 3,
-                "column": 15
+                "column": 12
               }
             },
             "exported": {
               "type": "Identifier",
               "start": 65,
-              "end": 73,
+              "end": 70,
               "loc": {
                 "start": {
                   "line": 3,
@@ -206,6 +206,75 @@
                 },
                 "end": {
                   "line": 3,
+                  "column": 12
+                },
+                "identifierName": "comp3"
+              },
+              "name": "comp3"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 76,
+          "end": 85,
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 18
+            },
+            "end": {
+              "line": 3,
+              "column": 27
+            }
+          },
+          "extra": {
+            "rawValue": "./comp3",
+            "raw": "'./comp3'"
+          },
+          "value": "./comp3"
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 87,
+        "end": 121,
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 0
+          },
+          "end": {
+            "line": 4,
+            "column": 34
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ExportDefaultSpecifier",
+            "start": 94,
+            "end": 102,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 7
+              },
+              "end": {
+                "line": 4,
+                "column": 15
+              }
+            },
+            "exported": {
+              "type": "Identifier",
+              "start": 94,
+              "end": 102,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 7
+                },
+                "end": {
+                  "line": 4,
                   "column": 15
                 },
                 "identifierName": "timeForm"
@@ -216,15 +285,15 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 79,
-          "end": 91,
+          "start": 108,
+          "end": 120,
           "loc": {
             "start": {
-              "line": 3,
+              "line": 4,
               "column": 21
             },
             "end": {
-              "line": 3,
+              "line": 4,
               "column": 33
             }
           },
@@ -237,44 +306,44 @@
       },
       {
         "type": "ExportNamedDeclaration",
-        "start": 93,
-        "end": 129,
+        "start": 122,
+        "end": 158,
         "loc": {
           "start": {
-            "line": 4,
+            "line": 5,
             "column": 0
           },
           "end": {
-            "line": 4,
+            "line": 5,
             "column": 36
           }
         },
         "specifiers": [
           {
             "type": "ExportDefaultSpecifier",
-            "start": 100,
-            "end": 109,
+            "start": 129,
+            "end": 138,
             "loc": {
               "start": {
-                "line": 4,
+                "line": 5,
                 "column": 7
               },
               "end": {
-                "line": 4,
+                "line": 5,
                 "column": 16
               }
             },
             "exported": {
               "type": "Identifier",
-              "start": 100,
-              "end": 109,
+              "start": 129,
+              "end": 138,
               "loc": {
                 "start": {
-                  "line": 4,
+                  "line": 5,
                   "column": 7
                 },
                 "end": {
-                  "line": 4,
+                  "line": 5,
                   "column": 16
                 },
                 "identifierName": "timeForm2"
@@ -285,15 +354,15 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 115,
-          "end": 128,
+          "start": 144,
+          "end": 157,
           "loc": {
             "start": {
-              "line": 4,
+              "line": 5,
               "column": 22
             },
             "end": {
-              "line": 4,
+              "line": 5,
               "column": 35
             }
           },
@@ -615,9 +684,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "timeForm",
+      "value": "comp3",
       "start": 65,
-      "end": 73,
+      "end": 70,
       "loc": {
         "start": {
           "line": 3,
@@ -625,7 +694,7 @@
         },
         "end": {
           "line": 3,
-          "column": 15
+          "column": 12
         }
       }
     },
@@ -642,16 +711,16 @@
         "binop": null
       },
       "value": "from",
-      "start": 74,
-      "end": 78,
+      "start": 71,
+      "end": 75,
       "loc": {
         "start": {
           "line": 3,
-          "column": 16
+          "column": 13
         },
         "end": {
           "line": 3,
-          "column": 20
+          "column": 17
         }
       }
     },
@@ -668,17 +737,17 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "./timeForm",
-      "start": 79,
-      "end": 91,
+      "value": "./comp3",
+      "start": 76,
+      "end": 85,
       "loc": {
         "start": {
           "line": 3,
-          "column": 21
+          "column": 18
         },
         "end": {
           "line": 3,
-          "column": 33
+          "column": 27
         }
       }
     },
@@ -695,16 +764,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 91,
-      "end": 92,
+      "start": 85,
+      "end": 86,
       "loc": {
         "start": {
           "line": 3,
-          "column": 33
+          "column": 27
         },
         "end": {
           "line": 3,
-          "column": 34
+          "column": 28
         }
       }
     },
@@ -723,8 +792,8 @@
         "updateContext": null
       },
       "value": "export",
-      "start": 93,
-      "end": 99,
+      "start": 87,
+      "end": 93,
       "loc": {
         "start": {
           "line": 4,
@@ -748,9 +817,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "timeForm2",
-      "start": 100,
-      "end": 109,
+      "value": "timeForm",
+      "start": 94,
+      "end": 102,
       "loc": {
         "start": {
           "line": 4,
@@ -758,6 +827,139 @@
         },
         "end": {
           "line": 4,
+          "column": 15
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "from",
+      "start": 103,
+      "end": 107,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 16
+        },
+        "end": {
+          "line": 4,
+          "column": 20
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "./timeForm",
+      "start": 108,
+      "end": 120,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 21
+        },
+        "end": {
+          "line": 4,
+          "column": 33
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 120,
+      "end": 121,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 33
+        },
+        "end": {
+          "line": 4,
+          "column": 34
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 122,
+      "end": 128,
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 0
+        },
+        "end": {
+          "line": 5,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "timeForm2",
+      "start": 129,
+      "end": 138,
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 7
+        },
+        "end": {
+          "line": 5,
           "column": 16
         }
       }
@@ -775,15 +977,15 @@
         "binop": null
       },
       "value": "from",
-      "start": 110,
-      "end": 114,
+      "start": 139,
+      "end": 143,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 17
         },
         "end": {
-          "line": 4,
+          "line": 5,
           "column": 21
         }
       }
@@ -802,15 +1004,15 @@
         "updateContext": null
       },
       "value": "./timeForm2",
-      "start": 115,
-      "end": 128,
+      "start": 144,
+      "end": 157,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 22
         },
         "end": {
-          "line": 4,
+          "line": 5,
           "column": 35
         }
       }
@@ -828,15 +1030,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 128,
-      "end": 129,
+      "start": 157,
+      "end": 158,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 35
         },
         "end": {
-          "line": 4,
+          "line": 5,
           "column": 36
         }
       }
@@ -854,15 +1056,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 130,
-      "end": 130,
+      "start": 159,
+      "end": 159,
       "loc": {
         "start": {
-          "line": 5,
+          "line": 6,
           "column": 0
         },
         "end": {
-          "line": 5,
+          "line": 6,
           "column": 0
         }
       }

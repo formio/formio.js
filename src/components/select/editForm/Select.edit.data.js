@@ -492,6 +492,43 @@ export default [
     },
   },
   {
+    type: 'select',
+    input: true,
+    key: 'refreshOnBlur',
+    label: 'Refresh Options On Blur',
+    weight: 19,
+    tooltip: 'Refresh data when another field is blured.',
+    dataSrc: 'custom',
+    valueProperty: 'value',
+    data: {
+      custom(context) {
+        var values = [];
+        values.push({ label: 'Any Change', value: 'data' });
+        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
+          if (component.key !== context.data.key) {
+            values.push({
+              label: component.label || component.key,
+              value: path
+            });
+          }
+        });
+        return values;
+      }
+    },
+    conditional: {
+      json: {
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+            'values'
+          ],
+        ],
+      },
+    },
+  },
+  {
     type: 'checkbox',
     input: true,
     weight: 20,
@@ -610,5 +647,13 @@ export default [
     label: 'Choices.js options',
     tooltip: 'A raw JSON object to use as options for the Select component (Choices JS).',
     defaultValue: {},
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 29,
+    key: 'useExactSearch',
+    label: 'Use exact search',
+    tooltip: 'Disables search algorithm threshold.',
   },
 ];

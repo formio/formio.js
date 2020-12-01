@@ -87,7 +87,7 @@ export default class AddressComponent extends ContainerComponent {
       title: 'Address',
       group: 'advanced',
       icon: 'home',
-      documentation: 'http://help.form.io/userguide/#address',
+      documentation: '/userguide/#address',
       weight: 35,
       schema: AddressComponent.schema(),
     };
@@ -244,7 +244,7 @@ export default class AddressComponent extends ContainerComponent {
       this.restoreComponentsContext();
     }
 
-    if (changed) {
+    if (changed || !_.isEmpty(value) && flags.fromSubmission) {
       this.redraw();
     }
 
