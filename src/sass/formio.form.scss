@@ -92,7 +92,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   background-color: #fff;
 }
 
-.field-required:after {
+.field-required:after, .tab-error::after {
   content:" *";
   color:red;
 }
@@ -1248,13 +1248,4 @@ div[read-only="true"] {
 
 .formio-form > div > nav > ul.pagination {
   flex-flow: wrap row;
-}
-
-.tab-error {
-  color: #222222 !important;
-  background-color: #f8d7da !important;
-
-  &.active {
-    background-color: #ea2f10 !important;
-  }
 }
