@@ -124,12 +124,12 @@
   display: inherit;
 }
 
-.component-settings-button-paste {
+.component-btn-group .btn.component-settings-button-paste {
   display: none;
 }
 
 .builder-paste-mode .component-settings-button-paste {
-  display: inherit;
+  display: inherit !important;
 }
 
 .wizard-page-label {
