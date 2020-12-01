@@ -1225,14 +1225,11 @@ export default class Component extends Element {
   getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
-      const widget = this.widget;
-      if (!widget || !value) {
+      if (!this.widget || !value) {
         return value;
       }
       else {
-        const stringValue = widget.getValueAsString(value);
-        widget.destroy();
-        return stringValue;
+        return this.widget.getValueAsString(value);
       }
     }
     if (Array.isArray(value)) {

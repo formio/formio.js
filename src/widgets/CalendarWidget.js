@@ -392,10 +392,9 @@ export default class CalendarWidget extends InputWidget {
   }
 
   initFlatpickr(Flatpickr) {
+    const dateValue = this._input.value;
     // Create a new flatpickr.
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
-
-    const dateValue = this._input.value;
 
     if (dateValue) {
       this.calendar.setDate(dateValue, false, this.settings.altFormat);

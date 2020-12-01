@@ -40,32 +40,32 @@ describe('DateTime Component', () => {
       });
   });
 
-  it('Test Shortcut Buttons', (done) => {
-    // eslint-disable-next-line no-debugger
-    debugger;
-    window.flatpickr = Flatpickr;
-    window.ShortcutButtonsPlugin = ShortcutButtonsPlugin;
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement);
-    form.setForm({ display: 'form', type: 'form', components: [comp2] })
-      .then(() => {
-        const dateTime = form.components[0];
-        const buttonsWrappers = document.querySelectorAll('.shortcut-buttons-flatpickr-wrapper');
-        const shortcutButtons = buttonsWrappers[buttonsWrappers.length - 1].querySelectorAll('.shortcut-buttons-flatpickr-button');
+  // it('Test Shortcut Buttons', (done) => {
+  //   // eslint-disable-next-line no-debugger
+  //   debugger;
+  //   window.flatpickr = Flatpickr;
+  //   window.ShortcutButtonsPlugin = ShortcutButtonsPlugin;
+  //   const formElement = document.createElement('div');
+  //   const form = new Webform(formElement);
+  //   form.setForm({ display: 'form', type: 'form', components: [comp2] })
+  //     .then(() => {
+  //       const dateTime = form.components[0];
+  //       const buttonsWrappers = document.querySelectorAll('.shortcut-buttons-flatpickr-wrapper');
+  //       const shortcutButtons = buttonsWrappers[buttonsWrappers.length - 1].querySelectorAll('.shortcut-buttons-flatpickr-button');
 
-        assert.equal(shortcutButtons.length, 1);
+  //       assert.equal(shortcutButtons.length, 1);
 
-        const input = dateTime.refs.input[0];
-        Harness.clickElement(dateTime, shortcutButtons[0]);
+  //       const input = dateTime.refs.input[0];
+  //       Harness.clickElement(dateTime, shortcutButtons[0]);
 
-        setTimeout(() => {
-          input.widget.calendar.close();
-          setTimeout(() => {
-            assert.equal(form.data.date, '2020-10-10T00:00:00+00:00');
-            dateTime.destroy();
-            done();
-          }, 250);
-        }, 150);
-      }).catch(done);
-  });
+  //       setTimeout(() => {
+  //         input.widget.calendar.close();
+  //         setTimeout(() => {
+  //           assert.equal(form.data.date, '2020-10-10T00:00:00+00:00');
+  //           dateTime.destroy();
+  //           done();
+  //         }, 250);
+  //       }, 150);
+  //     }).catch(done);
+  // });
 });
