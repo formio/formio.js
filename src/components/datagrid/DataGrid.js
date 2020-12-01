@@ -509,15 +509,16 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   checkComponentConditions(data, flags, row) {
+    const isVisible = this.visible;
     // If table isn't visible, don't bother calculating columns.
     if (!super.checkComponentConditions(data, flags, row)) {
       return false;
     }
 
     const { rebuild, show } = this.checkColumns(data, flags);
-    // If a rebuild is needed, then rebuild the table.
-    if (rebuild) {
-      this.redraw();
+    // Check if a rebuild is needed or the visibility changes.
+    if (rebuild || !isVisible) {
+      this.createRows();
     }
 
     // Return if this table should show.
