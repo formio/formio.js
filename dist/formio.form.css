@@ -842,7 +842,8 @@ div[data-oembed-url] {
 
 .open-modal-button {
   width: 100%;
-  text-align: left; }
+  text-align: left;
+  white-space: normal; }
 
 .formio-component-modal-wrapper-signature .open-modal-button {
   text-align: center;
@@ -947,6 +948,18 @@ div[data-oembed-url] {
 .formio-component-content[dir="rtl"] blockquote {
   border-left: 0;
   border-right: solid 5px #cccccc; }
+
+.formio-component-content .text-tiny {
+  font-size: 0.7em; }
+
+.formio-component-content .text-small {
+  font-size: 0.85em; }
+
+.formio-component-content .text-big {
+  font-size: 1.4em; }
+
+.formio-component-content .text-huge {
+  font-size: 1.8em; }
 
 .formio-component-address.formio-component-label-hidden > label.field-required {
   z-index: 1; }

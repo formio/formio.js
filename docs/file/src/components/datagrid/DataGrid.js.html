@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
@@ -558,9 +557,13 @@ export default class DataGridComponent extends NestedArrayComponent {
   removeRow(index) {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
-    _.each(row, (component) =&gt; this.removeComponent(component));
+    this.removeRowComponents(row);
     this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
+  }
+
+  removeRowComponents(row) {
+    _.each(row, (component) =&gt; this.removeComponent(component));
   }
 
   getRowValues() {
@@ -587,7 +590,13 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
     });
     // Delete any extra rows.
-    const removed = !!this.rows.splice(rowValues.length).length;
+    const removedRows = this.rows.splice(rowValues.length);
+    const removed = !!removedRows.length;
+    // Delete components of extra rows (to make sure that this.components contain only components of exisiting rows)
+    if (removed) {
+      removedRows.forEach(row =&gt; this.removeRowComponents(row));
+    }
+
     if (!init &amp;&amp; (added || removed)) {
       this.redraw();
     }
@@ -600,10 +609,18 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      if (col.id) {
+
+      let columnComponent;
+
+      if (this.builderMode) {
         col.id = col.id + rowIndex;
+        columnComponent = col;
       }
-      const component = this.createComponent(col, options, row);
+      else {
+        columnComponent = { ...col, id: (col.id + rowIndex) };
+      }
+
+      const component = this.createComponent(columnComponent, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;

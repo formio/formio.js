@@ -3203,7 +3203,8 @@ div[data-oembed-url] {
 
 .open-modal-button {
   width: 100%;
-  text-align: left; }
+  text-align: left;
+  white-space: normal; }
 
 .formio-component-modal-wrapper-signature .open-modal-button {
   text-align: center;
@@ -3308,6 +3309,18 @@ div[data-oembed-url] {
 .formio-component-content[dir="rtl"] blockquote {
   border-left: 0;
   border-right: solid 5px #cccccc; }
+
+.formio-component-content .text-tiny {
+  font-size: 0.7em; }
+
+.formio-component-content .text-small {
+  font-size: 0.85em; }
+
+.formio-component-content .text-big {
+  font-size: 1.4em; }
+
+.formio-component-content .text-huge {
+  font-size: 1.8em; }
 
 .formio-component-address.formio-component-label-hidden > label.field-required {
   z-index: 1; }
@@ -3425,11 +3438,13 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-content,
-.formbuilder .formio-component-form {
+.formbuilder .formio-component-form,
+.formbuilder .formio-component-datasource {
   border: 2px dashed #ddd; }
 
 .formbuilder .formio-component-form,
-.formbuilder .formio-component-hidden {
+.formbuilder .formio-component-hidden,
+.formbuilder .formio-component-datasource {
   height: 3em;
   text-align: center;
   color: #aaa;
@@ -3539,8 +3554,8 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
   overflow-y: auto; }
 
 .progress.pdf-progress {
-  height: 1rem; }
+  height: 2rem; }
 
 .progress.pdf-progress .progress-bar {
-  font-size: 0.7rem;
-  line-height: 1rem; }
+  font-size: 1rem;
+  line-height: 2rem; }

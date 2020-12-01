@@ -4,7 +4,7 @@ layout: vtabs
 section: examples
 weight: 13
 ---
-Sometimes you may want to submit the data to your own APIs or naviate to another page after the submission is complete. You can do this by listening to the submission events.
+Sometimes you may want to submit the data to your own APIs or navigate to another page after the submission is complete. You can do this by listening to the submission events.
 
 ```html
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">

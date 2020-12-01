@@ -1029,6 +1029,7 @@ div[data-oembed-url] {
 .open-modal-button {
   width: 100%;
   text-align: left;
+  white-space: normal;
 }
 
 .formio-component-modal-wrapper-signature .open-modal-button {
@@ -1135,6 +1136,24 @@ div[data-oembed-url] {
 .formio-component-content[dir="rtl"] blockquote {
   border-left: 0;
   border-right: solid 5px hsl(0, 0%, 80%);
+}
+
+.formio-component-content {
+  & .text-tiny {
+    font-size: 0.7em;
+  }
+
+  & .text-small {
+    font-size: 0.85em;
+  }
+
+  & .text-big {
+    font-size: 1.4em;
+  }
+
+  & .text-huge {
+    font-size: 1.8em;
+  }
 }
 
 .formio-component-address.formio-component-label-hidden {

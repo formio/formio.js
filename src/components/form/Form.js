@@ -95,16 +95,7 @@ export default class FormComponent extends Component {
       this.setFormRevision(this.component.revision);
     }
 
-    return this.createSubForm().then((subForm) => {
-      setTimeout(() => {
-        if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
-          this.root.subWizards.push(this);
-          this.emit('subWizardsUpdated');
-        }
-      }, 0);
-
-      return subForm;
-    });
+    return this.createSubForm();
   }
 
   get dataReady() {
@@ -376,6 +367,13 @@ export default class FormComponent extends Component {
         this.valueChanged = this.hasSetValue;
         return this.subForm;
       });
+    }).then((subForm) => {
+      if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
+        this.root.subWizards.push(this);
+        this.emit('subWizardsUpdated', subForm);
+      }
+
+      return subForm;
     });
     return this.subFormReady;
   }
@@ -489,9 +487,11 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = false;
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
+          this.subForm.showAllErrors = false;
           this.dataValue = result.submission;
           return this.dataValue;
         }).catch(err => {
+          this.subForm.showAllErrors = true;
           if (rejectOnError) {
             this.subForm.onSubmissionError(err);
             return NativePromise.reject(err);
@@ -525,7 +525,7 @@ export default class FormComponent extends Component {
     const isAlreadySubmitted = submission && submission._id && submission.form;
 
     // This submission has already been submitted, so just return the reference data.
-    if (isAlreadySubmitted) {
+    if (isAlreadySubmitted && !this.subForm.wizard) {
       this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
@@ -583,7 +583,7 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || this.areAllComponentsEmpty(value.data);
+    return value === null || _.isEqual(value, this.emptyValue) || (this.areAllComponentsEmpty(value.data) && !value._id);
   }
 
   areAllComponentsEmpty(data) {

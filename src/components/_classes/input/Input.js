@@ -123,7 +123,7 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)));
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value))).replace(/"/g, '&quot;');
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
     }

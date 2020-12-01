@@ -4,6 +4,87 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.2-rc.5
+#### Fixed
+ - FJS-1466: focus on the default value in the currency field
+ - FJS-1470: fixed infinite loop in wizard with dataGrid
+
+### 4.12.2-rc.4
+#### Fixed
+ - FJS-1297: fix editing nested wizards
+ - Fixing issues where clearOnHide would cause data to erroneously reset within nested conditionals
+ - FJS-1470: fixed an issue where infinite loop is created in wizard after internal form schema change
+ - FJS-1312: fix display of subform errors in wizards
+ - UIP-263: EditGrid: fix values with html tags got injected in template
+ - FJS-1429: fixed currency validation regexp
+ - FJS-1456: add line breaks for fields in modal preview
+ - FJS-1333: Fixes an issue where all the validation errors are shown for the modal draft row
+
+### 4.12.2-rc.3
+#### Added
+ - FJS-1380: Adds a validation which checks if the value is available within component's values setting
+
+### 4.12.2-rc.2
+#### Added
+ - UIP-261: Select: add use exact search option
+
+#### Fixed
+ - UIP-251: File: hide file drop area when file is uploading
+ - FJS-1428: Fixes an issue where lazy loading Select shows item only after the second click
+ - FMG-89 | PDF form | When the PDF is being uploaded, text in the upload progress bar is too small
+ - FMG-133 (1.96.0 Regression) When switching to PDF mode, you just get the spinning circle. I am not able to add a PDF
+ - FJS-1449: Fixing issues where the DateTime component is erroneously triggering changes.
+
+### 4.12.2-rc.1
+#### Fixed
+ - FMG-86 | Edit Form page | Accordions within the Resource Fields accordion do not expand/collapse when the ‘Wizard’ or the ‘PDF’ is selected in the Form Select drop down
+ - FJS-1438: fixed an issue where dataGrid extra components are not removed after setting value with fewer rows
+ - FJS-1297: fix data submission for nested wizards
+ - PDFBuilder: fix same type components get equal keys
+ - UIP-260: Button: fix not updated disabled attribute
+ - FJS-1312: fix display of list of errors during submission
+ - FJS-1442: Wizard: emit event when this.pages changes
+ - PDF-170: Fix files ready resolving promise
+ - VPAT-697 Added border outlines to Datasource component in formbuilder
+ - VPAT-431 Fixed issue when CKEditor text size styles were missing in forms (content components)
+ - FJS-1440: fixed an issue where hidden page is dispalyed in wizard navigation bar and wizard data is cleared after navigating to such page
+
+#### Changed
+ - Upgrade i18next@19.8.4, jwt-decode@3.1.2, marked@1.2.4, webpack-stream@6.1.1, vanilla-picker@2.11.0, babel-loader@8.2.1, dialog-polyfill@0.5.4, moment-timezone@0.5.32
+
+### 4.12.1
+#### Changed
+ - No changes. Released 4.12.1-rc.28 as official release.
+
+### 4.12.1-rc.28
+#### Fixed
+ - PDF-213: Fix ids mismatch
+ - FJS-1427: Component settings can't be opened after the Property name is cleared
+ - PDF-197: Set Formio base url and project url for pdf iframe
+ - FJS-1298: fix page display in one line when condition is set
+ - Fix: fix the modalEdit logic for the EditGrid component
+
+### 4.12.1-rc.27
+#### Fixed
+ - FJS-1426: Fixes an issue where NestedForm's data is not shown when it is inside DataGrid
+
+#### Changed
+ - Upgrade json-logic-js@2.0.0 which resolves https://www.npmjs.com/advisories/1542
+ - Upgrade marked@1.2.3, jwt-decode@3.1.1, eslint@7.13.0
+
+### 4.12.1-rc.26
+#### Added
+ - Pass along the saved flag to the submit event.
+ - UIP-245: File: adjust file upload status events to be caught by angular-formio
+
+### 4.12.1-rc.25
+#### Fixed
+ - FOR-2838/2839/2843: Fixes an issue with incorrect projectUrl when using not Subdomain path type. Also made that we always use global Formio.
+
+### 4.12.1-rc.24
+#### Changed
+ - FJS-1379: changes for more flexible inheritance
+
 ### 4.12.1-rc.23
 #### Fixed
  - VPAT-664 Changed setAlert signature to more flexible extension in VPAT

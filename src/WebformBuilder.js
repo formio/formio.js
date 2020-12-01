@@ -47,16 +47,6 @@ export default class WebformBuilder extends Component {
       }
     }
 
-    this.fieldsList = {
-      title: 'Result fields',
-      key: 'searchFields',
-      weight: 0,
-      subgroups: [],
-      default: true,
-      components: {},
-      componentOrder: []
-    };
-
     this.dragDropEnabled = true;
 
     // Setup the builder options.
@@ -113,7 +103,6 @@ export default class WebformBuilder extends Component {
           }
           info.components[key] = comp === true ? componentInfo[key] : comp;
           info.components[key].key = key;
-          this.fieldsList.components[key] = info.components[key];
         }
       }
     }
@@ -406,7 +395,6 @@ export default class WebformBuilder extends Component {
             }
           }
         );
-        this.fieldsList.components[component.key] = subgroup.components[component.key];
       }, true);
 
       this.groups.resource.subgroups.push(subgroup);
@@ -602,10 +590,12 @@ export default class WebformBuilder extends Component {
         });
       }
 
-      this.addEventListener(this.refs['sidebar-search'], 'input', (e) => {
-        const searchString = e.target.value;
-        this.searchFields(searchString);
-      });
+      this.addEventListener(this.refs['sidebar-search'], 'input',
+        _.debounce((e) => {
+          const searchString = e.target.value;
+          this.searchFields(searchString);
+        }, 300)
+      );
 
       if (this.dragDropEnabled) {
         this.initDragula();
@@ -617,41 +607,69 @@ export default class WebformBuilder extends Component {
     });
   }
 
-  searchFields(searchString) {
+  searchFields(searchString = '') {
+    const searchValue = searchString.toLowerCase();
     const sidebar = this.refs['sidebar'];
     const sidebarGroups = this.refs['sidebar-groups'];
+
     if (!sidebar || !sidebarGroups) {
       return;
     }
-    if (searchString) {
-      const filteredComponentsOrder = [];
-      for (const type in this.fieldsList.components) {
-        const builderInfo = this.fieldsList.components[type];
-        if (builderInfo.title.toLowerCase().indexOf(searchString.toLowerCase()) !== -1) {
-          filteredComponentsOrder.push(type);
+
+    const filterGroupBy = (group, searchValue = '') => {
+      const result = _.toPlainObject(group);
+      const { subgroups = [], components } = result;
+      const filteredOrder = [];
+
+      for (const key in components) {
+        const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
+        const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
+
+        if (isMatchedToTitle || isMatchedToKey) {
+          filteredOrder.push(components[key].key);
         }
       }
-      this.fieldsList.componentOrder = filteredComponentsOrder;
-      sidebarGroups.innerHTML = this.renderTemplate('builderSidebarGroup', {
-        group: this.fieldsList,
-        groupKey: 'searchFields',
-        groupId: `builder-sidebar-${this.id}`,
-        subgroups: []
-      });
-    }
-    else {
-      sidebarGroups.innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
-        group: this.groups[groupKey],
+
+      result.componentOrder = filteredOrder;
+      if (searchValue) {
+        result.default = true;
+      }
+      if (filteredOrder.length || subgroups.length) {
+        return result;
+      }
+      return null;
+    };
+
+    const filterGroupOrder = (groupOrder, searchValue) => {
+      const result = _.cloneDeep(groupOrder);
+      return result.filter(key => filterGroupBy(this.groups[key], searchValue));
+    };
+
+    const filterSubgroups = (groups, searchValue) => {
+      const result = _.clone(groups);
+      return result
+            .map(subgroup => filterGroupBy(subgroup, searchValue))
+            .filter(subgroup => !_.isNull(subgroup));
+    };
+
+    const toTemplate = groupKey => {
+      return {
+        group: filterGroupBy(this.groups[groupKey], searchValue),
         groupKey,
         groupId: sidebar.id || sidebarGroups.id,
-        subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
-          group,
-          groupKey: group.key,
-          groupId: `group-container-${groupKey}`,
-          subgroups: []
-        })),
-      })).join('');
-    }
+        subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchValue)
+                  .map((group) => this.renderTemplate('builderSidebarGroup', {
+                    group,
+                    groupKey: group.key,
+                    groupId: `group-container-${groupKey}`,
+                    subgroups: []
+                  })),
+      };
+    };
+
+    sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
+                              .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
+                              .join('');
 
     this.loadRefs(this.element, {
       'sidebar-groups': 'single',
@@ -733,7 +751,7 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
-    if (group.slice(0, group.indexOf('-')) === 'resource') {
+    else if (group.slice(0, group.indexOf('-')) === 'resource') {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
@@ -741,15 +759,27 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(resourceGroup.components[key].schema);
       }
     }
+    else if (group === 'searchFields') {//Search components go into this group
+      const resourceGroups = this.groups.resource.subgroups;
+      for (let ix = 0; ix < resourceGroups.length; ix++) {
+        const resourceGroup = resourceGroups[ix];
+        if (resourceGroup.components.hasOwnProperty(key)) {
+          info = fastCloneDeep(resourceGroup.components[key].schema);
+          break;
+        }
+      }
+    }
 
     if (info) {
-      info.key = _.camelCase(
-        info.key ||
-        info.title ||
-        info.label ||
-        info.placeholder ||
-        info.type
-      );
+      if (!info.key) {
+        info.key = _.camelCase(
+          info.key ||
+          info.title ||
+          info.label ||
+          info.placeholder ||
+          info.type
+        );
+      }
     }
 
     return info;
@@ -1420,7 +1450,6 @@ export default class WebformBuilder extends Component {
     if (!groupInfo.components.hasOwnProperty(component.key)) {
       groupInfo.components[component.key] = component;
     }
-    this.fieldsList.components[component.key] = component;
     return component;
   }
 
