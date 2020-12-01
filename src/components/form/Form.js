@@ -92,7 +92,7 @@ export default class FormComponent extends Component {
 
     // Add revision version if set.
     if (this.component.revision || this.component.revision === 0) {
-      this.formSrc += `/v/${this.component.revision}`;
+      this.setFormRevision(this.component.revision);
     }
 
     return this.createSubForm();
@@ -117,6 +117,24 @@ export default class FormComponent extends Component {
 
   get ready() {
     return this.subFormReady || NativePromise.resolve();
+  }
+
+  get useOriginalRevision() {
+    return this.component?.useOriginalRevision && !!this.formObj?.revisions;
+  }
+
+  setFormRevision(rev) {
+    // Remove current revisions from src if it is
+    this.formSrc = this.formSrc.replace(/\/v\/\d*/, '');
+    const revNumber = Number.parseInt(rev);
+
+    if (!isNaN(revNumber)) {
+      this.subFormRevision = rev;
+      this.formSrc += `/v/${rev}`;
+    }
+    else {
+      this.subFormRevision = undefined;
+    }
   }
 
   getComponent(path, fn) {
@@ -257,6 +275,13 @@ export default class FormComponent extends Component {
     return this._currentForm;
   }
 
+  get hasLoadedForm() {
+    return this.formObj
+      && this.formObj.components
+      && Array.isArray(this.formObj.components)
+      && this.formObj.components.length;
+  }
+
   set currentForm(instance) {
     this._currentForm = instance;
     if (!this.subForm) {
@@ -265,6 +290,12 @@ export default class FormComponent extends Component {
     this.subForm.getComponents().forEach(component => {
       component.currentForm = this;
     });
+  }
+
+  get isRevisionChanged() {
+    return _.isNumber(this.subFormRevision)
+      && _.isNumber(this.formObj._vid)
+      && this.formObj._vid !== this.subFormRevision;
   }
 
   destroy() {
@@ -307,12 +338,7 @@ export default class FormComponent extends Component {
 
       // Iterate through every component and hide the submit button.
       eachComponent(form.components, (component) => {
-        if (
-          (component.type === 'button') &&
-          ((component.action === 'submit') || !component.action)
-        ) {
-          component.hidden = true;
-        }
+        this.hideSubmitButton(component);
       });
 
       // If the subform is already created then destroy the old one.
@@ -352,6 +378,15 @@ export default class FormComponent extends Component {
     return this.subFormReady;
   }
 
+  hideSubmitButton(component) {
+    const isSubmitButton = (component.type === 'button') &&
+      ((component.action === 'submit') || !component.action);
+
+    if (isSubmitButton) {
+      component.hidden = true;
+    }
+  }
+
   /**
    * Load the subform.
    */
@@ -360,13 +395,7 @@ export default class FormComponent extends Component {
       return NativePromise.resolve();
     }
 
-    // Determine if we already have a loaded form object.
-    if (
-      this.formObj &&
-      this.formObj.components &&
-      Array.isArray(this.formObj.components) &&
-      this.formObj.components.length
-    ) {
+    if (this.hasLoadedForm && !this.isRevisionChanged) {
       // Pass config down to sub forms.
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
         this.formObj.config = this.root.form.config;
@@ -493,9 +522,10 @@ export default class FormComponent extends Component {
   beforeSubmit() {
     const submission = this.dataValue;
 
+    const isAlreadySubmitted = submission && submission._id && submission.form;
+
     // This submission has already been submitted, so just return the reference data.
-    // All wizards are submitted at the end of the form.
-    if (submission && submission._id && submission.form && !this.subForm.wizard) {
+    if (isAlreadySubmitted && !this.subForm.wizard) {
       this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
@@ -518,22 +548,38 @@ export default class FormComponent extends Component {
     const changed = super.setValue(submission, flags);
     this.valueChanged = true;
     if (this.subForm) {
-      if (
-        submission &&
-        submission._id &&
-        this.subForm.formio &&
-        _.isEmpty(submission.data)
-      ) {
-        const formUrl = submission.form ? `${this.subForm.formio.formsUrl}/${submission.form}` : this.formSrc;
-        const submissionUrl = `${formUrl}/submission/${submission._id}`;
-        this.subForm.setUrl(submissionUrl, this.options);
-        this.subForm.loadSubmission();
+      const shouldLoadOriginalRevision = this.useOriginalRevision
+        && _.isNumber(submission._fvid)
+        && _.isNumber(this.subForm.form?._vid)
+        && submission._fvid !== this.subForm.form._vid;
+
+      if (shouldLoadOriginalRevision) {
+        this.setFormRevision(submission._fvid);
+        this.createSubForm().then(() => {
+          this.attach(this.element);
+        });
       }
       else {
-        this.subForm.setValue(submission, flags);
+        this.setSubFormValue(submission, flags);
       }
     }
     return changed;
+  }
+
+  setSubFormValue(submission, flags) {
+    const shouldLoadSubmissionById = submission
+      && submission._id
+      && this.subForm.formio
+      && _.isEmpty(submission.data);
+
+    if (shouldLoadSubmissionById) {
+      const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+      this.subForm.setUrl(submissionUrl, this.options);
+      this.subForm.loadSubmission();
+    }
+    else {
+      this.subForm.setValue(submission, flags);
+    }
   }
 
   isEmpty(value = this.dataValue) {
