@@ -10,7 +10,6 @@ import wizard3 from '../test/forms/conditionalWizardPages';
 import wizard4 from '../test/forms/wizardWithSimpleConditionalPage';
 import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
 import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
-import wizardWithHighPages from '../test/forms/wizardWithHighPages';
 import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import formWithSignature from '../test/forms/formWithSignature';
@@ -248,14 +247,17 @@ describe('Wizard tests', () => {
       Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
       assert.equal(wizardForm.page, 2);
       setTimeout(() => {
-        const aInput = wizardForm.currentPage.getComponent('a');
-        assert.equal(aInput.errors.length, 1);
-        assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
-        done();
+        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
+        assert.equal(wizardForm.page, 0);
+        setTimeout(() => {
+          const aInput = wizardForm.currentPage.getComponent('a');
+          assert.equal(aInput.errors.length, 1);
+          assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
+          done();
+        }, 100);
       }, 100);
-    }, 100);
     })
-    .catch((err) => done(err));
+      .catch((err) => done(err));
   });
 
   it('Should leave errors for invalid fields after validation on next button and entering valid data in one of the fields', function(done) {
@@ -351,21 +353,6 @@ describe('Wizard tests', () => {
 
     assert(valid, 'Should be valid');
     assert.equal(form.data.c, 'c', 'Should keep the value of a conditionally visible page.');
-  });
-
-  it('Should scroll to the top of the page when the page is changed', (done) => {
-    const formElement = document.createElement('div');
-    wizardForm = new Wizard(formElement);
-    wizardForm.setForm(wizardWithHighPages)
-    .then(() => {
-      wizardForm.scrollIntoView(wizardForm.refs[`${wizardForm.wizardKey}-next`]);
-      wizardForm.setPage(1);
-      setTimeout(() => {
-        assert.equal(wizardForm.refs[wizardForm.wizardKey].scrollTop, 0, 'The top edge of the page should be aligned to the top edge of the window');
-        done();
-      }, 350);
-    })
-    .catch(done);
   });
 
   it('If allowPrevious is given, the breadcrumb bar should be clickable for visited tabs.', (done) => {
