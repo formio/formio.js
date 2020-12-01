@@ -12,6 +12,7 @@ import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParen
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
+import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 
 const isIEBrowser = FormioUtils.getIEBrowserVersion();
 const CKEDITOR_URL = isIEBrowser
@@ -1972,7 +1973,8 @@ export default class Component extends Element {
             'alignCenter',
             'alignRight'
           ]
-        }
+        },
+        extraPlugins: []
       },
       default: {}
     };
@@ -1980,9 +1982,13 @@ export default class Component extends Element {
 
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
-    settings.base64Upload = true;
+    settings.base64Upload = this.component.isUploadEnabled ? false : true;
     settings.mediaEmbed = { previewsInData: true };
     settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
+
+    if (this.component.isUploadEnabled) {
+      settings.extraPlugins.push(getFormioUploadAdapterPlugin(this.fileService, this));
+    }
 
     return Formio.requireLibrary(
       'ckeditor',
