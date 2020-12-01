@@ -278,14 +278,19 @@ export default class Wizard extends Webform {
     ]);
     this.attachNav();
     this.attachHeader();
-    return promises.then(() => this.emit('render', { component: this.currentPage, page: this.page })).then(() => {
+    return promises.then(() => {
+      this.emit('render', { component: this.currentPage, page: this.page });
       this.scrollPageToTop();
     });
   }
 
   scrollPageToTop() {
+    if (!this.refs[this.wizardKey]) {
+      return;
+    }
+
     if ('scrollIntoView' in this.refs[this.wizardKey]) {
-      this.refs[this.wizardKey]?.scrollIntoView(true);
+      this.refs[this.wizardKey].scrollIntoView(true);
     }
     else {
       this.scrollIntoView(this.refs[this.wizardKey]);
