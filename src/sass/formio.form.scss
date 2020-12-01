@@ -744,7 +744,6 @@ body.formio-dialog-open {
 }
 
 .formio-choices.form-group {
-  min-width: 200px;
   margin-bottom: 0;
 }
 
@@ -990,11 +989,15 @@ body.formio-dialog-open {
   }
 }
 
+.table-responsive[ref=component] {
+  overflow-x: visible;
+}
+
 .formio-component-textarea {
   .alert .ck-editor__editable {
     color: inherit;
   }
-  
+
   .ck.ck-editor__editable .image .ck-progress-bar {
     height: 4px;
   }
