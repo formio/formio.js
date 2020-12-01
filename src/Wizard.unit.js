@@ -253,7 +253,6 @@ describe('Wizard tests', () => {
         setTimeout(() => {
           const aInput = wizardForm.currentPage.getComponent('a');
           assert.equal(aInput.errors.length, 1);
-          console.log(aInput.errors);
           assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
           done();
         }, 100);
