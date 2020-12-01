@@ -602,10 +602,12 @@ export default class WebformBuilder extends Component {
         });
       }
 
-      this.addEventListener(this.refs['sidebar-search'], 'input', (e) => {
-        const searchString = e.target.value;
-        this.searchFields(searchString);
-      });
+      this.addEventListener(this.refs['sidebar-search'], 'input',
+        _.debounce((e) => {
+          const searchString = e.target.value;
+          this.searchFields(searchString);
+        }, 300)
+      );
 
       if (this.dragDropEnabled) {
         this.initDragula();
@@ -733,7 +735,7 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
-    if (group.slice(0, group.indexOf('-')) === 'resource') {
+    else if (group.slice(0, group.indexOf('-')) === 'resource') {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
@@ -741,15 +743,27 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(resourceGroup.components[key].schema);
       }
     }
+    else if (group === 'searchFields') {//Search components go into this group
+      const resourceGroups = this.groups.resource.subgroups;
+      for (let ix = 0; ix < resourceGroups.length; ix++) {
+        const resourceGroup = resourceGroups[ix];
+        if (resourceGroup.components.hasOwnProperty(key)) {
+          info = fastCloneDeep(resourceGroup.components[key].schema);
+          break;
+        }
+      }
+    }
 
     if (info) {
-      info.key = _.camelCase(
-        info.key ||
-        info.title ||
-        info.label ||
-        info.placeholder ||
-        info.type
-      );
+      if (!info.key) {
+        info.key = _.camelCase(
+          info.key ||
+          info.title ||
+          info.label ||
+          info.placeholder ||
+          info.type
+        );
+      }
     }
 
     return info;
