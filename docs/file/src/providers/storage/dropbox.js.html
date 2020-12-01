@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -175,6 +177,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/dropbox.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
+import { setXhrHeaders } from &apos;./xhr&apos;;
 const dropbox = (formio) =&gt; ({
   uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
     return new NativePromise(((resolve, reject) =&gt; {
@@ -215,6 +218,9 @@ const dropbox = (formio) =&gt; ({
       xhr.onabort = reject;
 
       xhr.open(&apos;POST&apos;, `${formio.formUrl}/storage/dropbox`);
+
+      setXhrHeaders(formio, xhr);
+
       const token = formio.getToken();
       if (token) {
         xhr.setRequestHeader(&apos;x-jwt-token&apos;, token);

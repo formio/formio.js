@@ -837,6 +837,9 @@ body.formio-dialog-open {
 .formio-component-textarea .alert .ck-editor__editable {
   color: inherit; }
 
+.formio-component-textarea .ck.ck-editor__editable .image .ck-progress-bar {
+  height: 4px; }
+
 div[data-oembed-url] {
   width: 100%; }
 
@@ -1029,7 +1032,7 @@ div[data-oembed-url] {
   .formio-component-modal-wrapper .component-rendering-hidden {
     visibility: hidden; }
 
-div[read-only="true"] .formio-component-textarea div[ref="input"] {
+.formio-component-textarea div.formio-editor-read-only-content[ref="input"] {
   white-space: pre-wrap; }
 
 .formio-editor-read-only-content img {
@@ -1147,11 +1150,11 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .formio-drop-zone.enabled {
   display: inherit; }
 
-.component-settings-button-paste {
+.component-btn-group .btn.component-settings-button-paste {
   display: none; }
 
 .builder-paste-mode .component-settings-button-paste {
-  display: inherit; }
+  display: inherit !important; }
 
 .wizard-page-label {
   cursor: pointer;

@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -1796,6 +1798,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span><span class="code" data-ice="signature">(fileService: <span>*</span>, component: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span><span class="code" data-ice="signature">(form: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -2120,6 +2150,34 @@
         
         <div data-ice="description"><p>Finds a component provided a query of properties of that component.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span><span class="code" data-ice="signature">(formio: <span>*</span>, xhr: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -5564,11 +5622,11 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/providers/storage/dropbox.js.html#lineNumber2">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/providers/storage/dropbox.js.html#lineNumber3">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import dropbox from &apos;<span><a href="file/src/providers/storage/dropbox.js.html#lineNumber2">formiojs/src/providers/storage/dropbox.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import dropbox from &apos;<span><a href="file/src/providers/storage/dropbox.js.html#lineNumber3">formiojs/src/providers/storage/dropbox.js</a></span>&apos;</code></pre></div>
   
   
   
@@ -6254,6 +6312,71 @@ If the component is not found the callback won&apos;t be called and function won
     <div data-ice="returnProperties">
 </div>
   </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-getFormioUploadAdapterPlugin">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">getFormioUploadAdapterPlugin</span><span class="code" data-ice="signature">(fileService: <span>*</span>, component: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/providers/storage/uploadAdapter.js.html#lineNumber58">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getFormioUploadAdapterPlugin} from &apos;<span><a href="file/src/providers/storage/uploadAdapter.js.html#lineNumber58">formiojs/src/providers/storage/uploadAdapter.js</a></span>&apos;</code></pre></div>
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">fileService</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">component</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
 
   
 
@@ -7156,6 +7279,71 @@ If the component is not found the callback won&apos;t be called and function won
     <div data-ice="returnProperties">
 </div>
   </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-setXhrHeaders">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">setXhrHeaders</span><span class="code" data-ice="signature">(formio: <span>*</span>, xhr: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/providers/storage/xhr.js.html#lineNumber3">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {setXhrHeaders} from &apos;<span><a href="file/src/providers/storage/xhr.js.html#lineNumber3">formiojs/src/providers/storage/xhr.js</a></span>&apos;</code></pre></div>
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">formio</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">xhr</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
 
   
 

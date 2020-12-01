@@ -744,6 +744,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/providers/storage/uploadadapter.js~getformiouploadadapterplugin",
+    "function/index.html#static-function-getFormioUploadAdapterPlugin",
+    "<span>getFormioUploadAdapterPlugin</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/uploadAdapter.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/formutils.js~getstrings",
     "function/index.html#static-function-getStrings",
     "<span>getStrings</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -831,6 +837,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/formutils.js~searchcomponents",
     "function/index.html#static-function-searchComponents",
     "<span>searchComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/providers/storage/xhr.js~setxhrheaders",
+    "function/index.html#static-function-setXhrHeaders",
+    "<span>setXhrHeaders</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/xhr.js</span>",
     "function"
   ],
   [
@@ -2478,6 +2490,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#checkmodal",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkModal",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkModal",
+    "method"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#checkvalidity",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkValidity",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkValidity",
@@ -2616,6 +2634,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#error",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-member-error",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#error",
+    "member"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#errors",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-errors",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#errors",
@@ -2676,10 +2700,22 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#isdirty",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-isDirty",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#isDirty",
+    "member"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#islastpage",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-isLastPage",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#isLastPage",
     "method"
+  ],
+  [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#ispristine",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-isPristine",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#isPristine",
+    "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#isvalid",
@@ -9705,6 +9741,12 @@ window.esdocSearchIndex = [
     "src/providers/storage/s3.js",
     "file/src/providers/storage/s3.js.html",
     "src/providers/storage/s3.js",
+    "file"
+  ],
+  [
+    "src/providers/storage/uploadadapter.js",
+    "file/src/providers/storage/uploadAdapter.js.html",
+    "src/providers/storage/uploadAdapter.js",
     "file"
   ],
   [

@@ -1,7 +1,7 @@
 {
-  "coverage": "7.59%",
-  "expectCount": 1475,
-  "actualCount": 112,
+  "coverage": "7.58%",
+  "expectCount": 1489,
+  "actualCount": 113,
   "files": {
     "src/EventEmitter.js": {
       "expectCount": 3,
@@ -403,7 +403,7 @@
       ]
     },
     "src/components/_classes/nested/NestedComponent.js": {
-      "expectCount": 78,
+      "expectCount": 82,
       "actualCount": 13,
       "undocumentLines": [
         8,
@@ -451,26 +451,30 @@
         534,
         540,
         550,
-        563,
-        568,
+        566,
         572,
-        581,
-        603,
-        614,
-        618,
-        625,
-        637,
-        645,
-        650,
-        657,
-        664,
-        669,
-        675,
-        680,
-        684,
-        690,
-        694,
-        712
+        584,
+        589,
+        593,
+        602,
+        624,
+        635,
+        639,
+        646,
+        660,
+        668,
+        673,
+        677,
+        681,
+        688,
+        695,
+        700,
+        706,
+        713,
+        717,
+        723,
+        727,
+        745
       ]
     },
     "src/components/_classes/nested/NestedComponent.unit.js": {
@@ -1848,7 +1852,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2
+        3
       ]
     },
     "src/providers/storage/indexeddb.js": {
@@ -1865,6 +1869,20 @@
         3
       ]
     },
+    "src/providers/storage/uploadAdapter.js": {
+      "expectCount": 9,
+      "actualCount": 1,
+      "undocumentLines": [
+        7,
+        8,
+        9,
+        10,
+        13,
+        48,
+        50,
+        58
+      ]
+    },
     "src/providers/storage/url.js": {
       "expectCount": 1,
       "actualCount": 0,
@@ -1873,10 +1891,11 @@
       ]
     },
     "src/providers/storage/xhr.js": {
-      "expectCount": 1,
+      "expectCount": 2,
       "actualCount": 0,
       "undocumentLines": [
-        3
+        3,
+        17
       ]
     },
     "src/templates/Templates.js": {
@@ -1997,19 +2016,19 @@
       "actualCount": 1,
       "undocumentLines": [
         14,
-        1045,
+        1069,
         23,
         24,
         25,
         26,
-        793,
-        824,
-        857,
-        990,
-        1021,
-        1025,
-        1029,
-        1033
+        815,
+        846,
+        880,
+        1014,
+        1045,
+        1049,
+        1053,
+        1057
       ]
     },
     "src/validator/rules/Custom.js": {
