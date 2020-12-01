@@ -10,6 +10,7 @@ import wizard3 from '../test/forms/conditionalWizardPages';
 import wizard4 from '../test/forms/wizardWithSimpleConditionalPage';
 import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
 import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
+import wizardWithHighPages from '../test/forms/wizardWithHighPages';
 import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import formWithSignature from '../test/forms/formWithSignature';
@@ -371,6 +372,21 @@ describe('Wizard tests', () => {
             done();
           }, 100);
         }, 100);
+      })
+      .catch(done);
+  });
+
+  it('Should scroll to the top of the page when the page is changed', (done) => {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizardWithHighPages)
+      .then(() => {
+        wizardForm.scrollIntoView(wizardForm.refs[`${wizardForm.wizardKey}-next`]);
+        wizardForm.setPage(1);
+        setTimeout(() => {
+          assert.equal(wizardForm.refs[wizardForm.wizardKey].scrollTop, 0, 'The top edge of the page should be aligned to the top edge of the window');
+          done();
+        }, 350);
       })
       .catch(done);
   });

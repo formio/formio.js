@@ -284,8 +284,11 @@ export default class Wizard extends Webform {
   }
 
   scrollPageToTop() {
-    if (this.currentPage?.component?.scrollToTop) {
+    if ('scrollIntoView' in this.refs[this.wizardKey]) {
       this.refs[this.wizardKey]?.scrollIntoView(true);
+    }
+    else {
+      this.scrollIntoView(this.refs[this.wizardKey]);
     }
   }
 
