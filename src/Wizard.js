@@ -105,6 +105,11 @@ export default class Wizard extends Webform {
       showCancel: !this.options.readOnly
     });
 
+    if (!this.isSecondInit) {
+      this.isClickableDefined = this.options?.breadcrumbSettings?.hasOwnProperty('clickable');
+      this.isSecondInit = true;
+    }
+
     this.options.breadcrumbSettings = _.defaults(this.options.breadcrumbSettings, {
       clickable: true
     });
@@ -284,7 +289,7 @@ export default class Wizard extends Webform {
       }
     });
 
-    return _.get(currentPage.component, 'breadcrumbClickable', true);
+    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage.component, 'breadcrumbClickable', true);
   }
 
   isAllowPrevious() {
