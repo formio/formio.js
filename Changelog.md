@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.2-rc.6
+#### Fixed
+ - Issue where a conditionally hidden datagrid was not initializing the data correctly resulting in data not saving.
+
 ### 4.12.2-rc.5
 #### Fixed
  - FJS-1466: focus on the default value in the currency field
