@@ -123,7 +123,7 @@ export default class WebformBuilder extends Component {
       if (this.groups[group] && this.groups[group].components) {
         this.groups[group].componentOrder = Object.keys(this.groups[group].components)
           .map(key => this.groups[group].components[key])
-          .filter(component => component && !component.ignore)
+          .filter(component => component && !component.ignore && !component.ignoreForForm)
           .sort((a, b) => a.weight - b.weight)
           .map(component => component.key);
       }
@@ -618,19 +618,21 @@ export default class WebformBuilder extends Component {
   }
 
   searchFields(searchString) {
-    if (!this.refs['sidebar-groups']) {
+    const sidebar = this.refs['sidebar'];
+    const sidebarGroups = this.refs['sidebar-groups'];
+    if (!sidebar || !sidebarGroups) {
       return;
     }
     if (searchString) {
       const filteredComponentsOrder = [];
       for (const type in this.fieldsList.components) {
         const builderInfo = this.fieldsList.components[type];
-        if (builderInfo.title.toLowerCase().indexOf(searchString) !== -1) {
+        if (builderInfo.title.toLowerCase().indexOf(searchString.toLowerCase()) !== -1) {
           filteredComponentsOrder.push(type);
         }
       }
       this.fieldsList.componentOrder = filteredComponentsOrder;
-      this.refs['sidebar-groups'].innerHTML = this.renderTemplate('builderSidebarGroup', {
+      sidebarGroups.innerHTML = this.renderTemplate('builderSidebarGroup', {
         group: this.fieldsList,
         groupKey: 'searchFields',
         groupId: `builder-sidebar-${this.id}`,
@@ -638,10 +640,10 @@ export default class WebformBuilder extends Component {
       });
     }
     else {
-      this.refs['sidebar-groups'].innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+      sidebarGroups.innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
         group: this.groups[groupKey],
         groupKey,
-        groupId: `builder-sidebar-${this.id}`,
+        groupId: sidebar.id || sidebarGroups.id,
         subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
           group,
           groupKey: group.key,
@@ -820,6 +822,24 @@ export default class WebformBuilder extends Component {
       return;
     }
 
+    // Show an error if siblings are disabled for a component and such a component already exists.
+    const draggableComponent = this.groups[group]?.components[key] || {};
+
+    if (draggableComponent.disableSiblings) {
+      let isCompAlreadyExists = false;
+      eachComponent(this.webform.components, (component) => {
+        if (component.key === draggableComponent.key) {
+          isCompAlreadyExists = true;
+          return;
+        }
+      }, true);
+      if (isCompAlreadyExists) {
+        this.webform.redraw();
+        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.key} component to one page.`);
+        return;
+      }
+    }
+
     if (target !== source) {
       // Ensure the key remains unique in its new container.
       BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent.component), info);
@@ -969,7 +989,7 @@ export default class WebformBuilder extends Component {
       remove = window.confirm(this.t(message));
     }
     if (!original) {
-      original = parent.formioContainer.find((comp) => comp.key === component.key);
+      original = parent.formioContainer.find((comp) => comp.id === component.id);
     }
     const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
     if (remove && index !== -1) {
@@ -1056,6 +1076,10 @@ export default class WebformBuilder extends Component {
           newComp.checkValidity = () => true;
           newComp.build(defaultValueComponent.element);
         }
+      }
+      else {
+        this.preview._data[changed.instance._data.key] = changed.value;
+        this.webform._data[changed.instance._data.key] = changed.value;
       }
     }
 
@@ -1234,6 +1258,7 @@ export default class WebformBuilder extends Component {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
+      helplinks: this.helplinks,
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
@@ -1260,7 +1285,8 @@ export default class WebformBuilder extends Component {
                     event.data.label ||
                     event.data.placeholder ||
                     event.data.type
-                  ));
+                  ).replace(/^[0-9]*/, ''));
+
                   return false;
                 }
               });
@@ -1403,6 +1429,12 @@ export default class WebformBuilder extends Component {
       this.webform.init();
     }
     return super.init();
+  }
+
+  clear() {
+    if (this.webform.initialized) {
+      this.webform.clear();
+    }
   }
 
   destroy(deleteFromGlobal) {

@@ -636,20 +636,21 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   setForm(form, flags) {
+    const isFormAlreadySet = this._form && this._form.components?.length;
     try {
       // Do not set the form again if it has been already set
-      if (JSON.stringify(this._form) === JSON.stringify(form)) {
+      if (isFormAlreadySet && JSON.stringify(this._form) === JSON.stringify(form)) {
         return NativePromise.resolve();
       }
+
+      // Create the form.
+      this._form = _.cloneDeep(form);
     }
     catch (err) {
       console.warn(err);
       // If provided form is not a valid JSON object, do not set it too
       return NativePromise.resolve();
     }
-
-    // Create the form.
-    this._form = form;
 
     // Allow the form to provide component overrides.
     if (form && form.settings && form.settings.components) {
@@ -1007,7 +1008,7 @@ export default class Webform extends NestedDataComponent {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.addEventListener(this.element, 'keydown', this.executeShortcuts);
+    this.addEventListener(document, 'keydown', this.executeShortcuts);
     this.currentForm = this;
     return childPromise.then(() => {
       this.emit('render', this.element);
@@ -1042,9 +1043,9 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
-   * @param {string} classes - Styling classes for alert.
+   * @param {Object} options
    */
-  setAlert(type, message, classes) {
+  setAlert(type, message, options) {
     if (!type && this.submitted) {
       if (this.alert) {
         if (this.refs.errorRef && this.refs.errorRef.length) {
@@ -1081,7 +1082,7 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: classes || `alert alert-${type}`,
+        class: (options && options.classes) || `alert alert-${type}`,
         id: `error-list-${this.id}`,
       });
       if (message instanceof HTMLElement) {
@@ -1193,7 +1194,7 @@ export default class Webform extends NestedDataComponent {
           };
           const li = this.ce('li', params);
           const span = this.ce('span');
-          li.style='cursor:pointer';
+          li.style.cursor = 'pointer';
 
           this.setContent(span, unescapeHTML(message));
           this.appendTo(span, li);
@@ -1249,7 +1250,7 @@ export default class Webform extends NestedDataComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
-    this.emit('submit', submission);
+    this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
     }
@@ -1279,7 +1280,7 @@ export default class Webform extends NestedDataComponent {
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
-      this.emit('change', { isValid: true });
+      this.emit('change', { isValid: true }, { silent: true });
       return false;
     }
 
@@ -1321,7 +1322,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (!flags || !flags.noEmit) {
-      this.emit('change', value, flags);
+      this.emit('change', value, flags, modified);
       isChangeEventEmitted = true;
     }
 

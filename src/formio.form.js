@@ -9,6 +9,7 @@ import Widgets from './widgets';
 import Formio from './Formio';
 import Form from './Form';
 import Utils from './utils';
+import Evaluator from './utils/Evaluator';
 Components.setComponents(AllComponents);
 const registerPlugin = (plugin) => {
   // Sanity check.
@@ -53,6 +54,9 @@ const registerPlugin = (plugin) => {
         break;
       case 'rules':
         Rules.addRules(plugin.rules);
+        break;
+      case 'evaluator':
+        Evaluator.registerEvaluator(plugin.evaluator);
         break;
       default:
         console.log('Unknown plugin option', key);

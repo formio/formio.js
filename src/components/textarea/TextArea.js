@@ -27,7 +27,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       title: 'Text Area',
       group: 'basic',
       icon: 'font',
-      documentation: 'http://help.form.io/userguide/#textarea',
+      documentation: '/userguide/#textarea',
       weight: 20,
       schema: TextAreaComponent.schema()
     };
@@ -134,7 +134,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           if (!settings) {
             settings = {};
           }
-          settings.mode = this.component.as;
+          settings.mode = `ace/mode/${this.component.as}`;
           this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
             this.editors[index] = ace;
             let dataValue = this.dataValue;
