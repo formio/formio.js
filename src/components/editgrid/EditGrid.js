@@ -883,9 +883,9 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   checkComponentValidity(data, dirty, row, options) {
-    // If super tells us that component invalid and there is no need to update alerts, just return false
     const superValid = super.checkComponentValidity(data, dirty, row, options);
 
+    // If super tells us that component invalid and there is no need to update alerts, just return false
     if (!superValid && (!this.alert || !this.hasOpenRows())) {
       return false;
     }
