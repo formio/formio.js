@@ -87,6 +87,7 @@ const EditFormUtils = {
               rows: 5,
               editor: 'ace',
               hideLabel: true,
+              as: 'javascript',
               input: true
             },
             {
