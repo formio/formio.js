@@ -801,15 +801,17 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   shouldValidateDraft(editRow) {
     // Draft rows should be validated only when there was an attempt to submit a form
-    return (editRow.state === EditRowState.Draft ||
-      editRow.state === EditRowState.Editing) &&
+    return (editRow.state === EditRowState.Draft &&
+      !this.pristine &&
+      !this.root?.pristine &&
+      !this.hasOpenRows()) ||
       this.root?.submitted;
   }
 
   shouldValidateRow(editRow, dirty) {
-    return this.component.rowDrafts ?
-      this.shouldValidateDraft(editRow) :
-      editRow.state === EditRowState.Editing || dirty;
+    return this.shouldValidateDraft(editRow) ||
+      editRow.state === EditRowState.Editing ||
+      dirty;
   }
 
   validateRow(editRow, dirty) {
@@ -822,7 +824,9 @@ export default class EditGridComponent extends NestedArrayComponent {
           comp.setPristine(!dirty);
         }
 
-        valid &= comp.checkValidity(null, dirty, editRow.data);
+        const silentCheck = this.component.rowDrafts && !this.root?.submitted;
+
+        valid &= comp.checkValidity(null, dirty, editRow.data, silentCheck);
       });
     }
 
@@ -880,7 +884,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   checkComponentValidity(data, dirty, row, options) {
     // If super tells us that component invalid and there is no need to update alerts, just return false
-    if (!super.checkComponentValidity(data, dirty, row, options) && (!this.alert || !this.hasOpenRows())) {
+    const superValid = super.checkComponentValidity(data, dirty, row, options);
+
+    if (!superValid && (!this.alert || !this.hasOpenRows())) {
       return false;
     }
 
@@ -923,7 +929,8 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
-    return true;
+
+    return superValid;
   }
 
   setValue(value, flags = {}) {
@@ -983,9 +990,10 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   restoreRowContext(editRow, flags = {}) {
+    const silentCheck = this.component.rowDrafts && !this.root?.submitted;
     editRow.components.forEach((component) => {
       component.data = editRow.data;
-      this.setNestedValue(component, editRow.data, flags);
+      this.setNestedValue(component, editRow.data, { ...flags, silentCheck });
     });
   }
 

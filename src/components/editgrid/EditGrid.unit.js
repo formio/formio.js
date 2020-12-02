@@ -391,7 +391,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should set alert with validation errors on save', (done) => {
+    it('Should set alert with validation errors on save and update them', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {
@@ -402,7 +402,8 @@ describe('EditGrid Component', () => {
         editGrid.addRow();
 
         setTimeout(() => {
-          const dialog = document.querySelector('[ref="dialogContents"]');
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
           const saveButton = dialog.querySelector('.btn.btn-primary');
           const clickEvent = new Event('click');
           saveButton.dispatchEvent(clickEvent);
@@ -410,10 +411,24 @@ describe('EditGrid Component', () => {
           setTimeout(() => {
             const alert = dialog.querySelector('.alert.alert-danger');
             assert.equal(form.errors.length, 3);
+
             const errorsLinks = alert.querySelectorAll('li');
             assert.equal(errorsLinks.length, 2);
-            document.body.innerHTML = '';
-            done();
+            // eslint-disable-next-line no-debugger
+            debugger;
+            const textField = editRow.components[0].getComponent('textField');
+            textField.setValue('new value');
+
+            setTimeout(() => {
+              const alertAfterFixingField = dialog.querySelector('.alert.alert-danger');
+              assert.equal(form.errors.length, 2);
+
+              const errorsLinksAfterFixingField = alertAfterFixingField.querySelectorAll('li');
+              assert.equal(errorsLinksAfterFixingField.length, 1);
+
+              document.body.innerHTML = '';
+              done();
+            }, 450);
           }, 100);
         }, 100);
       }).catch(done);
@@ -513,7 +528,11 @@ describe('EditGrid Component', () => {
 
                       setTimeout(() => {
                         const errorAlert = editGrid.editRows[0].dialog.querySelector(`#error-list-${editGrid.id}`);
+                        const hasError = textField.className.includes('has-error');
+
+                        assert(!hasError, 'Should stay valid until form is submitted');
                         assert.equal(errorAlert, null, 'Should be valid');
+
                         done();
                       }, 100);
                     });
