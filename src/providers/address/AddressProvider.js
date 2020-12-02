@@ -12,7 +12,12 @@ export class AddressProvider {
   }
 
   constructor(options = {}) {
+    this.beforeMergeOptions(options);
     this.options = _.merge({}, this.defaultOptions, options);
+  }
+
+  beforeMergeOptions() {
+    return;
   }
 
   get defaultOptions() {
