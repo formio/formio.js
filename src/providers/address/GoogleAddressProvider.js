@@ -116,11 +116,11 @@ export class GoogleAddressProvider extends AddressProvider {
   }
 
   search() {
-    return;
+    return Promise.resolve();
   }
 
   makeRequest() {
-    return;
+    return Promise.resolve();
   }
 
   getDisplayValue(address) {
