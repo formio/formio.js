@@ -31,6 +31,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   constructor(...args) {
     super(...args);
     this.type = 'datagrid';
+    this.tabIndex = 0;
   }
 
   init() {
@@ -249,6 +250,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       allowReorder: this.allowReorder,
       builder: this.builderMode,
       canAddColumn: this.canAddColumn,
+      tabIndex: this.tabIndex,
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
@@ -429,6 +431,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   createRowComponents(row, rowIndex) {
     const components = {};
+    this.tabIndex = 0;
     this.component.components.map((col, colIndex) => {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
@@ -448,6 +451,12 @@ export default class DataGridComponent extends NestedArrayComponent {
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
+      if (
+        columnComponent.tabindex &&
+        parseInt(columnComponent.tabindex) > this.tabIndex
+      ) {
+        this.tabIndex = parseInt(columnComponent.tabindex);
+      }
       components[col.key] = component;
     });
     return components;
