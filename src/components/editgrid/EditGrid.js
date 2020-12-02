@@ -777,7 +777,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
         else if (editRow) {
           // If drafts allowed, perform validation silently if there was no attempt to submit a form
-          const silentCheck = this.component.rowDrafts ? !this.shouldValidateDraft(editRow) : false;
+          const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
 
           this.checkRow('checkData', null, {
             ...flags,
@@ -824,7 +824,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           comp.setPristine(!dirty);
         }
 
-        const silentCheck = this.component.rowDrafts && !this.root?.submitted;
+        const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
 
         valid &= comp.checkValidity(null, dirty, editRow.data, silentCheck);
       });
@@ -990,7 +990,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   restoreRowContext(editRow, flags = {}) {
-    const silentCheck = this.component.rowDrafts && !this.root?.submitted;
+    const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
     editRow.components.forEach((component) => {
       component.data = editRow.data;
       this.setNestedValue(component, editRow.data, { ...flags, silentCheck });
