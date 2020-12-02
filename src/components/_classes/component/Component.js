@@ -2723,7 +2723,7 @@ export default class Component extends Element {
     if (this.component.validateOn === 'blur' && flags.fromSubmission) {
       return true;
     }
-    const isValid = this.checkComponentValidity(data, isDirty, row);
+    const isValid = this.checkComponentValidity(data, isDirty, row, flags);
     this.checkModal();
     return isValid;
   }

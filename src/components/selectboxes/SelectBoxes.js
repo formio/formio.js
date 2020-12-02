@@ -135,7 +135,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       .join(', ');
   }
 
-  checkComponentValidity(data, dirty, rowData) {
+  checkComponentValidity(data, dirty, rowData, options) {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
 
@@ -184,6 +184,6 @@ export default class SelectBoxesComponent extends RadioComponent {
       }
     }
 
-    return super.checkComponentValidity(data, dirty, rowData);
+    return super.checkComponentValidity(data, dirty, rowData, options);
   }
 }
