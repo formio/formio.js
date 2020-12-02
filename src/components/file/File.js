@@ -677,30 +677,29 @@ export default class FileComponent extends Field {
                 this.emit('fileUploadingStart', filePromise);
               },
             }
-          )
-              .then((fileInfo) => {
-                const index = this.statuses.indexOf(fileUpload);
-                if (index !== -1) {
-                  this.statuses.splice(index, 1);
-                }
-                fileInfo.originalName = file.name;
-                if (!this.hasValue()) {
-                  this.dataValue = [];
-                }
-                this.dataValue.push(fileInfo);
-                this.fileDropHidden = false;
-                this.redraw();
-                this.triggerChange();
-                this.emit('fileUploadingEnd', filePromise);
-              })
-              .catch((response) => {
-                fileUpload.status = 'error';
-                fileUpload.message = response;
-                delete fileUpload.progress;
-                this.fileDropHidden = false;
-                this.redraw();
-                this.emit('fileUploadingEnd', filePromise);
-              });
+          ).then((fileInfo) => {
+              const index = this.statuses.indexOf(fileUpload);
+              if (index !== -1) {
+                this.statuses.splice(index, 1);
+              }
+              fileInfo.originalName = file.name;
+              if (!this.hasValue()) {
+                this.dataValue = [];
+              }
+              this.dataValue.push(fileInfo);
+              this.fileDropHidden = false;
+              this.redraw();
+              this.triggerChange();
+              this.emit('fileUploadingEnd', filePromise);
+            })
+            .catch((response) => {
+              fileUpload.status = 'error';
+              fileUpload.message = response;
+              delete fileUpload.progress;
+              this.fileDropHidden = false;
+              this.redraw();
+              this.emit('fileUploadingEnd', filePromise);
+            });
         }
       });
     }

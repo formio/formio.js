@@ -43,7 +43,7 @@ const XHR = {
           if (typeof progressCallback === 'function') {
             xhr.upload.onprogress = progressCallback;
           }
-          
+
           if (typeof abortCallback === 'function') {
             abortCallback(() => xhr.abort());
           }
