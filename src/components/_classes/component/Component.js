@@ -273,6 +273,9 @@ export default class Component extends Element {
      */
     this.component = this.mergeSchema(component || {});
 
+    // Add the id to the component.
+    this.component.id = this.id;
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -291,9 +294,6 @@ export default class Component extends Element {
      * @type {*}
      */
     this._data = data || {};
-
-    // Add the id to the component.
-    this.component.id = this.id;
 
     /**
      * The existing error that this component has.
