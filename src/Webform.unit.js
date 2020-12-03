@@ -41,10 +41,34 @@ import formWithAddressComponent from '../test/forms/formWithAddressComponent';
 import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
+import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should display dataGrid conditional column once the condition is met', function(done) {
+    const formElement = document.createElement('div');
+    const formWithCondDataGridColumn = new Webform(formElement);
+
+    formWithCondDataGridColumn.setForm(formWithDataGridWithCondColumn).then(() => {
+      const condDataGridField = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
+      assert.equal(!!condDataGridField, false);
+
+      const textField = formWithCondDataGridColumn.element.querySelector( '[name="data[textField]"]');
+      textField.value = 'show';
+
+      const inputEvent = new Event('input');
+      textField.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        const condDataGridFieldAfterFulfillingCond = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
+        assert.equal(!!condDataGridFieldAfterFulfillingCond, true);
+
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
 
   it('Should remove dataGrid extra rows and components after setting value with less row number', function(done) {
     const formElement = document.createElement('div');
