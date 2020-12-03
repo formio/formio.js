@@ -1674,7 +1674,8 @@ export default class Component extends Element {
     }
 
     const newComponent = fastCloneDeep(this.originalComponent);
-
+    newComponent.id = this.component.id;
+    
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
         newComponent,
