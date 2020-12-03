@@ -990,10 +990,9 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   restoreRowContext(editRow, flags = {}) {
-    const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
     editRow.components.forEach((component) => {
       component.data = editRow.data;
-      this.setNestedValue(component, editRow.data, { ...flags, silentCheck });
+      this.setNestedValue(component, editRow.data, flags);
     });
   }
 
