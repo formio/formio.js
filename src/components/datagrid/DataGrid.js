@@ -400,12 +400,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     });
   }
 
-  createRows(init) {
+  createRows(init, rebuild) {
     let added = false;
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) => {
-      if (this.rows[index]) {
+      if (!rebuild && this.rows[index]) {
         this.setRowComponentsData(index, row);
       }
       else {
@@ -518,7 +518,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     const { rebuild, show } = this.checkColumns(data, flags);
     // Check if a rebuild is needed or the visibility changes.
     if (rebuild || !isVisible) {
-      this.createRows();
+      this.createRows(false, rebuild);
     }
 
     // Return if this table should show.
