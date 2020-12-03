@@ -414,8 +414,6 @@ describe('EditGrid Component', () => {
 
             const errorsLinks = alert.querySelectorAll('li');
             assert.equal(errorsLinks.length, 2);
-            // eslint-disable-next-line no-debugger
-            debugger;
             const textField = editRow.components[0].getComponent('textField');
             textField.setValue('new value');
 
