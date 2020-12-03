@@ -197,6 +197,9 @@ export default class FormComponent extends Component {
     if (this.options.fileService) {
       options.fileService = this.options.fileService;
     }
+    if (this.options.onChange) {
+      options.onChange = this.options.onChange;
+    }
     return options;
   }
 
