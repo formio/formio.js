@@ -548,6 +548,60 @@ describe('EditGrid Component', () => {
       });
     });
 
+    it('Should keep fields valid inside NestedForms id drafts are enabled', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+
+        form.checkValidity(form._data, true, form._data);
+        assert.equal(form.errors.length, 1);
+        editGrid.addRow();
+
+        setTimeout(() => {
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          const clickEvent = new Event('click');
+          saveButton.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const alert = dialog.querySelector('.alert.alert-danger');
+            assert.equal(form.errors.length, 1, 'Should not add new errors when drafts are enabled');
+            assert(!alert, 'Should not show an erros alert when drafts are enabled');
+
+            const textField = editRow.components[0].getComponent('textField');
+            editGrid.editRow(0);
+
+            setTimeout(() => {
+              textField.setValue('new value', { modified: true });
+
+              setTimeout(() => {
+                assert.equal(textField.dataValue, 'new value');
+                textField.setValue('', { modified: true });
+
+                setTimeout(() => {
+                  assert.equal(textField.dataValue, '');
+                  assert.equal(editGrid.editRows[0].errors.length, 0, 'Should not add error to components inside draft row');
+
+                  const textFieldComponent = textField.element;
+                  assert(!textFieldComponent.className.includes('has-error'), 'Should not add error class to component when drafts enabled');
+
+                  document.innerHTML = '';
+                  done();
+                }, 300);
+              }, 300);
+            }, 150);
+          }, 100);
+        }, 100);
+      }).catch(done)
+      .finally(() => {
+        delete ModalEditGrid.components[0].rowDrafts;
+      });
+    });
+
     // it('', (done) => {
     //   const formElement = document.createElement('div');
     //   const form = new Webform(formElement);
