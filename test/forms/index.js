@@ -31,5 +31,5 @@ export default [
   // NestedConditionallyHidden,
   // ChildMetadata,
   // WysiwygCursor
-  ClearOnHide
+  ClearOnHide,
 ];
