@@ -1090,6 +1090,59 @@ export function getContextComponents(context) {
   return values;
 }
 
+function translateElemValue(elem, translate) {
+  const isLink = elem.nodeName === 'A';
+  const elemValue = isLink
+    ? elem.parentElement.innerText
+    : elem.innerText;
+  const pureTextValue = Evaluator.templateSettings.interpolate.test(elemValue)
+    ? elemValue.replace(Evaluator.templateSettings.interpolate, '').replace(/\s\s+/g, ' ').trim()
+    : elemValue.trim();
+  const translatedTextValue = translate(pureTextValue);
+
+  if (pureTextValue !== translatedTextValue) {
+    if (isLink) {
+      const parentElemValue = elem.parentElement.innerHTML;
+      const links = parentElemValue.match(/<a[^>]*>(.*?)<\/a>/g);
+      elem.parentElement.innerHTML = elem.parentElement.innerText
+        .replace(pureTextValue, translatedTextValue)
+        .concat(' (', links.join(', '), ')');
+    }
+    else {
+      elem.innerHTML = elem.innerHTML.replace(pureTextValue, translatedTextValue);
+    }
+  }
+}
+
+function translateDeepTag(tag, translate) {
+  Array.prototype.forEach.call(tag.children, elem => {
+    if (elem.children.length) {
+      translateDeepTag(elem, translate);
+    }
+    translateElemValue(elem, translate);
+  });
+}
+
+export function translateHTMLTemplate(template, translate) {
+  const isHTML = /<[^>]*>/.test(template);
+
+  if (!isHTML) {
+    return translate(template);
+  }
+
+  const tempElem = document.createElement('div');
+  tempElem.innerHTML = template;
+
+  if (tempElem.children.length) {
+    translateDeepTag(tempElem, translate);
+  }
+  else {
+    translateElemValue(tempElem, translate);
+  }
+
+  return tempElem.innerHTML;
+}
+
 /**
  * Sanitize an html string.
  *

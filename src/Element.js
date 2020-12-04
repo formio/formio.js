@@ -527,6 +527,9 @@ export default class Element {
    * @return {XML|string|*|void}
    */
   interpolate(string, data) {
+    if (typeof string !== 'function') {
+      string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
+    }
     return FormioUtils.interpolate(string, this.evalContext(data));
   }
 
