@@ -2158,7 +2158,6 @@ describe('Webform tests', function() {
                 dateTimeComponent.setValue('2020-10-19T00:00:00');
                 setTimeout(() => {
                   assert.equal(dateTimeComponent.dataValue, '2020-10-19T00:00:00', 'Should set value');
-                  console.log('ERROR', dateTimeComponent.error);
                   assert(!dateVisibleInput.className.includes('is-invalid'), 'Invalid class should be removed');
                   assert(!flatpickerInput.className.includes('is-invalid'), 'Invalid class should be removed from flatpickr field as well');
                   done();
