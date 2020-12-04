@@ -35,6 +35,7 @@ import {
   formWithCustomFormatDate
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
+import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
 import disableSubmitButton from '../test/forms/disableSubmitButton';
 import formWithAddressComponent from '../test/forms/formWithAddressComponent';
@@ -2107,6 +2108,66 @@ describe('Webform tests', function() {
         assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, 'Should not set to defaultValue after restore');
         done();
       }, 150);
+    }).catch(done);
+  });
+
+  it('Should add and clear input error classes correclty', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+
+    form.setForm(UpdateErrorClassesWidgets).then(() => {
+      const checkbox = form.getComponent('showDate');
+      checkbox.setValue(true);
+      setTimeout(() => {
+        const dateTimeComponent = form.getComponent('condtionalDate');
+        const dateComponentElement = dateTimeComponent.element;
+        assert.equal(!dateComponentElement.className.includes('formio-hidden'), true, 'Should not be hidden');
+
+        form.submit();
+
+        setTimeout(() => {
+          const dateVisibleInput = dateComponentElement.querySelector('.input');
+          const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
+
+          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
+          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should has invalid class as well');
+
+          dateTimeComponent.setValue('2020-12-09T00:00:00');
+
+          setTimeout(() => {
+            assert.equal(dateTimeComponent.dataValue, '2020-12-09T00:00:00', 'Should set value');
+            assert(!dateVisibleInput.className.includes('is-invalid'), 'Invalid class should be removed');
+            assert(!flatpickerInput.className.includes('is-invalid'), 'Invalid class should be removed from flatpickr field as well');
+
+            checkbox.setValue(false);
+
+            setTimeout(() => {
+              const dateComponentElement = dateTimeComponent.element;
+              assert.equal(dateComponentElement.className.includes('formio-hidden'), true, 'Should be hidden');
+              checkbox.setValue(true);
+
+              setTimeout(() => {
+                const dateComponentElement = dateTimeComponent.element;
+                assert.equal(!dateComponentElement.className.includes('formio-hidden'), true, 'Should be visible');
+                const dateVisibleInput = dateComponentElement.querySelector('.input:not([type="hidden"]');
+                const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
+
+                assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
+                assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should has invalid class as well');
+
+                dateTimeComponent.setValue('2020-10-19T00:00:00');
+                setTimeout(() => {
+                  assert.equal(dateTimeComponent.dataValue, '2020-10-19T00:00:00', 'Should set value');
+                  console.log('ERROR', dateTimeComponent.error);
+                  assert(!dateVisibleInput.className.includes('is-invalid'), 'Invalid class should be removed');
+                  assert(!flatpickerInput.className.includes('is-invalid'), 'Invalid class should be removed from flatpickr field as well');
+                  done();
+                }, 300);
+              }, 400);
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 350);
     }).catch(done);
   });
 
