@@ -1820,6 +1820,8 @@ export default class Component extends Element {
   setErrorClasses(elements, dirty, hasErrors, hasMessages) {
     this.clearErrorClasses();
     elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    this.setInputWidgetErrorClasses(elements, hasErrors);
+
     if (hasErrors) {
       // Add error classes
       elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
@@ -2728,6 +2730,18 @@ export default class Component extends Element {
     this.removeClass(this.element, 'alert alert-danger');
     this.removeClass(this.element, 'has-error');
     this.removeClass(this.element, 'has-message');
+  }
+
+  setInputWidgetErrorClasses(inputRefs, hasErrors) {
+    if (!this.isInputComponent || !this.component.widget || !inputRefs?.length) {
+      return;
+    }
+
+    inputRefs.forEach((input) => {
+      if (input.widget && input.widget.setErrorClasses) {
+        input.widget.setErrorClasses(hasErrors);
+      }
+    });
   }
 
   setCustomValidity(messages, dirty, external) {

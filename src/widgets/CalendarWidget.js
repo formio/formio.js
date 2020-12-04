@@ -398,6 +398,19 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
+  setErrorClasses(hasErrors) {
+    if (!this.input) {
+      return;
+    }
+
+    if (hasErrors) {
+      this.input.className = `${this.input.className} is-invalid`;
+    }
+    else {
+      this.input.className = this.input.className.replace('is-invalid', '');
+    }
+  }
+
   validationValue(value) {
     if (typeof value === 'string') {
       return new Date(value);
