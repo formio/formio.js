@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FMG-109 | Change OnHover cursor style to the Hand pointer for the Wizard navigation buttons
 
 #### Fixed
+ - FJS-1484: fixed an issue where wizard resets form after components schema is changed inside the code
+ - FJS-1487: fixed an issue where conditional columns are not displayed inside dataGrid when the condition is met
+ - FOR-2882: fix the mode path in ace
+ - Fixed an issue where forms which have some logic get stuck in infinite loop
  - Fixed an issue where DateTime is rendered incorrectly & ignoring Format on mobile devices
  - FJS-1099: Allow overriding the breadCrumb clickable option with configurations.
  - Fix typo in class name in align.ejs.
