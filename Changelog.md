@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.2-rc.7
+#### Fixed
+ - FJS-1484: fixed an issue where wizard resets form after components schema is changed inside the code
+ - FJS-1487: fixed an issue where conditional columns are not displayed inside dataGrid when the condition is met
+ - FOR-2882: fix the mode path in ace
+ - Fixed an issue where forms which have some logic get stuck in infinite loop 
+
 ### 4.12.2-rc.6
 #### Fixed
  - Issue where a conditionally hidden datagrid was not initializing the data correctly resulting in data not saving.
