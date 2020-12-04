@@ -211,6 +211,7 @@ import {
   formWithCustomFormatDate
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
+import UpdateErrorClassesWidgets from &apos;../test/forms/updateErrorClasses-widgets&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
 import disableSubmitButton from &apos;../test/forms/disableSubmitButton&apos;;
 import formWithAddressComponent from &apos;../test/forms/formWithAddressComponent&apos;;
@@ -2283,6 +2284,65 @@ describe(&apos;Webform tests&apos;, function() {
         assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, &apos;Should not set to defaultValue after restore&apos;);
         done();
       }, 150);
+    }).catch(done);
+  });
+
+  it(&apos;Should add and clear input error classes correclty&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+
+    form.setForm(UpdateErrorClassesWidgets).then(() =&gt; {
+      const checkbox = form.getComponent(&apos;showDate&apos;);
+      checkbox.setValue(true);
+      setTimeout(() =&gt; {
+        const dateTimeComponent = form.getComponent(&apos;condtionalDate&apos;);
+        const dateComponentElement = dateTimeComponent.element;
+        assert.equal(!dateComponentElement.className.includes(&apos;formio-hidden&apos;), true, &apos;Should not be hidden&apos;);
+
+        form.submit();
+
+        setTimeout(() =&gt; {
+          const dateVisibleInput = dateComponentElement.querySelector(&apos;.input&apos;);
+          const flatpickerInput = dateComponentElement.querySelector(&apos;.flatpickr-input&apos;);
+
+          assert(dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Visible field should has invalid class&apos;);
+          assert(flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Flatpickr field should has invalid class as well&apos;);
+
+          dateTimeComponent.setValue(&apos;2020-12-09T00:00:00&apos;);
+
+          setTimeout(() =&gt; {
+            assert.equal(dateTimeComponent.dataValue, &apos;2020-12-09T00:00:00&apos;, &apos;Should set value&apos;);
+            assert(!dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed&apos;);
+            assert(!flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed from flatpickr field as well&apos;);
+
+            checkbox.setValue(false);
+
+            setTimeout(() =&gt; {
+              const dateComponentElement = dateTimeComponent.element;
+              assert.equal(dateComponentElement.className.includes(&apos;formio-hidden&apos;), true, &apos;Should be hidden&apos;);
+              checkbox.setValue(true);
+
+              setTimeout(() =&gt; {
+                const dateComponentElement = dateTimeComponent.element;
+                assert.equal(!dateComponentElement.className.includes(&apos;formio-hidden&apos;), true, &apos;Should be visible&apos;);
+                const dateVisibleInput = dateComponentElement.querySelector(&apos;.input:not([type=&quot;hidden&quot;]&apos;);
+                const flatpickerInput = dateComponentElement.querySelector(&apos;.flatpickr-input&apos;);
+
+                assert(dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Visible field should has invalid class&apos;);
+                assert(flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Flatpickr field should has invalid class as well&apos;);
+
+                dateTimeComponent.setValue(&apos;2020-10-19T00:00:00&apos;);
+                setTimeout(() =&gt; {
+                  assert.equal(dateTimeComponent.dataValue, &apos;2020-10-19T00:00:00&apos;, &apos;Should set value&apos;);
+                  assert(!dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed&apos;);
+                  assert(!flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed from flatpickr field as well&apos;);
+                  done();
+                }, 300);
+              }, 400);
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 350);
     }).catch(done);
   });
 
