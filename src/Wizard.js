@@ -733,9 +733,13 @@ export default class Wizard extends Webform {
     if (!form) {
       return;
     }
-    this.component.components = form.components || [];
-    this.setComponentSchema();
+
     return super.setForm(form, flags);
+  }
+
+  onSetForm(clonedForm, initialForm) {
+    this.component.components = (this._parentPath ? initialForm.components : clonedForm.components) || [];
+    this.setComponentSchema();
   }
 
   pageFieldLogicHandler() {
