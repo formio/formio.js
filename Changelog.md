@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.2
+#### Changed
+ - No changes. Released 4.12.2-rc.8 as official release.
+
 ### 4.12.2-rc.8
 #### Fixed
  - FJS-1449: Fixes an issue where is-invalid class is not set/removed for fields with CalendarWidget
