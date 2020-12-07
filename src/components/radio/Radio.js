@@ -151,19 +151,33 @@ export default class RadioComponent extends Field {
 
   updateValue(value, flags) {
     const changed = super.updateValue(value, flags);
+    console.log('RADIO:', changed, value);
     if (changed && this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
       const optionSelectedClass = 'radio-selected';
-
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        if (input && input.value.toString() === value.toString()) {
-          //add class to container when selected
-          this.addClass(wrapper, optionSelectedClass);
-        }
-        else {
-          this.removeClass(wrapper, optionSelectedClass);
+        switch (input.type) {
+          case 'radio' :
+            if (input && input.value.toString() === value.toString()) {
+              //add class to container when selected
+              this.addClass(wrapper, optionSelectedClass);
+            }
+            else {
+              this.removeClass(wrapper, optionSelectedClass);
+            }
+            break;
+          case 'checkbox' :
+            // eslint-disable-next-line no-case-declarations
+            const checked = value[input.value];
+            if (checked) {
+              this.addClass(wrapper, optionSelectedClass);
+            }
+            else {
+              this.removeClass(wrapper, optionSelectedClass);
+            }
+            break;
         }
       });
     }
