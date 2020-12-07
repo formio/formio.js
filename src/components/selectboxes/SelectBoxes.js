@@ -46,9 +46,28 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   get emptyValue() {
     return this.component.values.reduce((prev, value) => {
-      prev[value.value] = false;
+      if (value.value) {
+        prev[value.value] = false;
+      }
       return prev;
     }, {});
+  }
+
+  get defaultValue() {
+    let defaultValue = this.emptyValue;
+
+    if (!_.isEmpty(this.component.defaultValue)) {
+      defaultValue = this.component.defaultValue;
+    }
+    if (this.component.customDefaultValue && !this.options.preview) {
+      defaultValue = this.evaluate(
+        this.component.customDefaultValue,
+        { value: '' },
+        'value'
+      );
+    }
+
+    return defaultValue;
   }
 
   /**
