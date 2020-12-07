@@ -1173,13 +1173,12 @@ export function translateHTMLTemplate(template, translate) {
   const tempElem = document.createElement('div');
   tempElem.innerHTML = template;
 
-  if (tempElem.children.length) {
+  if (tempElem.innerText && tempElem.children.length) {
     translateDeepTag(tempElem, translate);
     return tempElem.innerHTML;
   }
-  else {
-    return translateElemValue(tempElem, translate);
-  }
+
+  return template;
 }
 
 /**
