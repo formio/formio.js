@@ -431,6 +431,15 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       return this.subForm.checkConditions(this.dataValue.data);
     }
+    // There are few cases when subForm is not loaded when a change is triggered,
+    // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
+    else if (this.subFormReady) {
+      this.subFormReady.then(() => {
+        if (this.subForm) {
+          return this.subForm.checkConditions(this.dataValue.data);
+        }
+      });
+    }
 
     return visible;
   }
