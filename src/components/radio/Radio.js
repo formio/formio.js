@@ -151,7 +151,6 @@ export default class RadioComponent extends Field {
 
   updateValue(value, flags) {
     const changed = super.updateValue(value, flags);
-    console.log('RADIO:', changed, value);
     if (changed && this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;

@@ -1,183 +1,195 @@
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
-  static schema(...extend) {
-    return Field.schema({
-      type: 'checkbox',
-      inputType: 'checkbox',
-      label: 'Checkbox',
-      key: 'checkbox',
-      dataGridLabel: true,
-      labelPosition: 'right',
-      value: '',
-      name: ''
-    }, ...extend);
-  }
-
-  static get builderInfo() {
-    return {
-      title: 'Checkbox',
-      group: 'basic',
-      icon: 'check-square',
-      documentation: '/userguide/#checkbox',
-      weight: 50,
-      schema: CheckBoxComponent.schema()
-    };
-  }
-
-  get defaultSchema() {
-    return CheckBoxComponent.schema();
-  }
-
-  get defaultValue() {
-    const { name } = this.component;
-
-    return name ? (this.component[name] || this.emptyValue) : (this.component.defaultValue || false).toString() === 'true';
-  }
-
-  get labelClass() {
-    let className = '';
-    if (this.isInputComponent
-      && !this.options.inputsOnly
-      && this.component.validate
-      && this.component.validate.required) {
-      className += ' field-required';
+    static schema(...extend) {
+        return Field.schema({
+            type: 'checkbox',
+            inputType: 'checkbox',
+            label: 'Checkbox',
+            key: 'checkbox',
+            dataGridLabel: true,
+            labelPosition: 'right',
+            value: '',
+            name: ''
+        }, ...extend);
     }
-    return `${className}`;
-  }
 
-  get hasSetValue() {
-    return this.hasValue();
-  }
+    static get builderInfo() {
+        return {
+            title: 'Checkbox',
+            group: 'basic',
+            icon: 'check-square',
+            documentation: '/userguide/#checkbox',
+            weight: 50,
+            schema: CheckBoxComponent.schema()
+        };
+    }
 
-  get inputInfo() {
-    const info = super.elementInfo();
-    info.type = 'input';
-    info.changeEvent = 'click';
-    info.attr.type = this.component.inputType || 'checkbox';
-    info.attr.class = 'form-check-input';
-    if (this.component.name) {
-      info.attr.name = `data[${this.component.name}]`;
+    get defaultSchema() {
+        return CheckBoxComponent.schema();
     }
-    info.attr.value = this.component.value ? this.component.value : 0;
-    info.label = this.t(this.component.label);
-    info.labelClass = this.labelClass;
-    return info;
-  }
 
-  get labelInfo() {
-    return {
-      hidden: true
-    };
-  }
+    get defaultValue() {
+        const { name } = this.component;
 
-  render() {
-    return super.render(this.renderTemplate('checkbox', {
-      input: this.inputInfo,
-      checked: this.checked,
-      tooltip: this.interpolate(this.t(this.component.tooltip) || '').replace(/(?:\r\n|\r|\n)/g, '<br />')
-    }));
-  }
+        return name ? (this.component[name] || this.emptyValue) : (this.component.defaultValue || false).toString() === 'true';
+    }
 
-  attach(element) {
-    this.loadRefs(element, { input: 'multiple' });
-    this.input = this.refs.input[0];
-    if (this.refs.input) {
-      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
-        modified: true
-      }));
-      this.addShortcut(this.input);
+    get labelClass() {
+        let className = '';
+        if (this.isInputComponent
+            && !this.options.inputsOnly
+            && this.component.validate
+            && this.component.validate.required) {
+            className += ' field-required';
+        }
+        return `${className}`;
     }
-    return super.attach(element);
-  }
 
-  detach(element) {
-    if (element && this.input) {
-      this.removeShortcut(this.input);
+    get hasSetValue() {
+        return this.hasValue();
     }
-    super.detach();
-  }
 
-  get emptyValue() {
-    return this.component.inputType === 'radio' ? null : false;
-  }
+    get inputInfo() {
+        const info = super.elementInfo();
+        info.type = 'input';
+        info.changeEvent = 'click';
+        info.attr.type = this.component.inputType || 'checkbox';
+        info.attr.class = 'form-check-input';
+        if (this.component.name) {
+            info.attr.name = `data[${this.component.name}]`;
+        }
+        info.attr.value = this.component.value ? this.component.value : 0;
+        info.label = this.t(this.component.label);
+        info.labelClass = this.labelClass;
+        return info;
+    }
 
-  isEmpty(value = this.dataValue) {
-    return super.isEmpty(value) || value === false;
-  }
+    get labelInfo() {
+        return {
+            hidden: true
+        };
+    }
 
-  get key() {
-    return this.component.name ? this.component.name : super.key;
-  }
+    render() {
+        return super.render(this.renderTemplate('checkbox', {
+            input: this.inputInfo,
+            checked: this.checked,
+            tooltip: this.interpolate(this.t(this.component.tooltip) || '').replace(/(?:\r\n|\r|\n)/g, '<br />')
+        }));
+    }
 
-  getValueAt(index) {
-    if (this.component.name) {
-      return this.refs.input[index].checked ? this.component.value : '';
+    attach(element) {
+        this.loadRefs(element, { input: 'multiple', formCheck: 'single' });
+        this.input = this.refs.input[0];
+        if (this.refs.input) {
+            this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
+                modified: true
+            }));
+            this.addShortcut(this.input);
+        }
+        return super.attach(element);
     }
-    return !!this.refs.input[index].checked;
-  }
 
-  getValue() {
-    const value = super.getValue();
-    if (this.component.name) {
-      return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
+    detach(element) {
+        if (element && this.input) {
+            this.removeShortcut(this.input);
+        }
+        super.detach();
     }
-    else {
-      return (value === '') ? this.dataValue : !!value;
-    }
-  }
 
-  get checked() {
-    if (this.component.name) {
-      return (this.dataValue === this.component.value);
+    get emptyValue() {
+        return this.component.inputType === 'radio' ? null : false;
     }
-    return !!this.dataValue;
-  }
 
-  setCheckedState(value) {
-    if (!this.input) {
-      return;
+    isEmpty(value = this.dataValue) {
+        return super.isEmpty(value) || value === false;
     }
-    if (this.component.name) {
-      this.input.value = (value === this.component.value) ? this.component.value : 0;
-      this.input.checked = (value === this.component.value) ? 1 : 0;
-    }
-    else if (value === 'on') {
-      this.input.value = 1;
-      this.input.checked = 1;
-    }
-    else if (value === 'off') {
-      this.input.value = 0;
-      this.input.checked = 0;
-    }
-    else if (value) {
-      this.input.value = 1;
-      this.input.checked = 1;
-    }
-    else {
-      this.input.value = 0;
-      this.input.checked = 0;
-    }
-    if (this.input.checked) {
-      this.input.setAttribute('checked', true);
-    }
-    else {
-      this.input.removeAttribute('checked');
-    }
-    return value;
-  }
 
-  setValue(value, flags = {}) {
-    if (
-      this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
-    ) {
-      return this.updateValue(value, flags);
+    get key() {
+        return this.component.name ? this.component.name : super.key;
     }
-    return false;
-  }
 
-  getValueAsString(value) {
-    return value ? 'Yes' : 'No';
-  }
+    getValueAt(index) {
+        if (this.component.name) {
+            return this.refs.input[index].checked ? this.component.value : '';
+        }
+        return !!this.refs.input[index].checked;
+    }
+
+    getValue() {
+        const value = super.getValue();
+        if (this.component.name) {
+            return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
+        }
+        else {
+            return (value === '') ? this.dataValue : !!value;
+        }
+    }
+
+    get checked() {
+        if (this.component.name) {
+            return (this.dataValue === this.component.value);
+        }
+        return !!this.dataValue;
+    }
+
+    setCheckedState(value) {
+        if (!this.input) {
+            return;
+        }
+        if (this.component.name) {
+            this.input.value = (value === this.component.value) ? this.component.value : 0;
+            this.input.checked = (value === this.component.value) ? 1 : 0;
+        }
+        else if (value === 'on') {
+            this.input.value = 1;
+            this.input.checked = 1;
+        }
+        else if (value === 'off') {
+            this.input.value = 0;
+            this.input.checked = 0;
+        }
+        else if (value) {
+            this.input.value = 1;
+            this.input.checked = 1;
+        }
+        else {
+            this.input.value = 0;
+            this.input.checked = 0;
+        }
+        if (this.input.checked) {
+            this.input.setAttribute('checked', true);
+        }
+        else {
+            this.input.removeAttribute('checked');
+        }
+        return value;
+    }
+
+    setValue(value, flags = {}) {
+        if (
+            this.setCheckedState(value) !== undefined ||
+            (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
+        ) {
+            return this.updateValue(value, flags);
+        }
+        return false;
+    }
+
+    updateValue(value, flags) {
+        const checkBoxChecked = 'checkbox-checked';
+        const val = this.getValue();
+        if (val) {
+            this.addClass(this.refs.formCheck, checkBoxChecked);
+        }
+        else {
+            this.removeClass(this.refs.formCheck, checkBoxChecked);
+        }
+        super.updateValue(value, flags);
+    }
+
+    getValueAsString(value) {
+        return value ? 'Yes' : 'No';
+    }
 }
