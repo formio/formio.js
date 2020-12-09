@@ -1,0 +1,5 @@
+<div
+  {% for (var attr in ctx.attrs) { %}
+    {{attr}}="{{ctx.attrs[attr]}}"
+  {% } %}
+>{{ctx.message}}</div>
