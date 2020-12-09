@@ -10,6 +10,7 @@ export default {
         alertMessage: '{{label}}: {{message}}',
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
+        errorsListNavigationMessage: 'Click to navigate to the field with following error.',
         submitError: 'Please check the form and correct all errors before submitting.',
         required: '{{field}} is required',
         unique: '{{field}} must be unique',
