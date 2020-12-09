@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fix textarea endlines in read-only mode.
  - FJS-1433: remove duplicate label in the list of errors
  - FMG-57: ‘Paste below’ button shows all the time, even though the component hasn’t been copied
+ - Fixed an issue where form properties of WizardBuilder and corresponding Webform are different
 
 ### 4.12.2-rc.5
 #### Fixed
