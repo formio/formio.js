@@ -180,6 +180,7 @@ export default class WizardBuilder extends WebformBuilder {
       type: 'form',
       components: page ? [page] : [],
     };
+    this._form.components[this.page] = this.webform.form.components[0];
     return this.redraw();
   }
 
