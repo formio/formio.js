@@ -175,11 +175,11 @@ export default class WizardBuilder extends WebformBuilder {
 
   rebuild() {
     const page = this.currentPage;
-    this.webform.form = {
+    this.webform.setForm({
       display: 'form',
       type: 'form',
       components: page ? [page] : [],
-    };
+    }, { keepAsReference: true });
     return this.redraw();
   }
 

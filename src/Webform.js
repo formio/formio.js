@@ -644,7 +644,7 @@ export default class Webform extends NestedDataComponent {
       }
 
       // Create the form.
-      this._form = _.cloneDeep(form);
+      this._form = flags?.keepAsReference ? form : _.cloneDeep(form);
 
       if (this.onSetForm) {
         this.onSetForm(this._form, form);
