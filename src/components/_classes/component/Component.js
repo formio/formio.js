@@ -1700,6 +1700,10 @@ export default class Component extends Element {
   }
 
   isIE() {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
     const userAgent = window.navigator.userAgent;
 
     const msie = userAgent.indexOf('MSIE ');

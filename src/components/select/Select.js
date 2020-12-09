@@ -1,10 +1,14 @@
-import Choices from '../../utils/ChoicesWrapper';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
 import { getRandomComponentId, boolValue } from '../../utils/utils';
+
+let Choices;
+if (typeof window !== 'undefined') {
+  Choices = require('../../utils/ChoicesWrapper').default;
+}
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -688,6 +692,10 @@ export default class SelectComponent extends Field {
         break;
       }
       case 'indexeddb': {
+        if (typeof window === 'undefined') {
+          return;
+        }
+
         if (!window.indexedDB) {
           window.alert("Your browser doesn't support current version of indexedDB");
         }
@@ -916,26 +924,29 @@ export default class SelectComponent extends Field {
     }
 
     const choicesOptions = this.choicesOptions();
-    this.choices = new Choices(input, choicesOptions);
 
-    if (this.selectOptions && this.selectOptions.length) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
-    }
+    if (Choices) {
+      this.choices = new Choices(input, choicesOptions);
 
-    if (this.component.multiple) {
-      this.focusableElement = this.choices.input.element;
-    }
-    else {
-      this.focusableElement = this.choices.containerInner.element;
-      this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-      if (choicesOptions.searchEnabled) {
-        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
+      if (this.selectOptions && this.selectOptions.length) {
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true);
       }
-    }
 
-    if (this.isInfiniteScrollProvided) {
-      this.scrollList = this.choices.choiceList.element;
-      this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
+      if (this.component.multiple) {
+        this.focusableElement = this.choices.input.element;
+      }
+      else {
+        this.focusableElement = this.choices.containerInner.element;
+        this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
+        if (choicesOptions.searchEnabled) {
+          this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
+        }
+      }
+
+      if (this.isInfiniteScrollProvided) {
+        this.scrollList = this.choices.choiceList.element;
+        this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
+      }
     }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);
@@ -966,14 +977,17 @@ export default class SelectComponent extends Field {
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
       this.addEventListener(input, 'hideDropdown', () => {
-        this.choices.input.element.value = '';
+        if (this.choices && this.choices.input && this.choices.input.element) {
+          this.choices.input.element.value = '';
+        }
+
         this.updateItems(null, true);
       });
     }
 
     this.addEventListener(input, 'showDropdown', () => this.update());
 
-    if (choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
+    if (this.choices && choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, 'removeItem', () => {

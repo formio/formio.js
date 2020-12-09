@@ -321,22 +321,24 @@ export default class PDF extends Webform {
 /**
  * Listen for window messages.
  */
-window.addEventListener('message', (event) => {
-  let eventData = null;
-  try {
-    eventData = JSON.parse(event.data);
-  }
-  catch (err) {
-    eventData = null;
-  }
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', (event) => {
+    let eventData = null;
+    try {
+      eventData = JSON.parse(event.data);
+    }
+    catch (err) {
+      eventData = null;
+    }
 
-  // If this form exists, then emit the event within this form.
-  if (
-    eventData &&
-    eventData.name &&
-    eventData.formId &&
-    Formio.forms.hasOwnProperty(eventData.formId)
-  ) {
-    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
-  }
-});
+    // If this form exists, then emit the event within this form.
+    if (
+      eventData &&
+      eventData.name &&
+      eventData.formId &&
+      Formio.forms.hasOwnProperty(eventData.formId)
+    ) {
+      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+    }
+  });
+}

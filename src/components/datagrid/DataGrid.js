@@ -1,8 +1,12 @@
 import _ from 'lodash';
-// Import from "dist" because it would require and "global" would not be defined in Angular apps.
-import dragula from 'dragula/dist/dragula';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep } from '../../utils/utils';
+
+let dragula;
+if (typeof window !== 'undefined') {
+  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
+  dragula = require('dragula/dist/dragula');
+}
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -293,9 +297,11 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
-        moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
-      }).on('drop', this.onReorder.bind(this));
+      if (dragula) {
+        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+          moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
+        }).on('drop', this.onReorder.bind(this));
+      }
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {

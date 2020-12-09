@@ -8,7 +8,16 @@ let Camera;
 let webViewCamera = navigator.camera || Camera;
 
 // canvas.toBlob polyfill.
-if (!HTMLCanvasElement.prototype.toBlob) {
+
+let htmlCanvasElement;
+if (typeof window !== 'undefined') {
+  htmlCanvasElement = window.HTMLCanvasElement;
+}
+else if (typeof global !== 'undefined') {
+  htmlCanvasElement = global.HTMLCanvasElement;
+}
+
+if (htmlCanvasElement && !htmlCanvasElement.prototype.toBlob) {
   Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
     value: function(callback, type, quality) {
       var canvas = this;
@@ -58,8 +67,8 @@ export default class FileComponent extends Field {
     super.init();
     webViewCamera = navigator.camera || Camera;
     const fileReaderSupported = (typeof FileReader !== 'undefined');
-    const formDataSupported = Boolean(window.FormData);
-    const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false;
+    const formDataSupported = typeof window !== 'undefined' ? Boolean(window.FormData) : false;
+    const progressSupported = (typeof window !== 'undefined' && window.XMLHttpRequest) ? ('upload' in new XMLHttpRequest) : false;
 
     this.support = {
       filereader: fileReaderSupported,

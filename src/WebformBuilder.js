@@ -1,7 +1,5 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
-// Import from "dist" because it would require and "global" would not be defined in Angular apps.
-import dragula from 'dragula/dist/dragula';
 import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
@@ -12,6 +10,12 @@ import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import Templates from './templates/Templates';
 require('./components/builder');
+
+let dragula;
+if (typeof window !== 'undefined') {
+  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
+  dragula = require('dragula/dist/dragula');
+}
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -554,7 +558,7 @@ export default class WebformBuilder extends Component {
       }
 
       // Add the paste status in form
-      if (window.sessionStorage) {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
         const data = window.sessionStorage.getItem('formio.clipboard');
         if (data) {
           this.addClass(this.refs.form, 'builder-paste-mode');
@@ -597,13 +601,17 @@ export default class WebformBuilder extends Component {
         }, 300)
       );
 
+      const promises = [];
+
       if (this.dragDropEnabled) {
-        this.initDragula();
+        promises.push(this.initDragula());
       }
 
       if (this.refs.form) {
-        return this.webform.attach(this.refs.form);
+        promises.push(this.webform.attach(this.refs.form));
       }
+
+      return NativePromise.all(promises);
     });
   }
 
@@ -700,6 +708,10 @@ export default class WebformBuilder extends Component {
     const containersArray = Array.prototype.slice.call(this.refs['sidebar-container']).filter(item => {
       return item.id !== 'group-container-resource';
     });
+
+    if (!dragula) {
+      return;
+    }
 
     this.dragula = dragula(containersArray, {
       moves(el) {
