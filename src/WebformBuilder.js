@@ -601,17 +601,13 @@ export default class WebformBuilder extends Component {
         }, 300)
       );
 
-      const promises = [];
-
       if (this.dragDropEnabled) {
-        promises.push(this.initDragula());
+        this.initDragula();
       }
 
       if (this.refs.form) {
-        promises.push(this.webform.attach(this.refs.form));
+        return this.webform.attach(this.refs.form);
       }
-
-      return NativePromise.all(promises);
     });
   }
 
