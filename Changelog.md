@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.3-rc.1
+#### Fixed
+ - Fixed an issue where form properties of WizardBuilder and corresponding Webform are different
+
 ### 4.12.2
 #### Changed
  - No changes. Released 4.12.2-rc.8 as official release.
