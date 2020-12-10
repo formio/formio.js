@@ -773,7 +773,7 @@ class Formio {
       .then(() => getFormio().pluginGet('staticRequest', requestArgs)
         .then((result) => {
           if (isNil(result)) {
-            return getFormio().request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+            return getFormio().request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         }));
