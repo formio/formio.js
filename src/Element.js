@@ -5,6 +5,7 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from 'vanilla-text-mask';
+import { lodashOperators } from './utils/jsonlogic/operators';
 
 /**
  * The root component for all elements within the Form.io renderer.
@@ -505,7 +506,7 @@ export default class Element {
    */
   evalContext(additional) {
     return Object.assign({
-      _,
+      _: lodashOperators.reduce((obj, operator) => _.set(obj, operator, _[operator]), {}),
       utils: FormioUtils,
       util: FormioUtils,
       user: Formio.getUser(),
