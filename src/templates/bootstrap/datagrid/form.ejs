@@ -42,7 +42,7 @@
         </td>
       {% } %}
       {% ctx.columns.forEach(function(col) { %}
-        <td ref="{{ctx.datagridKey}}">
+        <td ref="{{ctx.datagridKey}}" class="col-md-{{ctx.colWidth}}">
           {{row[col.key]}}
         </td>
       {% }) %}
