@@ -1,5 +1,9 @@
 import Input from '../_classes/input/Input';
-import Choices from 'choices.js';
+
+let Choices;
+if (typeof window !== 'undefined') {
+  Choices = require('choices.js');
+}
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -57,6 +61,11 @@ export default class TagsComponent extends Input {
     if (this.choices) {
       this.choices.destroy();
     }
+
+    if (!Choices) {
+      return;
+    }
+
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
