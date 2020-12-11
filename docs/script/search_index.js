@@ -3966,6 +3966,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#tabindex",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-tabIndex",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#tabIndex",
+    "member"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#togglegroup",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-toggleGroup",
     "src/components/datagrid/DataGrid.js~DataGridComponent#toggleGroup",
