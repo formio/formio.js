@@ -98,6 +98,15 @@ export default class SelectComponent extends Field {
   }
 
   get dataReady() {
+    // If the root submission has been set, and we are still not attached, then assume
+    // that our data is ready.
+    if (
+      this.root &&
+      this.root.submissionSet &&
+      !this.attached
+    ) {
+      return NativePromise.resolve();
+    }
     return this.itemsLoaded;
   }
 
