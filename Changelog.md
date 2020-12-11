@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.4-rc.1
+#### Fixed
+ - Fixing issue where itemsLoaded does not resolve if the select is not attached.
+ - 
+
 ### 4.12.3
 #### Changed
  - No changes. Released 4.12.3-rc.1 as official release.
