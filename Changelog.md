@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1433: remove duplicate label in the list of errors
  - FMG-57: ‘Paste below’ button shows all the time, even though the component hasn’t been copied
  - Fixed an issue where form properties of WizardBuilder and corresponding Webform are different
+ - FJS-1488: Fixing issue where setting tabindex on components inside datagrid does not also apply to remove row and add another buttons.
 
 ### 4.12.2-rc.5
 #### Fixed
