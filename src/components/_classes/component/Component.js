@@ -3075,6 +3075,14 @@ export default class Component extends Element {
     }
   }
 
+  scrollIntoView(element = this.element) {
+    if (!element) {
+      return;
+    }
+    const { left, top } = element.getBoundingClientRect();
+    window.scrollTo(left + window.scrollX, top + window.scrollY);
+  }
+
   focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
