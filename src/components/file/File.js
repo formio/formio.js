@@ -283,9 +283,20 @@ export default class FileComponent extends Field {
     if (this.component.multiple) {
       options.multiple = true;
     }
+    //use "accept" attribute only for desktop devices because of its limited support by mobile browsers
+    if (!this.isMobile.any) {
+      const filePattern = this.component.filePattern.trim() || '';
+      const imagesPattern = 'image/*';
 
-    if (this.imageUpload) {
-      options.accept = 'image/*';
+      if (this.imageUpload && (!filePattern || filePattern === '*')) {
+        options.accept = imagesPattern;
+      }
+      else if (this.imageUpload && !filePattern.includes(imagesPattern)) {
+        options.accept = `${imagesPattern},${filePattern}`;
+      }
+      else {
+        options.accept = filePattern;
+      }
     }
 
     return options;
