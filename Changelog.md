@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.4-rc.2
+#### Fixed
+ - FOR-2874: Added recaptcha async validation.
+
 ### 4.12.4-rc.1
 #### Fixed
  - Fixing issue where itemsLoaded does not resolve if the select is not attached.

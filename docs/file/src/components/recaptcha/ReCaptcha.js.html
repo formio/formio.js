@@ -252,8 +252,12 @@ export default class ReCaptchaComponent extends Component {
                 .then((token) =&gt; {
                   return this.sendVerificationRequest(token);
                 })
-                .then(verificationResult =&gt; {
-                  this.setValue(verificationResult);
+                .then(({ verificationResult, token }) =&gt; {
+                  this.setValue({
+                    ...verificationResult,
+                    token,
+                  });
+
                   return resolve(verificationResult);
                 });
             });
@@ -274,7 +278,32 @@ export default class ReCaptchaComponent extends Component {
   }
 
   sendVerificationRequest(token) {
-    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`);
+    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)
+      .then((verificationResult) =&gt; ({ verificationResult, token }));
+  }
+
+  checkComponentValidity(data, dirty, row, options = {}) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    const { async = false } = options;
+
+    // Verification could be async only
+    if (!async) {
+      return super.checkComponentValidity(data, dirty, row, options);
+    }
+
+    const componentData = row[this.component.key];
+    if (!componentData || !componentData.token) {
+      this.setCustomValidity(&apos;ReCaptcha: Token is not specified in submission&apos;);
+      return Promise.resolve(false);
+    }
+
+    return this.hook(&apos;validateReCaptcha&apos;, componentData.token, () =&gt; Promise.resolve(true))
+      .then((success) =&gt; success)
+      .catch((err) =&gt; {
+        this.setCustomValidity(err.message || err);
+        return false;
+      });
   }
 
   setValue(value) {

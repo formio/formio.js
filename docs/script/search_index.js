@@ -6024,6 +6024,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#checkcomponentvalidity",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-checkComponentValidity",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#checkComponentValidity",
+    "method"
+  ],
+  [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent#createinput",
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-createInput",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createInput",
