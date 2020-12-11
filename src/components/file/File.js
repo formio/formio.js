@@ -589,6 +589,23 @@ export default class FileComponent extends Field {
           message: this.t('Starting upload'),
         };
 
+        // Check if file with the same name is being uploaded
+        const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
+        const fileWithSameNameUploadedWithError = this.statuses.findIndex(fileStatus =>
+          fileStatus.originalName === file.name
+          && fileStatus.status === 'error'
+        );
+
+        if (fileWithSameNameUploaded) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t('File with the same name is already uploaded');
+        }
+
+        if (fileWithSameNameUploadedWithError !== -1) {
+          this.statuses.splice(fileWithSameNameUploadedWithError, 1);
+          this.redraw();
+        }
+
         // Check file pattern
         if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
           fileUpload.status = 'error';
