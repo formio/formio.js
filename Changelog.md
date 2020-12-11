@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.20
+### Fixed
+ - FJS-1453: Upgrades json-logic-js to v2.x
+
 ## 3.29.19
 ### Fixed
  - Fixed an issue where hide label is not working inside dataGrid
