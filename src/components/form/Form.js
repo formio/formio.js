@@ -197,6 +197,9 @@ export default class FormComponent extends Component {
     if (this.options.fileService) {
       options.fileService = this.options.fileService;
     }
+    if (this.options.onChange) {
+      options.onChange = this.options.onChange;
+    }
     return options;
   }
 
@@ -412,12 +415,15 @@ export default class FormComponent extends Component {
     return NativePromise.resolve();
   }
 
-  checkComponentValidity(data, dirty, row) {
+  checkComponentValidity(data, dirty, row, options) {
+    options = options || {};
+    const silentCheck = options.silentCheck || false;
+
     if (this.subForm) {
-      return this.subForm.checkValidity(this.dataValue.data, dirty);
+      return this.subForm.checkValidity(this.dataValue.data, dirty, null, silentCheck);
     }
 
-    return super.checkComponentValidity(data, dirty, row);
+    return super.checkComponentValidity(data, dirty, row, options);
   }
 
   checkComponentConditions(data, flags, row) {
