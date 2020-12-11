@@ -92,7 +92,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   background-color: #fff;
 }
 
-.field-required:after {
+.field-required:after, .tab-error::after {
   content:" *";
   color:red;
 }
