@@ -808,7 +808,7 @@ export default class Component extends Element {
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
-
+    const tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
     data.component = this.component;
     data.self = this;
     data.options = this.options;
@@ -829,7 +829,7 @@ export default class Component extends Element {
       return this.renderTemplate(...args);
     };
     data.label = this.labelInfo;
-    data.tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
+    data.tooltip = tooltip ? this.t(tooltip) : '';
 
     // Allow more specific template names
     const names = [
@@ -1033,12 +1033,12 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      const title = this.interpolate(tooltip.getAttribute('data-title') || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click focus',
         placement: 'right',
         html: true,
-        title: title,
+        title: this.t(tooltipText),
         template: `
           <div class="tooltip" style="opacity: 1;" role="tooltip">
             <div class="tooltip-arrow"></div>
