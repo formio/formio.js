@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getBrowserInfo } from '../../utils/utils';
 import TextFieldComponent from '../textfield/TextField';
 
 const defaultDataFormat = 'HH:mm:ss';
@@ -17,9 +18,11 @@ export default class TimeComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-
+    const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();
     this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
-    this.component.inputType = this.component.inputType || 'time';
+    this.component.inputType = isEdgeBrowser && edgeVersion <= 18
+      ? 'text'
+      : (this.component.inputType || 'time');
     this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
 
@@ -68,7 +71,7 @@ export default class TimeComponent extends TextFieldComponent {
 
   get inputInfo() {
     const info = super.inputInfo;
-    info.attr.type = this.component.inputType;
+    info.attr.type = 'text';
     return info;
   }
 
