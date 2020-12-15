@@ -53,7 +53,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     return `<div class="row">
       {% util.eachComponent(components, function(component) { %}
         {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
-          <div class="col-sm-2">{{ component.label }}</div>
+          <div class="col-sm-2">{{ ctx.t(component.label) }}</div>
         {% } %}
       {% }) %}
     </div>`;
@@ -64,7 +64,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       {% util.eachComponent(components, function(component) { %}
         {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
           <div class="col-sm-2">
-            {{ getView(component, row[component.key]) }}
+            {{ ctx.t(getView(component, row[component.key])) }}
           </div>
         {% } %}
       {% }) %}
