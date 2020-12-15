@@ -302,7 +302,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     let openRowCount = 0;
     this.rowElements.forEach((row, rowIndex) => {
       const editRow = this.editRows[rowIndex];
-      if (this.dataValue[rowIndex].isRowSelected) {
+      if (this.dataValue[rowIndex]?.isRowSelected) {
         row.classList.add('selected');
       }
       if (this.isOpen(editRow)) {
@@ -932,7 +932,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           const errorContainer = rowContainer.querySelector('.editgrid-row-error');
 
           if (!rowValid) {
-            errorContainer.textContent = 'Invalid row. Please correct it or delete.';
+            errorContainer.textContent = this.t('invalidRowError');
           }
         }
       }
@@ -941,11 +941,11 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
 
     if (!rowsValid) {
-      this.setCustomValidity('Please correct invalid rows before proceeding.', dirty);
+      this.setCustomValidity(this.t('invalidRowsError'), dirty);
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
-      this.setCustomValidity('Please save all rows before proceeding.', dirty);
+      this.setCustomValidity(this.t('unsavedRowsError'), dirty);
       return false;
     }
 
