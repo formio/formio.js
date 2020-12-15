@@ -1229,7 +1229,13 @@ export function getIEBrowserVersion() {
  * Possible browser names: chrome, safari, ie, edge, opera, mozilla, yabrowser
  */
 export function getBrowserInfo() {
-  const ua = navigator.userAgent.toLowerCase();
+  const browser = {};
+
+  if (typeof window === 'undefined') {
+    return browser;
+  }
+
+  const ua = window.navigator.userAgent.toLowerCase();
   const match = /(edge|edg)\/([\w.]+)/.exec(ua) ||
           /(opr)[/]([\w.]+)/.exec(ua) ||
           /(yabrowser)[ /]([\w.]+)/.exec(ua) ||
@@ -1243,7 +1249,6 @@ export function getBrowserInfo() {
           ua.indexOf('trident') >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
           ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
           [];
-  const browser = {};
   const matched = {
     browser: match[5] || match[3] || match[1] || '',
     version: match[4] || match[2] || '0'
