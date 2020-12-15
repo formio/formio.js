@@ -2639,7 +2639,7 @@ export default class Component extends Element {
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
-    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    const hasErrors = !!messages.filter(message => message.level === 'error' && !message.fromServer).length;
     if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
@@ -2669,9 +2669,14 @@ export default class Component extends Element {
     }
 
     const check = Validator.checkComponent(this, data, row, true, async);
+    let validations = check;
+
+    if (this.serverErrors?.length) {
+      validations = check.concat(this.serverErrors);
+    }
     return async ?
-      check.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
-      this.setComponentValidity(check, dirty, silentCheck);
+    validations.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
+      this.setComponentValidity(validations, dirty, silentCheck);
   }
 
   checkValidity(data, dirty, row, silentCheck) {
