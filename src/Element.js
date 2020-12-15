@@ -350,17 +350,7 @@ export default class Element {
   }
 
   get placeholderChar() {
-    if (!this.component.inputMaskPlaceholderChar) {
-      if (!this.component?.inputMask?.includes('\u02cd')) {
-        return '\u02cd';
-      }
-      // If some fields already use \u02cd in the mask, use an underscore as a placeholderChar
-      else {
-        return '_';
-      }
-    }
-
-    return this.component?.inputMaskPlaceholderChar;
+    return this.component?.inputMaskPlaceholderChar || '_';
   }
 
   /**
