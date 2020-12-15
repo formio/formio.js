@@ -2095,6 +2095,9 @@ export default class Component extends Element {
         editor.setOptions(settings);
         editor.getSession().setMode(settings.mode);
         editor.on('change', () => onChange(editor.getValue()));
+        if (settings.isUseWorkerDisabled) {
+          editor.session.setUseWorker(false);
+        }
         return editor;
       });
   }
