@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import AllComponents from './components';
 import Builders from './builders/Builders';
 import Components from './components/Components';
@@ -20,7 +21,7 @@ const registerPlugin = (plugin) => {
     const current = plugin.framework || Templates.framework || 'bootstrap';
     switch (key) {
       case 'options':
-        Formio.options = plugin.options;
+        Formio.options = _.merge(Formio.options, plugin.options);
         break;
       case 'templates':
         for (const framework of Object.keys(plugin.templates)) {
