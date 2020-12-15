@@ -50,7 +50,6 @@ export default class Element {
     });
 
     this.defaultMask = null;
-    this.placeholderChar = '\u02cd';
     /**
      * Conditional to show or hide helplinks in editForm
      *
@@ -350,6 +349,20 @@ export default class Element {
     return mask.map((char) => (char instanceof RegExp) ? this.placeholderChar : char).join('');
   }
 
+  get placeholderChar() {
+    if (!this.component.inputMaskPlaceholderChar) {
+      if (!this.component?.inputMask?.includes('\u02cd')) {
+        return '\u02cd';
+      }
+      // If some fields already use \u02cd in the mask, use an underscore as a placeholderChar
+      else {
+        return '_';
+      }
+    }
+
+    return this.component?.inputMaskPlaceholderChar;
+  }
+
   /**
    * Sets the input mask for an input.
    *
@@ -361,6 +374,7 @@ export default class Element {
     if (input && inputMask) {
       const mask = FormioUtils.getInputMask(inputMask, this.placeholderChar);
       this.defaultMask = mask;
+
       try {
         //destroy previous mask
         if (input.mask) {
