@@ -740,9 +740,9 @@ class ValidationChecker {
     }
   }
 
-  validate(component, validatorName, value, data, index, row) {
+  validate(component, validatorName, value, data, index, row, conditionallyVisible) {
     // Skip validation for conditionally hidden components
-    if (!component.conditionallyVisible()) {
+    if (!conditionallyVisible) {
       return false;
     }
 
@@ -814,6 +814,7 @@ class ValidationChecker {
 
     const validateCustom     = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
+    const conditionallyVisible = component.conditionallyVisible();
 
     // Run primary validators
     const resultsOrPromises = _(component.validators).chain()
@@ -830,7 +831,7 @@ class ValidationChecker {
           };
         }
 
-        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row));
+        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row, conditionallyVisible));
       })
       .flatten()
       .value();
@@ -838,11 +839,11 @@ class ValidationChecker {
     // Run the "unique" pseudo-validator
     component.component.validate = component.component.validate || {};
     component.component.validate.unique = component.component.unique;
-    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data, null, null, conditionallyVisible));
 
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
-    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, null, null, conditionallyVisible));
 
     // Define how results should be formatted
     const formatResults = results => {
