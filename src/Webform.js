@@ -276,6 +276,10 @@ export default class Webform extends NestedDataComponent {
   }
   /* eslint-enable max-statements */
 
+  get language() {
+    return this.options.language;
+  }
+
   /**
    * Sets the language for this form.
    *
