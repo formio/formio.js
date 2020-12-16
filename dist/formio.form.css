@@ -814,6 +814,9 @@ body.formio-dialog-open {
 .formio-component-textarea .alert .ck-editor__editable {
   color: inherit; }
 
+.formio-component-textarea .ck.ck-editor__editable .image .ck-progress-bar {
+  height: 4px; }
+
 div[data-oembed-url] {
   width: 100%; }
 
@@ -842,7 +845,8 @@ div[data-oembed-url] {
 
 .open-modal-button {
   width: 100%;
-  text-align: left; }
+  text-align: left;
+  white-space: normal; }
 
 .formio-component-modal-wrapper-signature .open-modal-button {
   text-align: center;
@@ -948,6 +952,18 @@ div[data-oembed-url] {
   border-left: 0;
   border-right: solid 5px #cccccc; }
 
+.formio-component-content .text-tiny {
+  font-size: 0.7em; }
+
+.formio-component-content .text-small {
+  font-size: 0.85em; }
+
+.formio-component-content .text-big {
+  font-size: 1.4em; }
+
+.formio-component-content .text-huge {
+  font-size: 1.8em; }
+
 .formio-component-address.formio-component-label-hidden > label.field-required {
   z-index: 1; }
   .formio-component-address.formio-component-label-hidden > label.field-required ~ .address-autocomplete-container .address-autocomplete-remove-value-icon {
@@ -993,7 +1009,7 @@ div[data-oembed-url] {
   .formio-component-modal-wrapper .component-rendering-hidden {
     visibility: hidden; }
 
-div[read-only="true"] .formio-component-textarea div[ref="input"] {
+.formio-component-textarea div.formio-editor-read-only-content[ref="input"] {
   white-space: pre-wrap; }
 
 .formio-editor-read-only-content img {

@@ -1,4 +1,7 @@
 <label class="control-label">{{ ctx.t(ctx.component.label) }}</label><br>
-<button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>
+<button lang='en' class='btn btn-light btn-md open-modal-button form-control' ref='openModal'>
   {{ ctx.previewText }}
 </button>
+<div class="formio-errors invalid-feedback">
+  {{ ctx.messages }}
+</div>

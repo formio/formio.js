@@ -1,10 +1,14 @@
-import Choices from '../../utils/ChoicesWrapper';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
-import { getRandomComponentId } from '../../utils/utils';
+import { getRandomComponentId, boolValue } from '../../utils/utils';
+
+let Choices;
+if (typeof window !== 'undefined') {
+  Choices = require('../../utils/ChoicesWrapper').default;
+}
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -41,7 +45,8 @@ export default class SelectComponent extends Field {
         include: 'score',
         threshold: 0.3,
       },
-      customOptions: {}
+      customOptions: {},
+      useExactSearch: false,
     }, ...extend);
   }
 
@@ -58,7 +63,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat(['select']);
+    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
 
     // Trigger an update.
     let updateArgs = [];
@@ -98,6 +103,15 @@ export default class SelectComponent extends Field {
   }
 
   get dataReady() {
+    // If the root submission has been set, and we are still not attached, then assume
+    // that our data is ready.
+    if (
+      this.root &&
+      this.root.submissionSet &&
+      !this.attached
+    ) {
+      return NativePromise.resolve();
+    }
     return this.itemsLoaded;
   }
 
@@ -224,14 +238,8 @@ export default class SelectComponent extends Field {
       ? this.component.idPath.split('.').reduceRight((obj, key) => ({ [key]: obj }), id)
       : {};
     const option = {
-      value: _.isObject(value) && this.isEntireObjectDisplay()
-        ? this.normalizeSingleValue(value)
-        : _.isObject(value)
-          ? value
-          : _.isNull(value)
-            ? this.emptyValue
-            : String(this.normalizeSingleValue(value)),
-      label: label,
+      value: this.getOptionValue(value),
+      label,
       ...idPath
     };
 
@@ -652,7 +660,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (forceUpdate || this.additionalResourcesAvailable || this.dataValue.length && !this.serverCount) {
+        if (forceUpdate || this.additionalResourcesAvailable || !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
@@ -697,6 +705,10 @@ export default class SelectComponent extends Field {
         break;
       }
       case 'indexeddb': {
+        if (typeof window === 'undefined') {
+          return;
+        }
+
         if (!window.indexedDB) {
           window.alert("Your browser doesn't support current version of indexedDB");
         }
@@ -861,7 +873,9 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, 'component.searchFields', ['label']),
-      fuseOptions: Object.assign(
+      fuseOptions: this.component.useExactSearch
+        ? {}
+        : Object.assign(
         {},
         _.get(this, 'component.fuseOptions', {}),
         {
@@ -923,26 +937,29 @@ export default class SelectComponent extends Field {
     }
 
     const choicesOptions = this.choicesOptions();
-    this.choices = new Choices(input, choicesOptions);
 
-    if (this.selectOptions && this.selectOptions.length) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
-    }
+    if (Choices) {
+      this.choices = new Choices(input, choicesOptions);
 
-    if (this.component.multiple) {
-      this.focusableElement = this.choices.input.element;
-    }
-    else {
-      this.focusableElement = this.choices.containerInner.element;
-      this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-      if (choicesOptions.searchEnabled) {
-        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
+      if (this.selectOptions && this.selectOptions.length) {
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true);
       }
-    }
 
-    if (this.isInfiniteScrollProvided) {
-      this.scrollList = this.choices.choiceList.element;
-      this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
+      if (this.component.multiple) {
+        this.focusableElement = this.choices.input.element;
+      }
+      else {
+        this.focusableElement = this.choices.containerInner.element;
+        this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
+        if (choicesOptions.searchEnabled) {
+          this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
+        }
+      }
+
+      if (this.isInfiniteScrollProvided) {
+        this.scrollList = this.choices.choiceList.element;
+        this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
+      }
     }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);
@@ -973,14 +990,17 @@ export default class SelectComponent extends Field {
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
       this.addEventListener(input, 'hideDropdown', () => {
-        this.choices.input.element.value = '';
+        if (this.choices && this.choices.input && this.choices.input.element) {
+          this.choices.input.element.value = '';
+        }
+
         this.updateItems(null, true);
       });
     }
 
     this.addEventListener(input, 'showDropdown', () => this.update());
 
-    if (choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
+    if (this.choices && choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, 'removeItem', () => {
@@ -1395,6 +1415,88 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.getOptionsValues();
+
+    if (values) {
+      if (_.isObject(value)) {
+        const compareComplexValues = (optionValue) => {
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
+
+          if (!_.isObject(normalizedOptionValue)) {
+            return false;
+          }
+
+          try {
+            return (JSON.stringify(normalizedOptionValue) === JSON.stringify(value));
+          }
+          catch (err) {
+            console.warn.error('Error while comparing items', err);
+            return false;
+          }
+        };
+
+        return values.findIndex((optionValue) => compareComplexValues(optionValue)) !== -1;
+      }
+
+      return values.findIndex((optionValue) => this.normalizeSingleValue(optionValue) === value) !== -1;
+    }
+    return false;
+  }
+
+  /**
+   * Performs required transformations on the initial value to use in selectOptions
+   * @param {*} value
+   */
+  getOptionValue(value) {
+    return _.isObject(value) && this.isEntireObjectDisplay()
+    ? this.normalizeSingleValue(value)
+    : _.isObject(value)
+      ? value
+      : _.isNull(value)
+        ? this.emptyValue
+        : String(this.normalizeSingleValue(value));
+  }
+
+  /**
+   * If component has static values (values, json) or custom values, returns an array of them
+   * @returns {Array<*>|undefiened}
+   */
+  getOptionsValues() {
+    let rawItems = [];
+    switch (this.component.dataSrc) {
+      case 'values':
+        rawItems = this.component.data.values;
+        break;
+      case 'json':
+        rawItems = this.component.data.json;
+        break;
+      case 'custom':
+        rawItems = this.getCustomItems();
+        break;
+    }
+
+    if (typeof rawItems === 'string') {
+      try {
+        rawItems = JSON.parse(rawItems);
+      }
+      catch (err) {
+        console.warn(err.message);
+        rawItems = [];
+      }
+    }
+
+    if (!Array.isArray(rawItems)) {
+      return;
+    }
+
+    return rawItems.map((item) => this.getOptionValue(this.itemValue(item)));
   }
 
   /**

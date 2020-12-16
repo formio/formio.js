@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -266,7 +268,7 @@ export default class PDFBuilder extends WebformBuilder {
           subgroups: this.groups[groupKey].subgroups.map((group) =&gt; this.renderTemplate(&apos;builderSidebarGroup&apos;, {
             group,
             groupKey: group.key,
-            groupId: `builder-sidebar-${groupKey}`,
+            groupId: `group-container-${groupKey}`,
             subgroups: []
           })),
         })),
@@ -277,6 +279,26 @@ export default class PDFBuilder extends WebformBuilder {
     });
 
     return result;
+  }
+
+  attachLoader(element) {
+    this.loadRefs(element, {
+      &apos;sidebar-loader&apos;: &apos;single&apos;
+    });
+    const sidebarLoader = this.refs[&apos;sidebar-loader&apos;];
+    if (sidebarLoader &amp;&amp; sidebarLoader.parentNode) {
+      sidebarLoader.parentNode.appendChild(sidebarLoader);
+    }
+  }
+
+  removeLoader(element) {
+    this.loadRefs(element, {
+      &apos;sidebar-loader&apos;: &apos;single&apos;
+    });
+    const sidebarLoader = this.refs[&apos;sidebar-loader&apos;];
+    if (sidebarLoader &amp;&amp; sidebarLoader.parentNode) {
+      sidebarLoader.parentNode.removeChild(sidebarLoader);
+    }
   }
 
   attach(element) {
@@ -291,6 +313,7 @@ export default class PDFBuilder extends WebformBuilder {
         &apos;uploadProgressWrapper&apos;: &apos;single&apos;,
         &apos;dragDropText&apos;: &apos;single&apos;
       });
+      this.removeLoader(element);
       this.addEventListener(this.refs[&apos;pdf-upload-button&apos;], &apos;click&apos;, (event) =&gt; {
         event.preventDefault();
       });
@@ -346,16 +369,16 @@ export default class PDFBuilder extends WebformBuilder {
     return super.attach(element).then(() =&gt; {
       this.loadRefs(this.element, {
         iframeDropzone: &apos;single&apos;,
-        &apos;sidebar-container&apos;: &apos;multiple&apos;,
-        &apos;sidebar-loader&apos;: &apos;single&apos;,
+        &apos;sidebar-container&apos;: &apos;multiple&apos;
       });
 
-      this.afterAttach();
+      this.afterAttach(element);
       return this.element;
     });
   }
 
-  afterAttach() {
+  afterAttach(element) {
+    this.attachLoader(element);
     this.on(&apos;saveComponent&apos;, (component) =&gt; {
       this.webform.postMessage({ name: &apos;updateElement&apos;, data: component });
     });
@@ -364,10 +387,7 @@ export default class PDFBuilder extends WebformBuilder {
     });
     if (this.refs[&apos;sidebar-loader&apos;]) {
       this.webform.on(&apos;iframe-ready&apos;, () =&gt; {
-        const sidebarLoader = this.refs[&apos;sidebar-loader&apos;];
-        if (sidebarLoader &amp;&amp; sidebarLoader.parentNode) {
-          sidebarLoader.parentNode.removeChild(sidebarLoader);
-        }
+        this.removeLoader(element);
       }, true);
     }
     this.initIframeEvents();
@@ -608,7 +628,7 @@ export default class PDFBuilder extends WebformBuilder {
     );
 
     // Set a unique key for this component.
-    BuilderUtils.uniquify([this.webform.component], schema);
+    BuilderUtils.uniquify([this.webform._form], schema);
     this.webform._form.components.push(schema);
 
     schema.overlay = {

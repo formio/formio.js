@@ -4,6 +4,96 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+###  [Unreleased]
+#### Added
+ - Enable Setting Headers To S3
+ - WebFormBuilder Search Enhancements
+ - FJS-1175 [feat]: adds an ability to NestedForm to use original revision for submissions viewing
+ - Adds an ability to upload images from CKEditor to storage providers
+
+#### Changed
+ - FOR-2419: Changed the logic of filtering and added searching by existing resource
+ - Style button to delete data in confirmation dialog as btn-danger
+ - FMG-109 | Change OnHover cursor style to the Hand pointer for the Wizard navigation buttons
+
+#### Fixed
+ - FOR-2874: Added recaptcha async validation.
+ - FJS-1484: fixed an issue where wizard resets form after components schema is changed inside the code
+ - FJS-1487: fixed an issue where conditional columns are not displayed inside dataGrid when the condition is met
+ - FOR-2882: fix the mode path in ace
+ - Fixed an issue where forms which have some logic get stuck in infinite loop
+ - Fixed an issue where DateTime is rendered incorrectly & ignoring Format on mobile devices
+ - FJS-1099: Allow overriding the breadCrumb clickable option with configurations.
+ - Fix typo in class name in align.ejs.
+ - Fix the uniquify method in the builder
+ - FJS-1156: No indication of errors inside the Layout components in a Modal Edit view
+ - Allow 0 for labelWidth and labelMargin.
+ - Fix textarea endlines in read-only mode.
+ - FJS-1433: remove duplicate label in the list of errors
+ - FMG-57: ‘Paste below’ button shows all the time, even though the component hasn’t been copied
+ - Fixed an issue where form properties of WizardBuilder and corresponding Webform are different
+ - FJS-1488: Fixing issue where setting tabindex on components inside datagrid does not also apply to remove row and add another buttons.
+
+### 4.12.2-rc.5
+#### Fixed
+ - FJS-1466: focus on the default value in the currency field
+ - FJS-1470: fixed infinite loop in wizard with dataGrid
+
+### 4.12.2-rc.4
+#### Fixed
+ - FJS-1297: fix editing nested wizards
+ - Fixing issues where clearOnHide would cause data to erroneously reset within nested conditionals
+ - FJS-1470: fixed an issue where infinite loop is created in wizard after internal form schema change
+ - FJS-1312: fix display of subform errors in wizards
+ - UIP-263: EditGrid: fix values with html tags got injected in template
+ - FJS-1429: fixed currency validation regexp
+ - FJS-1456: add line breaks for fields in modal preview
+ - FJS-1333: Fixes an issue where all the validation errors are shown for the modal draft row
+
+### 4.12.2-rc.3
+#### Added
+ - FJS-1380: Adds a validation which checks if the value is available within component's values setting
+
+### 4.12.2-rc.2
+#### Added
+ - UIP-261: Select: add use exact search option
+
+#### Fixed
+ - UIP-251: File: hide file drop area when file is uploading
+ - FJS-1428: Fixes an issue where lazy loading Select shows item only after the second click
+ - FMG-89 | PDF form | When the PDF is being uploaded, text in the upload progress bar is too small
+ - FMG-133 (1.96.0 Regression) When switching to PDF mode, you just get the spinning circle. I am not able to add a PDF
+ - FJS-1449: Fixing issues where the DateTime component is erroneously triggering changes.
+
+### 4.12.2-rc.1
+#### Fixed
+ - FMG-86 | Edit Form page | Accordions within the Resource Fields accordion do not expand/collapse when the ‘Wizard’ or the ‘PDF’ is selected in the Form Select drop down
+ - FJS-1438: fixed an issue where dataGrid extra components are not removed after setting value with fewer rows
+ - FJS-1297: fix data submission for nested wizards
+ - PDFBuilder: fix same type components get equal keys
+ - UIP-260: Button: fix not updated disabled attribute
+ - FJS-1312: fix display of list of errors during submission
+ - FJS-1442: Wizard: emit event when this.pages changes
+ - PDF-170: Fix files ready resolving promise
+ - VPAT-697 Added border outlines to Datasource component in formbuilder
+ - VPAT-431 Fixed issue when CKEditor text size styles were missing in forms (content components)
+ - FJS-1440: fixed an issue where hidden page is dispalyed in wizard navigation bar and wizard data is cleared after navigating to such page
+
+#### Changed
+ - Upgrade i18next@19.8.4, jwt-decode@3.1.2, marked@1.2.4, webpack-stream@6.1.1, vanilla-picker@2.11.0, babel-loader@8.2.1, dialog-polyfill@0.5.4, moment-timezone@0.5.32
+
+### 4.12.1
+#### Changed
+ - No changes. Released 4.12.1-rc.28 as official release.
+
+### 4.12.1-rc.28
+#### Fixed
+ - PDF-213: Fix ids mismatch
+ - FJS-1427: Component settings can't be opened after the Property name is cleared
+ - PDF-197: Set Formio base url and project url for pdf iframe
+ - FJS-1298: fix page display in one line when condition is set
+ - Fix: fix the modalEdit logic for the EditGrid component
+
 ### 4.12.1-rc.27
 #### Fixed
  - FJS-1426: Fixes an issue where NestedForm's data is not shown when it is inside DataGrid

@@ -140,7 +140,7 @@ export default class WizardBuilder extends WebformBuilder {
           subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
             group,
             groupKey: group.key,
-            groupId: `builder-sidebar-${groupKey}`,
+            groupId: `group-container-${groupKey}`,
             subgroups: []
           })),
         })),
@@ -175,11 +175,11 @@ export default class WizardBuilder extends WebformBuilder {
 
   rebuild() {
     const page = this.currentPage;
-    this.webform.form = {
+    this.webform.setForm({
       display: 'form',
       type: 'form',
       components: page ? [page] : [],
-    };
+    }, { keepAsReference: true });
     return this.redraw();
   }
 

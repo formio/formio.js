@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -218,11 +220,19 @@ export default class NestedComponent extends Field {
   }
 
   set visible(value) {
-    super.visible = value;
+    // DO NOT CALL super here.  There is an issue where clearOnHide was getting triggered with
+    // subcomponents because the &quot;parentVisible&quot; flag was set to false when it should really be
+    // set to true.
+    const visibilityChanged = this._visible !== value;
+    this._visible = value;
     const isVisible = this.visible;
     const forceShow = this.options.show &amp;&amp; this.options.show[this.component.key];
     const forceHide = this.options.hide &amp;&amp; this.options.hide[this.component.key];
     this.components.forEach(component =&gt; {
+      // Set the parent visibility first since we may have nested components within nested components
+      // and they need to be able to determine their visibility based on the parent visibility.
+      component.parentVisible = isVisible;
+
       const conditionallyVisible = component.conditionallyVisible();
       if (forceShow || conditionallyVisible) {
         component.visible = true;
@@ -234,8 +244,11 @@ export default class NestedComponent extends Field {
       if (!component.visible) {
         component.error = &apos;&apos;;
       }
-      component.parentVisible = isVisible;
     });
+    if (visibilityChanged) {
+      this.clearOnHide();
+      this.redraw();
+    }
   }
 
   get visible() {
@@ -244,9 +257,7 @@ export default class NestedComponent extends Field {
 
   set parentVisible(value) {
     super.parentVisible = value;
-    this.components.forEach(component =&gt; {
-      component.parentVisible = this.visible;
-    });
+    this.components.forEach(component =&gt; component.parentVisible = this.visible);
   }
 
   get parentVisible() {
@@ -722,9 +733,30 @@ export default class NestedComponent extends Field {
     flags = flags || {};
     row = row || this.data;
     components = components &amp;&amp; _.isArray(components) ? components : this.getComponents();
-    return components.reduce((valid, comp) =&gt; {
+    const isValid = components.reduce((valid, comp) =&gt; {
       return comp.checkData(data, flags, row) &amp;&amp; valid;
     }, super.checkData(data, flags, row));
+
+    this.checkModal(isValid, this.isDirty);
+    return isValid;
+  }
+
+  checkModal(isValid, dirty) {
+    if (!this.component.modalEdit || !this.componentModal) {
+      return;
+    }
+    const messages = this.errors;
+    this.clearErrorClasses(this.refs.openModalWrapper);
+    this.error = &apos;&apos;;
+    if (!isValid &amp;&amp; (dirty || !this.isPristine &amp;&amp; !!messages.length)) {
+      this.error = {
+        component: this.component,
+        level: &apos;hidden&apos;,
+        message: this.t(&apos;Fix the errors&apos;)
+      };
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
+    }
+    this.setOpenModalElement();
   }
 
   checkConditions(data, flags, row) {
@@ -795,10 +827,12 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    return this.getComponents().reduce(
+    const isValid = this.getComponents().reduce(
       (check, comp) =&gt; comp.checkValidity(data, dirty, row, silentCheck) &amp;&amp; check,
       super.checkValidity(data, dirty, row, silentCheck)
     );
+    this.checkModal(isValid, dirty);
+    return isValid;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
@@ -812,6 +846,14 @@ export default class NestedComponent extends Field {
   setPristine(pristine) {
     super.setPristine(pristine);
     this.getComponents().forEach((comp) =&gt; comp.setPristine(pristine));
+  }
+
+  get isPristine() {
+    return this.pristine &amp;&amp; this.getComponents().every((c) =&gt; c.isPristine);
+  }
+
+  get isDirty() {
+    return this.dirty &amp;&amp; this.getComponents().every((c) =&gt; c.isDirty);
   }
 
   detach() {
@@ -841,7 +883,9 @@ export default class NestedComponent extends Field {
 
   get errors() {
     const thisErrors = this.error ? [this.error] : [];
-    return this.getComponents().reduce((errors, comp) =&gt; errors.concat(comp.errors || []), thisErrors);
+    return this.getComponents()
+      .reduce((errors, comp) =&gt; errors.concat(comp.errors || []), thisErrors)
+      .filter(err =&gt; err.level !== &apos;hidden&apos;);
   }
 
   getValue() {

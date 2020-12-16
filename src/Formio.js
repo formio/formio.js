@@ -80,7 +80,7 @@ class Formio {
     else if (Formio.baseUrl) {
       this.base = Formio.baseUrl;
     }
-    else {
+    else if (typeof window !== 'undefined') {
       this.base = window.location.href.match(/http[s]?:\/\/api./)[0];
     }
 
@@ -773,7 +773,7 @@ class Formio {
       .then(() => getFormio().pluginGet('staticRequest', requestArgs)
         .then((result) => {
           if (isNil(result)) {
-            return getFormio().request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+            return getFormio().request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         }));
@@ -1534,8 +1534,12 @@ if (typeof window !== 'undefined') {
 
 // It makes sure that we use global Formio.
 function getFormio() {
-  if (typeof (window || global) === 'object' && typeof (window || global).Formio !== 'undefined') {
-    return (window || global).Formio;
+  if (typeof window === 'object' && typeof window.Formio !== 'undefined') {
+    return window.Formio;
+  }
+
+  if (typeof global === 'object' && typeof global.Formio !== 'undefined') {
+    return global.Formio;
   }
 
   return Formio;

@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -186,10 +188,50 @@ import wizard3 from &apos;../test/forms/conditionalWizardPages&apos;;
 import wizard4 from &apos;../test/forms/wizardWithSimpleConditionalPage&apos;;
 import wizard5 from &apos;../test/forms/wizardWithCustomConditionalPage&apos;;
 import wizard6 from &apos;../test/forms/wizardWithFirstConditionalPage&apos;;
+import wizardWithHiddenPanel from &apos;../test/forms/wizardWithHiddenPanel&apos;;
 import wizardWithAllowPrevious from &apos;../test/forms/wizardWithAllowPrevious&apos;;
 import formWithSignature from &apos;../test/forms/formWithSignature&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
+  it(&apos;Should not clear wizard data when navigating between wizard pages with hidden panel&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithHiddenPage = new Wizard(formElement);
+
+    formWithHiddenPage.setForm(wizardWithHiddenPanel).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+      const inputEvent = new Event(&apos;input&apos;);
+
+      assert.equal(formWithHiddenPage.pages.length, 2);
+
+      const page1Field = formWithHiddenPage.element.querySelector(&apos;[name=&quot;data[number]&quot;]&apos;);
+
+      page1Field.value = &apos;555&apos;;
+      page1Field.dispatchEvent(inputEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(formWithHiddenPage.element.querySelector(&apos;[name=&quot;data[number]&quot;]&apos;).value, 555);
+
+        const nextPageBtn = formWithHiddenPage.refs[`${formWithHiddenPage.wizardKey}-next`];
+        nextPageBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(formWithHiddenPage.page, 1);
+
+          const prevPageBtn = formWithHiddenPage.refs[`${formWithHiddenPage.wizardKey}-previous`];
+          prevPageBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(formWithHiddenPage.page, 0);
+            assert.equal(formWithHiddenPage.element.querySelector(&apos;[name=&quot;data[number]&quot;]&apos;).value, 555);
+
+            done();
+          }, 250);
+        }, 200);
+      }, 100);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should show signature submission in HTML render mode&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithSignatureHTMLMode = new Wizard(formElement, {

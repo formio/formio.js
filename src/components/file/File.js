@@ -8,7 +8,16 @@ let Camera;
 let webViewCamera = navigator.camera || Camera;
 
 // canvas.toBlob polyfill.
-if (!HTMLCanvasElement.prototype.toBlob) {
+
+let htmlCanvasElement;
+if (typeof window !== 'undefined') {
+  htmlCanvasElement = window.HTMLCanvasElement;
+}
+else if (typeof global !== 'undefined') {
+  htmlCanvasElement = global.HTMLCanvasElement;
+}
+
+if (htmlCanvasElement && !htmlCanvasElement.prototype.toBlob) {
   Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
     value: function(callback, type, quality) {
       var canvas = this;
@@ -58,8 +67,8 @@ export default class FileComponent extends Field {
     super.init();
     webViewCamera = navigator.camera || Camera;
     const fileReaderSupported = (typeof FileReader !== 'undefined');
-    const formDataSupported = Boolean(window.FormData);
-    const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false;
+    const formDataSupported = typeof window !== 'undefined' ? Boolean(window.FormData) : false;
+    const progressSupported = (typeof window !== 'undefined' && window.XMLHttpRequest) ? ('upload' in new XMLHttpRequest) : false;
 
     this.support = {
       filereader: fileReaderSupported,
@@ -74,6 +83,7 @@ export default class FileComponent extends Field {
     });
     this.cameraMode = false;
     this.statuses = [];
+    this.fileDropHidden = false;
   }
 
   get dataReady() {
@@ -119,6 +129,17 @@ export default class FileComponent extends Field {
       (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
   }
 
+  get fileDropHidden() {
+    return this._fileBrowseHidden;
+  }
+
+  set fileDropHidden(value) {
+    if (typeof value !== 'boolean' || this.component.multiple) {
+      return;
+    }
+    this._fileBrowseHidden = value;
+  }
+
   render() {
     return super.render(this.renderTemplate('file', {
       fileSize: this.fileSize,
@@ -126,6 +147,7 @@ export default class FileComponent extends Field {
       statuses: this.statuses,
       disabled: this.disabled,
       support: this.support,
+      fileDropHidden: this.fileDropHidden
     }));
   }
 
@@ -261,9 +283,20 @@ export default class FileComponent extends Field {
     if (this.component.multiple) {
       options.multiple = true;
     }
+    //use "accept" attribute only for desktop devices because of its limited support by mobile browsers
+    if (!this.isMobile.any) {
+      const filePattern = this.component.filePattern.trim() || '';
+      const imagesPattern = 'image/*';
 
-    if (this.imageUpload) {
-      options.accept = 'image/*';
+      if (this.imageUpload && (!filePattern || filePattern === '*')) {
+        options.accept = imagesPattern;
+      }
+      else if (this.imageUpload && !filePattern.includes(imagesPattern)) {
+        options.accept = `${imagesPattern},${filePattern}`;
+      }
+      else {
+        options.accept = filePattern;
+      }
     }
 
     return options;
@@ -451,6 +484,9 @@ export default class FileComponent extends Field {
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
       }
+      else {
+        this.filesReadyResolve();
+      }
     }
     return superAttach;
   }
@@ -573,6 +609,23 @@ export default class FileComponent extends Field {
           message: this.t('Starting upload'),
         };
 
+        // Check if file with the same name is being uploaded
+        const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
+        const fileWithSameNameUploadedWithError = this.statuses.findIndex(fileStatus =>
+          fileStatus.originalName === file.name
+          && fileStatus.status === 'error'
+        );
+
+        if (fileWithSameNameUploaded) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t('File with the same name is already uploaded');
+        }
+
+        if (fileWithSameNameUploadedWithError !== -1) {
+          this.statuses.splice(fileWithSameNameUploadedWithError, 1);
+          this.redraw();
+        }
+
         // Check file pattern
         if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
           fileUpload.status = 'error';
@@ -641,7 +694,10 @@ export default class FileComponent extends Field {
               delete fileUpload.message;
               this.redraw();
             }, url, options, fileKey, groupPermissions, groupResourceId,
-              () => this.emit('fileUploadingStart', filePromise)
+              () => {
+                this.fileDropHidden = true;
+                this.emit('fileUploadingStart', filePromise);
+              }
             )
               .then((fileInfo) => {
                 const index = this.statuses.indexOf(fileUpload);
@@ -653,6 +709,7 @@ export default class FileComponent extends Field {
                   this.dataValue = [];
                 }
                 this.dataValue.push(fileInfo);
+                this.fileDropHidden = false;
                 this.redraw();
                 this.triggerChange();
                 this.emit('fileUploadingEnd', filePromise);
@@ -661,6 +718,7 @@ export default class FileComponent extends Field {
                 fileUpload.status = 'error';
                 fileUpload.message = response;
                 delete fileUpload.progress;
+                this.fileDropHidden = false;
                 this.redraw();
                 this.emit('fileUploadingEnd', filePromise);
               });

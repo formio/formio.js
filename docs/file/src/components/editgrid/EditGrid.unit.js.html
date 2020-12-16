@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -572,6 +574,7 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() =&gt; {
         const editGrid = form.components[0];
+
         form.checkValidity(form._data, true, form._data);
         assert.equal(form.errors.length, 1);
         editGrid.addRow();
@@ -657,6 +660,53 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       }).catch(done);
     });
 
+    it(&apos;Should not show row errors alerts if drafts enabled&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() =&gt; {
+        const editGrid = form.components[0];
+        editGrid.addRow();
+
+        setTimeout(() =&gt; {
+          editGrid.saveRow(0);
+
+          setTimeout(() =&gt; {
+            editGrid.editRow(0).then(() =&gt; {
+              const textField = form.getComponent([&apos;editGrid&apos;, 0, &apos;form&apos;, &apos;textField&apos;]);
+
+              textField.setValue(&apos;someValue&apos;);
+
+              setTimeout(() =&gt; {
+                Harness.dispatchEvent(&apos;click&apos;, editGrid.editRows[0].dialog, `.editgrid-row-modal-${editGrid.id} [ref=&quot;dialogClose&quot;]`);
+                setTimeout(() =&gt; {
+                  const dialog = editGrid.editRows[0].confirmationDialog;
+
+                  Harness.dispatchEvent(&apos;click&apos;, dialog, &apos;[ref=&quot;dialogYesButton&quot;]&apos;);
+
+                  setTimeout(() =&gt; {
+                    editGrid.editRow(0).then(() =&gt; {
+                      textField.setValue(&apos;someValue&apos;);
+
+                      setTimeout(() =&gt; {
+                        const errorAlert = editGrid.editRows[0].dialog.querySelector(`#error-list-${editGrid.id}`);
+                        assert.equal(errorAlert, null, &apos;Should be valid&apos;);
+                        done();
+                      }, 100);
+                    });
+                  }, 100);
+                }, 100);
+              }, 100);
+            });
+          }, 100);
+        }, 100);
+      }).catch(done)
+      .finally(() =&gt; {
+        ModalEditGrid.components[0].rowDrafts = false;
+      });
+    });
+
     // it(&apos;&apos;, (done) =&gt; {
     //   const formElement = document.createElement(&apos;div&apos;);
     //   const form = new Webform(formElement);
@@ -673,8 +723,6 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       const component = form.getComponent([&apos;editGrid&apos;]);
       component.addRow();
       setTimeout(() =&gt; {
-        // eslint-disable-next-line no-debugger
-        debugger;
         Harness.getInputValue(component, &apos;data[editGrid][0][checkbox]&apos;, true, &apos;checked&apos;);
         Harness.testComponentVisibility(component, &apos;.formio-component-editGridChild&apos;, true);
         Harness.testComponentVisibility(component, &apos;.formio-component-panelChild&apos;, true);

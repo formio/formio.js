@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -203,6 +205,7 @@ class ValidationChecker {
       required: {
         key: &apos;validate.required&apos;,
         method: &apos;validateRequired&apos;,
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;required&apos;), {
             field: component.errorLabel,
@@ -223,8 +226,22 @@ class ValidationChecker {
           return !component.isEmpty(value);
         }
       },
+      onlyAvailableItems: {
+        key: &apos;validate.onlyAvailableItems&apos;,
+        method: &apos;validateValueAvailability&apos;,
+        message(component) {
+          return component.t(component.errorMessage(&apos;valueIsNotAvailable&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting) {
+          return !boolValue(setting);
+        }
+      },
       unique: {
         key: &apos;validate.unique&apos;,
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;unique&apos;), {
             field: component.errorLabel,
@@ -301,6 +318,7 @@ class ValidationChecker {
       },
       multiple: {
         key: &apos;validate.multiple&apos;,
+        hasLabel: true,
         message(component) {
           const shouldBeArray = boolValue(component.component.multiple) || Array.isArray(component.emptyValue);
           const isRequired = component.component.validate.required;
@@ -338,6 +356,7 @@ class ValidationChecker {
       },
       select: {
         key: &apos;validate.select&apos;,
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;select&apos;), {
             field: component.errorLabel,
@@ -446,6 +465,7 @@ class ValidationChecker {
       },
       min: {
         key: &apos;validate.min&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;min&apos;), {
             field: component.errorLabel,
@@ -466,6 +486,7 @@ class ValidationChecker {
       },
       max: {
         key: &apos;validate.max&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;max&apos;), {
             field: component.errorLabel,
@@ -538,6 +559,7 @@ class ValidationChecker {
       },
       minLength: {
         key: &apos;validate.minLength&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;minLength&apos;), {
             field: component.errorLabel,
@@ -555,6 +577,7 @@ class ValidationChecker {
       },
       maxLength: {
         key: &apos;validate.maxLength&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;maxLength&apos;), {
             field: component.errorLabel,
@@ -572,6 +595,7 @@ class ValidationChecker {
       },
       maxWords: {
         key: &apos;validate.maxWords&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;maxWords&apos;), {
             field: component.errorLabel,
@@ -589,6 +613,7 @@ class ValidationChecker {
       },
       minWords: {
         key: &apos;validate.minWords&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;minWords&apos;), {
             field: component.errorLabel,
@@ -605,6 +630,7 @@ class ValidationChecker {
         }
       },
       email: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;invalid_email&apos;), {
             field: component.errorLabel,
@@ -622,6 +648,7 @@ class ValidationChecker {
         }
       },
       url: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;invalid_url&apos;), {
             field: component.errorLabel,
@@ -639,6 +666,7 @@ class ValidationChecker {
         }
       },
       date: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;invalid_date&apos;), {
             field: component.errorLabel,
@@ -650,6 +678,7 @@ class ValidationChecker {
         }
       },
       day: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;invalid_day&apos;), {
             field: component.errorLabel,
@@ -708,6 +737,7 @@ class ValidationChecker {
       },
       pattern: {
         key: &apos;validate.pattern&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(_.get(component, &apos;component.validate.patternMessage&apos;, component.errorMessage(&apos;pattern&apos;), {
             field: component.errorLabel,
@@ -746,6 +776,7 @@ class ValidationChecker {
       },
       mask: {
         key: &apos;inputMask&apos;,
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(&apos;mask&apos;), {
             field: component.errorLabel,
@@ -802,6 +833,7 @@ class ValidationChecker {
       },
       maxDate: {
         key: &apos;maxDate&apos;,
+        hasLabel: true,
         message(component, setting) {
           const date = getDateSetting(setting);
           return component.t(component.errorMessage(&apos;maxDate&apos;), {
@@ -829,6 +861,7 @@ class ValidationChecker {
       },
       minDate: {
         key: &apos;minDate&apos;,
+        hasLabel: true,
         message(component, setting) {
           const date = getDateSetting(setting);
           return component.t(component.errorMessage(&apos;minDate&apos;), {
@@ -855,6 +888,7 @@ class ValidationChecker {
       },
       minYear: {
         key: &apos;minYear&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;minYear&apos;), {
             field: component.errorLabel,
@@ -875,6 +909,7 @@ class ValidationChecker {
       },
       maxYear: {
         key: &apos;maxYear&apos;,
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage(&apos;maxYear&apos;), {
             field: component.errorLabel,
@@ -896,6 +931,7 @@ class ValidationChecker {
       calendar: {
         key: &apos;validate.calendar&apos;,
         messageText: &apos;&apos;,
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(this.validators.calendar.messageText), {
             field: component.errorLabel,
@@ -940,6 +976,7 @@ class ValidationChecker {
       time: {
         key: &apos;validate.time&apos;,
         messageText: &apos;Invalid time&apos;,
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(this.validators.time.messageText), {
             field: component.errorLabel
@@ -1001,6 +1038,7 @@ class ValidationChecker {
         path: getArrayFromComponentPath(component.path || &apos;&apos;),
         context: {
           validator: validatorName,
+          hasLabel: validator.hasLabel,
           setting,
           key: component.key,
           label: component.label,
@@ -1102,6 +1140,7 @@ class ValidationChecker {
             row,
             error: result
           });
+          result.context.hasLabel = false;
         });
       }
 

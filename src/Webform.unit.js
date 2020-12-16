@@ -35,15 +35,64 @@ import {
   formWithCustomFormatDate
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
+import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
 import disableSubmitButton from '../test/forms/disableSubmitButton';
 import formWithAddressComponent from '../test/forms/formWithAddressComponent';
 import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
+import formWithDataGrid from '../test/forms/formWithDataGrid';
+import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should display dataGrid conditional column once the condition is met', function(done) {
+    const formElement = document.createElement('div');
+    const formWithCondDataGridColumn = new Webform(formElement);
+
+    formWithCondDataGridColumn.setForm(formWithDataGridWithCondColumn).then(() => {
+      const condDataGridField = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
+      assert.equal(!!condDataGridField, false);
+
+      const textField = formWithCondDataGridColumn.element.querySelector( '[name="data[textField]"]');
+      textField.value = 'show';
+
+      const inputEvent = new Event('input');
+      textField.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        const condDataGridFieldAfterFulfillingCond = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
+        assert.equal(!!condDataGridFieldAfterFulfillingCond, true);
+
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should remove dataGrid extra rows and components after setting value with less row number', function(done) {
+    const formElement = document.createElement('div');
+    const formWithDG = new Webform(formElement);
+
+    formWithDG.setForm(formWithDataGrid.form).then(() => {
+    formWithDG.setSubmission(formWithDataGrid.submission3rows);
+
+      setTimeout(() => {
+        assert.equal(formWithDG.components[0].rows.length, 3);
+        assert.equal(formWithDG.components[0].components.length, 3);
+
+        formWithDG.setSubmission(formWithDataGrid.submission1row);
+
+        setTimeout(() => {
+          assert.equal(formWithDG.components[0].rows.length, 1);
+          assert.equal(formWithDG.components[0].components.length, 1);
+
+          done();
+        }, 200);
+      }, 100);
+    }).catch((err) => done(err));
+  });
 
   it('Should not delete/change date value in dataGrid after adding new row', function(done) {
     const formElement = document.createElement('div');
@@ -195,6 +244,7 @@ describe('Webform tests', function() {
    const formWithNestedDraftModals = new Webform(formElement);
 
    formWithNestedDraftModals.setForm(formWithEditGridAndNestedDraftModalRow).then(() => {
+     const editGrid = formWithNestedDraftModals.getComponent('editGrid');
      const clickEvent = new Event('click');
      const inputEvent = new Event('input');
 
@@ -203,7 +253,7 @@ describe('Webform tests', function() {
      addRowBtn.dispatchEvent(clickEvent);
 
      setTimeout(() => {
-       const rowModal = document.querySelector('.formio-dialog-content');
+       const rowModal = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
        //checking if row modal was openned
        assert.equal(!!rowModal, true);
 
@@ -220,17 +270,17 @@ describe('Webform tests', function() {
          //clicking save button to save row draft
          saveModalBtn.dispatchEvent(clickEvent);
 
-         setTimeout(() => {
+        setTimeout(() => {
           const editGridRows = formWithNestedDraftModals.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
           //checking if the editGrid row was created
           assert.equal(editGridRows.length, 1);
 
-          const editRowBtn =  editGridRows[0].querySelector('.editRow');
+          const editRowBtn = editGridRows[0].querySelector('.editRow');
           //click the edit btn to open the row again
           editRowBtn.dispatchEvent(clickEvent);
 
           setTimeout(() => {
-            const rowModalForEditing = document.querySelector('.formio-dialog-content');
+            const rowModalForEditing = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
             const textFieldInputForEditing = rowModalForEditing.querySelector('[name="data[textField]"]');
             textFieldInputForEditing.value = 'changed value';
             //changing textfield value
@@ -246,26 +296,27 @@ describe('Webform tests', function() {
               XCloseBtn.dispatchEvent(clickEvent);
 
                 setTimeout(() => {
-                  const dialogWindows = document.querySelectorAll('.formio-dialog-content');
+                  const dialogConfirmationWindows = document.querySelectorAll(`.editgrid-row-modal-confirmation-${editGrid.id}`);
                   //checking if confirmation dialog is openned
-                  assert.equal(dialogWindows.length, 2);
+                  assert.equal(dialogConfirmationWindows.length, 1);
 
-                  const dialogCancelBtn = document.querySelector('[ref="dialogCancelButton"]');
+                  const dialogCancelBtn = dialogConfirmationWindows[0].querySelector('[ref="dialogCancelButton"]');
                   //closing confirmation dialog
                   dialogCancelBtn.dispatchEvent(clickEvent);
 
                   setTimeout(() => {
-                    const dialogWindowsAfterClosingConfirmation = document.querySelectorAll('.formio-dialog-content');
+                    const confirmationWindows = document.querySelectorAll(`.editgrid-row-modal-confirmation-${editGrid.id}`);
                     //checking if confirmation dialig is closed
-                    assert.equal(dialogWindowsAfterClosingConfirmation.length, 1);
+                    assert.equal(confirmationWindows.length, 0);
 
-                    const overlay = document.querySelector('[ref="dialogOverlay"]');
+                    const dialog = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
+                    const overlay = dialog.querySelector('[ref="dialogOverlay"]');
                     //clocking model overlay to open confirmation dialog again
                     overlay.dispatchEvent(clickEvent);
 
                     setTimeout(() => {
-                      const dialogWindowsAfterClickingOverlay = document.querySelectorAll('.formio-dialog-content');
-                      assert.equal(dialogWindowsAfterClickingOverlay.length, 2);
+                      const confirmationDialogsAfterClickingOverlay = document.querySelectorAll(`.editgrid-row-modal-confirmation-${editGrid.id}`);
+                      assert.equal(confirmationDialogsAfterClickingOverlay.length, 1);
 
                       document.body.innerHTML = '';
                       done();
@@ -274,10 +325,10 @@ describe('Webform tests', function() {
                  }, 150);
               }, 130);
             }, 110);
-         }, 90);
-       }, 70);
-     }, 50);
-   }).catch((err) => done(err));
+          }, 100);
+        }, 70);
+      }, 50);
+    }).catch((err) => done(err));
  });
 
   it('Should not show validation errors when saving invalid draft row in dataGrid', function(done) {
@@ -480,9 +531,13 @@ describe('Webform tests', function() {
       addRowBtn.dispatchEvent(clickEvent);
 
       setTimeout(() => {
-        const rowModal = document.querySelector('.formio-dialog-content');
+        const editGrid = formWithDraftModals.getComponent('editGrid');
+
+        assert.equal(editGrid.editRows.length, 1, 'Should create a row');
+
+        const rowModal = editGrid.editRows[0].dialog;
         //checking if row modal was openned
-        assert.equal(!!rowModal, true);
+        assert.equal(!!rowModal, true, 'Should open a modal window');
 
         const textFieldInput = rowModal.querySelector('[name="data[editGrid][0][textField]"]');
         textFieldInput.value = 'test';
@@ -502,7 +557,7 @@ describe('Webform tests', function() {
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
 
-            const submitBtn =  formWithDraftModals.element.querySelector('[name="data[submit]"');
+            const submitBtn = formWithDraftModals.element.querySelector('[name="data[submit]"');
             //pushing submit button to trigger validation
             submitBtn.dispatchEvent(clickEvent);
 
@@ -521,11 +576,11 @@ describe('Webform tests', function() {
               rowEditBtn.dispatchEvent(clickEvent);
 
               setTimeout(() => {
-                const rowModalAfterValidation = document.querySelector('.formio-dialog-content');
+                const rowModalAfterValidation = editGrid.editRows[0].dialog;
 
                 const alertWithErrorText = rowModalAfterValidation.querySelector('.alert-danger');
                 //checking if alert with errors list appeared inside the modal
-                assert.equal(!!alertWithErrorText, true);
+                assert.equal(!!alertWithErrorText, true, 'Should show error alert');
 
                 const alertErrorMessages = rowModalAfterValidation.querySelectorAll('[ref="messageRef"]');
                 assert.equal(alertErrorMessages.length, 1);
@@ -540,7 +595,7 @@ describe('Webform tests', function() {
                 numberInput.dispatchEvent(inputEvent);
 
                 setTimeout(() => {
-                  const rowModalWithValidFields = document.querySelector('.formio-dialog-content');
+                  const rowModalWithValidFields = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
                   const alertErrorMessagesAfterInputtingValidValues = rowModalWithValidFields.querySelectorAll('[ref="messageRef"]');
                   assert.equal(alertErrorMessagesAfterInputtingValidValues.length, 0);
 
@@ -554,7 +609,10 @@ describe('Webform tests', function() {
                   validTextInput.dispatchEvent(inputEvent);
 
                   setTimeout(() => {
-                    const alertErrorMessagesAfterInputtingInvalidValues = document.querySelector('.formio-dialog-content').querySelectorAll('[ref="messageRef"]');
+                    const alertErrorMessagesAfterInputtingInvalidValues = document
+                      .querySelector(`.editgrid-row-modal-${editGrid.id}`)
+                      .querySelectorAll('[ref="messageRef"]');
+
                     assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
                     document.body.innerHTML = '';
 
@@ -639,7 +697,7 @@ describe('Webform tests', function() {
       assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
-      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent, 'Text Field: Text Field is required');
+      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent, 'Text Field is required');
       done();
     }, 500);
     })
@@ -2050,6 +2108,65 @@ describe('Webform tests', function() {
         assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, 'Should not set to defaultValue after restore');
         done();
       }, 150);
+    }).catch(done);
+  });
+
+  it('Should add and clear input error classes correclty', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+
+    form.setForm(UpdateErrorClassesWidgets).then(() => {
+      const checkbox = form.getComponent('showDate');
+      checkbox.setValue(true);
+      setTimeout(() => {
+        const dateTimeComponent = form.getComponent('condtionalDate');
+        const dateComponentElement = dateTimeComponent.element;
+        assert.equal(!dateComponentElement.className.includes('formio-hidden'), true, 'Should not be hidden');
+
+        form.submit();
+
+        setTimeout(() => {
+          const dateVisibleInput = dateComponentElement.querySelector('.input');
+          const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
+
+          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
+          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should has invalid class as well');
+
+          dateTimeComponent.setValue('2020-12-09T00:00:00');
+
+          setTimeout(() => {
+            assert.equal(dateTimeComponent.dataValue, '2020-12-09T00:00:00', 'Should set value');
+            assert(!dateVisibleInput.className.includes('is-invalid'), 'Invalid class should be removed');
+            assert(!flatpickerInput.className.includes('is-invalid'), 'Invalid class should be removed from flatpickr field as well');
+
+            checkbox.setValue(false);
+
+            setTimeout(() => {
+              const dateComponentElement = dateTimeComponent.element;
+              assert.equal(dateComponentElement.className.includes('formio-hidden'), true, 'Should be hidden');
+              checkbox.setValue(true);
+
+              setTimeout(() => {
+                const dateComponentElement = dateTimeComponent.element;
+                assert.equal(!dateComponentElement.className.includes('formio-hidden'), true, 'Should be visible');
+                const dateVisibleInput = dateComponentElement.querySelector('.input:not([type="hidden"]');
+                const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
+
+                assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
+                assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should has invalid class as well');
+
+                dateTimeComponent.setValue('2020-10-19T00:00:00');
+                setTimeout(() => {
+                  assert.equal(dateTimeComponent.dataValue, '2020-10-19T00:00:00', 'Should set value');
+                  assert(!dateVisibleInput.className.includes('is-invalid'), 'Invalid class should be removed');
+                  assert(!flatpickerInput.className.includes('is-invalid'), 'Invalid class should be removed from flatpickr field as well');
+                  done();
+                }, 300);
+              }, 400);
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 350);
     }).catch(done);
   });
 

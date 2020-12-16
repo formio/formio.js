@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -244,7 +246,7 @@ export default class CurrencyComponent extends NumberComponent {
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language,
     });
-    let numberPattern = `\\${affixes.prefix}[0-9`;
+    let numberPattern = `${affixes.prefix}[0-9`;
     numberPattern += this.decimalSeparator || &apos;&apos;;
     numberPattern += this.delimiter || &apos;&apos;;
     numberPattern += &apos;]*&apos;;
@@ -349,6 +351,11 @@ export default class CurrencyComponent extends NumberComponent {
   addFocusBlurEvents(element) {
     super.addFocusBlurEvents(element);
 
+    this.addEventListener(element, &apos;focus&apos;, () =&gt; {
+      if (element.defaultValue === element.value) {
+        element.setSelectionRange(0, element.defaultValue.length);
+      }
+    });
     this.addEventListener(element, &apos;blur&apos;, () =&gt; {
       element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
     });

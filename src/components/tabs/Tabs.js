@@ -92,6 +92,7 @@ export default class TabsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
+    ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));
     const superAttach = super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
@@ -160,5 +161,45 @@ export default class TabsComponent extends NestedComponent {
     if (tabIndex !== -1) {
       this.setTab(tabIndex);
     }
+  }
+
+  setErrorClasses(elements) {
+    elements.forEach((element) => {
+      this.addClass(element, 'is-invalid');
+      if (this.options.highlightErrors) {
+        this.addClass(element, 'tab-error');
+      }
+      else {
+        this.addClass(element, 'has-error');
+      }
+    });
+  }
+
+  clearErrorClasses(elements) {
+    elements.forEach((element) => {
+      this.removeClass(element, 'is-invalid');
+      this.removeClass(element, 'tab-error');
+      this.removeClass(element, 'has-error');
+    });
+  }
+
+  handleTabsValidation() {
+    if (!this.refs[this.tabLinkKey] || !this.refs[this.tabLinkKey].length || !this.tabs.length) {
+      return;
+    }
+
+    this.clearErrorClasses(this.refs[this.tabLinkKey]);
+
+    const invalidTabsIndexes = this.tabs.reduce((invalidTabs, tab, tabIndex) => {
+      const hasComponentWithError = tab.some(comp => !!comp.error);
+      return hasComponentWithError ? [...invalidTabs, tabIndex] : invalidTabs;
+    }, []);
+
+    if (!invalidTabsIndexes.length) {
+      return;
+    }
+
+    const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) => invalidTabsIndexes.includes(tabIndex));
+    this.setErrorClasses(invalidTabs);
   }
 }

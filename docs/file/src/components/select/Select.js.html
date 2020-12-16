@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -180,7 +182,7 @@ import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
-import { getRandomComponentId } from &apos;../../utils/utils&apos;;
+import { getRandomComponentId, boolValue } from &apos;../../utils/utils&apos;;
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -216,7 +218,8 @@ export default class SelectComponent extends Field {
         include: &apos;score&apos;,
         threshold: 0.3,
       },
-      customOptions: {}
+      customOptions: {},
+      useExactSearch: false,
     }, ...extend);
   }
 
@@ -233,7 +236,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat([&apos;select&apos;]);
+    this.validators = this.validators.concat([&apos;select&apos;, &apos;onlyAvailableItems&apos;]);
 
     // Trigger an update.
     let updateArgs = [];
@@ -399,14 +402,8 @@ export default class SelectComponent extends Field {
       ? this.component.idPath.split(&apos;.&apos;).reduceRight((obj, key) =&gt; ({ [key]: obj }), id)
       : {};
     const option = {
-      value: _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
-        ? this.normalizeSingleValue(value)
-        : _.isObject(value)
-          ? value
-          : _.isNull(value)
-            ? this.emptyValue
-            : String(this.normalizeSingleValue(value)),
-      label: label,
+      value: this.getOptionValue(value),
+      label,
       ...idPath
     };
 
@@ -824,7 +821,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (forceUpdate || this.additionalResourcesAvailable || this.dataValue.length &amp;&amp; !this.serverCount) {
+        if (forceUpdate || this.additionalResourcesAvailable || !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
@@ -1033,7 +1030,9 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, &apos;component.searchFields&apos;, [&apos;label&apos;]),
-      fuseOptions: Object.assign(
+      fuseOptions: this.component.useExactSearch
+        ? {}
+        : Object.assign(
         {},
         _.get(this, &apos;component.fuseOptions&apos;, {}),
         {
@@ -1567,6 +1566,88 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.getOptionsValues();
+
+    if (values) {
+      if (_.isObject(value)) {
+        const compareComplexValues = (optionValue) =&gt; {
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
+
+          if (!_.isObject(normalizedOptionValue)) {
+            return false;
+          }
+
+          try {
+            return (JSON.stringify(normalizedOptionValue) === JSON.stringify(value));
+          }
+          catch (err) {
+            console.warn.error(&apos;Error while comparing items&apos;, err);
+            return false;
+          }
+        };
+
+        return values.findIndex((optionValue) =&gt; compareComplexValues(optionValue)) !== -1;
+      }
+
+      return values.findIndex((optionValue) =&gt; this.normalizeSingleValue(optionValue) === value) !== -1;
+    }
+    return false;
+  }
+
+  /**
+   * Performs required transformations on the initial value to use in selectOptions
+   * @param {*} value
+   */
+  getOptionValue(value) {
+    return _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
+    ? this.normalizeSingleValue(value)
+    : _.isObject(value)
+      ? value
+      : _.isNull(value)
+        ? this.emptyValue
+        : String(this.normalizeSingleValue(value));
+  }
+
+  /**
+   * If component has static values (values, json) or custom values, returns an array of them
+   * @returns {Array&lt;*&gt;|undefiened}
+   */
+  getOptionsValues() {
+    let rawItems = [];
+    switch (this.component.dataSrc) {
+      case &apos;values&apos;:
+        rawItems = this.component.data.values;
+        break;
+      case &apos;json&apos;:
+        rawItems = this.component.data.json;
+        break;
+      case &apos;custom&apos;:
+        rawItems = this.getCustomItems();
+        break;
+    }
+
+    if (typeof rawItems === &apos;string&apos;) {
+      try {
+        rawItems = JSON.parse(rawItems);
+      }
+      catch (err) {
+        console.warn(err.message);
+        rawItems = [];
+      }
+    }
+
+    if (!Array.isArray(rawItems)) {
+      return;
+    }
+
+    return rawItems.map((item) =&gt; this.getOptionValue(this.itemValue(item)));
   }
 
   /**

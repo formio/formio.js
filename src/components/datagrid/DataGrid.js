@@ -1,8 +1,12 @@
 import _ from 'lodash';
-// Import from "dist" because it would require and "global" would not be defined in Angular apps.
-import dragula from 'dragula/dist/dragula';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep } from '../../utils/utils';
+
+let dragula;
+if (typeof window !== 'undefined') {
+  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
+  dragula = require('dragula/dist/dragula');
+}
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -31,6 +35,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   constructor(...args) {
     super(...args);
     this.type = 'datagrid';
+    this.tabIndex = 0;
   }
 
   init() {
@@ -231,6 +236,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
+    const colWidth = Math.floor(12 / (columns.length + 1)).toString();
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
@@ -249,9 +255,11 @@ export default class DataGridComponent extends NestedArrayComponent {
       allowReorder: this.allowReorder,
       builder: this.builderMode,
       canAddColumn: this.canAddColumn,
+      tabIndex: this.tabIndex,
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
+      colWidth
     }));
   }
 
@@ -293,9 +301,11 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
-        moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
-      }).on('drop', this.onReorder.bind(this));
+      if (dragula) {
+        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+          moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
+        }).on('drop', this.onReorder.bind(this));
+      }
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
@@ -381,9 +391,13 @@ export default class DataGridComponent extends NestedArrayComponent {
   removeRow(index) {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
-    _.each(row, (component) => this.removeComponent(component));
+    this.removeRowComponents(row);
     this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
+  }
+
+  removeRowComponents(row) {
+    _.each(row, (component) => this.removeComponent(component));
   }
 
   getRowValues() {
@@ -396,12 +410,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     });
   }
 
-  createRows(init) {
+  createRows(init, rebuild) {
     let added = false;
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) => {
-      if (this.rows[index]) {
+      if (!rebuild && this.rows[index]) {
         this.setRowComponentsData(index, row);
       }
       else {
@@ -410,7 +424,13 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
     });
     // Delete any extra rows.
-    const removed = !!this.rows.splice(rowValues.length).length;
+    const removedRows = this.rows.splice(rowValues.length);
+    const removed = !!removedRows.length;
+    // Delete components of extra rows (to make sure that this.components contain only components of exisiting rows)
+    if (removed) {
+      removedRows.forEach(row => this.removeRowComponents(row));
+    }
+
     if (!init && (added || removed)) {
       this.redraw();
     }
@@ -419,17 +439,32 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   createRowComponents(row, rowIndex) {
     const components = {};
+    this.tabIndex = 0;
     this.component.components.map((col, colIndex) => {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      if (col.id) {
+
+      let columnComponent;
+
+      if (this.builderMode) {
         col.id = col.id + rowIndex;
+        columnComponent = col;
       }
-      const component = this.createComponent(col, options, row);
+      else {
+        columnComponent = { ...col, id: (col.id + rowIndex) };
+      }
+
+      const component = this.createComponent(columnComponent, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
+      if (
+        columnComponent.tabindex &&
+        parseInt(columnComponent.tabindex) > this.tabIndex
+      ) {
+        this.tabIndex = parseInt(columnComponent.tabindex);
+      }
       components[col.key] = component;
     });
     return components;
@@ -491,15 +526,16 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   checkComponentConditions(data, flags, row) {
+    const isVisible = this.visible;
     // If table isn't visible, don't bother calculating columns.
     if (!super.checkComponentConditions(data, flags, row)) {
       return false;
     }
 
     const { rebuild, show } = this.checkColumns(data, flags);
-    // If a rebuild is needed, then rebuild the table.
-    if (rebuild) {
-      this.redraw();
+    // Check if a rebuild is needed or the visibility changes.
+    if (rebuild || !isVisible) {
+      this.createRows(false, rebuild);
     }
 
     // Return if this table should show.

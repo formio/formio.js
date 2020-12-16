@@ -14,6 +14,7 @@ import {
   unescapeHTML,
   getStringFromComponentPath,
   searchComponents,
+  convertStringToHTMLElement
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -644,7 +645,11 @@ export default class Webform extends NestedDataComponent {
       }
 
       // Create the form.
-      this._form = _.cloneDeep(form);
+      this._form = flags?.keepAsReference ? form : _.cloneDeep(form);
+
+      if (this.onSetForm) {
+        this.onSetForm(this._form, form);
+      }
     }
     catch (err) {
       console.warn(err);
@@ -1081,16 +1086,17 @@ export default class Webform extends NestedDataComponent {
       }
     }
     if (message) {
-      this.alert = this.ce('div', {
+      const attrs = {
         class: (options && options.classes) || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-      });
-      if (message instanceof HTMLElement) {
-        this.appendTo(message, this.alert);
-      }
-      else {
-        this.setContent(this.alert, message);
-      }
+      };
+
+      const templateOptions = {
+        message: message instanceof HTMLElement ? message.outerHTML : message,
+        attrs: attrs
+      };
+
+      this.alert = convertStringToHTMLElement(this.renderTemplate('alert', templateOptions),`#${attrs.id}`);
     }
     if (!this.alert) {
       return;
@@ -1180,51 +1186,39 @@ export default class Webform extends NestedDataComponent {
       });
     });
 
-    const message = document.createDocumentFragment();
-    const p = this.ce('p');
-    this.setContent(p, this.t('error'));
-    const ul = this.ce('ul');
+    const displayedErrors = [];
+
     errors.forEach(err => {
       if (err) {
         const createListItem = (message, index) => {
-          const params = {
-            ref: 'errorRef',
-            tabIndex: 0,
-            'aria-label': `${message}. Click to navigate to the field with following error.`
-          };
-          const li = this.ce('li', params);
-          const span = this.ce('span');
-          li.style.cursor = 'pointer';
-
-          this.setContent(span, unescapeHTML(message));
-          this.appendTo(span, li);
-
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
-          if (keyOrPath) {
-            const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
-            li.dataset.componentKey = formattedKeyOrPath;
-          }
+          const formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
 
-          this.appendTo(li, ul);
+          return {
+            message: unescapeHTML(message),
+            keyOrPath: formattedKeyOrPath
+          };
         };
 
         if (err.messages && err.messages.length) {
           const { component } = err;
-          err.messages.forEach(({ message }, index) => {
-            const text = this.t('alertMessage', { label: this.t(component.label), message });
-            createListItem(text, index);
+          err.messages.forEach(({ message, context }, index) => {
+            const text = context?.hasLabel ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+            displayedErrors.push(createListItem(text, index));
           });
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || '' : err;
-          createListItem(message);
+          displayedErrors.push(createListItem(message));
         }
       }
     });
-    p.appendChild(ul);
-    message.appendChild(p);
-    this.setAlert('danger', message);
+
+    const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
+
+    this.setAlert('danger', errorsList);
+
     if (triggerEvent) {
       this.emit('error', errors);
     }
@@ -1280,7 +1274,7 @@ export default class Webform extends NestedDataComponent {
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
-      this.emit('change', { isValid: true });
+      this.emit('change', { isValid: true }, { silent: true });
       return false;
     }
 

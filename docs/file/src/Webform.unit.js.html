@@ -138,7 +138,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -216,10 +218,34 @@ import disableSubmitButton from &apos;../test/forms/disableSubmitButton&apos;;
 import formWithAddressComponent from &apos;../test/forms/formWithAddressComponent&apos;;
 import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&apos;;
 import nestedFormInsideDataGrid from &apos;../test/forms/dataGrid-nestedForm&apos;;
+import formWithDataGrid from &apos;../test/forms/formWithDataGrid&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should remove dataGrid extra rows and components after setting value with less row number&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithDG = new Webform(formElement);
+
+    formWithDG.setForm(formWithDataGrid.form).then(() =&gt; {
+    formWithDG.setSubmission(formWithDataGrid.submission3rows);
+
+      setTimeout(() =&gt; {
+        assert.equal(formWithDG.components[0].rows.length, 3);
+        assert.equal(formWithDG.components[0].components.length, 3);
+
+        formWithDG.setSubmission(formWithDataGrid.submission1row);
+
+        setTimeout(() =&gt; {
+          assert.equal(formWithDG.components[0].rows.length, 1);
+          assert.equal(formWithDG.components[0].components.length, 1);
+
+          done();
+        }, 200);
+      }, 100);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should not delete/change date value in dataGrid after adding new row&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
@@ -371,6 +397,7 @@ describe(&apos;Webform tests&apos;, function() {
    const formWithNestedDraftModals = new Webform(formElement);
 
    formWithNestedDraftModals.setForm(formWithEditGridAndNestedDraftModalRow).then(() =&gt; {
+     const editGrid = formWithNestedDraftModals.getComponent(&apos;editGrid&apos;);
      const clickEvent = new Event(&apos;click&apos;);
      const inputEvent = new Event(&apos;input&apos;);
 
@@ -379,7 +406,7 @@ describe(&apos;Webform tests&apos;, function() {
      addRowBtn.dispatchEvent(clickEvent);
 
      setTimeout(() =&gt; {
-       const rowModal = document.querySelector(&apos;.formio-dialog-content&apos;);
+       const rowModal = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
        //checking if row modal was openned
        assert.equal(!!rowModal, true);
 
@@ -396,17 +423,17 @@ describe(&apos;Webform tests&apos;, function() {
          //clicking save button to save row draft
          saveModalBtn.dispatchEvent(clickEvent);
 
-         setTimeout(() =&gt; {
+        setTimeout(() =&gt; {
           const editGridRows = formWithNestedDraftModals.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;);
           //checking if the editGrid row was created
           assert.equal(editGridRows.length, 1);
 
-          const editRowBtn =  editGridRows[0].querySelector(&apos;.editRow&apos;);
+          const editRowBtn = editGridRows[0].querySelector(&apos;.editRow&apos;);
           //click the edit btn to open the row again
           editRowBtn.dispatchEvent(clickEvent);
 
           setTimeout(() =&gt; {
-            const rowModalForEditing = document.querySelector(&apos;.formio-dialog-content&apos;);
+            const rowModalForEditing = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
             const textFieldInputForEditing = rowModalForEditing.querySelector(&apos;[name=&quot;data[textField]&quot;]&apos;);
             textFieldInputForEditing.value = &apos;changed value&apos;;
             //changing textfield value
@@ -422,26 +449,27 @@ describe(&apos;Webform tests&apos;, function() {
               XCloseBtn.dispatchEvent(clickEvent);
 
                 setTimeout(() =&gt; {
-                  const dialogWindows = document.querySelectorAll(&apos;.formio-dialog-content&apos;);
+                  const dialogConfirmationWindows = document.querySelectorAll(`.editgrid-row-modal-confirmation-${editGrid.id}`);
                   //checking if confirmation dialog is openned
-                  assert.equal(dialogWindows.length, 2);
+                  assert.equal(dialogConfirmationWindows.length, 1);
 
-                  const dialogCancelBtn = document.querySelector(&apos;[ref=&quot;dialogCancelButton&quot;]&apos;);
+                  const dialogCancelBtn = dialogConfirmationWindows[0].querySelector(&apos;[ref=&quot;dialogCancelButton&quot;]&apos;);
                   //closing confirmation dialog
                   dialogCancelBtn.dispatchEvent(clickEvent);
 
                   setTimeout(() =&gt; {
-                    const dialogWindowsAfterClosingConfirmation = document.querySelectorAll(&apos;.formio-dialog-content&apos;);
+                    const confirmationWindows = document.querySelectorAll(`.editgrid-row-modal-confirmation-${editGrid.id}`);
                     //checking if confirmation dialig is closed
-                    assert.equal(dialogWindowsAfterClosingConfirmation.length, 1);
+                    assert.equal(confirmationWindows.length, 0);
 
-                    const overlay = document.querySelector(&apos;[ref=&quot;dialogOverlay&quot;]&apos;);
+                    const dialog = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
+                    const overlay = dialog.querySelector(&apos;[ref=&quot;dialogOverlay&quot;]&apos;);
                     //clocking model overlay to open confirmation dialog again
                     overlay.dispatchEvent(clickEvent);
 
                     setTimeout(() =&gt; {
-                      const dialogWindowsAfterClickingOverlay = document.querySelectorAll(&apos;.formio-dialog-content&apos;);
-                      assert.equal(dialogWindowsAfterClickingOverlay.length, 2);
+                      const confirmationDialogsAfterClickingOverlay = document.querySelectorAll(`.editgrid-row-modal-confirmation-${editGrid.id}`);
+                      assert.equal(confirmationDialogsAfterClickingOverlay.length, 1);
 
                       document.body.innerHTML = &apos;&apos;;
                       done();
@@ -450,10 +478,10 @@ describe(&apos;Webform tests&apos;, function() {
                  }, 150);
               }, 130);
             }, 110);
-         }, 90);
-       }, 70);
-     }, 50);
-   }).catch((err) =&gt; done(err));
+          }, 100);
+        }, 70);
+      }, 50);
+    }).catch((err) =&gt; done(err));
  });
 
   it(&apos;Should not show validation errors when saving invalid draft row in dataGrid&apos;, function(done) {
@@ -656,9 +684,13 @@ describe(&apos;Webform tests&apos;, function() {
       addRowBtn.dispatchEvent(clickEvent);
 
       setTimeout(() =&gt; {
-        const rowModal = document.querySelector(&apos;.formio-dialog-content&apos;);
+        const editGrid = formWithDraftModals.getComponent(&apos;editGrid&apos;);
+
+        assert.equal(editGrid.editRows.length, 1, &apos;Should create a row&apos;);
+
+        const rowModal = editGrid.editRows[0].dialog;
         //checking if row modal was openned
-        assert.equal(!!rowModal, true);
+        assert.equal(!!rowModal, true, &apos;Should open a modal window&apos;);
 
         const textFieldInput = rowModal.querySelector(&apos;[name=&quot;data[editGrid][0][textField]&quot;]&apos;);
         textFieldInput.value = &apos;test&apos;;
@@ -678,7 +710,7 @@ describe(&apos;Webform tests&apos;, function() {
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
 
-            const submitBtn =  formWithDraftModals.element.querySelector(&apos;[name=&quot;data[submit]&quot;&apos;);
+            const submitBtn = formWithDraftModals.element.querySelector(&apos;[name=&quot;data[submit]&quot;&apos;);
             //pushing submit button to trigger validation
             submitBtn.dispatchEvent(clickEvent);
 
@@ -697,11 +729,11 @@ describe(&apos;Webform tests&apos;, function() {
               rowEditBtn.dispatchEvent(clickEvent);
 
               setTimeout(() =&gt; {
-                const rowModalAfterValidation = document.querySelector(&apos;.formio-dialog-content&apos;);
+                const rowModalAfterValidation = editGrid.editRows[0].dialog;
 
                 const alertWithErrorText = rowModalAfterValidation.querySelector(&apos;.alert-danger&apos;);
                 //checking if alert with errors list appeared inside the modal
-                assert.equal(!!alertWithErrorText, true);
+                assert.equal(!!alertWithErrorText, true, &apos;Should show error alert&apos;);
 
                 const alertErrorMessages = rowModalAfterValidation.querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
                 assert.equal(alertErrorMessages.length, 1);
@@ -716,7 +748,7 @@ describe(&apos;Webform tests&apos;, function() {
                 numberInput.dispatchEvent(inputEvent);
 
                 setTimeout(() =&gt; {
-                  const rowModalWithValidFields = document.querySelector(&apos;.formio-dialog-content&apos;);
+                  const rowModalWithValidFields = document.querySelector(`.editgrid-row-modal-${editGrid.id}`);
                   const alertErrorMessagesAfterInputtingValidValues = rowModalWithValidFields.querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
                   assert.equal(alertErrorMessagesAfterInputtingValidValues.length, 0);
 
@@ -730,7 +762,10 @@ describe(&apos;Webform tests&apos;, function() {
                   validTextInput.dispatchEvent(inputEvent);
 
                   setTimeout(() =&gt; {
-                    const alertErrorMessagesAfterInputtingInvalidValues = document.querySelector(&apos;.formio-dialog-content&apos;).querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
+                    const alertErrorMessagesAfterInputtingInvalidValues = document
+                      .querySelector(`.editgrid-row-modal-${editGrid.id}`)
+                      .querySelectorAll(&apos;[ref=&quot;messageRef&quot;]&apos;);
+
                     assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
                     document.body.innerHTML = &apos;&apos;;
 
@@ -815,7 +850,7 @@ describe(&apos;Webform tests&apos;, function() {
       assert.equal(formWithPattern.element.querySelector(&apos;.formio-component-textField&apos;).querySelectorAll(&apos;.error&apos;).length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, &apos;Text Field is required&apos;);
-      assert.equal(formWithPattern.element.querySelector(&apos;[ref=&quot;errorRef&quot;]&apos;).textContent, &apos;Text Field: Text Field is required&apos;);
+      assert.equal(formWithPattern.element.querySelector(&apos;[ref=&quot;errorRef&quot;]&apos;).textContent, &apos;Text Field is required&apos;);
       done();
     }, 500);
     })

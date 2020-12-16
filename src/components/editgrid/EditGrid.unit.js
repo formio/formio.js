@@ -391,17 +391,19 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should set alert with validation errors on save', (done) => {
+    it('Should set alert with validation errors on save and update them', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {
         const editGrid = form.components[0];
+
         form.checkValidity(form._data, true, form._data);
         assert.equal(form.errors.length, 1);
         editGrid.addRow();
 
         setTimeout(() => {
-          const dialog = document.querySelector('[ref="dialogContents"]');
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
           const saveButton = dialog.querySelector('.btn.btn-primary');
           const clickEvent = new Event('click');
           saveButton.dispatchEvent(clickEvent);
@@ -409,10 +411,22 @@ describe('EditGrid Component', () => {
           setTimeout(() => {
             const alert = dialog.querySelector('.alert.alert-danger');
             assert.equal(form.errors.length, 3);
+
             const errorsLinks = alert.querySelectorAll('li');
             assert.equal(errorsLinks.length, 2);
-            document.body.innerHTML = '';
-            done();
+            const textField = editRow.components[0].getComponent('textField');
+            textField.setValue('new value');
+
+            setTimeout(() => {
+              const alertAfterFixingField = dialog.querySelector('.alert.alert-danger');
+              assert.equal(form.errors.length, 2);
+
+              const errorsLinksAfterFixingField = alertAfterFixingField.querySelectorAll('li');
+              assert.equal(errorsLinksAfterFixingField.length, 1);
+
+              document.body.innerHTML = '';
+              done();
+            }, 450);
           }, 100);
         }, 100);
       }).catch(done);
@@ -481,6 +495,111 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
+    it('Should not show row errors alerts if drafts enabled', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        editGrid.addRow();
+
+        setTimeout(() => {
+          editGrid.saveRow(0);
+
+          setTimeout(() => {
+            editGrid.editRow(0).then(() => {
+              const textField = form.getComponent(['editGrid', 0, 'form', 'textField']);
+
+              textField.setValue('someValue');
+
+              setTimeout(() => {
+                Harness.dispatchEvent('click', editGrid.editRows[0].dialog, `.editgrid-row-modal-${editGrid.id} [ref="dialogClose"]`);
+                setTimeout(() => {
+                  const dialog = editGrid.editRows[0].confirmationDialog;
+
+                  Harness.dispatchEvent('click', dialog, '[ref="dialogYesButton"]');
+
+                  setTimeout(() => {
+                    editGrid.editRow(0).then(() => {
+                      textField.setValue('someValue');
+
+                      setTimeout(() => {
+                        const errorAlert = editGrid.editRows[0].dialog.querySelector(`#error-list-${editGrid.id}`);
+                        const hasError = textField.className.includes('has-error');
+
+                        assert(!hasError, 'Should stay valid until form is submitted');
+                        assert.equal(errorAlert, null, 'Should be valid');
+
+                        done();
+                      }, 100);
+                    });
+                  }, 100);
+                }, 100);
+              }, 100);
+            });
+          }, 100);
+        }, 100);
+      }).catch(done)
+      .finally(() => {
+        ModalEditGrid.components[0].rowDrafts = false;
+      });
+    });
+
+    it('Should keep fields valid inside NestedForms id drafts are enabled', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+
+        form.checkValidity(form._data, true, form._data);
+        assert.equal(form.errors.length, 1);
+        editGrid.addRow();
+
+        setTimeout(() => {
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
+          const saveButton = dialog.querySelector('.btn.btn-primary');
+          const clickEvent = new Event('click');
+          saveButton.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const alert = dialog.querySelector('.alert.alert-danger');
+            assert.equal(form.errors.length, 1, 'Should not add new errors when drafts are enabled');
+            assert(!alert, 'Should not show an erros alert when drafts are enabled');
+
+            const textField = editRow.components[0].getComponent('textField');
+            editGrid.editRow(0);
+
+            setTimeout(() => {
+              textField.setValue('new value', { modified: true });
+
+              setTimeout(() => {
+                assert.equal(textField.dataValue, 'new value');
+                textField.setValue('', { modified: true });
+
+                setTimeout(() => {
+                  assert.equal(textField.dataValue, '');
+                  assert.equal(editGrid.editRows[0].errors.length, 0, 'Should not add error to components inside draft row');
+
+                  const textFieldComponent = textField.element;
+                  assert(!textFieldComponent.className.includes('has-error'), 'Should not add error class to component when drafts enabled');
+
+                  document.innerHTML = '';
+                  done();
+                }, 300);
+              }, 300);
+            }, 150);
+          }, 100);
+        }, 100);
+      }).catch(done)
+      .finally(() => {
+        delete ModalEditGrid.components[0].rowDrafts;
+      });
+    });
+
     // it('', (done) => {
     //   const formElement = document.createElement('div');
     //   const form = new Webform(formElement);
@@ -497,8 +616,6 @@ describe('EditGrid Component', () => {
       const component = form.getComponent(['editGrid']);
       component.addRow();
       setTimeout(() => {
-        // eslint-disable-next-line no-debugger
-        debugger;
         Harness.getInputValue(component, 'data[editGrid][0][checkbox]', true, 'checked');
         Harness.testComponentVisibility(component, '.formio-component-editGridChild', true);
         Harness.testComponentVisibility(component, '.formio-component-panelChild', true);
