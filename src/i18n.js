@@ -7,6 +7,9 @@ export default {
   resources: {
     en: {
       translation: {
+        unsavedRowsError: 'Please save all rows before proceeding.',
+        invalidRowsError: 'Please correct invalid rows before proceeding.',
+        invalidRowError: 'Invalid row. Please correct it or delete.',
         alertMessageWithLabel: '{{label}}: {{message}}',
         alertMessage: '{{message}}',
         complete: 'Submission Complete',
