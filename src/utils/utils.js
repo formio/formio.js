@@ -1215,11 +1215,9 @@ export function round(number, precision) {
  * @return {(number|null)}
  */
 export function getIEBrowserVersion() {
-  if (typeof document === 'undefined' || !('documentMode' in document)) {
-    return null;
-  }
+  const { ie, version } = getBrowserInfo();
 
-  return document['documentMode'];
+  return ie ? version : null;
 }
 
 /**
