@@ -14,7 +14,7 @@ import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 
-const isIEBrowser = FormioUtils.getIEBrowserVersion();
+const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
       ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
       : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
