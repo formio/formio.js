@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -177,10 +176,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/DataGrid.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-// Import from &quot;dist&quot; because it would require and &quot;global&quot; would not be defined in Angular apps.
-import dragula from &apos;dragula/dist/dragula&apos;;
 import NestedArrayComponent from &apos;../_classes/nestedarray/NestedArrayComponent&apos;;
 import { fastCloneDeep } from &apos;../../utils/utils&apos;;
+
+let dragula;
+if (typeof window !== &apos;undefined&apos;) {
+  // Import from &quot;dist&quot; because it would require and &quot;global&quot; would not be defined in Angular apps.
+  dragula = require(&apos;dragula/dist/dragula&apos;);
+}
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -209,6 +212,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   constructor(...args) {
     super(...args);
     this.type = &apos;datagrid&apos;;
+    this.tabIndex = 0;
   }
 
   init() {
@@ -409,6 +413,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
+    const colWidth = Math.floor(12 / (columns.length + 1)).toString();
     return super.render(this.renderTemplate(&apos;datagrid&apos;, {
       rows: this.getRows(),
       columns: columns,
@@ -427,9 +432,11 @@ export default class DataGridComponent extends NestedArrayComponent {
       allowReorder: this.allowReorder,
       builder: this.builderMode,
       canAddColumn: this.canAddColumn,
+      tabIndex: this.tabIndex,
       placeholder: this.renderTemplate(&apos;builderPlaceholder&apos;, {
         position: this.componentComponents.length,
       }),
+      colWidth
     }));
   }
 
@@ -471,9 +478,11 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
-        moves: (_draggedElement, _oldParent, clickedElement) =&gt; clickedElement.classList.contains(&apos;formio-drag-button&apos;)
-      }).on(&apos;drop&apos;, this.onReorder.bind(this));
+      if (dragula) {
+        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+          moves: (_draggedElement, _oldParent, clickedElement) =&gt; clickedElement.classList.contains(&apos;formio-drag-button&apos;)
+        }).on(&apos;drop&apos;, this.onReorder.bind(this));
+      }
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) =&gt; {
@@ -578,12 +587,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     });
   }
 
-  createRows(init) {
+  createRows(init, rebuild) {
     let added = false;
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) =&gt; {
-      if (this.rows[index]) {
+      if (!rebuild &amp;&amp; this.rows[index]) {
         this.setRowComponentsData(index, row);
       }
       else {
@@ -607,6 +616,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   createRowComponents(row, rowIndex) {
     const components = {};
+    this.tabIndex = 0;
     this.component.components.map((col, colIndex) =&gt; {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
@@ -626,6 +636,12 @@ export default class DataGridComponent extends NestedArrayComponent {
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
+      if (
+        columnComponent.tabindex &amp;&amp;
+        parseInt(columnComponent.tabindex) &gt; this.tabIndex
+      ) {
+        this.tabIndex = parseInt(columnComponent.tabindex);
+      }
       components[col.key] = component;
     });
     return components;
@@ -687,15 +703,16 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   checkComponentConditions(data, flags, row) {
+    const isVisible = this.visible;
     // If table isn&apos;t visible, don&apos;t bother calculating columns.
     if (!super.checkComponentConditions(data, flags, row)) {
       return false;
     }
 
     const { rebuild, show } = this.checkColumns(data, flags);
-    // If a rebuild is needed, then rebuild the table.
-    if (rebuild) {
-      this.redraw();
+    // Check if a rebuild is needed or the visibility changes.
+    if (rebuild || !isVisible) {
+      this.createRows(false, rebuild);
     }
 
     // Return if this table should show.

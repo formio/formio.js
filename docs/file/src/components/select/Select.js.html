@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -176,13 +175,17 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/select/Select.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Choices from &apos;../../utils/ChoicesWrapper&apos;;
-import _ from &apos;lodash&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { getRandomComponentId, boolValue } from &apos;../../utils/utils&apos;;
+
+let Choices;
+if (typeof window !== &apos;undefined&apos;) {
+  Choices = require(&apos;../../utils/ChoicesWrapper&apos;).default;
+}
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -276,6 +279,15 @@ export default class SelectComponent extends Field {
   }
 
   get dataReady() {
+    // If the root submission has been set, and we are still not attached, then assume
+    // that our data is ready.
+    if (
+      this.root &amp;&amp;
+      this.root.submissionSet &amp;&amp;
+      !this.attached
+    ) {
+      return NativePromise.resolve();
+    }
     return this.itemsLoaded;
   }
 
@@ -866,6 +878,10 @@ export default class SelectComponent extends Field {
         break;
       }
       case &apos;indexeddb&apos;: {
+        if (typeof window === &apos;undefined&apos;) {
+          return;
+        }
+
         if (!window.indexedDB) {
           window.alert(&quot;Your browser doesn&apos;t support current version of indexedDB&quot;);
         }
@@ -1094,26 +1110,29 @@ export default class SelectComponent extends Field {
     }
 
     const choicesOptions = this.choicesOptions();
-    this.choices = new Choices(input, choicesOptions);
 
-    if (this.selectOptions &amp;&amp; this.selectOptions.length) {
-      this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
-    }
+    if (Choices) {
+      this.choices = new Choices(input, choicesOptions);
 
-    if (this.component.multiple) {
-      this.focusableElement = this.choices.input.element;
-    }
-    else {
-      this.focusableElement = this.choices.containerInner.element;
-      this.choices.containerOuter.element.setAttribute(&apos;tabIndex&apos;, &apos;-1&apos;);
-      if (choicesOptions.searchEnabled) {
-        this.addEventListener(this.choices.containerOuter.element, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
+      if (this.selectOptions &amp;&amp; this.selectOptions.length) {
+        this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
       }
-    }
 
-    if (this.isInfiniteScrollProvided) {
-      this.scrollList = this.choices.choiceList.element;
-      this.addEventListener(this.scrollList, &apos;scroll&apos;, () =&gt; this.onScroll());
+      if (this.component.multiple) {
+        this.focusableElement = this.choices.input.element;
+      }
+      else {
+        this.focusableElement = this.choices.containerInner.element;
+        this.choices.containerOuter.element.setAttribute(&apos;tabIndex&apos;, &apos;-1&apos;);
+        if (choicesOptions.searchEnabled) {
+          this.addEventListener(this.choices.containerOuter.element, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
+        }
+      }
+
+      if (this.isInfiniteScrollProvided) {
+        this.scrollList = this.choices.choiceList.element;
+        this.addEventListener(this.scrollList, &apos;scroll&apos;, () =&gt; this.onScroll());
+      }
     }
 
     this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);
@@ -1144,14 +1163,17 @@ export default class SelectComponent extends Field {
       this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
       this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
-        this.choices.input.element.value = &apos;&apos;;
+        if (this.choices &amp;&amp; this.choices.input &amp;&amp; this.choices.input.element) {
+          this.choices.input.element.value = &apos;&apos;;
+        }
+
         this.updateItems(null, true);
       });
     }
 
     this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
 
-    if (choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
+    if (this.choices &amp;&amp; choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, &apos;removeItem&apos;, () =&gt; {

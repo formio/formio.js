@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -213,16 +212,41 @@ import {
   formWithCustomFormatDate
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
+import UpdateErrorClassesWidgets from &apos;../test/forms/updateErrorClasses-widgets&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
 import disableSubmitButton from &apos;../test/forms/disableSubmitButton&apos;;
 import formWithAddressComponent from &apos;../test/forms/formWithAddressComponent&apos;;
 import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&apos;;
 import nestedFormInsideDataGrid from &apos;../test/forms/dataGrid-nestedForm&apos;;
 import formWithDataGrid from &apos;../test/forms/formWithDataGrid&apos;;
+import formWithDataGridWithCondColumn from &apos;../test/forms/dataGridWithConditionalColumn&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should display dataGrid conditional column once the condition is met&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithCondDataGridColumn = new Webform(formElement);
+
+    formWithCondDataGridColumn.setForm(formWithDataGridWithCondColumn).then(() =&gt; {
+      const condDataGridField = formWithCondDataGridColumn.element.querySelector( &apos;[name=&quot;data[dataGrid][0][numberCond]&quot;]&apos;);
+      assert.equal(!!condDataGridField, false);
+
+      const textField = formWithCondDataGridColumn.element.querySelector( &apos;[name=&quot;data[textField]&quot;]&apos;);
+      textField.value = &apos;show&apos;;
+
+      const inputEvent = new Event(&apos;input&apos;);
+      textField.dispatchEvent(inputEvent);
+
+      setTimeout(() =&gt; {
+        const condDataGridFieldAfterFulfillingCond = formWithCondDataGridColumn.element.querySelector( &apos;[name=&quot;data[dataGrid][0][numberCond]&quot;]&apos;);
+        assert.equal(!!condDataGridFieldAfterFulfillingCond, true);
+
+        done();
+      }, 300);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should remove dataGrid extra rows and components after setting value with less row number&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
@@ -2261,6 +2285,65 @@ describe(&apos;Webform tests&apos;, function() {
         assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, &apos;Should not set to defaultValue after restore&apos;);
         done();
       }, 150);
+    }).catch(done);
+  });
+
+  it(&apos;Should add and clear input error classes correclty&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+
+    form.setForm(UpdateErrorClassesWidgets).then(() =&gt; {
+      const checkbox = form.getComponent(&apos;showDate&apos;);
+      checkbox.setValue(true);
+      setTimeout(() =&gt; {
+        const dateTimeComponent = form.getComponent(&apos;condtionalDate&apos;);
+        const dateComponentElement = dateTimeComponent.element;
+        assert.equal(!dateComponentElement.className.includes(&apos;formio-hidden&apos;), true, &apos;Should not be hidden&apos;);
+
+        form.submit();
+
+        setTimeout(() =&gt; {
+          const dateVisibleInput = dateComponentElement.querySelector(&apos;.input&apos;);
+          const flatpickerInput = dateComponentElement.querySelector(&apos;.flatpickr-input&apos;);
+
+          assert(dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Visible field should has invalid class&apos;);
+          assert(flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Flatpickr field should has invalid class as well&apos;);
+
+          dateTimeComponent.setValue(&apos;2020-12-09T00:00:00&apos;);
+
+          setTimeout(() =&gt; {
+            assert.equal(dateTimeComponent.dataValue, &apos;2020-12-09T00:00:00&apos;, &apos;Should set value&apos;);
+            assert(!dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed&apos;);
+            assert(!flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed from flatpickr field as well&apos;);
+
+            checkbox.setValue(false);
+
+            setTimeout(() =&gt; {
+              const dateComponentElement = dateTimeComponent.element;
+              assert.equal(dateComponentElement.className.includes(&apos;formio-hidden&apos;), true, &apos;Should be hidden&apos;);
+              checkbox.setValue(true);
+
+              setTimeout(() =&gt; {
+                const dateComponentElement = dateTimeComponent.element;
+                assert.equal(!dateComponentElement.className.includes(&apos;formio-hidden&apos;), true, &apos;Should be visible&apos;);
+                const dateVisibleInput = dateComponentElement.querySelector(&apos;.input:not([type=&quot;hidden&quot;]&apos;);
+                const flatpickerInput = dateComponentElement.querySelector(&apos;.flatpickr-input&apos;);
+
+                assert(dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Visible field should has invalid class&apos;);
+                assert(flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Flatpickr field should has invalid class as well&apos;);
+
+                dateTimeComponent.setValue(&apos;2020-10-19T00:00:00&apos;);
+                setTimeout(() =&gt; {
+                  assert.equal(dateTimeComponent.dataValue, &apos;2020-10-19T00:00:00&apos;, &apos;Should set value&apos;);
+                  assert(!dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed&apos;);
+                  assert(!flatpickerInput.className.includes(&apos;is-invalid&apos;), &apos;Invalid class should be removed from flatpickr field as well&apos;);
+                  done();
+                }, 300);
+              }, 400);
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 350);
     }).catch(done);
   });
 

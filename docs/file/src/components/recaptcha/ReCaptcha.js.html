@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -254,8 +253,12 @@ export default class ReCaptchaComponent extends Component {
                 .then((token) =&gt; {
                   return this.sendVerificationRequest(token);
                 })
-                .then(verificationResult =&gt; {
-                  this.setValue(verificationResult);
+                .then(({ verificationResult, token }) =&gt; {
+                  this.setValue({
+                    ...verificationResult,
+                    token,
+                  });
+
                   return resolve(verificationResult);
                 });
             });
@@ -276,7 +279,32 @@ export default class ReCaptchaComponent extends Component {
   }
 
   sendVerificationRequest(token) {
-    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`);
+    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)
+      .then((verificationResult) =&gt; ({ verificationResult, token }));
+  }
+
+  checkComponentValidity(data, dirty, row, options = {}) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    const { async = false } = options;
+
+    // Verification could be async only
+    if (!async) {
+      return super.checkComponentValidity(data, dirty, row, options);
+    }
+
+    const componentData = row[this.component.key];
+    if (!componentData || !componentData.token) {
+      this.setCustomValidity(&apos;ReCaptcha: Token is not specified in submission&apos;);
+      return Promise.resolve(false);
+    }
+
+    return this.hook(&apos;validateReCaptcha&apos;, componentData.token, () =&gt; Promise.resolve(true))
+      .then((success) =&gt; success)
+      .catch((err) =&gt; {
+        this.setCustomValidity(err.message || err);
+        return false;
+      });
   }
 
   setValue(value) {

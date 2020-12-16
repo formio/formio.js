@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -249,6 +248,20 @@ export default [
     tooltip: &apos;An input mask helps the user with input by ensuring a predefined format.&lt;br&gt;&lt;br&gt;9: numeric&lt;br&gt;a: alphabetical&lt;br&gt;*: alphanumeric&lt;br&gt;&lt;br&gt;Example telephone mask: (999) 999-9999&lt;br&gt;&lt;br&gt;See the &lt;a target=\&apos;_blank\&apos; href=\&apos;https://github.com/RobinHerbots/jquery.inputmask\&apos;&gt;jquery.inputmask documentation&lt;/a&gt; for more information.&lt;/a&gt;&apos;,
     customConditional(context) {
       return !context.data.allowMultipleMasks;
+    }
+  },
+  {
+    weight: 411,
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;inputMaskPlaceholderChar&apos;,
+    label: &apos;Input Mask Placeholder Char&apos;,
+    tooltip: &apos;You can specify a char which will be used as a placeholder in the field. &lt;br/&gt; E.g., &quot;\u02cd&quot; &lt;br/&gt; Make note that placeholder char will be replaced by a space if it is used inside the mask&apos;,
+    validation: {
+      maxLength: 1
+    },
+    customConditional(context) {
+      return context.data.inputMask;
     }
   },
   {

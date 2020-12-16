@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -569,7 +568,7 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       }).catch(done);
     });
 
-    it(&apos;Should set alert with validation errors on save&apos;, (done) =&gt; {
+    it(&apos;Should set alert with validation errors on save and update them&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() =&gt; {
@@ -580,7 +579,8 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
         editGrid.addRow();
 
         setTimeout(() =&gt; {
-          const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
           const saveButton = dialog.querySelector(&apos;.btn.btn-primary&apos;);
           const clickEvent = new Event(&apos;click&apos;);
           saveButton.dispatchEvent(clickEvent);
@@ -588,10 +588,22 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
           setTimeout(() =&gt; {
             const alert = dialog.querySelector(&apos;.alert.alert-danger&apos;);
             assert.equal(form.errors.length, 3);
+
             const errorsLinks = alert.querySelectorAll(&apos;li&apos;);
             assert.equal(errorsLinks.length, 2);
-            document.body.innerHTML = &apos;&apos;;
-            done();
+            const textField = editRow.components[0].getComponent(&apos;textField&apos;);
+            textField.setValue(&apos;new value&apos;);
+
+            setTimeout(() =&gt; {
+              const alertAfterFixingField = dialog.querySelector(&apos;.alert.alert-danger&apos;);
+              assert.equal(form.errors.length, 2);
+
+              const errorsLinksAfterFixingField = alertAfterFixingField.querySelectorAll(&apos;li&apos;);
+              assert.equal(errorsLinksAfterFixingField.length, 1);
+
+              document.body.innerHTML = &apos;&apos;;
+              done();
+            }, 450);
           }, 100);
         }, 100);
       }).catch(done);
@@ -691,7 +703,11 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
 
                       setTimeout(() =&gt; {
                         const errorAlert = editGrid.editRows[0].dialog.querySelector(`#error-list-${editGrid.id}`);
+                        const hasError = textField.className.includes(&apos;has-error&apos;);
+
+                        assert(!hasError, &apos;Should stay valid until form is submitted&apos;);
                         assert.equal(errorAlert, null, &apos;Should be valid&apos;);
+
                         done();
                       }, 100);
                     });
@@ -704,6 +720,60 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       }).catch(done)
       .finally(() =&gt; {
         ModalEditGrid.components[0].rowDrafts = false;
+      });
+    });
+
+    it(&apos;Should keep fields valid inside NestedForms id drafts are enabled&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() =&gt; {
+        const editGrid = form.components[0];
+
+        form.checkValidity(form._data, true, form._data);
+        assert.equal(form.errors.length, 1);
+        editGrid.addRow();
+
+        setTimeout(() =&gt; {
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
+          const saveButton = dialog.querySelector(&apos;.btn.btn-primary&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+          saveButton.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            const alert = dialog.querySelector(&apos;.alert.alert-danger&apos;);
+            assert.equal(form.errors.length, 1, &apos;Should not add new errors when drafts are enabled&apos;);
+            assert(!alert, &apos;Should not show an erros alert when drafts are enabled&apos;);
+
+            const textField = editRow.components[0].getComponent(&apos;textField&apos;);
+            editGrid.editRow(0);
+
+            setTimeout(() =&gt; {
+              textField.setValue(&apos;new value&apos;, { modified: true });
+
+              setTimeout(() =&gt; {
+                assert.equal(textField.dataValue, &apos;new value&apos;);
+                textField.setValue(&apos;&apos;, { modified: true });
+
+                setTimeout(() =&gt; {
+                  assert.equal(textField.dataValue, &apos;&apos;);
+                  assert.equal(editGrid.editRows[0].errors.length, 0, &apos;Should not add error to components inside draft row&apos;);
+
+                  const textFieldComponent = textField.element;
+                  assert(!textFieldComponent.className.includes(&apos;has-error&apos;), &apos;Should not add error class to component when drafts enabled&apos;);
+
+                  document.innerHTML = &apos;&apos;;
+                  done();
+                }, 300);
+              }, 300);
+            }, 150);
+          }, 100);
+        }, 100);
+      }).catch(done)
+      .finally(() =&gt; {
+        delete ModalEditGrid.components[0].rowDrafts;
       });
     });
 

@@ -135,7 +135,7 @@ dialog.fixed {
 .formio-component-tags tags {
   background-color: #fff; }
 
-.field-required:after {
+.field-required:after, .tab-error::after {
   content: " *";
   color: red; }
 
@@ -662,7 +662,6 @@ body.formio-dialog-open {
   display: block; }
 
 .formio-choices.form-group {
-  min-width: 200px;
   margin-bottom: 0; }
 
 .formio-choices[data-type=select-multiple] .form-control {
@@ -833,6 +832,9 @@ body.formio-dialog-open {
   text-align: right; }
   .table > tbody > tr > td.cell-align-right > div {
     margin-left: auto; }
+
+.table-responsive[ref=component] {
+  overflow-x: visible; }
 
 .formio-component-textarea .alert .ck-editor__editable {
   color: inherit; }
@@ -1045,6 +1047,9 @@ div[data-oembed-url] {
 
 .formio-form > div > nav > ul.pagination {
   flex-flow: wrap row; }
+
+.pac-container {
+  z-index: 11000; }
 
 .formbuilder {
   position: relative; }

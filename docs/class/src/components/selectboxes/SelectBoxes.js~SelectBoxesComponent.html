@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -365,6 +364,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-defaultValue">defaultValue</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-emptyValue">emptyValue</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -456,7 +483,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>, options: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1433,6 +1460,49 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-defaultValue">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    
+    <span class="code" data-ice="name">defaultValue</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber56">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-emptyValue">
     <span class="access" data-ice="access">public</span>
     
@@ -1572,11 +1642,11 @@
     
     
     
-    <span class="code" data-ice="name">checkComponentValidity</span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">checkComponentValidity</span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>, options: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber138">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber157">source</a></span></span>
     </span>
   </h3>
 
@@ -1609,6 +1679,12 @@
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">rowData</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">options</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -1659,7 +1735,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber72">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 
@@ -1714,7 +1790,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber128">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber147">source</a></span></span>
     </span>
   </h3>
 
@@ -1828,7 +1904,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber60">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber79">source</a></span></span>
     </span>
   </h3>
 
@@ -1900,7 +1976,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber89">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber108">source</a></span></span>
     </span>
   </h3>
 
@@ -1972,7 +2048,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber116">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/selectboxes/SelectBoxes.js.html#lineNumber135">source</a></span></span>
     </span>
   </h3>
 

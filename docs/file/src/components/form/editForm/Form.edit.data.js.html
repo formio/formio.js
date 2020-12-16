@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -186,7 +185,16 @@ export default [
   EditFormUtils.javaScriptValue(&apos;Calculated Value&apos;, &apos;calculateValue&apos;, &apos;calculateValue&apos;, 130,
     &apos;&lt;p&gt;&lt;h4&gt;Example:&lt;/h4&gt;&lt;pre&gt;value = data.a + data.b + data.c;&lt;/pre&gt;&lt;/p&gt;&apos;,
     &apos;&lt;p&gt;&lt;h4&gt;Example:&lt;/h4&gt;&lt;pre&gt;{&quot;+&quot;: [{&quot;var&quot;: &quot;data.a&quot;}, {&quot;var&quot;: &quot;data.b&quot;}, {&quot;var&quot;: &quot;data.c&quot;}]}&lt;/pre&gt;&lt;p&gt;&lt;a target=&quot;_blank&quot; href=&quot;http://formio.github.io/formio.js/app/examples/calculated.html&quot;&gt;Click here for an example&lt;/a&gt;&lt;/p&gt;&apos;
-  )
+  ),
+  {
+    weight: 140,
+    type: &apos;checkbox&apos;,
+    label: &apos;Clear Value When Hidden&apos;,
+    key: &apos;clearOnHide&apos;,
+    defaultValue: true,
+    tooltip: &apos;When a field is hidden, clear the value.&apos;,
+    input: true
+  },
 ];
 /* eslint-enable max-len */
 </code></pre>

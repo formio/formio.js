@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -301,13 +300,17 @@ export default [
     },
   },
   {
-    type: &apos;textfield&apos;,
+    type: &apos;textarea&apos;,
     input: true,
-    key: &apos;providerOptions.params.region&apos;,
-    label: &apos;Region&apos;,
-    placeholder: &apos;Enter Region&apos;,
-    weight: 20,
-    tooltip: &apos;Specify Region for Google Maps APIs.&apos;,
+    key: &apos;providerOptions.params.autocompleteOptions&apos;,
+    label: &apos;Provider options&apos;,
+    placeholder: &apos;Enter provider options as JSON object&apos;,
+    defaultValue:{},
+    weight: 60,
+    rows: 5,
+    as: &apos;json&apos;,
+    editor: &apos;ace&apos;,
+    tooltip: &apos;Specify Google Maps Autocomplete options used for address searching as JSON object. Follow the &lt;a href =&quot;https://developers.google.com/maps/documentation/javascript/places-autocomplete&quot; target=&quot;_blank&quot;&gt;link&lt;/a&gt; for available options&apos;,
     conditional: {
       json: { &apos;===&apos;: [{ var: &apos;data.provider&apos; }, &apos;google&apos;] },
     },

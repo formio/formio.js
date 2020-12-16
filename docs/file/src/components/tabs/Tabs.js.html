@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -270,6 +269,7 @@ export default class TabsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.tabLinkKey]: &apos;multiple&apos;, [this.tabKey]: &apos;multiple&apos;, [this.tabLikey]: &apos;multiple&apos; });
+    [&apos;change&apos;, &apos;error&apos;].forEach(event =&gt; this.on(event, this.handleTabsValidation.bind(this)));
     const superAttach = super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) =&gt; {
       this.addEventListener(tabLink, &apos;click&apos;, (event) =&gt; {
@@ -338,6 +338,46 @@ export default class TabsComponent extends NestedComponent {
     if (tabIndex !== -1) {
       this.setTab(tabIndex);
     }
+  }
+
+  setErrorClasses(elements) {
+    elements.forEach((element) =&gt; {
+      this.addClass(element, &apos;is-invalid&apos;);
+      if (this.options.highlightErrors) {
+        this.addClass(element, &apos;tab-error&apos;);
+      }
+      else {
+        this.addClass(element, &apos;has-error&apos;);
+      }
+    });
+  }
+
+  clearErrorClasses(elements) {
+    elements.forEach((element) =&gt; {
+      this.removeClass(element, &apos;is-invalid&apos;);
+      this.removeClass(element, &apos;tab-error&apos;);
+      this.removeClass(element, &apos;has-error&apos;);
+    });
+  }
+
+  handleTabsValidation() {
+    if (!this.refs[this.tabLinkKey] || !this.refs[this.tabLinkKey].length || !this.tabs.length) {
+      return;
+    }
+
+    this.clearErrorClasses(this.refs[this.tabLinkKey]);
+
+    const invalidTabsIndexes = this.tabs.reduce((invalidTabs, tab, tabIndex) =&gt; {
+      const hasComponentWithError = tab.some(comp =&gt; !!comp.error);
+      return hasComponentWithError ? [...invalidTabs, tabIndex] : invalidTabs;
+    }, []);
+
+    if (!invalidTabsIndexes.length) {
+      return;
+    }
+
+    const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) =&gt; invalidTabsIndexes.includes(tabIndex));
+    this.setErrorClasses(invalidTabs);
   }
 }
 </code></pre>

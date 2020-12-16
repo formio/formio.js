@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -178,6 +177,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/time/Time.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import moment from &apos;moment&apos;;
 import TextFieldComponent from &apos;../textfield/TextField&apos;;
+import { getBrowserInfo } from &apos;../../utils/utils&apos;;
 
 const defaultDataFormat = &apos;HH:mm:ss&apos;;
 
@@ -195,9 +195,11 @@ export default class TimeComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-
+    const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();
     this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
-    this.component.inputType = this.component.inputType || &apos;time&apos;;
+    this.component.inputType = isEdgeBrowser &amp;&amp; edgeVersion &lt;= 18
+      ? &apos;text&apos;
+      : (this.component.inputType || &apos;time&apos;);
     this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
 

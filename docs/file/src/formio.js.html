@@ -131,7 +131,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -258,7 +257,7 @@ class Formio {
     else if (Formio.baseUrl) {
       this.base = Formio.baseUrl;
     }
-    else {
+    else if (typeof window !== &apos;undefined&apos;) {
       this.base = window.location.href.match(/http[s]?:\/\/api./)[0];
     }
 
@@ -951,7 +950,7 @@ class Formio {
       .then(() =&gt; getFormio().pluginGet(&apos;staticRequest&apos;, requestArgs)
         .then((result) =&gt; {
           if (isNil(result)) {
-            return getFormio().request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+            return getFormio().request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         }));
@@ -1712,8 +1711,12 @@ if (typeof window !== &apos;undefined&apos;) {
 
 // It makes sure that we use global Formio.
 function getFormio() {
-  if (typeof (window || global) === &apos;object&apos; &amp;&amp; typeof (window || global).Formio !== &apos;undefined&apos;) {
-    return (window || global).Formio;
+  if (typeof window === &apos;object&apos; &amp;&amp; typeof window.Formio !== &apos;undefined&apos;) {
+    return window.Formio;
+  }
+
+  if (typeof global === &apos;object&apos; &amp;&amp; typeof global.Formio !== &apos;undefined&apos;) {
+    return global.Formio;
   }
 
   return Formio;
