@@ -1215,11 +1215,65 @@ export function round(number, precision) {
  * @return {(number|null)}
  */
 export function getIEBrowserVersion() {
-  if (typeof document === 'undefined' || !('documentMode' in document)) {
-    return null;
+  const { ie, version } = getBrowserInfo();
+
+  return ie ? version : null;
+}
+
+/**
+ * Get browser name and version (modified from 'jquery-browser-plugin')
+ *
+ * @return {Object} -- {{browser name, version, isWebkit?}}
+ * Possible browser names: chrome, safari, ie, edge, opera, mozilla, yabrowser
+ */
+export function getBrowserInfo() {
+  const browser = {};
+
+  if (typeof window === 'undefined') {
+    return browser;
   }
 
-  return document['documentMode'];
+  const ua = window.navigator.userAgent.toLowerCase();
+  const match = /(edge|edg)\/([\w.]+)/.exec(ua) ||
+                /(opr)[/]([\w.]+)/.exec(ua) ||
+                /(yabrowser)[ /]([\w.]+)/.exec(ua) ||
+                /(chrome)[ /]([\w.]+)/.exec(ua) ||
+                /(iemobile)[/]([\w.]+)/.exec(ua) ||
+                /(version)(applewebkit)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+                /(webkit)[ /]([\w.]+).*(version)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+                /(webkit)[ /]([\w.]+)/.exec(ua) ||
+                /(opera)(?:.*version|)[ /]([\w.]+)/.exec(ua) ||
+                /(msie) ([\w.]+)/.exec(ua) ||
+                ua.indexOf('trident') >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
+                ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
+                [];
+  const matched = {
+    browser: match[5] || match[3] || match[1] || '',
+    version: match[4] || match[2] || '0'
+  };
+
+  if (matched.browser) {
+    browser[matched.browser] = true;
+    browser.version = parseInt(matched.version, 10);
+  }
+  // Chrome, Opera 15+, Safari and Yandex.Browser are webkit based browsers
+  if (browser.chrome || browser.opr || browser.safari || browser.edg || browser.yabrowser) {
+    browser.isWebkit = true;
+  }
+  // IE11 has a new token so we will assign it ie to avoid breaking changes
+  if (browser.rv || browser.iemobile) {
+    browser.ie = true;
+  }
+  // Edge has a new token since it became webkit based
+  if (browser.edg) {
+    browser.edge = true;
+  }
+  // Opera 15+ are identified as opr
+  if (browser.opr) {
+    browser.opera = true;
+  }
+
+  return browser;
 }
 
 export function getComponentPathWithoutIndicies(path = '') {

@@ -2,7 +2,7 @@
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import { uniqueName, getIEBrowserVersion } from '../../utils/utils';
+import { uniqueName, getBrowserInfo } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -187,8 +187,8 @@ export default class TextAreaComponent extends TextFieldComponent {
               dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
               const value = this.setConvertedValue(dataValue, index);
               const isReadOnly = this.options.readOnly || this.disabled;
-
-              if (getIEBrowserVersion()) {
+              // Use ckeditor 4 in IE browser
+              if (getBrowserInfo().ie) {
                 editor.on('instanceReady', () => {
                   editor.setReadOnly(isReadOnly);
                   editor.setData(value);
