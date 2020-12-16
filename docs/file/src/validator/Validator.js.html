@@ -978,9 +978,9 @@ class ValidationChecker {
     }
   }
 
-  validate(component, validatorName, value, data, index, row) {
+  validate(component, validatorName, value, data, index, row, conditionallyVisible) {
     // Skip validation for conditionally hidden components
-    if (!component.conditionallyVisible()) {
+    if (!conditionallyVisible) {
       return false;
     }
 
@@ -1052,6 +1052,7 @@ class ValidationChecker {
 
     const validateCustom     = _.get(component, &apos;component.validate.custom&apos;);
     const customErrorMessage = _.get(component, &apos;component.validate.customMessage&apos;);
+    const conditionallyVisible = component.conditionallyVisible();
 
     // Run primary validators
     const resultsOrPromises = _(component.validators).chain()
@@ -1068,7 +1069,7 @@ class ValidationChecker {
           };
         }
 
-        return _.map(values, (value, index) =&gt; this.validate(component, validatorName, value, data, index, row));
+        return _.map(values, (value, index) =&gt; this.validate(component, validatorName, value, data, index, row, conditionallyVisible));
       })
       .flatten()
       .value();
@@ -1076,11 +1077,11 @@ class ValidationChecker {
     // Run the &quot;unique&quot; pseudo-validator
     component.component.validate = component.component.validate || {};
     component.component.validate.unique = component.component.unique;
-    resultsOrPromises.push(this.validate(component, &apos;unique&apos;, component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, &apos;unique&apos;, component.validationValue, data, null, null, conditionallyVisible));
 
     // Run the &quot;multiple&quot; pseudo-validator
     component.component.validate.multiple = component.component.multiple;
-    resultsOrPromises.push(this.validate(component, &apos;multiple&apos;, component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, &apos;multiple&apos;, component.validationValue, data, null, null, conditionallyVisible));
 
     // Define how results should be formatted
     const formatResults = results =&gt; {

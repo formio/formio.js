@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.2
+### Fixed
+ - FJS-1192: fixed excessive calls of conditional logic on change event
+
 ## 4.8.1
 ### Fixed
  - Issue where regular promises were used in new address component and was breaking Angular 7 builds.
