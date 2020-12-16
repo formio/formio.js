@@ -10,11 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - WebFormBuilder Search Enhancements
  - FJS-1175 [feat]: adds an ability to NestedForm to use original revision for submissions viewing
  - Adds an ability to upload images from CKEditor to storage providers
+ - FIO-945: added possibility to translate editGrid errors
 
 #### Changed
  - FOR-2419: Changed the logic of filtering and added searching by existing resource
  - Style button to delete data in confirmation dialog as btn-danger
  - FMG-109 | Change OnHover cursor style to the Hand pointer for the Wizard navigation buttons
+ - Convert lodash to object in evalContext 
+ - FMG-127: remove redundant tooltips for the description and tooltip fields
+ - Allow multiple plugins to provide global options
 
 #### Fixed
  - FOR-2874: Added recaptcha async validation.
@@ -33,6 +37,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FMG-57: ‘Paste below’ button shows all the time, even though the component hasn’t been copied
  - Fixed an issue where form properties of WizardBuilder and corresponding Webform are different
  - FJS-1488: Fixing issue where setting tabindex on components inside datagrid does not also apply to remove row and add another buttons.
+ - FJS-1272: Fixes errors when add a placeholder char to a text mask
+ - UIP-271: edge time component
+ - Fixing issues where custom builder sidebars would crash and cause errors
 
 ### 4.12.2-rc.5
 #### Fixed
