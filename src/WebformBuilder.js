@@ -966,7 +966,7 @@ export default class WebformBuilder extends Component {
         (Array.isArray(component.columns) && component.columns.length)
       );
 
-    if (this.options.askForComponentsRemoval || removingComponentsGroup) {
+    if (this.options.alwaysConfirmComponentRemoval || removingComponentsGroup) {
       const message = removingComponentsGroup ? 'Removing this component will also remove all of its children. Are you sure you want to do this?'
         : 'Are you sure you want to remove this component?';
       remove = window.confirm(this.t(message));
