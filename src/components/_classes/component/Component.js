@@ -2227,7 +2227,9 @@ export default class Component extends Element {
 
     const checkMask = (value) => {
       if (typeof value === 'string') {
-        value = conformToMask(value, this.defaultMask).conformedValue;
+        const placeholderChar = this.placeholderChar;
+
+        value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
         if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
           value = '';
         }
@@ -2783,7 +2785,7 @@ export default class Component extends Element {
     }
 
     inputRefs.forEach((input) => {
-      if (input.widget && input.widget.setErrorClasses) {
+      if (input?.widget && input.widget.setErrorClasses) {
         input.widget.setErrorClasses(hasErrors);
       }
     });

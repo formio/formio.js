@@ -50,7 +50,6 @@ export default class Element {
     });
 
     this.defaultMask = null;
-
     /**
      * Conditional to show or hide helplinks in editForm
      *
@@ -347,7 +346,11 @@ export default class Element {
    * @returns {string} - The placeholder that will exist within the input as they type.
    */
   maskPlaceholder(mask) {
-    return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
+    return mask.map((char) => (char instanceof RegExp) ? this.placeholderChar : char).join('');
+  }
+
+  get placeholderChar() {
+    return this.component?.inputMaskPlaceholderChar || '_';
   }
 
   /**
@@ -355,12 +358,13 @@ export default class Element {
    *
    * @param {HTMLElement} input - The html input to apply the mask to.
    * @param {String} inputMask - The input mask to add to this input.
-   * @param {Boolean} placeholder - Set the mask placeholder on the input.
+   * @param {Boolean} usePlaceholder - Set the mask placeholder on the input.
    */
-  setInputMask(input, inputMask, placeholder) {
+  setInputMask(input, inputMask, usePlaceholder) {
     if (input && inputMask) {
-      const mask = FormioUtils.getInputMask(inputMask);
+      const mask = FormioUtils.getInputMask(inputMask, this.placeholderChar);
       this.defaultMask = mask;
+
       try {
         //destroy previous mask
         if (input.mask) {
@@ -368,7 +372,8 @@ export default class Element {
         }
         input.mask = maskInput({
           inputElement: input,
-          mask
+          mask,
+          placeholderChar: this.placeholderChar
         });
       }
       catch (e) {
@@ -379,7 +384,7 @@ export default class Element {
       if (mask.numeric) {
         input.setAttribute('pattern', '\\d*');
       }
-      if (placeholder) {
+      if (usePlaceholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
       }
     }

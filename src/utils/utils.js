@@ -756,9 +756,10 @@ export function convertFormatToMask(format) {
 /**
  * Returns an input mask that is compatible with the input mask library.
  * @param {string} mask - The Form.io input mask.
+ * @param {string} placeholderChar - Char which is used as a placeholder.
  * @returns {Array} - The input mask for the mask library.
  */
-export function getInputMask(mask) {
+export function getInputMask(mask, placeholderChar) {
   if (mask instanceof Array) {
     return mask;
   }
@@ -780,6 +781,11 @@ export function getInputMask(mask) {
       case '*':
         maskArray.numeric = false;
         maskArray.push(/[a-zA-Z0-9]/);
+        break;
+      // If char which is used inside mask placeholder was used in the mask, replace it with space to prevent errors
+      case placeholderChar:
+        maskArray.numeric = false;
+        maskArray.push(' ');
         break;
       default:
         maskArray.numeric = false;
