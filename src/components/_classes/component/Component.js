@@ -2739,7 +2739,7 @@ export default class Component extends Element {
     return isValid;
   }
 
-  checkModal(isValid, dirty) {
+  checkModal() {
     if (!this.component.modalEdit || !this.componentModal) {
       return;
     }
