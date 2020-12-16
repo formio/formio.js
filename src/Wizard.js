@@ -763,8 +763,11 @@ export default class Wizard extends Webform {
     this.setComponentSchema();
   }
 
-  pageFieldLogicHandler() {
-    this.pageFieldLogic(this.page);
+  setEditMode(submission) {
+    if (!this.editMode && submission._id && !this.options.readOnly) {
+      this.editMode = true;
+      this.redraw();
+    }
   }
 
   setValue(submission, flags = {}, ignoreEstablishment) {
@@ -779,12 +782,9 @@ export default class Wizard extends Webform {
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
-    this.pageFieldLogicHandler();
 
-    if (!this.editMode && submission._id && !this.options.readOnly) {
-      this.editMode = true;
-      this.redraw();
-    }
+    this.pageFieldLogic(this.page);
+    this.setEditMode(submission);
 
     return changed;
   }
