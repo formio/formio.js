@@ -783,12 +783,13 @@ describe('Formio.js Tests', () => {
           };
         }
         else if (fnName === 'uploadFile') {
+          const { storage, file, fileName, dir } = args[0];
           expectedArgs = {
-            provider: args[0],
+            provider: storage,
             method: 'upload',
-            file: args[1],
-            fileName: args[2],
-            dir: args[3]
+            file,
+            fileName,
+            dir
           };
         }
 
@@ -835,22 +836,22 @@ describe('Formio.js Tests', () => {
       {
         fnName: 'uploadFile',
         formUrl: 'https://api.localhost:3000/project/123/form/123',
-        args: [
-          's3',
-          'FILE',
-          'file.jpg',
-          'dir/'
-        ]
+        args: [{
+          storage: 's3',
+          file: 'FILE',
+          fileName: 'file.jpg',
+          dir: 'dir/'
+        }]
       },
       {
         fnName: 'uploadFile',
         formUrl: 'https://api.localhost:3000/project/123/form/123',
-        args: [
-          'dropbox',
-          'FILE',
-          'file.jpg',
-          'dir/'
-        ]
+        args: [{
+          storage: 'dropbox',
+          file: 'FILE',
+          fileName: 'file.jpg',
+          dir: 'dir/'
+        }]
       },
       {
         fnName: 'downloadFile',
