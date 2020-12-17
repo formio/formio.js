@@ -1413,8 +1413,9 @@ export default class SelectComponent extends Field {
     }
   }
 
-  validateValueAvailability(setting, value) {
-    if (!boolValue(setting) || !value) {
+  validateValueAvailability(setting, value, data, index, row, async) {
+    // If validation is not allowed or component does not have a value or it is not a server-side validation
+    if (!boolValue(setting) || !value || !async) {
       return true;
     }
 

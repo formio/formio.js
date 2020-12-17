@@ -118,14 +118,17 @@ export default class RadioComponent extends Field {
     return value;
   }
 
-  validateValueAvailability(setting, value) {
-    if (!boolValue(setting) || !value) {
+  validateValueAvailability(setting, value, data, index, row, async) {
+    // If validation is not allowed or component does not have a value or it is not a server-side validation
+    if (!boolValue(setting) || !value || !async) {
       return true;
     }
+
     const values = this.component.values;
     if (values) {
       return values.findIndex(({ value: optionValue }) => this.normalizeValue(optionValue) === value) !== -1;
     }
+
     return false;
   }
 
