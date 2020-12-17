@@ -261,6 +261,8 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const dataValue = this.dataValue || [];
     const headerTemplate = Evaluator.noeval ? templates.header : _.get(this.component, 'templates.header');
+    const t =this.t.bind(this);
+
     return super.render(children || this.renderTemplate('editgrid', {
       ref: {
         row: this.rowRef,
@@ -271,10 +273,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       header: this.renderString(headerTemplate, {
         components: this.component.components,
         value: dataValue,
+        t
       }),
       footer: this.renderString(_.get(this.component, 'templates.footer'), {
         components: this.component.components,
         value: dataValue,
+        t
       }),
       rows: this.editRows.map(this.renderRow.bind(this)),
       openRows: this.editRows.map((row) => this.isOpen(row)),
@@ -399,10 +403,11 @@ export default class EditGridComponent extends NestedArrayComponent {
             // If there is an html tag in view, don't allow it to be injected in template
             const htmlTagRegExp = new RegExp('<(.*?)>');
             return typeof view === 'string' && view.length && !instance.component?.template && htmlTagRegExp.test(view)
-              ? `<input type="text" value="${view.replace(/"/g, '&quot;')}" readonly/>`
-              : view;
+            ? `<input type="text" value="${view.replace(/"/g, '&quot;')}" readonly/>`
+            : view;
           },
           state: this.editRows[rowIndex].state,
+          t: this.t.bind(this)
         },
       );
     }

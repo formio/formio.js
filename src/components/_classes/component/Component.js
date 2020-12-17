@@ -871,7 +871,6 @@ export default class Component extends Element {
     if (!template) {
       return '';
     }
-    data.t = this.t.bind(this);
     // Interpolate the template and populate
     return this.interpolate(template, data);
   }
