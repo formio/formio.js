@@ -660,10 +660,9 @@ export default [
     type: 'checkbox',
     input: true,
     weight: 29,
-    key: 'allowCaching',
-    label: 'Enable to Store Request Result in the Cache',
-    defaultValue: true,
-    tooltip: 'When checked, the requests and its results will be stored in the cache and if the Select will try to make the request to the same URL with the same paremetrs, the cached data will be returned. It allows to increase performance, but if the remote source\'s data is changing quite often and you always need to keep it up-to-date, uncheck this option.',
+    key: 'ignoreCache',
+    label: 'Disables Storing Request Result in the Cache',
+    tooltip: 'Check it if you don\'t want the requests and its results to be stored in the cache. By default, it is stored and if the Select tries to make the request to the same URL with the same paremetrs, the cached data will be returned. It allows to increase performance, but if the remote source\'s data is changing quite often and you always need to keep it up-to-date, uncheck this option.',
     conditional: {
       json: { 'or': [
         { '===': [{ var: 'data.dataSrc' }, 'url'] },

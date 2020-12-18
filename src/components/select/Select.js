@@ -35,7 +35,7 @@ export default class SelectComponent extends Field {
       minSearch: 0,
       readOnlyValue: false,
       authenticate: false,
-      allowCaching: true,
+      ignoreCache: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
@@ -509,7 +509,7 @@ export default class SelectComponent extends Field {
     }
 
     // Set ignoreCache if it is
-    options.ignoreCache = !this.component.allowCaching;
+    options.ignoreCache = this.component.ignoreCache;
 
     // Make the request.
     options.header = headers;
