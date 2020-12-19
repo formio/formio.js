@@ -14,6 +14,7 @@ export default {
         alertMessage: '{{message}}',
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
+        errorListHotkey: 'Press Ctrl + Alt + X to go back to the error list.',
         errorsListNavigationMessage: 'Click to navigate to the field with following error.',
         submitError: 'Please check the form and correct all errors before submitting.',
         required: '{{field}} is required',
