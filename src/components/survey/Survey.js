@@ -19,7 +19,7 @@ export default class SurveyComponent extends Field {
       group: 'advanced',
       icon: 'list',
       weight: 110,
-      documentation: 'http://help.form.io/userguide/#survey',
+      documentation: '/userguide/#survey',
       schema: SurveyComponent.schema()
     };
   }

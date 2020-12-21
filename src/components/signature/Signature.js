@@ -24,7 +24,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: 'http://help.form.io/userguide/#signature',
+      documentation: '/userguide/#signature',
       schema: SignatureComponent.schema()
     };
   }

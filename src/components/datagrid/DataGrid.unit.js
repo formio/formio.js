@@ -9,41 +9,34 @@ import {
   comp2,
   comp3,
   comp4,
+  comp5,
   withDefValue,
   withRowGroupsAndDefValue,
 } from './fixtures';
 
 describe('DataGrid Component', () => {
-  it('Should not show alert message in modal edit and close modal window when clicking on modal overlay and value was not changed', (done) => {
-    Harness.testCreate(DataGridComponent, comp4).then((component) => {
-      const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
-      assert.equal(!!hiddenModalWindow, true);
-
-      const clickEvent = new Event('click');
-      const openModalElement = component.refs.openModal;
-
-      openModalElement.dispatchEvent(clickEvent);
-
+  it('Test modal edit confirmation dialog', (done) => {
+    Harness.testCreate(DataGridComponent, comp5).then((component) => {
+      component.componentModal.openModal();
+      const fakeEvent = {
+        preventDefault: () => {}
+      };
+      component.componentModal.showDialogListener(fakeEvent);
+      assert.equal(component.componentModal.isOpened, false, 'Should be closed without confirmation dialog since value was not changed');
       setTimeout(() => {
-        assert.equal(!!component.element.querySelector('.component-rendering-hidden'), false);
-
-        const clickEvent = new Event('click');
-        const modalOverlay = component.refs.modalOverlay;
-
-        modalOverlay.dispatchEvent(clickEvent);
-
+        component.componentModal.openModal();
+        Harness.setInputValue(component, 'data[dataGrid][0][textField]', 'My Text');
         setTimeout(() => {
-          const dialogWindowHeader = document.querySelector('[ref="dialogHeader"]');
-          //checking if there is dialog window
-          assert.equal( !!dialogWindowHeader, false);
-
-          const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
-          //checking if the modal window was closed
-          assert.equal(!!hiddenModalWindow, true);
+          component.componentModal.showDialogListener(fakeEvent);
+          assert.equal(component.componentModal.isValueChanged(), true, 'Should return true since value was modified');
+          assert.equal(component.componentModal.isOpened, true, 'Should stay opened and wait until user confirm closing without changes saving');
+          assert(component.componentModal.dialog, 'Should open confirmation dialog');
+          component.componentModal.closeDialog(fakeEvent);
+          component.destroy();
           done();
-        }, 300);
-      }, 200);
-    });
+        }, 100);
+      }, 100);
+    }).catch(done);
   });
 
   it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed, 
@@ -68,7 +61,7 @@ describe('DataGrid Component', () => {
         dataGridInputField.dispatchEvent(inputEvent);
 
         setTimeout(() => {
-          assert.equal( component.element.querySelector('[name="data[dataGrid][0][number]"]').value, '55555');
+          assert.equal(component.element.querySelector('[name="data[dataGrid][0][number]"]').value, '55555');
 
           const clickEvent = new Event('click');
           const modalOverlay = component.refs.modalOverlay;
@@ -76,8 +69,7 @@ describe('DataGrid Component', () => {
           modalOverlay.dispatchEvent(clickEvent);
 
           setTimeout(() => {
-            const dialogWindowHeader = document.querySelector('[ref="dialogHeader"]');
-            assert.equal( !!dialogWindowHeader, true);
+            assert.equal(!!component.componentModal.dialog, true);
 
             const clickEvent = new Event('click');
             const btnForCleaningValues = document.querySelector('[ref="dialogYesButton"]');

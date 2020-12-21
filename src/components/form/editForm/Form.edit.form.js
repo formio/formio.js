@@ -31,6 +31,14 @@ export default [
   {
     type: 'checkbox',
     input: true,
+    weight: 19,
+    key: 'useOriginalRevision',
+    label: 'Use Original Revision while Submissions Viewing',
+    tooltip: 'Using this option will make form load the original revision (the one which was used to make a submission) when viewing a submission.'
+  },
+  {
+    type: 'checkbox',
+    input: true,
     weight: 20,
     key: 'reference',
     label: 'Save as reference',

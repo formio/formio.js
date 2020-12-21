@@ -68,12 +68,14 @@
 
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-content,
-.formbuilder .formio-component-form {
+.formbuilder .formio-component-form,
+.formbuilder .formio-component-datasource {
   border: 2px dashed #ddd;
 }
 
 .formbuilder .formio-component-form,
-.formbuilder .formio-component-hidden {
+.formbuilder .formio-component-hidden,
+.formbuilder .formio-component-datasource {
   height: 3em;
   text-align: center;
   color: #aaa;
@@ -122,12 +124,12 @@
   display: inherit;
 }
 
-.component-settings-button-paste {
+.component-btn-group .btn.component-settings-button-paste {
   display: none;
 }
 
 .builder-paste-mode .component-settings-button-paste {
-  display: inherit;
+  display: inherit !important;
 }
 
 .wizard-page-label {
@@ -211,10 +213,10 @@
 }
 
 .progress.pdf-progress {
-  height: 1rem;
+  height: 2rem;
 }
 
 .progress.pdf-progress .progress-bar {
-  font-size: 0.7rem;
-  line-height: 1rem;
+  font-size: 1rem;
+  line-height: 2rem;
 }

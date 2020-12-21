@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Input from '../_classes/input/Input';
 import FormioUtils from '../../utils';
-import Widgets from '../../widgets';
+
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -47,7 +47,7 @@ export default class DateTimeComponent extends Input {
       title: 'Date / Time',
       group: 'advanced',
       icon: 'calendar',
-      documentation: 'http://help.form.io/userguide/#datetime',
+      documentation: '/userguide/#datetime',
       weight: 40,
       schema: DateTimeComponent.schema()
     };
@@ -122,11 +122,6 @@ export default class DateTimeComponent extends Input {
     return input;
   }
 
-  get widget() {
-    const widget = this.component.widget ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
-    return widget;
-  }
-
   get defaultSchema() {
     return DateTimeComponent.schema();
   }
@@ -144,6 +139,10 @@ export default class DateTimeComponent extends Input {
     return '';
   }
 
+  get momentFormat() {
+    return FormioUtils.convertFormatToMoment(this.component.format);
+  }
+
   isEmpty(value = this.dataValue) {
     if (value && (value.toString() === 'Invalid Date')) {
       return true;
@@ -157,9 +156,8 @@ export default class DateTimeComponent extends Input {
   }
 
   isEqual(valueA, valueB = this.dataValue) {
-    const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
-      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);
+      || moment.utc(valueA).format(this.momentFormat) === moment.utc(valueB).format(this.momentFormat);
   }
 
   createWrapper() {
@@ -187,6 +185,7 @@ export default class DateTimeComponent extends Input {
   }
 
   getValueAsString(value) {
-    return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
+    const format = FormioUtils.convertFormatToMoment(this.component.format);
+    return (value ? moment(value).format(format) : value) || '';
   }
 }

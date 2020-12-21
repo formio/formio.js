@@ -2473,7 +2473,7 @@ dialog.fixed {
 .formio-component-tags tags {
   background-color: #fff; }
 
-.field-required:after {
+.field-required:after, .tab-error::after {
   content: " *";
   color: red; }
 
@@ -3171,8 +3171,14 @@ body.formio-dialog-open {
   .table > tbody > tr > td.cell-align-right > div {
     margin-left: auto; }
 
+.table-responsive[ref=component] {
+  overflow-x: visible; }
+
 .formio-component-textarea .alert .ck-editor__editable {
   color: inherit; }
+
+.formio-component-textarea .ck.ck-editor__editable .image .ck-progress-bar {
+  height: 4px; }
 
 div[data-oembed-url] {
   width: 100%; }
@@ -3202,7 +3208,8 @@ div[data-oembed-url] {
 
 .open-modal-button {
   width: 100%;
-  text-align: left; }
+  text-align: left;
+  white-space: normal; }
 
 .formio-component-modal-wrapper-signature .open-modal-button {
   text-align: center;
@@ -3308,6 +3315,18 @@ div[data-oembed-url] {
   border-left: 0;
   border-right: solid 5px #cccccc; }
 
+.formio-component-content .text-tiny {
+  font-size: 0.7em; }
+
+.formio-component-content .text-small {
+  font-size: 0.85em; }
+
+.formio-component-content .text-big {
+  font-size: 1.4em; }
+
+.formio-component-content .text-huge {
+  font-size: 1.8em; }
+
 .formio-component-address.formio-component-label-hidden > label.field-required {
   z-index: 1; }
   .formio-component-address.formio-component-label-hidden > label.field-required ~ .address-autocomplete-container .address-autocomplete-remove-value-icon {
@@ -3353,14 +3372,22 @@ div[data-oembed-url] {
   .formio-component-modal-wrapper .component-rendering-hidden {
     visibility: hidden; }
 
-div[read-only="true"] .formio-component-textarea div[ref="input"] {
+.formio-component-textarea div.formio-editor-read-only-content[ref="input"] {
   white-space: pre-wrap; }
 
 .formio-editor-read-only-content img {
   max-width: 100%; }
 
-.table-responsive[ref=component] {
-  overflow-x: visible; }
+.formio-component-textfield .pull-right:not(:last-child),
+.formio-component-textarea .pull-right:not(:last-child),
+.formio-component-password .pull-right:not(:last-child) {
+  padding-left: 12px; }
+
+.formio-form > div > nav > ul.pagination {
+  flex-flow: wrap row; }
+
+.pac-container {
+  z-index: 11000; }
 
 .formbuilder {
   position: relative; }
@@ -3419,11 +3446,13 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-content,
-.formbuilder .formio-component-form {
+.formbuilder .formio-component-form,
+.formbuilder .formio-component-datasource {
   border: 2px dashed #ddd; }
 
 .formbuilder .formio-component-form,
-.formbuilder .formio-component-hidden {
+.formbuilder .formio-component-hidden,
+.formbuilder .formio-component-datasource {
   height: 3em;
   text-align: center;
   color: #aaa;
@@ -3464,11 +3493,11 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
 .formio-drop-zone.enabled {
   display: inherit; }
 
-.component-settings-button-paste {
+.component-btn-group .btn.component-settings-button-paste {
   display: none; }
 
 .builder-paste-mode .component-settings-button-paste {
-  display: inherit; }
+  display: inherit !important; }
 
 .wizard-page-label {
   cursor: pointer;
@@ -3533,8 +3562,8 @@ div[read-only="true"] .formio-component-textarea div[ref="input"] {
   overflow-y: auto; }
 
 .progress.pdf-progress {
-  height: 1rem; }
+  height: 2rem; }
 
 .progress.pdf-progress .progress-bar {
-  font-size: 0.7rem;
-  line-height: 1rem; }
+  font-size: 1rem;
+  line-height: 2rem; }

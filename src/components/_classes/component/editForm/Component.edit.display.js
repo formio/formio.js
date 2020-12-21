@@ -99,6 +99,7 @@ export default [
     as: 'html',
     wysiwyg: {
       minLines: 3,
+      isUseWorkerDisabled: true,
     },
   },
   {
@@ -113,6 +114,7 @@ export default [
     as: 'html',
     wysiwyg: {
       minLines: 3,
+      isUseWorkerDisabled: true,
     },
   },
   {

@@ -111,6 +111,8 @@ export default class PDF extends Webform {
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
       // Post the form to the iframe
+      this.form.base = Formio.getBaseUrl();
+      this.form.projectUrl = Formio.getProjectUrl();
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
@@ -319,22 +321,24 @@ export default class PDF extends Webform {
 /**
  * Listen for window messages.
  */
-window.addEventListener('message', (event) => {
-  let eventData = null;
-  try {
-    eventData = JSON.parse(event.data);
-  }
-  catch (err) {
-    eventData = null;
-  }
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', (event) => {
+    let eventData = null;
+    try {
+      eventData = JSON.parse(event.data);
+    }
+    catch (err) {
+      eventData = null;
+    }
 
-  // If this form exists, then emit the event within this form.
-  if (
-    eventData &&
-    eventData.name &&
-    eventData.formId &&
-    Formio.forms.hasOwnProperty(eventData.formId)
-  ) {
-    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
-  }
-});
+    // If this form exists, then emit the event within this form.
+    if (
+      eventData &&
+      eventData.name &&
+      eventData.formId &&
+      Formio.forms.hasOwnProperty(eventData.formId)
+    ) {
+      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+    }
+  });
+}

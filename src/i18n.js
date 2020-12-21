@@ -7,9 +7,14 @@ export default {
   resources: {
     en: {
       translation: {
-        alertMessage: '{{label}}: {{message}}',
+        unsavedRowsError: 'Please save all rows before proceeding.',
+        invalidRowsError: 'Please correct invalid rows before proceeding.',
+        invalidRowError: 'Invalid row. Please correct it or delete.',
+        alertMessageWithLabel: '{{label}}: {{message}}',
+        alertMessage: '{{message}}',
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
+        errorsListNavigationMessage: 'Click to navigate to the field with following error.',
         submitError: 'Please check the form and correct all errors before submitting.',
         required: '{{field}} is required',
         unique: '{{field}} must be unique',
@@ -34,6 +39,7 @@ export default {
         invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
         invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
         mask: '{{field}} does not match the mask.',
+        valueIsNotAvailable: '{{ field }} is an invalid value.',
         stripe: '{{stripe}}',
         month: 'Month',
         day: 'Day',

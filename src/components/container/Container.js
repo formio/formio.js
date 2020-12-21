@@ -22,7 +22,7 @@ export default class ContainerComponent extends NestedDataComponent {
       title: 'Container',
       icon: 'folder-open',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#container',
+      documentation: '/userguide/#container',
       weight: 10,
       schema: ContainerComponent.schema()
     };
@@ -72,7 +72,7 @@ export default class ContainerComponent extends NestedDataComponent {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    components = components || this.getComponents();
+    components = components && _.isArray(components) ? components : this.getComponents();
 
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, this.dataValue) && valid;

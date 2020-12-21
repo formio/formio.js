@@ -64,44 +64,46 @@ Object.keys(templates).forEach(framework => {
 
   // Render components
   Object.keys(AllComponents).forEach(component => {
-    // Basic
-    fs.writeFileSync(`${dir}/component-${framework}-${component}.html`, renderComponent(AllComponents[component], {}, { template: framework }));
+    if (component !== 'componentmodal') {
+      // Basic
+      fs.writeFileSync(`${dir}/component-${framework}-${component}.html`, renderComponent(AllComponents[component], {}, { template: framework }));
 
-    // Required
-    fs.writeFileSync(`${dir}/component-${framework}-${component}-required.html`, renderComponent(AllComponents[component], {
-      validate: {
-        required: true
+      // Required
+      fs.writeFileSync(`${dir}/component-${framework}-${component}-required.html`, renderComponent(AllComponents[component], {
+        validate: {
+          required: true
+        }
+      }, {
+        template: framework,
+      }));
+
+      // Multiple
+      fs.writeFileSync(`${dir}/component-${framework}-${component}-multiple.html`, renderComponent(AllComponents[component], {
+        multiple: true
+      }, {
+        template: framework,
+      }));
+
+      // Values
+      if (fs.existsSync(`${componentDir}/${component}/fixtures/values.js`)) {
+        const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
+
+        values.unshift(undefined);
+
+        values.forEach((value, index) => {
+          fs.writeFileSync(`${dir}/component-${framework}-${component}-html-value${index}.html`, renderComponent(AllComponents[component], {}, {
+            template: framework,
+            flatten: true,
+            renderMode: 'html',
+          }, value));
+
+          fs.writeFileSync(`${dir}/component-${framework}-${component}-string-value${index}.html`, renderAsString(AllComponents[component], {}, {
+            template: framework,
+            flatten: true,
+            renderMode: 'html',
+          }, value));
+        });
       }
-    }, {
-      template: framework,
-    }));
-
-    // Multiple
-    fs.writeFileSync(`${dir}/component-${framework}-${component}-multiple.html`, renderComponent(AllComponents[component], {
-      multiple: true
-    }, {
-      template: framework,
-    }));
-
-    // Values
-    if (fs.existsSync(`${componentDir}/${component}/fixtures/values.js`)) {
-      const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
-
-      values.unshift(undefined);
-
-      values.forEach((value, index) => {
-        fs.writeFileSync(`${dir}/component-${framework}-${component}-html-value${index}.html`, renderComponent(AllComponents[component], {}, {
-          template: framework,
-          flatten: true,
-          renderMode: 'html',
-        }, value));
-
-        fs.writeFileSync(`${dir}/component-${framework}-${component}-string-value${index}.html`, renderAsString(AllComponents[component], {}, {
-          template: framework,
-          flatten: true,
-          renderMode: 'html',
-        }, value));
-      });
     }
   });
 });

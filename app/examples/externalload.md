@@ -21,7 +21,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/c
     // Triggered when they click the submit button.
     form.on('change', function(event) {
       if (event.changed && event.changed.component.key === 'customerNumber' && event.changed.value) {
-        fetch('https://examples.form.io/customers/submission?data.number=' + event.changed.value, {
+        Formio.fetch('https://examples.form.io/customers/submission?data.number=' + event.changed.value, {
           headers: {
             'content-type': 'application/json'
           },
@@ -51,7 +51,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/c
     // Triggered when they click the submit button.
     form.on('change', function(event) {
       if (event.changed && event.changed.component.key === 'customerNumber' && event.changed.value) {
-        fetch('https://examples.form.io/customers/submission?data.number=' + event.changed.value, {
+        Formio.fetch('https://examples.form.io/customers/submission?data.number=' + event.changed.value, {
           headers: {
             'content-type': 'application/json'
           },

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import TextFieldComponent from '../textfield/TextField';
-import * as FormioUtils from '../../utils/utils';
+import { getBrowserInfo, getInputMask } from '../../utils/utils';
 
 const defaultDataFormat = 'HH:mm:ss';
 
@@ -18,10 +18,12 @@ export default class TimeComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-
+    const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();
     this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
-    this.component.defaultMask = FormioUtils.getInputMask('99:99:99');
-    this.component.inputType = this.component.inputType || 'time';
+    this.component.defaultMask = getInputMask('99:99:99');
+    this.component.inputType = isEdgeBrowser && edgeVersion <= 18
+      ? 'text'
+      : (this.component.inputType || 'time');
     this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
 
@@ -37,7 +39,7 @@ export default class TimeComponent extends TextFieldComponent {
       title: 'Time',
       icon: 'clock-o',
       group: 'advanced',
-      documentation: 'http://help.form.io/userguide/#time',
+      documentation: '/userguide/#time',
       weight: 55,
       schema: TimeComponent.schema(),
     };

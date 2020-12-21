@@ -15,6 +15,7 @@ import {
   unescapeHTML,
   getStringFromComponentPath,
   searchComponents,
+  convertStringToHTMLElement
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -644,10 +645,18 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   setForm(form, flags) {
+    const isFormAlreadySet = this._form && this._form.components?.length;
     try {
       // Do not set the form again if it has been already set
-      if (JSON.stringify(this._form) === JSON.stringify(form)) {
+      if (isFormAlreadySet && JSON.stringify(this._form) === JSON.stringify(form)) {
         return NativePromise.resolve();
+      }
+
+      // Create the form.
+      this._form = flags?.keepAsReference ? form : _.cloneDeep(form);
+
+      if (this.onSetForm) {
+        this.onSetForm(this._form, form);
       }
     }
     catch (err) {
@@ -655,9 +664,6 @@ export default class Webform extends NestedDataComponent {
       // If provided form is not a valid JSON object, do not set it too
       return NativePromise.resolve();
     }
-
-    // Create the form.
-    this._form = form;
 
     // Allow the form to provide component overrides.
     if (form && form.settings && form.settings.components) {
@@ -1015,7 +1021,7 @@ export default class Webform extends NestedDataComponent {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.addEventListener(this.element, 'keydown', this.executeShortcuts);
+    this.addEventListener(document, 'keydown', this.executeShortcuts);
     this.currentForm = this;
     return childPromise.then(() => {
       this.emit('render', this.element);
@@ -1050,21 +1056,21 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
-   * @param {string} options
+   * @param {Object} options
    */
   setAlert(type, message, options) {
-    const hotkeyListener = (e) => {
-      const { keyCode, key, ctrlKey, altKey } = e;
-        if ((key === 'x' || keyCode === 88) && ctrlKey && altKey) {
-          if (this.refs.errorRef && this.refs.errorRef.length) {
-            this.refs.errorRef[0].focus();
-          }
+    if (!type && this.submitted) {
+      if (this.alert) {
+        if (this.refs.errorRef && this.refs.errorRef.length) {
+          this.refs.errorRef.forEach(el => {
+            this.removeEventListener(el, 'click');
+            this.removeEventListener(el, 'keypress');
+          });
         }
-    };
+      }
+    }
 
     const removeAlert = () => {
-      this.removeEventListener(window, 'keydown', hotkeyListener);
-
       if (this.refs.errorRef && this.refs.errorRef.length) {
         this.refs.errorRef.forEach(el => {
           this.removeEventListener(el, 'click');
@@ -1099,16 +1105,17 @@ export default class Webform extends NestedDataComponent {
       }
     }
     if (message) {
-      this.alert = this.ce('div', {
+      const attrs = {
         class: (options && options.classes) || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-      });
-      if (message instanceof HTMLElement) {
-        this.appendTo(message, this.alert);
-      }
-      else {
-        this.setContent(this.alert, message);
-      }
+      };
+
+      const templateOptions = {
+        message: message instanceof HTMLElement ? message.outerHTML : message,
+        attrs: attrs
+      };
+
+      this.alert = convertStringToHTMLElement(this.renderTemplate('alert', templateOptions),`#${attrs.id}`);
     }
     if (!this.alert) {
       return;
@@ -1134,7 +1141,6 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
-      this.addEventListener(window, 'keydown', hotkeyListener);
       this.refs.errorRef.forEach(el => {
         this.addEventListener(el, 'click', (e) => {
           const key = e.currentTarget.dataset.componentKey;
@@ -1218,69 +1224,38 @@ export default class Webform extends NestedDataComponent {
       });
     });
 
-    const message = document.createDocumentFragment();
-    const p = this.ce('p', { id: `fix-errors-${this.id}` });
-    this.setContent(p, this.t('error'));
-    const errorHotkeyMessage = this.t('errorListHotkey');
+    const displayedErrors = [];
 
-    const params = {
-      class: 'fa fa-question-circle text-based',
-      style: 'margin-left: 5px',
-      ref: 'errorTooltip',
-      tabIndex: 0,
-      'data-title': errorHotkeyMessage,
-      'aria-label': errorHotkeyMessage,
-    };
-    const hotkeyInfo = this.ce('i', params);
-    this.appendTo(hotkeyInfo, p);
-
-    const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
         const createListItem = (message, index) => {
-          const params = {
-            ref: 'errorRef',
-            tabIndex: 0,
-            role: 'link',
-          };
-          const li = this.ce('li');
-          const messageContainer = this.ce('span', params);
-          const mainMessage = this.ce('span');
-          const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
-
-          this.setContent(mainMessage, unescapeHTML(message));
-          this.setContent(helpMessage, this.t('errorListHelpMessage'));
-
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
           const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
-          if (keyOrPath) {
-            const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
-            messageContainer.dataset.componentKey = formattedKeyOrPath;
-          }
+          const formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
 
-          messageContainer.appendChild(mainMessage);
-          messageContainer.appendChild(helpMessage);
-          li.appendChild(messageContainer);
-          this.appendTo(li, ul);
+          return {
+            message: unescapeHTML(message),
+            keyOrPath: formattedKeyOrPath
+          };
         };
 
         if (err.messages && err.messages.length) {
           const { component } = err;
-          err.messages.forEach(({ message }, index) => {
-            const additionalPeriod = message.charAt(message.length - 1) === '.' ? '' : '.';
-            const text = this.t('alertMessage', { label: this.t(component.label), message: `${message}${additionalPeriod}` });
-            createListItem(text, index);
+          err.messages.forEach(({ message, context }, index) => {
+            const text = context?.hasLabel ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+            displayedErrors.push(createListItem(text, index));
           });
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || '' : err;
-          createListItem(message);
+          displayedErrors.push(createListItem(message));
         }
       }
     });
-    p.appendChild(ul);
-    message.appendChild(p);
-    this.setAlert('danger', message);
+
+    const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
+
+    this.setAlert('danger', errorsList);
 
     if (triggerEvent) {
       this.emit('error', errors);
@@ -1307,7 +1282,7 @@ export default class Webform extends NestedDataComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
-    this.emit('submit', submission);
+    this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
     }
@@ -1337,7 +1312,7 @@ export default class Webform extends NestedDataComponent {
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
-      this.emit('change', { isValid: true });
+      this.emit('change', { isValid: true }, { silent: true });
       return false;
     }
 
@@ -1379,7 +1354,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (!flags || !flags.noEmit) {
-      this.emit('change', value, flags);
+      this.emit('change', value, flags, modified);
       isChangeEventEmitted = true;
     }
 

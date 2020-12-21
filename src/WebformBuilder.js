@@ -1,7 +1,5 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
-// Import from "dist" because it would require and "global" would not be defined in Angular apps.
-import dragula from 'dragula/dist/dragula';
 import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
@@ -12,6 +10,12 @@ import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import Templates from './templates/Templates';
 require('./components/builder');
+
+let dragula;
+if (typeof window !== 'undefined') {
+  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
+  dragula = require('dragula/dist/dragula');
+}
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -37,25 +41,6 @@ export default class WebformBuilder extends Component {
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
-
-    const componentInfo = {};
-    for (const type in Components.components) {
-      const component = Components.components[type];
-      if (component.builderInfo) {
-        component.type = type;
-        componentInfo[type] = component.builderInfo;
-      }
-    }
-
-    this.fieldsList = {
-      title: 'Result fields',
-      key: 'searchFields',
-      weight: 0,
-      subgroups: [],
-      default: true,
-      components: {},
-      componentOrder: []
-    };
 
     this.dragDropEnabled = true;
 
@@ -93,7 +78,7 @@ export default class WebformBuilder extends Component {
 
     for (const type in Components.components) {
       const component = Components.components[type];
-      if (component.builderInfo) {
+      if (component.builderInfo && component.builderInfo.schema) {
         this.schemas[type] = component.builderInfo.schema;
         component.type = type;
         const builderInfo = component.builderInfo;
@@ -101,29 +86,36 @@ export default class WebformBuilder extends Component {
         this.addBuilderComponentInfo(builderInfo);
       }
     }
+
     // Filter out any extra components.
     // Add the components in each group.
     for (const group in this.groups) {
       const info = this.groups[group];
       for (const key in info.components) {
-        const comp = info.components[key];
-        if (comp) {
-          if (comp.schema) {
-            this.schemas[key] = comp.schema;
-          }
-          info.components[key] = comp === true ? componentInfo[key] : comp;
+        let comp = info.components[key];
+        if (
+          comp === true &&
+          Components.components[key] &&
+          Components.components[key].builderInfo
+        ) {
+          comp = Components.components[key].builderInfo;
+        }
+        if (comp && comp.schema) {
+          this.schemas[key] = comp.schema;
+          info.components[key] = comp;
           info.components[key].key = key;
-          this.fieldsList.components[key] = info.components[key];
+        }
+        else {
+          // Do not include this component in the components array.
+          delete info.components[key];
         }
       }
-    }
 
-    // Need to create a component order for each group.
-    for (const group in this.groups) {
-      if (this.groups[group] && this.groups[group].components) {
-        this.groups[group].componentOrder = Object.keys(this.groups[group].components)
-          .map(key => this.groups[group].components[key])
-          .filter(component => component && !component.ignore)
+      // Order the compoennts.
+      if (info.components) {
+        info.componentOrder = Object.keys(info.components)
+          .map(key => info.components[key])
+          .filter(component => component && !component.ignore && !component.ignoreForForm)
           .sort((a, b) => a.weight - b.weight)
           .map(component => component.key);
       }
@@ -406,7 +398,6 @@ export default class WebformBuilder extends Component {
             }
           }
         );
-        this.fieldsList.components[component.key] = subgroup.components[component.key];
       }, true);
 
       this.groups.resource.subgroups.push(subgroup);
@@ -566,7 +557,7 @@ export default class WebformBuilder extends Component {
       }
 
       // Add the paste status in form
-      if (window.sessionStorage) {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
         const data = window.sessionStorage.getItem('formio.clipboard');
         if (data) {
           this.addClass(this.refs.form, 'builder-paste-mode');
@@ -602,10 +593,12 @@ export default class WebformBuilder extends Component {
         });
       }
 
-      this.addEventListener(this.refs['sidebar-search'], 'input', (e) => {
-        const searchString = e.target.value;
-        this.searchFields(searchString);
-      });
+      this.addEventListener(this.refs['sidebar-search'], 'input',
+        _.debounce((e) => {
+          const searchString = e.target.value;
+          this.searchFields(searchString);
+        }, 300)
+      );
 
       if (this.dragDropEnabled) {
         this.initDragula();
@@ -617,39 +610,69 @@ export default class WebformBuilder extends Component {
     });
   }
 
-  searchFields(searchString) {
-    if (!this.refs['sidebar-groups']) {
+  searchFields(searchString = '') {
+    const searchValue = searchString.toLowerCase();
+    const sidebar = this.refs['sidebar'];
+    const sidebarGroups = this.refs['sidebar-groups'];
+
+    if (!sidebar || !sidebarGroups) {
       return;
     }
-    if (searchString) {
-      const filteredComponentsOrder = [];
-      for (const type in this.fieldsList.components) {
-        const builderInfo = this.fieldsList.components[type];
-        if (builderInfo.title.toLowerCase().indexOf(searchString) !== -1) {
-          filteredComponentsOrder.push(type);
+
+    const filterGroupBy = (group, searchValue = '') => {
+      const result = _.toPlainObject(group);
+      const { subgroups = [], components } = result;
+      const filteredOrder = [];
+
+      for (const key in components) {
+        const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
+        const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
+
+        if (isMatchedToTitle || isMatchedToKey) {
+          filteredOrder.push(components[key].key);
         }
       }
-      this.fieldsList.componentOrder = filteredComponentsOrder;
-      this.refs['sidebar-groups'].innerHTML = this.renderTemplate('builderSidebarGroup', {
-        group: this.fieldsList,
-        groupKey: 'searchFields',
-        groupId: `builder-sidebar-${this.id}`,
-        subgroups: []
-      });
-    }
-    else {
-      this.refs['sidebar-groups'].innerHTML = this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
-        group: this.groups[groupKey],
+
+      result.componentOrder = filteredOrder;
+      if (searchValue) {
+        result.default = true;
+      }
+      if (filteredOrder.length || subgroups.length) {
+        return result;
+      }
+      return null;
+    };
+
+    const filterGroupOrder = (groupOrder, searchValue) => {
+      const result = _.cloneDeep(groupOrder);
+      return result.filter(key => filterGroupBy(this.groups[key], searchValue));
+    };
+
+    const filterSubgroups = (groups, searchValue) => {
+      const result = _.clone(groups);
+      return result
+            .map(subgroup => filterGroupBy(subgroup, searchValue))
+            .filter(subgroup => !_.isNull(subgroup));
+    };
+
+    const toTemplate = groupKey => {
+      return {
+        group: filterGroupBy(this.groups[groupKey], searchValue),
         groupKey,
-        groupId: `builder-sidebar-${this.id}`,
-        subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
-          group,
-          groupKey: group.key,
-          groupId: `group-container-${groupKey}`,
-          subgroups: []
-        })),
-      })).join('');
-    }
+        groupId: sidebar.id || sidebarGroups.id,
+        subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchValue)
+                  .map((group) => this.renderTemplate('builderSidebarGroup', {
+                    group,
+                    groupKey: group.key,
+                    groupId: `group-container-${groupKey}`,
+                    subgroups: []
+                  })),
+      };
+    };
+
+    sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
+                              .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
+                              .join('');
 
     this.loadRefs(this.element, {
       'sidebar-groups': 'single',
@@ -680,6 +703,10 @@ export default class WebformBuilder extends Component {
     const containersArray = Array.prototype.slice.call(this.refs['sidebar-container']).filter(item => {
       return item.id !== 'group-container-resource';
     });
+
+    if (!dragula) {
+      return;
+    }
 
     this.dragula = dragula(containersArray, {
       moves(el) {
@@ -731,7 +758,7 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
-    if (group.slice(0, group.indexOf('-')) === 'resource') {
+    else if (group.slice(0, group.indexOf('-')) === 'resource') {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
@@ -739,15 +766,27 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(resourceGroup.components[key].schema);
       }
     }
+    else if (group === 'searchFields') {//Search components go into this group
+      const resourceGroups = this.groups.resource.subgroups;
+      for (let ix = 0; ix < resourceGroups.length; ix++) {
+        const resourceGroup = resourceGroups[ix];
+        if (resourceGroup.components.hasOwnProperty(key)) {
+          info = fastCloneDeep(resourceGroup.components[key].schema);
+          break;
+        }
+      }
+    }
 
     if (info) {
-      info.key = _.camelCase(
-        info.key ||
-        info.title ||
-        info.label ||
-        info.placeholder ||
-        info.type
-      );
+      if (!info.key) {
+        info.key = _.camelCase(
+          info.key ||
+          info.title ||
+          info.label ||
+          info.placeholder ||
+          info.type
+        );
+      }
     }
 
     return info;
@@ -818,6 +857,24 @@ export default class WebformBuilder extends Component {
     // If we haven't found the component, stop.
     if (!info) {
       return;
+    }
+
+    // Show an error if siblings are disabled for a component and such a component already exists.
+    const draggableComponent = this.groups[group]?.components[key] || {};
+
+    if (draggableComponent.disableSiblings) {
+      let isCompAlreadyExists = false;
+      eachComponent(this.webform.components, (component) => {
+        if (component.key === draggableComponent.key) {
+          isCompAlreadyExists = true;
+          return;
+        }
+      }, true);
+      if (isCompAlreadyExists) {
+        this.webform.redraw();
+        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.key} component to one page.`);
+        return;
+      }
     }
 
     if (target !== source) {
@@ -969,7 +1026,7 @@ export default class WebformBuilder extends Component {
       remove = window.confirm(this.t(message));
     }
     if (!original) {
-      original = parent.formioContainer.find((comp) => comp.key === component.key);
+      original = parent.formioContainer.find((comp) => comp.id === component.id);
     }
     const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
     if (remove && index !== -1) {
@@ -1056,6 +1113,10 @@ export default class WebformBuilder extends Component {
           newComp.checkValidity = () => true;
           newComp.build(defaultValueComponent.element);
         }
+      }
+      else {
+        this.preview._data[changed.instance._data.key] = changed.value;
+        this.webform._data[changed.instance._data.key] = changed.value;
       }
     }
 
@@ -1234,6 +1295,7 @@ export default class WebformBuilder extends Component {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
+      helplinks: this.helplinks,
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
@@ -1260,7 +1322,8 @@ export default class WebformBuilder extends Component {
                     event.data.label ||
                     event.data.placeholder ||
                     event.data.type
-                  ));
+                  ).replace(/^[0-9]*/, ''));
+
                   return false;
                 }
               });
@@ -1394,7 +1457,6 @@ export default class WebformBuilder extends Component {
     if (!groupInfo.components.hasOwnProperty(component.key)) {
       groupInfo.components[component.key] = component;
     }
-    this.fieldsList.components[component.key] = component;
     return component;
   }
 
@@ -1403,6 +1465,12 @@ export default class WebformBuilder extends Component {
       this.webform.init();
     }
     return super.init();
+  }
+
+  clear() {
+    if (this.webform.initialized) {
+      this.webform.clear();
+    }
   }
 
   destroy(deleteFromGlobal) {
