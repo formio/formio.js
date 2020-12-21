@@ -14,7 +14,8 @@ import {
   unescapeHTML,
   getStringFromComponentPath,
   searchComponents,
-  convertStringToHTMLElement
+  convertStringToHTMLElement,
+  getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -1179,7 +1180,9 @@ export default class Webform extends NestedDataComponent {
       }
 
       components.forEach((path) => {
-        const component = this.getComponent(path, _.identity);
+        const originalPath = this._parentPath + getStringFromComponentPath(path);
+        const component = this.getComponent(path, _.identity, originalPath);
+
         if (err.fromServer) {
           if (component.serverErrors) {
             component.serverErrors.push(err);
@@ -1200,8 +1203,13 @@ export default class Webform extends NestedDataComponent {
       if (err) {
         const createListItem = (message, index) => {
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
-          const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key) || err.fromServer && err.path;
-          const formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
+          const keyOrPath = (messageFromIndex && messageFromIndex.formattedKeyOrPath || messageFromIndex.path) || (err.component && err.component.key) || err.fromServer && err.path;
+
+          let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
+          formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
+          if (!err.formattedKeyOrPath) {
+            err.formattedKeyOrPath = formattedKeyOrPath;
+          }
 
           return {
             message: unescapeHTML(message),
@@ -1224,8 +1232,7 @@ export default class Webform extends NestedDataComponent {
     });
 
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
-
-    this.setAlert('danger', errorsList);
+    this.root.setAlert('danger', errorsList);
 
     if (triggerEvent) {
       this.emit('error', errors);
@@ -1386,6 +1393,8 @@ export default class Webform extends NestedDataComponent {
   }
 
   submitForm(options = {}) {
+    this.clearServerErrors();
+
     return new NativePromise((resolve, reject) => {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
@@ -1450,7 +1459,11 @@ export default class Webform extends NestedDataComponent {
                 submission: result,
                 saved: true,
               }))
-              .catch(reject);
+              .catch((error) => {
+                this.setServerErrors(error);
+
+                return reject(error);
+              });
           }
 
           const submitFormio = this.formio;
@@ -1468,10 +1481,7 @@ export default class Webform extends NestedDataComponent {
               saved: true,
             }))
             .catch((error) => {
-              this.serverErrors = error.details.filter((err) => err.level === 'error').map((err) => {
-                err.fromServer = true;
-                return err;
-              });
+              this.setServerErrors(error);
 
               return reject(error);
             });
@@ -1480,10 +1490,18 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
+  setServerErrors(error) {
+    if (error.details) {
+      this.serverErrors = error.details.filter((err) => err.level === 'error').map((err) => {
+        err.fromServer = true;
+        return err;
+      });
+    }
+  }
+
   executeSubmit(options) {
     this.submitted = true;
     this.submitting = true;
-    this.clearServerErrors();
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
       .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
@@ -1492,7 +1510,9 @@ export default class Webform extends NestedDataComponent {
   clearServerErrors() {
     this.serverErrors?.forEach((error) => {
       if (error.path) {
-        const component = this.getComponent(error.path[0], _.identity);
+        const pathArray = getArrayFromComponentPath(error.path);
+        const component = this.getComponent(pathArray, _.identity, error.formattedKeyOrPath);
+
         if (component) {
           component.serverErrors = [];
         }
