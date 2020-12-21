@@ -38,6 +38,7 @@ export class NestedComponent extends Field {
   updateValue(value: any, flags: any, source: any): any;
   hasChanged(): boolean;
   checkData(data: any, flags: any, source: any): boolean;
+  checkModal(isValid: boolean, dirty: boolean): void;
   checkConditions(data: any, norecurse?: any): any;
   clearOnHide(show: boolean): void;
   restoreComponentsContext(): void;
