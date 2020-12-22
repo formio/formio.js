@@ -27,8 +27,8 @@ This library has a very powerful JSON form builder, and can be used like the fol
 <html>
   <head>
     <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
-    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
+    <link rel='stylesheet' href='https://cdn.form.io/formiojs/formio.full.min.css'>
+    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
         Formio.builder(document.getElementById('builder'), {}, {});
@@ -50,8 +50,8 @@ The following is a simple example on how to render a form within your HTML appli
 <html>
   <head>
     <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
-    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
+    <link rel='stylesheet' href='https://cdn.form.io/formiojs/formio.full.min.css'>
+    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
         Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
@@ -113,8 +113,8 @@ being set to ```wizard```.
 <html>
   <head>
     <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
-    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
+    <link rel='stylesheet' href='https://cdn.form.io/formiojs/formio.full.min.css'>
+    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
         Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard');
