@@ -731,8 +731,8 @@ export default class Component extends Element {
 
   labelIsHidden() {
     return !this.component.label ||
-      ((!this.inDataGrid && this.component.hideLabel) ||
-      (this.inDataGrid && !this.component.dataGridLabel) ||
+      ((!this.component.inDataGrid && this.component.hideLabel) ||
+      (this.component.inDataGrid && !this.component.dataGridLabel) ||
       this.options.inputsOnly) && !this.builderMode;
   }
 
