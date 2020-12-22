@@ -176,8 +176,8 @@ export default class SelectBoxesComponent extends RadioComponent {
         }
         if (maxCount && count > maxCount) {
           const message = this.component.maxSelectedCountMessage
-            ? this.component.maxSelectedCountMessage
-            : `You can only select up to ${maxCount} items.`;
+            ? this.t(this.component.maxSelectedCountMessage)
+            : this.t('You can only select up to {{maxCount}} items.', { maxCount });
           this.setCustomValidity(message, dirty);
           return false;
         }
@@ -189,8 +189,8 @@ export default class SelectBoxesComponent extends RadioComponent {
           });
         }
         const message = this.component.minSelectedCountMessage
-          ? this.component.minSelectedCountMessage
-          : `You must select at least ${minCount} items.`;
+          ? this.t(this.component.minSelectedCountMessage)
+          : this.t('You must select at least {{minCount}} items.', { minCount });
         this.setCustomValidity(message, dirty);
         return false;
       }
