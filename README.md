@@ -131,7 +131,7 @@ being set to ```wizard```.
 You can also use this library as a JavaScript embedding of the form using a single line of code. For example, to embed the https://examples.form.io/example form within your application you can simply use the following embed code.
 
 ```html
-<script src="https://unpkg.com/formiojs@latest/dist/formio.embed.min.js?src=https://examples.form.io/example"></script>
+<script src="https://cdn.form.io/formiojs/formio.embed.min.js?src=https://examples.form.io/example"></script>
 ```
 
 For an example of how this looks and works, check out the following [Form.io Form Embedding CodePen](http://codepen.io/travist/pen/ggQOBa)
@@ -145,7 +145,7 @@ In addition to having a Form Renderer within this application, you can also use 
 ```html
 <html>
   <head>
-    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
+    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
     <script type='text/javascript'>
       var formio = new Formio('https://examples.form.io/example');
       formio.loadForm().then(function(form) {

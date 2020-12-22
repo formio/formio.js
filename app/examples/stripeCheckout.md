@@ -38,7 +38,7 @@ Stripe Checkout can be configured with this following parameters:
 To use this plugin, you must first include the contributed modules for the Form.io renderer using.
 
 ```html
-<script src="https://unpkg.com/formiojs@latest/dist/formio.contrib.min.js"></script>
+<script src="https://cdn.form.io/formiojs/formio.contrib.min.js"></script>
 ```
 
 After you have included this library within your page, you will then need to register it with the Form renderer using the following.
@@ -57,9 +57,9 @@ Formio.registerComponent('stripeCheckout', StripeCheckoutComponent);
 #### Example
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
-<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
-<script src="https://unpkg.com/formiojs@latest/dist/formio.contrib.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<script src="https://cdn.form.io/formiojs/formio.contrib.min.js"></script>
 <div id="formio"></formio>
 ```
 
