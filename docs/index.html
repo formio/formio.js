@@ -189,8 +189,8 @@
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css&apos;&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
-    &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://cdn.form.io/formiojs/formio.full.min.css&apos;&gt;
+    &lt;script src=&apos;https://cdn.form.io/formiojs/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       window.onload = function() {
         Formio.builder(document.getElementById(&apos;builder&apos;), {}, {});
@@ -207,8 +207,8 @@
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css&apos;&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
-    &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://cdn.form.io/formiojs/formio.full.min.css&apos;&gt;
+    &lt;script src=&apos;https://cdn.form.io/formiojs/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       window.onload = function() {
         Formio.createForm(document.getElementById(&apos;formio&apos;), &apos;https://examples.form.io/example&apos;);
@@ -257,8 +257,8 @@ being set to <code>wizard</code>.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css&apos;&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
-    &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://cdn.form.io/formiojs/formio.full.min.css&apos;&gt;
+    &lt;script src=&apos;https://cdn.form.io/formiojs/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       window.onload = function() {
         Formio.createForm(document.getElementById(&apos;formio&apos;), &apos;https://examples.form.io/wizard&apos;);
@@ -271,14 +271,14 @@ being set to <code>wizard</code>.</p>
 &lt;/html&gt;</code>
 </code></pre>
 <h2 id="form-embedding">Form Embedding</h2><p>You can also use this library as a JavaScript embedding of the form using a single line of code. For example, to embed the <a href="https://examples.form.io/example">https://examples.form.io/example</a> form within your application you can simply use the following embed code.</p>
-<pre><code class="lang-html"><code class="source-code prettyprint">&lt;script src=&quot;https://unpkg.com/formiojs@latest/dist/formio.embed.min.js?src=https://examples.form.io/example&quot;&gt;&lt;/script&gt;</code>
+<pre><code class="lang-html"><code class="source-code prettyprint">&lt;script src=&quot;https://cdn.form.io/formiojs/formio.embed.min.js?src=https://examples.form.io/example&quot;&gt;&lt;/script&gt;</code>
 </code></pre>
 <p>For an example of how this looks and works, check out the following <a href="http://codepen.io/travist/pen/ggQOBa">Form.io Form Embedding CodePen</a></p>
 <h2 id="full-form-renderer-documentation">Full Form Renderer Documentation</h2><p>For a more complete documentation of how to utilize this library within your application go to the <a href="https://github.com/formio/formio.js/wiki/Form-Renderer">Form Renderer</a> documentation within the <a href="https://github.com/formio/formio.js/wiki">Wiki</a></p>
 <h1 id="javascript-sdk">JavaScript SDK</h1><p>In addition to having a Form Renderer within this application, you can also use this library as a JavaScript SDK in your application. For example, to load a Form, and then submit that form you could do the following within your JavaScript.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
-    &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
+    &lt;script src=&apos;https://cdn.form.io/formiojs/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       var formio = new Formio(&apos;https://examples.form.io/example&apos;);
       formio.loadForm().then(function(form) {
