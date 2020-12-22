@@ -175,9 +175,10 @@ export default class SelectBoxesComponent extends RadioComponent {
           });
         }
         if (maxCount && count > maxCount) {
-          const message = this.component.maxSelectedCountMessage
-            ? this.t(this.component.maxSelectedCountMessage)
-            : this.t('You can only select up to {{maxCount}} items.', { maxCount });
+          const message = this.t(
+            this.component.maxSelectedCountMessage || 'You can only select up to {{maxCount}} items.',
+            { maxCount }
+          );
           this.setCustomValidity(message, dirty);
           return false;
         }
@@ -188,9 +189,10 @@ export default class SelectBoxesComponent extends RadioComponent {
             item.disabled = false;
           });
         }
-        const message = this.component.minSelectedCountMessage
-          ? this.t(this.component.minSelectedCountMessage)
-          : this.t('You must select at least {{minCount}} items.', { minCount });
+        const message = this.t(
+          this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items.',
+          { minCount }
+        );
         this.setCustomValidity(message, dirty);
         return false;
       }
