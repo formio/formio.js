@@ -55,6 +55,49 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - UIP-271: edge time component
  - Fixing issues where custom builder sidebars would crash and cause errors
 
+### 4.12.4
+#### Changed
+ - No changes. Released 4.12.4-rc.3 as official release.
+
+### 4.12.4-rc.3
+#### Fixed
+ - Fixing issues where custom builder sidebars would crash and cause errors.
+
+### 4.12.4-rc.2
+#### Fixed
+ - FOR-2874: Added recaptcha async validation.
+
+### 4.12.4-rc.1
+#### Fixed
+ - Fixing issue where itemsLoaded does not resolve if the select is not attached.
+ - FJS-1488: Fixing issue where setting tabindex on components inside datagrid does not also apply to remove row and add another buttons.  
+
+#### Changed
+ - Upgrade idb@5.0.8, uuid@8.3.2, @babel/cli@7.12.10, @babel/core@7.12.10, @babel/plugin-proposal-optional-chaining@7.12.7, @babel/preset-env@7.12.10, @babel/register@7.12.10, babel-loader@8.2.2, marked@1.2.6, sinon@9.2.2, eslint@7.15.0, fetch-mock@9.11.0
+
+### 4.12.3
+#### Changed
+ - No changes. Released 4.12.3-rc.1 as official release.
+
+### 4.12.3-rc.1
+#### Fixed
+ - Fixed an issue where form properties of WizardBuilder and corresponding Webform are different
+
+### 4.12.2
+#### Changed
+ - No changes. Released 4.12.2-rc.8 as official release.
+
+### 4.12.2-rc.8
+#### Fixed
+ - FJS-1449: Fixes an issue where is-invalid class is not set/removed for fields with CalendarWidget
+
+### 4.12.2-rc.7
+#### Fixed
+ - FJS-1484: fixed an issue where wizard resets form after components schema is changed inside the code
+ - FJS-1487: fixed an issue where conditional columns are not displayed inside dataGrid when the condition is met
+ - FOR-2882: fix the mode path in ace
+ - Fixed an issue where forms which have some logic get stuck in infinite loop 
+
 ### 4.12.2-rc.6
 #### Fixed
  - Issue where a conditionally hidden datagrid was not initializing the data correctly resulting in data not saving.

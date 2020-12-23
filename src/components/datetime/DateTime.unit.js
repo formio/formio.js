@@ -1,14 +1,10 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import DateTimeComponent from './DateTime';
-import Webform from '../../Webform';
-import Flatpickr from 'flatpickr';
-import ShortcutButtonsPlugin from 'shortcut-buttons-flatpickr';
 
 import {
   comp1,
   comp2,
-  comp3,
 } from './fixtures';
 
 describe('DateTime Component', () => {

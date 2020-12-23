@@ -41,7 +41,6 @@ export default class WebformBuilder extends Component {
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
-
     this.dragDropEnabled = true;
 
     // Setup the builder options.
