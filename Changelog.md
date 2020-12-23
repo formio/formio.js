@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1175 [feat]: adds an ability to NestedForm to use original revision for submissions viewing
  - Adds an ability to upload images from CKEditor to storage providers
  - FIO-945: added possibility to translate editGrid errors
+ - FJS-1239: Adds ability to create shortcut buttons for flatpickr
+ - An option called "alwaysConfirmComponentRemoval" which will always confirm before removing components from the form builder.
+ - Added option to Select (url based) components to ignore the Form.io caching of the API request.
+ - Add Webform language getter
 
 #### Changed
  - FOR-2419: Changed the logic of filtering and added searching by existing resource
@@ -22,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
  - FOR-2874: Added recaptcha async validation.
+ - FJS-1411: fix displaying server errors
  - FJS-1484: fixed an issue where wizard resets form after components schema is changed inside the code
  - FJS-1487: fixed an issue where conditional columns are not displayed inside dataGrid when the condition is met
  - FOR-2882: fix the mode path in ace
@@ -40,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1272: Fixes errors when add a placeholder char to a text mask
  - UIP-271: edge time component
  - Fixing issues where custom builder sidebars would crash and cause errors
+ - UIP-270: Radio: fix validation not triggered for the first time with default value
 
 ### 4.12.2-rc.5
 #### Fixed
