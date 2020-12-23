@@ -869,6 +869,15 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
+  it('Should get the language passed via options', () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+      language: 'es'
+    });
+
+    assert.equal(form.language, 'es');
+  });
+
   it('Should translate form errors in alerts', () => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
