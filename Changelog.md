@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - UIP-271: edge time component
  - Fixing issues where custom builder sidebars would crash and cause errors
 
+### 4.12.2-rc.6
+#### Fixed
+ - Issue where a conditionally hidden datagrid was not initializing the data correctly resulting in data not saving.
+
 ### 4.12.2-rc.5
 #### Fixed
  - FJS-1466: focus on the default value in the currency field
