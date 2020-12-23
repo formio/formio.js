@@ -178,7 +178,7 @@ export default class RadioComponent extends Field {
       && this.previousValue === this.currentValue;
     if (shouldResetValue) {
       this.resetValue();
-      this.triggerChange();
+      this.triggerChange(flags);
     }
     this.previousValue = this.dataValue;
     return changed;
