@@ -656,4 +656,18 @@ export default [
     label: 'Use exact search',
     tooltip: 'Disables search algorithm threshold.',
   },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 29,
+    key: 'ignoreCache',
+    label: 'Disables Storing Request Result in the Cache',
+    tooltip: 'Check it if you don\'t want the requests and its results to be stored in the cache. By default, it is stored and if the Select tries to make the request to the same URL with the same paremetrs, the cached data will be returned. It allows to increase performance, but if the remote source\'s data is changing quite often and you always need to keep it up-to-date, uncheck this option.',
+    conditional: {
+      json: { 'or': [
+        { '===': [{ var: 'data.dataSrc' }, 'url'] },
+        { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+      ] },
+    },
+  },
 ];
