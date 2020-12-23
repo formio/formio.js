@@ -276,67 +276,69 @@ describe(&apos;Webform tests&apos;, function() {
     const formWithDate = new Webform(formElement);
 
     formWithDate.setForm(formWithCustomFormatDate).then(() =&gt; {
-      const clickEvent = new Event(&apos;click&apos;);
-
-      const dateCompInputWidget = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
-      const dateAltFormat = dateCompInputWidget.calendar.config.altFormat;
-      dateCompInputWidget.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat);
-
-      const dateCompInputWidget1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
-      const dateAltFormat1 = dateCompInputWidget1.calendar.config.altFormat;
-      dateCompInputWidget1.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat1);
-
-      const dateCompInputWidget2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
-      const dateAltFormat2 = dateCompInputWidget2.calendar.config.altFormat;
-      dateCompInputWidget2.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat2);
-
       setTimeout(() =&gt; {
-      const dateCompAltInput = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;.flatpickr-input&apos;);
-      const dateComp = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
 
-      const dateCompAltInput1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;.flatpickr-input&apos;);
-      const dateComp1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+        const dateCompInputWidget = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+        const dateAltFormat = dateCompInputWidget.calendar.config.altFormat;
+        dateCompInputWidget.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat);
 
-      const dateCompAltInput2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;.flatpickr-input&apos;);
-      const dateComp2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
+        const dateCompInputWidget1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+        const dateAltFormat1 = dateCompInputWidget1.calendar.config.altFormat;
+        dateCompInputWidget1.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat1);
 
-      assert.equal(dateCompAltInput.value,&apos;30-05-2020&apos;);
-      assert.equal(dateComp.value,&apos;30-05-2020&apos;);
+        const dateCompInputWidget2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;.flatpickr-input&apos;).widget;
+        const dateAltFormat2 = dateCompInputWidget2.calendar.config.altFormat;
+        dateCompInputWidget2.calendar.setDate(&apos;30-05-2020&apos;, true, dateAltFormat2);
 
-      assert.equal(dateCompAltInput1.value,&apos;2020-05-30T00:00:00&apos;);
-      assert.equal(dateComp1.value,&apos;30-05-2020&apos;);
+        setTimeout(() =&gt; {
+        const dateCompAltInput = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;.flatpickr-input&apos;);
+        const dateComp = formWithDate.element.querySelector(&apos;.formio-component-textField&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
 
-      assert.equal(dateCompAltInput2.value,&apos;2020-05-30T00:00:00&apos;);
-      assert.equal(dateComp2.value,&apos;30-05-2020&apos;);
+        const dateCompAltInput1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;.flatpickr-input&apos;);
+        const dateComp1 = formWithDate.element.querySelector(&apos;.formio-component-dateTime&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
 
-      const addNewRowBtn = formWithDate.element.querySelector(&apos;.formio-button-add-row&apos;);
-      addNewRowBtn.dispatchEvent(clickEvent);
+        const dateCompAltInput2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;.flatpickr-input&apos;);
+        const dateComp2 = formWithDate.element.querySelector(&apos;.formio-component-textField2&apos;).querySelector(&apos;[type=&quot;text&quot;]&apos;);
 
-      setTimeout(() =&gt; {
-        const dataGridRows = formWithDate.element.querySelectorAll(&apos;[ref=&quot;datagrid-dataGrid-row&quot;]&apos;);
-        assert.equal(dataGridRows.length, 2);
+        assert.equal(dateCompAltInput.value,&apos;30-05-2020&apos;);
+        assert.equal(dateComp.value,&apos;30-05-2020&apos;);
 
-        const dateCompAltInputAfterAddingRow = formWithDate.element.querySelectorAll(&apos;.formio-component-textField&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
-        const dateCompAfterAddingRow = formWithDate.element.querySelectorAll(&apos;.formio-component-textField&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
+        assert.equal(dateCompAltInput1.value,&apos;2020-05-30T00:00:00&apos;);
+        assert.equal(dateComp1.value,&apos;30-05-2020&apos;);
 
-        const dateCompAltInputAfterAddingRow1 = formWithDate.element.querySelectorAll(&apos;.formio-component-dateTime&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
-        const dateCompAfterAddingRow1 = formWithDate.element.querySelectorAll(&apos;.formio-component-dateTime&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
+        assert.equal(dateCompAltInput2.value,&apos;2020-05-30T00:00:00&apos;);
+        assert.equal(dateComp2.value,&apos;30-05-2020&apos;);
 
-        const dateCompAltInputAfterAddingRow2 = formWithDate.element.querySelectorAll(&apos;.formio-component-textField2&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
-        const dateCompAfterAddingRow2 = formWithDate.element.querySelectorAll(&apos;.formio-component-textField2&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
+        const addNewRowBtn = formWithDate.element.querySelector(&apos;.formio-button-add-row&apos;);
+        addNewRowBtn.dispatchEvent(clickEvent);
 
-        assert.equal(dateCompAltInputAfterAddingRow.value,&apos;30-05-2020&apos;);
-        assert.equal(dateCompAfterAddingRow.value,&apos;30-05-2020&apos;);
+        setTimeout(() =&gt; {
+          const dataGridRows = formWithDate.element.querySelectorAll(&apos;[ref=&quot;datagrid-dataGrid-row&quot;]&apos;);
+          assert.equal(dataGridRows.length, 2);
 
-        assert.equal(dateCompAltInputAfterAddingRow1.value,&apos;2020-05-30T00:00:00&apos;);
-        assert.equal(dateCompAfterAddingRow1.value,&apos;30-05-2020&apos;);
+          const dateCompAltInputAfterAddingRow = formWithDate.element.querySelectorAll(&apos;.formio-component-textField&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
+          const dateCompAfterAddingRow = formWithDate.element.querySelectorAll(&apos;.formio-component-textField&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
 
-        assert.equal(dateCompAltInputAfterAddingRow2.value,&apos;2020-05-30T00:00:00&apos;);
-        assert.equal(dateCompAfterAddingRow2.value,&apos;30-05-2020&apos;);
+          const dateCompAltInputAfterAddingRow1 = formWithDate.element.querySelectorAll(&apos;.formio-component-dateTime&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
+          const dateCompAfterAddingRow1 = formWithDate.element.querySelectorAll(&apos;.formio-component-dateTime&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
 
-        done();
-       }, 150);
-      }, 50);
+          const dateCompAltInputAfterAddingRow2 = formWithDate.element.querySelectorAll(&apos;.formio-component-textField2&apos;)[0].querySelector(&apos;.flatpickr-input&apos;);
+          const dateCompAfterAddingRow2 = formWithDate.element.querySelectorAll(&apos;.formio-component-textField2&apos;)[0].querySelector(&apos;[type=&quot;text&quot;]&apos;);
+
+          assert.equal(dateCompAltInputAfterAddingRow.value,&apos;30-05-2020&apos;);
+          assert.equal(dateCompAfterAddingRow.value,&apos;30-05-2020&apos;);
+
+          assert.equal(dateCompAltInputAfterAddingRow1.value,&apos;2020-05-30T00:00:00&apos;);
+          assert.equal(dateCompAfterAddingRow1.value,&apos;30-05-2020&apos;);
+
+          assert.equal(dateCompAltInputAfterAddingRow2.value,&apos;2020-05-30T00:00:00&apos;);
+          assert.equal(dateCompAfterAddingRow2.value,&apos;30-05-2020&apos;);
+
+          done();
+         }, 150);
+        }, 50);
+      }, 100);
     }).catch((err) =&gt; done(err));
   });
 
@@ -1042,6 +1044,15 @@ describe(&apos;Webform tests&apos;, function() {
 
       done();
     }).catch(done);
+  });
+
+  it(&apos;Should get the language passed via options&apos;, () =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, {
+      language: &apos;es&apos;
+    });
+
+    assert.equal(form.language, &apos;es&apos;);
   });
 
   it(&apos;Should translate form errors in alerts&apos;, () =&gt; {
