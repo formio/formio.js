@@ -2,7 +2,7 @@
   {% ctx.util.eachComponent(ctx.components, function(component) { %}
     {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
       <div class="col-sm-2">
-        {{ ctx.t(ctx.getView(component, ctx.row[component.key])) }}
+        {{ ctx.getView(component, ctx.row[component.key]) }}
       </div>
     {% } %}
   {% }) %}
