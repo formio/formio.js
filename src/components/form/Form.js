@@ -238,6 +238,10 @@ export default class FormComponent extends Component {
     }
     return super.attach(element)
       .then(() => {
+        if (this.isSubFormLazyLoad() && !this.hasLoadedForm && !this.subFormLoading) {
+          this.createSubForm(true);
+        }
+
         return this.subFormReady.then(() => {
           this.empty(element);
           if (this.options.builder) {
@@ -333,8 +337,8 @@ export default class FormComponent extends Component {
    *
    * @return {*}
    */
-  createSubForm() {
-    this.subFormReady = this.loadSubForm().then((form) => {
+  createSubForm(fromAttach) {
+    this.subFormReady = this.loadSubForm(fromAttach).then((form) => {
       if (!form) {
         return;
       }
@@ -393,8 +397,8 @@ export default class FormComponent extends Component {
   /**
    * Load the subform.
    */
-  loadSubForm() {
-    if (this.builderMode || this.isHidden()) {
+  loadSubForm(fromAttach) {
+    if (this.builderMode || this.isHidden() || (this.isSubFormLazyLoad() && !fromAttach)) {
       return NativePromise.resolve();
     }
 
@@ -406,9 +410,11 @@ export default class FormComponent extends Component {
       return NativePromise.resolve(this.formObj);
     }
     else if (this.formSrc) {
+      this.subFormLoading = true;
       return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
+          this.subFormLoading = false;
           return formObj;
         });
     }
@@ -549,6 +555,10 @@ export default class FormComponent extends Component {
         return this.dataValue;
       })
       .then(() => super.beforeSubmit());
+  }
+
+  isSubFormLazyLoad() {
+    return  this.root?._form?.display === 'wizard' && this.component.lazyLoad;
   }
 
   isHidden() {
