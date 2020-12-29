@@ -2738,7 +2738,7 @@ export default class Component extends Element {
     }
 
     inputRefs.forEach((input) => {
-      if (input.widget && input.widget.setErrorClasses) {
+      if (input?.widget && input.widget.setErrorClasses) {
         input.widget.setErrorClasses(hasErrors);
       }
     });
