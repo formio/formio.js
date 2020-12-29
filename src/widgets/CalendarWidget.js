@@ -203,9 +203,10 @@ export default class CalendarWidget extends InputWidget {
               // FJS-1103: When hit the enter button, the field not saving the year correctly
               this.addEventListener(this.calendar.altInput, 'keydown', (event) => {
                 if (event.keyCode === 13) {
-                  this.calendar.altInput.blur();
-                  this.calendar.close();
-                  event.stopPropagation();
+                  if (this.calendar.isOpen) {
+                    this.calendar.close();
+                    event.stopPropagation();
+                  }
                 }
               });
             }
