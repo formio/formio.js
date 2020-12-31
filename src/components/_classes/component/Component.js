@@ -497,7 +497,12 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-    this._visible = this.conditionallyVisible(null, null);
+    const visible = this.conditionallyVisible(null, null);
+
+    if (this._visible !== visible) {
+      this.visible = visible;
+      this._visible = visible;
+    }
   }
 
   destroy() {
