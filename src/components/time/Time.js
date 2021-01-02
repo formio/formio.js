@@ -66,7 +66,10 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get validationValue() {
-    return this.rawData || this.dataValue;
+    if (Array.isArray(this.rawData) && !this.rawData.length || !this.rawData) {
+      return this.dataValue;
+    }
+    return this.rawData;
   }
 
   get inputInfo() {
@@ -132,9 +135,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   setValueAt(index, value) {
-    if (value) {
-      this.setRawValue(this.getValueAsString(value), index);
-    }
+    this.setRawValue(value ? this.getValueAsString(value) : value, index);
     this.refs.input[index].value = this.getRawValue(index);
   }
 
