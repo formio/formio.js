@@ -2747,7 +2747,6 @@ export default class Component extends Element {
     if (!this.component.modalEdit || !this.componentModal) {
       return;
     }
-    this.setOpenModalElement();
   }
 
   get validationValue() {
