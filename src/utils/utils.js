@@ -1096,6 +1096,97 @@ export function getContextComponents(context) {
   return values;
 }
 
+// Tags that could be in text, that should be ommited or handled in a special way
+const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP', 'INS', 'DEL', 'MARK', 'CODE'];
+
+/**
+ * Helper function for 'translateHTMLTemplate'. Translates text value of the passed html element.
+ *
+ * @param {HTMLElement} elem
+ * @param {Function} translate
+ *
+ * @returns {String}
+ *   Translated element template.
+ */
+function translateElemValue(elem, translate) {
+  const elemValue = elem.innerText.replace(Evaluator.templateSettings.interpolate, '').replace(/\s\s+/g, ' ').trim();
+  const translatedValue = translate(elemValue);
+
+  if (elemValue !== translatedValue) {
+    const links = elem.innerHTML.match(/<a[^>]*>(.*?)<\/a>/g);
+
+    if (links && links.length) {
+      if (links.length === 1 && links[0].length === elem.innerHTML.length) {
+        return elem.innerHTML.replace(elemValue, translatedValue);
+      }
+
+      const translatedLinks = links.map(link => {
+        const linkElem = document.createElement('a');
+        linkElem.innerHTML = link;
+        return translateElemValue(linkElem, translate);
+      });
+
+      return `${translatedValue} (${translatedLinks.join(', ')})`;
+    }
+    else {
+      return elem.innerText.replace(elemValue, translatedValue);
+    }
+  }
+  else {
+    return elem.innerHTML;
+  }
+}
+
+/**
+ * Helper function for 'translateHTMLTemplate'. Goes deep through html tag children and calls function to translate their text values.
+ *
+ * @param {HTMLElement} tag
+ * @param {Function} translate
+ *
+ * @returns {void}
+ */
+function translateDeepTag(tag, translate) {
+  const children = tag.children.length && [...tag.children];
+  const shouldTranslateEntireContent = children && children.every(child =>
+    child.children.length === 0
+    && inTextTags.some(tag => child.nodeName === tag)
+  );
+
+  if (!children || shouldTranslateEntireContent) {
+    tag.innerHTML = translateElemValue(tag, translate);
+  }
+  else {
+    children.forEach(child => translateDeepTag(child, translate));
+  }
+}
+
+/**
+ * Translates text values in html template.
+ *
+ * @param {String} template
+ * @param {Function} translate
+ *
+ * @returns {String}
+ *   Html template with translated values.
+ */
+export function translateHTMLTemplate(template, translate) {
+  const isHTML = /<[^>]*>/.test(template);
+
+  if (!isHTML) {
+    return translate(template);
+  }
+
+  const tempElem = document.createElement('div');
+  tempElem.innerHTML = template;
+
+  if (tempElem.innerText && tempElem.children.length) {
+    translateDeepTag(tempElem, translate);
+    return tempElem.innerHTML;
+  }
+
+  return template;
+}
+
 /**
  * Sanitize an html string.
  *
