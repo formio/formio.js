@@ -979,7 +979,7 @@ class Formio {
       .then(() =&gt; getFormio().pluginGet(&apos;request&apos;, requestArgs)
         .then((result) =&gt; {
           if (isNil(result)) {
-            return getFormio().request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+            return getFormio().request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         }));

@@ -397,16 +397,22 @@ export default class PDFBuilder extends WebformBuilder {
 
   upload(file) {
     const formio = new Formio(this.projectUrl);
-    this.refs.dragDropText.style.display = &apos;none&apos;;
-    this.refs.uploadProgressWrapper.style.display = &apos;inherit&apos;;
+    if (this.refs.dragDropText) {
+      this.refs.dragDropText.style.display = &apos;none&apos;;
+    }
+    if (this.refs.uploadProgressWrapper) {
+      this.refs.uploadProgressWrapper.style.display = &apos;inherit&apos;;
+    }
     formio.uploadFile(&apos;url&apos;, file, file, &apos;&apos;, (event) =&gt; {
-      const progress = Math.floor((event.loaded / event.total) * 100);
-      this.refs.uploadProgress.style.width = `${progress}%`;
-      if (progress &gt; 98) {
-        this.refs.uploadProgress.innerHTML = this.t(&apos;Converting PDF. Please wait.&apos;);
-      }
-      else {
-        this.refs.uploadProgress.innerHTML = `${this.t(&apos;Uploading&apos;)} ${progress}%`;
+      if (this.refs.uploadProgress) {
+        const progress = Math.floor((event.loaded / event.total) * 100);
+        this.refs.uploadProgress.style.width = `${progress}%`;
+        if (progress &gt; 98) {
+          this.refs.uploadProgress.innerHTML = this.t(&apos;Converting PDF. Please wait.&apos;);
+        }
+        else {
+          this.refs.uploadProgress.innerHTML = `${this.t(&apos;Uploading&apos;)} ${progress}%`;
+        }
       }
     }, `${this.projectUrl}/upload`, {}, &apos;file&apos;)
       .then((result) =&gt; {
@@ -414,8 +420,12 @@ export default class PDFBuilder extends WebformBuilder {
           id: result.data.file,
           src: `${result.data.filesServer}${result.data.path}`
         });
-        this.refs.dragDropText.style.display = &apos;inherit&apos;;
-        this.refs.uploadProgressWrapper.style.display = &apos;none&apos;;
+        if (this.refs.dragDropText) {
+          this.refs.dragDropText.style.display = &apos;inherit&apos;;
+        }
+        if (this.refs.uploadProgressWrapper) {
+          this.refs.uploadProgressWrapper.style.display = &apos;none&apos;;
+        }
         this.emit(&apos;pdfUploaded&apos;, result.data);
         this.redraw();
       })

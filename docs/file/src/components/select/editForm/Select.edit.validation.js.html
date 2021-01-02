@@ -179,13 +179,33 @@
   {
     weight: 50,
     type: &apos;checkbox&apos;,
-    label: &apos;Perform server validation&apos;,
+    label: &apos;Perform server validation of remote value&apos;,
     tooltip: &apos;Check this if you would like for the server to perform a validation check to ensure the selected value is an available option. This requires a Search query to ensure a record is found.&apos;,
     key: &apos;validate.select&apos;,
     input: true,
     conditional: {
       json: { var: &apos;data.searchField&apos; }
     }
+  },
+  {
+    weight: 52,
+    type: &apos;checkbox&apos;,
+    label: &apos;Allow only available values&apos;,
+    tooltip: &apos;Check this if you would like to perform a validation check to ensure the selected value is an available option.&apos;,
+    key: &apos;validate.onlyAvailableItems&apos;,
+    input: true,
+    conditional: {
+      json: {
+        in: [
+          { var: &apos;data.dataSrc&apos; },
+          [
+            &apos;values&apos;,
+            &apos;json&apos;,
+            &apos;custom&apos;
+          ],
+        ],
+      },
+    },
   }
 ];
 </code></pre>

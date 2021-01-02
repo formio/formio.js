@@ -189,6 +189,24 @@ describe(&apos;Tags Component&apos;, function() {
     return Harness.testCreate(TagsComponent, comp1);
   });
 
+  it(&apos;Should not allow to add non-unique tags on blur&apos;, function(done) {
+    Harness.testCreate(TagsComponent, comp2).then((component) =&gt; {
+      const blurEvent = new Event(&apos;blur&apos;);
+      const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
+      const element = component.choices.input.element;
+      const values = [&apos;test&apos;, &apos;test1&apos;, &apos;test&apos;];
+
+      values.forEach(value =&gt; {
+        element.value = value;
+        element.dispatchEvent(inputEvent);
+        element.dispatchEvent(blurEvent);
+      });
+
+      assert.equal(component.choices.getValue(true).length, 2);
+      done();
+    });
+  });
+
   it(&apos;Should not exceed maxTags limit&apos;, function(done) {
     Harness.testCreate(TagsComponent, comp2).then((component) =&gt; {
       const blurEvent = new Event(&apos;blur&apos;);

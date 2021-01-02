@@ -1356,12 +1356,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/pdf.js~pdf#downloadbutton",
-    "class/src/PDF.js~PDF.html#instance-member-downloadButton",
-    "src/PDF.js~PDF#downloadButton",
-    "member"
-  ],
-  [
     "src/pdf.js~pdf#focusoncomponent",
     "class/src/PDF.js~PDF.html#instance-method-focusOnComponent",
     "src/PDF.js~PDF#focusOnComponent",
@@ -1443,12 +1437,6 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#setform",
     "class/src/PDF.js~PDF.html#instance-method-setForm",
     "src/PDF.js~PDF#setForm",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#setsubmission",
-    "class/src/PDF.js~PDF.html#instance-method-setSubmission",
-    "src/PDF.js~PDF#setSubmission",
     "method"
   ],
   [
@@ -5199,12 +5187,6 @@ window.esdocSearchIndex = [
     "src/components/form/editform/form.edit.display.js",
     "file/src/components/form/editForm/Form.edit.display.js.html",
     "src/components/form/editForm/Form.edit.display.js",
-    "file"
-  ],
-  [
-    "src/components/form/editform/form.edit.form.js",
-    "file/src/components/form/editForm/Form.edit.form.js.html",
-    "src/components/form/editForm/Form.edit.form.js",
     "file"
   ],
   [

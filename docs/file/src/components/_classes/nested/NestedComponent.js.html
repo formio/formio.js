@@ -752,11 +752,11 @@ export default class NestedComponent extends Field {
       this.error = {
         component: this.component,
         level: &apos;hidden&apos;,
-        message: this.t(&apos;Fix the errors&apos;)
+        message: this.t(&apos;Fix the errors&apos;),
+        messages,
       };
       this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
     }
-    this.setOpenModalElement();
   }
 
   checkConditions(data, flags, row) {

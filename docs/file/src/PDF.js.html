@@ -402,33 +402,6 @@ export default class PDF extends Webform {
     return changed;
   }
 
-  setSubmission(submission) {
-    return super.setSubmission(submission).then(() =&gt; {
-      if (this.formio) {
-        this.formio.getDownloadUrl().then((url) =&gt; {
-          // Add a download button if it has a download url.
-          if (!url) {
-            return;
-          }
-          if (!this.downloadButton) {
-            if (this.options.primaryProject) {
-              url += `&amp;project=${this.options.primaryProject}`;
-            }
-            this.downloadButton = this.ce(&apos;a&apos;, {
-              href: url,
-              target: &apos;_blank&apos;,
-              style: &apos;position:absolute;right:10px;top:110px;cursor:pointer;&apos;
-            }, this.ce(&apos;img&apos;, {
-              src: require(&apos;./pdf.image&apos;),
-              style: &apos;width:3em;&apos;
-            }));
-            this.element.insertBefore(this.downloadButton, this.iframe);
-          }
-        });
-      }
-    });
-  }
-
   postMessage(message) {
     // If we get here before the iframeReady promise is set up, it&apos;s via the superclass constructor
     if (!this.iframeReady) {
