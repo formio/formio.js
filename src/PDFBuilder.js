@@ -220,16 +220,22 @@ export default class PDFBuilder extends WebformBuilder {
 
   upload(file) {
     const formio = new Formio(this.projectUrl);
-    this.refs.dragDropText.style.display = 'none';
-    this.refs.uploadProgressWrapper.style.display = 'inherit';
+    if (this.refs.dragDropText) {
+      this.refs.dragDropText.style.display = 'none';
+    }
+    if (this.refs.uploadProgressWrapper) {
+      this.refs.uploadProgressWrapper.style.display = 'inherit';
+    }
     formio.uploadFile('url', file, file, '', (event) => {
-      const progress = Math.floor((event.loaded / event.total) * 100);
-      this.refs.uploadProgress.style.width = `${progress}%`;
-      if (progress > 98) {
-        this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
-      }
-      else {
-        this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+      if (this.refs.uploadProgress) {
+        const progress = Math.floor((event.loaded / event.total) * 100);
+        this.refs.uploadProgress.style.width = `${progress}%`;
+        if (progress > 98) {
+          this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
+        }
+        else {
+          this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+        }
       }
     }, `${this.projectUrl}/upload`, {}, 'file')
       .then((result) => {
@@ -237,8 +243,12 @@ export default class PDFBuilder extends WebformBuilder {
           id: result.data.file,
           src: `${result.data.filesServer}${result.data.path}`
         });
-        this.refs.dragDropText.style.display = 'inherit';
-        this.refs.uploadProgressWrapper.style.display = 'none';
+        if (this.refs.dragDropText) {
+          this.refs.dragDropText.style.display = 'inherit';
+        }
+        if (this.refs.uploadProgressWrapper) {
+          this.refs.uploadProgressWrapper.style.display = 'none';
+        }
         this.emit('pdfUploaded', result.data);
         this.redraw();
       })
