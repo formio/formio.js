@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.4
+#### Added
+ - FIO-994: Makes onlyAvailableItems validation optional
+ - Implement translations for static templates
+ - FJS-1183: Add download button if setting showPdfIcon checked
+ - FIO-1015: Added lazy load option for nested webforms inside wizard
+ - Allow override of url & method in request hook
+ 
+#### Fixed
+ - FIO-1036: Fixes an issue where Unique validation return an empty error
+ - Fixing issues where bad template references were causing the pdf upload to crash.
+ - FIO-129: fixed an issue where non-unique tags are added on blur event
+ - FJS-1486, FJS-1407: Fixes an issue where multiple Time's value is considered as an while server-side validation and an issue where front-end validation is not triggered when add a new row of a multiple Time component
+ - FJS-1424: Fixes an issue where changing "hidden" property of the parent component does not affect children's visibility
+
+#### Changed
+ - Cherry picked commits for VPAT/USWDS release
+ - FJS-1395: Removes useless settings option (Default open Rows) of a DataGrid
+
 ### 4.13.0-rc.3
 #### Added
  - FJS-1239: Adds ability to create shortcut buttons for flatpickr
