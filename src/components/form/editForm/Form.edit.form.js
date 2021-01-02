@@ -4,7 +4,7 @@ export default [
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form?limit=4294967295&select=_id,title'
+      url: '/form?limit=4294967295&select=_id,title,display'
     },
     searchField: 'title__regex',
     template: '<span>{{ item.title }}</span>',
@@ -17,6 +17,23 @@ export default [
     tooltip: 'The form to load within this form component.',
     validate: {
       required: true,
+    },
+  },
+  {
+    label: 'Lazy Load',
+    inputType: 'checkbox',
+    defaultValue: true,
+    clearOnHide: true,
+    errorLabel: '',
+    key: 'lazyLoad',
+    type: 'checkbox',
+    tooltip: 'if it is checked, the subform is loaded after navigation to the page with this component within the wizard.',
+    input: true,
+    customConditional( { instance, data }) {
+      const formInfo = instance.root?.getComponent('form')?.defaultDownloadedResources.find(res => res._id === data.form);
+      const displayMode = 'wizard';
+
+      return instance.options?.editForm?.display === displayMode && formInfo && formInfo.display !== displayMode;
     },
   },
   {
