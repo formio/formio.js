@@ -122,10 +122,12 @@ export default class RadioComponent extends Field {
     if (!boolValue(setting) || !value) {
       return true;
     }
+
     const values = this.component.values;
     if (values) {
       return values.findIndex(({ value: optionValue }) => this.normalizeValue(optionValue) === value) !== -1;
     }
+
     return false;
   }
 
