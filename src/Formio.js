@@ -530,7 +530,7 @@ class Formio {
     });
   }
 
-  uploadFile({ storage, file, fileName, dir, fileKey, uploadStartCallback, ...otherArgs }) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -550,7 +550,7 @@ class Formio {
                 if (uploadStartCallback) {
                   uploadStartCallback();
                 }
-                return provider.uploadFile({ storage, file, fileName, dir, fileKey, ...otherArgs });
+                return provider.uploadFile({ storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback });
               }
               else {
                 throw ('Storage provider not found');

@@ -691,28 +691,31 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
-          const filePromise = fileService.uploadFile({
+          const filePromise = fileService.uploadFile(
             storage,
             file,
             fileName,
             dir,
-            url,
-            options,
-            fileKey,
-            groupPermissions,
-            groupId: groupResourceId,
-            progressCallback: (evt) => {
+            // Progress callback
+            (evt) => {
               fileUpload.status = 'progress';
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
               delete fileUpload.message;
               this.redraw();
             },
-            abortCallback: (abort) => this.abortUpload = abort,
-            uploadStartCallback: () => {
+            url,
+            options,
+            fileKey,
+            groupPermissions,
+            groupResourceId,
+            // Upload start callback
+            () => {
               this.fileDropHidden = true;
               this.emit('fileUploadingStart', filePromise);
             },
-          }).then((fileInfo) => {
+            // Abort upload callback
+            (abort) => this.abortUpload = abort,
+          ).then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
                 this.statuses.splice(index, 1);

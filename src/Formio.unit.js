@@ -836,22 +836,22 @@ describe('Formio.js Tests', () => {
       {
         fnName: 'uploadFile',
         formUrl: 'https://api.localhost:3000/project/123/form/123',
-        args: [{
-          storage: 's3',
-          file: 'FILE',
-          fileName: 'file.jpg',
-          dir: 'dir/'
-        }]
+        args: [
+          's3',
+          'FILE',
+          'file.jpg',
+          'dir/'
+        ]
       },
       {
         fnName: 'uploadFile',
         formUrl: 'https://api.localhost:3000/project/123/form/123',
-        args: [{
-          storage: 'dropbox',
-          file: 'FILE',
-          fileName: 'file.jpg',
-          dir: 'dir/'
-        }]
+        args: [
+          'dropbox',
+          'FILE',
+          'file.jpg',
+          'dir/'
+        ]
       },
       {
         fnName: 'downloadFile',
