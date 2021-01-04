@@ -73,14 +73,6 @@ export default [
   },
   {
     type: 'checkbox',
-    label: 'Default Open Rows',
-    key: 'defaultOpen',
-    tooltip: 'Check this if you would like for the rows of the edit grid to be defaulted to opened if values exist.',
-    weight: 420,
-    input: true
-  },
-  {
-    type: 'checkbox',
     label: 'Equal column width',
     key: 'layoutFixed',
     weight: 430,

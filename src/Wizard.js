@@ -17,6 +17,7 @@ export default class Wizard extends Webform {
    * @param {Object} options Options object, supported options are:
    *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
+   *    - allowPrevious: false (default) determines if the breadcrumb bar is clickable or not for visited tabs
    */
   constructor() {
     let element, options;
@@ -35,18 +36,21 @@ export default class Wizard extends Webform {
     this.originalComponents = [];
     this.page = 0;
     this.currentPanel = null;
+    this.currentPanels = null;
     this.currentNextPage = 0;
     this._seenPages = [0];
     this.subWizards = [];
     this.allPages = [];
     this.lastPromise = NativePromise.resolve();
+    this.enabledIndex = 0;
+    this.editMode = false;
   }
 
   isLastPage() {
     const next = this.getNextPage();
 
     if (_.isNumber(next)) {
-      return 0 < next && next >= this.pages.length;
+      return next === -1;
     }
 
     return _.isNull(next);
@@ -54,18 +58,28 @@ export default class Wizard extends Webform {
 
   getPages(args = {}) {
     const { all = false } = args;
-    const pages = this.pages
+    const pages = this.hasExtraPages ? this.components : this.pages;
+    const filteredPages = pages
       .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
 
-    return pages;
+    return filteredPages;
+  }
+
+  get hasExtraPages() {
+    return !_.isEmpty(this.subWizards);
   }
 
   get data() {
     return super.data;
   }
 
+  checkConditions(data, flags, row) {
+    this.establishPages(data);
+    return super.checkConditions(data, flags, row);
+  }
+
   set data(value) {
-    this.establishPages(value);
+    this._data = value;
     _.each(this.getPages({ all: true }), (component) => {
       component.data = this.componentContext(component);
     });
@@ -91,9 +105,15 @@ export default class Wizard extends Webform {
       showCancel: !this.options.readOnly
     });
 
+    if (!this.isSecondInit) {
+      this.isClickableDefined = this.options?.breadcrumbSettings?.hasOwnProperty('clickable');
+      this.isSecondInit = true;
+    }
+
     this.options.breadcrumbSettings = _.defaults(this.options.breadcrumbSettings, {
       clickable: true
     });
+    this.options.allowPrevious = this.options.allowPrevious || false;
 
     this.page = 0;
     const onReady = super.init();
@@ -103,9 +123,11 @@ export default class Wizard extends Webform {
       this.component = this.pages[this.page].component;
     }
 
-    this.on('subWizardsUpdated', () => {
-      if (this.subWizards.length) {
-        this.transformPages();
+    this.on('subWizardsUpdated', (subForm) => {
+      const subWizard = this.subWizards.find(subWizard => subForm?.id && subWizard.subForm?.id === subForm?.id);
+
+      if (this.subWizards.length && subWizard) {
+        subWizard.subForm.setValue(subForm._submission, {}, true);
         this.establishPages();
         this.redraw();
       }
@@ -118,12 +140,12 @@ export default class Wizard extends Webform {
     return `wizard-${this.id}`;
   }
 
-  get form() {
-    return this.wizard;
+  get wizard() {
+    return this.form;
   }
 
-  set form(value) {
-    super.form = value;
+  set wizard(form) {
+    this.setForm(form);
   }
 
   get buttons() {
@@ -145,7 +167,7 @@ export default class Wizard extends Webform {
     return {
       wizardKey: this.wizardKey,
       isBreadcrumbClickable: this.isBreadcrumbClickable(),
-      isSubForm: !!this.parent,
+      isSubForm: !!this.parent && !this.root?.component?.type === 'wizard',
       panels: this.allPages.length ? this.allPages.map(page => page.component) : this.pages.map(page => page.component),
       buttons: this.buttons,
       currentPage: this.page,
@@ -245,6 +267,9 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-submit`]: 'single',
       [`${this.wizardKey}-link`]: 'multiple',
     });
+    if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
+      this.enabledIndex = this.pages?.length - 1;
+    }
 
     const promises = this.attachComponents(this.refs[this.wizardKey], [
       ...this.prefixComps,
@@ -253,7 +278,23 @@ export default class Wizard extends Webform {
     ]);
     this.attachNav();
     this.attachHeader();
-    return promises.then(() => this.emit('render', { component: this.currentPage, page: this.page }));
+    return promises.then(() => {
+      this.emit('render', { component: this.currentPage, page: this.page });
+      this.scrollPageToTop();
+    });
+  }
+
+  scrollPageToTop() {
+    if (!this.refs[this.wizardKey]) {
+      return;
+    }
+
+    if ('scrollIntoView' in this.refs[this.wizardKey]) {
+      this.refs[this.wizardKey].scrollIntoView(true);
+    }
+    else {
+      this.scrollIntoView(this.refs[this.wizardKey]);
+    }
   }
 
   isBreadcrumbClickable() {
@@ -264,7 +305,18 @@ export default class Wizard extends Webform {
       }
     });
 
-    return _.get(currentPage.component, 'breadcrumbClickable', true);
+    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage.component, 'breadcrumbClickable', true);
+  }
+
+  isAllowPrevious() {
+    let currentPage = null;
+    this.pages.map(page => {
+      if (_.isEqual(this.currentPage.component, page.component)) {
+        currentPage = page;
+      }
+    });
+
+    return _.get(currentPage.component, 'allowPrevious', this.options.allowPrevious);
   }
 
   attachNav() {
@@ -289,16 +341,24 @@ export default class Wizard extends Webform {
     });
   }
 
+  emitWizardPageSelected(index) {
+    this.emit('wizardPageSelected', this.pages[index], index);
+  }
+
   attachHeader() {
-    if (this.isBreadcrumbClickable()) {
+    const isAllowPrevious = this.isAllowPrevious();
+
+    if (this.isBreadcrumbClickable() || isAllowPrevious) {
       this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
-        this.addEventListener(link, 'click', (event) => {
-          this.emit('wizardNavigationClicked', this.pages[index]);
-          event.preventDefault();
-          return this.setPage(index).then(() => {
-            this.emit('wizardPageSelected', this.pages[index], index);
+        if (!isAllowPrevious || index <= this.enabledIndex) {
+          this.addEventListener(link, 'click', (event) => {
+            this.emit('wizardNavigationClicked', this.pages[index]);
+            event.preventDefault();
+            return this.setPage(index).then(() => {
+              this.emitWizardPageSelected(index);
+            });
           });
-        });
+        }
       });
     }
   }
@@ -317,36 +377,44 @@ export default class Wizard extends Webform {
 
   transformPages() {
     const allComponents = [];
+    const components = this.getSortedComponents(this);
     let defferedComponents = [];
     this.allPages = [];
 
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
-      let hasNested = false;
       const nestedPages = [];
-      const components = nestedComp?.subForm ? nestedComp?.subForm.components : nestedComp.components || [];
-      const additionalComponents = components.filter(comp => !comp.subForm);
+      const currentComponents = nestedComp?.subForm ? this.getSortedComponents(nestedComp.subForm) : nestedComp?.components || [];
+      const visibleComponents = currentComponents.filter(comp => comp._visible);
+      const additionalComponents = visibleComponents.filter(comp => !comp.subForm);
+      let hasNested = false;
 
-      eachComponent(components, (comp) => {
-        if (comp.component.type === 'panel' && !getAllComponents(comp, compsArr, false)) {
+      eachComponent(visibleComponents, (comp) => {
+        if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
           if (pushAllowed) {
+            this.setRootPanelId(comp);
             nestedPages.push(comp);
           }
           hasNested = true;
         }
 
         if (comp && comp.subForm) {
-          hasNested = getAllComponents(comp, nestedPages, pushAllowed);
+          const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
+          if (!hasNested) {
+            hasNested = hasNestedForm;
+          }
         }
       }, true);
 
       if (nestedComp.component.type === 'panel') {
         if (!hasNested && pushAllowed) {
+          this.setRootPanelId(nestedComp);
           compsArr.push(nestedComp);
         }
         if (hasNested && additionalComponents.length) {
           const newComp = _.clone(nestedComp);
           newComp.components = additionalComponents;
+          this.setRootPanelId(newComp);
           defferedComponents.push(newComp);
         }
       }
@@ -357,11 +425,48 @@ export default class Wizard extends Webform {
       return hasNested;
     };
 
-    this.components.forEach((component) => {
+    components.forEach((component) => {
       getAllComponents(component, allComponents);
     }, []);
 
     this.allPages = allComponents;
+  }
+
+  getSortedComponents({ components, originalComponents }) { // sorts components if they were shuffled after the conditional logic
+    const currentComponents = [];
+    const currentPages = [];
+
+    if (components && components.length) {
+      components.map(page => {
+        if (page.component.type === 'panel') {
+          currentPages[page.component.key || page.component.title] = page;
+        }
+      });
+    }
+
+    originalComponents?.forEach((item) => {
+      if (!item.key) {
+        item.key = item.title;
+      }
+      if (currentPages[item.key]) {
+        currentComponents.push(currentPages[item.key]);
+      }
+    });
+
+    return currentComponents;
+  }
+
+  findRootPanel(component) {
+    return component.parent?.parent ? this.findRootPanel(component.parent) : component;
+  }
+
+  setRootPanelId(component) {
+    if (component.rootPanelId && component.rootPanelId !== component.id) {
+      return;
+    }
+
+    const parent = component.parent?.parent ? this.findRootPanel(component.parent) : component;
+    component.rootPanelId = parent.id;
   }
 
   establishPages(data = this.data) {
@@ -385,7 +490,7 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const isVisible = checkCondition(item, data, data, this.component, this);
+          const isVisible = checkCondition(item, data, data, this.component, this) && !item.hidden;
           if (isVisible) {
             visible.push(item);
             if (page) {
@@ -415,6 +520,11 @@ export default class Wizard extends Webform {
       });
     }
 
+    if (this.pages.length) {
+      this.emit('pagesChanged');
+    }
+
+    this.transformPages();
     if (this.allPages && this.allPages.length) {
       this.pages = this.allPages;
     }
@@ -436,8 +546,18 @@ export default class Wizard extends Webform {
       this.pageFieldLogic(num);
 
       this.getNextPage();
-      if (!this._seenPages.includes(num)) {
-        this._seenPages = this._seenPages.concat(num);
+      let parentNum = num;
+      if (this.hasExtraPages) {
+        const pageFromPages = this.pages[num];
+        const pageFromComponents = this.components[num];
+        if (!pageFromComponents || pageFromPages.id !== pageFromComponents.id) {
+          parentNum = this.components.findIndex(comp => {
+            return comp.id === this.pages[parentNum].rootPanelId;
+          });
+        }
+      }
+      if (!this._seenPages.includes(parentNum)) {
+        this._seenPages = this._seenPages.concat(parentNum);
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
@@ -469,7 +589,7 @@ export default class Wizard extends Webform {
     const form = this.pages[this.page].component;
     // Check conditional nextPage
     if (form) {
-      const page = this.pages.length > (this.page + 1) ? this.page + 1 : -1;
+      const page = this.pages.length > (this.page + 1) && !this.showAllErrors ? this.page + 1 : -1;
       if (form.nextPage) {
         const next = this.evaluate(form.nextPage, {
           next: page,
@@ -505,8 +625,7 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const hasExtraPages = !_.isEmpty(this.subWizards) && !_.isEqual(this.pages, this.components);
-    const pages = hasExtraPages ? this.getComponents() : this.getPages();
+    const pages = this.getPages();
 
     return NativePromise.all(pages.map((page) => {
       page.options.beforeSubmit = true;
@@ -533,6 +652,10 @@ export default class Wizard extends Webform {
     });
   }
 
+  emitNextPage() {
+    this.emit('nextPage', { page: this.page, submission: this.submission });
+  }
+
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
@@ -546,7 +669,12 @@ export default class Wizard extends Webform {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
-          this.emit('nextPage', { page: this.page, submission: this.submission });
+          if (!(this.options.readOnly || this.editMode) && this.enabledIndex < this.page) {
+            this.enabledIndex = this.page;
+            this.redraw();
+          }
+
+          this.emitNextPage();
         });
       });
     }
@@ -556,10 +684,14 @@ export default class Wizard extends Webform {
     }
   }
 
+  emitPrevPage() {
+    this.emit('prevPage', { page: this.page, submission: this.submission });
+  }
+
   prevPage() {
     return this.beforePage().then(() => {
       return this.setPage(this.getPreviousPage()).then(() => {
-        this.emit('prevPage', { page: this.page, submission: this.submission });
+        this.emitPrevPage();
       });
     });
   }
@@ -568,6 +700,10 @@ export default class Wizard extends Webform {
     if (super.cancel(noconfirm)) {
       this.setPristine(true);
       return this.setPage(0).then(() => {
+        if (this.enabledIndex) {
+          this.enabledIndex = 0;
+        }
+        this.onChange();
         this.redraw();
         return this.page;
       });
@@ -618,19 +754,38 @@ export default class Wizard extends Webform {
     if (!form) {
       return;
     }
-    this.wizard = form;
-    this.component.components = form.components || [];
-    this.setComponentSchema();
+
     return super.setForm(form, flags);
   }
 
-  setValue(submission, flags = {}) {
+  onSetForm(clonedForm, initialForm) {
+    this.component.components = (this._parentPath ? initialForm.components : clonedForm.components) || [];
+    this.setComponentSchema();
+  }
+
+  setEditMode(submission) {
+    if (!this.editMode && submission._id && !this.options.readOnly) {
+      this.editMode = true;
+      this.redraw();
+    }
+  }
+
+  setValue(submission, flags = {}, ignoreEstablishment) {
     this._submission = submission;
-    this.establishPages(submission.data);
+
+    if (flags && flags.fromSubmission && (this.options.readOnly || this.editMode)) {
+      this._data = submission.data;
+    }
+    if (!ignoreEstablishment) {
+      this.establishPages(submission.data);
+    }
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
+
     this.pageFieldLogic(this.page);
+    this.setEditMode(submission);
+
     return changed;
   }
 
@@ -688,10 +843,24 @@ export default class Wizard extends Webform {
     }
 
     // If the pages change, need to redraw the header.
-    const currentPanels = this.pages.map(page => page.component.key);
-    const panels = this.establishPages().map(panel => panel.key);
+    let currentPanels;
+    let panels;
     const currentNextPage = this.currentNextPage;
-    if (!_.isEqual(panels, currentPanels)) {
+    if (this.hasExtraPages) {
+      currentPanels = this.pages.map(page => page.component.key);
+      this.establishPages();
+      panels = this.pages.map(page => page.component.key);
+    }
+    else {
+      currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
+      panels = this.establishPages().map(panel => panel.key);
+      this.currentPanels = panels;
+      if (this.currentPanel && this.currentPanel.key) {
+        this.setPage(this.currentPanels.findIndex(panel => panel === this.currentPanel.key));
+      }
+    }
+
+    if (!_.isEqual(panels, currentPanels) || (flags && flags.fromSubmission)) {
       this.redrawHeader();
     }
 
@@ -699,6 +868,13 @@ export default class Wizard extends Webform {
     if (currentNextPage !== this.getNextPage()) {
       this.redrawNavigation();
     }
+  }
+
+  redraw() {
+    if (this.parent?.component?.modalEdit) {
+      return this.parent.redraw();
+    }
+    return super.redraw();
   }
 
   checkValidity(data, dirty, row, currentPageOnly) {

@@ -30,6 +30,10 @@ const multipleTextareaInsideConditionalComponent = require('./multipleTextareaIn
 const formComponentWithConditionalRenderingForm = require('./formComponentWithConditionalRenderingForm.json');
 const disabledNestedForm = require('./disabledNestedForm.json');
 const propertyActions = require('./propertyActions.json');
+const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedForm.json');
+const formWithDateTimeComponents = require('./formWithDateTimeComponents');
+const formWithCollapsedPanel = require('./formWithCollapsedPanel.json');
+const formWithCustomFormatDate = require('./formWithCustomFormatDate.json');
 
 module.exports = {
   advanced,
@@ -64,4 +68,8 @@ module.exports = {
   formComponentWithConditionalRenderingForm,
   disabledNestedForm,
   propertyActions,
+  formWithEditGridAndNestedDraftModalRow,
+  formWithDateTimeComponents,
+  formWithCollapsedPanel,
+  formWithCustomFormatDate
 };

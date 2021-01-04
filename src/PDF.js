@@ -111,6 +111,8 @@ export default class PDF extends Webform {
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
       // Post the form to the iframe
+      this.form.base = Formio.getBaseUrl();
+      this.form.projectUrl = Formio.getProjectUrl();
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
@@ -223,33 +225,6 @@ export default class PDF extends Webform {
     return changed;
   }
 
-  setSubmission(submission) {
-    return super.setSubmission(submission).then(() => {
-      if (this.formio) {
-        this.formio.getDownloadUrl().then((url) => {
-          // Add a download button if it has a download url.
-          if (!url) {
-            return;
-          }
-          if (!this.downloadButton) {
-            if (this.options.primaryProject) {
-              url += `&project=${this.options.primaryProject}`;
-            }
-            this.downloadButton = this.ce('a', {
-              href: url,
-              target: '_blank',
-              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-            }, this.ce('img', {
-              src: require('./pdf.image'),
-              style: 'width:3em;'
-            }));
-            this.element.insertBefore(this.downloadButton, this.iframe);
-          }
-        });
-      }
-    });
-  }
-
   postMessage(message) {
     // If we get here before the iframeReady promise is set up, it's via the superclass constructor
     if (!this.iframeReady) {
@@ -319,22 +294,24 @@ export default class PDF extends Webform {
 /**
  * Listen for window messages.
  */
-window.addEventListener('message', (event) => {
-  let eventData = null;
-  try {
-    eventData = JSON.parse(event.data);
-  }
-  catch (err) {
-    eventData = null;
-  }
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', (event) => {
+    let eventData = null;
+    try {
+      eventData = JSON.parse(event.data);
+    }
+    catch (err) {
+      eventData = null;
+    }
 
-  // If this form exists, then emit the event within this form.
-  if (
-    eventData &&
-    eventData.name &&
-    eventData.formId &&
-    Formio.forms.hasOwnProperty(eventData.formId)
-  ) {
-    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
-  }
-});
+    // If this form exists, then emit the event within this form.
+    if (
+      eventData &&
+      eventData.name &&
+      eventData.formId &&
+      Formio.forms.hasOwnProperty(eventData.formId)
+    ) {
+      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+    }
+  });
+}

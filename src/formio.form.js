@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import AllComponents from './components';
 import Builders from './builders/Builders';
 import Components from './components/Components';
@@ -9,6 +10,7 @@ import Widgets from './widgets';
 import Formio from './Formio';
 import Form from './Form';
 import Utils from './utils';
+import Evaluator from './utils/Evaluator';
 Components.setComponents(AllComponents);
 const registerPlugin = (plugin) => {
   // Sanity check.
@@ -19,7 +21,7 @@ const registerPlugin = (plugin) => {
     const current = plugin.framework || Templates.framework || 'bootstrap';
     switch (key) {
       case 'options':
-        Formio.options = plugin.options;
+        Formio.options = _.merge(Formio.options, plugin.options);
         break;
       case 'templates':
         for (const framework of Object.keys(plugin.templates)) {
@@ -53,6 +55,9 @@ const registerPlugin = (plugin) => {
         break;
       case 'rules':
         Rules.addRules(plugin.rules);
+        break;
+      case 'evaluator':
+        Evaluator.registerEvaluator(plugin.evaluator);
         break;
       default:
         console.log('Unknown plugin option', key);

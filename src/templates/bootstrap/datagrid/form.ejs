@@ -16,7 +16,7 @@
       {% if (ctx.hasExtraColumn) { %}
       <th>
         {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
-        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow">
+        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
           <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another')}}
         </button>
         {% } %}
@@ -42,14 +42,14 @@
         </td>
       {% } %}
       {% ctx.columns.forEach(function(col) { %}
-        <td ref="{{ctx.datagridKey}}">
+        <td ref="{{ctx.datagridKey}}" class="col-md-{{ctx.colWidth}}">
           {{row[col.key]}}
         </td>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
         {% if (!ctx.builder && ctx.hasRemoveButtons) { %}
         <td>
-          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow">
+          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow" tabindex="{{ctx.tabIndex}}">
             <i class="{{ctx.iconClass('remove-circle')}}"></i>
           </button>
         </td>
@@ -67,7 +67,7 @@
   <tfoot>
     <tr>
       <td colspan="{{ctx.numColumns + 1}}">
-        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow">
+        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
           <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another')}}
         </button>
       </td>

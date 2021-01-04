@@ -17,7 +17,7 @@
     {% ctx.tableComponents.forEach(function(row, rowIndex) { %}
     <tr ref="row-{{ctx.id}}">
       {% row.forEach(function(column, colIndex) { %}
-      <td ref="{{ctx.tableKey}}-{{rowIndex}}"{% if (ctx.cellClassName) { %} class="{{ctx.cellClassName}}"{% } %}>{{column}}</td>
+      <td ref="{{ctx.tableKey}}-{{rowIndex}}"{% if (ctx.cellClassName) { %} class="{{ctx.cellClassName}} col-md-{{ctx.colWidth}}"{% } %}>{{column}}</td>
       {% }) %}
     </tr>
     {% }) %}

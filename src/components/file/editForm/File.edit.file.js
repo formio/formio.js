@@ -209,7 +209,7 @@ export default [
     input: true,
     key: 'filePattern',
     label: 'File Pattern',
-    placeholder: '.pdf,.jpg',
+    placeholder: '.jpg,video/*,application/pdf',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file patterns.',
     weight: 50
   },

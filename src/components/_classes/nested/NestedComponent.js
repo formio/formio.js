@@ -36,17 +36,25 @@ export default class NestedComponent extends Field {
   set collapsed(value) {
     this._collapsed = value;
     this.redraw();
-    if (!value) {
+    if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
   }
 
   set visible(value) {
-    super.visible = value;
+    // DO NOT CALL super here.  There is an issue where clearOnHide was getting triggered with
+    // subcomponents because the "parentVisible" flag was set to false when it should really be
+    // set to true.
+    const visibilityChanged = this._visible !== value;
+    this._visible = value;
     const isVisible = this.visible;
     const forceShow = this.options.show && this.options.show[this.component.key];
     const forceHide = this.options.hide && this.options.hide[this.component.key];
     this.components.forEach(component => {
+      // Set the parent visibility first since we may have nested components within nested components
+      // and they need to be able to determine their visibility based on the parent visibility.
+      component.parentVisible = isVisible;
+
       const conditionallyVisible = component.conditionallyVisible();
       if (forceShow || conditionallyVisible) {
         component.visible = true;
@@ -58,8 +66,11 @@ export default class NestedComponent extends Field {
       if (!component.visible) {
         component.error = '';
       }
-      component.parentVisible = isVisible;
     });
+    if (visibilityChanged) {
+      this.clearOnHide();
+      this.redraw();
+    }
   }
 
   get visible() {
@@ -68,9 +79,7 @@ export default class NestedComponent extends Field {
 
   set parentVisible(value) {
     super.parentVisible = value;
-    this.components.forEach(component => {
-      component.parentVisible = this.visible;
-    });
+    this.components.forEach(component => component.parentVisible = this.visible);
   }
 
   get parentVisible() {
@@ -211,9 +220,15 @@ export default class NestedComponent extends Field {
     originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
-    const [key, ...remainingPath] = path;
+    const newPath = _.clone(path);
+    let key = newPath.shift();
+    const remainingPath = newPath;
     let comp = null;
     let possibleComp = null;
+
+    if (_.isNumber(key)) {
+      key = remainingPath.shift();
+    }
 
     if (!_.isString(key)) {
       return comp;
@@ -390,6 +405,12 @@ export default class NestedComponent extends Field {
     return comp;
   }
 
+  beforeFocus() {
+    if (this.parent && 'beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+  }
+
   render(children) {
     // If already rendering, don't re-render.
     return super.render(children || this.renderTemplate(this.templateName, {
@@ -534,10 +555,31 @@ export default class NestedComponent extends Field {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    components = components || this.getComponents();
-    return components.reduce((valid, comp) => {
+    components = components && _.isArray(components) ? components : this.getComponents();
+    const isValid = components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
+
+    this.checkModal(isValid, this.isDirty);
+    return isValid;
+  }
+
+  checkModal(isValid, dirty) {
+    if (!this.component.modalEdit || !this.componentModal) {
+      return;
+    }
+    const messages = this.errors;
+    this.clearErrorClasses(this.refs.openModalWrapper);
+    this.error = '';
+    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {
+      this.error = {
+        component: this.component,
+        level: 'hidden',
+        message: this.t('Fix the errors'),
+        messages,
+      };
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
+    }
   }
 
   checkConditions(data, flags, row) {
@@ -608,10 +650,12 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    return this.getComponents().reduce(
+    const isValid = this.getComponents().reduce(
       (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
       super.checkValidity(data, dirty, row, silentCheck)
     );
+    this.checkModal(isValid, dirty);
+    return isValid;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
@@ -627,11 +671,26 @@ export default class NestedComponent extends Field {
     this.getComponents().forEach((comp) => comp.setPristine(pristine));
   }
 
+  get isPristine() {
+    return this.pristine && this.getComponents().every((c) => c.isPristine);
+  }
+
+  get isDirty() {
+    return this.dirty && this.getComponents().every((c) => c.isDirty);
+  }
+
   detach() {
     this.components.forEach(component => {
       component.detach();
     });
     super.detach();
+  }
+
+  clear() {
+    this.components.forEach(component => {
+      component.clear();
+    });
+    super.clear();
   }
 
   destroy() {
@@ -647,7 +706,9 @@ export default class NestedComponent extends Field {
 
   get errors() {
     const thisErrors = this.error ? [this.error] : [];
-    return this.getComponents().reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors);
+    return this.getComponents()
+      .reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors)
+      .filter(err => err.level !== 'hidden');
   }
 
   getValue() {

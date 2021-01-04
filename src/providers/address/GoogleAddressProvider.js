@@ -1,5 +1,7 @@
+/* globals google */
+import Formio from '../../Formio';
+import _ from 'lodash';
 import { AddressProvider } from './AddressProvider';
-import NativePromise from 'native-promise-only';
 
 export class GoogleAddressProvider extends AddressProvider {
   static get name() {
@@ -10,43 +12,122 @@ export class GoogleAddressProvider extends AddressProvider {
     return 'Google Maps';
   }
 
-  get defaultOptions() {
-    return {
-      params: {
-        sensor: 'false',
-      },
-    };
-  }
+  constructor(options = {}) {
+    super(options);
+    this.addRequiredProviderOptions();
 
-  get queryProperty() {
-    return 'address';
-  }
+    let src = 'https://maps.googleapis.com/maps/api/js?v=quarterly&libraries=places&callback=googleMapsCallback';
 
-  get responseProperty() {
-    return 'results';
+    if (options.params?.key) {
+      src += `&key=${options.params.key}`;
+    }
+
+    Formio.requireLibrary(this.getLibraryName(), 'google.maps.places', src);
   }
 
   get displayValueProperty() {
+    return 'formattedPlace';
+  }
+
+  get alternativeDisplayValueProperty() {
     return 'formatted_address';
   }
 
-  makeRequest(options = {}) {
-    return new NativePromise((resolve, reject) => {
-      var xhr = new XMLHttpRequest();
+  get autocompleteOptions() {
+    let options = _.get(this.options, 'params.autocompleteOptions', {});
 
-      xhr.open('GET', this.getRequestUrl(options), true);
+    if (!_.isObject(options)) {
+      options = {};
+    }
 
-      xhr.onload = () => resolve(JSON.parse(xhr.response));
+    return options;
+  }
 
-      xhr.onerror = reject;
+  beforeMergeOptions(options) {
+    // providing support of old Google Provider option
+    this.convertRegionToAutocompleteOption(options);
+  }
 
-      xhr.send();
+  getLibraryName() {
+    return 'googleMaps';
+  }
+
+  convertRegionToAutocompleteOption(options) {
+    const providerOptions = options;
+    let region = _.get(providerOptions, 'params.region', '');
+
+    if (region && !_.has(options, 'params.autocompleteOptions')) {
+      region = region.toUpperCase().trim();
+      // providing compatibility with ISO 3166-1 Alpha-2 county codes (for checking compatibility https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
+      const countryCodes = { 'UK': 'GB' };
+
+      if (countryCodes[region]) {
+        region = countryCodes[region];
+      }
+
+      _.set(providerOptions, 'params.autocompleteOptions.componentRestrictions.country', [region]);
+    }
+  }
+
+  getRequiredAddressProperties() {
+    return ['address_components', 'formatted_address','geometry','place_id', 'plus_code', 'types'];
+  }
+
+  addRequiredProviderOptions() {
+    const options = this.autocompleteOptions;
+    const addressProperties = this.getRequiredAddressProperties();
+
+    if (_.isArray(options.fields) && options.fields.length > 0 ) {
+      options.fields.forEach(optionalField => {
+        if (!addressProperties.some(addressProp => optionalField === addressProp)) {
+          addressProperties.push(optionalField);
+        }
+      });
+    }
+    options.fields = addressProperties;
+  }
+
+  filterPlace(place) {
+    place = place || {};
+    const filteredPlace = {};
+
+    if (this.autocompleteOptions) {
+      this.autocompleteOptions.fields.forEach(field => {
+        if (place[field]) {
+          filteredPlace[field] = place[field];
+        }
+      });
+    }
+
+    return filteredPlace;
+  }
+
+  attachAutocomplete(elem, index, onSelectAddress) {
+    Formio.libraryReady(this.getLibraryName()).then(() => {
+      const autocomplete = new google.maps.places.Autocomplete(elem, this.autocompleteOptions);
+
+      autocomplete.addListener('place_changed', ()=>{
+        const place = this.filterPlace(autocomplete.getPlace());
+        place.formattedPlace = _.get(autocomplete, 'gm_accessors_.place.se.formattedPrediction', place[this.alternativeDisplayValueProperty]);
+
+        onSelectAddress(place, elem, index);
+      });
     });
   }
 
-  getRequestUrl(options = {}) {
-    const { params } = options;
+  search() {
+    return Promise.resolve();
+  }
 
-    return `https://maps.googleapis.com/maps/api/geocode/json?${this.serialize(params)}`;
+  makeRequest() {
+    return Promise.resolve();
+  }
+
+  getDisplayValue(address) {
+    const displayedProperty = _.has(address, this.displayValueProperty)
+      ? this.displayValueProperty
+      : this.alternativeDisplayValueProperty;
+
+    return _.get(address, displayedProperty, '');
   }
 }

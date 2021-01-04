@@ -41,7 +41,7 @@ export default class TableComponent extends NestedComponent {
       group: 'layout',
       icon: 'table',
       weight: 40,
-      documentation: 'http://help.form.io/userguide/#table',
+      documentation: '/userguide/#table',
       schema: TableComponent.schema()
     };
   }
@@ -91,6 +91,14 @@ export default class TableComponent extends NestedComponent {
     return `table-${this.key}`;
   }
 
+  get colWidth() {
+    const { numCols } = this.component;
+    if (!numCols || typeof numCols !== 'number') {
+      return '';
+    }
+    return Math.floor(12 / numCols).toString();
+  }
+
   constructor(...args) {
     super(...args);
     this.noField = true;
@@ -137,6 +145,7 @@ export default class TableComponent extends NestedComponent {
     return super.render(this.renderTemplate('table', {
       cellClassName: this.cellClassName,
       tableKey: this.tableKey,
+      colWidth: this.colWidth,
       tableComponents: this.table.map(row =>
         row.map(column =>
           this.renderComponents(column)

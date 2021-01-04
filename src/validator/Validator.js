@@ -27,6 +27,7 @@ class ValidationChecker {
       required: {
         key: 'validate.required',
         method: 'validateRequired',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('required'), {
             field: component.errorLabel,
@@ -47,8 +48,22 @@ class ValidationChecker {
           return !component.isEmpty(value);
         }
       },
+      onlyAvailableItems: {
+        key: 'validate.onlyAvailableItems',
+        method: 'validateValueAvailability',
+        message(component) {
+          return component.t(component.errorMessage('valueIsNotAvailable'), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting) {
+          return !boolValue(setting);
+        }
+      },
       unique: {
         key: 'validate.unique',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('unique'), {
             field: component.errorLabel,
@@ -61,8 +76,8 @@ class ValidationChecker {
             return true;
           }
 
-          // Skip if value is empty
-          if (!value || _.isEmpty(value)) {
+          // Skip if value is empty object or falsy
+          if (!value || _.isObjectLike(value) && _.isEmpty(value)) {
             return true;
           }
 
@@ -101,10 +116,9 @@ class ValidationChecker {
             else if (_.isArray(value)) {
               query[path] = { $all: value };
             }
-            else if (_.isObject(value)) {
+            else if (_.isObject(value) || _.isNumber(value)) {
               query[path] = { $eq: value };
             }
-
             // Only search for non-deleted items
             query.deleted = { $eq: null };
 
@@ -126,6 +140,7 @@ class ValidationChecker {
       },
       multiple: {
         key: 'validate.multiple',
+        hasLabel: true,
         message(component) {
           const shouldBeArray = boolValue(component.component.multiple) || Array.isArray(component.emptyValue);
           const isRequired = component.component.validate.required;
@@ -163,6 +178,7 @@ class ValidationChecker {
       },
       select: {
         key: 'validate.select',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('select'), {
             field: component.errorLabel,
@@ -271,6 +287,7 @@ class ValidationChecker {
       },
       min: {
         key: 'validate.min',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('min'), {
             field: component.errorLabel,
@@ -291,6 +308,7 @@ class ValidationChecker {
       },
       max: {
         key: 'validate.max',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('max'), {
             field: component.errorLabel,
@@ -363,6 +381,7 @@ class ValidationChecker {
       },
       minLength: {
         key: 'validate.minLength',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('minLength'), {
             field: component.errorLabel,
@@ -380,6 +399,7 @@ class ValidationChecker {
       },
       maxLength: {
         key: 'validate.maxLength',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('maxLength'), {
             field: component.errorLabel,
@@ -397,6 +417,7 @@ class ValidationChecker {
       },
       maxWords: {
         key: 'validate.maxWords',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('maxWords'), {
             field: component.errorLabel,
@@ -414,6 +435,7 @@ class ValidationChecker {
       },
       minWords: {
         key: 'validate.minWords',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('minWords'), {
             field: component.errorLabel,
@@ -430,6 +452,7 @@ class ValidationChecker {
         }
       },
       email: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('invalid_email'), {
             field: component.errorLabel,
@@ -447,6 +470,7 @@ class ValidationChecker {
         }
       },
       url: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('invalid_url'), {
             field: component.errorLabel,
@@ -464,6 +488,7 @@ class ValidationChecker {
         }
       },
       date: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('invalid_date'), {
             field: component.errorLabel,
@@ -475,6 +500,7 @@ class ValidationChecker {
         }
       },
       day: {
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('invalid_day'), {
             field: component.errorLabel,
@@ -533,6 +559,7 @@ class ValidationChecker {
       },
       pattern: {
         key: 'validate.pattern',
+        hasLabel: true,
         message(component, setting) {
           return component.t(_.get(component, 'component.validate.patternMessage', component.errorMessage('pattern'), {
             field: component.errorLabel,
@@ -571,6 +598,7 @@ class ValidationChecker {
       },
       mask: {
         key: 'inputMask',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('mask'), {
             field: component.errorLabel,
@@ -627,6 +655,7 @@ class ValidationChecker {
       },
       maxDate: {
         key: 'maxDate',
+        hasLabel: true,
         message(component, setting) {
           const date = getDateSetting(setting);
           return component.t(component.errorMessage('maxDate'), {
@@ -654,6 +683,7 @@ class ValidationChecker {
       },
       minDate: {
         key: 'minDate',
+        hasLabel: true,
         message(component, setting) {
           const date = getDateSetting(setting);
           return component.t(component.errorMessage('minDate'), {
@@ -680,6 +710,7 @@ class ValidationChecker {
       },
       minYear: {
         key: 'minYear',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('minYear'), {
             field: component.errorLabel,
@@ -700,6 +731,7 @@ class ValidationChecker {
       },
       maxYear: {
         key: 'maxYear',
+        hasLabel: true,
         message(component, setting) {
           return component.t(component.errorMessage('maxYear'), {
             field: component.errorLabel,
@@ -721,6 +753,7 @@ class ValidationChecker {
       calendar: {
         key: 'validate.calendar',
         messageText: '',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(this.validators.calendar.messageText), {
             field: component.errorLabel,
@@ -765,6 +798,7 @@ class ValidationChecker {
       time: {
         key: 'validate.time',
         messageText: 'Invalid time',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage(this.validators.time.messageText), {
             field: component.errorLabel
@@ -809,9 +843,9 @@ class ValidationChecker {
     }
   }
 
-  validate(component, validatorName, value, data, index, row, async) {
+  validate(component, validatorName, value, data, index, row, async, conditionallyVisible) {
     // Skip validation for conditionally hidden components
-    if (!component.conditionallyVisible()) {
+    if (!conditionallyVisible) {
       return false;
     }
 
@@ -826,6 +860,7 @@ class ValidationChecker {
         path: getArrayFromComponentPath(component.path || ''),
         context: {
           validator: validatorName,
+          hasLabel: validator.hasLabel,
           setting,
           key: component.key,
           label: component.label,
@@ -879,7 +914,7 @@ class ValidationChecker {
 
     const validateCustom     = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
-
+    const conditionallyVisible = component.conditionallyVisible();
     // Run primary validators
     const resultsOrPromises = _(component.validators).chain()
       .map(validatorName => {
@@ -897,10 +932,10 @@ class ValidationChecker {
 
         // Handle the case when there is no values defined and it is required.
         if (validatorName === 'required' && !values.length) {
-          return [this.validate(component, validatorName, null, data, 0, row, async)];
+          return [this.validate(component, validatorName, null, data, 0, row, async, conditionallyVisible)];
         }
 
-        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row, async));
+        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row, async, conditionallyVisible));
       })
       .flatten()
       .value();
@@ -908,11 +943,11 @@ class ValidationChecker {
     // Run the "unique" pseudo-validator
     component.component.validate = component.component.validate || {};
     component.component.validate.unique = component.component.unique;
-    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data, 0, data, async));
+    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data, 0, data, async, conditionallyVisible));
 
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
-    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async));
+    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async, conditionallyVisible));
 
     // Define how results should be formatted
     const formatResults = results => {
@@ -927,6 +962,7 @@ class ValidationChecker {
             row,
             error: result
           });
+          result.context.hasLabel = false;
         });
       }
 

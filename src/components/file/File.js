@@ -8,7 +8,16 @@ let Camera;
 let webViewCamera = navigator.camera || Camera;
 
 // canvas.toBlob polyfill.
-if (!HTMLCanvasElement.prototype.toBlob) {
+
+let htmlCanvasElement;
+if (typeof window !== 'undefined') {
+  htmlCanvasElement = window.HTMLCanvasElement;
+}
+else if (typeof global !== 'undefined') {
+  htmlCanvasElement = global.HTMLCanvasElement;
+}
+
+if (htmlCanvasElement && !htmlCanvasElement.prototype.toBlob) {
   Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
     value: function(callback, type, quality) {
       var canvas = this;
@@ -48,7 +57,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: 'http://help.form.io/userguide/#file',
+      documentation: '/userguide/#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -58,8 +67,8 @@ export default class FileComponent extends Field {
     super.init();
     webViewCamera = navigator.camera || Camera;
     const fileReaderSupported = (typeof FileReader !== 'undefined');
-    const formDataSupported = Boolean(window.FormData);
-    const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false;
+    const formDataSupported = typeof window !== 'undefined' ? Boolean(window.FormData) : false;
+    const progressSupported = (typeof window !== 'undefined' && window.XMLHttpRequest) ? ('upload' in new XMLHttpRequest) : false;
 
     this.support = {
       filereader: fileReaderSupported,
@@ -74,6 +83,7 @@ export default class FileComponent extends Field {
     });
     this.cameraMode = false;
     this.statuses = [];
+    this.fileDropHidden = false;
   }
 
   get dataReady() {
@@ -119,6 +129,17 @@ export default class FileComponent extends Field {
       (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
   }
 
+  get fileDropHidden() {
+    return this._fileBrowseHidden;
+  }
+
+  set fileDropHidden(value) {
+    if (typeof value !== 'boolean' || this.component.multiple) {
+      return;
+    }
+    this._fileBrowseHidden = value;
+  }
+
   render() {
     return super.render(this.renderTemplate('file', {
       fileSize: this.fileSize,
@@ -126,6 +147,7 @@ export default class FileComponent extends Field {
       statuses: this.statuses,
       disabled: this.disabled,
       support: this.support,
+      fileDropHidden: this.fileDropHidden
     }));
   }
 
@@ -261,9 +283,20 @@ export default class FileComponent extends Field {
     if (this.component.multiple) {
       options.multiple = true;
     }
+    //use "accept" attribute only for desktop devices because of its limited support by mobile browsers
+    if (!this.isMobile.any) {
+      const filePattern = this.component.filePattern.trim() || '';
+      const imagesPattern = 'image/*';
 
-    if (this.imageUpload) {
-      options.accept = 'image/*';
+      if (this.imageUpload && (!filePattern || filePattern === '*')) {
+        options.accept = imagesPattern;
+      }
+      else if (this.imageUpload && !filePattern.includes(imagesPattern)) {
+        options.accept = `${imagesPattern},${filePattern}`;
+      }
+      else {
+        options.accept = filePattern;
+      }
     }
 
     return options;
@@ -325,7 +358,9 @@ export default class FileComponent extends Field {
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
-
+        if (!this.component.multiple && this.statuses.some(fileUpload => fileUpload.status === 'progress')) {
+          return;
+        }
         this.browseFiles(this.browseOptions)
           .then((files) => {
             this.upload(files);
@@ -427,7 +462,7 @@ export default class FileComponent extends Field {
     }
 
     this.refs.fileType.forEach((fileType, index) => {
-      this.dataValue[index].fileType = this.component.fileTypes[0].label;
+      this.dataValue[index].fileType = this.dataValue[index].fileType || this.component.fileTypes[0].label;
 
       this.addEventListener(fileType, 'change', (event) => {
         event.preventDefault();
@@ -448,6 +483,9 @@ export default class FileComponent extends Field {
         NativePromise.all(loadingImages).then(() => {
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
+      }
+      else {
+        this.filesReadyResolve();
       }
     }
     return superAttach;
@@ -571,6 +609,23 @@ export default class FileComponent extends Field {
           message: this.t('Starting upload'),
         };
 
+        // Check if file with the same name is being uploaded
+        const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
+        const fileWithSameNameUploadedWithError = this.statuses.findIndex(fileStatus =>
+          fileStatus.originalName === file.name
+          && fileStatus.status === 'error'
+        );
+
+        if (fileWithSameNameUploaded) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t('File with the same name is already uploaded');
+        }
+
+        if (fileWithSameNameUploadedWithError !== -1) {
+          this.statuses.splice(fileWithSameNameUploadedWithError, 1);
+          this.redraw();
+        }
+
         // Check file pattern
         if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
           fileUpload.status = 'error';
@@ -611,7 +666,7 @@ export default class FileComponent extends Field {
             file.private = true;
           }
           const { storage, options = {} } = this.component;
-          const url = this.interpolate(this.component.url);
+          const url = this.interpolate(this.component.url, { file: fileUpload });
           let groupKey = null;
           let groupPermissions = null;
 
@@ -633,31 +688,40 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
-          fileService.uploadFile(storage, file, fileName, dir, (evt) => {
-            fileUpload.status = 'progress';
-            fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
-            delete fileUpload.message;
-            this.redraw();
-          }, url, options, fileKey, groupPermissions, groupResourceId)
-            .then((fileInfo) => {
-              const index = this.statuses.indexOf(fileUpload);
-              if (index !== -1) {
-                this.statuses.splice(index, 1);
-              }
-              fileInfo.originalName = file.name;
-              if (!this.hasValue()) {
-                this.dataValue = [];
-              }
-              this.dataValue.push(fileInfo);
+          const filePromise = fileService.uploadFile(storage, file, fileName, dir, (evt) => {
+              fileUpload.status = 'progress';
+              fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
+              delete fileUpload.message;
               this.redraw();
-              this.triggerChange();
-            })
-            .catch((response) => {
-              fileUpload.status = 'error';
-              fileUpload.message = response;
-              delete fileUpload.progress;
-              this.redraw();
-            });
+            }, url, options, fileKey, groupPermissions, groupResourceId,
+              () => {
+                this.fileDropHidden = true;
+                this.emit('fileUploadingStart', filePromise);
+              }
+            )
+              .then((fileInfo) => {
+                const index = this.statuses.indexOf(fileUpload);
+                if (index !== -1) {
+                  this.statuses.splice(index, 1);
+                }
+                fileInfo.originalName = file.name;
+                if (!this.hasValue()) {
+                  this.dataValue = [];
+                }
+                this.dataValue.push(fileInfo);
+                this.fileDropHidden = false;
+                this.redraw();
+                this.triggerChange();
+                this.emit('fileUploadingEnd', filePromise);
+              })
+              .catch((response) => {
+                fileUpload.status = 'error';
+                fileUpload.message = response;
+                delete fileUpload.progress;
+                this.fileDropHidden = false;
+                this.redraw();
+                this.emit('fileUploadingEnd', filePromise);
+              });
         }
       });
     }
@@ -690,6 +754,10 @@ export default class FileComponent extends Field {
   }
 
   focus() {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+
     if (this.refs.fileBrowse) {
       this.refs.fileBrowse.focus();
     }

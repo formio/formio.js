@@ -37,6 +37,14 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
 
 export { jsonLogic, moment };
 
+function setPathToComponentAndPerentSchema(component) {
+  component.path = getComponentPath(component);
+  const dataParent = getDataParentComponent(component);
+  if (dataParent && typeof dataParent === 'object') {
+    dataParent.path = getComponentPath(dataParent);
+  }
+}
+
 /**
  * Evaluate a method.
  *
@@ -242,7 +250,7 @@ export function checkCustomConditional(component, custom, row, data, form, varia
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
   const value = (instance && instance.evaluate) ?
-    instance.evaluate(custom) :
+    instance.evaluate(custom, { row, data, form }) :
     evaluate(custom, { row, data, form });
   if (value === null) {
     return onError;
@@ -278,14 +286,27 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
  * @returns {boolean}
  */
 export function checkCondition(component, row, data, form, instance) {
-  if (component.customConditional) {
-    return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
+  const { customConditional, conditional } = component;
+  if (customConditional) {
+    return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-  else if (component.conditional && component.conditional.when) {
-    return checkSimpleConditional(component, component.conditional, row, data);
+  else if (conditional && conditional.when) {
+    // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
+    if (!instance) {
+      instance = _.cloneDeep(component);
+      setPathToComponentAndPerentSchema(instance);
+    }
+    const dataParent = getDataParentComponent(instance);
+    const parentPathWithoutIndicies = dataParent?.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
+    if (dataParent && conditional.when.startsWith(parentPathWithoutIndicies)) {
+      const newRow = {};
+      _.set(newRow, parentPathWithoutIndicies, row);
+      row = newRow;
+    }
+    return checkSimpleConditional(component, conditional, row, data);
   }
-  else if (component.conditional && component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form, true);
+  else if (conditional && conditional.json) {
+    return checkJsonConditional(component, conditional.json, row, data, form, true);
   }
 
   // Default to show.
@@ -590,8 +611,8 @@ export function momentDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatDate(value, format, timezone) {
-  const momentDate = moment(value);
+export function formatDate(value, format, timezone, flatPickrInputFormat) {
+  const momentDate = moment(value, flatPickrInputFormat || undefined);
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {
@@ -735,9 +756,10 @@ export function convertFormatToMask(format) {
 /**
  * Returns an input mask that is compatible with the input mask library.
  * @param {string} mask - The Form.io input mask.
+ * @param {string} placeholderChar - Char which is used as a placeholder.
  * @returns {Array} - The input mask for the mask library.
  */
-export function getInputMask(mask) {
+export function getInputMask(mask, placeholderChar) {
   if (mask instanceof Array) {
     return mask;
   }
@@ -759,6 +781,11 @@ export function getInputMask(mask) {
       case '*':
         maskArray.numeric = false;
         maskArray.push(/[a-zA-Z0-9]/);
+        break;
+      // If char which is used inside mask placeholder was used in the mask, replace it with space to prevent errors
+      case placeholderChar:
+        maskArray.numeric = false;
+        maskArray.push(' ');
         break;
       default:
         maskArray.numeric = false;
@@ -1069,6 +1096,97 @@ export function getContextComponents(context) {
   return values;
 }
 
+// Tags that could be in text, that should be ommited or handled in a special way
+const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP', 'INS', 'DEL', 'MARK', 'CODE'];
+
+/**
+ * Helper function for 'translateHTMLTemplate'. Translates text value of the passed html element.
+ *
+ * @param {HTMLElement} elem
+ * @param {Function} translate
+ *
+ * @returns {String}
+ *   Translated element template.
+ */
+function translateElemValue(elem, translate) {
+  const elemValue = elem.innerText.replace(Evaluator.templateSettings.interpolate, '').replace(/\s\s+/g, ' ').trim();
+  const translatedValue = translate(elemValue);
+
+  if (elemValue !== translatedValue) {
+    const links = elem.innerHTML.match(/<a[^>]*>(.*?)<\/a>/g);
+
+    if (links && links.length) {
+      if (links.length === 1 && links[0].length === elem.innerHTML.length) {
+        return elem.innerHTML.replace(elemValue, translatedValue);
+      }
+
+      const translatedLinks = links.map(link => {
+        const linkElem = document.createElement('a');
+        linkElem.innerHTML = link;
+        return translateElemValue(linkElem, translate);
+      });
+
+      return `${translatedValue} (${translatedLinks.join(', ')})`;
+    }
+    else {
+      return elem.innerText.replace(elemValue, translatedValue);
+    }
+  }
+  else {
+    return elem.innerHTML;
+  }
+}
+
+/**
+ * Helper function for 'translateHTMLTemplate'. Goes deep through html tag children and calls function to translate their text values.
+ *
+ * @param {HTMLElement} tag
+ * @param {Function} translate
+ *
+ * @returns {void}
+ */
+function translateDeepTag(tag, translate) {
+  const children = tag.children.length && [...tag.children];
+  const shouldTranslateEntireContent = children && children.every(child =>
+    child.children.length === 0
+    && inTextTags.some(tag => child.nodeName === tag)
+  );
+
+  if (!children || shouldTranslateEntireContent) {
+    tag.innerHTML = translateElemValue(tag, translate);
+  }
+  else {
+    children.forEach(child => translateDeepTag(child, translate));
+  }
+}
+
+/**
+ * Translates text values in html template.
+ *
+ * @param {String} template
+ * @param {Function} translate
+ *
+ * @returns {String}
+ *   Html template with translated values.
+ */
+export function translateHTMLTemplate(template, translate) {
+  const isHTML = /<[^>]*>/.test(template);
+
+  if (!isHTML) {
+    return translate(template);
+  }
+
+  const tempElem = document.createElement('div');
+  tempElem.innerHTML = template;
+
+  if (tempElem.innerText && tempElem.children.length) {
+    translateDeepTag(tempElem, translate);
+    return tempElem.innerHTML;
+  }
+
+  return template;
+}
+
 /**
  * Sanitize an html string.
  *
@@ -1076,6 +1194,9 @@ export function getContextComponents(context) {
  * @returns {*}
  */
 export function sanitize(string, options) {
+  if (typeof dompurify.sanitize !== 'function') {
+    return string;
+  }
   // Dompurify configuration
   const sanitizeOptions = {
     ADD_ATTR: ['ref', 'target'],
@@ -1102,6 +1223,10 @@ export function sanitize(string, options) {
   // Allowd URI Regex
   if (options.sanitizeConfig && options.sanitizeConfig.allowedUriRegex) {
     sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
+  }
+  // Allow to extend the existing array of elements that are safe for URI-like values
+  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addUriSafeAttr) && options.sanitizeConfig.addUriSafeAttr.length > 0) {
+    sanitizeOptions.ADD_URI_SAFE_ATTR = options.sanitizeConfig.addUriSafeAttr;
   }
   return dompurify.sanitize(string, sanitizeOptions);
 }
@@ -1149,6 +1274,15 @@ export function getArrayFromComponentPath(pathStr) {
     .map(part => _.defaultTo(_.toNumber(part), part));
 }
 
+export function  hasInvalidComponent(component) {
+  return component.getComponents().some((comp) => {
+    if (_.isArray(comp.components)) {
+      return hasInvalidComponent(comp);
+    }
+      return comp.error;
+  });
+}
+
 export function getStringFromComponentPath(path) {
   if (!_.isArray(path)) {
     return path;
@@ -1178,9 +1312,100 @@ export function round(number, precision) {
  * @return {(number|null)}
  */
 export function getIEBrowserVersion() {
-  if (typeof document === 'undefined' || !('documentMode' in document)) {
-    return null;
+  const { ie, version } = getBrowserInfo();
+
+  return ie ? version : null;
+}
+
+/**
+ * Get browser name and version (modified from 'jquery-browser-plugin')
+ *
+ * @return {Object} -- {{browser name, version, isWebkit?}}
+ * Possible browser names: chrome, safari, ie, edge, opera, mozilla, yabrowser
+ */
+export function getBrowserInfo() {
+  const browser = {};
+
+  if (typeof window === 'undefined') {
+    return browser;
   }
 
-  return document['documentMode'];
+  const ua = window.navigator.userAgent.toLowerCase();
+  const match = /(edge|edg)\/([\w.]+)/.exec(ua) ||
+                /(opr)[/]([\w.]+)/.exec(ua) ||
+                /(yabrowser)[ /]([\w.]+)/.exec(ua) ||
+                /(chrome)[ /]([\w.]+)/.exec(ua) ||
+                /(iemobile)[/]([\w.]+)/.exec(ua) ||
+                /(version)(applewebkit)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+                /(webkit)[ /]([\w.]+).*(version)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+                /(webkit)[ /]([\w.]+)/.exec(ua) ||
+                /(opera)(?:.*version|)[ /]([\w.]+)/.exec(ua) ||
+                /(msie) ([\w.]+)/.exec(ua) ||
+                ua.indexOf('trident') >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
+                ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
+                [];
+  const matched = {
+    browser: match[5] || match[3] || match[1] || '',
+    version: match[4] || match[2] || '0'
+  };
+
+  if (matched.browser) {
+    browser[matched.browser] = true;
+    browser.version = parseInt(matched.version, 10);
+  }
+  // Chrome, Opera 15+, Safari and Yandex.Browser are webkit based browsers
+  if (browser.chrome || browser.opr || browser.safari || browser.edg || browser.yabrowser) {
+    browser.isWebkit = true;
+  }
+  // IE11 has a new token so we will assign it ie to avoid breaking changes
+  if (browser.rv || browser.iemobile) {
+    browser.ie = true;
+  }
+  // Edge has a new token since it became webkit based
+  if (browser.edg) {
+    browser.edge = true;
+  }
+  // Opera 15+ are identified as opr
+  if (browser.opr) {
+    browser.opera = true;
+  }
+
+  return browser;
 }
+
+export function getComponentPathWithoutIndicies(path = '') {
+  return path.replace(/\[\d+\]/, '');
+}
+
+/**
+ * Returns a path to the component which based on its schema
+ * @param {*} component is a component's schema containing link to its parent's schema in the 'parent' property
+ */
+export function getComponentPath(component, path = '') {
+  if (!component || !component.key) {
+    return path;
+  }
+  path = component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
+  return getComponentPath(component.parent, path);
+}
+
+/**
+ * Returns a parent component of the passed component instance skipping all the Layout components
+ * @param {*} componentInstance
+ * @return {(Component|undefined)}
+ */
+export function getDataParentComponent(componentInstance) {
+  if (!componentInstance) {
+    return;
+  }
+  const { parent } = componentInstance;
+  if (parent && (parent.isInputComponent || parent.input)) {
+    return parent;
+  }
+  else {
+    return getDataParentComponent(parent);
+  }
+}
+
+// Export lodash to save space with other libraries.
+export { _ };

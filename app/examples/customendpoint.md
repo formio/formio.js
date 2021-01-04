@@ -4,13 +4,13 @@ layout: vtabs
 section: examples
 weight: 13
 ---
-Sometimes you may want to submit the data to your own APIs or naviate to another page after the submission is complete. You can do this by listening to the submission events.
+Sometimes you may want to submit the data to your own APIs or navigate to another page after the submission is complete. You can do this by listening to the submission events.
 
 ```html
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
-<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
 <div id="formio"></formio>
 ```
 
@@ -33,7 +33,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
           method: 'POST',
           mode: 'cors',
         })
-        .then(response => {
+        .then(function(response) {
           form.emit('submitDone', submission)
           response.json()
         })
@@ -62,7 +62,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
           method: 'POST',
           mode: 'cors',
         })
-        .then(response => {
+        .then(function(response) {
           form.emit('submitDone', submission)
           response.json()
         })

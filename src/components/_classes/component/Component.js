@@ -8,11 +8,13 @@ import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
+import Widgets from '../../../widgets';
+import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 
-const isIEBrowser = FormioUtils.getIEBrowserVersion();
+const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
       ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
       : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
@@ -272,6 +274,9 @@ export default class Component extends Element {
      */
     this.component = this.mergeSchema(component || {});
 
+    // Add the id to the component.
+    this.component.id = this.id;
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -290,9 +295,6 @@ export default class Component extends Element {
      * @type {*}
      */
     this._data = data || {};
-
-    // Add the id to the component.
-    this.component.id = this.id;
 
     /**
      * The existing error that this component has.
@@ -495,7 +497,12 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-    this._visible = this.conditionallyVisible(null, null);
+    const visible = this.conditionallyVisible(null, null);
+
+    if (this._visible !== visible) {
+      this.visible = visible;
+      this._visible = visible;
+    }
   }
 
   destroy() {
@@ -528,11 +535,7 @@ export default class Component extends Element {
   }
 
   set parentVisible(value) {
-    if (this._parentVisible !== value) {
-      this._parentVisible = value;
-      this.clearOnHide();
-      this.redraw();
-    }
+    this._parentVisible = value;
   }
 
   get parentVisible() {
@@ -540,11 +543,7 @@ export default class Component extends Element {
   }
 
   set parentDisabled(value) {
-    if (this._parentDisabled !== value) {
-      this._parentDisabled = value;
-      this.clearOnHide();
-      this.redraw();
-    }
+    this._parentDisabled = value;
   }
 
   get parentDisabled() {
@@ -614,11 +613,13 @@ export default class Component extends Element {
   }
 
   get labelWidth() {
-    return this.component.labelWidth || 30;
+    const width = this.component.labelWidth;
+    return width >= 0 ? width : 30;
   }
 
   get labelMargin() {
-    return this.component.labelMargin || 3;
+    const margin = this.component.labelMargin;
+    return margin >= 0 ? margin : 3;
   }
 
   get isAdvancedLabel() {
@@ -812,7 +813,7 @@ export default class Component extends Element {
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
-
+    const tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
     data.component = this.component;
     data.self = this;
     data.options = this.options;
@@ -833,7 +834,7 @@ export default class Component extends Element {
       return this.renderTemplate(...args);
     };
     data.label = this.labelInfo;
-    data.tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
+    data.tooltip = tooltip ? this.t(tooltip) : '';
 
     // Allow more specific template names
     const names = [
@@ -875,13 +876,17 @@ export default class Component extends Element {
     if (!template) {
       return '';
     }
-
     // Interpolate the template and populate
     return this.interpolate(template, data);
   }
 
   performInputMapping(input) {
     return input;
+  }
+
+  get widget() {
+    const widget = this.component.widget && Widgets[this.component.widget.type] ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    return widget;
   }
 
   getBrowserLanguage() {
@@ -960,8 +965,15 @@ export default class Component extends Element {
   }
 
   getModalPreviewTemplate() {
+    const dataValue = this.component.type === 'password' ? this.dataValue.replace(/./g, '•') : this.dataValue;
+    const message = this.error ? {
+      level: 'error',
+      message: this.error.message,
+    } : '';
+
     return this.renderTemplate('modalPreview', {
-      previewText: this.getValueAsString(this.dataValue, { modalPreview: true }) || this.t('Click to set value')
+      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
+      messages: message && this.renderTemplate('message', message)
     });
   }
 
@@ -1016,6 +1028,7 @@ export default class Component extends Element {
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
     if (this.element.id) {
       this.id = this.element.id;
+      this.component.id = this.id;
     }
 
     this.loadRefs(element, {
@@ -1024,12 +1037,12 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      const title = this.interpolate(tooltip.getAttribute('data-title') || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click focus',
         placement: 'right',
         html: true,
-        title: title,
+        title: this.t(tooltipText),
         template: `
           <div class="tooltip" style="opacity: 1;" role="tooltip">
             <div class="tooltip-arrow"></div>
@@ -1112,7 +1125,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && changePath === refreshData) && changed && changed.instance &&
+      (changePath && getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
@@ -1121,12 +1134,15 @@ export default class Component extends Element {
     }
   }
 
-  checkRefreshOn(changes, flags) {
+  checkRefreshOn(changes, flags = {}) {
     changes = changes || [];
-    if (!changes.length && flags?.changed) {
+    if (flags.noRefresh) {
+      return;
+    }
+    if (!changes.length && flags.changed) {
       changes = [flags.changed];
     }
-    const refreshOn = this.component.refreshOn || this.component.redrawOn;
+    const refreshOn = flags.fromBlur ? this.component.refreshOnBlur : this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
@@ -1213,7 +1229,12 @@ export default class Component extends Element {
   getWidgetValueAsString(value, options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
-      return value;
+      if (!this.widget || !value) {
+        return value;
+      }
+      else {
+        return this.widget.getValueAsString(value);
+      }
     }
     if (Array.isArray(value)) {
       const values = [];
@@ -1244,7 +1265,8 @@ export default class Component extends Element {
     if (value === null || value === undefined) {
       return '';
     }
-    return value.toString();
+    const stringValue = value.toString();
+    return this.sanitize(stringValue);
   }
 
   getView(value, options) {
@@ -1412,6 +1434,18 @@ export default class Component extends Element {
     this.pristine = pristine;
   }
 
+  get isPristine() {
+    return this.pristine;
+  }
+
+  setDirty(dirty) {
+    this.dirty = dirty;
+  }
+
+  get isDirty() {
+    return this.dirty;
+  }
+
   /**
    * Removes a value out of the data array and rebuild the rows.
    * @param {number} index - The index of the data element to remove.
@@ -1515,7 +1549,6 @@ export default class Component extends Element {
     super.removeEventListeners();
     this.tooltips.forEach(tooltip => tooltip.dispose());
     this.tooltips = [];
-    this.refs.input = [];
   }
 
   hasClass(element, className) {
@@ -1671,6 +1704,10 @@ export default class Component extends Element {
   }
 
   isIE() {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
     const userAgent = window.navigator.userAgent;
 
     const msie = userAgent.indexOf('MSIE ');
@@ -1799,6 +1836,8 @@ export default class Component extends Element {
       messages = [messages];
     }
 
+    messages = _.uniqBy(messages, message => message.message);
+
     if (this.refs.messageContainer) {
       this.setContent(this.refs.messageContainer, messages.map((message) =>
         this.renderTemplate('message', message)
@@ -1806,29 +1845,32 @@ export default class Component extends Element {
     }
   }
 
-  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
+  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
     elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    this.setInputWidgetErrorClasses(elements, hasErrors);
+
     if (hasErrors) {
       // Add error classes
       elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
 
       if (dirty && this.options.highlightErrors) {
-        this.addClass(this.element, this.options.componentErrorClass);
+        this.addClass(element, this.options.componentErrorClass);
       }
       else {
-        this.addClass(this.element, 'has-error');
+        this.addClass(element, 'has-error');
       }
     }
     if (hasMessages) {
-      this.addClass(this.element, 'has-message');
+      this.addClass(element, 'has-message');
     }
   }
 
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
-      !this.rootPristine &&
+      // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
+      (!this.rootPristine || getDataParentComponent(this)?.hasScopedChildren) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -1857,7 +1899,9 @@ export default class Component extends Element {
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
-      this.pristine = false;
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
       this.addClass(this.getElement(), 'formio-modified');
     }
 
@@ -1939,7 +1983,8 @@ export default class Component extends Element {
             'alignCenter',
             'alignRight'
           ]
-        }
+        },
+        extraPlugins: []
       },
       default: {}
     };
@@ -1947,9 +1992,13 @@ export default class Component extends Element {
 
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
-    settings.base64Upload = true;
+    settings.base64Upload = this.component.isUploadEnabled ? false : true;
     settings.mediaEmbed = { previewsInData: true };
     settings = _.merge(this.wysiwygDefault.ckeditor, _.get(this.options, 'editors.ckeditor.settings', {}), settings);
+
+    if (this.component.isUploadEnabled) {
+      settings.extraPlugins.push(getFormioUploadAdapterPlugin(this.fileService, this));
+    }
 
     return Formio.requireLibrary(
       'ckeditor',
@@ -2048,8 +2097,11 @@ export default class Component extends Element {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
         editor.setOptions(settings);
-        editor.getSession().setMode(`ace/mode/${settings.mode}`);
+        editor.getSession().setMode(settings.mode);
         editor.on('change', () => onChange(editor.getValue()));
+        if (settings.isUseWorkerDisabled) {
+          editor.session.setUseWorker(false);
+        }
         return editor;
       });
   }
@@ -2120,17 +2172,17 @@ export default class Component extends Element {
       !this.key ||
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
-      return value;
+      return;
     }
     if ((value !== null) && (value !== undefined)) {
       value = this.hook('setDataValue', value, this.key, this._data);
     }
     if ((value === null) || (value === undefined)) {
       this.unset();
-      return value;
+      return;
     }
     _.set(this._data, this.key, value);
-    return value;
+    return;
   }
 
   /**
@@ -2177,15 +2229,27 @@ export default class Component extends Element {
       );
     }
 
-    if (this.defaultMask) {
-      if (typeof defaultValue === 'string') {
-        defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
-        if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
-          defaultValue = '';
+    const checkMask = (value) => {
+      if (typeof value === 'string') {
+        const placeholderChar = this.placeholderChar;
+
+        value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
+        if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
+          value = '';
         }
       }
       else {
-        defaultValue = '';
+        value = '';
+      }
+      return value;
+    };
+
+    if (this.defaultMask) {
+      if (Array.isArray(defaultValue)) {
+        defaultValue = defaultValue.map(checkMask);
+      }
+      else {
+        defaultValue = checkMask(defaultValue);
       }
     }
 
@@ -2253,6 +2317,10 @@ export default class Component extends Element {
       this.visible
     ) {
       this.redraw();
+    }
+    if (this.options.renderMode === 'html' && changed) {
+      this.redraw();
+      return changed;
     }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
@@ -2434,21 +2502,18 @@ export default class Component extends Element {
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
 
-    if (!this.component.calculateValue || shouldBeCleared) {
+    // Handle all cases when calculated values should not fire.
+    if (
+      this.options.readOnly ||
+      !this.component.calculateValue ||
+      shouldBeCleared ||
+      (this.options.server && !this.component.calculateServer) ||
+      flags.dataSourceInitialLoading
+    ) {
       return false;
     }
 
-    // If this component allows overrides.
-    const allowOverride = this.component.allowCalculateOverride;
-
-    let firstPass = false;
     const dataValue = this.dataValue;
-
-    // First pass, the calculatedValue is undefined.
-    if (this.calculatedValue === undefined) {
-      firstPass = true;
-      this.calculatedValue = null;
-    }
 
     // Calculate the new value.
     let calculatedValue = this.evaluate(this.component.calculateValue, {
@@ -2461,53 +2526,43 @@ export default class Component extends Element {
       calculatedValue = this.emptyValue;
     }
 
-    // reassigning calculated value to the right one if rows(for ex. dataGrid rows) were reordered
-    if (flags.isReordered && allowOverride) {
-      this.calculatedValue = calculatedValue;
+    const changed = !_.isEqual(dataValue, calculatedValue);
+
+    // Do not override calculations on server if they have calculateServer set.
+    if (this.component.allowCalculateOverride) {
+      const firstPass = (this.calculatedValue === undefined);
+      if (firstPass) {
+        this.calculatedValue = null;
+      }
+      const newCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(calculatedValue));
+      const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
+      const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
+      const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
+      // Check to ensure that the calculated value is different than the previously calculated value.
+      if (previousCalculatedValue && previousChanged && !calculationChanged) {
+        return false;
+      }
+
+      if (flags.isReordered || !calculationChanged) {
+        return false;
+      }
+
+      if (flags.fromSubmission && this.component.persistent === true) {
+        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+        this.calculatedValue = calculatedValue;
+        return false;
+      }
+
+      // If this is the firstPass, and the dataValue is different than to the calculatedValue.
+      if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
+        // Return that we have a change so it will perform another pass.
+        return true;
+      }
     }
 
-    const currentCalculatedValue = this.convertNumberOrBoolToString(this.calculatedValue);
-    const newCalculatedValue = this.convertNumberOrBoolToString(calculatedValue);
-
-    const normCurr = this.normalizeValue(currentCalculatedValue);
-    const normNew = this.normalizeValue(newCalculatedValue);
-
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      this.calculatedValue &&
-      !_.isEqual(dataValue, currentCalculatedValue) &&
-      _.isEqual(newCalculatedValue, currentCalculatedValue)) {
-      return false;
-    }
-
-    if (_.isEqual(normCurr, normNew) && allowOverride) {
-      return false;
-    }
-
-    if (flags.fromSubmission && allowOverride && this.component.persistent === true) {
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
-
-    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
-    if (
-      allowOverride &&
-      firstPass &&
-      !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, this.convertNumberOrBoolToString(calculatedValue)) &&
-      !_.isEqual(calculatedValue, this.convertNumberOrBoolToString(calculatedValue))
-    ) {
-      // Return that we have a change so it will perform another pass.
-      this.calculatedValue = calculatedValue;
-      return true;
-    }
-    // Set the new value.
-    const changed = flags.dataSourceInitialLoading || _.isEqual(this.dataValue, calculatedValue)
-    ? false
-    : this.setValue(calculatedValue, flags);
     this.calculatedValue = calculatedValue;
-    return changed;
+
+    return changed ? this.setValue(calculatedValue, flags) : false;
   }
 
   /**
@@ -2588,7 +2643,7 @@ export default class Component extends Element {
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
-    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    const hasErrors = !!messages.filter(message => message.level === 'error' && !message.fromServer).length;
     if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
@@ -2618,15 +2673,22 @@ export default class Component extends Element {
     }
 
     const check = Validator.checkComponent(this, data, row, true, async);
+    let validations = check;
+
+    if (this.serverErrors?.length) {
+      validations = check.concat(this.serverErrors);
+    }
     return async ?
-      check.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
-      this.setComponentValidity(check, dirty, silentCheck);
+    validations.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
+      this.setComponentValidity(validations, dirty, silentCheck);
   }
 
   checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row, { silentCheck });
+    const isValid = this.checkComponentValidity(data, dirty, row, { silentCheck });
+    this.checkModal();
+    return isValid;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
@@ -2646,7 +2708,10 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    this.checkRefreshOn(flags.changes, flags);
+    // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
+    if (!flags.fromBlur) {
+      this.checkRefreshOn(flags.changes, flags);
+    }
 
     if (flags.noCheck) {
       return true;
@@ -2654,7 +2719,7 @@ export default class Component extends Element {
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
 
-    if (flags.noValidate && !flags.validateOnInit) {
+    if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
         this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
       }
@@ -2673,10 +2738,20 @@ export default class Component extends Element {
       isDirty = true;
     }
 
+    this.setDirty(isDirty);
+
     if (this.component.validateOn === 'blur' && flags.fromSubmission) {
       return true;
     }
-    return this.checkComponentValidity(data, isDirty, row);
+    const isValid = this.checkComponentValidity(data, isDirty, row, flags);
+    this.checkModal();
+    return isValid;
+  }
+
+  checkModal() {
+    if (!this.component.modalEdit || !this.componentModal) {
+      return;
+    }
   }
 
   get validationValue() {
@@ -2705,11 +2780,23 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  clearErrorClasses() {
-    this.removeClass(this.element, this.options.componentErrorClass);
-    this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'has-error');
-    this.removeClass(this.element, 'has-message');
+  clearErrorClasses(element = this.element) {
+    this.removeClass(element, this.options.componentErrorClass);
+    this.removeClass(element, 'alert alert-danger');
+    this.removeClass(element, 'has-error');
+    this.removeClass(element, 'has-message');
+  }
+
+  setInputWidgetErrorClasses(inputRefs, hasErrors) {
+    if (!this.isInputComponent || !this.component.widget || !inputRefs?.length) {
+      return;
+    }
+
+    inputRefs.forEach((input) => {
+      if (input?.widget && input.widget.setErrorClasses) {
+        input.widget.setErrorClasses(hasErrors);
+      }
+    });
   }
 
   setCustomValidity(messages, dirty, external) {
@@ -2999,6 +3086,14 @@ export default class Component extends Element {
     if (hasAutofocus) {
       this.on('render', () => this.focus(), true);
     }
+  }
+
+  scrollIntoView(element = this.element) {
+    if (!element) {
+      return;
+    }
+    const { left, top } = element.getBoundingClientRect();
+    window.scrollTo(left + window.scrollX, top + window.scrollY);
   }
 
   focus(index) {
