@@ -783,13 +783,12 @@ describe('Formio.js Tests', () => {
           };
         }
         else if (fnName === 'uploadFile') {
-          const { storage, file, fileName, dir } = args[0];
           expectedArgs = {
-            provider: storage,
+            provider: args[0],
             method: 'upload',
-            file,
-            fileName,
-            dir
+            file: args[1],
+            fileName: args[2],
+            dir: args[3]
           };
         }
 
