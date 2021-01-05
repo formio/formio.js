@@ -1,12 +1,12 @@
 import XHR from './xhr';
 const azure = (formio) => ({
-  uploadFile({ file, fileName, dir, progressCallback, abortCallback, groupPermissions, groupId }) {
+  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
     return XHR.upload(formio, 'azure', (xhr, response) => {
       xhr.openAndSetHeaders('PUT', response.url);
       xhr.setRequestHeader('Content-Type', file.type);
       xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
       return file;
-    }, file, fileName, dir, progressCallback, abortCallback, groupPermissions, groupId).then(() => {
+    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then(() => {
       return {
         storage: 'azure',
         name: XHR.path([dir, fileName]),

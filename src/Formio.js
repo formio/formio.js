@@ -550,7 +550,7 @@ class Formio {
                 if (uploadStartCallback) {
                   uploadStartCallback();
                 }
-                return provider.uploadFile({ storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback });
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback);
               }
               else {
                 throw ('Storage provider not found');

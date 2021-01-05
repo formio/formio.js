@@ -3,7 +3,7 @@ import NativePromise from 'native-promise-only';
 const indexeddb = () => ({
   title: 'indexedDB',
   name: 'indexeddb',
-  uploadFile({ file, url, options }) {
+  uploadFile(file, fileName, dir, progressCallback, url, options) {
     if (!('indexedDB' in window)) {
       console.log('This browser doesn\'t support IndexedDB');
       return;
