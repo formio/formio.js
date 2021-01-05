@@ -498,12 +498,7 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-    const visible = this.conditionallyVisible(null, null);
-
-    if (this._visible !== visible) {
-      this.visible = visible;
-      this._visible = visible;
-    }
+    this._visible = this.conditionallyVisible(null, null);
   }
 
   destroy() {
@@ -1550,6 +1545,7 @@ export default class Component extends Element {
   rebuild() {
     this.destroy();
     this.init();
+    this.visible = this.conditionallyVisible(null, null);
     return this.redraw();
   }
 
