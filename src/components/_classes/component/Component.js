@@ -120,6 +120,7 @@ export default class Component extends Element {
        * The input label provided to this component.
        */
       label: '',
+      dataGridLabel: false,
       labelPosition: 'top',
       description: '',
       errorLabel: '',
@@ -719,6 +720,13 @@ export default class Component extends Element {
   }
 
   /**
+   * Returns true if component is inside DataGrid
+   */
+  get isInDataGrid() {
+    return this.inDataGrid;
+  }
+
+  /**
    * Translate a text using the i18n system.
    *
    * @param {string} text - The i18n identifier.
@@ -736,8 +744,8 @@ export default class Component extends Element {
 
   labelIsHidden() {
     return !this.component.label ||
-      ((!this.inDataGrid && this.component.hideLabel) ||
-      (this.inDataGrid && !this.component.dataGridLabel) ||
+      ((!this.isInDataGrid && this.component.hideLabel) ||
+      (this.isInDataGrid && !this.component.dataGridLabel) ||
       this.options.inputsOnly) && !this.builderMode;
   }
 
