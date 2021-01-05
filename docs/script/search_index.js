@@ -6534,12 +6534,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/select/select.js~selectcomponent#overlayoptions",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-overlayOptions",
-    "src/components/select/Select.js~SelectComponent#overlayOptions",
-    "member"
-  ],
-  [
     "src/components/select/select.js~selectcomponent#redraw",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-redraw",
     "src/components/select/Select.js~SelectComponent#redraw",

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 #### Changed
  - Revert "Feat/uip 239 select options overlayed"
+ - Upgrade core-js@3.8.2, flatpickr@4.6.9, webpack@5.11.1, eslint@7.17.0
 
 ### 4.13.0-rc.4
 #### Added
