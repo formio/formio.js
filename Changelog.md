@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.5
+#### Fixed
+ - fix 'show label in DataGrid' option
+ - Fixed an error occurred when trying to add Logic row
+ 
+#### Changed
+ - Revert "Feat/uip 239 select options overlayed"
+
 ### 4.13.0-rc.4
 #### Added
  - FIO-994: Makes onlyAvailableItems validation optional
