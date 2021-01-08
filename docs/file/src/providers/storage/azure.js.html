@@ -177,13 +177,13 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/azure.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import XHR from &apos;./xhr&apos;;
 const azure = (formio) =&gt; ({
-  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
+  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
     return XHR.upload(formio, &apos;azure&apos;, (xhr, response) =&gt; {
       xhr.openAndSetHeaders(&apos;PUT&apos;, response.url);
       xhr.setRequestHeader(&apos;Content-Type&apos;, file.type);
       xhr.setRequestHeader(&apos;x-ms-blob-type&apos;, &apos;BlockBlob&apos;);
       return file;
-    }, file, fileName, dir, progressCallback, groupPermissions, groupId).then(() =&gt; {
+    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then(() =&gt; {
       return {
         storage: &apos;azure&apos;,
         name: XHR.path([dir, fileName]),

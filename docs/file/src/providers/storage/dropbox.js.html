@@ -178,13 +178,17 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import { setXhrHeaders } from &apos;./xhr&apos;;
 const dropbox = (formio) =&gt; ({
-  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
+  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
     return new NativePromise(((resolve, reject) =&gt; {
       // Send the file with data.
       const xhr = new XMLHttpRequest();
 
       if (typeof progressCallback === &apos;function&apos;) {
         xhr.upload.onprogress = progressCallback;
+      }
+
+      if (typeof abortCallback === &apos;function&apos;) {
+        abortCallback(() =&gt; xhr.abort());
       }
 
       const fd = new FormData();

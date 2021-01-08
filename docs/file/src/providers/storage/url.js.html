@@ -178,13 +178,18 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 
 const url = (formio) =&gt; {
-  const xhrRequest = (url, name, query, data, options, onprogress) =&gt; {
+  const xhrRequest = (url, name, query, data, options, progressCallback, abortCallback) =&gt; {
     return new NativePromise((resolve, reject) =&gt; {
       const xhr = new XMLHttpRequest();
       const json = (typeof data === &apos;string&apos;);
       const fd = new FormData();
-      if (typeof onprogress === &apos;function&apos;) {
-        xhr.upload.onprogress = onprogress;
+
+      if (typeof progressCallback === &apos;function&apos;) {
+        xhr.upload.onprogress = progressCallback;
+      }
+
+      if (typeof abortCallback === &apos;function&apos;) {
+        abortCallback(() =&gt; xhr.abort());
       }
 
       if (!json) {
@@ -253,7 +258,7 @@ const url = (formio) =&gt; {
   return {
     title: &apos;Url&apos;,
     name: &apos;url&apos;,
-    uploadFile(file, name, dir, progressCallback, url, options, fileKey) {
+    uploadFile(file, name, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
       const uploadRequest = function(form) {
         return xhrRequest(url, name, {
           baseUrl: encodeURIComponent(formio.projectUrl),
@@ -263,7 +268,7 @@ const url = (formio) =&gt; {
           [fileKey]:file,
           name,
           dir
-        }, options, progressCallback).then(response =&gt; {
+        }, options, progressCallback, abortCallback).then(response =&gt; {
           // Store the project and form url along with the metadata.
           response.data = response.data || {};
           response.data.baseUrl = formio.projectUrl;

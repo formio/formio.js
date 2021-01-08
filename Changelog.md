@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.6
+#### Added
+ - UIP-253: Ability to abort file upload
+ - FJS-1419 (FIO-141): added tooltip for wizard pages
+
+#### Fixed
+ - Github example customendpoint: fix fetch undefined in ie11
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.7.0, @formio/semantic@2.5.0
+
 ### 4.13.0-rc.5
 #### Fixed
  - fix 'show label in DataGrid' option
