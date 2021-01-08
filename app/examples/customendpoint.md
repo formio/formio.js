@@ -25,7 +25,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
     form.on('submit', function(submission) {
       console.log(submission);
       alert('Submission sent to custom endpoint. See developer console.');
-      return fetch('https://hookb.in/ZrRRbJBe', {
+      return Formio.fetch('https://hookb.in/ZrRRbJBe', {
           body: JSON.stringify(submission),
           headers: {
             'content-type': 'application/json'
@@ -54,7 +54,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
     form.on('submit', function(submission) {
       console.log(submission);
       alert('Submission sent to custom endpoint. See developer console.');
-      return fetch('https://hookb.in/ZrRRbJBe', {
+      return Formio.fetch('https://hookb.in/ZrRRbJBe', {
           body: JSON.stringify(submission),
           headers: {
             'content-type': 'application/json'
