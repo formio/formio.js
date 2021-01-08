@@ -2,7 +2,12 @@
   <ul class="pagination">
     {% ctx.panels.forEach(function(panel, index) { %}
     <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="cursor: pointer;">
-      <span class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(panel.title)}}</span>
+      <span class="page-link" ref="{{ctx.wizardKey}}-link">
+        {{ctx.t(panel.title)}} 
+        {% if (panel.tooltip && ctx.currentPage === index) { %}
+        <i ref="{{ctx.wizardKey}}-tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+        {% } %}
+      </span>
     </li>
     {% }) %}
   </ul>

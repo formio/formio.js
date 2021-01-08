@@ -813,10 +813,15 @@ export default class Component extends Element {
     return null;
   }
 
+  getFormattedTooltip(tooltipValue) {
+    const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+    return tooltip ? this.t(tooltip) : '';
+  }
+
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
-    const tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
     data.component = this.component;
     data.self = this;
     data.options = this.options;
@@ -837,7 +842,7 @@ export default class Component extends Element {
       return this.renderTemplate(...args);
     };
     data.label = this.labelInfo;
-    data.tooltip = tooltip ? this.t(tooltip) : '';
+    data.tooltip = this.getFormattedTooltip(this.component.tooltip);
 
     // Allow more specific template names
     const names = [
@@ -1016,6 +1021,23 @@ export default class Component extends Element {
     }
   }
 
+  attachTooltips(toolTipsRefs, tooltipValue) {
+    toolTipsRefs.forEach((tooltip, index) => {
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipValue).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      this.tooltips[index] = new Tooltip(tooltip, {
+        trigger: 'hover click focus',
+        placement: 'right',
+        html: true,
+        title: this.t(tooltipText),
+        template: `
+          <div class="tooltip" style="opacity: 1;" role="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner"></div>
+          </div>`,
+      });
+    });
+  }
+
   attach(element) {
     if (!this.builderMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
@@ -1039,20 +1061,7 @@ export default class Component extends Element {
       tooltip: 'multiple'
     });
 
-    this.refs.tooltip.forEach((tooltip, index) => {
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
-      this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: this.t(tooltipText),
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
-    });
+    this.attachTooltips(this.refs.tooltip, this.component.tooltip);
 
     // Attach logic.
     this.attachLogic();
