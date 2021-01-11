@@ -33,8 +33,10 @@ describe('Currency Component', () => {
 
         currencyElement.value = '.';
         currencyElement.dispatchEvent(inputEvent);
-        assert.equal(currencyElement.selectionStart, 3);
-        done();
+        setTimeout(() => {
+          assert.equal(currencyElement.selectionStart, 3);
+          done();
+        }, 200);
       });
   });
 
