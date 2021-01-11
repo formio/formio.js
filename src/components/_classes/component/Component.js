@@ -1001,6 +1001,25 @@ export default class Component extends Element {
     }
   }
 
+  attachTooltips(toolTipsRefs) {
+    toolTipsRefs.forEach((tooltip, index) => {
+      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+      this.tooltips[index] = new Tooltip(tooltip, {
+        trigger: 'hover click focus',
+        placement: 'right',
+        html: true,
+        title: this.t(tooltipText),
+        template: `
+          <div class="tooltip" style="opacity: 1;" role="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner"></div>
+          </div>`,
+      });
+    });
+  }
+
   attach(element) {
     if (!this.builderMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
@@ -1024,20 +1043,7 @@ export default class Component extends Element {
       tooltip: 'multiple'
     });
 
-    this.refs.tooltip.forEach((tooltip, index) => {
-      const title = this.interpolate(tooltip.getAttribute('data-title') || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, '<br />');
-      this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: title,
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
-    });
+    this.attachTooltips(this.refs.tooltip);
 
     // Attach logic.
     this.attachLogic();
