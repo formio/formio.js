@@ -1021,9 +1021,11 @@ export default class Component extends Element {
     }
   }
 
-  attachTooltips(toolTipsRefs, tooltipValue) {
+  attachTooltips(toolTipsRefs) {
     toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipValue).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click focus',
         placement: 'right',
@@ -1061,7 +1063,7 @@ export default class Component extends Element {
       tooltip: 'multiple'
     });
 
-    this.attachTooltips(this.refs.tooltip, this.component.tooltip);
+    this.attachTooltips(this.refs.tooltip);
 
     // Attach logic.
     this.attachLogic();
