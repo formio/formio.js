@@ -76,19 +76,16 @@ export default class CurrencyComponent extends NumberComponent {
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask || '',
-      afterUpdate: (value) => {
-        if (value === '.' && input.prevValue) {
-          const caretPosition = input.value.length - 1;
-          input.setSelectionRange(caretPosition, caretPosition);
+      pipe: (conformedValue) => {
+        if (conformedValue === '$0._') {
+          // Delay to allow mask to update first.
+          setTimeout(() => {
+            const caretPosition = input.value.length - 1;
+            input.setSelectionRange(caretPosition, caretPosition);
+          });
         }
-        input.prevValue = value;
+        return conformedValue;
       }
-    });
-
-    input.mask.textMaskInputElement.update(input.value);
-    // Delay to allow mask to update first.
-    setTimeout(() => {
-      input.prevValue = input.value;
     });
   }
 
