@@ -377,6 +377,7 @@ export default [
                 customConditional({ row }) {
                   return row.type === 'mergeComponentSchema';
                 },
+               },
               Object.assign(EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
                {
                   customConditional({ row }) {
@@ -397,7 +398,6 @@ export default [
                 customConditional({ row }) {
                   return row.type === 'customAction';
                 },
-               },
               },
             ],
           },
