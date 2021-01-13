@@ -213,6 +213,10 @@ export default [
                       label: 'Merge Component Schema',
                       value: 'mergeComponentSchema',
                     },
+                    {
+                      label: 'Custom Action',
+                      value: 'customAction',
+                    },
                   ],
                 },
                 dataSrc: 'values',
@@ -373,6 +377,27 @@ export default [
                 customConditional({ row }) {
                   return row.type === 'mergeComponentSchema';
                 },
+              Object.assign(EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
+               {
+                  customConditional({ row }) {
+                    return row.type === 'customAction';
+                   }
+                }
+              ),
+              {
+                weight: 20,
+                input: true,
+                label: 'Custom Action (Javascript)',
+                key: 'customAction',
+                editor: 'ace',
+                rows: 5,
+                placeholder: `value = data.myfield;`,
+                type: 'textarea',
+                tableView: false,
+                customConditional({ row }) {
+                  return row.type === 'customAction';
+                },
+               },
               },
             ],
           },
