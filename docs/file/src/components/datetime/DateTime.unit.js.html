@@ -186,7 +186,7 @@ import {
 
 describe(&apos;DateTime Component&apos;, () =&gt; {
   it(&apos;Should build a date time component&apos;, () =&gt; {
-    return Harness.testCreate(DateTimeComponent, comp1);
+    return Harness.testCreate(DateTimeComponent, comp1).then((dateTime) =&gt; dateTime.destroy());
   });
 
   it(&apos;Test formatting&apos;, (done) =&gt; {
@@ -198,6 +198,7 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
       dateTime.setValue(value);
       setTimeout(() =&gt; {
         assert.equal(dateTime.getValueAsString(value), formattedValue, &apos;getValueAsString should return formatted value&apos;);
+        dateTime.destroy();
         done();
       }, 250);
     }).catch(done);
@@ -208,8 +209,38 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
     return Harness.testCreate(DateTimeComponent, comp2)
       .then((dateTime) =&gt; {
         assert.equal(dateTime.getValueAsString(&apos;2020-09-18T12:12:00&apos;), &apos;2020-09-18 12:12 PM&apos;);
+        dateTime.destroy();
       });
   });
+
+  // it(&apos;Test Shortcut Buttons&apos;, (done) =&gt; {
+  //   // eslint-disable-next-line no-debugger
+  //   debugger;
+  //   window.flatpickr = Flatpickr;
+  //   window.ShortcutButtonsPlugin = ShortcutButtonsPlugin;
+  //   const formElement = document.createElement(&apos;div&apos;);
+  //   const form = new Webform(formElement);
+  //   form.setForm({ display: &apos;form&apos;, type: &apos;form&apos;, components: [comp2] })
+  //     .then(() =&gt; {
+  //       const dateTime = form.components[0];
+  //       const buttonsWrappers = document.querySelectorAll(&apos;.shortcut-buttons-flatpickr-wrapper&apos;);
+  //       const shortcutButtons = buttonsWrappers[buttonsWrappers.length - 1].querySelectorAll(&apos;.shortcut-buttons-flatpickr-button&apos;);
+
+  //       assert.equal(shortcutButtons.length, 1);
+
+  //       const input = dateTime.refs.input[0];
+  //       Harness.clickElement(dateTime, shortcutButtons[0]);
+
+  //       setTimeout(() =&gt; {
+  //         input.widget.calendar.close();
+  //         setTimeout(() =&gt; {
+  //           assert.equal(form.data.date, &apos;2020-10-10T00:00:00+00:00&apos;);
+  //           dateTime.destroy();
+  //           done();
+  //         }, 250);
+  //       }, 150);
+  //     }).catch(done);
+  // });
 });
 </code></pre>
 

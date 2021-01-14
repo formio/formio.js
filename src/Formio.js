@@ -530,7 +530,7 @@ class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -550,7 +550,7 @@ class Formio {
                 if (uploadStartCallback) {
                   uploadStartCallback();
                 }
-                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback);
               }
               else {
                 throw ('Storage provider not found');
@@ -802,7 +802,7 @@ class Formio {
       .then(() => getFormio().pluginGet('request', requestArgs)
         .then((result) => {
           if (isNil(result)) {
-            return getFormio().request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+            return getFormio().request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         }));

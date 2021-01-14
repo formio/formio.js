@@ -41,7 +41,6 @@ export default class WebformBuilder extends Component {
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
-
     this.dragDropEnabled = true;
 
     // Setup the builder options.
@@ -269,7 +268,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editComponent, 'click', () =>
-          this.editComponent(component.schema, parent, false, false, component.component));
+          this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
       }
 
       if (component.refs.editJson) {
@@ -912,8 +911,10 @@ export default class WebformBuilder extends Component {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 
+    const componentInDataGrid = parent.type === 'datagrid';
+
     if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
-      this.editComponent(info, target, isNew);
+      this.editComponent(info, target, isNew, null, null, { inDataGrid: componentInDataGrid });
     }
 
     // Only rebuild the parts needing to be rebuilt.
@@ -1014,15 +1015,16 @@ export default class WebformBuilder extends Component {
       return;
     }
     let remove = true;
-    if (
-      !component.skipRemoveConfirm &&
+    const removingComponentsGroup = !component.skipRemoveConfirm &&
       (
         (Array.isArray(component.components) && component.components.length) ||
         (Array.isArray(component.rows) && component.rows.length) ||
         (Array.isArray(component.columns) && component.columns.length)
-      )
-    ) {
-      const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
+      );
+
+    if (this.options.alwaysConfirmComponentRemoval || removingComponentsGroup) {
+      const message = removingComponentsGroup ? 'Removing this component will also remove all of its children. Are you sure you want to do this?'
+        : 'Are you sure you want to remove this component?';
       remove = window.confirm(this.t(message));
     }
     if (!original) {
@@ -1218,7 +1220,7 @@ export default class WebformBuilder extends Component {
     return NativePromise.resolve();
   }
 
-  editComponent(component, parent, isNew, isJsonEdit, original) {
+  editComponent(component, parent, isNew, isJsonEdit, original, flags = {}) {
     if (!component.key) {
       return;
     }
@@ -1246,6 +1248,7 @@ export default class WebformBuilder extends Component {
     // Pass along the form being edited.
     editFormOptions.editForm = this.form;
     editFormOptions.editComponent = component;
+    editFormOptions.flags = flags;
     this.editForm = new Webform(
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),

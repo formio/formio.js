@@ -9,7 +9,7 @@ import {
 
 describe('DateTime Component', () => {
   it('Should build a date time component', () => {
-    return Harness.testCreate(DateTimeComponent, comp1);
+    return Harness.testCreate(DateTimeComponent, comp1).then((dateTime) => dateTime.destroy());
   });
 
   it('Test formatting', (done) => {
@@ -21,6 +21,7 @@ describe('DateTime Component', () => {
       dateTime.setValue(value);
       setTimeout(() => {
         assert.equal(dateTime.getValueAsString(value), formattedValue, 'getValueAsString should return formatted value');
+        dateTime.destroy();
         done();
       }, 250);
     }).catch(done);
@@ -31,6 +32,36 @@ describe('DateTime Component', () => {
     return Harness.testCreate(DateTimeComponent, comp2)
       .then((dateTime) => {
         assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');
+        dateTime.destroy();
       });
   });
+
+  // it('Test Shortcut Buttons', (done) => {
+  //   // eslint-disable-next-line no-debugger
+  //   debugger;
+  //   window.flatpickr = Flatpickr;
+  //   window.ShortcutButtonsPlugin = ShortcutButtonsPlugin;
+  //   const formElement = document.createElement('div');
+  //   const form = new Webform(formElement);
+  //   form.setForm({ display: 'form', type: 'form', components: [comp2] })
+  //     .then(() => {
+  //       const dateTime = form.components[0];
+  //       const buttonsWrappers = document.querySelectorAll('.shortcut-buttons-flatpickr-wrapper');
+  //       const shortcutButtons = buttonsWrappers[buttonsWrappers.length - 1].querySelectorAll('.shortcut-buttons-flatpickr-button');
+
+  //       assert.equal(shortcutButtons.length, 1);
+
+  //       const input = dateTime.refs.input[0];
+  //       Harness.clickElement(dateTime, shortcutButtons[0]);
+
+  //       setTimeout(() => {
+  //         input.widget.calendar.close();
+  //         setTimeout(() => {
+  //           assert.equal(form.data.date, '2020-10-10T00:00:00+00:00');
+  //           dateTime.destroy();
+  //           done();
+  //         }, 250);
+  //       }, 150);
+  //     }).catch(done);
+  // });
 });

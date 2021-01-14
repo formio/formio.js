@@ -1356,12 +1356,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/pdf.js~pdf#downloadbutton",
-    "class/src/PDF.js~PDF.html#instance-member-downloadButton",
-    "src/PDF.js~PDF#downloadButton",
-    "member"
-  ],
-  [
     "src/pdf.js~pdf#focusoncomponent",
     "class/src/PDF.js~PDF.html#instance-method-focusOnComponent",
     "src/PDF.js~PDF#focusOnComponent",
@@ -1443,12 +1437,6 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#setform",
     "class/src/PDF.js~PDF.html#instance-method-setForm",
     "src/PDF.js~PDF#setForm",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#setsubmission",
-    "class/src/PDF.js~PDF.html#instance-method-setSubmission",
-    "src/PDF.js~PDF#setSubmission",
     "method"
   ],
   [
@@ -5202,12 +5190,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/form/editform/form.edit.form.js",
-    "file/src/components/form/editForm/Form.edit.form.js.html",
-    "src/components/form/editForm/Form.edit.form.js",
-    "file"
-  ],
-  [
     "src/components/form/fixtures/comp1.js",
     "file/src/components/form/fixtures/comp1.js.html",
     "src/components/form/fixtures/comp1.js",
@@ -6550,12 +6532,6 @@ window.esdocSearchIndex = [
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-onScroll",
     "src/components/select/Select.js~SelectComponent#onScroll",
     "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#overlayoptions",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-overlayOptions",
-    "src/components/select/Select.js~SelectComponent#overlayOptions",
-    "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#redraw",

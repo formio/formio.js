@@ -220,8 +220,9 @@ export default class NestedComponent extends Field {
     originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
-    let key = path.shift();
-    const remainingPath = path;
+    const newPath = _.clone(path);
+    let key = newPath.shift();
+    const remainingPath = newPath;
     let comp = null;
     let possibleComp = null;
 

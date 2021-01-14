@@ -136,31 +136,31 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 301,
+        "lineNumber": 302,
         "line": "  /**"
       },
       {
-        "lineNumber": 302,
+        "lineNumber": 303,
         "line": "   * Create a new component and add it to the components array."
       },
       {
-        "lineNumber": 303,
+        "lineNumber": 304,
         "line": "   *"
       },
       {
-        "lineNumber": 304,
+        "lineNumber": 305,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 305,
+        "lineNumber": 306,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 306,
+        "lineNumber": 307,
         "line": "   */"
       },
       {
-        "lineNumber": 307,
+        "lineNumber": 308,
         "line": "  createComponent(component, options, data, before) {"
       }
     ],
@@ -180,27 +180,27 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 368,
+        "lineNumber": 369,
         "line": "  /**"
       },
       {
-        "lineNumber": 369,
+        "lineNumber": 370,
         "line": "   *"
       },
       {
-        "lineNumber": 370,
+        "lineNumber": 371,
         "line": "   * @param element"
       },
       {
-        "lineNumber": 371,
+        "lineNumber": 372,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 372,
+        "lineNumber": 373,
         "line": "   */"
       },
       {
-        "lineNumber": 373,
+        "lineNumber": 374,
         "line": "  addComponents(data, options) {"
       }
     ],
@@ -218,39 +218,39 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 385,
+        "lineNumber": 386,
         "line": "  /**"
       },
       {
-        "lineNumber": 386,
+        "lineNumber": 387,
         "line": "   * Add a new component to the components array."
       },
       {
-        "lineNumber": 387,
+        "lineNumber": 388,
         "line": "   *"
       },
       {
-        "lineNumber": 388,
+        "lineNumber": 389,
         "line": "   * @param {Object} component - The component JSON schema to add."
       },
       {
-        "lineNumber": 389,
+        "lineNumber": 390,
         "line": "   * @param {Object} data - The submission data object to house the data for this component."
       },
       {
-        "lineNumber": 390,
+        "lineNumber": 391,
         "line": "   * @param {HTMLElement} before - A DOM element to insert this element before."
       },
       {
-        "lineNumber": 391,
+        "lineNumber": 392,
         "line": "   * @return {Component} - The created component instance."
       },
       {
-        "lineNumber": 392,
+        "lineNumber": 393,
         "line": "   */"
       },
       {
-        "lineNumber": 393,
+        "lineNumber": 394,
         "line": "  addComponent(component, data, before, noAdd) {"
       }
     ],
@@ -319,31 +319,31 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 227,
+        "lineNumber": 224,
         "line": "  /**"
       },
       {
-        "lineNumber": 228,
+        "lineNumber": 225,
         "line": "   * Adds an option to the select dropdown."
       },
       {
-        "lineNumber": 229,
+        "lineNumber": 226,
         "line": "   *"
       },
       {
-        "lineNumber": 230,
+        "lineNumber": 227,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 231,
+        "lineNumber": 228,
         "line": "   * @param label"
       },
       {
-        "lineNumber": 232,
+        "lineNumber": 229,
         "line": "   */"
       },
       {
-        "lineNumber": 233,
+        "lineNumber": 230,
         "line": "  addOption(value, label, attrs = {}, id = getRandomComponentId()) {"
       }
     ],
@@ -363,23 +363,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 1121,
+        "lineNumber": 1088,
         "line": "  /**"
       },
       {
-        "lineNumber": 1122,
+        "lineNumber": 1089,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 1123,
+        "lineNumber": 1090,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 1124,
+        "lineNumber": 1091,
         "line": "   */"
       },
       {
-        "lineNumber": 1125,
+        "lineNumber": 1092,
         "line": "  addCurrentChoices(values, items, keyValue) {"
       }
     ],

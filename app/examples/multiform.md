@@ -9,8 +9,8 @@ workflows. Each page within the workflow can decide how to navigate to the next 
 user input within the workflow.
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
-<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
 <div id="workflow"></div>
 ```
 

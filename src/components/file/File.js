@@ -415,7 +415,14 @@ export default class FileComponent extends Field {
     });
 
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
-      this.addEventListener(fileStatusRemove, 'click', (event) => this.activateFileStatusRemoveLink(event, index));
+      this.addEventListener(fileStatusRemove, 'click', (event) => {
+        event.preventDefault();
+        if (this.abortUpload) {
+          this.abortUpload();
+        }
+        this.statuses.splice(index, 1);
+        this.redraw();
+      });
     });
 
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
@@ -722,40 +729,53 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
-          const filePromise = fileService.uploadFile(storage, file, fileName, dir, (evt) => {
+          const filePromise = fileService.uploadFile(
+            storage,
+            file,
+            fileName,
+            dir,
+            // Progress callback
+            (evt) => {
               fileUpload.status = 'progress';
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
               delete fileUpload.message;
               this.redraw();
-            }, url, options, fileKey, groupPermissions, groupResourceId,
-              () => {
-                this.fileDropHidden = true;
-                this.emit('fileUploadingStart', filePromise);
+            },
+            url,
+            options,
+            fileKey,
+            groupPermissions,
+            groupResourceId,
+            // Upload start callback
+            () => {
+              this.fileDropHidden = true;
+              this.emit('fileUploadingStart', filePromise);
+            },
+            // Abort upload callback
+            (abort) => this.abortUpload = abort,
+          ).then((fileInfo) => {
+              const index = this.statuses.indexOf(fileUpload);
+              if (index !== -1) {
+                this.statuses.splice(index, 1);
               }
-            )
-              .then((fileInfo) => {
-                const index = this.statuses.indexOf(fileUpload);
-                if (index !== -1) {
-                  this.statuses.splice(index, 1);
-                }
-                fileInfo.originalName = file.name;
-                if (!this.hasValue()) {
-                  this.dataValue = [];
-                }
-                this.dataValue.push(fileInfo);
-                this.fileDropHidden = false;
-                this.redraw();
-                this.triggerChange();
-                this.emit('fileUploadingEnd', filePromise);
-              })
-              .catch((response) => {
-                fileUpload.status = 'error';
-                fileUpload.message = response;
-                delete fileUpload.progress;
-                this.fileDropHidden = false;
-                this.redraw();
-                this.emit('fileUploadingEnd', filePromise);
-              });
+              fileInfo.originalName = file.name;
+              if (!this.hasValue()) {
+                this.dataValue = [];
+              }
+              this.dataValue.push(fileInfo);
+              this.fileDropHidden = false;
+              this.redraw();
+              this.triggerChange();
+              this.emit('fileUploadingEnd', filePromise);
+            })
+            .catch((response) => {
+              fileUpload.status = 'error';
+              fileUpload.message = response;
+              delete fileUpload.progress;
+              this.fileDropHidden = false;
+              this.redraw();
+              this.emit('fileUploadingEnd', filePromise);
+            });
         }
         else {
           fileUploadCallback && fileUploadCallback.call(this, fileUpload);

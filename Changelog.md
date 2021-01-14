@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.6
+#### Added
+ - UIP-253: Ability to abort file upload
+ - FJS-1419 (FIO-141): added tooltip for wizard pages
+
+#### Fixed
+ - Github example customendpoint: fix fetch undefined in ie11
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.7.0, @formio/semantic@2.5.0
+
+### 4.13.0-rc.5
+#### Fixed
+ - fix 'show label in DataGrid' option
+ - Fixed an error occurred when trying to add Logic row
+ 
+#### Changed
+ - Revert "Feat/uip 239 select options overlayed"
+ - Upgrade core-js@3.8.2, flatpickr@4.6.9, webpack@5.11.1, eslint@7.17.0
+
+### 4.13.0-rc.4
+#### Added
+ - FIO-994: Makes onlyAvailableItems validation optional
+ - Implement translations for static templates
+ - FJS-1183: Add download button if setting showPdfIcon checked
+ - FIO-1015: Added lazy load option for nested webforms inside wizard
+ - Allow override of url & method in request hook
+ 
+#### Fixed
+ - FIO-1036: Fixes an issue where Unique validation return an empty error
+ - Fixing issues where bad template references were causing the pdf upload to crash.
+ - FIO-129: fixed an issue where non-unique tags are added on blur event
+ - FJS-1486, FJS-1407: Fixes an issue where multiple Time's value is considered as an while server-side validation and an issue where front-end validation is not triggered when add a new row of a multiple Time component
+ - FJS-1424: Fixes an issue where changing "hidden" property of the parent component does not affect children's visibility
+
+#### Changed
+ - Cherry picked commits for VPAT/USWDS release
+ - FJS-1395: Removes useless settings option (Default open Rows) of a DataGrid
+
+### 4.13.0-rc.3
+#### Added
+ - FJS-1239: Adds ability to create shortcut buttons for flatpickr
+ - An option called "alwaysConfirmComponentRemoval" which will always confirm before removing components from the form builder.
+ - Added option to Select (url based) components to ignore the Form.io caching of the API request.
+ - Add Webform language getter
+ 
+#### Changed
+ - Localize selectboxes validation messages
+
+#### Fixed
+ - UIP-270: Radio: fix validation not triggered for the first time with default value
+
 ### 4.13.0-rc.1
 #### Added
  - Enable Setting Headers To S3
@@ -22,6 +74,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
  - FOR-2874: Added recaptcha async validation.
+ - FJS-1411: fix displaying server errors
  - FJS-1484: fixed an issue where wizard resets form after components schema is changed inside the code
  - FJS-1487: fixed an issue where conditional columns are not displayed inside dataGrid when the condition is met
  - FOR-2882: fix the mode path in ace
@@ -40,6 +93,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-1272: Fixes errors when add a placeholder char to a text mask
  - UIP-271: edge time component
  - Fixing issues where custom builder sidebars would crash and cause errors
+
+### 4.12.4
+#### Changed
+ - No changes. Released 4.12.4-rc.3 as official release.
+
+### 4.12.4-rc.3
+#### Fixed
+ - Fixing issues where custom builder sidebars would crash and cause errors.
+
+### 4.12.4-rc.2
+#### Fixed
+ - FOR-2874: Added recaptcha async validation.
+
+### 4.12.4-rc.1
+#### Fixed
+ - Fixing issue where itemsLoaded does not resolve if the select is not attached.
+ - FJS-1488: Fixing issue where setting tabindex on components inside datagrid does not also apply to remove row and add another buttons.  
+
+#### Changed
+ - Upgrade idb@5.0.8, uuid@8.3.2, @babel/cli@7.12.10, @babel/core@7.12.10, @babel/plugin-proposal-optional-chaining@7.12.7, @babel/preset-env@7.12.10, @babel/register@7.12.10, babel-loader@8.2.2, marked@1.2.6, sinon@9.2.2, eslint@7.15.0, fetch-mock@9.11.0
+
+### 4.12.3
+#### Changed
+ - No changes. Released 4.12.3-rc.1 as official release.
+
+### 4.12.3-rc.1
+#### Fixed
+ - Fixed an issue where form properties of WizardBuilder and corresponding Webform are different
+
+### 4.12.2
+#### Changed
+ - No changes. Released 4.12.2-rc.8 as official release.
+
+### 4.12.2-rc.8
+#### Fixed
+ - FJS-1449: Fixes an issue where is-invalid class is not set/removed for fields with CalendarWidget
+
+### 4.12.2-rc.7
+#### Fixed
+ - FJS-1484: fixed an issue where wizard resets form after components schema is changed inside the code
+ - FJS-1487: fixed an issue where conditional columns are not displayed inside dataGrid when the condition is met
+ - FOR-2882: fix the mode path in ace
+ - Fixed an issue where forms which have some logic get stuck in infinite loop 
+
+### 4.12.2-rc.6
+#### Fixed
+ - Issue where a conditionally hidden datagrid was not initializing the data correctly resulting in data not saving.
 
 ### 4.12.2-rc.5
 #### Fixed

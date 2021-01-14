@@ -15,7 +15,8 @@ import {
   unescapeHTML,
   getStringFromComponentPath,
   searchComponents,
-  convertStringToHTMLElement
+  convertStringToHTMLElement,
+  getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -283,6 +284,10 @@ export default class Webform extends NestedDataComponent {
     this.root = this;
   }
   /* eslint-enable max-statements */
+
+  get language() {
+    return this.options.language;
+  }
 
   /**
    * Sets the language for this form.
@@ -789,6 +794,7 @@ export default class Webform extends NestedDataComponent {
         this.submissionSet = true;
         this.triggerChange(flags);
         this.setValue(submission, flags);
+        this.setDownloadUrl();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -1217,7 +1223,17 @@ export default class Webform extends NestedDataComponent {
       }
 
       components.forEach((path) => {
-        const component = this.getComponent(path, _.identity);
+        const originalPath = this._parentPath + getStringFromComponentPath(path);
+        const component = this.getComponent(path, _.identity, originalPath);
+
+        if (err.fromServer) {
+          if (component.serverErrors) {
+            component.serverErrors.push(err);
+          }
+          else {
+            component.serverErrors = [err];
+          }
+        }
         const components = _.compact(Array.isArray(component) ? component : [component]);
 
         components.forEach((component) => component.setCustomValidity(err.message, true));
@@ -1230,8 +1246,13 @@ export default class Webform extends NestedDataComponent {
       if (err) {
         const createListItem = (message, index) => {
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
-          const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
-          const formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
+          const keyOrPath = (messageFromIndex && messageFromIndex.formattedKeyOrPath || messageFromIndex.path) || (err.component && err.component.key) || err.fromServer && err.path;
+
+          let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
+          formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
+          if (!err.formattedKeyOrPath) {
+            err.formattedKeyOrPath = formattedKeyOrPath;
+          }
 
           return {
             message: unescapeHTML(message),
@@ -1241,8 +1262,8 @@ export default class Webform extends NestedDataComponent {
 
         if (err.messages && err.messages.length) {
           const { component } = err;
-          err.messages.forEach(({ message, context }, index) => {
-            const text = context?.hasLabel ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+          err.messages.forEach(({ message, context, fromServer }, index) => {
+            const text = context?.hasLabel || fromServer ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
             displayedErrors.push(createListItem(text, index));
           });
         }
@@ -1254,8 +1275,7 @@ export default class Webform extends NestedDataComponent {
     });
 
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
-
-    this.setAlert('danger', errorsList);
+    this.root.setAlert('danger', errorsList);
 
     if (triggerEvent) {
       this.emit('error', errors);
@@ -1416,6 +1436,8 @@ export default class Webform extends NestedDataComponent {
   }
 
   submitForm(options = {}) {
+    this.clearServerErrors();
+
     return new NativePromise((resolve, reject) => {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
@@ -1480,7 +1502,11 @@ export default class Webform extends NestedDataComponent {
                 submission: result,
                 saved: true,
               }))
-              .catch(reject);
+              .catch((error) => {
+                this.setServerErrors(error);
+
+                return reject(error);
+              });
           }
 
           const submitFormio = this.formio;
@@ -1497,10 +1523,23 @@ export default class Webform extends NestedDataComponent {
               submission: result,
               saved: true,
             }))
-            .catch(reject);
+            .catch((error) => {
+              this.setServerErrors(error);
+
+              return reject(error);
+            });
         });
       });
     });
+  }
+
+  setServerErrors(error) {
+    if (error.details) {
+      this.serverErrors = error.details.filter((err) => err.level === 'error').map((err) => {
+        err.fromServer = true;
+        return err;
+      });
+    }
   }
 
   executeSubmit(options) {
@@ -1509,6 +1548,20 @@ export default class Webform extends NestedDataComponent {
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
       .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
+  }
+
+  clearServerErrors() {
+    this.serverErrors?.forEach((error) => {
+      if (error.path) {
+        const pathArray = getArrayFromComponentPath(error.path);
+        const component = this.getComponent(pathArray, _.identity, error.formattedKeyOrPath);
+
+        if (component) {
+          component.serverErrors = [];
+        }
+      }
+    });
+    this.serverErrors = [];
   }
 
   /**
@@ -1587,6 +1640,31 @@ export default class Webform extends NestedDataComponent {
     });
     if (recaptchaComponent.length > 0) {
       recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    }
+  }
+
+  setDownloadUrl() {
+    if (this.formio && _.get(this, 'form.settings.showPdfIcon', false)) {
+      this.formio.getDownloadUrl().then((url) => {
+        // Add a download button if it has a download url.
+        if (!url) {
+          return;
+        }
+        if (!this.downloadButton) {
+          if (this.options.primaryProject) {
+            url += `&project=${this.options.primaryProject}`;
+          }
+          this.downloadButton = this.ce('a', {
+            href: url,
+            target: '_blank',
+            style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
+          }, this.ce('img', {
+            src: require('./pdf.image'),
+            style: 'width:3em;'
+          }));
+          this.element.insertBefore(this.downloadButton, this.iframe);
+        }
+      });
     }
   }
 

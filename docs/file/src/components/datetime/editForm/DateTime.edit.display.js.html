@@ -238,6 +238,39 @@
     description: &apos;Use formats provided by &lt;a href=&quot;https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes&quot; target=&quot;_blank&quot;&gt;DateParser Codes&lt;/a&gt;&apos;,
     tooltip: &apos;The date format for displaying the datetime value.&apos;,
     weight: 52
+  },
+  {
+    type: &apos;editgrid&apos;,
+    input: true,
+    key: &apos;shortcutButtons&apos;,
+    label: &apos;Shortcut Buttons&apos;,
+    description: &apos;You can specify few buttons which will be shown above the calendar. Use Label to specify the name of the button and onClick to specify which date/time will be set when user clicks the button. E.g, date = new Date()&apos;,
+    templates: {
+      header: &apos;&lt;div class=&quot;row&quot;&gt;\n  &lt;div class=&quot;col-sm-3&quot;&gt;Label&lt;/div&gt;\n  &lt;div class=&quot;col-sm-6&quot;&gt;onClick&lt;/div&gt;\n&lt;/div&gt;&apos;,
+      row: &apos;&lt;div class=&quot;row&quot;&gt;\n      &lt;div class=&quot;col-sm-3&quot;&gt;\n        {{ flattenedComponents.label.getView(row.label) }}\n      &lt;/div&gt;\n      &lt;div class=&quot;col-sm-6&quot;&gt;\n        {{ flattenedComponents.onClick.getView(row.onClick) }}\n      &lt;/div&gt;\n      {% if (!instance.disabled) { %}\n        &lt;div class=&quot;col-sm-3&quot;&gt;\n          &lt;div class=&quot;btn-group pull-right&quot;&gt;\n            &lt;button class=&quot;btn btn-default btn-light btn-sm editRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&quot;edit&quot;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&quot;trash&quot;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;\n            {% } %}\n          &lt;/div&gt;\n        &lt;/div&gt;\n      {% } %}\n    &lt;/div&gt;&apos;
+    },
+    components: [
+      {
+        label: &apos;Label&apos;,
+        key: &apos;label&apos;,
+        type: &apos;textfield&apos;,
+        input: true,
+        validate: {
+          required: true
+        }
+      },
+      {
+        label: &apos;onClick&apos;,
+        key: &apos;onClick&apos;,
+        type: &apos;textarea&apos;,
+        editor: &apos;ace&apos;,
+        input: true,
+        validate: {
+          required: true
+        }
+      }
+    ],
+    defaultValue: []
   }
 ];
 </code></pre>

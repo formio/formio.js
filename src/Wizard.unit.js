@@ -14,8 +14,34 @@ import wizardWithHighPages from '../test/forms/wizardWithHighPages';
 import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import formWithSignature from '../test/forms/formWithSignature';
+import wizardWithTooltip from '../test/forms/wizardWithTooltip';
 
 describe('Wizard tests', () => {
+  it('Should show tooltip for wizard pages', function(done) {
+    const formElement = document.createElement('div');
+    const wizardWithPageTooltip = new Wizard(formElement);
+
+    wizardWithPageTooltip.setForm(wizardWithTooltip).then(() => {
+      const clickEvent = new Event('click');
+
+      assert.equal(wizardWithPageTooltip.tooltips.length, 1);
+
+      const pageTooltipIcon = wizardWithPageTooltip.refs[`${wizardWithPageTooltip.wizardKey}-tooltip`][0];
+
+      assert.equal(!!pageTooltipIcon, true);
+
+      pageTooltipIcon.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const tooltipText = wizardWithPageTooltip.element.querySelector('.tooltip-inner').textContent;
+        assert.equal(tooltipText, wizardWithPageTooltip.currentPanel.tooltip);
+
+        done();
+      }, 250);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should not clear wizard data when navigating between wizard pages with hidden panel', function(done) {
     const formElement = document.createElement('div');
     const formWithHiddenPage = new Wizard(formElement);

@@ -185,8 +185,8 @@ export default [
     label: &apos;Advanced Logic&apos;,
     key: &apos;logic&apos;,
     templates: {
-      header: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;strong&gt;{{ value.length }} Advanced Logic Configured&lt;/strong&gt;\n  &lt;/div&gt;\n&lt;/div&gt;&apos;,
-      row: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;div&gt;{{ row.name }} &lt;/div&gt;\n  &lt;/div&gt;\n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
+      header: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;strong&gt;{{ value.length }} {{ ctx.t(&quot;Advanced Logic Configured&quot;) }}&lt;/strong&gt;\n  &lt;/div&gt;\n&lt;/div&gt;&apos;,
+      row: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;div&gt;{{ row.name }} &lt;/div&gt;\n  &lt;/div&gt;\n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;{{ ctx.t(&quot;Edit&quot;) }}&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;{{ ctx.t(&quot;Delete&quot;) }}&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
       footer: &apos;&apos;,
     },
     type: &apos;editgrid&apos;,
@@ -345,8 +345,8 @@ export default [
         key: &apos;actions&apos;,
         tableView: false,
         templates: {
-          header: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;&lt;strong&gt;{{ value.length }} actions&lt;/strong&gt;&lt;/div&gt;\n&lt;/div&gt;&apos;,
-          row: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;div&gt;{{ row.name }} &lt;/div&gt;\n  &lt;/div&gt;\n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
+          header: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;&lt;strong&gt;{{ value.length }} {{ ctx.t(&quot;actions&quot;) }}&lt;/strong&gt;&lt;/div&gt;\n&lt;/div&gt;&apos;,
+          row: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;div&gt;{{ row.name }} &lt;/div&gt;\n  &lt;/div&gt;\n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;{{ ctx.t(&quot;Edit&quot;) }}&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;{{ ctx.t(&quot;Delete&quot;) }}&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
           footer: &apos;&apos;,
         },
         type: &apos;editgrid&apos;,

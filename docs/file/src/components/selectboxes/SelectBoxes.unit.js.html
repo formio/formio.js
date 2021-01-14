@@ -175,17 +175,171 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/selectboxes/SelectBoxes.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+import Harness from &apos;../../../test/harness&apos;;
 import SelectBoxesComponent from &apos;./SelectBoxes&apos;;
+import Formio from &apos;./../../Formio&apos;;
 
 import {
-  comp1,
+  comp1
 } from &apos;./fixtures&apos;;
 
 describe(&apos;SelectBoxes Component&apos;, () =&gt; {
   it(&apos;Should build a SelectBoxes component&apos;, () =&gt; {
     return Harness.testCreate(SelectBoxesComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;checkbox&quot;]&apos;, 8);
+    });
+  });
+
+  describe(&apos;error messages&apos;, () =&gt; {
+    it(&apos;Should have a minSelectedCount validation message&apos;, () =&gt; {
+      const formJson = {
+        components: [
+          {
+            type: &apos;selectboxes&apos;,
+            key: &apos;options&apos;,
+            values: [
+              { label: &apos;Option 1&apos;, value: &apos;1&apos; },
+              { label: &apos;Option 2&apos;, value: &apos;2&apos; },
+              { label: &apos;Option 3&apos;, value: &apos;3&apos; },
+              { label: &apos;Option 4&apos;, value: &apos;4&apos; }
+            ],
+            validate: {
+              minSelectedCount: 2
+            }
+          }
+        ]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      return Formio.createForm(element, formJson)
+        .then(async form =&gt; {
+          form.submission = {
+            data: {
+              options: { 1: true }
+            }
+          };
+          const comp = form.getComponent(&apos;options&apos;);
+          setTimeout(() =&gt; {
+            const { messageContainer } = comp.refs;
+            assert.equal(
+              messageContainer.textContent.trim(),
+              &apos;You must select at least 2 items.&apos;
+            );
+          }, 300);
+        });
+    });
+
+    it(&apos;Should use the minSelectedCountMessage if provided&apos;, () =&gt; {
+      const formJson = {
+        components: [
+          {
+            type: &apos;selectboxes&apos;,
+            key: &apos;options&apos;,
+            values: [
+              { label: &apos;Option 1&apos;, value: &apos;1&apos; },
+              { label: &apos;Option 2&apos;, value: &apos;2&apos; },
+              { label: &apos;Option 3&apos;, value: &apos;3&apos; },
+              { label: &apos;Option 4&apos;, value: &apos;4&apos; }
+            ],
+            validate: {
+              minSelectedCount: 2,
+            },
+            minSelectedCountMessage: &apos;Please select at least {{minCount}} items.&apos;
+          }
+        ]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      return Formio.createForm(element, formJson)
+        .then(async form =&gt; {
+          form.submission = {
+            data: {
+              options: { 1: true }
+            }
+          };
+          const comp = form.getComponent(&apos;options&apos;);
+          setTimeout(() =&gt; {
+            const { messageContainer } = comp.refs;
+            assert.equal(
+              messageContainer.textContent.trim(),
+              &apos;Please select at least 2 items.&apos;
+            );
+          }, 300);
+        });
+    });
+
+    it(&apos;Should have a maxSelectedCount validation message&apos;, () =&gt; {
+      const formJson = {
+        components: [
+          {
+            type: &apos;selectboxes&apos;,
+            key: &apos;options&apos;,
+            values: [
+              { label: &apos;Option 1&apos;, value: &apos;1&apos; },
+              { label: &apos;Option 2&apos;, value: &apos;2&apos; },
+              { label: &apos;Option 3&apos;, value: &apos;3&apos; },
+              { label: &apos;Option 4&apos;, value: &apos;4&apos; }
+            ],
+            validate: {
+              maxSelectedCount: 2
+            }
+          }
+        ]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      return Formio.createForm(element, formJson)
+        .then(async form =&gt; {
+          form.submission = {
+            data: {
+              options: { 1: true, 2: true, 3: true }
+            }
+          };
+          const comp = form.getComponent(&apos;options&apos;);
+          setTimeout(() =&gt; {
+            const { messageContainer } = comp.refs;
+            assert.equal(
+              messageContainer.textContent.trim(),
+              &apos;You can only select up to 2 items.&apos;
+            );
+          }, 300);
+        });
+    });
+
+    it(&apos;Should use the maxSelectedCountMessage if provided&apos;, () =&gt; {
+      const formJson = {
+        components: [
+          {
+            type: &apos;selectboxes&apos;,
+            key: &apos;options&apos;,
+            values: [
+              { label: &apos;Option 1&apos;, value: &apos;1&apos; },
+              { label: &apos;Option 2&apos;, value: &apos;2&apos; },
+              { label: &apos;Option 3&apos;, value: &apos;3&apos; },
+              { label: &apos;Option 4&apos;, value: &apos;4&apos; }
+            ],
+            validate: {
+              maxSelectedCount: 2,
+            },
+            maxSelectedCountMessage: &apos;Please select {{maxCount}} items at most.&apos;
+          }
+        ]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      return Formio.createForm(element, formJson)
+        .then(async form =&gt; {
+          form.submission = {
+            data: {
+              options: { 1: true, 2: true, 3: true }
+            }
+          };
+          const comp = form.getComponent(&apos;options&apos;);
+          setTimeout(() =&gt; {
+            const { messageContainer } = comp.refs;
+            assert.equal(
+              messageContainer.textContent.trim(),
+              &apos;Please select 2 items at most.&apos;
+            );
+          }, 300);
+        });
     });
   });
 });

@@ -178,7 +178,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import XHR from &apos;./xhr&apos;;
 const s3 = (formio) =&gt; ({
-  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
+  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
     return XHR.upload(formio, &apos;s3&apos;, (xhr, response) =&gt; {
       response.data.fileName = fileName;
       response.data.key = XHR.path([response.data.key, dir, fileName]);
@@ -196,7 +196,7 @@ const s3 = (formio) =&gt; ({
         xhr.openAndSetHeaders(&apos;POST&apos;, response.url);
         return fd;
       }
-    }, file, fileName, dir, progressCallback, groupPermissions, groupId).then((response) =&gt; {
+    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then((response) =&gt; {
       return {
         storage: &apos;s3&apos;,
         name: fileName,

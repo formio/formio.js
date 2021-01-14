@@ -255,10 +255,14 @@ export default class TagsComponent extends Input {
       const value = this.choices.input.value;
       const maxTagsNumber = this.component.maxTags;
       const valuesCount = this.choices.getValue(true).length;
+      const isRepeatedValue = this.choices.getValue(true).some(existingValue =&gt; existingValue.trim() === value.trim());
 
       if (value) {
         if (maxTagsNumber &amp;&amp; valuesCount === maxTagsNumber) {
           this.choices.addItems = false;
+          this.choices.clearInput();
+        }
+        else if (isRepeatedValue) {
           this.choices.clearInput();
         }
         else {
