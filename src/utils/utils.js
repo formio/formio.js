@@ -273,6 +273,24 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
   }
 }
 
+function getRow(component, row, instance, conditional) {
+  const condition = conditional || component.conditional;
+  // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
+  if (!instance) {
+    instance = _.cloneDeep(component);
+    setPathToComponentAndPerentSchema(instance);
+  }
+  const dataParent = getDataParentComponent(instance);
+  const parentPathWithoutIndicies = dataParent?.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
+  if (dataParent && condition.when?.startsWith(parentPathWithoutIndicies)) {
+    const newRow = {};
+    _.set(newRow, parentPathWithoutIndicies, row);
+    row = newRow;
+  }
+
+  return row;
+}
+
 /**
  * Checks the conditions for a provided component and data.
  *
@@ -291,18 +309,7 @@ export function checkCondition(component, row, data, form, instance) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
   else if (conditional && conditional.when) {
-    // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
-    if (!instance) {
-      instance = _.cloneDeep(component);
-      setPathToComponentAndPerentSchema(instance);
-    }
-    const dataParent = getDataParentComponent(instance);
-    const parentPathWithoutIndicies = dataParent?.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
-    if (dataParent && conditional.when.startsWith(parentPathWithoutIndicies)) {
-      const newRow = {};
-      _.set(newRow, parentPathWithoutIndicies, row);
-      row = newRow;
-    }
+    row = getRow(component, row, instance);
     return checkSimpleConditional(component, conditional, row, data);
   }
   else if (conditional && conditional.json) {
@@ -330,6 +337,7 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
 
   switch (trigger.type) {
     case 'simple':
+      row = getRow(component, row, instance, trigger.simple);
       return checkSimpleConditional(component, trigger.simple, row, data);
     case 'javascript':
       return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
