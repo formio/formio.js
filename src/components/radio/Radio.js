@@ -93,6 +93,7 @@ export default class RadioComponent extends Field {
         });
       }
     });
+    this.setSelectedClasses();
     return super.attach(element);
   }
 
@@ -149,9 +150,8 @@ export default class RadioComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
-    const changed = super.updateValue(value, flags);
-    if (changed && this.refs.wrapper) {
+  setSelectedClasses() {
+    if (this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
       const optionSelectedClass = 'radio-selected';
@@ -166,6 +166,13 @@ export default class RadioComponent extends Field {
           this.removeClass(wrapper, optionSelectedClass);
         }
       });
+    }
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+    if (changed) {
+      this.setSelectedClasses();
     }
 
     if (!flags || !flags.modified || !this.isRadio) {
