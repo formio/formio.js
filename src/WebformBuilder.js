@@ -1442,19 +1442,21 @@ export default class WebformBuilder extends Component {
       if (data) {
         const schema = JSON.parse(data);
         const parent = this.getParentElement(component.element);
-        BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
-        let path = '';
-        let index = 0;
-        if (parent.formioContainer) {
-          index = parent.formioContainer.indexOf(component.component);
-          path = this.getComponentsPath(schema, parent.formioComponent.component);
-          parent.formioContainer.splice(index + 1, 0, schema);
+        if (parent) {
+          BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
+          let path = '';
+          let index = 0;
+          if (parent.formioContainer) {
+            index = parent.formioContainer.indexOf(component.component);
+            path = this.getComponentsPath(schema, parent.formioComponent.component);
+            parent.formioContainer.splice(index + 1, 0, schema);
+          }
+          else if (parent.formioComponent && parent.formioComponent.saveChildComponent) {
+            parent.formioComponent.saveChildComponent(schema, false);
+          }
+          parent.formioComponent.rebuild();
+          this.emit('saveComponent', schema, schema, parent.formioComponent.components, path, (index + 1), true);
         }
-        else if (parent.formioComponent && parent.formioComponent.saveChildComponent) {
-          parent.formioComponent.saveChildComponent(schema, false);
-        }
-        parent.formioComponent.rebuild();
-        this.emit('saveComponent', schema, schema, parent.formioComponent.components, path, (index + 1), true);
         this.emit('change', this.form);
       }
     }
