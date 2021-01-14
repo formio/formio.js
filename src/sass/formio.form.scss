@@ -423,7 +423,8 @@ td > .form-group {
   -webkit-animation: formio-dialog-fadein 0.5s;
   animation: formio-dialog-fadein 0.5s;
   pointer-events: all;
-  overflow: auto;
+  overflow: initial;
+  max-height: initial;
 }
 
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
