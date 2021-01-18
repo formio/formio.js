@@ -1,4 +1,5 @@
 import Input from '../_classes/input/Input';
+import _ from 'lodash';
 
 let Choices;
 if (typeof window !== 'undefined') {
@@ -154,5 +155,20 @@ export default class TagsComponent extends Input {
     if (this.refs.input && this.refs.input.length) {
       this.refs.input[0].parentNode.lastChild.focus();
     }
+  }
+
+  getValueAsString(value, options) {
+    if (!value) {
+      return '';
+    }
+
+    let stringValue = '';
+
+    if (Array.isArray(value)) {
+      stringValue = value.join(', ');
+    }
+
+    stringValue = value.toString();
+    return this.sanitize(stringValue);
   }
 }
