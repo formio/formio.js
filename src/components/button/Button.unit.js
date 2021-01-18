@@ -9,7 +9,7 @@ import {
   comp1
 } from './fixtures';
 import Webform from '../../Webform';
-import formWithResetValue from '../../../test/forms/formWithResetValue';
+import formWithResetValue from '../../../test/formtest/formWithResetValue';
 
 describe('Button Component', () => {
   it('Should build a button component', () => {
