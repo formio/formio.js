@@ -13,8 +13,64 @@ import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
 import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import formWithSignature from '../test/forms/formWithSignature';
+import wizardWithTooltip from '../test/forms/wizardWithTooltip';
+import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
 
 describe('Wizard tests', () => {
+  it('Should correctly set values in HTML render mode', function(done) {
+    const formElement = document.createElement('div');
+    const formHTMLMode = new Wizard(formElement, {
+      readOnly: true,
+      renderMode: 'html'
+    });
+
+    formHTMLMode.setForm(wizardForHtmlModeTest.form).then(() => {
+      formHTMLMode.setSubmission(wizardForHtmlModeTest.submission);
+
+      setTimeout(() => {
+        const numberValue = formHTMLMode.element.querySelector('[ref="value"]').textContent;
+        assert.equal(+numberValue, wizardForHtmlModeTest.submission.data.number);
+
+        const nextPageBtn = formHTMLMode.refs[`${formHTMLMode.wizardKey}-next`];
+        const clickEvent = new Event('click');
+        nextPageBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const textValue = formHTMLMode.element.querySelector('[ref="value"]').textContent;
+          assert.equal(textValue, wizardForHtmlModeTest.submission.data.textField);
+
+          done();
+        }, 250);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should show tooltip for wizard pages', function(done) {
+    const formElement = document.createElement('div');
+    const wizardWithPageTooltip = new Wizard(formElement);
+
+    wizardWithPageTooltip.setForm(wizardWithTooltip).then(() => {
+      const clickEvent = new Event('click');
+
+      assert.equal(wizardWithPageTooltip.tooltips.length, 1);
+
+      const pageTooltipIcon = wizardWithPageTooltip.refs[`${wizardWithPageTooltip.wizardKey}-tooltip`][0];
+
+      assert.equal(!!pageTooltipIcon, true);
+
+      pageTooltipIcon.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const tooltipText = wizardWithPageTooltip.element.querySelector('.tooltip-inner').textContent;
+        assert.equal(tooltipText, wizardWithPageTooltip.currentPanel.tooltip);
+
+        done();
+      }, 250);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should not clear wizard data when navigating between wizard pages with hidden panel', function(done) {
     const formElement = document.createElement('div');
     const formWithHiddenPage = new Wizard(formElement);
