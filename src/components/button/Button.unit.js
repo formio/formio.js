@@ -8,6 +8,8 @@ import sinon from 'sinon';
 import {
   comp1
 } from './fixtures';
+import Webform from '../../Webform';
+import formWithResetValue from '../../../test/forms/formWithResetValue';
 
 describe('Button Component', () => {
   it('Should build a button component', () => {
@@ -247,5 +249,40 @@ describe('Button Component', () => {
         }, 100);
       })
       .catch(done);
+  });
+
+  it('Should reset values of all the form\'s components and update properties dependent on values', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithResetValue).then(() => {
+      const select = form.getComponent(['showPanel']);
+
+      select.setValue('yes');
+
+      setTimeout(() => {
+        const panel = form.getComponent(['panel']);
+        const textField = form.getComponent(['textField']);
+        const textArea = form.getComponent(['textArea']);
+
+        assert.equal(panel.visible, true, 'Panel should be visible');
+        assert.equal(textField.visible, true, 'TextFiled should be visible');
+        assert.equal(textArea.visible, true, 'TextArea should be visible');
+
+        const resetButton = form.getComponent(['reset']);
+        resetButton.emit('resetForm');
+
+        setTimeout(() => {
+          const panel = form.getComponent(['panel']);
+          const textField = form.getComponent(['textField']);
+          const textArea = form.getComponent(['textArea']);
+
+          assert.equal(panel.visible, false, 'Panel should NOT be visible');
+          assert.equal(textField.visible, false, 'TextFiled should NOT be visible');
+          assert.equal(textArea.visible, false, 'TextArea should NOT be visible');
+          done();
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
   });
 });
