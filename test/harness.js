@@ -301,6 +301,17 @@ const Harness = {
     assert(element, `${name} input not found`);
     assert.equal(value, element[valueProperty]);
   },
+  setTagsValue(values, component) {
+    const blurEvent = new Event('blur');
+    const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+    const element = component.choices.input.element;
+
+    values.forEach(value => {
+      element.value = value;
+      element.dispatchEvent(inputEvent);
+      element.dispatchEvent(blurEvent);
+    });
+  },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);

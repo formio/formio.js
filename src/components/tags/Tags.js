@@ -162,13 +162,11 @@ export default class TagsComponent extends Input {
       return '';
     }
 
-    let stringValue = '';
-
     if (Array.isArray(value)) {
-      stringValue = value.join(', ');
+      return value.join(', ');
     }
 
-    stringValue = value.toString();
+    const stringValue = value.toString();
     return this.sanitize(stringValue);
   }
 }
