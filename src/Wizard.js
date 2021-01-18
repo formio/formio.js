@@ -283,7 +283,9 @@ export default class Wizard extends Webform {
     this.attachHeader();
     return promises.then(() => {
       this.emit('render', { component: this.currentPage, page: this.page });
-      this.scrollPageToTop();
+      if (this.component.scrollToTop) {
+        this.scrollPageToTop();
+      }
     });
   }
 
