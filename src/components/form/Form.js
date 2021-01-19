@@ -544,7 +544,8 @@ export default class FormComponent extends Component {
     let res = true;
     if (this.subForm) {
       this.subForm.everyComponent((comp) => {
-        res &= comp.isEmpty(_.get(data, comp.key) || comp.dataValue);
+        const componentValue = _.get(data, comp.key);
+        res &= comp.isEmpty(componentValue);
       });
     }
     else {
