@@ -8,6 +8,7 @@ import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
 import 'flatpickr';
+import Formio from './Formio';
 import {
   settingErrors,
   clearOnHide,
@@ -43,6 +44,7 @@ import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
+import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 
 /* eslint-disable max-statements */
@@ -2108,7 +2110,32 @@ describe('Webform tests', function() {
       setTimeout(() => {
         assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, 'Should not set to defaultValue after restore');
         done();
-      }, 150);
+      }, 350);
+    }).catch(done);
+  });
+
+  it('Should not set the default value if there is only Radio with False value', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, nestedFormInWizard).then((form) => {
+      const nestedForm = form.getComponent(['form']);
+      const submission = {
+        data: {
+          radio: false
+        }
+      };
+
+      nestedForm.dataValue = { ...submission };
+
+      setTimeout(() => {
+        assert.deepEqual(nestedForm.dataValue, submission, 'Should set submission');
+        nestedForm.valueChanged = true;
+        form.setPage(1);
+
+        setTimeout(() => {
+          assert.deepEqual(nestedForm.dataValue.data, submission.data, 'Should not set to defaultValue after restore');
+          done();
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 
