@@ -87,6 +87,11 @@ const compileStyles = (styles, file) => {
     .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest('dist'));
 };
+gulp.task('styles-embed', function embedStyles() {
+  return compileStyles([
+    './src/sass/formio.embed.scss'
+  ], 'formio.embed');
+});
 gulp.task('styles-form', function formStyles() {
   return compileStyles([
     './node_modules/choices.js/public/assets/styles/choices.min.css',
@@ -194,6 +199,7 @@ gulp.task('build', gulp.series(
     'bootswatch'
   ),
   gulp.parallel(
+    'styles-embed',
     'styles-form',
     'styles-builder',
     'styles-full',
