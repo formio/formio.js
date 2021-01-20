@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.5
+#### Fixed
+ - FIO-1160: Fixes errors when there is an undefined value in the inputs array
+
 ### 4.12.4
 #### Changed
  - No changes. Released 4.12.4-rc.3 as official release.
