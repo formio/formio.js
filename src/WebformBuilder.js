@@ -38,6 +38,7 @@ export default class WebformBuilder extends Component {
     this.builderHeight = 0;
     this.schemas = {};
     this.repeatablePaths = [];
+    this.isFormSchemaInvalid = false;
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
@@ -1153,12 +1154,16 @@ export default class WebformBuilder extends Component {
 
   highlightInvalidComponents() {
     const repeatablePaths = this.findRepeatablePaths();
+    let hasInvalidComponents = false;
 
     eachComponent(this.webform.getComponents(), (comp, path) => {
       if (repeatablePaths.includes(path)) {
         comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+        hasInvalidComponents = true;
       }
     });
+
+    this.isFormSchemaInvalid = hasInvalidComponents;
   }
 
   /**
