@@ -176,7 +176,7 @@ if (thisScript) {
   addScript(config.script, 'Formio', (Formio) => {
     const renderForm = () => {
       addStyles(config.style);
-      config.before(config);
+      config.before(Formio, formElement, config);
       const form = (config.form || config.src);
       debug('Creating form', form, config.config);
       Formio.createForm(formElement, form, config.config).then((instance) => {
