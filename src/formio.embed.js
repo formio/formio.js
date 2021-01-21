@@ -313,7 +313,7 @@ if (thisScript) {
         addScript(config.libs[config.template].js);
       }
       addScript(`https://cdn.form.io/${config.template}/${config.template}.min.js`, config.template, (template) => {
-        debug(`Using ${template}`);
+        debug(`Using ${config.template}`);
         Formio.use(template);
         renderForm();
       });
