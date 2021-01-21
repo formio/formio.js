@@ -38,7 +38,6 @@ export default class WebformBuilder extends Component {
     this.builderHeight = 0;
     this.schemas = {};
     this.repeatablePaths = [];
-    this.isFormSchemaInvalid = false;
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
@@ -1163,7 +1162,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    this.isFormSchemaInvalid = hasInvalidComponents;
+    this.emit('error', hasInvalidComponents);
   }
 
   /**
