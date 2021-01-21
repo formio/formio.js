@@ -49,7 +49,7 @@ if (thisScript) {
     config: {},
     redirect: (query.return || query.redirect),
     before: () => {},
-    ready: () => {}
+    after: () => {}
   }, (window[query.c || 'FormioConfig'] || {}));
 
   /**
@@ -259,7 +259,7 @@ if (thisScript) {
         Formio.events.emit('formEmbedded', instance);
 
         debug('Calling ready callback');
-        config.ready(instance, config);
+        config.after(instance, config);
 
         // Configure a redirect.
         instance.on('submit', (submission) => {
