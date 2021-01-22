@@ -46,7 +46,6 @@ export class GoogleAddressProvider extends AddressProvider {
 
   getRequestUrl(options = {}) {
     const { params } = options;
-
     return `https://maps.googleapis.com/maps/api/geocode/json?${this.serialize(params)}`;
   }
 }
