@@ -281,11 +281,13 @@ export default class PDF extends Webform {
 
   showErrors(error, triggerEvent) {
     const helpBlock = document.getElementById('submit-error');
+    const submitError = this.t('submitError');
+    const isSubmitErrorShown = this.refs.buttonMessage?.textContent.trim() === submitError;
 
-    if (!helpBlock && this.errors.length) {
+    if (!helpBlock && this.errors.length && !isSubmitErrorShown) {
       const p = this.ce('p', { class: 'help-block' });
 
-      this.setContent(p, this.t('submitError'));
+      this.setContent(p, submitError);
       p.addEventListener('click', () => {
         window.scrollTo(0, 0);
       });
