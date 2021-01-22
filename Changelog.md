@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Official Release]
+#### Fixed
+ - FIO-1205: Using NativePromise instead of Promise
+
 ### 4.12.5
 #### Fixed
  - FIO-1160: Fixes errors when there is an undefined value in the inputs array
