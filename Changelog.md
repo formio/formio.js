@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Official Release]
+### 4.12.6
 #### Fixed
  - FIO-1205: Using NativePromise instead of Promise
 
