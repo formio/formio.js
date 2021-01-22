@@ -1977,7 +1977,7 @@ export default class Component extends Element {
         maxLines: 12,
         minLines: 12,
         tabSize: 2,
-        mode: 'javascript',
+        mode: 'ace/mode/javascript',
         placeholder: this.t(this.component.placeholder)
       },
       ckeditor: {
