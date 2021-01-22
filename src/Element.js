@@ -377,6 +377,9 @@ export default class Element {
           mask,
           placeholderChar: this.placeholderChar
         });
+        if (this.root && this.root.shadowRoot) {
+          input.mask.shadowRoot = this.root.shadowRoot;
+        }
       }
       catch (e) {
         // Don't pass error up, to prevent form rejection.
