@@ -122,7 +122,7 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks = this.options.hooks || {};
 
-    this.options.hooks.renderComponent = (html, { self }) => {
+    this.options.hooks.renderComponent = (html, { component, self }) => {
       if (self.type === 'form' && !self.key) {
         // The main webform shouldn't have this class as it adds extra styles.
         return html.replace('formio-component-form', '');
@@ -135,6 +135,7 @@ export default class WebformBuilder extends Component {
       return this.renderTemplate('builderComponent', {
         html,
         disableBuilderActions: self?.component?.disableBuilderActions,
+        childComponent: component,
       });
     };
 
@@ -213,88 +214,7 @@ export default class WebformBuilder extends Component {
       // Need to set up horizontal rearrangement of fields.
     };
 
-    this.options.hooks.attachComponent = (element, component) => {
-      // Add component to element for later reference.
-      element.formioComponent = component;
-
-      component.loadRefs(element, {
-        removeComponent: 'single',
-        editComponent: 'single',
-        moveComponent: 'single',
-        copyComponent: 'single',
-        pasteComponent: 'single',
-        editJson: 'single'
-      });
-
-      if (component.refs.copyComponent) {
-        new Tooltip(component.refs.copyComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Copy')
-        });
-
-        component.addEventListener(component.refs.copyComponent, 'click', () =>
-          this.copyComponent(component));
-      }
-
-      if (component.refs.pasteComponent) {
-        const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Paste below')
-        });
-
-        component.addEventListener(component.refs.pasteComponent, 'click', () => {
-          pasteToolTip.hide();
-          this.pasteComponent(component);
-        });
-      }
-
-      if (component.refs.moveComponent) {
-        new Tooltip(component.refs.moveComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Move')
-        });
-      }
-
-      const parent = this.getParentElement(element);
-
-      if (component.refs.editComponent) {
-        new Tooltip(component.refs.editComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Edit')
-        });
-
-        component.addEventListener(component.refs.editComponent, 'click', () =>
-          this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
-      }
-
-      if (component.refs.editJson) {
-        new Tooltip(component.refs.editJson, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Edit JSON')
-        });
-
-        component.addEventListener(component.refs.editJson, 'click', () =>
-          this.editComponent(component.schema, parent, false, true, component.component));
-      }
-
-      if (component.refs.removeComponent) {
-        new Tooltip(component.refs.removeComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Remove')
-        });
-
-        component.addEventListener(component.refs.removeComponent, 'click', () =>
-          this.removeComponent(component.schema, parent, component.component));
-      }
-
-      return element;
-    };
+    this.options.hooks.attachComponent = this.attachComponent.bind(this);
 
     // Load resources tagged as 'builder'
     const query = {
@@ -409,6 +329,89 @@ export default class WebformBuilder extends Component {
     });
 
     this.triggerRedraw();
+  }
+
+  attachComponent(element, component) {
+    // Add component to element for later reference.
+    element.formioComponent = component;
+
+    component.loadRefs(element, {
+      removeComponent: 'single',
+      editComponent: 'single',
+      moveComponent: 'single',
+      copyComponent: 'single',
+      pasteComponent: 'single',
+      editJson: 'single'
+    });
+
+    if (component.refs.copyComponent) {
+      new Tooltip(component.refs.copyComponent, {
+        trigger: 'hover focus',
+        placement: 'top',
+        title: this.t('Copy')
+      });
+
+      component.addEventListener(component.refs.copyComponent, 'click', () =>
+        this.copyComponent(component));
+    }
+
+    if (component.refs.pasteComponent) {
+      const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
+        trigger: 'hover focus',
+        placement: 'top',
+        title: this.t('Paste below')
+      });
+
+      component.addEventListener(component.refs.pasteComponent, 'click', () => {
+        pasteToolTip.hide();
+        this.pasteComponent(component);
+      });
+    }
+
+    if (component.refs.moveComponent) {
+      new Tooltip(component.refs.moveComponent, {
+        trigger: 'hover focus',
+        placement: 'top',
+        title: this.t('Move')
+      });
+    }
+
+    const parent = this.getParentElement(element);
+
+    if (component.refs.editComponent) {
+      new Tooltip(component.refs.editComponent, {
+        trigger: 'hover focus',
+        placement: 'top',
+        title: this.t('Edit')
+      });
+
+      component.addEventListener(component.refs.editComponent, 'click', () =>
+        this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
+    }
+
+    if (component.refs.editJson) {
+      new Tooltip(component.refs.editJson, {
+        trigger: 'hover focus',
+        placement: 'top',
+        title: this.t('Edit JSON')
+      });
+
+      component.addEventListener(component.refs.editJson, 'click', () =>
+        this.editComponent(component.schema, parent, false, true, component.component));
+    }
+
+    if (component.refs.removeComponent) {
+      new Tooltip(component.refs.removeComponent, {
+        trigger: 'hover focus',
+        placement: 'top',
+        title: this.t('Remove')
+      });
+
+      component.addEventListener(component.refs.removeComponent, 'click', () =>
+        this.removeComponent(component.schema, parent, component.component));
+    }
+
+    return element;
   }
 
   createForm(options) {
