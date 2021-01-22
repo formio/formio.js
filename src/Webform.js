@@ -307,6 +307,10 @@ export default class Webform extends NestedDataComponent {
     return this.form.components;
   }
 
+  get shadowRoot() {
+    return this.options.shadowRoot;
+  }
+
   /**
    * Add a language for translations
    *
