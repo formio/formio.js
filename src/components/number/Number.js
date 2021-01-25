@@ -116,7 +116,8 @@ export default class NumberComponent extends Input {
     input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
       inputElement: input,
-      mask: this.numberMask
+      mask: this.numberMask,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
   }
 
