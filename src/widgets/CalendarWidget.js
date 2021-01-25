@@ -112,6 +112,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.isManuallyOverriddenValue = false;
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
+    this.settings.position = 'auto center';
     this.settings.onChange = () => {
       if (this.settings.allowInput) {
         if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
