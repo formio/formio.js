@@ -3113,17 +3113,28 @@ export default class Component extends Element {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
+
     if (this.refs.input?.length) {
-      if (typeof index === 'number' && this.refs.input[index]) {
-        this.refs.input[index].focus();
+      const focusingInput = typeof index === 'number' && this.refs.input[index]
+        ? this.refs.input[index]
+        : this.refs.input[this.refs.input.length - 1];
+
+      if (this.component.widget?.type === 'calendar') {
+        const sibling = focusingInput.nextSibling;
+
+        if (sibling) {
+          sibling.focus();
+        }
       }
       else {
-        this.refs.input[this.refs.input.length - 1].focus();
+        focusingInput.focus();
       }
     }
+
     if (this.refs.openModal) {
       this.refs.openModal.focus();
     }
+
     if (this.parent.refs.openModal) {
       this.parent.refs.openModal.focus();
     }
