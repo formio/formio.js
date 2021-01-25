@@ -366,13 +366,14 @@ export default class Element {
         if (input.mask) {
           input.mask.destroy();
         }
+        // eslint-disable-next-line no-debugger
+        debugger;
         input.mask = maskInput({
           inputElement: input,
-          mask
+          mask,
+          placeholderChar: this.placeholderChar,
+          shadowRoot: this.root ? this.root.shadowRoot : null
         });
-        if (this.root && this.root.shadowRoot) {
-          input.mask.shadowRoot = this.root.shadowRoot;
-        }
       }
       catch (e) {
         // Don't pass error up, to prevent form rejection.

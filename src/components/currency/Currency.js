@@ -76,6 +76,7 @@ export default class CurrencyComponent extends NumberComponent {
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask || '',
+      shadowRoot: this.root ? this.root.shadowRoot : null
     });
   }
 
