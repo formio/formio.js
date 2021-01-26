@@ -372,8 +372,7 @@ export default class Element {
         if (input.mask) {
           input.mask.destroy();
         }
-        // eslint-disable-next-line no-debugger
-        debugger;
+
         input.mask = maskInput({
           inputElement: input,
           mask,
