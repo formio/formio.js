@@ -515,7 +515,11 @@ export default class Element {
       token: Formio.getToken({
         decode: true
       }),
-      config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
+      config: this.root && this.root.form && this.root.form.config
+        ? this.root.form.config
+        : this.options?.formConfig
+          ? this.options.formConfig
+          : {},
     }, additional, _.get(this.root, 'options.evalContext', {}));
   }
 
