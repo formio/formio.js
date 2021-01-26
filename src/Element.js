@@ -522,7 +522,11 @@ export default class Element {
       token: Formio.getToken({
         decode: true
       }),
-      config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
+      config: this.root && this.root.form && this.root.form.config
+        ? this.root.form.config
+        : this.options?.formConfig
+          ? this.options.formConfig
+          : {},
     }, additional, _.get(this.root, 'options.evalContext', {}));
   }
 
@@ -537,6 +541,7 @@ export default class Element {
     if (typeof string !== 'function' && this.component.content) {
       string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
     }
+
     return FormioUtils.interpolate(string, this.evalContext(data));
   }
 
