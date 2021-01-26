@@ -27,7 +27,7 @@ export default class Input extends Multivalue {
     };
 
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder);
+      attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
     if (this.component.tabindex) {

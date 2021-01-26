@@ -18,6 +18,6 @@
 </div>
 {% if (ctx.component.footer) { %}
   <div class="signature-pad-footer">
-    {{ctx.t(ctx.component.footer)}}
+    {{ctx.t(ctx.component.footer, { _userInput: true })}}
   </div>
 {% } %}

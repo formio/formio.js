@@ -57,7 +57,7 @@ export default class ButtonComponent extends Field {
     if (this.component.customClass) {
       info.attr.class += ` ${this.component.customClass}`;
     }
-    info.content = this.t(this.component.label);
+    info.content = this.t(this.component.label, { _userInput: true });
     return info;
   }
 
