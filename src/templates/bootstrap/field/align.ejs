@@ -22,5 +22,5 @@
 </div>
 
 {% if (ctx.component.description) { %}
-  <div class="form-text text-muted">{{ctx.t(ctx.component.description)}}</div>
+  <div class="form-text text-muted">{{ctx.t(ctx.component.description, { _userInput: true })}}</div>
 {% } %}

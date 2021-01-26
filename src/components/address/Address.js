@@ -317,7 +317,7 @@ export default class AddressComponent extends ContainerComponent {
     };
 
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder);
+      attr.placeholder = this.t(this.component.placeholder), { _userInput: true };
     }
 
     if (this.disabled) {

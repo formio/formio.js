@@ -13,6 +13,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
+import i18nConfig from '../../../i18n';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
@@ -731,6 +732,10 @@ export default class Component extends Element {
     if (!text) {
       return '';
     }
+    // Use _userInput: true to ignore translations from defaults
+    if (text in i18nConfig.resources.en.translation && params._userInput) {
+      return text;
+    }
     params.data = this.rootValue;
     params.row = this.data;
     params.component = this.component;
@@ -816,7 +821,7 @@ export default class Component extends Element {
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-    return tooltip ? this.t(tooltip) : '';
+    return tooltip ? this.t(tooltip, { _userInput: true }) : '';
   }
 
   renderTemplate(name, data = {}, modeOption) {
@@ -1028,7 +1033,7 @@ export default class Component extends Element {
         trigger: 'hover click focus',
         placement: 'right',
         html: true,
-        title: this.t(tooltipText),
+        title: this.t(tooltipText, { _userInput: true }),
         template: `
           <div class="tooltip" style="opacity: 1;" role="tooltip">
             <div class="tooltip-arrow"></div>
@@ -1487,7 +1492,7 @@ export default class Component extends Element {
    * @returns {string} - The name of the component.
    */
   get name() {
-    return this.t(this.component.label || this.component.placeholder || this.key);
+    return this.t(this.component.label || this.component.placeholder || this.key, { _userInput: true });
   }
 
   /**
@@ -1958,7 +1963,7 @@ export default class Component extends Element {
     return {
       quill: {
         theme: 'snow',
-        placeholder: this.t(this.component.placeholder),
+        placeholder: this.t(this.component.placeholder, { _userInput: true }),
         modules: {
           toolbar: [
             [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
@@ -1978,7 +1983,7 @@ export default class Component extends Element {
         minLines: 12,
         tabSize: 2,
         mode: 'javascript',
-        placeholder: this.t(this.component.placeholder)
+        placeholder: this.t(this.component.placeholder, { _userInput: true })
       },
       ckeditor: {
         image: {
@@ -3073,7 +3078,7 @@ export default class Component extends Element {
     };
 
     if (this.component.placeholder) {
-      attributes.placeholder = this.t(this.component.placeholder);
+      attributes.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
     if (this.component.tabindex) {

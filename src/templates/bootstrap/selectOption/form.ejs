@@ -4,5 +4,5 @@
   {{attr}}="{{ctx.attrs[attr]}}"
   {% } %}
   >
-  {{ctx.t(ctx.option.label)}}
+  {{ctx.t(ctx.option.label, { _userInput: true })}}
 </option>
