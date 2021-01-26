@@ -26,6 +26,7 @@ if (thisScript) {
     style: query.styles,
     libs: {
       uswds: {
+        fa: true,
         js: `${cdn}/uswds@2.10.0/dist/js/uswds.min.js`,
         css: `${cdn}/uswds@2.10.0/dist/css/uswds.min.css`
       },
@@ -107,6 +108,10 @@ if (thisScript) {
     if (!href) {
       return;
     }
+    if (typeof href !== 'string' && href.length) {
+      href.forEach(ref => addStyles(ref));
+      return;
+    }
     debug('Adding Styles', href);
     const link = createElement('link', {
       rel: 'stylesheet',
@@ -124,6 +129,10 @@ if (thisScript) {
 
   const addScript = (src, globalProp, onReady) => {
     if (!src) {
+      return;
+    }
+    if (typeof src !== 'string' && src.length) {
+      src.forEach(ref => addScript(ref));
       return;
     }
     if (globalProp && global(globalProp)) {
@@ -311,8 +320,13 @@ if (thisScript) {
       if (config.includeLibs) {
         addStyles(config.libs[config.template].css);
         addScript(config.libs[config.template].js);
+        if (config.libs[config.template].fa) {
+          addStyles(config.libs.fontawesome.css, true);
+        }
       }
-      addScript(`https://cdn.form.io/${config.template}/${config.template}.min.js`, config.template, (template) => {
+      const templateSrc = `${cdn}/@formio/${config.template}@latest/dist/${config.template}.min`;
+      addStyles(`${templateSrc}.css`);
+      addScript(`${templateSrc}.js`, config.template, (template) => {
         debug(`Using ${config.template}`);
         Formio.use(template);
         renderForm();
