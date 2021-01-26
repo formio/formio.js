@@ -180,4 +180,19 @@ export default class CheckBoxComponent extends Field {
   getValueAsString(value) {
     return value ? 'Yes' : 'No';
   }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+
+    // Update attributes of the input element
+    if (changed && this.input) {
+      if (this.input.checked) {
+        this.input.setAttribute("checked", "true");
+      } else {
+        this.input.removeAttribute("checked");
+      }
+    }
+
+    return changed;
+  }
 }
