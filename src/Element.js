@@ -151,6 +151,28 @@ export default class Element {
   }
 
   /**
+   * Remove one listener for a certain event. This is the exact opposite to `.on()`
+   * 
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function} cb - The callback handler to handle this event.
+   */
+  offOne(event, cb) {
+    if (!this.events) {
+      return;
+    }
+    const type = `${this.options.namespace}.${event}`;
+
+    const listener = this.events
+      .listeners(type)
+      .find(item => item && item === cb && item.id === this.id);
+    if (!listener) {
+      return;
+    }
+
+    this.events.off(type, listener);
+  }
+
+  /**
    * Emit a new event.
    *
    * @param {string} event - The event to emit.
