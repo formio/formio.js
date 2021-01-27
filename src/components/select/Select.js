@@ -1343,8 +1343,11 @@ export default class SelectComponent extends Field {
     }
 
     // Add the value options.
-    this.addValueOptions();
-    this.setChoicesValue(value, hasPreviousValue, flags);
+    this.itemsLoaded.then(() => {
+      this.addValueOptions();
+      this.setChoicesValue(value, hasPreviousValue, flags);
+    });
+
     return changed;
   }
 
