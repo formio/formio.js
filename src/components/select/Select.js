@@ -214,8 +214,9 @@ export default class SelectComponent extends Field {
     const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
-      if (!label || !this.t(label, { _userInput: true })) return;
-      return template.replace(label, this.t(label, { _userInput: true }));
+      const hasTranslator = this.i18next?.translator;
+      if (!label || (hasTranslator && !this.t(label, { _userInput: true }))) return;
+      return hasTranslator ? template.replace(label, this.t(label, { _userInput: true })) : label;
     }
     else {
       return JSON.stringify(data);
@@ -312,10 +313,6 @@ export default class SelectComponent extends Field {
     }
 
     if (!this.choices && this.refs.selectContainer) {
-      if (this.loading) {
-        // this.removeChildFrom(this.refs.input[0], this.selectContainer);
-      }
-
       this.empty(this.refs.selectContainer);
     }
 
