@@ -10,6 +10,9 @@ module.exports = _.merge({}, WebpackConfig, {
     libraryTarget: 'umd',
     libraryExport: 'Formio',
     path: path.resolve(__dirname, '../dist'),
-    filename: 'formio.js'
+    filename: 'formio.js',
+    environment: {
+      arrowFunction: false
+    },
   }
 });

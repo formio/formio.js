@@ -57,9 +57,19 @@ export default class TreeComponent extends NestedComponent {
       parent: this,
       root: this.root || this,
     };
+    this.disabled = this.shouldDisabled;
     this.setRoot();
     this.viewComponentsInstantiated = false;
     this._viewComponents = [];
+  }
+
+  get disabled() {
+    return super.disabled;
+  }
+
+  set disabled(disabled) {
+    super.disabled = disabled;
+    this.viewComponents.forEach((component) => component.parentDisabled = disabled);
   }
 
   destroy() {
@@ -72,7 +82,12 @@ export default class TreeComponent extends NestedComponent {
 
   createComponents(data, node) {
     const components = this.componentComponents.map(
-      (component) => Components.create(component, this.componentOptions, data),
+      (component) => {
+        const componentInstance = Components.create(component, this.componentOptions, data);
+        componentInstance.parentDisabled = this.disabled;
+
+        return componentInstance;
+      },
     );
 
     if (node) {

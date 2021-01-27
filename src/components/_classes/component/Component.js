@@ -819,6 +819,10 @@ export default class Component extends Element {
     return tooltip ? this.t(tooltip) : '';
   }
 
+  isHtmlRenderMode() {
+    return this.options.renderMode === 'html';
+  }
+
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
@@ -1021,9 +1025,11 @@ export default class Component extends Element {
     }
   }
 
-  attachTooltips(toolTipsRefs, tooltipValue) {
+  attachTooltips(toolTipsRefs) {
     toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipValue).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click focus',
         placement: 'right',
@@ -1061,7 +1067,7 @@ export default class Component extends Element {
       tooltip: 'multiple'
     });
 
-    this.attachTooltips(this.refs.tooltip, this.component.tooltip);
+    this.attachTooltips(this.refs.tooltip);
 
     // Attach logic.
     this.attachLogic();
@@ -1809,6 +1815,30 @@ export default class Component extends Element {
 
           break;
         }
+        case 'customAction': {
+          const oldValue = this.getValue();
+          const newValue = this.evaluate(action.customAction, {
+            value: _.clone(oldValue),
+            data,
+            row,
+			input: oldValue,
+            component: newComponent,
+            result,
+          },
+          'value');
+
+          if (!_.isEqual(oldValue, newValue)) {
+            this.setValue(newValue);
+
+            if (this.viewOnly) {
+              this.dataValue = newValue;
+            }
+
+            changed = true;
+          }
+
+          break;
+        }
       }
 
       return changed;
@@ -2331,7 +2361,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.options.renderMode === 'html' && changed) {
+    if (this.isHtmlRenderMode() && changed) {
       this.redraw();
       return changed;
     }

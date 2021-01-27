@@ -45,6 +45,7 @@ import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 import { nestedFormInWizard } from '../test/fixtures';
+import NativePromise from 'native-promise-only';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -1563,7 +1564,7 @@ describe('Webform tests', function() {
       assert.equal(submitButton.disabled, false, 'Button should be enabled at the beginning');
 
       const simulateFileUploading = (comp, debounce = 250) => {
-        const filePromise = new Promise((resolve) => {
+        const filePromise = new NativePromise((resolve) => {
           setTimeout(() => resolve(), debounce);
         });
         filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));

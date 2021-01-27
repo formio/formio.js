@@ -1154,9 +1154,13 @@ export default class WebformBuilder extends Component {
   highlightInvalidComponents() {
     const repeatablePaths = this.findRepeatablePaths();
 
-    eachComponent(this.webform.getComponents(), (comp, path) => {
+    this.webform.everyComponent((comp) => {
+      const path = comp.path;
       if (repeatablePaths.includes(path)) {
         comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+      }
+      else if (comp.error?.message?.startsWith('API Key is not unique')) {
+        comp.setCustomValidity('');
       }
     });
   }
@@ -1274,7 +1278,7 @@ export default class WebformBuilder extends Component {
     const instance = new ComponentClass(componentCopy);
     this.editForm.submission = isJsonEdit ? {
       data: {
-        componentJson: instance.component
+        componentJson: component
       },
     } : {
         data: instance.component,

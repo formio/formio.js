@@ -236,7 +236,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
-    const colWidth = Math.floor(12 / (columns.length + 1)).toString();
+    const layoutFixed = columns.some(col => col.type === 'select') || this.component.layoutFixed;
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
@@ -259,7 +259,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
-      colWidth
+      layoutFixed
     }));
   }
 
@@ -359,7 +359,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });
-    this.redraw();
+    this.rebuild();
   }
 
   addRow() {
