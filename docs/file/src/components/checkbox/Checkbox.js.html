@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
@@ -237,7 +236,7 @@ export default class CheckBoxComponent extends Field {
       info.attr.name = `data[${this.component.name}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
-    info.label = this.t(this.component.label);
+    info.label = this.t(this.component.label, { _userInput: true });
     info.labelClass = this.labelClass;
     return info;
   }
@@ -252,7 +251,7 @@ export default class CheckBoxComponent extends Field {
     return super.render(this.renderTemplate(&apos;checkbox&apos;, {
       input: this.inputInfo,
       checked: this.checked,
-      tooltip: this.interpolate(this.t(this.component.tooltip) || &apos;&apos;).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;)
+      tooltip: this.interpolate(this.t(this.component.tooltip) || &apos;&apos;, { _userInput: true }).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;)
     }));
   }
 
@@ -356,6 +355,22 @@ export default class CheckBoxComponent extends Field {
 
   getValueAsString(value) {
     return value ? &apos;Yes&apos; : &apos;No&apos;;
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+
+    // Update attributes of the input element
+    if (changed &amp;&amp; this.input) {
+      if (this.input.checked) {
+        this.input.setAttribute(&apos;checked&apos;, &apos;true&apos;);
+      }
+      else {
+        this.input.removeAttribute(&apos;checked&apos;);
+      }
+    }
+
+    return changed;
   }
 }
 </code></pre>

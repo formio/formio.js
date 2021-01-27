@@ -1,5 +1,4 @@
 import Input from '../_classes/input/Input';
-import _ from 'lodash';
 
 let Choices;
 if (typeof window !== 'undefined') {
@@ -157,7 +156,7 @@ export default class TagsComponent extends Input {
     }
   }
 
-  getValueAsString(value, options) {
+  getValueAsString(value) {
     if (!value) {
       return '';
     }

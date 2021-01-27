@@ -378,12 +378,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/pdf.js~pdf",
-    "class/src/PDF.js~PDF.html",
-    "<span>PDF</span> <span class=\"search-result-import-path\">formiojs/src/PDF.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/pdfbuilder.js~pdfbuilder",
     "class/src/PDFBuilder.js~PDFBuilder.html",
     "<span>PDFBuilder</span> <span class=\"search-result-import-path\">formiojs/src/PDFBuilder.js</span>",
@@ -1324,144 +1318,6 @@ window.esdocSearchIndex = [
     "file/src/Formio.unit.js.html",
     "src/Formio.unit.js",
     "file"
-  ],
-  [
-    "src/pdf.js",
-    "file/src/PDF.js.html",
-    "src/PDF.js",
-    "file"
-  ],
-  [
-    "src/pdf.js~pdf#attach",
-    "class/src/PDF.js~PDF.html#instance-method-attach",
-    "src/PDF.js~PDF#attach",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#clear",
-    "class/src/PDF.js~PDF.html#instance-method-clear",
-    "src/PDF.js~PDF#clear",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#components",
-    "class/src/PDF.js~PDF.html#instance-member-components",
-    "src/PDF.js~PDF#components",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#constructor",
-    "class/src/PDF.js~PDF.html#instance-constructor-constructor",
-    "src/PDF.js~PDF#constructor",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#focusoncomponent",
-    "class/src/PDF.js~PDF.html#instance-method-focusOnComponent",
-    "src/PDF.js~PDF#focusOnComponent",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#getsrc",
-    "class/src/PDF.js~PDF.html#instance-method-getSrc",
-    "src/PDF.js~PDF#getSrc",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#getsubmission",
-    "class/src/PDF.js~PDF.html#instance-method-getSubmission",
-    "src/PDF.js~PDF#getSubmission",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#iframeelement",
-    "class/src/PDF.js~PDF.html#instance-member-iframeElement",
-    "src/PDF.js~PDF#iframeElement",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#iframeready",
-    "class/src/PDF.js~PDF.html#instance-member-iframeReady",
-    "src/PDF.js~PDF#iframeReady",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#iframereadyreject",
-    "class/src/PDF.js~PDF.html#instance-member-iframeReadyReject",
-    "src/PDF.js~PDF#iframeReadyReject",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#iframereadyresolve",
-    "class/src/PDF.js~PDF.html#instance-member-iframeReadyResolve",
-    "src/PDF.js~PDF#iframeReadyResolve",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#init",
-    "class/src/PDF.js~PDF.html#instance-method-init",
-    "src/PDF.js~PDF#init",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#issubmitbuttonhidden",
-    "class/src/PDF.js~PDF.html#instance-method-isSubmitButtonHidden",
-    "src/PDF.js~PDF#isSubmitButtonHidden",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#postmessage",
-    "class/src/PDF.js~PDF.html#instance-method-postMessage",
-    "src/PDF.js~PDF#postMessage",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#rebuild",
-    "class/src/PDF.js~PDF.html#instance-method-rebuild",
-    "src/PDF.js~PDF#rebuild",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#redraw",
-    "class/src/PDF.js~PDF.html#instance-method-redraw",
-    "src/PDF.js~PDF#redraw",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#render",
-    "class/src/PDF.js~PDF.html#instance-method-render",
-    "src/PDF.js~PDF#render",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#setform",
-    "class/src/PDF.js~PDF.html#instance-method-setForm",
-    "src/PDF.js~PDF#setForm",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#setvalue",
-    "class/src/PDF.js~PDF.html#instance-method-setValue",
-    "src/PDF.js~PDF#setValue",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#showerrors",
-    "class/src/PDF.js~PDF.html#instance-method-showErrors",
-    "src/PDF.js~PDF#showErrors",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#submitbutton",
-    "class/src/PDF.js~PDF.html#instance-member-submitButton",
-    "src/PDF.js~PDF#submitButton",
-    "member"
-  ],
-  [
-    "src/pdf.js~pdf#submitform",
-    "class/src/PDF.js~PDF.html#instance-method-submitForm",
-    "src/PDF.js~PDF#submitForm",
-    "method"
   ],
   [
     "src/pdfbuilder.js",
@@ -3120,6 +2976,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#updatevalue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-updateValue",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#updateValue",
+    "method"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent.builderinfo",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#static-get-builderInfo",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent.builderInfo",
@@ -4390,12 +4252,6 @@ window.esdocSearchIndex = [
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-emptyValue",
     "src/components/datetime/DateTime.js~DateTimeComponent#emptyValue",
     "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#focus",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-focus",
-    "src/components/datetime/DateTime.js~DateTimeComponent#focus",
-    "method"
   ],
   [
     "src/components/datetime/datetime.js~datetimecomponent#formatvalue",
@@ -5925,6 +5781,12 @@ window.esdocSearchIndex = [
     "src/components/radio/radio.js~radiocomponent#render",
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-render",
     "src/components/radio/Radio.js~RadioComponent#render",
+    "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#setselectedclasses",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-setSelectedClasses",
+    "src/components/radio/Radio.js~RadioComponent#setSelectedClasses",
     "method"
   ],
   [
@@ -7512,6 +7374,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/tags/tags.js~tagscomponent#getvalueasstring",
+    "class/src/components/tags/Tags.js~TagsComponent.html#instance-method-getValueAsString",
+    "src/components/tags/Tags.js~TagsComponent#getValueAsString",
+    "method"
+  ],
+  [
     "src/components/tags/tags.js~tagscomponent#init",
     "class/src/components/tags/Tags.js~TagsComponent.html#instance-method-init",
     "src/components/tags/Tags.js~TagsComponent#init",
@@ -7599,12 +7467,6 @@ window.esdocSearchIndex = [
     "src/components/textarea/editform/textarea.edit.display.js",
     "file/src/components/textarea/editForm/TextArea.edit.display.js.html",
     "src/components/textarea/editForm/TextArea.edit.display.js",
-    "file"
-  ],
-  [
-    "src/components/textarea/editform/textarea.edit.layout.js",
-    "file/src/components/textarea/editForm/TextArea.edit.layout.js.html",
-    "src/components/textarea/editForm/TextArea.edit.layout.js",
     "file"
   ],
   [
@@ -8302,6 +8164,18 @@ window.esdocSearchIndex = [
     "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-destroy",
     "src/components/tree/Tree.js~TreeComponent#destroy",
     "method"
+  ],
+  [
+    "src/components/tree/tree.js~treecomponent#disabled",
+    "class/src/components/tree/Tree.js~TreeComponent.html#instance-get-disabled",
+    "src/components/tree/Tree.js~TreeComponent#disabled",
+    "member"
+  ],
+  [
+    "src/components/tree/tree.js~treecomponent#disabled",
+    "class/src/components/tree/Tree.js~TreeComponent.html#instance-set-disabled",
+    "src/components/tree/Tree.js~TreeComponent#disabled",
+    "member"
   ],
   [
     "src/components/tree/tree.js~treecomponent#editnode",

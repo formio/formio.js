@@ -164,11 +164,11 @@ export default class RadioComponent extends Field {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
           //change "checked" attribute
-          input.setAttribute("checked", "true");
+          input.setAttribute('checked', 'true');
         }
         else {
           this.removeClass(wrapper, optionSelectedClass);
-          input.removeAttribute("checked");
+          input.removeAttribute('checked');
         }
       });
     }

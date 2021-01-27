@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
@@ -185,6 +184,7 @@ import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
 import &apos;flatpickr&apos;;
+import Formio from &apos;./Formio&apos;;
 import {
   settingErrors,
   clearOnHide,
@@ -220,6 +220,8 @@ import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&
 import nestedFormInsideDataGrid from &apos;../test/forms/dataGrid-nestedForm&apos;;
 import formWithDataGrid from &apos;../test/forms/formWithDataGrid&apos;;
 import formWithDataGridWithCondColumn from &apos;../test/forms/dataGridWithConditionalColumn&apos;;
+import { nestedFormInWizard } from &apos;../test/fixtures&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -1738,7 +1740,7 @@ describe(&apos;Webform tests&apos;, function() {
       assert.equal(submitButton.disabled, false, &apos;Button should be enabled at the beginning&apos;);
 
       const simulateFileUploading = (comp, debounce = 250) =&gt; {
-        const filePromise = new Promise((resolve) =&gt; {
+        const filePromise = new NativePromise((resolve) =&gt; {
           setTimeout(() =&gt; resolve(), debounce);
         });
         filePromise.then(() =&gt; comp.emit(&apos;fileUploadingEnd&apos;, filePromise));
@@ -2295,7 +2297,32 @@ describe(&apos;Webform tests&apos;, function() {
       setTimeout(() =&gt; {
         assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, &apos;Should not set to defaultValue after restore&apos;);
         done();
-      }, 150);
+      }, 350);
+    }).catch(done);
+  });
+
+  it(&apos;Should not set the default value if there is only Radio with False value&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, nestedFormInWizard).then((form) =&gt; {
+      const nestedForm = form.getComponent([&apos;form&apos;]);
+      const submission = {
+        data: {
+          radio: false
+        }
+      };
+
+      nestedForm.dataValue = { ...submission };
+
+      setTimeout(() =&gt; {
+        assert.deepEqual(nestedForm.dataValue, submission, &apos;Should set submission&apos;);
+        nestedForm.valueChanged = true;
+        form.setPage(1);
+
+        setTimeout(() =&gt; {
+          assert.deepEqual(nestedForm.dataValue.data, submission.data, &apos;Should not set to defaultValue after restore&apos;);
+          done();
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 

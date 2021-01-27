@@ -187,9 +187,10 @@ export default class CheckBoxComponent extends Field {
     // Update attributes of the input element
     if (changed && this.input) {
       if (this.input.checked) {
-        this.input.setAttribute("checked", "true");
-      } else {
-        this.input.removeAttribute("checked");
+        this.input.setAttribute('checked', 'true');
+      }
+      else {
+        this.input.removeAttribute('checked');
       }
     }
 
