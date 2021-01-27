@@ -175,15 +175,6 @@ export default class DateTimeComponent extends Input {
     return super.checkValidity(data, dirty, rowData);
   }
 
-  focus() {
-    if (this.refs.input && this.refs.input[0]) {
-      const sibling = this.refs.input[0].nextSibling;
-      if (sibling) {
-        sibling.focus();
-      }
-    }
-  }
-
   getValueAsString(value) {
     const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (value ? moment(value).format(format) : value) || '';
