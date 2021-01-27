@@ -779,9 +779,10 @@ export default class Wizard extends Webform {
   setValue(submission, flags = {}, ignoreEstablishment) {
     this._submission = submission;
 
-    if (flags && flags.fromSubmission && (this.options.readOnly || this.editMode)) {
+    if (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) {
       this._data = submission.data;
     }
+
     if (!ignoreEstablishment) {
       this.establishPages(submission.data);
     }

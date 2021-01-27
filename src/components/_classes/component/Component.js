@@ -819,6 +819,10 @@ export default class Component extends Element {
     return tooltip ? this.t(tooltip) : '';
   }
 
+  isHtmlRenderMode() {
+    return this.options.renderMode === 'html';
+  }
+
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
@@ -2357,7 +2361,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.options.renderMode === 'html' && changed) {
+    if (this.isHtmlRenderMode() && changed) {
       this.redraw();
       return changed;
     }
