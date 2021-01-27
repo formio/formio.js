@@ -60,7 +60,7 @@ export default class CheckBoxComponent extends Field {
       info.attr.name = `data[${this.component.name}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
-    info.label = this.t(this.component.label);
+    info.label = this.t(this.component.label, { _userInput: true });
     info.labelClass = this.labelClass;
     return info;
   }
@@ -75,7 +75,7 @@ export default class CheckBoxComponent extends Field {
     return super.render(this.renderTemplate('checkbox', {
       input: this.inputInfo,
       checked: this.checked,
-      tooltip: this.interpolate(this.t(this.component.tooltip) || '').replace(/(?:\r\n|\r|\n)/g, '<br />')
+      tooltip: this.interpolate(this.t(this.component.tooltip) || '', { _userInput: true }).replace(/(?:\r\n|\r|\n)/g, '<br />')
     }));
   }
 

@@ -8,7 +8,7 @@
   <thead>
     <tr class="row">
       {% ctx.component.header.forEach(function(header) { %}
-      <th class="col-md-{{ctx.colWidth}}">{{ctx.t(header)}}</th>
+      <th class="col-md-{{ctx.colWidth}}">{{ctx.t(header, { _userInput: true })}}</th>
       {% }) %}
     </tr>
   </thead>
