@@ -824,6 +824,10 @@ export default class Component extends Element {
     return tooltip ? this.t(tooltip, { _userInput: true }) : '';
   }
 
+  isHtmlRenderMode() {
+    return this.options.renderMode === 'html';
+  }
+
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
@@ -1026,9 +1030,11 @@ export default class Component extends Element {
     }
   }
 
-  attachTooltips(toolTipsRefs, tooltipValue) {
+  attachTooltips(toolTipsRefs) {
     toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipValue).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click focus',
         placement: 'right',
@@ -1066,7 +1072,7 @@ export default class Component extends Element {
       tooltip: 'multiple'
     });
 
-    this.attachTooltips(this.refs.tooltip, this.component.tooltip);
+    this.attachTooltips(this.refs.tooltip);
 
     // Attach logic.
     this.attachLogic();
@@ -1814,6 +1820,30 @@ export default class Component extends Element {
 
           break;
         }
+        case 'customAction': {
+          const oldValue = this.getValue();
+          const newValue = this.evaluate(action.customAction, {
+            value: _.clone(oldValue),
+            data,
+            row,
+			input: oldValue,
+            component: newComponent,
+            result,
+          },
+          'value');
+
+          if (!_.isEqual(oldValue, newValue)) {
+            this.setValue(newValue);
+
+            if (this.viewOnly) {
+              this.dataValue = newValue;
+            }
+
+            changed = true;
+          }
+
+          break;
+        }
       }
 
       return changed;
@@ -1982,7 +2012,7 @@ export default class Component extends Element {
         maxLines: 12,
         minLines: 12,
         tabSize: 2,
-        mode: 'javascript',
+        mode: 'ace/mode/javascript',
         placeholder: this.t(this.component.placeholder, { _userInput: true })
       },
       ckeditor: {
@@ -2336,7 +2366,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.options.renderMode === 'html' && changed) {
+    if (this.isHtmlRenderMode() && changed) {
       this.redraw();
       return changed;
     }
@@ -3118,17 +3148,28 @@ export default class Component extends Element {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
+
     if (this.refs.input?.length) {
-      if (typeof index === 'number' && this.refs.input[index]) {
-        this.refs.input[index].focus();
+      const focusingInput = typeof index === 'number' && this.refs.input[index]
+        ? this.refs.input[index]
+        : this.refs.input[this.refs.input.length - 1];
+
+      if (this.component.widget?.type === 'calendar') {
+        const sibling = focusingInput.nextSibling;
+
+        if (sibling) {
+          sibling.focus();
+        }
       }
       else {
-        this.refs.input[this.refs.input.length - 1].focus();
+        focusingInput.focus();
       }
     }
+
     if (this.refs.openModal) {
       this.refs.openModal.focus();
     }
+
     if (this.parent.refs.openModal) {
       this.parent.refs.openModal.focus();
     }

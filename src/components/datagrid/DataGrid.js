@@ -236,7 +236,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
-    const colWidth = Math.floor(12 / (columns.length + 1)).toString();
+    const layoutFixed = columns.some(col => col.type === 'select') || this.component.layoutFixed;
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
@@ -259,7 +259,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
-      colWidth
+      layoutFixed
     }));
   }
 
@@ -303,7 +303,15 @@ export default class DataGridComponent extends NestedArrayComponent {
 
       if (dragula) {
         this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
-          moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
+          moves: (_draggedElement, _oldParent, clickedElement) => {
+            const clickedElementKey = clickedElement.getAttribute('data-key');
+            const oldParentKey = _oldParent.getAttribute('data-key');
+
+            //Check if the clicked button belongs to that container, if false, it belongs to the nested container
+            if (oldParentKey === clickedElementKey) {
+              return clickedElement.classList.contains('formio-drag-button');
+            }
+          }
         }).on('drop', this.onReorder.bind(this));
       }
     }
@@ -359,7 +367,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });
-    this.redraw();
+    this.rebuild();
   }
 
   addRow() {

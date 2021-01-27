@@ -878,7 +878,11 @@ export default class SelectComponent extends Field {
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate(null, true);
-      this.setItems(this.selectOptions || []);
+
+      if (this.visible) {
+        this.setItems(this.selectOptions || []);
+      }
+
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {
@@ -1135,11 +1139,9 @@ export default class SelectComponent extends Field {
       if (this.choices) {
         this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
-      else {
-        notFoundValuesToAdd.map(notFoundValue => {
-          this.addOption(notFoundValue.value, notFoundValue.label);
-        });
-      }
+      notFoundValuesToAdd.map(notFoundValue => {
+        this.addOption(notFoundValue.value, notFoundValue.label);
+      });
     }
     return added;
   }

@@ -5,7 +5,7 @@
       <span class="page-link" ref="{{ctx.wizardKey}}-link">
         {{ctx.t(panel.title, { _userInput: true })}}
         {% if (panel.tooltip && ctx.currentPage === index) { %}
-        <i ref="{{ctx.wizardKey}}-tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+        <i ref="{{ctx.wizardKey}}-tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{panel.tooltip}}"></i>
         {% } %}
       </span>
     </li>

@@ -9,7 +9,7 @@
       {{ctx.t(ctx.component.title, { _userInput: true })}}
       {% } %}
       {% if (ctx.component.tooltip) { %}
-        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
       {% } %}
     </span>
   </div>
