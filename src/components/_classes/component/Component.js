@@ -1809,6 +1809,30 @@ export default class Component extends Element {
 
           break;
         }
+        case 'customAction': {
+          const oldValue = this.getValue();
+          const newValue = this.evaluate(action.customAction, {
+            value: _.clone(oldValue),
+            data,
+            row,
+			input: oldValue,
+            component: newComponent,
+            result,
+          },
+          'value');
+
+          if (!_.isEqual(oldValue, newValue)) {
+            this.setValue(newValue);
+
+            if (this.viewOnly) {
+              this.dataValue = newValue;
+            }
+
+            changed = true;
+          }
+
+          break;
+        }
       }
 
       return changed;
