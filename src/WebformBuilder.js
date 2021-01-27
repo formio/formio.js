@@ -1274,7 +1274,7 @@ export default class WebformBuilder extends Component {
     const instance = new ComponentClass(componentCopy);
     this.editForm.submission = isJsonEdit ? {
       data: {
-        componentJson: instance.component
+        componentJson: component
       },
     } : {
         data: instance.component,
