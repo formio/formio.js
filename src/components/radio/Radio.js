@@ -158,12 +158,26 @@ export default class RadioComponent extends Field {
 
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
+        switch (input.type) {
+          case 'radio' :
         if (input && input.value.toString() === value.toString()) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
         }
         else {
           this.removeClass(wrapper, optionSelectedClass);
+        }
+            break;
+          case 'checkbox' :
+            // eslint-disable-next-line no-case-declarations
+            const checked = value[input.value];
+            if (checked) {
+              this.addClass(wrapper, optionSelectedClass);
+            }
+            else {
+              this.removeClass(wrapper, optionSelectedClass);
+            }
+            break;
         }
       });
     }
@@ -178,7 +192,7 @@ export default class RadioComponent extends Field {
       && this.previousValue === this.currentValue;
     if (shouldResetValue) {
       this.resetValue();
-      this.triggerChange(flags);
+      this.triggerChange();
     }
     this.previousValue = this.dataValue;
     return changed;
