@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Changed
+ - Use schema instead of component for Builder Edit JSON dialog
+ - Refactoring the inline embed code to enhance its usage and allow shadow dom.
+ - update fetch-ponyfill to 7.1.0
+ - Revert "Element: convert lodash to object in evalContext"
+ - FIO-246 (FJS-1473): removed fixedSize setting from PDF overlay settings
+ 
+#### Fixed
+ - FJS-1397: Fixes an issue where Tree's children are not disabled when the Tree is
+ - FIO-1046: Fixes an issue where unique key error is not cleared when it is fixed/issue where unique error is not show for components inside Columns
+ - FIO-1113: Disables arrow functions in webpack's output to support IE11
+ - FMG-55: Create a from | Copying a root panel on the page of a Wizard, it pasts below the copied panel
+ - FJS-1391: Fixes an issue where options of the modal select are truncated by the edge of the dialog window
+ - Fix/4.13.0 regression datagrid columns width
+ - Fixed issue where conditionally hidden radio controls are not applying the selected styles correctly.
+ - FJS-1369: Fixea an issue where some components' properties, such as 'visible', are not updated when reset value
+ - FJS-1389: Fixes an issue where Radio will become non-clickable after the row it belongs to is reordered
+ - FJS-1385: Fixes an issue where only the first tag is displayed in the modal preview when 'Save As' is set to 'Array'
+ - FIO-1116: fixed an issue where wizard submission is incorrectly set on first page load in HTML render mode
+ - FIO-1133: Fixes setting 'false' value to the radio inside the nested form
+ - FIO-1142: fixed an issue where submit error messages are displayed twice under submit button in PDF forms
+ - UIP-213: fix setting wrong mode to ace editor
+ - FIO-1169: fixed an issue where select default values are dislayed when select is conditionally hidden in PDF
+ - FIO-292 (FJS-1319): fixed an issue where some components do not have indication of required validation (star icon) when their label is hidden
+ - FJS-1328: Fixes an issue where it is impossible to reorder rows of a child DataGrid
+ - FIO-209 (FJS-1366): fixed an issue where click on textField with calendar widget error in form errors list does not redirect to the component input
+ - Fix: fix the positioning of the Calendar widget
+ - FIO-3530: update input attribute when value changes
+ - FIO-1207: Fixes an issue where a selected item is shown twice when a search result is empty
+ - FIO-1125: Any value used in Translate list is returning contains an invalid selection
+ - FIO-495 (FJS-885): fixed an issue where it is not possible to load select options in builder if select URL uses config data
+ - FIO-208 highlight js syntax
+ 
+#### Added
+ - Variables exposed in Logic Tab of a component configuration, and added Custom Action to Logic actions.
+ - FIO-273: editgrid tooltips
+ - FIO-1121: made "scroll wizard page to the top" feature as configurable option
+ - FJS-1344: Adds an event when there are some invalid components within the form
+
 ### 4.13.0-rc.6
 #### Added
  - UIP-253: Ability to abort file upload
