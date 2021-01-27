@@ -98,6 +98,11 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   color:red;
 }
 
+.field-required:after {
+  position: relative;
+  z-index: 10;
+}
+
 .glyphicon-spin {
   -webkit-animation: formio-spin 1s infinite linear;
   -moz-animation: formio-spin 1s infinite linear;
