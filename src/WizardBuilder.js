@@ -183,12 +183,12 @@ export default class WizardBuilder extends WebformBuilder {
     return this.redraw();
   }
 
-  addPage() {
+  addPage(page) {
     const pageNum = (this.pages.length + 1);
     const newPage = this.getPageConfig(pageNum);
     BuilderUtils.uniquify(this._form.components, newPage);
-    this._form.components.push(newPage);
-    this.emit('saveComponent', newPage, this._form.components);
+    this._form.components.push(page && page.component || newPage);
+    this.emit('saveComponent', page && page.component || newPage, this._form.components);
     this.emit('change', this._form);
     return this.rebuild();
   }
@@ -234,6 +234,11 @@ export default class WizardBuilder extends WebformBuilder {
     if (component instanceof WizardBuilder) {
       return;
     }
-    return super.pasteComponent(component);
+    if (this._form.components.find(comp => _.isEqual(component.component, comp))) {
+      this.addPage(component);
+    }
+    else {
+      return super.pasteComponent(component);
+    }
   }
 }
