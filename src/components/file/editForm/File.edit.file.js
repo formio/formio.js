@@ -163,6 +163,21 @@ export default [
     }
   },
   {
+    type: 'textarea',
+    input: true,
+    key: 'imageProcessing',
+    label: 'Image Processing',
+    placeholder: `sharp(input)
+      .rotate(180)
+      .resize({ width: 500 });
+    `,
+    tooltip: '<span>The image processing service using <a href=\'https://sharp.pixelplumbing.com/\'>Sharp</a> library.</span>',
+    weight: 42,
+    conditional: {
+      json: { '==': [{ var: 'data.image' }, true] }
+    }
+  },
+  {
     type: 'checkbox',
     input: true,
     key: 'webcam',
