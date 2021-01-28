@@ -128,7 +128,7 @@ export default class SignatureComponent extends Input {
   }
 
   checkSize(force, scale) {
-    if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
+    if (force || (this.refs.padBody && this.refs.padBody.offsetWidth !== this.currentWidth)) {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.offsetWidth;
       this.refs.canvas.width = this.currentWidth * this.scale;
