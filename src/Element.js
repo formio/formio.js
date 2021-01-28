@@ -130,46 +130,37 @@ export default class Element {
   }
 
   /**
-   * Removes all listeners for a certain event.
+   * Removes a listener for a certain event. Not passing the 2nd arg will remove all listeners for that event.
    *
-   * @param event
-   */
-  off(event) {
-    if (!this.events) {
-      return;
-    }
-    const type = `${this.options.namespace}.${event}`;
-
-    // Iterate through all the internal events.
-    _.each(this.events.listeners(type), (listener) => {
-      // Ensure this event is for this component.
-      if (listener && (listener.id === this.id)) {
-        // Turn off this event handler.
-        this.events.off(type, listener);
-      }
-    });
-  }
-
-  /**
-   * Remove one listener for a certain event. This is the exact opposite to `.on()`
-   * 
    * @param {string} event - The event you wish to register the handler for.
-   * @param {function} cb - The callback handler to handle this event.
+   * @param {function|undefined} cb - The callback handler to handle this event.
    */
-  offOne(event, cb) {
+  off(event, cb) {
     if (!this.events) {
       return;
     }
     const type = `${this.options.namespace}.${event}`;
 
-    const listener = this.events
+    const listeners = this.events
       .listeners(type)
-      .find(item => item && item === cb && item.id === this.id);
-    if (!listener) {
-      return;
-    }
+      .filter((listener) => {
+        // Ensure the listener is for this element
+        return listener && listener.id === this.id;
+      })
+      .filter((listener) => {
+        // Bypass this filter if no target listener is given
+        if (!cb) {
+          return true;
+        }
 
-    this.events.off(type, listener);
+        // If target listener is given, find that one and filter out others
+        return cb && cb === listener;
+      });
+
+    // Remove all filtered listeners
+    listeners.forEach((listener) => {
+      this.events.off(type, listener);
+    });
   }
 
   /**
