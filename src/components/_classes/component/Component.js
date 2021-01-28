@@ -2264,6 +2264,7 @@ export default class Component extends Element {
     this.unset();
   }
 
+  // This is just a comment to commit
   get defaultValue() {
     let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
