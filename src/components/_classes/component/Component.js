@@ -2182,7 +2182,7 @@ export default class Component extends Element {
 
   get defaultValue() {
     let defaultValue = this.emptyValue;
-    if (this.component.hasOwnProperty('defaultValue') && !_.isNil(this.component.defaultValue)) {
+    if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
     if (this.component.customDefaultValue && !this.options.preview) {
