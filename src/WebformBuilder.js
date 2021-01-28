@@ -38,15 +38,6 @@ export default class WebformBuilder extends Component {
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
 
-    const componentInfo = {};
-    for (const type in Components.components) {
-      const component = Components.components[type];
-      if (component.builderInfo) {
-        component.type = type;
-        componentInfo[type] = component.builderInfo;
-      }
-    }
-
     this.fieldsList = {
       title: 'Result fields',
       key: 'searchFields',
@@ -93,7 +84,7 @@ export default class WebformBuilder extends Component {
 
     for (const type in Components.components) {
       const component = Components.components[type];
-      if (component.builderInfo) {
+      if (component.builderInfo && component.builderInfo.schema) {
         this.schemas[type] = component.builderInfo.schema;
         component.type = type;
         const builderInfo = component.builderInfo;
@@ -101,29 +92,37 @@ export default class WebformBuilder extends Component {
         this.addBuilderComponentInfo(builderInfo);
       }
     }
+
     // Filter out any extra components.
     // Add the components in each group.
     for (const group in this.groups) {
       const info = this.groups[group];
       for (const key in info.components) {
-        const comp = info.components[key];
-        if (comp) {
-          if (comp.schema) {
-            this.schemas[key] = comp.schema;
-          }
-          info.components[key] = comp === true ? componentInfo[key] : comp;
+        let comp = info.components[key];
+        if (
+          comp === true &&
+          Components.components[key] &&
+          Components.components[key].builderInfo
+        ) {
+          comp = Components.components[key].builderInfo;
+        }
+        if (comp && comp.schema) {
+          this.schemas[key] = comp.schema;
+          info.components[key] = comp;
           info.components[key].key = key;
           this.fieldsList.components[key] = info.components[key];
         }
+        else {
+          // Do not include this component in the components array.
+          delete info.components[key];
+        }
       }
-    }
 
-    // Need to create a component order for each group.
-    for (const group in this.groups) {
-      if (this.groups[group] && this.groups[group].components) {
-        this.groups[group].componentOrder = Object.keys(this.groups[group].components)
-          .map(key => this.groups[group].components[key])
-          .filter(component => component && !component.ignore)
+      // Order the compoennts.
+      if (info.components) {
+        info.componentOrder = Object.keys(info.components)
+          .map(key => info.components[key])
+          .filter(component => component && !component.ignore && !component.ignoreForForm)
           .sort((a, b) => a.weight - b.weight)
           .map(component => component.key);
       }
@@ -820,6 +819,24 @@ export default class WebformBuilder extends Component {
     // If we haven't found the component, stop.
     if (!info) {
       return;
+    }
+
+    // Show an error if siblings are disabled for a component and such a component already exists.
+    const draggableComponent = this.groups[group]?.components[key] || {};
+
+    if (draggableComponent.disableSiblings) {
+      let isCompAlreadyExists = false;
+      eachComponent(this.webform.components, (component) => {
+        if (component.key === draggableComponent.key) {
+          isCompAlreadyExists = true;
+          return;
+        }
+      }, true);
+      if (isCompAlreadyExists) {
+        this.webform.redraw();
+        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.key} component to one page.`);
+        return;
+      }
     }
 
     if (target !== source) {

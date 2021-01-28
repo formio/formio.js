@@ -273,6 +273,9 @@ export default class Component extends Element {
      */
     this.component = this.mergeSchema(component || {});
 
+    // Add the id to the component.
+    this.component.id = this.id;
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -291,9 +294,6 @@ export default class Component extends Element {
      * @type {*}
      */
     this._data = data || {};
-
-    // Add the id to the component.
-    this.component.id = this.id;
 
     /**
      * The existing error that this component has.
@@ -529,11 +529,7 @@ export default class Component extends Element {
   }
 
   set parentVisible(value) {
-    if (this._parentVisible !== value) {
-      this._parentVisible = value;
-      this.clearOnHide();
-      this.redraw();
-    }
+    this._parentVisible = value;
   }
 
   get parentVisible() {
@@ -541,11 +537,7 @@ export default class Component extends Element {
   }
 
   set parentDisabled(value) {
-    if (this._parentDisabled !== value) {
-      this._parentDisabled = value;
-      this.clearOnHide();
-      this.redraw();
-    }
+    this._parentDisabled = value;
   }
 
   get parentDisabled() {
@@ -1024,6 +1016,7 @@ export default class Component extends Element {
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
     if (this.element.id) {
       this.id = this.element.id;
+      this.component.id = this.id;
     }
 
     this.loadRefs(element, {
@@ -1260,7 +1253,8 @@ export default class Component extends Element {
     if (value === null || value === undefined) {
       return '';
     }
-    return value.toString();
+    const stringValue = value.toString();
+    return this.sanitize(stringValue);
   }
 
   getView(value, options) {
@@ -1826,6 +1820,8 @@ export default class Component extends Element {
   setErrorClasses(elements, dirty, hasErrors, hasMessages) {
     this.clearErrorClasses();
     elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    this.setInputWidgetErrorClasses(elements, hasErrors);
+
     if (hasErrors) {
       // Add error classes
       elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
@@ -2734,6 +2730,18 @@ export default class Component extends Element {
     this.removeClass(this.element, 'alert alert-danger');
     this.removeClass(this.element, 'has-error');
     this.removeClass(this.element, 'has-message');
+  }
+
+  setInputWidgetErrorClasses(inputRefs, hasErrors) {
+    if (!this.isInputComponent || !this.component.widget || !inputRefs?.length) {
+      return;
+    }
+
+    inputRefs.forEach((input) => {
+      if (input?.widget && input.widget.setErrorClasses) {
+        input.widget.setErrorClasses(hasErrors);
+      }
+    });
   }
 
   setCustomValidity(messages, dirty, external) {

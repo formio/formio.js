@@ -74,6 +74,7 @@ export default class FileComponent extends Field {
     });
     this.cameraMode = false;
     this.statuses = [];
+    this.fileDropHidden = false;
   }
 
   get dataReady() {
@@ -119,6 +120,17 @@ export default class FileComponent extends Field {
       (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
   }
 
+  get fileDropHidden() {
+    return this._fileBrowseHidden;
+  }
+
+  set fileDropHidden(value) {
+    if (typeof value !== 'boolean' || this.component.multiple) {
+      return;
+    }
+    this._fileBrowseHidden = value;
+  }
+
   render() {
     return super.render(this.renderTemplate('file', {
       fileSize: this.fileSize,
@@ -126,6 +138,7 @@ export default class FileComponent extends Field {
       statuses: this.statuses,
       disabled: this.disabled,
       support: this.support,
+      fileDropHidden: this.fileDropHidden
     }));
   }
 
@@ -451,6 +464,9 @@ export default class FileComponent extends Field {
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
       }
+      else {
+        this.filesReadyResolve();
+      }
     }
     return superAttach;
   }
@@ -640,7 +656,12 @@ export default class FileComponent extends Field {
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
               delete fileUpload.message;
               this.redraw();
-            }, url, options, fileKey, groupPermissions, groupResourceId)
+            }, url, options, fileKey, groupPermissions, groupResourceId,
+              () => {
+                this.fileDropHidden = true;
+                this.emit('fileUploadingStart', filePromise);
+              }
+            )
               .then((fileInfo) => {
                 const index = this.statuses.indexOf(fileUpload);
                 if (index !== -1) {
@@ -651,19 +672,19 @@ export default class FileComponent extends Field {
                   this.dataValue = [];
                 }
                 this.dataValue.push(fileInfo);
+                this.fileDropHidden = false;
                 this.redraw();
                 this.triggerChange();
+                this.emit('fileUploadingEnd', filePromise);
               })
               .catch((response) => {
                 fileUpload.status = 'error';
                 fileUpload.message = response;
                 delete fileUpload.progress;
+                this.fileDropHidden = false;
                 this.redraw();
-              })
-              .finally(() => {
                 this.emit('fileUploadingEnd', filePromise);
               });
-            this.emit('fileUploadingStart', filePromise);
         }
       });
     }

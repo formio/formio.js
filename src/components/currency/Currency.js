@@ -68,7 +68,7 @@ export default class CurrencyComponent extends NumberComponent {
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language,
     });
-    let numberPattern = `\\${affixes.prefix}[0-9`;
+    let numberPattern = `${affixes.prefix}[0-9`;
     numberPattern += this.decimalSeparator || '';
     numberPattern += this.delimiter || '';
     numberPattern += ']*';
@@ -173,6 +173,11 @@ export default class CurrencyComponent extends NumberComponent {
   addFocusBlurEvents(element) {
     super.addFocusBlurEvents(element);
 
+    this.addEventListener(element, 'focus', () => {
+      if (element.defaultValue === element.value) {
+        element.setSelectionRange(0, element.defaultValue.length);
+      }
+    });
     this.addEventListener(element, 'blur', () => {
       element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
     });

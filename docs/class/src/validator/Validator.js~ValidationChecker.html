@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
@@ -78,8 +77,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
@@ -325,7 +323,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html#instance-member-validators">validators</a></span></span><span class="code" data-ice="signature">: {&quot;required&quot;: <span>*</span>, &quot;unique&quot;: <span>*</span>, &quot;multiple&quot;: <span>*</span>, &quot;select&quot;: <span>*</span>, &quot;min&quot;: <span>*</span>, &quot;max&quot;: <span>*</span>, &quot;minSelectedCount&quot;: <span>*</span>, &quot;maxSelectedCount&quot;: <span>*</span>, &quot;minLength&quot;: <span>*</span>, &quot;maxLength&quot;: <span>*</span>, &quot;maxWords&quot;: <span>*</span>, &quot;minWords&quot;: <span>*</span>, &quot;email&quot;: <span>*</span>, &quot;url&quot;: <span>*</span>, &quot;date&quot;: <span>*</span>, &quot;day&quot;: <span>*</span>, &quot;pattern&quot;: <span>*</span>, &quot;json&quot;: <span>*</span>, &quot;mask&quot;: <span>*</span>, &quot;custom&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;minYear&quot;: <span>*</span>, &quot;maxYear&quot;: <span>*</span>, &quot;calendar&quot;: <span>*</span>, &quot;time&quot;: <span>*</span>}</span>
+          <span class="code" data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html#instance-member-validators">validators</a></span></span><span class="code" data-ice="signature">: {&quot;required&quot;: <span>*</span>, &quot;onlyAvailableItems&quot;: <span>*</span>, &quot;unique&quot;: <span>*</span>, &quot;multiple&quot;: <span>*</span>, &quot;select&quot;: <span>*</span>, &quot;min&quot;: <span>*</span>, &quot;max&quot;: <span>*</span>, &quot;minSelectedCount&quot;: <span>*</span>, &quot;maxSelectedCount&quot;: <span>*</span>, &quot;minLength&quot;: <span>*</span>, &quot;maxLength&quot;: <span>*</span>, &quot;maxWords&quot;: <span>*</span>, &quot;minWords&quot;: <span>*</span>, &quot;email&quot;: <span>*</span>, &quot;url&quot;: <span>*</span>, &quot;date&quot;: <span>*</span>, &quot;day&quot;: <span>*</span>, &quot;pattern&quot;: <span>*</span>, &quot;json&quot;: <span>*</span>, &quot;mask&quot;: <span>*</span>, &quot;custom&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;minYear&quot;: <span>*</span>, &quot;maxYear&quot;: <span>*</span>, &quot;calendar&quot;: <span>*</span>, &quot;time&quot;: <span>*</span>}</span>
         </p>
       </div>
       <div>
@@ -639,7 +637,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1008">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1021">source</a></span></span>
     </span>
   </h3>
 
@@ -721,7 +719,7 @@
     
     
     
-    <span class="code" data-ice="name">validators</span><span class="code" data-ice="signature">: {&quot;required&quot;: <span>*</span>, &quot;unique&quot;: <span>*</span>, &quot;multiple&quot;: <span>*</span>, &quot;select&quot;: <span>*</span>, &quot;min&quot;: <span>*</span>, &quot;max&quot;: <span>*</span>, &quot;minSelectedCount&quot;: <span>*</span>, &quot;maxSelectedCount&quot;: <span>*</span>, &quot;minLength&quot;: <span>*</span>, &quot;maxLength&quot;: <span>*</span>, &quot;maxWords&quot;: <span>*</span>, &quot;minWords&quot;: <span>*</span>, &quot;email&quot;: <span>*</span>, &quot;url&quot;: <span>*</span>, &quot;date&quot;: <span>*</span>, &quot;day&quot;: <span>*</span>, &quot;pattern&quot;: <span>*</span>, &quot;json&quot;: <span>*</span>, &quot;mask&quot;: <span>*</span>, &quot;custom&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;minYear&quot;: <span>*</span>, &quot;maxYear&quot;: <span>*</span>, &quot;calendar&quot;: <span>*</span>, &quot;time&quot;: <span>*</span>}</span>
+    <span class="code" data-ice="name">validators</span><span class="code" data-ice="signature">: {&quot;required&quot;: <span>*</span>, &quot;onlyAvailableItems&quot;: <span>*</span>, &quot;unique&quot;: <span>*</span>, &quot;multiple&quot;: <span>*</span>, &quot;select&quot;: <span>*</span>, &quot;min&quot;: <span>*</span>, &quot;max&quot;: <span>*</span>, &quot;minSelectedCount&quot;: <span>*</span>, &quot;maxSelectedCount&quot;: <span>*</span>, &quot;minLength&quot;: <span>*</span>, &quot;maxLength&quot;: <span>*</span>, &quot;maxWords&quot;: <span>*</span>, &quot;minWords&quot;: <span>*</span>, &quot;email&quot;: <span>*</span>, &quot;url&quot;: <span>*</span>, &quot;date&quot;: <span>*</span>, &quot;day&quot;: <span>*</span>, &quot;pattern&quot;: <span>*</span>, &quot;json&quot;: <span>*</span>, &quot;mask&quot;: <span>*</span>, &quot;custom&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;minYear&quot;: <span>*</span>, &quot;maxYear&quot;: <span>*</span>, &quot;calendar&quot;: <span>*</span>, &quot;time&quot;: <span>*</span>}</span>
     <span class="right-info">
       
       
@@ -771,7 +769,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber844">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber857">source</a></span></span>
     </span>
   </h3>
 
@@ -868,7 +866,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber977">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber990">source</a></span></span>
     </span>
   </h3>
 
@@ -969,7 +967,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber954">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber967">source</a></span></span>
     </span>
   </h3>
 
@@ -1065,7 +1063,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber780">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber793">source</a></span></span>
     </span>
   </h3>
 
@@ -1178,7 +1176,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1016">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1029">source</a></span></span>
     </span>
   </h3>
 
@@ -1221,7 +1219,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1012">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1025">source</a></span></span>
     </span>
   </h3>
 
@@ -1264,7 +1262,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1020">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber1033">source</a></span></span>
     </span>
   </h3>
 
@@ -1307,7 +1305,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber811">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/validator/Validator.js.html#lineNumber824">source</a></span></span>
     </span>
   </h3>
 

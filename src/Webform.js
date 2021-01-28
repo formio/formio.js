@@ -638,15 +638,17 @@ export default class Webform extends NestedDataComponent {
   setForm(form, flags) {
     const isFormAlreadySet = this._form && this._form.components?.length;
     try {
-      const formString = JSON.stringify(form);
-
       // Do not set the form again if it has been already set
-      if (isFormAlreadySet && JSON.stringify(this._form) === formString) {
+      if (isFormAlreadySet && JSON.stringify(this._form) === JSON.stringify(form)) {
         return NativePromise.resolve();
       }
 
       // Create the form.
-      this._form = JSON.parse(formString);
+      this._form = flags?.keepAsReference ? form : _.cloneDeep(form);
+
+      if (this.onSetForm) {
+        this.onSetForm(this._form, form);
+      }
     }
     catch (err) {
       console.warn(err);
@@ -1045,9 +1047,9 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
-   * @param {string} classes - Styling classes for alert.
+   * @param {Object} options
    */
-  setAlert(type, message, classes) {
+  setAlert(type, message, options) {
     if (!type && this.submitted) {
       if (this.alert) {
         if (this.refs.errorRef && this.refs.errorRef.length) {
@@ -1084,7 +1086,7 @@ export default class Webform extends NestedDataComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: classes || `alert alert-${type}`,
+        class: (options && options.classes) || `alert alert-${type}`,
         id: `error-list-${this.id}`,
       });
       if (message instanceof HTMLElement) {
@@ -1252,7 +1254,7 @@ export default class Webform extends NestedDataComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
-    this.emit('submit', submission);
+    this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
     }
@@ -1282,7 +1284,7 @@ export default class Webform extends NestedDataComponent {
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
-      this.emit('change', { isValid: true });
+      this.emit('change', { isValid: true }, { silent: true });
       return false;
     }
 

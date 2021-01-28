@@ -26,6 +26,17 @@ export default class WizardBuilder extends WebformBuilder {
 
     this.page = 0;
 
+    // Need to create a component order for each group.
+    for (const group in this.groups) {
+      if (this.groups[group] && this.groups[group].components) {
+        this.groups[group].componentOrder = Object.keys(this.groups[group].components)
+          .map(key => this.groups[group].components[key])
+          .filter(component => component && !component.ignore)
+          .sort((a, b) => a.weight - b.weight)
+          .map(component => component.key);
+      }
+    }
+
     this.options.hooks.attachPanel = (element, component) => {
       if (component.refs.removeComponent) {
         this.addEventListener(component.refs.removeComponent, 'click', () => {
@@ -129,7 +140,7 @@ export default class WizardBuilder extends WebformBuilder {
           subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
             group,
             groupKey: group.key,
-            groupId: `builder-sidebar-${groupKey}`,
+            groupId: `group-container-${groupKey}`,
             subgroups: []
           })),
         })),
@@ -164,11 +175,11 @@ export default class WizardBuilder extends WebformBuilder {
 
   rebuild() {
     const page = this.currentPage;
-    this.webform.form = {
+    this.webform.setForm({
       display: 'form',
       type: 'form',
       components: page ? [page] : [],
-    };
+    }, { keepAsReference: true });
     return this.redraw();
   }
 

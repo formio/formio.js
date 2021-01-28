@@ -25,11 +25,15 @@
   {% if page.template == nil %}
     <link href="https://bootswatch.com/4/cosmo/bootstrap.min.css" rel="stylesheet">
   {% endif %}
-  <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% if page.noFormio == nil %}
+    <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% endif %}
   <script src="https://cdn.form.io/ace/ace.js"></script>
   <script src="{{ site.baseurl }}/app/jquery/jquery.slim.min.js"></script>
   <script src="{{ site.baseurl }}/app/bootstrap/js/bootstrap.min.js"></script>
-  <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% if page.noFormio == nil %}
+    <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% endif %}
   {% if page.contrib %}
     <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}
@@ -67,7 +71,7 @@
 <hr />
 <div>
   <h4 class="text-center text-muted">powered by <img src="{{ site.baseurl }}/app/logo.png" class="mr-2" style="height: 1.2em;" /></h4>
-  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2019. All rights reserved</p>
+  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2020. All rights reserved</p>
 </div>
 <p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
 <script type="text/javascript">

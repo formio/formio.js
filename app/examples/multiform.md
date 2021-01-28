@@ -9,8 +9,8 @@ workflows. Each page within the workflow can decide how to navigate to the next 
 user input within the workflow.
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
-<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
 <div id="workflow"></div>
 ```
 
@@ -319,13 +319,13 @@ workflow.form = {
           {
             input: false,
             html: "<h2>Are you sure you wish to submit?</h3>\n" +
-                  + "<ul>\n" +
-                    + "{% if (data.a) { %}<li><strong>Page A</strong> --> {{ data.a.data.nextPage }}</li>{% } %}\n" +
-                    + "{% if (data.b) { %}<li><strong>Page B</strong> --> {{ data.b.data.nextPage }}</li>{% } %}\n" +
-                    + "{% if (data.c) { %}<li><strong>Page C</strong> --> {{ data.c.data.nextPage }}</li>{% } %}\n" +
-                    + "{% if (data.d) { %}<li><strong>Page D</strong> --> {{ data.d.data.nextPage }}</li>{% } %}\n" +
-                    + "{% if (data.e) { %}<li><strong>Page E</strong> --> {{ data.e.data.nextPage }}</li>{% } %}\n" +
-                  + "</ul>",
+                  "<ul>\n" +
+                    "{% if (data.a) { %}<li><strong>Page A</strong> --> {{ data.a.data.nextPage }}</li>{% } %}\n" +
+                    "{% if (data.b) { %}<li><strong>Page B</strong> --> {{ data.b.data.nextPage }}</li>{% } %}\n" +
+                    "{% if (data.c) { %}<li><strong>Page C</strong> --> {{ data.c.data.nextPage }}</li>{% } %}\n" +
+                    "{% if (data.d) { %}<li><strong>Page D</strong> --> {{ data.d.data.nextPage }}</li>{% } %}\n" +
+                    "{% if (data.e) { %}<li><strong>Page E</strong> --> {{ data.e.data.nextPage }}</li>{% } %}\n" +
+                  "</ul>",
             type: 'content',
             key: 'areyousure'
           }

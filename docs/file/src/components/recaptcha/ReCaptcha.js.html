@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
@@ -78,8 +77,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
@@ -254,8 +252,12 @@ export default class ReCaptchaComponent extends Component {
                 .then((token) =&gt; {
                   return this.sendVerificationRequest(token);
                 })
-                .then(verificationResult =&gt; {
-                  this.setValue(verificationResult);
+                .then(({ verificationResult, token }) =&gt; {
+                  this.setValue({
+                    ...verificationResult,
+                    token,
+                  });
+
                   return resolve(verificationResult);
                 });
             });
@@ -276,7 +278,32 @@ export default class ReCaptchaComponent extends Component {
   }
 
   sendVerificationRequest(token) {
-    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`);
+    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)
+      .then((verificationResult) =&gt; ({ verificationResult, token }));
+  }
+
+  checkComponentValidity(data, dirty, row, options = {}) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    const { async = false } = options;
+
+    // Verification could be async only
+    if (!async) {
+      return super.checkComponentValidity(data, dirty, row, options);
+    }
+
+    const componentData = row[this.component.key];
+    if (!componentData || !componentData.token) {
+      this.setCustomValidity(&apos;ReCaptcha: Token is not specified in submission&apos;);
+      return NativePromise.resolve(false);
+    }
+
+    return this.hook(&apos;validateReCaptcha&apos;, componentData.token, () =&gt; NativePromise.resolve(true))
+      .then((success) =&gt; success)
+      .catch((err) =&gt; {
+        this.setCustomValidity(err.message || err);
+        return false;
+      });
   }
 
   setValue(value) {

@@ -648,4 +648,12 @@ export default [
     tooltip: 'A raw JSON object to use as options for the Select component (Choices JS).',
     defaultValue: {},
   },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 29,
+    key: 'useExactSearch',
+    label: 'Use exact search',
+    tooltip: 'Disables search algorithm threshold.',
+  },
 ];

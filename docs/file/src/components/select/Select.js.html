@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
@@ -78,8 +77,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
@@ -182,7 +180,7 @@ import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
-import { getRandomComponentId } from &apos;../../utils/utils&apos;;
+import { getRandomComponentId, boolValue } from &apos;../../utils/utils&apos;;
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -218,7 +216,8 @@ export default class SelectComponent extends Field {
         include: &apos;score&apos;,
         threshold: 0.3,
       },
-      customOptions: {}
+      customOptions: {},
+      useExactSearch: false,
     }, ...extend);
   }
 
@@ -235,7 +234,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat([&apos;select&apos;]);
+    this.validators = this.validators.concat([&apos;select&apos;, &apos;onlyAvailableItems&apos;]);
 
     // Trigger an update.
     let updateArgs = [];
@@ -275,6 +274,15 @@ export default class SelectComponent extends Field {
   }
 
   get dataReady() {
+    // If the root submission has been set, and we are still not attached, then assume
+    // that our data is ready.
+    if (
+      this.root &amp;&amp;
+      this.root.submissionSet &amp;&amp;
+      !this.attached
+    ) {
+      return NativePromise.resolve();
+    }
     return this.itemsLoaded;
   }
 
@@ -378,7 +386,7 @@ export default class SelectComponent extends Field {
         ? JSON.stringify(data.data)
         : data.data;
     }
-    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
+    const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
     if (template) {
       const label = template.replace(/&lt;\/?[^&gt;]+(&gt;|$)/g, &apos;&apos;);
       if (!label || !this.t(label)) return;
@@ -401,14 +409,8 @@ export default class SelectComponent extends Field {
       ? this.component.idPath.split(&apos;.&apos;).reduceRight((obj, key) =&gt; ({ [key]: obj }), id)
       : {};
     const option = {
-      value: _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
-        ? this.normalizeSingleValue(value)
-        : _.isObject(value)
-          ? value
-          : _.isNull(value)
-            ? this.emptyValue
-            : String(this.normalizeSingleValue(value)),
-      label: label,
+      value: this.getOptionValue(value),
+      label,
       ...idPath
     };
 
@@ -746,6 +748,7 @@ export default class SelectComponent extends Field {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
+      return;
     }
 
     this.updateItems(null, true);
@@ -825,7 +828,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (forceUpdate || this.additionalResourcesAvailable || this.dataValue.length &amp;&amp; !this.serverCount) {
+        if (forceUpdate || this.additionalResourcesAvailable || !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
@@ -931,21 +934,36 @@ export default class SelectComponent extends Field {
    * Activate this select control.
    */
   activate() {
+    if (this.loading || !this.active) {
+      this.setLoadingItem();
+    }
     if (this.active) {
       return;
     }
     this.activated = true;
+    this.triggerUpdate();
+  }
+
+  setLoadingItem(addToCurrentList = false) {
     if (this.choices) {
-      this.choices.setChoices([{
-        value: &apos;&apos;,
-        label: `&lt;i class=&quot;${this.iconClass(&apos;refresh&apos;)}&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/i&gt;`,
-        disabled: true,
-      }], &apos;value&apos;, &apos;label&apos;, true);
+      if (addToCurrentList) {
+        this.choices.setChoices([{
+          value: `${this.id}-loading`,
+          label: &apos;Loading...&apos;,
+          disabled: true,
+        }], &apos;value&apos;, &apos;label&apos;);
+      }
+      else {
+        this.choices.setChoices([{
+          value: &apos;&apos;,
+          label: `&lt;i class=&quot;${this.iconClass(&apos;refresh&apos;)}&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/i&gt;`,
+          disabled: true,
+        }], &apos;value&apos;, &apos;label&apos;, true);
+      }
     }
     else if (this.component.dataSrc === &apos;url&apos; || this.component.dataSrc === &apos;resource&apos;) {
       this.addOption(&apos;&apos;, this.t(&apos;loading...&apos;));
     }
-    this.triggerUpdate();
   }
 
   get active() {
@@ -1019,7 +1037,9 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, &apos;component.searchFields&apos;, [&apos;label&apos;]),
-      fuseOptions: Object.assign(
+      fuseOptions: this.component.useExactSearch
+        ? {}
+        : Object.assign(
         {},
         _.get(this, &apos;component.fuseOptions&apos;, {}),
         {
@@ -1083,11 +1103,6 @@ export default class SelectComponent extends Field {
     const choicesOptions = this.choicesOptions();
     this.choices = new Choices(input, choicesOptions);
 
-    this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
-      this.choices.input.element.value = &apos;&apos;;
-      this.updateItems(null, true);
-    });
-
     if (this.selectOptions &amp;&amp; this.selectOptions.length) {
       this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
     }
@@ -1105,22 +1120,7 @@ export default class SelectComponent extends Field {
 
     if (this.isInfiniteScrollProvided) {
       this.scrollList = this.choices.choiceList.element;
-      this.onScroll = () =&gt; {
-        const isLoadingAvailable = !this.isScrollLoading
-          &amp;&amp; this.additionalResourcesAvailable
-          &amp;&amp; ((this.scrollList.scrollTop + this.scrollList.clientHeight) &gt;= this.scrollList.scrollHeight);
-
-        if (isLoadingAvailable) {
-          this.isScrollLoading = true;
-          this.choices.setChoices([{
-            value: `${this.id}-loading`,
-            label: &apos;Loading...&apos;,
-            disabled: true,
-          }], &apos;value&apos;, &apos;label&apos;);
-          this.triggerUpdate(this.choices.input.element.value);
-        }
-      };
-      this.addEventListener(this.scrollList, &apos;scroll&apos;, this.onScroll);
+      this.addEventListener(this.scrollList, &apos;scroll&apos;, () =&gt; this.onScroll());
     }
 
     this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);
@@ -1150,14 +1150,13 @@ export default class SelectComponent extends Field {
       });
       this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
+      this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
+        this.choices.input.element.value = &apos;&apos;;
+        this.updateItems(null, true);
+      });
     }
 
-    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; {
-      if (this.dataValue) {
-        this.triggerUpdate();
-      }
-      this.update();
-    });
+    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
 
     if (choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
@@ -1201,6 +1200,18 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  get isLoadingAvailable() {
+    return !this.isScrollLoading &amp;&amp; this.additionalResourcesAvailable;
+  }
+
+  onScroll() {
+    if (this.isLoadingAvailable) {
+      this.isScrollLoading = true;
+      this.setLoadingItem(true);
+      this.triggerUpdate(this.choices.input.element.value);
+    }
   }
 
   attachRefreshOnBlur() {
@@ -1562,6 +1573,88 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.getOptionsValues();
+
+    if (values) {
+      if (_.isObject(value)) {
+        const compareComplexValues = (optionValue) =&gt; {
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
+
+          if (!_.isObject(normalizedOptionValue)) {
+            return false;
+          }
+
+          try {
+            return (JSON.stringify(normalizedOptionValue) === JSON.stringify(value));
+          }
+          catch (err) {
+            console.warn.error(&apos;Error while comparing items&apos;, err);
+            return false;
+          }
+        };
+
+        return values.findIndex((optionValue) =&gt; compareComplexValues(optionValue)) !== -1;
+      }
+
+      return values.findIndex((optionValue) =&gt; this.normalizeSingleValue(optionValue) === value) !== -1;
+    }
+    return false;
+  }
+
+  /**
+   * Performs required transformations on the initial value to use in selectOptions
+   * @param {*} value
+   */
+  getOptionValue(value) {
+    return _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
+    ? this.normalizeSingleValue(value)
+    : _.isObject(value)
+      ? value
+      : _.isNull(value)
+        ? this.emptyValue
+        : String(this.normalizeSingleValue(value));
+  }
+
+  /**
+   * If component has static values (values, json) or custom values, returns an array of them
+   * @returns {Array&lt;*&gt;|undefiened}
+   */
+  getOptionsValues() {
+    let rawItems = [];
+    switch (this.component.dataSrc) {
+      case &apos;values&apos;:
+        rawItems = this.component.data.values;
+        break;
+      case &apos;json&apos;:
+        rawItems = this.component.data.json;
+        break;
+      case &apos;custom&apos;:
+        rawItems = this.getCustomItems();
+        break;
+    }
+
+    if (typeof rawItems === &apos;string&apos;) {
+      try {
+        rawItems = JSON.parse(rawItems);
+      }
+      catch (err) {
+        console.warn(err.message);
+        rawItems = [];
+      }
+    }
+
+    if (!Array.isArray(rawItems)) {
+      return;
+    }
+
+    return rawItems.map((item) =&gt; this.getOptionValue(this.itemValue(item)));
   }
 
   /**
