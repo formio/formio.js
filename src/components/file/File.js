@@ -97,9 +97,22 @@ export default class FileComponent extends BaseComponent {
   }
 
   loadImage(fileInfo) {
-    return this.fileService.downloadFile(fileInfo).then(result => {
-      return result.url;
-    });
+    const imageUrlPromise = this.fileService.downloadFile(fileInfo)
+      .then(result => result.url);
+
+    if (!this.component.imageProcessing || !this.component.imageProcessing.trim().length) {
+      return imageUrlPromise;
+    }
+
+    return imageUrlPromise
+      .then((result) => {
+        return Formio
+          .makeStaticRequest(`${Formio.baseUrl}/image-processing`, 'POST', {
+            imageUrl: result,
+            processingScript: this.component.imageProcessing.trim(),
+          });
+      })
+      .then(data => `data:${fileInfo.type};base64,${data.encodedImage}`);
   }
 
   setValue(value) {
