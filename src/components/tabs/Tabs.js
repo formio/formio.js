@@ -184,11 +184,11 @@ export default class TabsComponent extends NestedComponent {
 
   clearErrorClasses(elements) {
     if (this.component.modalEdit) {
-      const element = Array.isArray(elements) ? this.element : elements;
+      const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;
       super.clearErrorClasses(element);
     }
 
-    elements = Array.isArray(elements) ? elements : [elements];
+    elements = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];
 
     elements.forEach((element) => {
       this.removeClass(element, 'is-invalid');
