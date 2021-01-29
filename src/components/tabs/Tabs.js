@@ -167,18 +167,27 @@ export default class TabsComponent extends NestedComponent {
     if (this.component.modalEdit) {
       super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);
     }
+
     elements.forEach((element) => {
       this.addClass(element, 'is-invalid');
-      if (this.options.highlightErrors && element.getAttribute('ref') !== 'openModal') {
-        this.addClass(element, 'tab-error');
-      }
-      else {
-        this.addClass(element, 'has-error');
+
+      if (element.getAttribute('ref') !== 'openModal') {
+        if (this.options.highlightErrors) {
+          this.addClass(element, 'tab-error');
+        }
+        else {
+          this.addClass(element, 'has-error');
+        }
       }
     });
   }
 
   clearErrorClasses(elements) {
+    if (this.component.modalEdit) {
+      const element = Array.isArray(elements) ? this.element : elements;
+      super.clearErrorClasses(element);
+    }
+
     elements = Array.isArray(elements) ? elements : [elements];
 
     elements.forEach((element) => {
