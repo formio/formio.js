@@ -4,6 +4,7 @@ import download from 'downloadjs';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
+import fileProcessor from '../../providers/processor/fileProcessor';
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -97,22 +98,8 @@ export default class FileComponent extends BaseComponent {
   }
 
   loadImage(fileInfo) {
-    const imageUrlPromise = this.fileService.downloadFile(fileInfo)
+    return this.fileService.downloadFile(fileInfo)
       .then(result => result.url);
-
-    if (!this.component.imageProcessing || !this.component.imageProcessing.trim().length) {
-      return imageUrlPromise;
-    }
-
-    return imageUrlPromise
-      .then((result) => {
-        return Formio
-          .makeStaticRequest(`${Formio.baseUrl}/image-processing`, 'POST', {
-            imageUrl: result,
-            processingScript: this.component.imageProcessing.trim(),
-          });
-      })
-      .then(data => `data:${fileInfo.type};base64,${data.encodedImage}`);
   }
 
   setValue(value) {
@@ -782,7 +769,7 @@ export default class FileComponent extends BaseComponent {
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
-      Array.prototype.forEach.call(files, file => {
+      Array.prototype.forEach.call(files, async file => {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
@@ -863,7 +850,20 @@ export default class FileComponent extends BaseComponent {
             file.private = true;
           }
           const { storage, url, options } = this.component;
-          fileService.uploadFile(storage, file, fileName, dir, evt => {
+
+          let processedFile = null;
+
+          if (this.root.options.fileProcessor) {
+            try {
+              processedFile = await fileProcessor(this.root.options.fileProcessor)(file, this.component.properties);
+            }
+            catch (err) {
+              fileUpload.status = 'error';
+              fileUpload.message = this.t('File processing has been failed.');
+            }
+          }
+
+          fileService.uploadFile(storage, processedFile || file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
