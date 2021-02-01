@@ -230,6 +230,13 @@ export default class ButtonComponent extends Field {
     }, true);
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
+    this.addEventListener(this.refs.buttonMessageContainer, 'click', () => {
+      if (this.refs.buttonMessageContainer.classList.contains('has-error')) {
+        if (this.root && this.root.alert) {
+          this.scrollIntoView(this.root.alert);
+        }
+      }
+    });
 
     this.disabled = this.shouldDisabled;
     this.setDisabled(this.refs.button, this.disabled);
