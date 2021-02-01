@@ -139,26 +139,20 @@ export default class Element {
     if (!this.events) {
       return;
     }
+
     const type = `${this.options.namespace}.${event}`;
 
-    const listeners = this.events
-      .listeners(type)
-      .filter((listener) => {
-        // Ensure the listener is for this element
-        return listener && listener.id === this.id;
-      })
-      .filter((listener) => {
-        // Bypass this filter if no target listener is given
-        if (!cb) {
-          return true;
-        }
+    this.events.listeners(type).forEach((listener) => {
+      // Ensure the listener is for this element
+      if (!listener || listener.id !== this.id) {
+        return;
+      }
 
-        // If target listener is given, find that one and filter out others
-        return cb && cb === listener;
-      });
+      // If there is a given callback, only deal with the match
+      if (cb && cb !== listener) {
+        return;
+      }
 
-    // Remove all filtered listeners
-    listeners.forEach((listener) => {
       this.events.off(type, listener);
     });
   }
