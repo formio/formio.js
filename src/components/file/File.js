@@ -3,6 +3,7 @@ import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
+import fileProcessor from '../../providers/processor/fileProcessor';
 
 let Camera;
 let webViewCamera = navigator.camera || Camera;
@@ -579,7 +580,8 @@ export default class FileComponent extends Field {
     }
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
-      Array.prototype.forEach.call(files, (file) => {
+      /* eslint-disable max-statements */
+      Array.prototype.forEach.call(files, async(file) => {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
@@ -651,7 +653,26 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
-          const filePromise = fileService.uploadFile(storage, file, fileName, dir, (evt) => {
+
+          let processedFile = null;
+
+          if (this.root.options.fileProcessor) {
+            try {
+              processedFile = await fileProcessor(this.root.options.fileProcessor)(file, this.component.properties);
+            }
+            catch (err) {
+              fileUpload.status = 'error';
+              fileUpload.message = this.t('File processing has been failed.');
+            }
+          }
+
+          const filePromise = fileService.uploadFile(
+            storage,
+            processedFile || file,
+            fileName,
+            dir,
+            // Progress callback
+            (evt) => {
               fileUpload.status = 'progress';
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
               delete fileUpload.message;
