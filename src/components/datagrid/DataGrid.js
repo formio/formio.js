@@ -498,7 +498,11 @@ export default class DataGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    return this.checkRows('checkValidity', data, dirty, true, silentCheck);
+    const isValid = this.checkRows('checkValidity', data, dirty, true, silentCheck);
+
+    this.checkModal(isValid, dirty);
+
+    return isValid;
   }
 
   checkColumns(data, flags = {}) {
