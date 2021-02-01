@@ -277,6 +277,20 @@ const Harness = {
     assert(element, `${query} not found`);
     assert(element.className.split(' ').includes(className));
   },
+  testModalWrapperErrorClasses(component, shouldBeInvalid = true, query = '[ref="openModalWrapper"]') {
+    const modalWrapper = component.element.querySelector(query);
+    assert(modalWrapper, `${query} not found`);
+    assert.equal(
+      modalWrapper.className.split(' ').includes('formio-error-wrapper'),
+      shouldBeInvalid,
+      `Should ${shouldBeInvalid ? '' : 'not'} have error class`
+    );
+    assert.equal(
+      modalWrapper.className.split(' ').includes('has-message'),
+      shouldBeInvalid,
+      `Should ${shouldBeInvalid ? '' : 'not'} have class indicating that the component has a message`
+    );
+  },
   testElementAttribute(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {
       assert.equal(expected, element.getAttribute(attribute));

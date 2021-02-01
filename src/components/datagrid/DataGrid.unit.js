@@ -3,6 +3,7 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
+import Formio from '../../Formio';
 
 import {
   comp1,
@@ -12,6 +13,7 @@ import {
   comp5,
   withDefValue,
   withRowGroupsAndDefValue,
+  modalWithRequiredFields,
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -292,10 +294,53 @@ describe('DataGrid Panels', () => {
   });
 });
 
-describe('Datagrid disabling', () => {
+describe('DataGrid disabling', () => {
   it('Child components should be disabled', () => {
     return Harness.testCreate(DataGridComponent, comp3).then((component) => {
       assert.equal(component.components.reduce((acc, child) => acc && child.parentDisabled, true), true);
     });
+  });
+});
+
+describe('DataGrid modal', () => {
+  it('Should be highlighted in red when invalid', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, {
+      display: 'form',
+      components: [modalWithRequiredFields]
+    })
+    .then((form) => {
+      const data = {
+        dataGrid: [
+          {
+            textField: '',
+            textArea: ''
+          }
+        ]
+      };
+
+      form.checkValidity(data, true, data);
+
+      setTimeout(() => {
+        Harness.testModalWrapperErrorClasses(form);
+
+        const validData = {
+          dataGrid: [
+            {
+              textField: 'Some text',
+              textArea: 'Mre text'
+            }
+          ]
+        };
+
+        form.setSubmission({ data: validData });
+
+        setTimeout(() => {
+          Harness.testModalWrapperErrorClasses(form, false);
+          done();
+        }, 200);
+      }, 200);
+    })
+    .catch(done);
   });
 });
