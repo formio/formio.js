@@ -908,6 +908,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
+
     return true;
   }
 
