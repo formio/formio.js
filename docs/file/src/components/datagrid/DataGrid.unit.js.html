@@ -40,7 +40,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
@@ -87,8 +86,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
@@ -179,6 +177,7 @@ import assert from &apos;power-assert&apos;;
 import { expect } from &apos;chai&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import DataGridComponent from &apos;./DataGrid&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 import {
   comp1,
@@ -188,6 +187,7 @@ import {
   comp5,
   withDefValue,
   withRowGroupsAndDefValue,
+  modalWithRequiredFields,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DataGrid Component&apos;, () =&gt; {
@@ -468,11 +468,54 @@ describe(&apos;DataGrid Panels&apos;, () =&gt; {
   });
 });
 
-describe(&apos;Datagrid disabling&apos;, () =&gt; {
+describe(&apos;DataGrid disabling&apos;, () =&gt; {
   it(&apos;Child components should be disabled&apos;, () =&gt; {
     return Harness.testCreate(DataGridComponent, comp3).then((component) =&gt; {
       assert.equal(component.components.reduce((acc, child) =&gt; acc &amp;&amp; child.parentDisabled, true), true);
     });
+  });
+});
+
+describe(&apos;DataGrid modal&apos;, () =&gt; {
+  it(&apos;Should be highlighted in red when invalid&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, {
+      display: &apos;form&apos;,
+      components: [modalWithRequiredFields]
+    })
+    .then((form) =&gt; {
+      const data = {
+        dataGrid: [
+          {
+            textField: &apos;&apos;,
+            textArea: &apos;&apos;
+          }
+        ]
+      };
+
+      form.checkValidity(data, true, data);
+
+      setTimeout(() =&gt; {
+        Harness.testModalWrapperErrorClasses(form);
+
+        const validData = {
+          dataGrid: [
+            {
+              textField: &apos;Some text&apos;,
+              textArea: &apos;Mre text&apos;
+            }
+          ]
+        };
+
+        form.setSubmission({ data: validData });
+
+        setTimeout(() =&gt; {
+          Harness.testModalWrapperErrorClasses(form, false);
+          done();
+        }, 200);
+      }, 200);
+    })
+    .catch(done);
   });
 });
 </code></pre>

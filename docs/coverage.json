@@ -1,15 +1,17 @@
 {
-  "coverage": "7.5%",
-  "expectCount": 1466,
-  "actualCount": 110,
+  "coverage": "7.29%",
+  "expectCount": 1357,
+  "actualCount": 99,
   "files": {
     "src/EventEmitter.js": {
-      "expectCount": 3,
+      "expectCount": 5,
       "actualCount": 0,
       "undocumentLines": [
+        3,
         4,
-        5,
-        18
+        17,
+        25,
+        29
       ]
     },
     "src/Form.js": {
@@ -164,7 +166,7 @@
         1492,
         1498,
         1504,
-        1536
+        1533
       ]
     },
     "src/Formio.unit.js": {
@@ -333,38 +335,6 @@
       "undocumentLines": [
         3,
         4
-      ]
-    },
-    "src/components/_classes/input/Input.js": {
-      "expectCount": 27,
-      "actualCount": 1,
-      "undocumentLines": [
-        7,
-        8,
-        10,
-        13,
-        21,
-        56,
-        65,
-        69,
-        76,
-        80,
-        88,
-        92,
-        98,
-        102,
-        119,
-        147,
-        167,
-        183,
-        191,
-        198,
-        202,
-        206,
-        216,
-        224,
-        288,
-        301
       ]
     },
     "src/components/_classes/nested/NestedComponent.form.js": {
@@ -686,12 +656,12 @@
         415,
         421,
         448,
-        504,
-        536,
-        553,
-        596,
+        508,
+        540,
+        557,
         600,
-        647
+        604,
+        651
       ]
     },
     "src/components/datamap/DataMap.form.js": {
@@ -731,14 +701,14 @@
         159,
         167,
         180,
-        214,
-        218,
-        222,
-        229,
-        234,
-        241,
-        251,
-        259
+        211,
+        215,
+        219,
+        226,
+        231,
+        238,
+        248,
+        256
       ]
     },
     "src/components/datetime/DateTime.form.js": {
@@ -1025,7 +995,7 @@
       ]
     },
     "src/components/radio/Radio.js": {
-      "expectCount": 22,
+      "expectCount": 23,
       "actualCount": 1,
       "undocumentLines": [
         5,
@@ -1035,20 +1005,21 @@
         30,
         33,
         37,
-        46,
-        50,
+        45,
         54,
-        56,
-        59,
-        69,
-        100,
-        109,
-        122,
-        135,
-        148,
-        155,
-        177,
-        188
+        58,
+        62,
+        64,
+        67,
+        77,
+        108,
+        117,
+        130,
+        143,
+        156,
+        163,
+        185,
+        196
       ]
     },
     "src/components/recaptcha/ReCaptcha.form.js": {
@@ -1102,87 +1073,6 @@
       "actualCount": 0,
       "undocumentLines": [
         7
-      ]
-    },
-    "src/components/select/Select.js": {
-      "expectCount": 85,
-      "actualCount": 10,
-      "undocumentLines": [
-        13,
-        14,
-        53,
-        64,
-        66,
-        74,
-        82,
-        85,
-        87,
-        88,
-        90,
-        92,
-        93,
-        97,
-        100,
-        101,
-        105,
-        118,
-        122,
-        149,
-        161,
-        168,
-        172,
-        176,
-        180,
-        184,
-        188,
-        270,
-        284,
-        294,
-        401,
-        422,
-        541,
-        547,
-        551,
-        566,
-        570,
-        578,
-        587,
-        595,
-        605,
-        738,
-        760,
-        782,
-        786,
-        797,
-        807,
-        856,
-        886,
-        909,
-        927,
-        1014,
-        1018,
-        1026,
-        1034,
-        1051,
-        1060,
-        1077,
-        1081,
-        1089,
-        1149,
-        1155,
-        1202,
-        1208,
-        1226,
-        1292,
-        1322,
-        1334,
-        1343,
-        1385,
-        1496,
-        1505,
-        1572,
-        1580,
-        1587
       ]
     },
     "src/components/select/fixtures/comp3.js": {
@@ -1323,8 +1213,8 @@
         109,
         154,
         166,
-        178,
-        186
+        185,
+        200
       ]
     },
     "src/components/tags/Tags.form.js": {
