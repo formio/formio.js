@@ -1173,7 +1173,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    this.emit('error', hasInvalidComponents);
+    this.emit('builderFormValidityChange', hasInvalidComponents);
   }
 
   /**
