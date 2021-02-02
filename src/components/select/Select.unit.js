@@ -19,12 +19,13 @@ describe('Select Component', () => {
   it('should not stringify select option value', function(done) {
     Harness.testCreate(SelectComponent, comp6).then((component) => {
       component.setValue({ value:'a', label:'A' });
-
-      assert.equal(component.choices._currentState.items[0].value.value, 'a');
-      assert.equal(typeof component.choices._currentState.items[0].value , 'object');
-      assert.equal(component.dataValue.value, 'a');
-      assert.equal(typeof component.dataValue , 'object');
-      done();
+      setTimeout(()=> {
+        assert.equal(component.choices._currentState.items[0].value.value, 'a');
+        assert.equal(typeof component.choices._currentState.items[0].value , 'object');
+        assert.equal(component.dataValue.value, 'a');
+        assert.equal(typeof component.dataValue , 'object');
+        done();
+      }, 100);
     });
   });
 
