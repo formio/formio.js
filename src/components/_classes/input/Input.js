@@ -271,6 +271,10 @@ export default class Input extends Multivalue {
       type: this.component.widget
     } : this.component.widget;
 
+    if (this.root?.shadowRoot) {
+      settings.shadowRoot = this.root?.shadowRoot;
+    }
+
     // Make sure we have a widget.
     if (!Widgets.hasOwnProperty(settings.type)) {
       return null;

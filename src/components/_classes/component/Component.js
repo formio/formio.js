@@ -902,7 +902,13 @@ export default class Component extends Element {
   }
 
   get widget() {
-    const widget = this.component.widget && Widgets[this.component.widget.type] ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    const settings = this.component.widget;
+
+    if (settings && this.root?.shadowRoot) {
+      settings.shadowRoot = this.root.shadowRoot;
+    }
+
+    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component): null;
     return widget;
   }
 
