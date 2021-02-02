@@ -889,7 +889,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           const errorContainer = rowContainer.querySelector('.editgrid-row-error');
 
           if (!rowValid) {
-            errorContainer.textContent = 'Invalid row. Please correct it or delete.';
+            errorContainer.textContent = this.t('Invalid row. Please correct it or delete.');
           }
         }
       }
@@ -898,11 +898,11 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
 
     if (!rowsValid) {
-      this.setCustomValidity('Please correct invalid rows before proceeding.', dirty);
+      this.setCustomValidity(this.t('Please correct invalid rows before proceeding.'), dirty);
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
-      this.setCustomValidity('Please save all rows before proceeding.', dirty);
+      this.setCustomValidity(this.t('Please save all rows before proceeding.'), dirty);
       return false;
     }
 
