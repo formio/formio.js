@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - update fetch-ponyfill to 7.1.0
  - Revert "Element: convert lodash to object in evalContext"
  - FIO-246 (FJS-1473): removed fixedSize setting from PDF overlay settings
+ - FIO-1114: Updating Copyright
+ - Cherry pick commits for v2.2.0 VPAT/USWDS release
+ - FJS-1458: Makes Button error message clickable
+ - FIO-972: updated event emitter to EventEmitter3
  
 #### Fixed
  - FJS-1397: Fixes an issue where Tree's children are not disabled when the Tree is
@@ -37,12 +41,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-1125: Any value used in Translate list is returning contains an invalid selection
  - FIO-495 (FJS-885): fixed an issue where it is not possible to load select options in builder if select URL uses config data
  - FIO-208 highlight js syntax
+ - FJS-726: Fixes an issue where Select value is not shown on Data Tab when dataSrc is Resource and the Value Property is not specified
+ - FIO-590: Pin the latest working version of flatpickr on IE 11 (v4.6.6)
+ - CONTRIB: Fixed the translation issues while saving edit grid
+ - CONTRIB: Fixes an issue where Submit button becomes invalid when there are few components with the same API keys
+ - FIO-1230: fixed an issue where wrong select submission value is shown for a moment when saved value doesn`t include displayed property
+ - FJS-1468: Fixes an issue where sometimes the "Cannot read propery offsetWidth of undefined" appears
+ - FIO-1194: Fixes an issue where default values which are equal to false are not set properly
+ - FIO-1184: fixed an issue where dateTime test renders are updated in each time zone that causes CircleCI failing
+ - FJS-1317: Fixes an issue where modal Tabs containing invalid components is not highlighted in red
+ - FJS-1317: Fixes an issue where an invalid modal dataGrid is not highlighted in red
+ - PDF-207: Lazy load Select options for HTML mode.
+ - FIO-452 (FJS-1435): fixed an issue where validation error message is not displayed for select component
+ - FIO-1212: Fixes an issue where date in DateTime is selected only after the second click in IE11
+ - FIO-1258: remove the function used for overwriting
  
 #### Added
  - Variables exposed in Logic Tab of a component configuration, and added Custom Action to Logic actions.
  - FIO-273: editgrid tooltips
  - FIO-1121: made "scroll wizard page to the top" feature as configurable option
  - FJS-1344: Adds an event when there are some invalid components within the form
+ - CONTRIB: Added ability to call .off method to remove one listener for a certain event
+ - FIO-106 (FJS-571): added template for html render mode of address component
 
 ### 4.13.0-rc.6
 #### Added
