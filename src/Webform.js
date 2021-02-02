@@ -42,10 +42,7 @@ function getOptions(options) {
     saveDraftThrottle: 5000
   });
   if (!options.events) {
-    options.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    options.events = new EventEmitter();
   }
   return options;
 }

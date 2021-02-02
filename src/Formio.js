@@ -1520,10 +1520,7 @@ Formio.cache = {};
 Formio.Providers = Providers;
 Formio.version = '---VERSION---';
 Formio.pathType = '';
-Formio.events = new EventEmitter({
-  wildcard: false,
-  maxListeners: 0
-});
+Formio.events = new EventEmitter();
 
 if (typeof global !== 'undefined') {
   Formio.addToGlobal(global);
