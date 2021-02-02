@@ -34,6 +34,14 @@ export default class RadioComponent extends Field {
     return RadioComponent.schema();
   }
 
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultValue === false) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
+
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';

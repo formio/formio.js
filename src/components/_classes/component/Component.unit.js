@@ -38,7 +38,7 @@ describe('Component', () => {
       good: {
         value: 'te'
       }
-    }, done));
+    }, done)).catch(done);
   });
 
   it('Should provide minLength validation', (done) => {
