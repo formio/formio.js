@@ -128,23 +128,30 @@ export default class Element {
   }
 
   /**
-   * Removes all listeners for a certain event.
+   * Removes a listener for a certain event. Not passing the 2nd arg will remove all listeners for that event.
    *
-   * @param event
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function|undefined} cb - The callback handler to handle this event.
    */
-  off(event) {
+  off(event, cb) {
     if (!this.events) {
       return;
     }
+
     const type = `${this.options.namespace}.${event}`;
 
-    // Iterate through all the internal events.
-    _.each(this.events.listeners(type), (listener) => {
-      // Ensure this event is for this component.
-      if (listener && (listener.id === this.id)) {
-        // Turn off this event handler.
-        this.events.off(type, listener);
+    this.events.listeners(type).forEach((listener) => {
+      // Ensure the listener is for this element
+      if (!listener || listener.id !== this.id) {
+        return;
       }
+
+      // If there is a given callback, only deal with the match
+      if (cb && cb !== listener) {
+        return;
+      }
+
+      this.events.off(type, listener);
     });
   }
 
