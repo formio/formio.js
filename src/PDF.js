@@ -113,12 +113,7 @@ export default class PDF extends Webform {
       // Post the form to the iframe
       this.form.base = Formio.getBaseUrl();
       this.form.projectUrl = Formio.getProjectUrl();
-      this.postMessage({ name: 'form', data: {
-        form: this.form,
-        options: {
-          fileProcessor: this.options.fileProcessor
-        }
-      } });
+      this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
       const submitButton = this.components.find(c => c.element === this.refs.button);
@@ -210,12 +205,7 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
-      this.postMessage({ name: 'form', data: {
-        form: this.form,
-        options: {
-          fileProcessor: this.options.fileProcessor
-        }
-      } });
+      this.postMessage({ name: 'form', data: this.form });
     });
   }
 
