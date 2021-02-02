@@ -163,19 +163,33 @@ export default class TabsComponent extends NestedComponent {
     }
   }
 
-  setErrorClasses(elements) {
+  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
+    if (this.component.modalEdit) {
+      super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);
+    }
+
     elements.forEach((element) => {
       this.addClass(element, 'is-invalid');
-      if (this.options.highlightErrors) {
-        this.addClass(element, 'tab-error');
-      }
-      else {
-        this.addClass(element, 'has-error');
+
+      if (element.getAttribute('ref') !== 'openModal') {
+        if (this.options.highlightErrors) {
+          this.addClass(element, 'tab-error');
+        }
+        else {
+          this.addClass(element, 'has-error');
+        }
       }
     });
   }
 
   clearErrorClasses(elements) {
+    if (this.component.modalEdit) {
+      const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;
+      super.clearErrorClasses(element);
+    }
+
+    elements = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];
+
     elements.forEach((element) => {
       this.removeClass(element, 'is-invalid');
       this.removeClass(element, 'tab-error');
