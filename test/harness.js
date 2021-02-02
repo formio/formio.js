@@ -1,10 +1,8 @@
 import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import NativePromise from 'native-promise-only';
-
 import i18Defaults from '../lib/i18n';
 import FormBuilder from '../lib/FormBuilder';
 import AllComponents from '../lib/components';
@@ -168,10 +166,7 @@ const Harness = {
   testCreate(Component, componentSettings, options = {}) {
     const compSettings = _.cloneDeep(componentSettings);
     const component = new Component(compSettings, _.merge({
-      events: new EventEmitter({
-        wildcard: false,
-        maxListeners: 0
-      })
+      events: new EventEmitter(),
     }, options));
     component.pristine = false;
     return new Promise((resolve, reject) => {

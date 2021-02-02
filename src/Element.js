@@ -44,10 +44,7 @@ export default class Element {
      *
      * @type {EventEmitter}
      */
-    this.events = (options && options.events) ? options.events : new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    this.events = (options && options.events) ? options.events : new EventEmitter();
 
     this.defaultMask = null;
     /**
