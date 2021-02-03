@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Changed
+ - FIO-950: Add file processing usage
+
 ### 4.12.7-rc.1
 #### Changed
  - Fix: fix application of logic for fields with data storage as an array
