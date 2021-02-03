@@ -1,6 +1,6 @@
 <div class="form-radio radio">
   {% ctx.values.forEach(function(item) { %}
-  <div class="form-check{{ctx.inline ? '-inline' : ''}} {% if ((ctx.disabled && ctx.value) && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
+  <div class="form-check{{ctx.inline ? '-inline' : ''}} {% if ((ctx.disabled && ctx.value && item.selected)) { %}
     radio-selected radio-checked
     {% } %}" ref="wrapper" >
     <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
@@ -13,7 +13,7 @@
         {{attr}}="{{ctx.input.attr[attr]}}"
         {% } %}
         value="{{item.value}}"
-        {% if (ctx.value && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
+        {% if (ctx.value && item.selected) { %}
           checked=true
         {% } %}
         {% if (item.disabled) { %}

@@ -56,14 +56,36 @@ export default class RadioComponent extends Field {
     this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
   }
 
+  updateSelected() {
+    switch (this.inputInfo.attr.type) {
+      case 'checkbox' :
+        this.component.values.forEach(item => {
+          item.selected = this.dataValue[item.value];
+        });
+        break;
+      case 'radio' :
+        this.component.values.forEach(item => {
+          item.selected = item.value === this.dataValue;
+        });
+        break;
+    }
+  }
+
+  onChange(flags, fromRoot) {
+    this.updateSelected();
+    return super.onChange(flags, fromRoot);
+  }
+
   render() {
-    return super.render(this.renderTemplate('radio', {
+    const data = {
       input: this.inputInfo,
       inline: this.component.inline,
       values: this.component.values,
       value: this.dataValue,
       row: this.row,
-    }));
+    };
+    this.updateSelected();
+    return super.render(this.renderTemplate('radio', data));
   }
 
   attach(element) {
@@ -192,7 +214,7 @@ export default class RadioComponent extends Field {
       && this.previousValue === this.currentValue;
     if (shouldResetValue) {
       this.resetValue();
-      this.triggerChange();
+      this.triggerChange(flags);
     }
     this.previousValue = this.dataValue;
     return changed;

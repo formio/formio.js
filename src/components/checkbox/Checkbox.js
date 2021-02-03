@@ -180,11 +180,13 @@ export default class CheckBoxComponent extends Field {
   updateValue(value, flags) {
     const checkBoxChecked = 'checkbox-checked';
     const val = this.getValue();
-    if (val) {
-      this.addClass(this.refs.formCheck, checkBoxChecked);
-    }
-    else {
-      this.removeClass(this.refs.formCheck, checkBoxChecked);
+    if (this.refs.formCheck) {
+      if (val) {
+        this.addClass(this.refs.formCheck, checkBoxChecked);
+      }
+      else {
+        this.removeClass(this.refs.formCheck, checkBoxChecked);
+      }
     }
     super.updateValue(value, flags);
   }
