@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### 4.12.7-rc.2
 #### Changed
  - FIO-950: Add file processing usage
+ - FIO-1258: remove the function used for overwriting
+ - FIO-1242: Refactoring the inline embed code to enhance its usage and allow shadow dom.
+ - FIO-1082: update fetch-ponyfill to 7.1.0
+
+#### Fixed
+ - Fixed the translation issues while saving edit grid
+ - FJS-1468: Fixes an issue where sometimes the "Cannot read propery offsetWidth of undefined" appears
+ - FIO-1194: Fixes an issue where default values which are equal to false are not set properly
+ - FIO-1184: fixed an issue where dateTime test renders are updated in each time zone that causes CircleCI failing
+ - FIO-1230: fixed an issue where wrong select submission value is shown for a moment when saved value doesn`t include displayed property
+ - FIO-208: Highlight js syntax
+ - FIO-106 (FJS-571): added template for html render mode of address component
+ - FIO-495 (FJS-885): fixed an issue where it is not possible to load select options in builder if select URL uses config data
+ - FIO-1133: Fixes setting 'false' value to the radio inside the nested form
+ - FIO-1217: Fixes masks caret behavior when it is used inside shadow DOM
+ - FIO-1207: Fixes an issue where a selected item is shown twice when a search result is empty
+ - FIO-1205: Using NativePromise instead of Promise
+ - FIO-1114: Updating Copyright
+ - FIO-273: editgrid tooltips
+ - FIO-1113: Disables arrow functions in webpack's output to support IE11
+ - FIO-1116: fixed an issue where wizard submission is incorrectly set on first page load in HTML render mode
+ - FIO-1142: fixed an issue where submit error messages are displayed twice under submit button in PDF forms
+ - FIO-1169: fixed an issue where select default values are dislayed when select is conditionally hidden in PDF
+ - FIO-1117: Fix: fix the positioning of the Calendar widget 
+ - FIO-1125: Any value used in Translate list is returning contains an invalid selection
+ - FIO-1182: Fixed issue where conditionally hidden radio controls are not applying the selected styles correctly.i
+ - FIO-612: PDF-207: Lazy load Select options
 
 ### 4.12.7-rc.1
 #### Changed
