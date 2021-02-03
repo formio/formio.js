@@ -1,5 +1,5 @@
 import { createNumberMask } from 'text-mask-addons';
-import { maskInput } from 'vanilla-text-mask';
+import { maskInput } from 'text-mask-all/vanilla';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';
 import NumberComponent from '../number/Number';

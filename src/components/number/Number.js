@@ -1,4 +1,4 @@
-import { maskInput, conformToMask } from 'vanilla-text-mask';
+import { maskInput, conformToMask } from 'text-mask-all/vanilla';
 import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import Input from '../_classes/input/Input';
