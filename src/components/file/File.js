@@ -313,6 +313,7 @@ export default class FileComponent extends Field {
       fileStatusRemove: 'multiple',
       fileImage: 'multiple',
       fileType: 'multiple',
+      fileProcessingLoader: 'single',
     });
     // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
     this.refs.input = [];
@@ -588,7 +589,7 @@ export default class FileComponent extends Field {
           name: fileName,
           size: file.size,
           status: 'info',
-          message: this.t('Starting upload'),
+          message: this.t('Starting file processing.'),
         };
 
         // Check file pattern
@@ -658,13 +659,23 @@ export default class FileComponent extends Field {
 
           if (this.root.options.fileProcessor) {
             try {
-              processedFile = await fileProcessor(this.root.options.fileProcessor)(file, this.component.properties);
+              this.refs.fileProcessingLoader.style.display = 'block';
+              const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
+              processedFile = await fileProcessorHandler(file, this.component.properties);
             }
             catch (err) {
               fileUpload.status = 'error';
               fileUpload.message = this.t('File processing has been failed.');
+              this.fileDropHidden = false;
+              this.redraw();
+              this.refs.fileProcessingLoader.style.display = 'none';
+              return;
             }
+            this.refs.fileProcessingLoader.style.display = 'none';
           }
+
+          fileUpload.message = this.t('Starting upload.');
+          this.redraw();
 
           const filePromise = fileService.uploadFile(
             storage,
