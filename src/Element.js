@@ -4,7 +4,7 @@ import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
-import maskInput from 'vanilla-text-mask';
+import maskInput from 'text-mask-all/vanilla';
 import { lodashOperators } from './utils/jsonlogic/operators';
 
 const lodash = lodashOperators.reduce((obj, operator) => _.set(obj, operator, _[operator]), {});
@@ -372,10 +372,12 @@ export default class Element {
         if (input.mask) {
           input.mask.destroy();
         }
+
         input.mask = maskInput({
           inputElement: input,
           mask,
-          placeholderChar: this.placeholderChar
+          placeholderChar: this.placeholderChar,
+          shadowRoot: this.root ? this.root.shadowRoot : null
         });
       }
       catch (e) {
