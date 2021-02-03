@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased]
 #### Changed
  - FIO-950: Add file processing usage
+ 
+#### Fixed
+ - FIO-1217: Fixes masks caret behavior when it is used inside shadow DOM
 
 ### 4.13.0-rc.7
 #### Changed
