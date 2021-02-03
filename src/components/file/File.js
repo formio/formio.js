@@ -589,7 +589,7 @@ export default class FileComponent extends Field {
           name: fileName,
           size: file.size,
           status: 'info',
-          message: this.t('Starting file processing.'),
+          message: this.t('Processing file. Please wait...'),
         };
 
         // Check file pattern
