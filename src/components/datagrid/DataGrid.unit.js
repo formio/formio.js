@@ -14,6 +14,7 @@ import {
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
+  withConditionalFieldsAndValidations
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -261,6 +262,83 @@ describe('DataGrid Component', () => {
 
       expect(getGroupSizes.call(self)).to.deep.equal([1, 3, 10]);
     });
+  });
+
+  it('Test "components" property and their context', (done) => {
+    const testComponentsData = (components, expectedData) => {
+      components.forEach((comp) => assert.deepEqual(
+        comp.data,
+        expectedData,
+        'Data of components inside DataGrid should be equal to row\'s data'
+      ));
+    };
+
+    Formio.createForm(document.createElement('div'), withConditionalFieldsAndValidations)
+      .then((form) => {
+        const rootText = form.getComponent(['text']);
+        rootText.setValue('Match', { modified: true });
+
+        setTimeout(() => {
+          const emptyRowData = {
+            rootTest: '',
+            rowTest: ''
+          };
+          const dataGrid = form.getComponent(['dataGrid']);
+
+          assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+          testComponentsData(dataGrid.components, emptyRowData);
+
+          const showTextFieldInsideDataGridRadio = form.getComponent(['radio']);
+          showTextFieldInsideDataGridRadio.setValue('show', { modified: true });
+
+          setTimeout(() => {
+            const rowData1 = { ...emptyRowData, radio1: '' };
+            const dataGridRowRadio = form.getComponent(['dataGrid', 0, 'radio1']);
+
+            assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+            testComponentsData(dataGrid.components, rowData1);
+            assert.equal(dataGridRowRadio.visible, true, 'Radio inside DataGrid should become visible');
+
+            dataGridRowRadio.setValue('dgShow', { modified: true });
+
+            setTimeout(() => {
+              const rowData2 =  {
+                ...emptyRowData,
+                radio1: 'dgShow',
+                rowShowShowTextfieldWhenDataGridRadioHasShowValue: ''
+              };
+              const dataGridRowConditionalField = form.getComponent(['dataGrid', 0, 'rowShowShowTextfieldWhenDataGridRadioHasShowValue']);
+
+              assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+              testComponentsData(dataGrid.components, rowData2);
+              assert.equal(dataGridRowConditionalField.visible, true, 'Conditional field inside DataGrid should become visible');
+
+              const rootTest = form.getComponent(['dataGrid', 0, 'rootTest']);
+              const rowTest = form.getComponent(['dataGrid', 0, 'rowTest']);
+
+              rootTest.setValue('Match', { modified: true });
+              rowTest.setValue('Match', { modified: true });
+
+              setTimeout(() => {
+                const rowData3 = {
+                  ...rowData2,
+                  rowTest: 'Match',
+                  rootTest: 'Match'
+                };
+
+                assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+                testComponentsData(dataGrid.components, rowData3);
+
+                form.checkAsyncValidity(null, true).then((valid) => {
+                  assert(valid, 'Form should be valid');
+                  done();
+                }).catch(done);
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      })
+      .catch(done);
   });
 });
 
