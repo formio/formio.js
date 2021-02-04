@@ -1,8 +1,5 @@
-import Harness from '../../../test/harness';
 import assert from 'power-assert';
 import Formio from '../../Formio';
-import Tabs from './Tabs';
-
 import { comp1 } from './fixtures';
 
 describe('Tabs Component', () => {
