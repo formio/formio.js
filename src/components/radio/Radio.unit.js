@@ -57,7 +57,7 @@ describe('Radio Component', () => {
     Harness.testCreate(RadioComponent, comp4).then((component) => {
       assert.equal(component.dataValue, false, 'Should be equal to false');
       const input = component.element.querySelector('input[value="false"]');
-      assert.equal(input.getAttribute('checked'), 'true', 'Should be checked');
+      assert.equal(input.checked,true, 'Should be checked');
       done();
     });
   });
