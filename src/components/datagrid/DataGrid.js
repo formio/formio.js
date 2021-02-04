@@ -592,7 +592,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       _.each(row, (col) => {
         col.rowIndex = rowIndex;
-        this.setRowComponentsData(rowIndex, value[rowIndex]);
         this.setNestedValue(col, value[rowIndex], flags);
       });
     });
