@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
@@ -133,6 +132,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-processor">providers/processor</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fileProcessor">fileProcessor</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -189,8 +189,64 @@ import wizard6 from &apos;../test/forms/wizardWithFirstConditionalPage&apos;;
 import wizardWithHiddenPanel from &apos;../test/forms/wizardWithHiddenPanel&apos;;
 import wizardWithAllowPrevious from &apos;../test/forms/wizardWithAllowPrevious&apos;;
 import formWithSignature from &apos;../test/forms/formWithSignature&apos;;
+import wizardWithTooltip from &apos;../test/forms/wizardWithTooltip&apos;;
+import wizardForHtmlModeTest from &apos;../test/forms/wizardForHtmlRenderModeTest&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
+  it(&apos;Should correctly set values in HTML render mode&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formHTMLMode = new Wizard(formElement, {
+      readOnly: true,
+      renderMode: &apos;html&apos;
+    });
+
+    formHTMLMode.setForm(wizardForHtmlModeTest.form).then(() =&gt; {
+      formHTMLMode.setSubmission(wizardForHtmlModeTest.submission);
+
+      setTimeout(() =&gt; {
+        const numberValue = formHTMLMode.element.querySelector(&apos;[ref=&quot;value&quot;]&apos;).textContent;
+        assert.equal(+numberValue, wizardForHtmlModeTest.submission.data.number);
+
+        const nextPageBtn = formHTMLMode.refs[`${formHTMLMode.wizardKey}-next`];
+        const clickEvent = new Event(&apos;click&apos;);
+        nextPageBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          const textValue = formHTMLMode.element.querySelector(&apos;[ref=&quot;value&quot;]&apos;).textContent;
+          assert.equal(textValue, wizardForHtmlModeTest.submission.data.textField);
+
+          done();
+        }, 250);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should show tooltip for wizard pages&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizardWithPageTooltip = new Wizard(formElement);
+
+    wizardWithPageTooltip.setForm(wizardWithTooltip).then(() =&gt; {
+      const clickEvent = new Event(&apos;click&apos;);
+
+      assert.equal(wizardWithPageTooltip.tooltips.length, 1);
+
+      const pageTooltipIcon = wizardWithPageTooltip.refs[`${wizardWithPageTooltip.wizardKey}-tooltip`][0];
+
+      assert.equal(!!pageTooltipIcon, true);
+
+      pageTooltipIcon.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        const tooltipText = wizardWithPageTooltip.element.querySelector(&apos;.tooltip-inner&apos;).textContent;
+        assert.equal(tooltipText, wizardWithPageTooltip.currentPanel.tooltip);
+
+        done();
+      }, 250);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should not clear wizard data when navigating between wizard pages with hidden panel&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formWithHiddenPage = new Wizard(formElement);

@@ -11,8 +11,5 @@ module.exports = _.merge({}, WebpackConfig, {
     libraryExport: 'Formio',
     path: path.resolve(__dirname, '../dist'),
     filename: 'formio.js',
-    environment: {
-      arrowFunction: false
-    },
   }
 });

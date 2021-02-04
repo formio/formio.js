@@ -37,6 +37,43 @@ dialog.fixed {
   transform: translate(0, -50%);
 }
 @charset "UTF-8";
+.formio-loader {
+  position: relative;
+  min-height: 60px; }
+
+.loader-wrapper {
+  z-index: 1000;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  height: 120px;
+  background-color: rgba(0, 0, 0, 0); }
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -30px;
+  margin-top: -30px;
+  z-index: 10000;
+  display: inline-block;
+  border: 6px solid #f3f3f3;
+  /* Light grey */
+  border-top: 6px solid #3498db;
+  /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 2s linear infinite; }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
 .formio-form {
   position: relative;
   min-height: 80px; }
@@ -200,42 +237,6 @@ td > .form-group {
   text-align: center;
   color: #C3C3C3; }
 
-.formio-loader {
-  position: relative;
-  min-height: 60px; }
-
-.loader-wrapper {
-  z-index: 1000;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
-  background-color: rgba(0, 0, 0, 0.1); }
-
-.loader {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -30px;
-  margin-top: -30px;
-  z-index: 10000;
-  display: inline-block;
-  border: 6px solid #f3f3f3;
-  /* Light grey */
-  border-top: 6px solid #3498db;
-  /* Blue */
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 2s linear infinite; }
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg); }
-  100% {
-    transform: rotate(360deg); } }
-
 .choices__list--dropdown {
   z-index: 100; }
 
@@ -278,9 +279,20 @@ td > .form-group {
 
 /* end fix for choices.js deletable items in rtl */
 .formio-component-file .fileSelector {
+  position: relative;
   padding: 15px;
   border: 2px dashed #ddd;
   text-align: center; }
+  .formio-component-file .fileSelector .loader-wrapper {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1); }
+    .formio-component-file .fileSelector .loader-wrapper .loader {
+      height: 45px;
+      width: 45px;
+      margin-top: -23px;
+      margin-left: -23px; }
 
 .formio-component-file .fileSelector.fileDragOver {
   border-color: #127abe; }
