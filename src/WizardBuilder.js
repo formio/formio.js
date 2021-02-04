@@ -2,6 +2,7 @@ import WebformBuilder from './WebformBuilder';
 import Webform from './Webform';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
+import { fastCloneDeep } from './utils/utils';
 
 export default class WizardBuilder extends WebformBuilder {
   constructor() {
@@ -184,11 +185,21 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   addPage(page) {
-    const pageNum = (this.pages.length + 1);
-    const newPage = this.getPageConfig(pageNum);
+    const newPage = page && page.schema ? fastCloneDeep(page.schema) : this.getPageConfig(this.pages.length + 1);
+
     BuilderUtils.uniquify(this._form.components, newPage);
-    this._form.components.push(page && page.component || newPage);
-    this.emit('saveComponent', page && page.component || newPage, this._form.components);
+    this._form.components.push(newPage);
+
+    this.emitSaveComponentEvent(
+      newPage,
+      newPage,
+      this._form,
+      'components',
+      (this._form.components.length - 1),
+      true,
+      newPage
+    );
+
     this.emit('change', this._form);
     return this.rebuild();
   }

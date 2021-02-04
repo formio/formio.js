@@ -1220,7 +1220,7 @@ export default class WebformBuilder extends Component {
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
-        this.emit('saveComponent',
+        this.emitSaveComponentEvent(
           schema,
           originalComp,
           parentComponent.schema,
@@ -1236,6 +1236,18 @@ export default class WebformBuilder extends Component {
 
     this.highlightInvalidComponents();
     return NativePromise.resolve();
+  }
+
+  emitSaveComponentEvent(schema, originalComp, parentComponentSchema, path, index, isNew, originalComponentSchema) {
+    this.emit('saveComponent',
+      schema,
+      originalComp,
+      parentComponentSchema,
+      path,
+      index,
+      isNew,
+      originalComponentSchema
+    );
   }
 
   editComponent(component, parent, isNew, isJsonEdit, original, flags = {}) {
@@ -1455,7 +1467,8 @@ export default class WebformBuilder extends Component {
             parent.formioComponent.saveChildComponent(schema, false);
           }
           parent.formioComponent.rebuild();
-          this.emit('saveComponent', schema, schema, parent.formioComponent.components, path, (index + 1), true);
+
+          this.emitSaveComponentEvent(schema, schema, parent.formioComponent.components, path, (index + 1), true);
         }
         this.emit('change', this.form);
       }
