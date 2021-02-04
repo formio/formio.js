@@ -839,7 +839,7 @@ export default class BaseComponent extends Component {
       data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {}
-    }, additional));
+    }, additional,  _.get(this.root, 'options.evalContext', {})));
   }
 
   get defaultValue() {

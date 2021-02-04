@@ -29,7 +29,10 @@ export default class FormBuilder extends Form {
    * builder.render();
    */
   constructor(element, form, options) {
-    super(element, form, options);
+    super(element, form, Object.assign(
+      options,
+      ((Formio.options && Formio.options.builder) ? Formio.options.builder : {})
+    ));
   }
 
   create() {
