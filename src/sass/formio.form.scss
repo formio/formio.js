@@ -276,6 +276,10 @@ td > .form-group {
   padding: 15px;
   border: 2px dashed #ddd;
   text-align: center;
+
+  .loader-wrapper {
+    display: none;
+  }
 }
 
 .formio-component-file .fileSelector.fileDragOver {

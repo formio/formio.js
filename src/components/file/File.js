@@ -522,7 +522,8 @@ export default class FileComponent extends BaseComponent {
                         },
                         this.ce('i', { class: this.iconClass('camera') })
                       )
-                    ] : null
+                    ] : null,
+                  this.buildFileProcessingLoader(),
                 ]
               ),
             ] :
@@ -587,6 +588,18 @@ export default class FileComponent extends BaseComponent {
     this.addFocusBlurEvents(this.browseLink);
 
     return this.browseLink;
+  }
+
+  buildFileProcessingLoader() {
+    this.fileProcessingLoader = this.ce('div', {
+      class: 'loader-wrapper'
+    }, [
+      this.ce('div', {
+        class: 'loader'
+      })
+    ]);
+
+    return this.fileProcessingLoader;
   }
 
   buildUploadStatusList(container) {
@@ -854,14 +867,32 @@ export default class FileComponent extends BaseComponent {
           let processedFile = null;
 
           if (this.root.options.fileProcessor) {
+            fileUpload.message = this.t('Starting file processing.');
+            const originalStatus = uploadStatus;
+            uploadStatus = this.createUploadStatus(fileUpload);
+            this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+
             try {
-              processedFile = await fileProcessor(this.root.options.fileProcessor)(file, this.component.properties);
+              this.fileProcessingLoader.style.display = 'block';
+              const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
+              processedFile = await fileProcessorHandler(file, this.component.properties);
             }
             catch (err) {
               fileUpload.status = 'error';
               fileUpload.message = this.t('File processing has been failed.');
+              const originalStatus = uploadStatus;
+              uploadStatus = this.createUploadStatus(fileUpload);
+              this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+              this.fileProcessingLoader.style.display = 'none';
+              return;
             }
+            this.fileProcessingLoader.style.display = 'none';
           }
+
+          fileUpload.message = this.t('Starting upload.');
+          const originalStatus = uploadStatus;
+          uploadStatus = this.createUploadStatus(fileUpload);
+          this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
 
           fileService.uploadFile(storage, processedFile || file, fileName, dir, evt => {
             fileUpload.status = 'progress';
