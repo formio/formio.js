@@ -804,6 +804,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/providers/processor/fileprocessor.js~fileprocessor",
+    "function/index.html#static-function-fileProcessor",
+    "<span>fileProcessor</span> <span class=\"search-result-import-path\">formiojs/src/providers/processor/fileProcessor.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/formutils.js~findcomponent",
     "function/index.html#static-function-findComponent",
     "<span>findComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -2698,6 +2704,12 @@ window.esdocSearchIndex = [
     "class/src/Webform.js~Webform.html#instance-method-onSubmit",
     "src/Webform.js~Webform#onSubmit",
     "method"
+  ],
+  [
+    "src/webform.js~webform#options",
+    "class/src/Webform.js~Webform.html#instance-member-options",
+    "src/Webform.js~Webform#options",
+    "member"
   ],
   [
     "src/webform.js~webform#ready",
@@ -7590,6 +7602,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#buildfileprocessingloader",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-buildFileProcessingLoader",
+    "src/components/file/File.js~FileComponent#buildFileProcessingLoader",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#buildhiddenfileinput",
     "class/src/components/file/File.js~FileComponent.html#instance-method-buildHiddenFileInput",
     "src/components/file/File.js~FileComponent#buildHiddenFileInput",
@@ -7707,6 +7725,12 @@ window.esdocSearchIndex = [
     "src/components/file/file.js~filecomponent#errorcontainer",
     "class/src/components/file/File.js~FileComponent.html#instance-member-errorContainer",
     "src/components/file/File.js~FileComponent#errorContainer",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#fileprocessingloader",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-fileProcessingLoader",
+    "src/components/file/File.js~FileComponent#fileProcessingLoader",
     "member"
   ],
   [
@@ -12777,6 +12801,12 @@ window.esdocSearchIndex = [
     "src/providers/index.js",
     "file/src/providers/index.js.html",
     "src/providers/index.js",
+    "file"
+  ],
+  [
+    "src/providers/processor/fileprocessor.js",
+    "file/src/providers/processor/fileProcessor.js.html",
+    "src/providers/processor/fileProcessor.js",
     "file"
   ],
   [

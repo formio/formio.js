@@ -1,6 +1,6 @@
 {
-  "coverage": "17.18%",
-  "expectCount": 1845,
+  "coverage": "17.13%",
+  "expectCount": 1850,
   "actualCount": 317,
   "files": {
     "src/EventEmitter.js": {
@@ -21,11 +21,11 @@
         25,
         26,
         27,
-        30,
-        43,
-        71,
-        76,
-        96
+        33,
+        46,
+        74,
+        79,
+        99
       ]
     },
     "src/FormBuilder.js": {
@@ -33,8 +33,8 @@
       "actualCount": 1,
       "undocumentLines": [
         7,
-        35,
-        37
+        38,
+        40
       ]
     },
     "src/Formio.js": {
@@ -217,7 +217,7 @@
       ]
     },
     "src/Webform.js": {
-      "expectCount": 88,
+      "expectCount": 89,
       "actualCount": 53,
       "undocumentLines": [
         17,
@@ -238,23 +238,24 @@
         418,
         445,
         469,
-        676,
-        841,
-        848,
-        856,
-        879,
-        905,
-        930,
-        938,
-        991,
-        1156,
-        1191,
-        1281,
-        1318,
-        1357,
-        1358,
-        1362,
-        1366
+        690,
+        700,
+        865,
+        872,
+        880,
+        903,
+        929,
+        954,
+        962,
+        1015,
+        1180,
+        1215,
+        1305,
+        1342,
+        1381,
+        1382,
+        1386,
+        1390
       ]
     },
     "src/WebformBuilder.js": {
@@ -1044,24 +1045,24 @@
       ]
     },
     "src/components/file/File.js": {
-      "expectCount": 57,
+      "expectCount": 59,
       "actualCount": 0,
       "undocumentLines": [
-        28,
         29,
-        46,
-        57,
-        61,
+        30,
+        47,
+        58,
         62,
         63,
-        66,
+        64,
         67,
-        75,
-        79,
-        83,
-        87,
-        91,
-        99,
+        68,
+        76,
+        80,
+        84,
+        88,
+        92,
+        100,
         105,
         108,
         133,
@@ -1089,21 +1090,23 @@
         415,
         489,
         519,
-        571,
         572,
-        592,
+        573,
+        593,
         594,
-        598,
-        628,
-        634,
-        670,
-        709,
-        736,
-        756,
-        760,
-        764,
-        894,
-        920
+        605,
+        607,
+        611,
+        641,
+        647,
+        683,
+        722,
+        749,
+        769,
+        773,
+        777,
+        938,
+        964
       ]
     },
     "src/components/form/Form.form.js": {
@@ -2125,6 +2128,20 @@
         6,
         7,
         8
+      ]
+    },
+    "src/formio.form.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        10
+      ]
+    },
+    "src/providers/processor/fileProcessor.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
       ]
     },
     "src/providers/storage/azure.js": {

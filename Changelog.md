@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.30.0
+### Changed
+ - Added image processing feature.
+
 ## 3.29.20
 ### Fixed
  - FJS-1453: Upgrades json-logic-js to v2.x
@@ -91,7 +95,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.29.0
 ### Fixed
  - Problems where errors would show up in EditGrid for new rows.
- 
+
 ### Changed
  - Upgrade tooltip.js@1.3.3, @babel/cli@7.6.4, @babel/core@7.6.4, @babel/preset-env@7.6.3, chance@1.1.3, mocha@6.2.2, webpack@4.41.2, choices.js@7.1.5, core-js@3.3.4, karma@4.4.1, i18next@18.0.0, moment-timezone@0.5.27
  - Updated timezone files to incorporate new DST changes.
@@ -105,14 +109,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Fix nested forms not having config if loaded with full=true
  - Fix apply actions when action type is property
- 
+
 ### Changed
  - Upgraded flatpickr@4.6.3, ejs-loader@0.3.5
 
 ## 3.28.0
 ### Added
  - isInputComponent method in utils
- 
+
 ### Fixed
  - Fix day comp does not populate global data until blured
 
@@ -126,7 +130,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Added options to interpolate method.
  - Validation for data for date\time component
- 
+
 ### Fixed
  - Disable load icon item in select component.
 
@@ -181,7 +185,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.25.0
 ### Added
  - A way to turn off eval by setting "FormioUtils.Evaluator.noeval = true".
- 
+
 ### Changed
  - Default EditGrid templates to look better and also respect "tableView" property.
 
@@ -191,7 +195,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Select component infinite scroll fix
  - Problem where Checkbox was not checking if input was set in updateValue method.
  - Potential problems where changed status was not getting returned in setValue for some components.
- 
+
 ### Added
  - Add silent:true option on submission errors to fail silently
 
@@ -216,7 +220,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.24.0
 ### Added
  - Option to show EditGrid forms as modals.
- - Make form config available to eval context. 
+ - Make form config available to eval context.
  - Pass component to beforeSubmit hook
  - Adding a custom wizard example to the docs and added showSubmit flag.
 
@@ -296,7 +300,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems with the content-type header getting set incorrectly which was causing request failures.
 
 ## 3.22.11
-### Fixed 
+### Fixed
  - FOR-2409: Sketchpad and Tagpad images not loading
  - ```Content-type``` and ```Accept``` headers being added to non-formio requests
 
@@ -308,7 +312,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2352: Force PDF.setForm to push supplied form to iframe
  - Radio clear on hide fix
  - FOR-2377: Fix signature aspect ratio issue
- 
+
 ### Added
  - Make tooltips translatable.
 
@@ -403,7 +407,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-2310: Tagpad -> Fixed dot being drawn with offset when initial image has minX minY in viewBox
 
-## 3.21.0 
+## 3.21.0
 ### Added
  - FOR-2290: Ability to specify file name template for File component
 
@@ -414,7 +418,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Columns inner Column component having ```input: true``` inside of component JSON
  - File uploads within the wizard forms.
  - Fix adding new resource from within multiple-values select.
- 
+
 ### Changed
  - Make it so that it will keep components from deleting if the component has a getComponents method.
  - Upgraded i18next@15.1.3, @babel/core@7.4.5, @babel/preset-env@7.4.5, webpack@4.32.2
@@ -456,14 +460,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.20.12
 ### Added
- - FOR-2273: Sketchpad -> Automatic resizing of drawing area to fill all free space in modal 
+ - FOR-2273: Sketchpad -> Automatic resizing of drawing area to fill all free space in modal
  - Min and Max validations to the DataGrid form builder interface.
 
 ### Fixed
  - Tagpad: Background being invisible in readOnly mode and overflowing its container
  - When pasting a copied component into an empty layout component, it should paste the component inside the layout component instead of below it.
  - Issues where the "Allow override of calculated value" would get in a bad state.
- 
+
 ### Changed
  - Upgraded i18next@15.1.1, babel-loader@8.0.6
 
@@ -500,7 +504,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
  - A userPermissions method on Formio to check user permissions on forms and submissions.
- 
+
 ### Changed
  - Refactored the "canSubmit" method to use the new userPermissions method.
 
@@ -518,7 +522,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.20.4
 ### Added
  - A way for the SAML SSO to force the authentication to always trigger against the SAML provider.
- 
+
 ### Changed
  - Upgraded @babel/cli@7.4.4, @babel/core@7.4.4, @babel/polyfill@7.4.4, @babel/preset-env@7.4.4, del@4.1.1
 
@@ -555,7 +559,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Problem where form builder would not fire any events when moving components.
  - Fixing the form merging logic and also adding tests to ensure future functionality.
- - Tagpad: sending excess headers on loading background image by URL 
+ - Tagpad: sending excess headers on loading background image by URL
  - WYSIWYG image upload being broken after lazy load change
  - Fixed auto adjusting columns when all components are not visible within.
 
@@ -589,7 +593,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.19.8
 ### Fixed
  - Textareas were sometimes unsetting themselves on data change.
- - Sketchpad: sending excess headers on loading background image by URL 
+ - Sketchpad: sending excess headers on loading background image by URL
 
 ## 3.19.7
 ### Fixed
@@ -643,7 +647,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2168: Fixed add andother button in TextArea component
  - Github-issue-1045: Fixed resource component render with HTML5 widget
  - Fix layout components crashing when moving in builder.
- 
+
 ### Changed
  - Upgraded i18next@15.0.9, @babel/core@7.4.3, @babel/polyfill@7.4.3, @babel/preset-env@7.4.3, fast-json-patch@2.1.0, @babel/cli@7.4.3, del@4.1.0
 
@@ -658,8 +662,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2074: Tagpad issues with background
  - FOR-2073: Sketchpad issues with background
  - FOR-2105: Fix validation on initial render in editgrid
- - @zdegner: Select does not return value after scrolling to end of list of options 
- 
+ - @zdegner: Select does not return value after scrolling to end of list of options
+
 ### Changed
  - Upgraded i18next@15.0.8, hoek@6.1.3, sinon@7.3.1, eslint@5.16.0
 
@@ -675,13 +679,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2074: TagPad Component
  - Bootstrap version option.
  - FOR-2073: Sketchpad Component
- 
+
 ### Fixed
  - FOR-2119: Fixed issues with multiple masks crashing during a form destroy.
  - FOR-1956: Fix resetForm event on cancel button callback
  - FOR-2105: Fix empty required select is valid onChange
  - TextArea on non string value.
- 
+
 ### Changed
  - Upgrade eslint@5.15.3, @babel/core@7.4.0, @babel/polyfill@7.4.0, @babel/preset-env@7.4.2, sinon@7.3.0
 
@@ -714,7 +718,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.16.4
 ### Fixed
- - Edit forms for Base, Nested and Url components. 
+ - Edit forms for Base, Nested and Url components.
  - Allow custom select options to override any defined options.
 
 ### Added
@@ -733,7 +737,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue with the image upload via webcam where the image would not get set in the image list.
  - Problem where 0 could not be set as the default value for Number components.
- 
+
 ### Changed
  - Upgraded flatpickr@4.5.6, i18next@15.0.5, sinon@7.2.7, eslint@5.15.0, del@4.0.0
 
@@ -751,7 +755,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Upgraded flatpickr@4.5.4, mocha@6.0.1, marked@0.6.1
  - Upgraded choices.js library to 6.x branch.
  - Upgraded whatwg-fetch to latest version.
- 
+
 ### Fixed
  - Fixed the gulp watch routine.
  - Issue with validations not running on tabs other than the current tab being shown.
@@ -770,7 +774,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
  - The ability to configure the fuseOptions for the Select components.
- 
+
 ### Changed
  - Upgraded sinon@7.2.4, webpack@4.29.5, @babel/core@7.3.3, eslint@5.14.1
 
@@ -795,7 +799,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-1782: Ability to reorder rows for Data Grid, Edit Grid and Multiple Values components
  - SAML authentication support
- 
+
 ### Changed
  - Upgrade i18next@15.0.4, bootstrap@4.3.1, bootswatch@4.3.1
 
@@ -803,11 +807,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Continuous scrolling to Select component.
  - Limit and sort for Select component.
- 
+
 ### Fixed
  - Initial validation for webform components to not trigger checkData.
  - Fixing issue with the template cache not being a function.
- 
+
 ### Changed
  - Upgraded webpack@4.29.3, i18next@15.0.0
 
@@ -822,7 +826,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1804: Add option to override fuzzy search threshold in Select
  - FOR-2044: Fix bug with form danger alert
  - Added ability to set default value on nested forms.
- 
+
 ### Changed
  - Upgraded  webpack@4.29.2, eslint@5.13.0, i18next@14.0.1, karma@4.0.0, written-number@0.9.1
 
@@ -844,7 +848,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.13.6
 ### Added
  - instance.currentForm to reference the form a component is an instance of.
- 
+
 ### Fixed
  - Required validation in textarea with wysiwyg.
 
@@ -875,7 +879,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - PDF from not showing the console.warning of "postmessage message type required"
 
 ## 3.13.1
-### Added 
+### Added
  - FOR-1933: 'formEmbedded' event
  - Currently logged in user to the evaluation context.
 
@@ -905,7 +909,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-1736: Added test for Custom Component.
  - Test to prove the language change occurs in nested forms.
- 
+
 ### Changed
  - Upgraded i18next@13.1.5, eslint@5.12.1, sinon@7.2.3, moment@2.24.0, @babel/preset-env@7.3.1, webpack@4.29.0
 
@@ -920,7 +924,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
  - Upgrade i18next@13.1.4
- 
+
 ### Fixed
  - Problem where nested form would show the submit buttons.
  - Fixed bug with schema getter when it returns duplicates within components array.
@@ -940,7 +944,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues with the choices icons not making their way into external librarys such as Angular, etc.
  - Added "HTML" property type to extract html content from the HTML5 component
- 
+
 ## 3.11.0
 ### Added
  - The ModalEdit component which allows for inline editing of content with modal overlay.
@@ -957,10 +961,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.10.3
 ### Added
  - The ability to configure a select dropdown to show only the value in readOnly mode.
- 
+
 ### Fixed
  - FOR-1934: Problem where the language configurations was not getting passed into nested forms.
- 
+
 ### Changed
  - Upgraded babel-loader@8.0.5, i18next@13.1.0, eslint@5.12.0, marked@0.6.0
 
@@ -979,7 +983,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1964: Fix bug with delimiter setting in Number
  - Problems where the valueProperty would not show in the Select component settings.
- 
+
 ### Changed
  - Switch to Karma mocha reporter.
  - Upgraded i18next@13.0.1, @babel/cli@7.2.3, @babel/preset-env@7.2.3, webpack@4.28.2, @babel/polyfill@7.2.5, bootstrap@4.2.1, eslint@5.11.0
@@ -1012,12 +1016,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1911: Problem where some configurations would not get passed to the wizard components.
  - FOR-1336: Fix bug with double validation
  - Typos
- 
+
 ### Added
  - Add ability to get all translatable strings from a form definition.
  - RTL support for select dropdowns.
  - Added component tooltip interpolation
- 
+
 
 ## 3.9.3
 ### Fixed

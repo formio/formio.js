@@ -24,6 +24,7 @@ module.exports = function(config) {
             use: [{
               loader: 'ejs-loader',
               options: {
+                esModule: false,
                 evaluate: /\{%([\s\S]+?)%\}/g,
                 interpolate: /\{\{([\s\S]+?)\}\}/g,
                 escape: /\{\{\{([\s\S]+?)\}\}\}/g

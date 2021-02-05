@@ -136,6 +136,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-processor">providers/processor</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fileProcessor">fileProcessor</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -222,6 +223,7 @@ import download from &apos;downloadjs&apos;;
 import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import fileProcessor from &apos;../../providers/processor/fileProcessor&apos;;
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -315,9 +317,8 @@ export default class FileComponent extends BaseComponent {
   }
 
   loadImage(fileInfo) {
-    return this.fileService.downloadFile(fileInfo).then(result =&gt; {
-      return result.url;
-    });
+    return this.fileService.downloadFile(fileInfo)
+      .then(result =&gt; result.url);
   }
 
   setValue(value) {
@@ -740,7 +741,8 @@ export default class FileComponent extends BaseComponent {
                         },
                         this.ce(&apos;i&apos;, { class: this.iconClass(&apos;camera&apos;) })
                       )
-                    ] : null
+                    ] : null,
+                  this.buildFileProcessingLoader(),
                 ]
               ),
             ] :
@@ -805,6 +807,18 @@ export default class FileComponent extends BaseComponent {
     this.addFocusBlurEvents(this.browseLink);
 
     return this.browseLink;
+  }
+
+  buildFileProcessingLoader() {
+    this.fileProcessingLoader = this.ce(&apos;div&apos;, {
+      class: &apos;loader-wrapper&apos;
+    }, [
+      this.ce(&apos;div&apos;, {
+        class: &apos;loader&apos;
+      })
+    ]);
+
+    return this.fileProcessingLoader;
   }
 
   buildUploadStatusList(container) {
@@ -987,7 +1001,7 @@ export default class FileComponent extends BaseComponent {
     if (this.component.storage &amp;&amp; files &amp;&amp; files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
-      Array.prototype.forEach.call(files, file =&gt; {
+      Array.prototype.forEach.call(files, async file =&gt; {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
@@ -1068,7 +1082,38 @@ export default class FileComponent extends BaseComponent {
             file.private = true;
           }
           const { storage, url, options } = this.component;
-          fileService.uploadFile(storage, file, fileName, dir, evt =&gt; {
+
+          let processedFile = null;
+
+          if (this.root.options.fileProcessor) {
+            fileUpload.message = this.t(&apos;Starting file processing.&apos;);
+            const originalStatus = uploadStatus;
+            uploadStatus = this.createUploadStatus(fileUpload);
+            this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+
+            try {
+              this.fileProcessingLoader.style.display = &apos;block&apos;;
+              const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
+              processedFile = await fileProcessorHandler(file, this.component.properties);
+            }
+            catch (err) {
+              fileUpload.status = &apos;error&apos;;
+              fileUpload.message = this.t(&apos;File processing has been failed.&apos;);
+              const originalStatus = uploadStatus;
+              uploadStatus = this.createUploadStatus(fileUpload);
+              this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+              this.fileProcessingLoader.style.display = &apos;none&apos;;
+              return;
+            }
+            this.fileProcessingLoader.style.display = &apos;none&apos;;
+          }
+
+          fileUpload.message = this.t(&apos;Starting upload.&apos;);
+          const originalStatus = uploadStatus;
+          uploadStatus = this.createUploadStatus(fileUpload);
+          this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+
+          fileService.uploadFile(storage, processedFile || file, fileName, dir, evt =&gt; {
             fileUpload.status = &apos;progress&apos;;
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
