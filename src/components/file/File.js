@@ -4,6 +4,7 @@ import download from 'downloadjs';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
+import fileProcessor from '../../providers/processor/fileProcessor';
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -97,9 +98,8 @@ export default class FileComponent extends BaseComponent {
   }
 
   loadImage(fileInfo) {
-    return this.fileService.downloadFile(fileInfo).then(result => {
-      return result.url;
-    });
+    return this.fileService.downloadFile(fileInfo)
+      .then(result => result.url);
   }
 
   setValue(value) {
@@ -522,7 +522,8 @@ export default class FileComponent extends BaseComponent {
                         },
                         this.ce('i', { class: this.iconClass('camera') })
                       )
-                    ] : null
+                    ] : null,
+                  this.buildFileProcessingLoader(),
                 ]
               ),
             ] :
@@ -587,6 +588,18 @@ export default class FileComponent extends BaseComponent {
     this.addFocusBlurEvents(this.browseLink);
 
     return this.browseLink;
+  }
+
+  buildFileProcessingLoader() {
+    this.fileProcessingLoader = this.ce('div', {
+      class: 'loader-wrapper'
+    }, [
+      this.ce('div', {
+        class: 'loader'
+      })
+    ]);
+
+    return this.fileProcessingLoader;
   }
 
   buildUploadStatusList(container) {
@@ -769,7 +782,7 @@ export default class FileComponent extends BaseComponent {
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
-      Array.prototype.forEach.call(files, file => {
+      Array.prototype.forEach.call(files, async file => {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
@@ -850,7 +863,38 @@ export default class FileComponent extends BaseComponent {
             file.private = true;
           }
           const { storage, url, options } = this.component;
-          fileService.uploadFile(storage, file, fileName, dir, evt => {
+
+          let processedFile = null;
+
+          if (this.root.options.fileProcessor) {
+            fileUpload.message = this.t('Starting file processing.');
+            const originalStatus = uploadStatus;
+            uploadStatus = this.createUploadStatus(fileUpload);
+            this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+
+            try {
+              this.fileProcessingLoader.style.display = 'block';
+              const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
+              processedFile = await fileProcessorHandler(file, this.component.properties);
+            }
+            catch (err) {
+              fileUpload.status = 'error';
+              fileUpload.message = this.t('File processing has been failed.');
+              const originalStatus = uploadStatus;
+              uploadStatus = this.createUploadStatus(fileUpload);
+              this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+              this.fileProcessingLoader.style.display = 'none';
+              return;
+            }
+            this.fileProcessingLoader.style.display = 'none';
+          }
+
+          fileUpload.message = this.t('Starting upload.');
+          const originalStatus = uploadStatus;
+          uploadStatus = this.createUploadStatus(fileUpload);
+          this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+
+          fileService.uploadFile(storage, processedFile || file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;

@@ -25,6 +25,9 @@ export default class Form {
     this.element = element;
     this.form = form;
     this.options = options;
+    if (Formio.options && Formio.options.form) {
+      this.options = Object.assign(options, Formio.options.form);
+    }
   }
 
   create() {
