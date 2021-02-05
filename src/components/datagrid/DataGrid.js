@@ -446,6 +446,9 @@ export default class DataGridComponent extends NestedArrayComponent {
         this.setRowComponentsData(index, row);
       }
       else {
+        if (this.rows[index]) {
+          this.removeRowComponents(this.rows[index]);
+        }
         this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
