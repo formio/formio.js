@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 #### Fixed
  - FIO-1217: Fixes masks caret behavior when it is used inside shadow DOM
+ - UIP-213: Fix wrong modes passed to ace editor config
+ - FIO-1300: add the dynamicWizard type to conditions with components that store data as an array
+ - FIO-1345: Added additional check for disabled property
+ - FJS-1460: Fixes an issue where components inside DataGrid have wrong row indexes after removing row
+ - FIO-1272: fixed console errors in wizard builder and an issue where unique API key is not created for pasted wizard page and pasted page refers to the copied page
+ - FIO-1265: Fixes DataGrid's server validation
 
 ### 4.13.0-rc.7
 #### Changed
