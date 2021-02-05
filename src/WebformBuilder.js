@@ -188,7 +188,7 @@ export default class WebformBuilder extends Component {
       containerElement.formioComponent = component;
 
       // Add container to draggable list.
-      if (this.dragula && this.allowDrop(element)) {
+      if (this.dragula && this.allowDrop(element) && component.type !== 'datamap') {
         this.dragula.containers.push(containerElement);
       }
 

@@ -218,7 +218,7 @@ export default class DataMapComponent extends DataGridComponent {
 
   saveChildComponent(component) {
     // Update the Value Component, the Key Component is not allowed to edit
-    if (component.key === this.valueKey) {
+    if (component.key !== this.keySchema.key) {
       this.component.valueComponent = component;
     }
   }
