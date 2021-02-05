@@ -199,6 +199,7 @@ export default class Wizard extends Webform {
       ctx.panels.map(panel => {
         if (panel.key === this.component.key) {
           this.currentPanel = panel;
+          ctx.wizardPageTooltip = this.getFormattedTooltip(panel.tooltip);
         }
       });
     }
@@ -245,7 +246,8 @@ export default class Wizard extends Webform {
         headerElement.outerHTML = this.renderTemplate('wizardHeader', this.renderContext);
         headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
         this.loadRefs(headerElement, {
-          [`${this.wizardKey}-link`]: 'multiple'
+          [`${this.wizardKey}-link`]: 'multiple',
+          [`${this.wizardKey}-tooltip`]: 'multiple'
         });
         this.attachHeader();
       }
@@ -261,6 +263,7 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-next`]: 'single',
       [`${this.wizardKey}-submit`]: 'single',
       [`${this.wizardKey}-link`]: 'multiple',
+      [`${this.wizardKey}-tooltip`]: 'multiple'
     });
     if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
       this.enabledIndex = this.pages?.length - 1;
@@ -326,6 +329,7 @@ export default class Wizard extends Webform {
 
   attachHeader() {
     const isAllowPrevious = this.isAllowPrevious();
+    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`]);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
       this.refs[`${this.wizardKey}-link`].forEach((link, index) => {

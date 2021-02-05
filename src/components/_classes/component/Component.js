@@ -841,7 +841,7 @@ export default class Component extends Element {
       return this.renderTemplate(...args);
     };
     data.label = this.labelInfo;
-    data.tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
+    data.tooltip = this.getFormattedTooltip(this.component.tooltip);
 
     // Allow more specific template names
     const names = [
