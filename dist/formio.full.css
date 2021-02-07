@@ -2644,9 +2644,20 @@ td > .form-group {
 
 /* end fix for choices.js deletable items in rtl */
 .formio-component-file .fileSelector {
+  position: relative;
   padding: 15px;
   border: 2px dashed #ddd;
   text-align: center; }
+  .formio-component-file .fileSelector .loader-wrapper {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1); }
+    .formio-component-file .fileSelector .loader-wrapper .loader {
+      height: 45px;
+      width: 45px;
+      margin-top: -23px;
+      margin-left: -23px; }
 
 .formio-component-file .fileSelector.fileDragOver {
   border-color: #127abe; }
