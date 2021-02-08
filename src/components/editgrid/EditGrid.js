@@ -942,7 +942,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
       }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
-      rowsEditing |= this.isRowEditing(dirty, editRow);
+      rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
     if (!rowsValid) {
@@ -958,10 +958,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.setCustomValidity(message, dirty);
 
     return superValid;
-  }
-
-  isRowEditing(dirty, editRow) {
-    return dirty && this.isOpen(editRow);
   }
 
   setValue(value, flags = {}) {

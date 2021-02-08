@@ -6,7 +6,8 @@ import RadioComponent from './Radio';
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -49,6 +50,15 @@ describe('Radio Component', () => {
       assert.equal(spans[1].innerHTML, 'Green');
       assert.equal(spans[2].innerHTML, 'Blue');
       assert.equal(spans[3].innerHTML, 'Yellow');
+    });
+  });
+
+  it('Should set false as defaultValue correctly', (done) => {
+    Harness.testCreate(RadioComponent, comp4).then((component) => {
+      assert.equal(component.dataValue, false, 'Should be equal to false');
+      const input = component.element.querySelector('input[value="false"]');
+      assert.equal(input.getAttribute('checked'), 'true', 'Should be checked');
+      done();
     });
   });
 });

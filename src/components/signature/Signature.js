@@ -67,7 +67,7 @@ export default class SignatureComponent extends Input {
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && this.options.readOnly) {
+    if (value && this.refs.signatureImage && (this.options.readOnly || this.disabled)) {
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
@@ -128,7 +128,7 @@ export default class SignatureComponent extends Input {
   }
 
   checkSize(force, scale) {
-    if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
+    if (this.refs.padBody && (force || this.refs.padBody && this.refs.padBody.offsetWidth !== this.currentWidth)) {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.offsetWidth;
       this.refs.canvas.width = this.currentWidth * this.scale;

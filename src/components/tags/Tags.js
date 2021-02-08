@@ -155,4 +155,17 @@ export default class TagsComponent extends Input {
       this.refs.input[0].parentNode.lastChild.focus();
     }
   }
+
+  getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    const stringValue = value.toString();
+    return this.sanitize(stringValue);
+  }
 }

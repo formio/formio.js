@@ -42,10 +42,7 @@ function getOptions(options) {
     saveDraftThrottle: 5000
   });
   if (!options.events) {
-    options.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    options.events = new EventEmitter();
   }
   return options;
 }
@@ -1050,7 +1047,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     this.setPristine(true);
-    this.redraw();
+    this.rebuild();
   }
 
   /**

@@ -9,7 +9,7 @@
       <td colspan="2">
         <button class="btn btn-primary formio-button-add-resource" ref="addResource">
           <i class="{{ctx.iconClass('plus')}}"></i>
-          {{ctx.t(ctx.component.addResourceLabel || 'Add Resource')}}
+          {{ctx.t(ctx.component.addResourceLabel || 'Add Resource', { _userInput: true })}}
         </button>
       </td>
     </tr>

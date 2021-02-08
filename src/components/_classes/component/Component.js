@@ -13,6 +13,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
+import i18nConfig from '../../../i18n';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
@@ -731,6 +732,10 @@ export default class Component extends Element {
     if (!text) {
       return '';
     }
+    // Use _userInput: true to ignore translations from defaults
+    if (text in i18nConfig.resources.en.translation && params._userInput) {
+      return text;
+    }
     params.data = this.rootValue;
     params.row = this.data;
     params.component = this.component;
@@ -816,7 +821,11 @@ export default class Component extends Element {
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-    return tooltip ? this.t(tooltip) : '';
+    return tooltip ? this.t(tooltip, { _userInput: true }) : '';
+  }
+
+  isHtmlRenderMode() {
+    return this.options.renderMode === 'html';
   }
 
   renderTemplate(name, data = {}, modeOption) {
@@ -893,7 +902,13 @@ export default class Component extends Element {
   }
 
   get widget() {
-    const widget = this.component.widget && Widgets[this.component.widget.type] ? new Widgets[this.component.widget.type](this.component.widget, this.component): null;
+    const settings = this.component.widget;
+
+    if (settings && this.root?.shadowRoot) {
+      settings.shadowRoot = this.root.shadowRoot;
+    }
+
+    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component): null;
     return widget;
   }
 
@@ -1021,14 +1036,16 @@ export default class Component extends Element {
     }
   }
 
-  attachTooltips(toolTipsRefs, tooltipValue) {
+  attachTooltips(toolTipsRefs) {
     toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipValue).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click focus',
         placement: 'right',
         html: true,
-        title: this.t(tooltipText),
+        title: this.t(tooltipText, { _userInput: true }),
         template: `
           <div class="tooltip" style="opacity: 1;" role="tooltip">
             <div class="tooltip-arrow"></div>
@@ -1061,7 +1078,7 @@ export default class Component extends Element {
       tooltip: 'multiple'
     });
 
-    this.attachTooltips(this.refs.tooltip, this.component.tooltip);
+    this.attachTooltips(this.refs.tooltip);
 
     // Attach logic.
     this.attachLogic();
@@ -1487,7 +1504,7 @@ export default class Component extends Element {
    * @returns {string} - The name of the component.
    */
   get name() {
-    return this.t(this.component.label || this.component.placeholder || this.key);
+    return this.t(this.component.label || this.component.placeholder || this.key, { _userInput: true });
   }
 
   /**
@@ -1809,6 +1826,30 @@ export default class Component extends Element {
 
           break;
         }
+        case 'customAction': {
+          const oldValue = this.getValue();
+          const newValue = this.evaluate(action.customAction, {
+            value: _.clone(oldValue),
+            data,
+            row,
+			input: oldValue,
+            component: newComponent,
+            result,
+          },
+          'value');
+
+          if (!_.isEqual(oldValue, newValue)) {
+            this.setValue(newValue);
+
+            if (this.viewOnly) {
+              this.dataValue = newValue;
+            }
+
+            changed = true;
+          }
+
+          break;
+        }
       }
 
       return changed;
@@ -1958,7 +1999,7 @@ export default class Component extends Element {
     return {
       quill: {
         theme: 'snow',
-        placeholder: this.t(this.component.placeholder),
+        placeholder: this.t(this.component.placeholder, { _userInput: true }),
         modules: {
           toolbar: [
             [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
@@ -1977,8 +2018,8 @@ export default class Component extends Element {
         maxLines: 12,
         minLines: 12,
         tabSize: 2,
-        mode: 'javascript',
-        placeholder: this.t(this.component.placeholder)
+        mode: 'ace/mode/javascript',
+        placeholder: this.t(this.component.placeholder, { _userInput: true })
       },
       ckeditor: {
         image: {
@@ -2331,7 +2372,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.options.renderMode === 'html' && changed) {
+    if (this.isHtmlRenderMode() && changed) {
       this.redraw();
       return changed;
     }
@@ -3073,7 +3114,7 @@ export default class Component extends Element {
     };
 
     if (this.component.placeholder) {
-      attributes.placeholder = this.t(this.component.placeholder);
+      attributes.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
     if (this.component.tabindex) {
@@ -3113,17 +3154,28 @@ export default class Component extends Element {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
+
     if (this.refs.input?.length) {
-      if (typeof index === 'number' && this.refs.input[index]) {
-        this.refs.input[index].focus();
+      const focusingInput = typeof index === 'number' && this.refs.input[index]
+        ? this.refs.input[index]
+        : this.refs.input[this.refs.input.length - 1];
+
+      if (this.component.widget?.type === 'calendar') {
+        const sibling = focusingInput.nextSibling;
+
+        if (sibling) {
+          sibling.focus();
+        }
       }
       else {
-        this.refs.input[this.refs.input.length - 1].focus();
+        focusingInput.focus();
       }
     }
+
     if (this.refs.openModal) {
       this.refs.openModal.focus();
     }
+
     if (this.parent.refs.openModal) {
       this.parent.refs.openModal.focus();
     }

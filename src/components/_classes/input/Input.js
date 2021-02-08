@@ -27,7 +27,7 @@ export default class Input extends Multivalue {
     };
 
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder);
+      attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
     if (this.component.tabindex) {
@@ -270,6 +270,10 @@ export default class Input extends Multivalue {
     const settings = (typeof this.component.widget === 'string') ? {
       type: this.component.widget
     } : this.component.widget;
+
+    if (this.root?.shadowRoot) {
+      settings.shadowRoot = this.root?.shadowRoot;
+    }
 
     // Make sure we have a widget.
     if (!Widgets.hasOwnProperty(settings.type)) {

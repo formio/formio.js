@@ -5,9 +5,7 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from 'text-mask-all/vanilla';
-import { lodashOperators } from './utils/jsonlogic/operators';
 
-const lodash = lodashOperators.reduce((obj, operator) => _.set(obj, operator, _[operator]), {});
 /**
  * The root component for all elements within the Form.io renderer.
  */
@@ -46,10 +44,7 @@ export default class Element {
      *
      * @type {EventEmitter}
      */
-    this.events = (options && options.events) ? options.events : new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    this.events = (options && options.events) ? options.events : new EventEmitter();
 
     this.defaultMask = null;
     /**
@@ -130,23 +125,30 @@ export default class Element {
   }
 
   /**
-   * Removes all listeners for a certain event.
+   * Removes a listener for a certain event. Not passing the 2nd arg will remove all listeners for that event.
    *
-   * @param event
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function|undefined} cb - The callback handler to handle this event.
    */
-  off(event) {
+  off(event, cb) {
     if (!this.events) {
       return;
     }
+
     const type = `${this.options.namespace}.${event}`;
 
-    // Iterate through all the internal events.
-    _.each(this.events.listeners(type), (listener) => {
-      // Ensure this event is for this component.
-      if (listener && (listener.id === this.id)) {
-        // Turn off this event handler.
-        this.events.off(type, listener);
+    this.events.listeners(type).forEach((listener) => {
+      // Ensure the listener is for this element
+      if (!listener || listener.id !== this.id) {
+        return;
       }
+
+      // If there is a given callback, only deal with the match
+      if (cb && cb !== listener) {
+        return;
+      }
+
+      this.events.off(type, listener);
     });
   }
 
@@ -514,7 +516,7 @@ export default class Element {
    */
   evalContext(additional) {
     return Object.assign({
-      _: lodash,
+      _,
       utils: FormioUtils,
       util: FormioUtils,
       user: Formio.getUser(),
@@ -524,7 +526,11 @@ export default class Element {
       token: Formio.getToken({
         decode: true
       }),
-      config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
+      config: this.root && this.root.form && this.root.form.config
+        ? this.root.form.config
+        : this.options?.formConfig
+          ? this.options.formConfig
+          : {},
     }, additional, _.get(this.root, 'options.evalContext', {}));
   }
 
@@ -539,6 +545,7 @@ export default class Element {
     if (typeof string !== 'function' && this.component.content) {
       string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
     }
+
     return FormioUtils.interpolate(string, this.evalContext(data));
   }
 

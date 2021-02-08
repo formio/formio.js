@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from 'eventemitter3';
 import NativePromise from 'native-promise-only';
 import {
   isMongoId,
@@ -615,7 +615,8 @@ export default class FormComponent extends Component {
     let res = true;
     if (this.subForm) {
       this.subForm.everyComponent((comp) => {
-        res &= comp.isEmpty(_.get(data, comp.key) || comp.dataValue);
+        const componentValue = _.get(data, comp.key);
+        res &= comp.isEmpty(componentValue);
       });
     }
     else {
@@ -723,10 +724,7 @@ export default class FormComponent extends Component {
   }
 
   createEmitter() {
-    const emitter = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    const emitter = new EventEmitter();
     const nativeEmit = emitter.emit;
     const that = this;
     emitter.emit = function(event, ...args) {

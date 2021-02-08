@@ -9,12 +9,7 @@ describe('TextField Builder', () => {
     // Incrise Events limit for this tests set
     Harness.builderBefore(done, {
       editForm: {
-        events: new EventEmitter({
-          wildcard: false,
-          maxListeners: 0,
-          loadLimit: 250,
-          log: true,
-        })
+        events: new EventEmitter()
       }
     });
   });

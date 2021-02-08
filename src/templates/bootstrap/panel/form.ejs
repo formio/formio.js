@@ -6,10 +6,10 @@
         <i class="formio-collapse-icon {{ctx.iconClass(ctx.collapsed ? 'plus-square-o' : 'minus-square-o')}} text-muted" data-title="Collapse Panel"></i>
       {% } %}
       {% if (!ctx.component.hideLabel || ctx.builder) { %}
-      {{ctx.t(ctx.component.title)}}
+      {{ctx.t(ctx.component.title, { _userInput: true })}}
       {% } %}
       {% if (ctx.component.tooltip) { %}
-        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
       {% } %}
     </span>
   </div>

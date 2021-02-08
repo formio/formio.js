@@ -98,6 +98,11 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   color:red;
 }
 
+.field-required:after {
+  position: relative;
+  z-index: 10;
+}
+
 .glyphicon-spin {
   -webkit-animation: formio-spin 1s infinite linear;
   -moz-animation: formio-spin 1s infinite linear;
@@ -256,9 +261,24 @@ td > .form-group {
 /* end fix for choices.js deletable items in rtl */
 
 .formio-component-file .fileSelector {
+  position: relative;
   padding: 15px;
   border: 2px dashed #ddd;
   text-align: center;
+
+  .loader-wrapper {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+
+    .loader {
+      height: 45px;
+      width: 45px;
+      margin-top: -23px;
+      margin-left: -23px;
+    }
+  }
 }
 
 .formio-component-file .fileSelector.fileDragOver {
@@ -388,7 +408,7 @@ td > .form-group {
   -webkit-animation: formio-dialog-fadein 0.5s;
   animation: formio-dialog-fadein 0.5s;
   pointer-events: all;
-  overflow: auto;
+  overflow: initial;
 }
 
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
@@ -1224,4 +1244,8 @@ div[data-oembed-url] {
 //styles for google maps dropdown
 .pac-container {
   z-index: 11000;
+}
+
+[ref='buttonMessageContainer'].has-error {
+  cursor: pointer;
 }

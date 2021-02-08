@@ -1,7 +1,7 @@
 import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from 'eventemitter3';
 import { uniqueKey } from '../../utils/utils';
 
 export default class DataMapComponent extends DataGridComponent {
@@ -182,10 +182,7 @@ export default class DataMapComponent extends DataGridComponent {
 
     // Create a new event emitter since fields are isolated.
     const options = _.clone(this.options);
-    options.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    options.events = new EventEmitter();
     options.name += `[${rowIndex}]`;
     options.row = `${rowIndex}`;
 
