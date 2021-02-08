@@ -172,7 +172,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { maskInput, conformToMask } from &apos;vanilla-text-mask&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { maskInput, conformToMask } from &apos;text-mask-all/vanilla&apos;;
 import _ from &apos;lodash&apos;;
 import { createNumberMask } from &apos;text-mask-addons&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
@@ -290,7 +290,8 @@ export default class NumberComponent extends Input {
     input.setAttribute(&apos;pattern&apos;, numberPattern);
     input.mask = maskInput({
       inputElement: input,
-      mask: this.numberMask
+      mask: this.numberMask,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
   }
 

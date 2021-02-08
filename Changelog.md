@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.9
+#### Fixed
+ - FIO-1217: Fixes masks caret behavior when it is used inside shadow DOM
+
 ### 4.13.0-rc.8
 #### Changed
  - FIO-950: Add file processing usage

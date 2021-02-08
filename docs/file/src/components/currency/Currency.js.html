@@ -173,7 +173,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/currency/Currency.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { createNumberMask } from &apos;text-mask-addons&apos;;
-import { maskInput } from &apos;vanilla-text-mask&apos;;
+import { maskInput } from &apos;text-mask-all/vanilla&apos;;
 import _ from &apos;lodash&apos;;
 import { getCurrencyAffixes } from &apos;../../utils/utils&apos;;
 import NumberComponent from &apos;../number/Number&apos;;
@@ -250,6 +250,7 @@ export default class CurrencyComponent extends NumberComponent {
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask || &apos;&apos;,
+      shadowRoot: this.root ? this.root.shadowRoot : null
     });
   }
 
