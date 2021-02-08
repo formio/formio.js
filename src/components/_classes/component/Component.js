@@ -1,5 +1,5 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
-import { conformToMask } from 'vanilla-text-mask';
+import { conformToMask } from 'text-mask-all/vanilla';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';

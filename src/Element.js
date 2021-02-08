@@ -4,7 +4,7 @@ import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
-import maskInput from 'vanilla-text-mask';
+import maskInput from 'text-mask-all/vanilla';
 
 /**
  * The root component for all elements within the Form.io renderer.
@@ -374,10 +374,12 @@ export default class Element {
         if (input.mask) {
           input.mask.destroy();
         }
+
         input.mask = maskInput({
           inputElement: input,
           mask,
-          placeholderChar: this.placeholderChar
+          placeholderChar: this.placeholderChar,
+          shadowRoot: this.root ? this.root.shadowRoot : null
         });
       }
       catch (e) {
