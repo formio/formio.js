@@ -1208,15 +1208,18 @@ export default class WebformBuilder extends Component {
       const originalComp = comp.component;
       const originalComponentSchema = comp.schema;
 
-      if (parentContainer) {
+      const isParentSaveChildMethod = this.isParentSaveChildMethod(parent.formioComponent);
+
+      if (parentContainer && !isParentSaveChildMethod) {
         parentContainer[index] = submissionData;
         if (comp) {
           comp.component = submissionData;
         }
       }
-      else if (parentComponent && parentComponent.saveChildComponent) {
-        parentComponent.saveChildComponent(submissionData);
+      else if (isParentSaveChildMethod) {
+        parent.formioComponent.saveChildComponent(submissionData);
       }
+
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
@@ -1458,21 +1461,28 @@ export default class WebformBuilder extends Component {
           BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
           let path = '';
           let index = 0;
-          if (parent.formioContainer) {
+
+          const isParentSaveChildMethod = this.isParentSaveChildMethod(parent.formioComponent);
+
+          if (parent.formioContainer && !isParentSaveChildMethod) {
             index = parent.formioContainer.indexOf(component.component);
             path = this.getComponentsPath(schema, parent.formioComponent.component);
             parent.formioContainer.splice(index + 1, 0, schema);
           }
-          else if (parent.formioComponent && parent.formioComponent.saveChildComponent) {
+          else if (isParentSaveChildMethod) {
             parent.formioComponent.saveChildComponent(schema, false);
           }
           parent.formioComponent.rebuild();
 
-          this.emitSaveComponentEvent(schema, schema, parent.formioComponent.components, path, (index + 1), true);
+          this.emitSaveComponentEvent(schema, schema, parent.formioComponent.component, path, (index + 1), true, schema);
         }
         this.emit('change', this.form);
       }
     }
+  }
+
+  isParentSaveChildMethod(parentComp) {
+    return !!(parentComp && parentComp.saveChildComponent);
   }
 
   getParentElement(element) {
