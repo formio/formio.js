@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### 4.12.7-rc.2
+### 4.12.8-rc.1
 #### Changed
  - FIO-950: Add file processing usage
  - FIO-1258: remove the function used for overwriting
@@ -34,6 +34,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-1125: Any value used in Translate list is returning contains an invalid selection
  - FIO-1182: Fixed issue where conditionally hidden radio controls are not applying the selected styles correctly.i
  - FIO-612: PDF-207: Lazy load Select options
+
+### 4.12.7
+#### Changed
+ - Released v4.12.7-rc.1 as official v4.12.7
 
 ### 4.12.7-rc.1
 #### Changed
