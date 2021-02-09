@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.7
+#### Changed
+ - Released v4.12.7-rc.1 as official v4.12.7
+
 ### 4.12.7-rc.1
 #### Changed
  - Fix: fix application of logic for fields with data storage as an array
