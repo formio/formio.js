@@ -640,6 +640,7 @@ export default class Webform extends NestedDataComponent {
    * });
    *
    * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
+   * @param flags
    * @returns {*}
    */
   setForm(form, flags) {
