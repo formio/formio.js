@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.7-patch.1
+#### Fixed
+ - FIO-1300: add the dynamicWizard type to conditions with components that store data as an array
+ - FIO-1258: remove the function used for overwriting
+ - Fix: add a method to override
+ - Moving the condition into function for overwriting
+
 ### 4.12.7
 #### Changed
  - Released v4.12.7-rc.1 as official v4.12.7
