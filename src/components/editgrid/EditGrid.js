@@ -68,7 +68,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           </div>
         {% } %}
       {% }) %}
-      {% if (!instance.disabled) { %}
+      {% if (!instance.options.readOnly && !instance.disabled) { %}
         <div class="col-sm-2">
           <div class="btn-group pull-right">
             <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
