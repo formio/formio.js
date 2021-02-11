@@ -1389,7 +1389,8 @@ export default class Component extends Element {
   get className() {
     let className = this.hasInput ? 'form-group has-feedback ' : '';
     className += `formio-component formio-component-${this.component.type} `;
-    if (this.key) {
+    // TODO: find proper way to avoid overriding of default type-based component styles
+    if (this.key && this.key !== 'form') {
       className += `formio-component-${this.key} `;
     }
     if (this.component.multiple) {
