@@ -46,6 +46,22 @@ export default [
     weight: 11,
   },
   {
+    type: 'textfield',
+    input: true,
+    label: 'Form Revision (Deprecated)',
+    description: `
+      <div class="alert alert-danger">
+        Having 'formRevision' property means that you form was configured in the older version of builder.
+        Please, remove it and use 'revision' property instead.
+      </div>
+    `,
+    customConditional({ data }) {
+      return !!data.formRevision;
+    },
+    key: 'formRevision',
+    weight: 11,
+  },
+  {
     type: 'checkbox',
     input: true,
     weight: 19,
