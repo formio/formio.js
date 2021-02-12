@@ -1498,7 +1498,7 @@ export default class Webform extends NestedDataComponent {
 
   setServerErrors(error) {
     if (error.details) {
-      this.serverErrors = error.details.filter((err) => err.level === 'error').map((err) => {
+      this.serverErrors = error.details.filter((err) => err.level ? err.level === 'error' : err).map((err) => {
         err.fromServer = true;
         return err;
       });
