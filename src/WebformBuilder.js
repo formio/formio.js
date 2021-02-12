@@ -1298,13 +1298,19 @@ export default class WebformBuilder extends Component {
           key: 'componentJson',
           label: 'Component JSON',
           tooltip: 'Edit the JSON for this component.'
+        },
+        {
+          type: 'checkbox',
+          key: 'showFullSchema',
+          label: 'Full Schema'
         }
       ]
     } : ComponentClass.editForm(_.cloneDeep(overrides));
     const instance = new ComponentClass(componentCopy);
     this.editForm.submission = isJsonEdit ? {
       data: {
-        componentJson: component
+        componentJson: component,
+        showFullSchema: false
       },
     } : {
         data: instance.component,
@@ -1339,6 +1345,16 @@ export default class WebformBuilder extends Component {
 
     this.editForm.on('change', (event) => {
       if (event.changed) {
+        if (event.changed.component && event.changed.component.key === 'showFullSchema') {
+          const { value } = event.changed;
+          this.editForm.submission = {
+            data: {
+              componentJson: value ? instance.component : component,
+              showFullSchema: value
+            },
+          };
+          return;
+        }
         // See if this is a manually modified key. Treat custom component keys as manually modified
         if ((event.changed.component && (event.changed.component.key === 'key')) || isJsonEdit) {
           componentCopy.keyModified = true;
