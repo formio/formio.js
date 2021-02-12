@@ -52,7 +52,7 @@ export default [
     description: `
       <div class="alert alert-danger">
         Having 'formRevision' property means that you form was configured in the older version of builder.
-        Please, remove it and use 'revision' property instead.
+        Please, remove it and use 'revision' property (Form Revision) instead.
       </div>
     `,
     customConditional({ data }) {
