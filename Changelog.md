@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.10
+#### Fixed
+ - FIO-213: Fix the display of server validations for 6x server
+ - FIO-1252: Form key causing style issues
+ - FIO-1225: Add check for readOnly state of form to hide edit button
+ - FIO-1423: Add keepAsReference flag to webformBuilder setForm method
+ - FIO-1273: Fixed issues where changes of value component is not saved in dataMap component.
+
+#### Added
+ - UIP-277: Create option to show full component json
+
 ### 4.13.0-rc.9
 #### Fixed
  - FIO-1217: Fixes masks caret behavior when it is used inside shadow DOM
