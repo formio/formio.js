@@ -119,7 +119,16 @@ export default class DataMapComponent extends DataGridComponent {
     if (_.isEmpty(dataValue)) {
       return [];
     }
+
     return Object.keys(dataValue).map(() => dataValue);
+  }
+
+  getComponentsContainer() {
+    if (this.builderMode) {
+      return this.getComponents().map(comp => comp.component);
+    }
+
+    return super.getComponentsContainer();
   }
 
   get iteratableRows() {
@@ -159,9 +168,13 @@ export default class DataMapComponent extends DataGridComponent {
   getRowKey(rowIndex) {
     const keys = Object.keys(this.dataValue);
     if (!keys[rowIndex]) {
-      keys[rowIndex] = uniqueKey(this.dataValue, 'key');
+      keys[rowIndex] = uniqueKey(this.dataValue, this.defaultRowKey);
     }
     return keys[rowIndex];
+  }
+
+  get defaultRowKey() {
+    return 'key';
   }
 
   setRowComponentsData(rowIndex, rowData) {
@@ -178,7 +191,8 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   createRowComponents(row, rowIndex) {
-    let key = this.getRowKey(rowIndex);
+    // Use original value component API key in builder mode to be able to edit value component
+    let key = this.builderMode ? this.valueKey : this.getRowKey(rowIndex);
 
     // Create a new event emitter since fields are isolated.
     const options = _.clone(this.options);
@@ -187,7 +201,7 @@ export default class DataMapComponent extends DataGridComponent {
     options.row = `${rowIndex}`;
 
     const components = {};
-    components['__key'] = this.createComponent(this.keySchema, options, { __key: key });
+    components['__key'] = this.createComponent(this.keySchema, options, { __key: this.builderMode ? this.defaultRowKey : key });
     components['__key'].on('componentChange', (event) => {
       const dataValue = this.dataValue;
       const newKey = uniqueKey(dataValue, event.value);
@@ -218,7 +232,7 @@ export default class DataMapComponent extends DataGridComponent {
 
   saveChildComponent(component) {
     // Update the Value Component, the Key Component is not allowed to edit
-    if (component.key === this.valueKey) {
+    if (component.key !== this.keySchema.key) {
       this.component.valueComponent = component;
     }
   }

@@ -339,12 +339,16 @@ export default class DataGridComponent extends NestedArrayComponent {
         this.attachComponents(
           this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
           [this.rows[rowIndex][col.key]],
-          this.component.components
+          this.getComponentsContainer(),
         );
         columnIndex++;
       });
     });
     return super.attach(element);
+  }
+
+  getComponentsContainer() {
+    return this.component.components;
   }
 
   onReorder(element, _target, _source, sibling) {
