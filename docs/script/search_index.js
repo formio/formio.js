@@ -3546,6 +3546,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/datamap/datamap.js~datamapcomponent#defaultrowkey",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-defaultRowKey",
+    "src/components/datamap/DataMap.js~DataMapComponent#defaultRowKey",
+    "member"
+  ],
+  [
     "src/components/datamap/datamap.js~datamapcomponent#defaultschema",
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-defaultSchema",
     "src/components/datamap/DataMap.js~DataMapComponent#defaultSchema",
@@ -3567,6 +3573,12 @@ window.esdocSearchIndex = [
     "src/components/datamap/datamap.js~datamapcomponent#getcolumns",
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getColumns",
     "src/components/datamap/DataMap.js~DataMapComponent#getColumns",
+    "method"
+  ],
+  [
+    "src/components/datamap/datamap.js~datamapcomponent#getcomponentscontainer",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getComponentsContainer",
+    "src/components/datamap/DataMap.js~DataMapComponent#getComponentsContainer",
     "method"
   ],
   [
