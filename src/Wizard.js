@@ -703,6 +703,10 @@ export default class Wizard extends Webform {
   }
 
   cancel(noconfirm) {
+    if (this.options.readOnly) {
+      return NativePromise.resolve();
+    }
+
     if (super.cancel(noconfirm)) {
       this.setPristine(true);
       return this.setPage(0).then(() => {
@@ -818,7 +822,7 @@ export default class Wizard extends Webform {
       case 'next':
         return next && (nextPage !== null) && (nextPage !== -1);
       case 'cancel':
-        return cancel;
+        return cancel && !this.options.readOnly;
       case 'submit':
         return submit && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
       default:
