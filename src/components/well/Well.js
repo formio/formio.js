@@ -26,10 +26,6 @@ export default class WellComponent extends NestedComponent {
     return WellComponent.schema();
   }
 
-  get className() {
-    return `${this.component.customClass}`;
-  }
-
   get templateName() {
     return 'well';
   }

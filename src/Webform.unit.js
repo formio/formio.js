@@ -2237,22 +2237,46 @@ describe('Webform tests', function() {
   });
 
   each(FormTests, (formTest) => {
-    describe(formTest.title || '', () => {
-      each(formTest.tests, (formTestTest, title) => {
-        it(title, () => {
-          const formElement = document.createElement('div');
-          const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-          return form.setForm(formTest.form).then(() => {
-            formTestTest(form, (error) => {
-              form.destroy();
-              if (error) {
-                throw new Error(error);
-              }
+    const useDoneInsteadOfPromise = formTest.useDone;
+
+    if (useDoneInsteadOfPromise) {
+      describe(formTest.title || '', () => {
+        each(formTest.tests, (formTestTest, title) => {
+          it(title, function(done) {
+            const formElement = document.createElement('div');
+            let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
+            form.setForm(formTest.form).then(function() {
+              formTestTest(form, function(error) {
+                form = null;
+                formElement.innerHTML = '';
+                if (error) {
+                  throw new Error(error);
+                }
+                done();
+              });
             });
           });
         });
       });
-    });
+    }
+    else {
+      describe(formTest.title || '', () => {
+        each(formTest.tests, (formTestTest, title) => {
+          it(title, function() {
+            const formElement = document.createElement('div');
+            const form = new Webform(formElement, { template: 'bootstrap3', language: 'en' });
+            return form.setForm(formTest.form).then(function() {
+              formTestTest(form, function(error) {
+                form.destroy();
+                if (error) {
+                  throw new Error(error);
+                }
+              });
+            });
+          });
+        });
+      });
+    }
   });
 });
 
