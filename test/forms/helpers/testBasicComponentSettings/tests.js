@@ -144,7 +144,9 @@ export default {
         const compType = comp.component.type;
 
         assert.equal(comp.visible, false, `Should set visible:false for ${compKey} (component ${compType})`);
-        assert.equal(comp.element.classList.contains('formio-hidden'), true, `Should set formio-hidden class for ${compKey} (component ${compType})`);
+        if (compType !== 'well') {
+          assert.equal(comp.element.classList.contains('formio-hidden'), true, `Should set formio-hidden class for ${compKey} (component ${compType})`);
+        }
       })
       done();
     },
