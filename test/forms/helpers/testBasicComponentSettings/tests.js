@@ -271,29 +271,6 @@ export default {
       done();
     },
   },
-  customDefaultValue: {
-    'Should correctly set custom default value'(form, done) {
-      form.components.forEach(comp=> {
-        const compKey = comp.component.key;
-        const compType = comp.component.type;
-        if(compKey === 'basis') return;
-      
-        const defaultValue = settings.customDefaultValue[`${compKey}`].expectedValue;
-
-        assert.deepEqual(comp.defaultValue, defaultValue, `Should correctly define default value for ${compKey} (component ${compType})`);
-        assert.deepEqual(comp.dataValue, comp.defaultValue, `Should set default value for ${compKey} (component ${compType})`);
-
-        const inputValue = comp.getValue();
-
-        assert.deepEqual(
-          compType === 'datetime' ? inputValue.startsWith(comp.defaultValue) : inputValue, 
-          compType === 'datetime' ? true : comp.defaultValue, 
-          `Got value must be equal to default value for ${compKey} (component ${compType})`
-        );
-      })
-      done();
-    },
-  },
   redrawOn: {
     'Should redrow on checkbox value change'(form, done) {
       const checkboxValue =  form.data.checkbox;
@@ -513,10 +490,10 @@ export default {
                 if (isLastComp) {
                   done();
                 }
-              }, 50)
-            }, 50)
-          }, 50)
-        })
+              }, 50);;
+            }, 50);
+          }, 50);
+        });
       });
     },
     'Should save component values and close the modal after clicking "save"' (form, done) {
@@ -574,8 +551,8 @@ export default {
               if (isLastComp) {
                 done();
               }
-            }, 50)
-          }, 50)
+            }, 50);
+          }, 50);
         })
       });
     },
@@ -602,7 +579,123 @@ export default {
         });
 
         done();
-      })
+      });
+    },
+  },
+  calculateValue: {
+    'Should caclulate component value'(form, done, test) {
+      test.timeout(2500);
+
+      const basisComponent = form.getComponent('basis');
+      let basis = basisComponent.getValue();
+
+      const checkCalculatedValue = () => {
+        form.components.forEach(comp=> {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+          if (compKey === 'basis') return;
+        
+          const getExpectedCalculatedValue = (basis) => settings.calculateValue[`${compKey}`].expectedValue(basis);
+
+          const inputValue = comp.dataValue;
+
+          assert.deepEqual(
+            compType === 'datetime' ? inputValue.startsWith(getExpectedCalculatedValue(basis)) : inputValue, 
+            compType === 'datetime' ? true : getExpectedCalculatedValue(basis), 
+            `Should calculate component value for ${compKey} (component ${compType})`
+          );
+        });
+      }
+
+      checkCalculatedValue();
+
+      let basisComponentNewValue = '';
+      basisComponent.setValue(basisComponentNewValue);
+
+       setTimeout(() => {
+        basis = basisComponent.getValue();
+        assert.deepEqual(basis, basisComponentNewValue, `Should set basis component value`);
+        checkCalculatedValue();
+
+        basisComponentNewValue = 'value for calculation of other components value';
+        basisComponent.setValue(basisComponentNewValue);
+
+        setTimeout(() => {
+         basis = basisComponent.getValue();
+         assert.deepEqual(basis, basisComponentNewValue, `Should set basis component value`);
+         checkCalculatedValue();
+         done();
+        }, 250);
+      }, 250);
+    },
+    'Should not allow overriding component colculated value'(form, done) {
+      const basisComponent = form.getComponent('basis');
+      let basis = basisComponent.getValue();
+
+      const checkCalculatedValue = () => {
+        form.components.forEach(comp=> {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+          if (compKey === 'basis') return;
+        
+          const getExpectedCalculatedValue = (basis) => settings.calculateValue[`${compKey}`].expectedValue(basis);
+
+          const inputValue = comp.dataValue;
+
+          assert.deepEqual(
+            compType === 'datetime' ? inputValue.startsWith(getExpectedCalculatedValue(basis)) : inputValue, 
+            compType === 'datetime' ? true : getExpectedCalculatedValue(basis), 
+            `Should calculate component value for ${compKey} (component ${compType})`
+          );
+        })
+      }
+
+      checkCalculatedValue();
+
+       form.setValue({data: values.values});
+
+       setTimeout(() => {
+        checkCalculatedValue();
+        done();
+       }, 300);
+    },
+    'Should allow overriding component colculated value'(form, done, test) {
+      test.timeout(3000);
+
+      const basisComponent = form.getComponent('basis');
+      let basis = basisComponent.getValue();
+
+      form.everyComponent((comp)=> {
+        if(comp.component.calculateValue) {
+          comp.component.allowCalculateOverride = true;
+        }
+      });
+
+      const checkCalculatedValue = (overriden) => {
+        form.components.forEach(comp => {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+          if (compKey === 'basis') return;
+        
+          const getExpectedCalculatedValue = (basis) => overriden ? values.values[`${compKey}`] : settings.calculateValue[`${compKey}`].expectedValue(basis);
+
+          const inputValue = comp.dataValue;
+
+          assert.deepEqual(
+            compType === 'datetime' ? inputValue.startsWith(getExpectedCalculatedValue(basis)) : inputValue, 
+            compType === 'datetime' ? true : getExpectedCalculatedValue(basis), 
+            `Should calculate component value for ${compKey} (component ${compType})`
+          );
+        })
+      }
+
+      checkCalculatedValue(false);
+       form.setValue({ data: values.values });
+       
+       setTimeout(() => {
+        checkCalculatedValue(true);
+        done();
+      }, 300);
     },
   },
 };

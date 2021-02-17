@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import moment from 'moment';
+
 
 export default {
   placeholder: _.reduce(
@@ -239,7 +241,81 @@ export default {
       return obj;
     },
     {}
-  ),    
+  ),
+  calculateValue: {
+    textField: { js:'value = `${data.basis} calculated`', expectedValue: (basis) => `${basis} calculated` },
+    textArea: { js:'value = `${data.basis} calculated`', expectedValue: (basis) => `${basis} calculated`},
+    number: { js: 'value = data.basis.length', expectedValue: (basis) => basis.length },
+    checkbox: { js:'value = data.basis.length > 5', expectedValue: (basis) => basis.length > 5 },
+    selectBoxes: { js:'value = { a: data.basis.length > 5, b: data.basis.length > 10 , c: data.basis.length > 20 }', expectedValue: (basis) => ({ a: basis.length > 5, b: basis.length > 10 , c: basis.length > 20})},
+    select: { js:'value = data.basis.length > 5 ? "a" : "b"', expectedValue: (basis) => basis.length > 5 ? "a" : "b"},
+    radio: { js:'value = data.basis.length < 5 ? "c" : "b"', expectedValue: (basis) => basis.length < 5 ? "c" : "b"},
+    email: { js:'value = `${data.basis.split(" ").join("")}@example.com`', expectedValue:  (basis) => `${basis.split(" ").join("")}@example.com`},
+    url: { js: 'value = `https://${data.basis.split(" ").join("")}.com`', expectedValue: (basis) => `https://${basis.split(" ").join("")}.com`},
+    phoneNumber: { js:'value = `(${data.basis ? "222":"333"}) 555-5555`', expectedValue: (basis) => `(${basis ? "222":"333"}) 555-5555`},
+    tags: { js:'value = data.basis.split(" ").join(",")', expectedValue: (basis) => basis.split(" ").join(",")},
+    dateTime: { js:"var date = moment('2005-02-03T12:00:00');var now = moment();value = date < now ? '2023-03-03T12:00:00' : '2003-12-12T12:00:00';", expectedValue: (basis) => { 
+      const date = moment('2005-02-03T12:00:00');
+      const now = moment();
+
+      return date < now ? '2023-03-03T12:00:00' : '2003-12-12T12:00:00'
+    }},
+    day: { js:'value = data.basis.length > 5 ? "05/05/2015" : "03/03/2003"', expectedValue: (basis) => basis.length > 5 ? "05/05/2015" : "03/03/2003"},
+    time: { js:'value = data.basis.length > 5 ? "04:45:00" : "04:05:00"', expectedValue: (basis) => basis.length > 5 ? "04:45:00" : "04:05:00"},
+    currency: { js:'value = data.basis.length', expectedValue: (basis) => basis.length },
+    survey: { js:"value = { question1: data.basis.length ? 'yes' : 'no', question2: !data.basis.length ? 'yes' : 'no'}", expectedValue: (basis) => ({ question1: basis.length ? 'yes' : 'no', question2: !basis.length ? 'yes' : 'no'})},
+    hidden: { js:'value = data.basis.length', expectedValue: (basis) => basis.length },
+    container: { js:'value = { textFieldContainer: data.basis + " calculated" }', expectedValue: (basis) => ({ textFieldContainer: basis + " calculated" })},
+    dataMap: { js:'value = { key: data.basis + " calculated" }', expectedValue: (basis) => ({ key: basis + " calculated" }) },
+    dataGrid: { js:'value = [{ textFieldDataGrid: data.basis + " calculated1" }, { textFieldDataGrid: data.basis + " calculated2" }]', expectedValue: (basis) => [{ textFieldDataGrid: basis + " calculated1" }, { textFieldDataGrid: basis + " calculated2" }]},
+    editGrid: { js:'value = [{textFieldEditGrid: data.basis + " calculated"}]', expectedValue: (basis) => [{textFieldEditGrid: basis + " calculated"}]},
+    tree: { js:"value = {children: [], data:{ textFieldTree: data.basis + ' calculated' } }", expectedValue: (basis) => ({children: [], data:{ textFieldTree: basis + ' calculated' }}) },
+    file: { js: 'value = [{ name: `${data.basis}-15c248a4-401f-4456-aff9-abcbdf0f7bfa.docx`, originalName: `${data.basis}.docx`, size: 11396, storage: "base64", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", url: "data:application/vnd.openxmlformats-officedocument", }]',
+      expectedValue: (basis) => [{ 
+        name: `${basis}-15c248a4-401f-4456-aff9-abcbdf0f7bfa.docx`,
+        originalName: `${basis}.docx`,
+        size: 11396,
+        storage: "base64",
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        url: "data:application/vnd.openxmlformats-officedocument",
+      }]
+    }
+  },
+  clearOnHide: _.reduce(
+    [ 
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      //"signature", 
+      "container", "dataMap", "dataGrid", "editGrid", "tree", "file"
+    ],
+    (obj, componentKey) => {
+      obj[componentKey] = true;
+      return obj;
+    },
+    {}
+  ),
+  dataGridLabel:_.reduce(
+    [ 
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      //"signature", 
+      "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+    ],
+    (obj, componentKey) => {
+      obj[componentKey] = true;
+      return obj;
+    },
+    {}
+  ),
+  autofocus:_.reduce(
+    [ 
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+    ],
+    (obj, componentKey) => {
+      obj[componentKey] = true;
+      return obj;
+    },
+    {}
+  ),
 };
 
 
