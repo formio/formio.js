@@ -104,6 +104,31 @@ const indexeddb = () => ({
         };
       });
     });
+  },
+  deleteFile(file, options) {
+    return new NativePromise((resolve) => {
+      const request = indexedDB.open(options.indexeddb, 3);
+
+      request.onsuccess = function(event) {
+        const db = event.target.result;
+        resolve(db);
+      };
+    }).then((db) => {
+      return new NativePromise((resolve, reject) => {
+        const trans = db.transaction([options.indexeddbTable], 'readwrite');
+        const store = trans.objectStore(options.indexeddbTable).delete(file.id);
+        store.onsuccess = () => {
+          trans.oncomplete = () => {
+            const result = store.result;
+
+            resolve(result);
+          };
+        };
+        store.onerror = () => {
+          return reject(this);
+        };
+      });
+    });
   }
 });
 
