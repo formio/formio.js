@@ -88,6 +88,7 @@ const indexeddb = () => ({
 
             reader.onload = (event) => {
               result.url = event.target.result;
+              result.storage = file.storage;
               resolve(result);
             };
 
