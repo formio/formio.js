@@ -154,6 +154,30 @@ export default class SelectBoxesComponent extends RadioComponent {
       .join(', ');
   }
 
+  setSelectedClasses() {
+    if (this.refs.wrapper) {
+      //add/remove selected option class
+      const value = this.dataValue;
+      const valuesKeys = Object.keys(value);
+
+      this.refs.wrapper.forEach((wrapper, index) => {
+        const key = valuesKeys[index];
+        const isChecked = value[key];
+        const input = this.refs.input[index];
+        if (isChecked && input?.value.toString() === key) {
+          //add class to container when selected
+          this.addClass(wrapper, this.optionSelectedClass);
+          //change "checked" attribute
+          input.setAttribute('checked', 'true');
+        }
+        else if (!isChecked && input?.value.toString() === key) {
+          this.removeClass(wrapper, this.optionSelectedClass);
+          input.removeAttribute('checked');
+        }
+      });
+    }
+}
+
   checkComponentValidity(data, dirty, rowData, options) {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
