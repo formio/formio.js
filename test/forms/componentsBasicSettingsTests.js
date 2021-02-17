@@ -24,7 +24,7 @@ export default _.map(testedProperties, (property) => {
       } 
       else {
         //if we have expected value in property settings
-        if (['customDefaultValue'].includes(property)) {
+        if (['customDefaultValue', 'calculateValue'].includes(property)) {
           comp[property] = settings[property][comp.key].js;
         }
         else {
@@ -37,7 +37,7 @@ export default _.map(testedProperties, (property) => {
       return comp;
     });
   
-  if(['customDefaultValue'].includes(property)) {
+  if(['customDefaultValue', 'calculateValue'].includes(property)) {
     testedForm.components.unshift(baseHelpingComponent);
   }
 
