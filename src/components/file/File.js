@@ -659,7 +659,9 @@ export default class FileComponent extends Field {
 
           if (this.root.options.fileProcessor) {
             try {
-              this.refs.fileProcessingLoader.style.display = 'block';
+              if (this.refs.fileProcessingLoader) {
+                this.refs.fileProcessingLoader.style.display = 'block';
+              }
               const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
               processedFile = await fileProcessorHandler(file, this.component.properties);
             }
@@ -668,10 +670,13 @@ export default class FileComponent extends Field {
               fileUpload.message = this.t('File processing has been failed.');
               this.fileDropHidden = false;
               this.redraw();
-              this.refs.fileProcessingLoader.style.display = 'none';
               return;
             }
-            this.refs.fileProcessingLoader.style.display = 'none';
+            finally {
+              if (this.refs.fileProcessingLoader) {
+                this.refs.fileProcessingLoader.style.display = 'none';
+              }
+            }
           }
 
           fileUpload.message = this.t('Starting upload.');
