@@ -408,7 +408,7 @@ export default {
   modalEdit: {
     'Should open and close modal window'(form, done) {
       const componentsWithBug = ["columns", "fieldset", "panel", "table", "tabs", "well"]; //BUG: include them in test when it is fixed
-      const testComponents = form.components.filter(comp => !componentsWithBug.includes(comp.component.type));
+      const testComponents = form.components.filter(comp => ![...componentsWithBug, 'button'].includes(comp.component.type));
       testComponents.forEach((comp, index) => {
         const isLastComp = index === (testComponents.length - 1);
         const compKey = comp.component.key;
@@ -442,7 +442,7 @@ export default {
     },
     'Should delete component changes when closing modal window and clicking "delete it" in confirmation dialog' (form, done) {
       const layoutComponents = ["columns", "fieldset", "panel", "table", "tabs", "well"]
-      const testComponents = form.components.filter(comp => !['htmlelement', 'content'].includes(comp.component.type));
+      const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
       testComponents.forEach((comp, index) => {
         const componentsWithBug = layoutComponents; //BUG: include them in test when it is fixed
@@ -521,10 +521,9 @@ export default {
     },
     'Should save component values and close the modal after clicking "save"' (form, done) {
       const layoutComponents = ["columns", "fieldset", "panel", "table", "tabs", "well"]
-      const testComponents = form.components.filter(comp => !['htmlelement', 'content'].includes(comp.component.type));
+      const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
       testComponents.forEach((comp, index) => {
-        //const componentsWithBug = layoutComponents; //BUG: include them in test when it is fixed
         const isLastComp = index === (testComponents.length - 1);
         const compKey = comp.component.key;
         const compType = comp.component.type;
@@ -579,6 +578,31 @@ export default {
           }, 50)
         })
       });
+    },
+    'Should highlight modal button if component is invalid' (form, done, test) {
+      test.timeout(5500)
+      let testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
+
+      form.everyComponent((comp)=> {
+        comp.component.validate = comp.component.validate || {};
+        comp.component.validate.required = true;
+      });
+      
+      const clickEvent = new Event('click');
+      form.getComponent('submit').refs.button.dispatchEvent(clickEvent)
+
+      setTimeout(() => {
+        testComponents.forEach((comp, index) => {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+
+          const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
+          assert.deepEqual(!!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
+          assert.deepEqual(isErrorHighlightClass, true, `${compKey} (component ${compType}): should highlight invalid modal button`);
+        });
+
+        done();
+      })
     },
   },
 };

@@ -231,8 +231,8 @@ export default {
       "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "html", "content", 
-      "columns", "fieldset", "panel", "table", "tabs", "well", //BUG: they are excluded from some tests of modalEdit setting (not discard changes, not)
-      "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file"
+      "columns", "fieldset", "panel", "table", "tabs", "well", //BUG: they are excluded from some tests of modalEdit setting
+      "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
       obj[componentKey] = true;

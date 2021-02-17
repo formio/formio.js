@@ -2207,7 +2207,7 @@ describe('Webform tests', function() {
         }, 300);
       }, 350);
     }).catch(done);
-  });
+  }).timeout(3000);
 
   describe('Custom Logic', () => {
     it('Should rerender components using updated properties', (done) => {
@@ -2243,6 +2243,7 @@ describe('Webform tests', function() {
       describe(formTest.title || '', () => {
         each(formTest.tests, (formTestTest, title) => {
           it(title, function(done) {
+            const self = this;
             const formElement = document.createElement('div');
             let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
             form.setForm(formTest.form).then(function() {
@@ -2253,7 +2254,7 @@ describe('Webform tests', function() {
                   throw new Error(error);
                 }
                 done();
-              });
+              }, self);
             });
           });
         });
