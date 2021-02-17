@@ -161,22 +161,25 @@ export default class SelectBoxesComponent extends RadioComponent {
       const valuesKeys = Object.keys(value);
 
       this.refs.wrapper.forEach((wrapper, index) => {
-        const key = valuesKeys[index];
-        const isChecked = value[key];
+        let key = valuesKeys[index];
         const input = this.refs.input[index];
-        if (isChecked && input?.value.toString() === key) {
+        if (input?.value.toString() !== key) {
+          key = valuesKeys.find((k) => input?.value.toString() === k);
+        }
+        const isChecked = value[key];
+        if (isChecked && key) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
           //change "checked" attribute
           input.setAttribute('checked', 'true');
         }
-        else if (!isChecked && input?.value.toString() === key) {
+        else if (!isChecked && key) {
           this.removeClass(wrapper, this.optionSelectedClass);
           input.removeAttribute('checked');
         }
       });
     }
-}
+  }
 
   checkComponentValidity(data, dirty, rowData, options) {
     const minCount = this.component.validate.minSelectedCount;
