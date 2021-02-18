@@ -69,6 +69,36 @@ export default class RadioComponent extends Field {
         });
         break;
     }
+
+    if (this.refs.wrapper) {
+      const value = this.dataValue;
+      const optionSelectedClass = 'radio-selected';
+
+      this.refs.wrapper.forEach((wrapper, index) => {
+        const input = this.refs.input[index];
+        switch (input.type) {
+          case 'radio' :
+            if (input && input.value.toString() === value.toString()) {
+              //add class to container when selected
+              this.addClass(wrapper, optionSelectedClass);
+            }
+            else {
+              this.removeClass(wrapper, optionSelectedClass);
+            }
+            break;
+          case 'checkbox' :
+            // eslint-disable-next-line no-case-declarations
+            const checked = value[input.value];
+            if (checked) {
+              this.addClass(wrapper, optionSelectedClass);
+            }
+            else {
+              this.removeClass(wrapper, optionSelectedClass);
+            }
+            break;
+        }
+      });
+    }
   }
 
   onChange(flags, fromRoot) {
@@ -115,6 +145,7 @@ export default class RadioComponent extends Field {
         });
       }
     });
+    this.updateSelected();
     return super.attach(element);
   }
 
@@ -173,42 +204,10 @@ export default class RadioComponent extends Field {
 
   updateValue(value, flags) {
     const changed = super.updateValue(value, flags);
-    if (changed && this.refs.wrapper) {
-      //add/remove selected option class
-      const value = this.dataValue;
-      const optionSelectedClass = 'radio-selected';
-
-      this.refs.wrapper.forEach((wrapper, index) => {
-        const input = this.refs.input[index];
-        switch (input.type) {
-          case 'radio' :
-        if (input && input.value.toString() === value.toString()) {
-          //add class to container when selected
-          this.addClass(wrapper, optionSelectedClass);
-        }
-        else {
-          this.removeClass(wrapper, optionSelectedClass);
-        }
-            break;
-          case 'checkbox' :
-            // eslint-disable-next-line no-case-declarations
-            const checked = value[input.value];
-            if (checked) {
-              this.addClass(wrapper, optionSelectedClass);
-            }
-            else {
-              this.removeClass(wrapper, optionSelectedClass);
-            }
-            break;
-        }
-      });
-    }
-
     if (!flags || !flags.modified || !this.isRadio) {
       return changed;
     }
-
-    // If they clicked on the radio that is currently selected, it needs to reset the value.
+   // If they clicked on the radio that is currently selected, it needs to reset the value.
     this.currentValue = this.dataValue;
     const shouldResetValue = !(flags && flags.noUpdateEvent)
       && this.previousValue === this.currentValue;
@@ -217,6 +216,7 @@ export default class RadioComponent extends Field {
       this.triggerChange(flags);
     }
     this.previousValue = this.dataValue;
+    this.updateSelected();
     return changed;
   }
 

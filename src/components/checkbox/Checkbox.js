@@ -88,6 +88,7 @@ export default class CheckBoxComponent extends Field {
       }));
       this.addShortcut(this.input);
     }
+    this.setChecked();
     return super.attach(element);
   }
 
@@ -178,6 +179,11 @@ export default class CheckBoxComponent extends Field {
   }
 
   updateValue(value, flags) {
+    this.setChecked();
+     super.updateValue(value, flags);
+  }
+
+  setChecked() {
     const checkBoxChecked = 'checkbox-checked';
     const val = this.getValue();
     if (this.refs.formCheck) {
@@ -188,7 +194,6 @@ export default class CheckBoxComponent extends Field {
         this.removeClass(this.refs.formCheck, checkBoxChecked);
       }
     }
-    super.updateValue(value, flags);
   }
 
   getValueAsString(value) {
