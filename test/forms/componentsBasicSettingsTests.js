@@ -12,27 +12,27 @@ export default _.map(testedProperties, (property) => {
 
   testedForm.components = testedForm.components
     .filter(comp => {
-      if (settings[property].hasOwnProperty(comp.key)) {
+      if ( _.get(settings, property).hasOwnProperty(comp.key)) {
         return true;
       }
     })
     .map(comp => {
       if (property === 'placeholder' && comp.type === 'day') {
         _.each(comp.fields, (fieldValue, fieldName) => {
-          fieldValue[property] = settings[property][comp.key][fieldName] || '';
+          fieldValue[property] = _.get(settings, property)[comp.key][fieldName] || '';
         })
       } 
       else {
         //if we have expected value in property settings
         if (['customDefaultValue', 'calculateValue'].includes(property)) {
-          comp[property] = settings[property][comp.key].js;
+          _.set(comp, property , _.get(settings, property)[comp.key].js);
         }
         else {
-          comp[property] = settings[property][comp.key];
+          _.set(comp, property , _.get(settings, property)[comp.key]);
         }
       }
       if (['redrawOn'].includes(property)) {
-        comp.label = `${comp.label} {{data.${settings[property][comp.key]}}}`;
+        comp.label = `${comp.label} {{data.${ _.get(settings, property)[comp.key]}}}`;
       }
       return comp;
     });
@@ -41,7 +41,7 @@ export default _.map(testedProperties, (property) => {
     testedForm.components.unshift(baseHelpingComponent);
   }
 
-  const propertyTests = tests[property];
+  const propertyTests = _.get(tests,property, {});
 
   return {
     title: title,

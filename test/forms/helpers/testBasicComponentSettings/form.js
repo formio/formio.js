@@ -618,7 +618,6 @@ export default {
     "type": "button",
     "label": "Submit",
     "key": "submit",
-    "disableOnInvalid": true,
     "input": true,
     "tableView": false
   }],

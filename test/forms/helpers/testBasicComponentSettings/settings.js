@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-
+import basicValues from './basicValues';
 
 export default {
   placeholder: _.reduce(
@@ -293,29 +293,69 @@ export default {
     },
     {}
   ),
-  dataGridLabel:_.reduce(
-    [ 
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+  'validate.required':_.reduce(
+    [
+      "textField", "extArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
-      "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+      //"container","dataGrid", // BUG: required validation does not work
+      "dataMap", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
       obj[componentKey] = true;
       return obj;
     },
     {}
+  ), 
+  'validate.custom': _.reduce(
+    [
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day",
+      "time", "currency", "survey", 
+      //"signature", 
+       "container", "dataMap", "dataGrid", 
+      "editGrid", "tree", "file", 
+      "submit"
+    ],
+    (obj, componentKey) => {
+      const value = _.get(basicValues, componentKey);
+      obj[componentKey] = `valid = !_.isEqual(instance.dataValue, ${_.isNumber(value) ? value : JSON.stringify(value)}) ? true : 'Custom validation message: component is invalid.'`  ;
+      return obj;
+    },
+    {}
   ),
-  autofocus:_.reduce(
-    [ 
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+  'validate_nested_components': _.reduce(
+    [
+      "columns", "fieldset", "panel", "table", "tabs", "well", "container", "dataMap", "dataGrid", "editGrid", "tree", "submit"
     ],
     (obj, componentKey) => {
       obj[componentKey] = true;
       return obj;
     },
     {}
-  ),
+  ), 
+
+  // dataGridLabel:_.reduce(
+  //   [ 
+  //     "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+  //     //"signature", 
+  //     "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+  //   ],
+  //   (obj, componentKey) => {
+  //     obj[componentKey] = true;
+  //     return obj;
+  //   },
+  //   {}
+  // ),
+  // autofocus:_.reduce(
+  //   [ 
+  //     "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+  //     "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+  //   ],
+  //   (obj, componentKey) => {
+  //     obj[componentKey] = true;
+  //     return obj;
+  //   },
+  //   {}
+  // ),
 };
 
 
