@@ -96,6 +96,7 @@ if (thisScript) {
   // If we include the libraries, then we will attempt to run this in shadow dom.
   if (config.includeLibs && (typeof wrapper.attachShadow === 'function')) {
     wrapper = wrapper.attachShadow({ mode: 'open' });
+    config.config.shadowRoot = wrapper;
   }
 
   const global = (name) => {
@@ -188,7 +189,6 @@ if (thisScript) {
       config.before(Formio, formElement, config);
       const form = (config.form || config.src);
       debug('Creating form', form, config.config);
-      config.config.shadowRoot = wrapper;
       Formio.createForm(formElement, form, config.config).then((instance) => {
         const submitDone = (submission) => {
           debug('Submision Complete', submission);
