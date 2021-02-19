@@ -1,4 +1,4 @@
-<div class="form-check checkbox">
+<div class="form-check checkbox {% if (ctx.checked && ctx.disabled) { %}checkbox-checked{% } %}" ref="formCheck">
   <label class="{{ctx.input.labelClass}} form-check-label">
     <{{ctx.input.type}}
       ref="input"
