@@ -1,38 +1,27 @@
 {
-  "_from": "bootswatch@4.6.0",
-  "_id": "bootswatch@4.6.0",
-  "_inBundle": false,
-  "_integrity": "sha512-Yr6YqFBC8jwTzoJoLViYlvO97IhPWGqZEm+6FXHfD/G6gbUok6sZkdXxdh4Zb6iCGEwr9p7zGCn38yKQD/bh2Q==",
-  "_location": "/bootswatch",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "bootswatch@4.6.0",
-    "name": "bootswatch",
-    "escapedName": "bootswatch",
-    "rawSpec": "4.6.0",
-    "saveSpec": null,
-    "fetchSpec": "4.6.0"
-  },
-  "_requiredBy": [
-    "#DEV:/",
-    "#USER"
-  ],
-  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.6.0.tgz",
-  "_shasum": "295237ed0e118decb3e3543f2ac14e9bb8ae48ea",
-  "_spec": "bootswatch@4.6.0",
-  "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
-  "author": {
-    "name": "Thomas Park"
+  "name": "bootswatch",
+  "description": "Bootswatch is a collection of themes for Bootstrap.",
+  "version": "4.6.0",
+  "author": "Thomas Park",
+  "homepage": "https://bootswatch.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomaspark/bootswatch.git"
   },
   "bugs": {
     "url": "https://github.com/thomaspark/bootswatch/issues"
   },
-  "bundleDependencies": false,
+  "scripts": {
+    "build": "grunt swatch",
+    "htmllint": "grunt htmllint",
+    "stylelint": "stylelint \"**/*.scss\" --rd",
+    "test": "npm run stylelint"
+  },
+  "files": [
+    "dist/**/*.{css,scss}"
+  ],
   "dependencies": {},
-  "deprecated": false,
-  "description": "Bootswatch is a collection of themes for Bootstrap.",
   "devDependencies": {
     "@lodder/grunt-postcss": "^3.0.0",
     "autoprefixer": "^10.1.0",
@@ -52,22 +41,9 @@
     "postcss": "^8.2.0",
     "stylelint": "^13.8.0",
     "stylelint-config-twbs-bootstrap": "^2.1.0"
-  },
-  "files": [
-    "dist/**/*.{css,scss}"
-  ],
-  "homepage": "https://bootswatch.com",
-  "license": "MIT",
-  "name": "bootswatch",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/thomaspark/bootswatch.git"
-  },
-  "scripts": {
-    "build": "grunt swatch",
-    "htmllint": "grunt htmllint",
-    "stylelint": "stylelint \"**/*.scss\" --rd",
-    "test": "npm run stylelint"
-  },
-  "version": "4.6.0"
+  }
+
+,"_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.6.0.tgz"
+,"_integrity": "sha512-Yr6YqFBC8jwTzoJoLViYlvO97IhPWGqZEm+6FXHfD/G6gbUok6sZkdXxdh4Zb6iCGEwr9p7zGCn38yKQD/bh2Q=="
+,"_from": "bootswatch@4.6.0"
 }

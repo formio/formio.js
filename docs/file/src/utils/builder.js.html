@@ -191,7 +191,7 @@ export default {
     eachComponent(container, (comp) =&gt; {
       formKeys[comp.key] = true;
 
-      if ([&apos;address&apos;, &apos;container&apos;, &apos;datagrid&apos;, &apos;editgrid&apos;, &apos;tree&apos;].includes(component.type) || component.tree || component.arrayTree) {
+      if ([&apos;address&apos;, &apos;container&apos;, &apos;datagrid&apos;, &apos;editgrid&apos;, &apos;dynamicWizard&apos;, &apos;tree&apos;].includes(comp.type) || comp.tree || comp.arrayTree) {
         return true;
       }
     }, true);
@@ -211,7 +211,7 @@ export default {
 
       formKeys[newKey] = true;
 
-      if ([&apos;address&apos;, &apos;container&apos;, &apos;datagrid&apos;, &apos;editgrid&apos;, &apos;tree&apos;].includes(component.type) || component.tree || component.arrayTree) {
+      if ([&apos;address&apos;, &apos;container&apos;, &apos;datagrid&apos;, &apos;editgrid&apos;, &apos;dynamicWizard&apos;, &apos;tree&apos;].includes(component.type) || component.tree || component.arrayTree) {
         return true;
       }
     }, true);

@@ -9678,6 +9678,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/templates/bootstrap/alert/index.js",
+    "file/src/templates/bootstrap/alert/index.js.html",
+    "src/templates/bootstrap/alert/index.js",
+    "file"
+  ],
+  [
     "src/templates/bootstrap/builder/index.js",
     "file/src/templates/bootstrap/builder/index.js.html",
     "src/templates/bootstrap/builder/index.js",
@@ -9795,6 +9801,12 @@ window.esdocSearchIndex = [
     "src/templates/bootstrap/editgrid/index.js",
     "file/src/templates/bootstrap/editgrid/index.js.html",
     "src/templates/bootstrap/editgrid/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap/errorslist/index.js",
+    "file/src/templates/bootstrap/errorsList/index.js.html",
+    "src/templates/bootstrap/errorsList/index.js",
     "file"
   ],
   [
