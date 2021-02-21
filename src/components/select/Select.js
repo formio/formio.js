@@ -871,7 +871,7 @@ export default class SelectComponent extends Field {
     this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
-      this.triggerUpdate();
+      this.triggerUpdate(null, true);
 
       if (this.visible) {
         this.setItems(this.selectOptions || []);
