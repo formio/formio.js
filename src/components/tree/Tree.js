@@ -84,8 +84,8 @@ export default class TreeComponent extends NestedComponent {
     const components = this.componentComponents.map(
       (component) => {
         const componentInstance = Components.create(component, this.componentOptions, data);
+        componentInstance.init();
         componentInstance.parentDisabled = this.disabled;
-
         return componentInstance;
       },
     );
@@ -200,14 +200,20 @@ export default class TreeComponent extends NestedComponent {
   }
 
   attachActions(node) {
-    this.loadRefs.call(node, node.refs.content, {
-      addChild: 'single',
+    if (!node.editing) {
+      this.loadRefs.call(node, node.refs.content, {
+        addChild: 'single',
+        editNode: 'single',
+        removeNode: 'single',
+        revertNode: 'single',
+        toggleNode: 'single',
+      });
+    }
+
+    //load refs correctly (if there is nested tree)
+    this.loadRefs.call(node, node.refs.content.children[0]?.children[1] || node.refs.content, {
       cancelNode: 'single',
-      editNode: 'single',
-      removeNode: 'single',
-      revertNode: 'single',
       saveNode: 'single',
-      toggleNode: 'single',
     });
 
     if (node.refs.addChild) {
