@@ -290,7 +290,7 @@ lib: sandbox
     if (version === 'default') {
       Formio = originalFormio;
       loading.style.display = 'none';
-      setTimeout(() => {
+      setTimeout(function() {
         document.dispatchEvent(new Event('formioChange'));
       }, 100);
       return;
