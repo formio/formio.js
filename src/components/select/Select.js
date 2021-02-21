@@ -393,15 +393,15 @@ export default class SelectComponent extends Field {
     this.loading = false;
 
     // If a value is provided, then select it.
-    if (this.dataValue) {
+    if (!this.isEmpty()) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
     }
     else {
       // If a default value is provided then select it.
-      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
-      if (defaultValue) {
+      const defaultValue = this.defaultValue;
+      if (!this.isEmpty(defaultValue)) {
         this.setValue(defaultValue);
       }
     }
@@ -410,6 +410,14 @@ export default class SelectComponent extends Field {
     this.itemsLoadedResolve();
   }
   /* eslint-enable max-statements */
+
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && (this.component.defaultValue === false || this.component.defaultValue === 0)) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
 
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
@@ -538,6 +546,10 @@ export default class SelectComponent extends Field {
 
   updateCustomItems() {
     this.setItems(this.getCustomItems() || []);
+  }
+
+  isEmpty(value = this.dataValue) {
+    return super.isEmpty(value) || value === undefined;
   }
 
   refresh(value, { instance }) {
@@ -1094,7 +1106,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if (!value || _.isEmpty(value)) {
+      if (this.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1287,8 +1299,8 @@ export default class SelectComponent extends Field {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
-    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasPreviousValue = !this.isEmpty(previousValue);
+    const hasValue = !this.isEmpty(value);
 
     // Undo typing when searching to set the value.
     if (this.component.multiple && Array.isArray(value)) {
@@ -1338,7 +1350,7 @@ export default class SelectComponent extends Field {
   }
 
   setChoicesValue(value, hasPreviousValue, flags = {}) {
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasValue = !this.isEmpty(value);
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
