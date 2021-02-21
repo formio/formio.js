@@ -893,7 +893,7 @@ export default class SelectComponent extends Field {
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
-    if (this.choices) {
+    if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
 
@@ -1577,7 +1577,9 @@ export default class SelectComponent extends Field {
   detach() {
     super.detach();
     if (this.choices) {
-      this.choices.destroy();
+      if (this.choices.containerOuter?.element?.parentNode) {
+        this.choices.destroy();
+      }
       this.choices = null;
     }
   }
