@@ -1313,7 +1313,7 @@ export default class WebformBuilder extends Component {
     this.editForm.submission = isJsonEdit ? {
       data: {
         componentJson: component,
-        showFullSchema: false
+        showFullSchema: this.options.showFullJsonSchema
       },
     } : {
         data: instance.component,
