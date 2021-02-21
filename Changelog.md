@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.11
+#### Fixed
+ - FIO-530: Get rid of placeholder set automatically in CalendarWidget
+ - FIO-1391: Fixes an issue where value of lazy loading Select is not shown on the Edit tab
+ - FIO-1336: File component not showing Take picture or Switch to file upload buttons
+ - FIO-1384: Fixes an issue where Sandbox does not load in IE11
+ - FIO-1379: Fixes an issue where text mask behaves incorrectly when embed form with includeLibs = false
+ - FIO-1392: Fixes an issue where DataGrid's and EditGrid's previews are clipped to the open modal button with fixes height
+ - FIO-1435: Disables Lazy Loading for HTML5 Select since it is impossible to make it behave correctly due to the browsers' restrictions
+ - FIO-1397: IndexDB file delete view
+ - FIO-1435: Fixes an issue where Select Boxes appear to be unchecked after changing Wizard's page
+ - FIO-1408: fixed an issue where tree component with certain components inside is not submitted or does not render
+ - UIP-277: Add global option to show full component JSON schema
+ - FIO-1062: Automated tests
+ - FJS-837: Fixes an issue where 0 and false are considered as empty values for Select
+ - FIO-524: Fix resource forms didn't transfer settings to pdf
+
 ### 4.13.0-rc.10
 #### Fixed
  - FIO-213: Fix the display of server validations for 6x server
