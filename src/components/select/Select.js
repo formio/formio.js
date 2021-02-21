@@ -95,11 +95,6 @@ export default class SelectComponent extends Field {
 
     // If this component has been activated.
     this.activated = false;
-
-    // Determine when the items have been loaded.
-    this.itemsLoaded = new NativePromise((resolve) => {
-      this.itemsLoadedResolve = resolve;
-    });
   }
 
   get dataReady() {
@@ -628,6 +623,7 @@ export default class SelectComponent extends Field {
       case 'resource': {
         // If there is no resource, or we are lazyLoading, wait until active.
         if (!this.component.data.resource || (!forceUpdate && !this.active)) {
+          this.itemsLoadedResolve();
           return;
         }
 
@@ -650,6 +646,7 @@ export default class SelectComponent extends Field {
       case 'url': {
         if (!forceUpdate && !this.active && !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
+          this.itemsLoadedResolve();
           return;
         }
         let { url } = this.component.data;
@@ -1004,7 +1001,7 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.triggerUpdate();
+    this.updateItems();
     return superAttach;
   }
 
@@ -1380,6 +1377,14 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  get itemsLoaded() {
+    return this._itemsLoaded || NativePromise.resolve();
+  }
+
+  set itemsLoaded(promise) {
+    this._itemsLoaded = promise;
   }
 
   validateValueAvailability(setting, value) {
