@@ -1064,29 +1064,57 @@ export default {
       }, 500);
     },
   },
+  'set_get_value': {
+    'Should set and get components` value (including string value)'(form, done, test) {
+      form.components.forEach(comp => {
+        comp.setValue(values.values[comp.component.key]);
+      });
+
+      setTimeout(() => {
+        checkSetValue(form.components, 'should set value', true);
+        done();
+      }, 300);
+    },
+    'Should set and get submission'(form, done, test) {
+      form.setSubmission({ data:values.submission }).then(() => {
+        checkSetValue(form.components, 'should set submisson', true);
+        assert.deepEqual(form.submission.data, values.submission, 'Should contain correct submission data');
+        done();
+      })
+    },
+  },
 };
 
 
-function  checkSetValue (testComponents, message) {
+function  checkSetValue (testComponents, message, checkStringValue) {
   testComponents.forEach(comp => {
     const compKey = comp.component.key;
     const compType = comp.component.type;
     const value =  _.get(values.values, compKey);
 
+    const checkValues = (comp, expectedValue, expectedStringValue) => {
+      const key = comp.component.key;
+      const type = comp.component.type;
+      //not to compare datetime as it depends on timezone
+      if (type !== 'datetime') {
+        assert.deepEqual(comp.getValue(), expectedValue, `${key} (component ${type}): ${message}`);
+      }
+
+      assert.deepEqual(comp.dataValue, expectedValue, `${key} (component ${type}): ${message}`);
+
+      if (checkStringValue) {
+        assert.deepEqual(comp.getValueAsString(comp.dataValue), expectedStringValue, `${key} (component ${type}): should get value as string`);
+      }
+    }
+
     if (layoutComponents.includes(compType)) {
       _.each(comp.components, (child) => {
         const childKey = child.component.key;
-        const childExpectedValue = value[childKey];
-
-        assert.deepEqual(
-          child.dataValue, 
-          childExpectedValue, 
-          `${compKey} (component ${compType}): ${message}`
-        );
-      })
+        checkValues(child, value[childKey], values.stringValues[childKey]);
+      });
     }
     else {
-      assert.deepEqual(comp.dataValue, value, `${compKey} (component ${compType}): ${message}`);
+      checkValues(comp, value, values.stringValues[compKey]);
     }
   });
 };

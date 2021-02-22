@@ -354,7 +354,7 @@ export default {
     },
     {}
   ), 
-  'logic': _.reduce(    
+  logic: _.reduce(    
     [
       "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
@@ -483,6 +483,18 @@ export default {
     },
     {}
   ), 
+  'set_get_value': _.reduce(    
+    [
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      //"signature", 
+      "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+    ],
+    (obj, componentKey) => {
+      obj[componentKey] = true; 
+      return obj;
+    },
+    {}
+  ),
 };
 
 
