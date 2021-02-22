@@ -13,6 +13,7 @@ import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
 import wizardWithHighPages from '../test/forms/wizardWithHighPages';
 import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
+import wizardWithNestedWizard from '../test/forms/wizardWithNestedWizard';
 import formWithSignature from '../test/forms/formWithSignature';
 import wizardWithTooltip from '../test/forms/wizardWithTooltip';
 import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
@@ -441,6 +442,21 @@ describe('Wizard tests', () => {
         wizardForm.setPage(1);
         setTimeout(() => {
           assert.equal(wizardForm.refs[wizardForm.wizardKey].scrollTop, 0, 'The top edge of the page should be aligned to the top edge of the window');
+          done();
+        }, 350);
+      })
+      .catch(done);
+  });
+
+  it('Should show the actual page after re-rendering due to nested wizards.', (done) => {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizardWithNestedWizard)
+      .then(() => {
+        wizardForm.setForm(wizardWithNestedWizard);
+
+        setTimeout(() => {
+          assert.equal(wizardForm.element.querySelector('.wizard-page'), wizardForm.allPages[0].components[0].element.parentNode);
           done();
         }, 350);
       })
