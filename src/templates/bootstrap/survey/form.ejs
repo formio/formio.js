@@ -3,7 +3,7 @@
     <tr>
       <th></th>
       {% ctx.component.values.forEach(function(value) { %}
-      <th style="text-align: center;">{{ctx.t(value.label)}}</th>
+      <th style="text-align: center;">{{ctx.t(value.label, { _userInput: true })}}</th>
       {% }) %}
     </tr>
   </thead>

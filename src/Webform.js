@@ -43,10 +43,7 @@ function getOptions(options) {
     saveDraftThrottle: 5000
   });
   if (!options.events) {
-    options.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    options.events = new EventEmitter();
   }
   return options;
 }
@@ -319,6 +316,10 @@ export default class Webform extends NestedDataComponent {
 
   get componentComponents() {
     return this.form.components;
+  }
+
+  get shadowRoot() {
+    return this.options.shadowRoot;
   }
 
   /**
@@ -647,6 +648,7 @@ export default class Webform extends NestedDataComponent {
    * });
    *
    * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
+   * @param flags
    * @returns {*}
    */
   setForm(form, flags) {
@@ -1054,7 +1056,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     this.setPristine(true);
-    this.redraw();
+    this.rebuild();
   }
 
   /**
@@ -1536,7 +1538,7 @@ export default class Webform extends NestedDataComponent {
 
   setServerErrors(error) {
     if (error.details) {
-      this.serverErrors = error.details.filter((err) => err.level === 'error').map((err) => {
+      this.serverErrors = error.details.filter((err) => err.level ? err.level === 'error' : err).map((err) => {
         err.fromServer = true;
         return err;
       });

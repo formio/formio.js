@@ -236,7 +236,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
-    const colWidth = Math.floor(12 / (columns.length + 1)).toString();
+    const layoutFixed = columns.some(col => col.type === 'select') || this.component.layoutFixed;
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
@@ -259,7 +259,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
-      colWidth
+      layoutFixed
     }));
   }
 
@@ -303,7 +303,15 @@ export default class DataGridComponent extends NestedArrayComponent {
 
       if (dragula) {
         this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
-          moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
+          moves: (_draggedElement, _oldParent, clickedElement) => {
+            const clickedElementKey = clickedElement.getAttribute('data-key');
+            const oldParentKey = _oldParent.getAttribute('data-key');
+
+            //Check if the clicked button belongs to that container, if false, it belongs to the nested container
+            if (oldParentKey === clickedElementKey) {
+              return clickedElement.classList.contains('formio-drag-button');
+            }
+          }
         }).on('drop', this.onReorder.bind(this));
       }
     }
@@ -331,12 +339,16 @@ export default class DataGridComponent extends NestedArrayComponent {
         this.attachComponents(
           this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
           [this.rows[rowIndex][col.key]],
-          this.component.components
+          this.getComponentsContainer(),
         );
         columnIndex++;
       });
     });
     return super.attach(element);
+  }
+
+  getComponentsContainer() {
+    return this.component.components;
   }
 
   onReorder(element, _target, _source, sibling) {
@@ -359,7 +371,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });
-    this.redraw();
+    this.rebuild();
   }
 
   addRow() {
@@ -388,10 +400,29 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.redraw();
   }
 
+  updateComponentsRowIndex(components, rowIndex) {
+    components.forEach((component, colIndex) => {
+      if (component.options?.name) {
+        const newName = `[${this.key}][${rowIndex}]`;
+        component.options.name = component.options.name.replace(`[${this.key}][${component.rowIndex}]`, newName);
+      }
+      component.rowIndex = rowIndex;
+      component.row = `${rowIndex}-${colIndex}`;
+      component.path = this.calculateComponentPath(component);
+    });
+  }
+
+  updateRowsComponents(rowIndex) {
+    this.rows.slice(rowIndex).forEach((row, index) => {
+      this.updateComponentsRowIndex(Object.values(row), rowIndex + index);
+    });
+  }
+
   removeRow(index) {
     this.splice(index);
     const [row] = this.rows.splice(index, 1);
     this.removeRowComponents(row);
+    this.updateRowsComponents(index);
     this.setValue(this.dataValue, { isReordered: true });
     this.redraw();
   }
@@ -419,6 +450,9 @@ export default class DataGridComponent extends NestedArrayComponent {
         this.setRowComponentsData(index, row);
       }
       else {
+        if (this.rows[index]) {
+          this.removeRowComponents(this.rows[index]);
+        }
         this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
@@ -490,7 +524,11 @@ export default class DataGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    return this.checkRows('checkValidity', data, dirty, true, silentCheck);
+    const isValid = this.checkRows('checkValidity', data, dirty, true, silentCheck);
+
+    this.checkModal(isValid, dirty);
+
+    return isValid;
   }
 
   checkColumns(data, flags = {}) {

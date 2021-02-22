@@ -3,6 +3,7 @@ import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
+import fileProcessor from '../../providers/processor/fileProcessor';
 
 let Camera;
 let webViewCamera = navigator.camera || Camera;
@@ -314,10 +315,12 @@ export default class FileComponent extends Field {
   }
 
   deleteFile(fileInfo) {
-    if (fileInfo && (this.component.storage === 'url')) {
-      const fileService = this.fileService;
+    const { options = {} } = this.component;
+
+    if (fileInfo && (['url', 'indexeddb'].includes(this.component.storage))) {
+      const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
-        fileService.deleteFile(fileInfo);
+        fileService.deleteFile(fileInfo, options);
       }
       else {
         const formio = this.options.formio || (this.root && this.root.formio);
@@ -357,6 +360,7 @@ export default class FileComponent extends Field {
       fileStatusRemove: 'multiple',
       fileImage: 'multiple',
       fileType: 'multiple',
+      fileProcessingLoader: 'single',
     });
     // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
     this.refs.input = [];
@@ -640,14 +644,15 @@ export default class FileComponent extends Field {
     }
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
-      Array.prototype.forEach.call(files, (file) => {
+      /* eslint-disable max-statements */
+      Array.prototype.forEach.call(files, async(file) => {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
           name: fileName,
           size: file.size,
           status: 'info',
-          message: this.t('Starting upload'),
+          message: this.t('Processing file. Please wait...'),
         };
 
         // Check if file with the same name is being uploaded
@@ -729,9 +734,36 @@ export default class FileComponent extends Field {
 
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
+          let processedFile = null;
+
+          if (this.root.options.fileProcessor) {
+            try {
+              if (this.refs.fileProcessingLoader) {
+                this.refs.fileProcessingLoader.style.display = 'block';
+              }
+              const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
+              processedFile = await fileProcessorHandler(file, this.component.properties);
+            }
+            catch (err) {
+              fileUpload.status = 'error';
+              fileUpload.message = this.t('File processing has been failed.');
+              this.fileDropHidden = false;
+              this.redraw();
+              return;
+            }
+            finally {
+              if (this.refs.fileProcessingLoader) {
+                this.refs.fileProcessingLoader.style.display = 'none';
+              }
+            }
+          }
+
+          fileUpload.message = this.t('Starting upload.');
+          this.redraw();
+
           const filePromise = fileService.uploadFile(
             storage,
-            file,
+            processedFile || file,
             fileName,
             dir,
             // Progress callback

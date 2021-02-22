@@ -34,6 +34,14 @@ export default class RadioComponent extends Field {
     return RadioComponent.schema();
   }
 
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultValue === false) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
+
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -49,6 +57,10 @@ export default class RadioComponent extends Field {
 
   get isRadio() {
     return this.component.inputType === 'radio';
+  }
+
+  get optionSelectedClass() {
+    return 'radio-selected';
   }
 
   init() {
@@ -93,6 +105,7 @@ export default class RadioComponent extends Field {
         });
       }
     });
+    this.setSelectedClasses();
     return super.attach(element);
   }
 
@@ -151,23 +164,30 @@ export default class RadioComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
-    const changed = super.updateValue(value, flags);
-    if (changed && this.refs.wrapper) {
+  setSelectedClasses() {
+    if (this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
-      const optionSelectedClass = 'radio-selected';
-
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
         if (input && input.value.toString() === value.toString()) {
           //add class to container when selected
-          this.addClass(wrapper, optionSelectedClass);
+          this.addClass(wrapper, this.optionSelectedClass);
+          //change "checked" attribute
+          input.setAttribute('checked', 'true');
         }
         else {
-          this.removeClass(wrapper, optionSelectedClass);
+          this.removeClass(wrapper, this.optionSelectedClass);
+          input.removeAttribute('checked');
         }
       });
+    }
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+    if (changed) {
+      this.setSelectedClasses();
     }
 
     if (!flags || !flags.modified || !this.isRadio) {

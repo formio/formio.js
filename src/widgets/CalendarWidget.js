@@ -88,7 +88,6 @@ export default class CalendarWidget extends InputWidget {
 
   attach(input) {
     const superAttach = super.attach(input);
-    this.setPlaceholder(input);
 
     const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);
     this.defaultFormat = {
@@ -110,8 +109,10 @@ export default class CalendarWidget extends InputWidget {
     this.settings.defaultValue = '';
     this.settings.manualInputValue = '';
     this.settings.isManuallyOverriddenValue = false;
+    this.settings.currentValue = '';
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
+    this.settings.position = 'auto center';
     this.settings.onChange = () => {
       if (this.settings.allowInput) {
         if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
@@ -365,12 +366,6 @@ export default class CalendarWidget extends InputWidget {
     return formatDate(value, format, this.timezone, convertFormatToMoment(this.calendar ? this.valueFormat : this.settings.dateFormat));
   }
 
-  setPlaceholder(input) {
-    if (input && !input.getAttribute('placeholder')) {
-      input.setAttribute('placeholder', this.settings.format);
-    }
-  }
-
   setErrorClasses(hasErrors) {
     if (!this.input) {
       return;
@@ -401,9 +396,10 @@ export default class CalendarWidget extends InputWidget {
     }
 
     this.calendar.altInput.addEventListener('input', (event) => {
-      if (this.settings.allowInput) {
+      if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
         this.settings.manualInputValue = event.target.value;
         this.settings.isManuallyOverriddenValue = true;
+        this.settings.currentValue = event.target.value;
       }
 
       if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
@@ -423,7 +419,10 @@ export default class CalendarWidget extends InputWidget {
 
     // Make sure we commit the value after a blur event occurs.
     this.addEventListener(this.calendar._input, 'blur', (event) => {
-      if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+      const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
+      const target = event.relatedTarget ? event.relatedTarget : activeElement;
+
+      if (!target?.className.split(/\s+/).includes('flatpickr-day')) {
         const inputValue = this.calendar.input.value;
         const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 

@@ -1,10 +1,8 @@
 import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import NativePromise from 'native-promise-only';
-
 import i18Defaults from '../lib/i18n';
 import FormBuilder from '../lib/FormBuilder';
 import AllComponents from '../lib/components';
@@ -168,10 +166,7 @@ const Harness = {
   testCreate(Component, componentSettings, options = {}) {
     const compSettings = _.cloneDeep(componentSettings);
     const component = new Component(compSettings, _.merge({
-      events: new EventEmitter({
-        wildcard: false,
-        maxListeners: 0
-      })
+      events: new EventEmitter(),
     }, options));
     component.pristine = false;
     return new Promise((resolve, reject) => {
@@ -277,6 +272,20 @@ const Harness = {
     assert(element, `${query} not found`);
     assert(element.className.split(' ').includes(className));
   },
+  testModalWrapperErrorClasses(component, shouldBeInvalid = true, query = '[ref="openModalWrapper"]') {
+    const modalWrapper = component.element.querySelector(query);
+    assert(modalWrapper, `${query} not found`);
+    assert.equal(
+      modalWrapper.className.split(' ').includes('formio-error-wrapper'),
+      shouldBeInvalid,
+      `Should ${shouldBeInvalid ? '' : 'not'} have error class`
+    );
+    assert.equal(
+      modalWrapper.className.split(' ').includes('has-message'),
+      shouldBeInvalid,
+      `Should ${shouldBeInvalid ? '' : 'not'} have class indicating that the component has a message`
+    );
+  },
   testElementAttribute(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {
       assert.equal(expected, element.getAttribute(attribute));
@@ -300,6 +309,17 @@ const Harness = {
     const element = component.element.querySelector(`[name="${name}"]`);
     assert(element, `${name} input not found`);
     assert.equal(value, element[valueProperty]);
+  },
+  setTagsValue(values, component) {
+    const blurEvent = new Event('blur');
+    const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+    const element = component.choices.input.element;
+
+    values.forEach(value => {
+      element.value = value;
+      element.dispatchEvent(inputEvent);
+      element.dispatchEvent(blurEvent);
+    });
   },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);

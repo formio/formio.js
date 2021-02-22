@@ -590,6 +590,33 @@ class Formio {
     return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
+  deleteFile(file, options) {
+    const requestArgs = {
+      method: 'delete',
+      file: file
+    };
+
+    const request = Formio.pluginWait('preRequest', requestArgs)
+      .then(() => {
+        return Formio.pluginGet('fileRequest', requestArgs)
+          .then((result) => {
+            if (file.storage && isNil(result)) {
+              const Provider = Providers.getProvider('storage', file.storage);
+              if (Provider) {
+                const provider = new Provider(this);
+                return provider.deleteFile(file, options);
+              }
+              else {
+                throw ('Storage provider not found');
+              }
+            }
+            return result || { url: '' };
+          });
+      });
+
+    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
+  }
+
   /**
    * Returns the user permissions to a form and submission.
    *
@@ -1520,10 +1547,7 @@ Formio.cache = {};
 Formio.Providers = Providers;
 Formio.version = '---VERSION---';
 Formio.pathType = '';
-Formio.events = new EventEmitter({
-  wildcard: false,
-  maxListeners: 0
-});
+Formio.events = new EventEmitter();
 
 if (typeof global !== 'undefined') {
   Formio.addToGlobal(global);

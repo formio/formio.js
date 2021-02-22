@@ -5,9 +5,9 @@
 <div class="input-group-prepend" ref="prefix">
   <span class="input-group-text">
     {% if(ctx.prefix instanceof HTMLElement){ %}
-      {{ ctx.t(ctx.prefix.outerHTML) }}
+      {{ ctx.t(ctx.prefix.outerHTML, { _userInput: true }) }}
     {% } else{ %}
-      {{ ctx.t(ctx.prefix) }}
+      {{ ctx.t(ctx.prefix, { _userInput: true }) }}
     {% } %}
   </span>
 </div>
@@ -34,9 +34,9 @@
 <div class="input-group-append" ref="suffix">
   <span class="input-group-text">
     {% if(ctx.suffix instanceof HTMLElement){ %}
-      {{ ctx.t(ctx.suffix.outerHTML) }}
+      {{ ctx.t(ctx.suffix.outerHTML, { _userInput: true }) }}
     {% } else{ %}
-      {{ ctx.t(ctx.suffix) }}
+      {{ ctx.t(ctx.suffix, { _userInput: true }) }}
     {% } %}
   </span>
 </div>

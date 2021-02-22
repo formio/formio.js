@@ -95,11 +95,6 @@ export default class SelectComponent extends Field {
 
     // If this component has been activated.
     this.activated = false;
-
-    // Determine when the items have been loaded.
-    this.itemsLoaded = new NativePromise((resolve) => {
-      this.itemsLoadedResolve = resolve;
-    });
   }
 
   get dataReady() {
@@ -198,10 +193,10 @@ export default class SelectComponent extends Field {
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.component.template) {
       const itemLabel = data.label || data;
-      return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;
+      return (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
     }
     if (typeof data === 'string') {
-      return this.t(data);
+      return this.t(data, { _userInput: true });
     }
 
     if (data.data) {
@@ -214,8 +209,9 @@ export default class SelectComponent extends Field {
     const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
-      if (!label || !this.t(label)) return;
-      return template.replace(label, this.t(label));
+      const hasTranslator = this.i18next?.translator;
+      if (!label || (hasTranslator && !this.t(label, { _userInput: true }))) return;
+      return hasTranslator ? template.replace(label, this.t(label, { _userInput: true })) : label;
     }
     else {
       return JSON.stringify(data);
@@ -312,10 +308,6 @@ export default class SelectComponent extends Field {
     }
 
     if (!this.choices && this.refs.selectContainer) {
-      if (this.loading) {
-        // this.removeChildFrom(this.refs.input[0], this.selectContainer);
-      }
-
       this.empty(this.refs.selectContainer);
     }
 
@@ -401,15 +393,15 @@ export default class SelectComponent extends Field {
     this.loading = false;
 
     // If a value is provided, then select it.
-    if (this.dataValue) {
+    if (!this.isEmpty()) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
     }
     else {
       // If a default value is provided then select it.
-      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
-      if (defaultValue) {
+      const defaultValue = this.defaultValue;
+      if (!this.isEmpty(defaultValue)) {
         this.setValue(defaultValue);
       }
     }
@@ -418,6 +410,14 @@ export default class SelectComponent extends Field {
     this.itemsLoadedResolve();
   }
   /* eslint-enable max-statements */
+
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && (this.component.defaultValue === false || this.component.defaultValue === 0)) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
 
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
@@ -548,6 +548,10 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
+  isEmpty(value = this.dataValue) {
+    return super.isEmpty(value) || value === undefined;
+  }
+
   refresh(value, { instance }) {
     if (this.component.clearOnRefresh && (instance && !instance.pristine)) {
       this.setValue(this.emptyValue);
@@ -631,6 +635,7 @@ export default class SelectComponent extends Field {
       case 'resource': {
         // If there is no resource, or we are lazyLoading, wait until active.
         if (!this.component.data.resource || (!forceUpdate && !this.active)) {
+          this.itemsLoadedResolve();
           return;
         }
 
@@ -653,6 +658,7 @@ export default class SelectComponent extends Field {
       case 'url': {
         if (!forceUpdate && !this.active && !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
+          this.itemsLoadedResolve();
           return;
         }
         let { url } = this.component.data;
@@ -806,7 +812,7 @@ export default class SelectComponent extends Field {
 
   choicesOptions() {
     const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
-    const placeholderValue = this.t(this.component.placeholder);
+    const placeholderValue = this.t(this.component.placeholder, { _userInput: true });
     let customOptions = this.component.customOptions || {};
     if (typeof customOptions == 'string') {
       try {
@@ -878,7 +884,11 @@ export default class SelectComponent extends Field {
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate(null, true);
-      this.setItems(this.selectOptions || []);
+
+      if (this.visible) {
+        this.setItems(this.selectOptions || []);
+      }
+
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {
@@ -895,7 +905,7 @@ export default class SelectComponent extends Field {
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
-    if (this.choices) {
+    if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
 
@@ -1003,7 +1013,7 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.triggerUpdate();
+    this.updateItems();
     return superAttach;
   }
 
@@ -1096,7 +1106,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if (!value || _.isEmpty(value)) {
+      if (this.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1135,11 +1145,9 @@ export default class SelectComponent extends Field {
       if (this.choices) {
         this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
-      else {
-        notFoundValuesToAdd.map(notFoundValue => {
-          this.addOption(notFoundValue.value, notFoundValue.label);
-        });
-      }
+      notFoundValuesToAdd.map(notFoundValue => {
+        this.addOption(notFoundValue.value, notFoundValue.label);
+      });
     }
     return added;
   }
@@ -1168,7 +1176,7 @@ export default class SelectComponent extends Field {
       if (
         !this.component.multiple &&
         this.component.placeholder &&
-        (value === this.t(this.component.placeholder))
+        (value === this.t(this.component.placeholder, { _userInput: true }))
       ) {
         value = this.emptyValue;
       }
@@ -1291,8 +1299,8 @@ export default class SelectComponent extends Field {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
-    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasPreviousValue = !this.isEmpty(previousValue);
+    const hasValue = !this.isEmpty(value);
 
     // Undo typing when searching to set the value.
     if (this.component.multiple && Array.isArray(value)) {
@@ -1324,8 +1332,11 @@ export default class SelectComponent extends Field {
     }
 
     // Add the value options.
-    this.addValueOptions();
-    this.setChoicesValue(value, hasPreviousValue, flags);
+    this.itemsLoaded.then(() => {
+      this.addValueOptions();
+      this.setChoicesValue(value, hasPreviousValue, flags);
+    });
+
     return changed;
   }
 
@@ -1339,7 +1350,7 @@ export default class SelectComponent extends Field {
   }
 
   setChoicesValue(value, hasPreviousValue, flags = {}) {
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasValue = !this.isEmpty(value);
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
@@ -1378,6 +1389,14 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  get itemsLoaded() {
+    return this._itemsLoaded || NativePromise.resolve();
+  }
+
+  set itemsLoaded(promise) {
+    this._itemsLoaded = promise;
   }
 
   validateValueAvailability(setting, value) {
@@ -1570,7 +1589,9 @@ export default class SelectComponent extends Field {
   detach() {
     super.detach();
     if (this.choices) {
-      this.choices.destroy();
+      if (this.choices.containerOuter?.element?.parentNode) {
+        this.choices.destroy();
+      }
       this.choices = null;
     }
   }
@@ -1582,13 +1603,13 @@ export default class SelectComponent extends Field {
     }
   }
 
-  setErrorClasses(elements, dirty, hasError) {
-    super.setErrorClasses(elements, dirty, hasError);
+  setErrorClasses(elements, dirty, hasError, hasMessages, element = this.element) {
+    super.setErrorClasses(elements, dirty, hasError, hasMessages, element);
     if (this.choices) {
-      super.setErrorClasses([this.choices.containerInner.element], dirty, hasError);
+      super.setErrorClasses([this.choices.containerInner.element], dirty, hasError, hasMessages, element);
     }
     else {
-      super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
+      super.setErrorClasses([this.refs.selectContainer], dirty, hasError, hasMessages, element);
     }
   }
 }

@@ -57,9 +57,19 @@ export default class TreeComponent extends NestedComponent {
       parent: this,
       root: this.root || this,
     };
+    this.disabled = this.shouldDisabled;
     this.setRoot();
     this.viewComponentsInstantiated = false;
     this._viewComponents = [];
+  }
+
+  get disabled() {
+    return super.disabled;
+  }
+
+  set disabled(disabled) {
+    super.disabled = disabled;
+    this.viewComponents.forEach((component) => component.parentDisabled = disabled);
   }
 
   destroy() {
@@ -72,7 +82,12 @@ export default class TreeComponent extends NestedComponent {
 
   createComponents(data, node) {
     const components = this.componentComponents.map(
-      (component) => Components.create(component, this.componentOptions, data),
+      (component) => {
+        const componentInstance = Components.create(component, this.componentOptions, data);
+        componentInstance.init();
+        componentInstance.parentDisabled = this.disabled;
+        return componentInstance;
+      },
     );
 
     if (node) {
@@ -185,14 +200,20 @@ export default class TreeComponent extends NestedComponent {
   }
 
   attachActions(node) {
-    this.loadRefs.call(node, node.refs.content, {
-      addChild: 'single',
+    if (!node.editing) {
+      this.loadRefs.call(node, node.refs.content, {
+        addChild: 'single',
+        editNode: 'single',
+        removeNode: 'single',
+        revertNode: 'single',
+        toggleNode: 'single',
+      });
+    }
+
+    //load refs correctly (if there is nested tree)
+    this.loadRefs.call(node, node.refs.content.children[0]?.children[1] || node.refs.content, {
       cancelNode: 'single',
-      editNode: 'single',
-      removeNode: 'single',
-      revertNode: 'single',
       saveNode: 'single',
-      toggleNode: 'single',
     });
 
     if (node.refs.addChild) {

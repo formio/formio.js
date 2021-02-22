@@ -2,22 +2,22 @@
     {{ ctx.component.striped ? 'table-striped' : ''}}
     {{ ctx.component.hover ? 'table-hover' : ''}}
     {{ ctx.component.condensed ? 'table-sm' : ''}}
-    " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
+    " {% if (ctx.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
   {% if (ctx.hasHeader) { %}
   <thead>
     <tr>
       {% if (ctx.component.reorder) { %}<th></th>{% } %}
       {% ctx.columns.forEach(function(col) { %}
         <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-          {{ col.hideLabel ? '' : ctx.t(col.label || col.title) }}
-          {% if (col.tooltip) { %} <i ref="tooltip" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
+          {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
+          {% if (col.tooltip) { %} <i ref="tooltip" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{col.tooltip}}"></i>{% } %}
         </th>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
       <th>
         {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
         <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
-          <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another')}}
+          <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
         </button>
         {% } %}
       </th>
@@ -25,7 +25,7 @@
     </tr>
   </thead>
   {% } %}
-  <tbody ref="{{ctx.datagridKey}}-tbody">
+  <tbody ref="{{ctx.datagridKey}}-tbody" data-key="{{ctx.datagridKey}}">
     {% ctx.rows.forEach(function(row, index) { %}
     {% if (ctx.hasGroups && ctx.groups[index]) { %}
     <tr ref="{{ctx.datagridKey}}-group-header" class="datagrid-group-header{{ctx.hasToggle ? ' clickable' : ''}}">
@@ -38,11 +38,11 @@
     <tr ref="{{ctx.datagridKey}}-row">
       {% if (ctx.component.reorder) { %}
         <td>
-          <button type="button" class="formio-drag-button btn btn-default fa fa-bars"></button>
+          <button type="button" class="formio-drag-button btn btn-default fa fa-bars" data-key="{{ctx.datagridKey}}"></button>
         </td>
       {% } %}
       {% ctx.columns.forEach(function(col) { %}
-        <td ref="{{ctx.datagridKey}}" class="col-md-{{ctx.colWidth}}">
+        <td ref="{{ctx.datagridKey}}">
           {{row[col.key]}}
         </td>
       {% }) %}
@@ -68,7 +68,7 @@
     <tr>
       <td colspan="{{ctx.numColumns + 1}}">
         <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
-          <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another')}}
+          <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
         </button>
       </td>
     </tr>

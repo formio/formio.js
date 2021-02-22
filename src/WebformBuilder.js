@@ -233,6 +233,12 @@ export default class WebformBuilder extends Component {
     const formio = new Formio(Formio.projectUrl);
     const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
+    formio.loadProject().then((project) => {
+      if (project && _.get(project, 'settings.addConfigToForms', false)) {
+        this.options.formConfig = project.config || {};
+      }
+    });
+
     if (!formio.noProject && !isResourcesDisabled) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
@@ -492,7 +498,7 @@ export default class WebformBuilder extends Component {
     }
 
     // Some components are their own namespace.
-    if (['address', 'container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
+    if (['address', 'container', 'datagrid', 'editgrid', 'dynamicWizard', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
       return component.key;
     }
 
@@ -962,7 +968,7 @@ export default class WebformBuilder extends Component {
     if (this.webform) {
       const shouldRebuild = !this.webform.form.components ||
         (form.components.length !== this.webform.form.components.length);
-      return this.webform.setForm(form).then(() => {
+      return this.webform.setForm(form, { keepAsReference: true }).then(() => {
         if (this.refs.form) {
           this.builderHeight = this.refs.form.offsetHeight;
         }
@@ -1046,7 +1052,8 @@ export default class WebformBuilder extends Component {
           'logic',
           'autofocus',
           'customConditional',
-        ])]
+        ])],
+        config: this.options.formConfig || {}
       };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
@@ -1140,12 +1147,20 @@ export default class WebformBuilder extends Component {
 
   highlightInvalidComponents() {
     const repeatablePaths = this.findRepeatablePaths();
+    let hasInvalidComponents = false;
 
-    eachComponent(this.webform.getComponents(), (comp, path) => {
+    this.webform.everyComponent((comp) => {
+      const path = comp.path;
       if (repeatablePaths.includes(path)) {
         comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+        hasInvalidComponents = true;
+      }
+      else if (comp.error?.message?.startsWith('API Key is not unique')) {
+        comp.setCustomValidity('');
       }
     });
+
+    this.emit('builderFormValidityChange', hasInvalidComponents);
   }
 
   /**
@@ -1177,19 +1192,22 @@ export default class WebformBuilder extends Component {
       const originalComp = comp.component;
       const originalComponentSchema = comp.schema;
 
-      if (parentContainer) {
+      const isParentSaveChildMethod = this.isParentSaveChildMethod(parent.formioComponent);
+
+      if (parentContainer && !isParentSaveChildMethod) {
         parentContainer[index] = submissionData;
         if (comp) {
           comp.component = submissionData;
         }
       }
-      else if (parentComponent && parentComponent.saveChildComponent) {
-        parentComponent.saveChildComponent(submissionData);
+      else if (isParentSaveChildMethod) {
+        parent.formioComponent.saveChildComponent(submissionData);
       }
+
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
-        this.emit('saveComponent',
+        this.emitSaveComponentEvent(
           schema,
           originalComp,
           parentComponent.schema,
@@ -1205,6 +1223,18 @@ export default class WebformBuilder extends Component {
 
     this.highlightInvalidComponents();
     return NativePromise.resolve();
+  }
+
+  emitSaveComponentEvent(schema, originalComp, parentComponentSchema, path, index, isNew, originalComponentSchema) {
+    this.emit('saveComponent',
+      schema,
+      originalComp,
+      parentComponentSchema,
+      path,
+      index,
+      isNew,
+      originalComponentSchema
+    );
   }
 
   editComponent(component, parent, isNew, isJsonEdit, original, flags = {}) {
@@ -1255,13 +1285,19 @@ export default class WebformBuilder extends Component {
           key: 'componentJson',
           label: 'Component JSON',
           tooltip: 'Edit the JSON for this component.'
+        },
+        {
+          type: 'checkbox',
+          key: 'showFullSchema',
+          label: 'Full Schema'
         }
       ]
     } : ComponentClass.editForm(_.cloneDeep(overrides));
     const instance = new ComponentClass(componentCopy);
     this.editForm.submission = isJsonEdit ? {
       data: {
-        componentJson: instance.component
+        componentJson: component,
+        showFullSchema: this.options.showFullJsonSchema
       },
     } : {
         data: instance.component,
@@ -1296,6 +1332,16 @@ export default class WebformBuilder extends Component {
 
     this.editForm.on('change', (event) => {
       if (event.changed) {
+        if (event.changed.component && event.changed.component.key === 'showFullSchema') {
+          const { value } = event.changed;
+          this.editForm.submission = {
+            data: {
+              componentJson: value ? instance.component : component,
+              showFullSchema: value
+            },
+          };
+          return;
+        }
         // See if this is a manually modified key. Treat custom component keys as manually modified
         if ((event.changed.component && (event.changed.component.key === 'key')) || isJsonEdit) {
           componentCopy.keyModified = true;
@@ -1415,20 +1461,28 @@ export default class WebformBuilder extends Component {
           BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
           let path = '';
           let index = 0;
-          if (parent.formioContainer) {
+
+          const isParentSaveChildMethod = this.isParentSaveChildMethod(parent.formioComponent);
+
+          if (parent.formioContainer && !isParentSaveChildMethod) {
             index = parent.formioContainer.indexOf(component.component);
             path = this.getComponentsPath(schema, parent.formioComponent.component);
             parent.formioContainer.splice(index + 1, 0, schema);
           }
-          else if (parent.formioComponent && parent.formioComponent.saveChildComponent) {
+          else if (isParentSaveChildMethod) {
             parent.formioComponent.saveChildComponent(schema, false);
           }
           parent.formioComponent.rebuild();
-          this.emit('saveComponent', schema, schema, parent.formioComponent.components, path, (index + 1), true);
+
+          this.emitSaveComponentEvent(schema, schema, parent.formioComponent.component, path, (index + 1), true, schema);
         }
         this.emit('change', this.form);
       }
     }
+  }
+
+  isParentSaveChildMethod(parentComp) {
+    return !!(parentComp && parentComp.saveChildComponent);
   }
 
   getParentElement(element) {

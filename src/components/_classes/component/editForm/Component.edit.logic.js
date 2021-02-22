@@ -1,3 +1,4 @@
+import EditFormUtils from './utils';
 import { getContextComponents } from '../../../../utils/utils';
 
 /* eslint-disable quotes, max-len */
@@ -118,6 +119,7 @@ export default [
                 key: 'javascript',
                 rows: 5,
                 editor: 'ace',
+                as: 'javascript',
                 input: true,
                 tableView: false,
                 placeholder: `result = (data['mykey'] > 1);`,
@@ -212,6 +214,10 @@ export default [
                     {
                       label: 'Merge Component Schema',
                       value: 'mergeComponentSchema',
+                    },
+                    {
+                      label: 'Custom Action',
+                      value: 'customAction',
                     },
                   ],
                 },
@@ -350,6 +356,7 @@ export default [
                 label: 'Value (Javascript)',
                 key: 'value',
                 editor: 'ace',
+                as: 'javascript',
                 rows: 5,
                 placeholder: `value = data.myfield;`,
                 type: 'textarea',
@@ -365,6 +372,7 @@ export default [
                 label: 'Schema Defenition',
                 key: 'schemaDefinition',
                 editor: 'ace',
+                as: 'javascript',
                 rows: 5,
                 placeholder: `schema = { label: 'Updated' };`,
                 type: 'textarea',
@@ -372,6 +380,27 @@ export default [
                 description: '"row", "data", "component", and "result" variables are available. Return the schema.',
                 customConditional({ row }) {
                   return row.type === 'mergeComponentSchema';
+                },
+               },
+              Object.assign(EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
+               {
+                  customConditional({ row }) {
+                    return row.type === 'customAction';
+                   }
+                }
+              ),
+              {
+                weight: 20,
+                input: true,
+                label: 'Custom Action (Javascript)',
+                key: 'customAction',
+                editor: 'ace',
+                rows: 5,
+                placeholder: `value = data.myfield;`,
+                type: 'textarea',
+                tableView: false,
+                customConditional({ row }) {
+                  return row.type === 'customAction';
                 },
               },
             ],

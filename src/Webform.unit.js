@@ -8,6 +8,7 @@ import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
 import 'flatpickr';
+import Formio from './Formio';
 import {
   settingErrors,
   clearOnHide,
@@ -43,6 +44,8 @@ import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
+import { nestedFormInWizard } from '../test/fixtures';
+import NativePromise from 'native-promise-only';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -1561,7 +1564,7 @@ describe('Webform tests', function() {
       assert.equal(submitButton.disabled, false, 'Button should be enabled at the beginning');
 
       const simulateFileUploading = (comp, debounce = 250) => {
-        const filePromise = new Promise((resolve) => {
+        const filePromise = new NativePromise((resolve) => {
           setTimeout(() => resolve(), debounce);
         });
         filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));
@@ -2118,7 +2121,32 @@ describe('Webform tests', function() {
       setTimeout(() => {
         assert.deepEqual(nestedForm.dataValue, submissionWithIdOnly, 'Should not set to defaultValue after restore');
         done();
-      }, 150);
+      }, 350);
+    }).catch(done);
+  });
+
+  it('Should not set the default value if there is only Radio with False value', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, nestedFormInWizard).then((form) => {
+      const nestedForm = form.getComponent(['form']);
+      const submission = {
+        data: {
+          radio: false
+        }
+      };
+
+      nestedForm.dataValue = { ...submission };
+
+      setTimeout(() => {
+        assert.deepEqual(nestedForm.dataValue, submission, 'Should set submission');
+        nestedForm.valueChanged = true;
+        form.setPage(1);
+
+        setTimeout(() => {
+          assert.deepEqual(nestedForm.dataValue.data, submission.data, 'Should not set to defaultValue after restore');
+          done();
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 
@@ -2179,7 +2207,7 @@ describe('Webform tests', function() {
         }, 300);
       }, 350);
     }).catch(done);
-  });
+  }).timeout(3000);
 
   describe('Custom Logic', () => {
     it('Should rerender components using updated properties', (done) => {
@@ -2209,22 +2237,47 @@ describe('Webform tests', function() {
   });
 
   each(FormTests, (formTest) => {
-    describe(formTest.title || '', () => {
-      each(formTest.tests, (formTestTest, title) => {
-        it(title, () => {
-          const formElement = document.createElement('div');
-          const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-          return form.setForm(formTest.form).then(() => {
-            formTestTest(form, (error) => {
-              form.destroy();
-              if (error) {
-                throw new Error(error);
-              }
+    const useDoneInsteadOfPromise = formTest.useDone;
+
+    if (useDoneInsteadOfPromise) {
+      describe(formTest.title || '', () => {
+        each(formTest.tests, (formTestTest, title) => {
+          it(title, function(done) {
+            const self = this;
+            const formElement = document.createElement('div');
+            let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
+            form.setForm(formTest.form).then(function() {
+              formTestTest(form, function(error) {
+                form = null;
+                formElement.innerHTML = '';
+                if (error) {
+                  throw new Error(error);
+                }
+                done();
+              }, self);
             });
           });
         });
       });
-    });
+    }
+    else {
+      describe(formTest.title || '', () => {
+        each(formTest.tests, (formTestTest, title) => {
+          it(title, function() {
+            const formElement = document.createElement('div');
+            const form = new Webform(formElement, { template: 'bootstrap3', language: 'en' });
+            return form.setForm(formTest.form).then(function() {
+              formTestTest(form, function(error) {
+                form.destroy();
+                if (error) {
+                  throw new Error(error);
+                }
+              });
+            });
+          });
+        });
+      });
+    }
   });
 });
 

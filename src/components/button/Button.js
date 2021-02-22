@@ -57,7 +57,7 @@ export default class ButtonComponent extends Field {
     if (this.component.customClass) {
       info.attr.class += ` ${this.component.customClass}`;
     }
-    info.content = this.t(this.component.label);
+    info.content = this.t(this.component.label, { _userInput: true });
     return info;
   }
 
@@ -230,6 +230,13 @@ export default class ButtonComponent extends Field {
     }, true);
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
+    this.addEventListener(this.refs.buttonMessageContainer, 'click', () => {
+      if (this.refs.buttonMessageContainer.classList.contains('has-error')) {
+        if (this.root && this.root.alert) {
+          this.scrollIntoView(this.root.alert);
+        }
+      }
+    });
 
     this.disabled = this.shouldDisabled;
     this.setDisabled(this.refs.button, this.disabled);
