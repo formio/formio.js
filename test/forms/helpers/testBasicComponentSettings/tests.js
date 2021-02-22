@@ -3,6 +3,8 @@ import _ from 'lodash';
 import settings from './settings';
 import values from './values';
 
+const layoutComponents = ["columns", "fieldset", "panel", "table", "tabs", "well"];
+
 export default {
   placeholder: {
     'Should show placeholder'(form, done) {
@@ -497,7 +499,7 @@ export default {
       });
     },
     'Should save component values and close the modal after clicking "save"' (form, done) {
-      const layoutComponents = ["columns", "fieldset", "panel", "table", "tabs", "well"]
+      
       const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
       testComponents.forEach((comp, index) => {
@@ -531,7 +533,7 @@ export default {
                   const childType = child.component.type;
                   const childKey = child.component.key;
                   const childDataValue = child.getValue();
-                  const childExpectedValue = comp.getValue()[childKey];
+                  const childExpectedValue = value[childKey];
 
                   assert.deepEqual(
                     childType === 'datetime' ? childDataValue.startsWith(childExpectedValue) : childDataValue, 
@@ -899,4 +901,193 @@ export default {
       }, 300);
     },
   },
+  conditional: {
+    'Should show component if simple condition is met and hide it if simple condition is not fulfilled'(form, done, test) {
+      test.timeout(2500);
+      const testComponents = form.components.filter(comp => !['basis'].includes(comp.component.key));
+
+      const testVisibility = (shouldBeVisible) => {
+        testComponents.forEach(comp => {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+
+          assert.equal(comp.visible, shouldBeVisible, `Should set visible:${shouldBeVisible} for ${compKey} (component ${compType})`);
+          assert.equal(comp.hasCondition(), true, `${compKey} (component ${compType}): hasCondition should return true`);
+          assert.equal(comp.conditionallyVisible(), shouldBeVisible, `${compKey} (component ${compType}): should ${shouldBeVisible ? 'not' : ''} be conditionally visible`);
+         
+          if (compType !== 'well') {
+            assert.equal(comp.element.classList.contains('formio-hidden'), !shouldBeVisible, `Should ${shouldBeVisible ? 'not' : ''} set formio-hidden class for ${compKey} (component ${compType})`);
+          }
+        });
+      }
+
+      testVisibility(false);
+      form.getComponent('basis').setValue('show');
+
+      setTimeout(() => {
+        testVisibility(true);
+        form.getComponent('basis').setValue('hide');
+
+        setTimeout(() => {
+          testVisibility(false);
+
+          done();
+        }, 300);
+      }, 300);
+    },
+  }, 
+  customConditional: {
+    'Should show component if custom condition is met and hide it if custom condition is not fulfilled'(form, done, test) {
+      test.timeout(2500);
+      const testComponents = form.components.filter(comp => !['basis'].includes(comp.component.key));
+
+      const testVisibility = (shouldBeVisible) => {
+        testComponents.forEach(comp => {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+
+          assert.equal(comp.visible, shouldBeVisible, `Should set visible:${shouldBeVisible} for ${compKey} (component ${compType})`);
+          assert.equal(comp.hasCondition(), true, `${compKey} (component ${compType}): hasCondition should return true`);
+          assert.equal(comp.conditionallyVisible(), shouldBeVisible, `${compKey} (component ${compType}): should ${shouldBeVisible ? 'not' : ''} be conditionally visible`);
+         
+          if (compType !== 'well') {
+            assert.equal(comp.element.classList.contains('formio-hidden'), !shouldBeVisible, `Should ${shouldBeVisible ? 'not' : ''} set formio-hidden class for ${compKey} (component ${compType})`);
+          }
+        });
+      }
+
+      testVisibility(false);
+      form.getComponent('basis').setValue('show');
+
+      setTimeout(() => {
+        testVisibility(true);
+        form.getComponent('basis').setValue('hide');
+
+        setTimeout(() => {
+          testVisibility(false);
+
+          done();
+        }, 300);
+      }, 300);
+    },
+  }, 
+  logic: {
+    'Should execute value/property/merge schema/custom actions if simple logic condition is met'(form, done, test) {
+      test.timeout(6000);
+      const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key));
+
+      form.getComponent('basis').setValue('value action');
+      setTimeout(() => {
+        checkSetValue(testComponents,'should set value once simple logic value action is executed');
+        form.getComponent('basis').setValue('property action');
+
+        setTimeout(() => {
+          testComponents.forEach(comp => {
+            const compKey = comp.component.key;
+            const compType = comp.component.type;
+  
+            assert.deepEqual(comp.component.label, 'changed label on property action', `${compKey} (component ${compType}): should change label once simple logic property action is executed`);
+            assert.deepEqual(comp.name, 'changed label on property action', `${compKey} (component ${compType}): should change name once simple logic property action is executed`);
+          });
+
+          _.each(testComponents, (comp) => {
+            comp.setValue( _.isNumber(comp.dataValue) ? 0 : comp.defaultValue);
+          });
+
+          form.getComponent('basis').setValue('merge schema action');
+
+          setTimeout(() => {
+            testComponents.forEach(comp => {
+              const compKey = comp.component.key;
+              const compType = comp.component.type;
+    
+              assert.deepEqual(comp.component.label, 'changed label on merge schema', `${compKey} (component ${compType}): should change label once simple logic merge schema action is executed`);
+              assert.deepEqual(comp.name, 'changed label on merge schema', `${compKey} (component ${compType}): should change name once simple logic property merge schema action is executed`);
+            });
+
+            form.getComponent('basis').setValue('custom action');
+  
+            setTimeout(() => {
+              checkSetValue(testComponents, 'should set value once simple logic custom action is executed');
+    
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    },
+    'Should execute value action if js logic condition is met'(form, done, test) {
+      const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key));
+
+      form.getComponent('basis').setValue('some text value with length over twenty');
+      setTimeout(() => {
+        checkSetValue(testComponents, 'should set value once js logic value action is executed');
+        done();
+      }, 500);
+    },
+    'Should execute property action if json logic condition is met'(form, done, test) {
+      test.timeout(2500);
+      const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key));
+
+      form.getComponent('basis').setValue('add class');
+      setTimeout(() => {
+        testComponents.forEach(comp => {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+
+          assert.deepEqual(comp.element.classList.contains('json-logic-class'), true, `${compKey} (component ${compType}): should set custom class once json logic property action is executed`);
+        });
+        done();
+      }, 500);
+    },
+    'Should execute property action if logic event is emitted'(form, done, test) {
+      test.timeout(2500);
+
+      const componentsWithBug = ['select', 'editgrid', 'tree'];// remove those components once bug is fixed
+      const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key) && !componentsWithBug.includes(comp.component.type));
+      const clickEvent = new Event('click');
+      form.getComponent('hideBtn').refs.button.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        testComponents.forEach(comp => {
+          const compKey = comp.component.key;
+          const compType = comp.component.type;
+      
+          assert.equal(comp.visible, false, `Should set visible:false for ${compKey} (component ${compType})`);
+          
+          if (compType !== 'well') {
+            assert.equal(comp.element.classList.contains('formio-hidden'), true, `Should set formio-hidden class for ${compKey} (component ${compType})`);
+          }
+        });
+
+        done();
+      }, 500);
+    },
+  },
 };
+
+
+function  checkSetValue (testComponents, message) {
+  testComponents.forEach(comp => {
+    const compKey = comp.component.key;
+    const compType = comp.component.type;
+    const value =  _.get(values.values, compKey);
+
+    if (layoutComponents.includes(compType)) {
+      _.each(comp.components, (child) => {
+        const childKey = child.component.key;
+        const childExpectedValue = value[childKey];
+
+        assert.deepEqual(
+          child.dataValue, 
+          childExpectedValue, 
+          `${compKey} (component ${compType}): ${message}`
+        );
+      })
+    }
+    else {
+      assert.deepEqual(comp.dataValue, value, `${compKey} (component ${compType}): ${message}`);
+    }
+  });
+};
+

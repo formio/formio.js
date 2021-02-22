@@ -311,9 +311,7 @@ export default {
       "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day",
       "time", "currency", "survey", 
       //"signature", 
-       "container", "dataMap", "dataGrid", 
-      "editGrid", "tree", "file", 
-      "submit"
+      "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
       const value = _.get(basicValues, componentKey);
@@ -332,30 +330,159 @@ export default {
     },
     {}
   ), 
+  'conditional': _.reduce(    
+    [
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      //"signature", 
+      "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+    ],
+    (obj, componentKey) => {
+      obj[componentKey] = { show: true, when: "basis", eq: "show" };
+      return obj;
+    },
+    {}
+  ), 
+  'customConditional': _.reduce(    
+    [
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      //"signature", 
+      "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+    ],
+    (obj, componentKey) => {
+      obj[componentKey] = "show = _.isEqual(data.basis, 'show');"
+      return obj;
+    },
+    {}
+  ), 
+  'logic': _.reduce(    
+    [
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      //"signature", 
+      "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+    ],
+    (obj, componentKey) => {
+      const value = _.get(basicValues, componentKey);
 
-  // dataGridLabel:_.reduce(
-  //   [ 
-  //     "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-  //     //"signature", 
-  //     "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
-  //   ],
-  //   (obj, componentKey) => {
-  //     obj[componentKey] = true;
-  //     return obj;
-  //   },
-  //   {}
-  // ),
-  // autofocus:_.reduce(
-  //   [ 
-  //     "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-  //     "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
-  //   ],
-  //   (obj, componentKey) => {
-  //     obj[componentKey] = true;
-  //     return obj;
-  //   },
-  //   {}
-  // ),
+      obj[componentKey] = [{
+        'name': 'test logic name (simple + value)',
+        'trigger': {
+          'type': 'simple',
+          'simple': {
+            'show': true,
+            'when': 'basis',
+            'eq': 'value action'
+          }
+        },
+        'actions': [{
+          'name': 'test value action',
+          'type': 'value',
+          'value': `value = ${_.isNumber(value) ? value : JSON.stringify(value)}`
+        }]
+      }, {
+        'name': 'test logic name (simple + property)',
+        'trigger': {
+          'type': 'simple',
+          'simple': {
+            'show': true,
+            'when': 'basis',
+            'eq': 'property action'
+          }
+        },
+        'actions': [{
+          'name': 'test property action',
+          'type': 'property',
+          'property': {
+            'label': 'Label',
+            'value': 'label',
+            'type': 'string'
+          },
+          'text': 'changed label on property action'
+        }]
+      }, {
+        'name': 'test logic name (simple + merge schema)',
+        'trigger': {
+          'type': 'simple',
+          'simple': {
+            'show': true,
+            'when': 'basis',
+            'eq': 'merge schema action'
+          }
+        },
+        'actions': [{
+          'name': 'test merge schema action',
+          'type': 'mergeComponentSchema',
+          'schemaDefinition': 'schema = {label: "changed label on merge schema"}'
+        }]
+      }, {
+        'name': 'test logic name (simple + custom)',
+        'trigger': {
+          'type': 'simple',
+          'simple': {
+            'show': true,
+            'when': 'basis',
+            'eq': 'custom action'
+          }
+        },
+        'actions': [{
+          'name': 'test custom action',
+          'type': 'customAction',
+          'customAction': `value = ${_.isNumber(value) ? value : JSON.stringify(value)}`
+        }]
+      }, {
+        'name': 'test logic name (js + value)',
+        'trigger': {
+          'type': 'javascript',
+          'javascript': 'result = data.basis.length > 20'
+        },
+        'actions': [{
+          'name': 'test value action',
+          'type': 'value',
+          'value': `value = ${_.isNumber(value) ? value : JSON.stringify(value)}`
+        }]
+      }, {
+        'name': 'test logic name (json + property)',
+        'trigger': {
+          'type': 'json',
+          'json': {
+            'if': [{
+              '==': [{
+                'var': 'data.basis'
+              }, 'add class']
+            }, true, false]
+          }
+        },
+        'actions': [{
+          'name': 'test property action',
+          'type': 'property',
+          'property': {
+            'label': 'Container Custom Class',
+            'value': 'customClass',
+            'type': 'string'
+          },
+          'text': 'json-logic-class'
+        }]
+      }, {
+        'name': 'test logic name (event + property)',
+        'trigger': {
+          'type': 'event',
+          'event': 'hide'
+        },
+        'actions': [{
+          'name': 'test property action',
+          'type': 'property',
+          'property': {
+            'label': 'Hidden',
+            'value': 'hidden',
+            'type': 'boolean'
+          },
+          'state': true
+        }]
+      }];
+      
+      return obj;
+    },
+    {}
+  ), 
 };
 
 

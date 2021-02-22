@@ -4,7 +4,25 @@ import testHelpers from './helpers/testBasicComponentSettings';
 const { settings, form, tests } = testHelpers;
 const testedProperties = Object.keys(settings);
 
-const baseHelpingComponent = { 'label':'basis','tableView': true,'defaultValue':'base value','key':'basis','type':'textfield','input':true };
+const baseHelpingComponent = {
+  'label': 'basis',
+  'tableView': true,
+  'defaultValue': 'base value',
+  'key': 'basis',
+  'type': 'textfield',
+  'input': true
+};
+
+const helpingActionBtn = {
+  'label': 'Hide btn',
+  'action': 'event',
+  'showValidations': false,
+  'tableView': false,
+  'key': 'hideBtn',
+  'type': 'button',
+  'input': true,
+  'event': 'hide'
+};
 
 export default _.map(testedProperties, (property) => {
   const title = `Test basic component settings: ${property}`;
@@ -37,8 +55,12 @@ export default _.map(testedProperties, (property) => {
       return comp;
     });
   
-  if(['customDefaultValue', 'calculateValue'].includes(property)) {
+  if (['customDefaultValue', 'calculateValue', 'conditional', 'customConditional', 'logic'].includes(property)) {
     testedForm.components.unshift(baseHelpingComponent);
+
+    if (['logic'].includes(property)) {
+      testedForm.components.push(helpingActionBtn);
+    }
   }
 
   const propertyTests = _.get(tests,property, {});
