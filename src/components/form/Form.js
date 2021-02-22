@@ -254,7 +254,7 @@ export default class FormComponent extends Component {
           this.setContent(element, this.render());
           if (this.subForm) {
             this.subForm.attach(element);
-            if (this.subForm?.subWizards) {
+            if (this.subForm._form.display === 'wizard' && this.root._form.display === 'wizard') {
               this.root.redraw();
             }
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
