@@ -183,8 +183,8 @@ export default class CheckBoxComponent extends Field {
   }
 
   updateValue(value, flags) {
-    this.setChecked();
     const changed = super.updateValue(value, flags);
+    this.setChecked();
 
     // Update attributes of the input element
     if (changed && this.input) {
@@ -195,7 +195,6 @@ export default class CheckBoxComponent extends Field {
         this.input.removeAttribute('checked');
       }
     }
-
     return changed;
   }
 

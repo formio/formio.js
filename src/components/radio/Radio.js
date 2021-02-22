@@ -161,18 +161,9 @@ export default class RadioComponent extends Field {
   }
 
   setSelectedClasses() {
-    switch (this.inputInfo.attr.type) {
-      case 'checkbox' :
-        this.component.values.forEach(item => {
-          item.selected = this.dataValue[item.value];
-        });
-        break;
-      case 'radio' :
-        this.component.values.forEach(item => {
-          item.selected = item.value === this.dataValue;
-        });
-        break;
-    }
+    this.component.values.forEach(item => {
+      item.selected = this.inputInfo.attr.type === 'checkbox' ? this.dataValue[item.value] : (item.value === this.dataValue);
+    });
 
     if (this.refs.wrapper) {
       //add/remove selected option class
@@ -181,30 +172,14 @@ export default class RadioComponent extends Field {
 
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        switch (input.type) {
-          case 'radio' :
-            if (input && input.value.toString() === value.toString()) {
-              //add class to container when selected
-              this.addClass(wrapper, optionSelectedClass);
-              input.setAttribute('checked', 'true');
-            }
-            else {
-              this.removeClass(wrapper, optionSelectedClass);
-              input.removeAttribute('checked');
-            }
-            break;
-          case 'checkbox' :
-            // eslint-disable-next-line no-case-declarations
-            const checked = value[input.value];
-            if (checked) {
-              this.addClass(wrapper, optionSelectedClass);
-              input.setAttribute('checked', 'true');
-            }
-            else {
-              this.removeClass(wrapper, optionSelectedClass);
-              input.removeAttribute('checked');
-            }
-            break;
+        const checked  = (input.type === 'checkbox') ? value[input.value] : (input.value.toString() === value.toString());
+        if (checked) {
+          this.addClass(wrapper, optionSelectedClass);
+          input.setAttribute('checked', 'true');
+        }
+        else {
+          this.removeClass(wrapper, optionSelectedClass);
+          input.removeAttribute('checked');
         }
        });
     }
