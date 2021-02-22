@@ -88,8 +88,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
@@ -105,7 +104,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Tree.js~TreeComponent.html">TreeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
@@ -177,7 +175,10 @@ import Harness from &apos;../../../test/harness&apos;;
 import TreeComponent from &apos;./Tree&apos;;
 import {
   comp1,
+  comp2,
+  comp3
 } from &apos;./fixtures&apos;;
+import _ from &apos;lodash&apos;;
 
 describe(&apos;Tree Component&apos;, () =&gt; {
   it(&apos;Should set and render values in readOnly mode&apos;, function(done) {
@@ -214,6 +215,123 @@ describe(&apos;Tree Component&apos;, () =&gt; {
     assert.equal(valueContainers[2].innerHTML.trim(), &apos;333&apos;);
 
     done();
+    });
+  });
+  it(&apos;Should render tree and allow to save node with basic, layout and data component inside&apos;, function(done) {
+    Harness.testCreate(TreeComponent, comp2).then((component) =&gt; {
+      assert.equal(!!component.treeRoot.refs.content, true);
+      assert.equal(!!component.treeRoot.refs.cancelNode, true);
+      assert.equal(!!component.treeRoot.refs.saveNode, true);
+      assert.equal(!!component.treeRoot.refs.addChild, false);
+      assert.equal(!!component.treeRoot.refs.editNode, false);
+      assert.equal(!!component.treeRoot.refs.removeNode, false);
+
+      const value = {
+        data: {
+          dataGrid: [{ textField: &apos;data grid 1st row text&apos; }],
+          number: 3333,
+          select: &apos;&apos;,
+          textArea: &apos;text area text&apos;,
+        },
+        children: []
+      };
+
+      const inputFields = {
+        &apos;data[tree][dataGrid][0][textField]&apos;: value.data.dataGrid[0].textField,
+        &apos;data[tree][number]&apos;:value.data.number,
+        &apos;data[tree][textArea]&apos;: value.data.textArea
+      };
+
+      const inputEvent = new Event(&apos;input&apos;);
+      _.each(inputFields, (value, fieldName)=&gt; {
+        const input = component.element.querySelector(`[name=&quot;${fieldName}&quot;]`);
+        input.value = value;
+        input.dispatchEvent(inputEvent);
+      });
+
+      setTimeout(() =&gt; {
+        const clickEvent = new Event(&apos;click&apos;);
+        component.treeRoot.refs.saveNode.dispatchEvent(clickEvent);
+        setTimeout(() =&gt; {
+          assert.equal(!!component.treeRoot.refs.content, true);
+          assert.equal(!!component.treeRoot.refs.cancelNode, false);
+          assert.equal(!!component.treeRoot.refs.saveNode, false);
+          assert.equal(!!component.treeRoot.refs.addChild, true);
+          assert.equal(!!component.treeRoot.refs.editNode, true);
+          assert.equal(!!component.treeRoot.refs.removeNode, true);
+          assert.deepEqual(component.getValue(), value, &apos;setvalue&apos;);
+
+          done();
+        });
+      });
+    });
+  });
+  it(&apos;Should keep the node of parent tree opened when saving the node of a child tree&apos;, function(done) {
+    Harness.testCreate(TreeComponent, comp3).then((component) =&gt; {
+      assert.equal(!!component.treeRoot.refs.cancelNode, true);
+      assert.equal(!!component.treeRoot.refs.saveNode, true);
+      assert.equal(!!component.treeRoot.refs.editNode, false);
+
+      const clickEvent = new Event(&apos;click&apos;);
+      const childSaveNodeBtn = component.element.querySelector(&apos;.formio-component-tree1&apos;).querySelector(&apos;[ref=&quot;saveNode&quot;]&apos;);
+
+      childSaveNodeBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(!!component.treeRoot.refs.cancelNode, true);
+        assert.equal(!!component.treeRoot.refs.saveNode, true);
+        assert.equal(!!component.treeRoot.refs.editNode, false);
+
+        const childTree = component.element.querySelector(&apos;.formio-component-tree1&apos;);
+        const saveBtn = childTree.querySelector(&apos;[ref=&quot;saveNode&quot;]&apos;);
+        const editBtn = childTree.querySelector(&apos;[ref=&quot;editNode&quot;]&apos;);
+
+        assert.equal(!!saveBtn, false);
+        assert.equal(!!editBtn, true);
+
+        done();
+      });
+    });
+  });
+  it(&apos;Should allow to open node of a child tree for editing after opening parent tree node&apos;, function(done) {
+    Harness.testCreate(TreeComponent, comp3).then((component) =&gt; {
+      assert.equal(!!component.treeRoot.refs.cancelNode, true, &apos;Should show cancel btn for parent tree&apos;);
+      assert.equal(!!component.treeRoot.refs.saveNode, true, &apos;Should show save btn for parent tree&apos;);
+      assert.equal(!!component.treeRoot.refs.editNode, false, &apos;Should not show edit btn for parent node in editing tree&apos;);
+
+      assert.equal(!!component.treeRoot.components[0].treeRoot.refs.cancelNode, true, &apos;Should show cancel btn for child tree&apos;);
+      assert.equal(!!component.treeRoot.components[0].treeRoot.refs.saveNode, true, &apos;Should show save btn for child tree&apos;);
+      assert.equal(!!component.treeRoot.components[0].treeRoot.refs.editNode, false, &apos;Should not show edit btn for child tree in editing tree&apos;);
+
+      const clickEvent = new Event(&apos;click&apos;);
+      const childSaveNodeBtn = component.treeRoot.components[0].treeRoot.refs.saveNode;
+      const parentSaveNodeBtn = component.treeRoot.refs.saveNode;
+      childSaveNodeBtn.dispatchEvent(clickEvent);
+      parentSaveNodeBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(!!component.treeRoot.refs.cancelNode, false, &apos;Should not show cancel btn for parent tree&apos;);
+        assert.equal(!!component.treeRoot.refs.saveNode, false, &apos;Should not show save btn for parent tree&apos;);
+        assert.equal(!!component.treeRoot.refs.editNode, true, &apos;Should show edit btn for parent tree&apos;);
+
+        const parentEditNodeBtn = component.treeRoot.refs.editNode;
+
+        parentEditNodeBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(!!component.treeRoot.components[0].treeRoot.refs.saveNode, false, &apos;Should not show save btn for child tree&apos;);
+          assert.equal(!!component.treeRoot.components[0].treeRoot.refs.editNode, true, &apos;Should show edit btn for child tree&apos;);
+
+          const childEditNodeBtn = component.treeRoot.components[0].treeRoot.refs.editNode;
+
+          childEditNodeBtn.dispatchEvent(clickEvent);
+
+          assert.equal(component.treeRoot.components[0].treeRoot.editing, true, &apos;Should set editing mode for child tree&apos;);
+          assert.equal(!!component.treeRoot.components[0].treeRoot.refs.saveNode, true, &apos;Should show save btn for child tree&apos;);
+
+          done();
+        });
+      });
     });
   });
 });

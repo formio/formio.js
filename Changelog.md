@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FJS-837: Fixes an issue where 0 and false are considered as empty values for Select
  - FIO-524: Fix resource forms didn't transfer settings to pdf
 
+#### Changed
+ - Upgrade i18next@19.8.9, lodash@4.17.21, @babel/cli@7.12.17, @babel/core@7.12.17, @babel/plugin-proposal-optional-chaining@7.12.17, @babel/preset-env@7.12.17, @formio/bootstrap3@2.9.0, core-js@3.9.0, webpack@5.23.0
+
 ### 4.13.0-rc.10
 #### Fixed
  - FIO-213: Fix the display of server validations for 6x server
