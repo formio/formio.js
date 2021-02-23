@@ -86,15 +86,30 @@ export default [
     },
   },
   {
-    type: 'textarea',
-    as: 'json',
-    editor: 'ace',
+    type: 'editgrid',
+    addAnother: 'Add Plugin',
+    saveRow: 'Save Plugin',
     weight: 28,
     input: true,
-    multiple: true,
     key: 'plugins',
-    label: 'Plugins configurations',
-    defaultValue: {},
+    label: 'Plugins',
+   components: [
+    {
+      label: 'Name',
+      tableView: true,
+      key: 'name',
+      type: 'textfield',
+      input: true
+    },
+    {
+      label: 'Settings',
+      editor: 'ace',
+      tableView: true,
+      key: 'settings',
+      type: 'textarea',
+      input: true,
+      as: 'json'
+    }]
   },
   {
     weight: 700,

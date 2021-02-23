@@ -4,7 +4,7 @@ import FormioPlugin from './FormioPlugin';
 export default class PasswordStrongnessPlugin extends FormioPlugin {
   static get info() {
     return {
-      supportedComponents: ['password']
+      supportedComponents: ['password'],
     };
   }
 
@@ -18,16 +18,17 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
       ],
       updateOn: 'levelChange',
       levels: [
-        { name: 'low', maxScore: 25 },
-        { name: 'medium', maxScore: 50 },
-        { name: 'high', maxScore: 100 }
+        { name: 'low', maxScore: 25, style: 'danger' },
+        { name: 'medium', maxScore: 50, style: 'warning' },
+        { name: 'high', maxScore: 100, style: 'success' }
       ],
       template: `
         <div class="formio-security-indicator">
           {% if (!ctx.readOnly && !ctx.pristine) { %}
             <div
               title="{{ctx.t(ctx.tooltip)}}"
-              class="security-{{ctx.level.name}}"
+              class="security-{{ctx.level.name}} {{ ctx.level.style ? 'bg-' + ctx.level.style : ''}}"
+              style="{{ctx.level.color ? 'backgroound-color' + ctx.level.color + ';' : ''}}"
             ></div>
           {% } %}
         </div>
@@ -128,20 +129,26 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
   render() {
     const view = this.component.interpolate(this.template, {
       score: this.score,
+      maxScore: this.maxScore,
       level: this.level,
       levels: this.levels,
       readOnly: this.component.options.readOnly,
       pristine: this.component.pristine,
       t: this.t.bind(this),
-      tooltip: this.tooltip
+      tooltip: this.tooltip,
     });
 
     return this.component.sanitize(view);
   }
 
+  /**
+   * Determines is a password is secure enough to submit
+   * @return {boolean}
+   */
   isValid() {
-    if (typeof this.settings.isValid === 'string') {
-      const valid = this.evaluate(this.settings.isValid, {
+    const isValidCheck = this.settings.isValid;
+    if (typeof isValidCheck === 'string') {
+      const valid = this.evaluate(isValidCheck, {
         score: this.score,
         level: this.level
       }, 'valid');
@@ -151,6 +158,13 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
     return this.score >= Math.round(this.maxScore / 2);
   }
 
+  /**
+   * Handles the result of check and constructs a new error object or returns an amount of points to add to the current score
+   * @param {boolean|number} valid - Determines if the validation was failed or an amount of points if it was passed
+   * @param {*} validation - Validation configuration
+   * @param {string} value - Value which was validated
+   * @param {string} message - Message which should be shown if validation was not passed
+   */
   handleValidationResult(valid, validation, value, message) {
     if (valid === false || valid === 0) {
       this.errors.push({ validation: validation.name, value, message, level: validation.required ? 'error' : 'warning' });
@@ -162,6 +176,10 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
     return 0;
   }
 
+  /**
+   * Performs checks to validate password security
+   * @param {string} value - Suggested password
+   */
   checkValidity(value) {
     this.errors = [];
     let score = 0;
@@ -192,12 +210,12 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
 
   constructor(settings, componentInstance) {
     super(settings, componentInstance);
-    this._score = 0;
+    this._score = 0; // Set initial value of score
     this.validations = [...(this.settings.validations || this.defaultSettings.validations)];
     this.levels = [...(this.settings.levels || this.defaultSettings.levels)];
-    this.levels.sort((a, b) => a.maxScore - b.maxScore);
-    this.level = this.levels[0];
-    this.maxScore = this.levels[this.levels.length - 1].maxScore;
+    this.levels.sort((a, b) => a.maxScore - b.maxScore); // Sort levels from the lowest one to the highest
+    this.level = this.levels[0]; // Set currnt level to the lowest one
+    this.maxScore = this.levels[this.levels.length - 1].maxScore; // Set maximal amount of security points based on the highest level
   }
 
   attach(element) {
@@ -217,6 +235,10 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
   }
 
   insertContainer(element, container) {
+    if (!element || !container) {
+      return false;
+    }
+
     const insert = this.settings.location?.insert;
     const selector = this.settings.location?.selector;
     let reference;
@@ -256,6 +278,10 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
     super.destroy();
   }
 
+  /**
+   * Finds the level which one the passed score suits
+   * @param {number} score - Points of password's security
+   */
   getLevel(score = this.score) {
     const lowestLevel = this.levels[0];
     let prevMaxScore = lowestLevel.maxScore;
@@ -268,6 +294,7 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
       return this.levels[this.levels.length - 1];
     }
 
+    // Iterate through levels and find the one which the passed score belongs to
     for (let i = 1; i < this.levels.length; i++) {
       const level = this.levels[i];
 
@@ -281,6 +308,9 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
     return lowestLevel;
   }
 
+  /**
+   * Update the current view of the password's security indicator
+   */
   updateView() {
     if (!this.element) {
       return;

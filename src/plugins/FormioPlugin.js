@@ -3,6 +3,10 @@ import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class FormioPlugin extends Element {
+  static get info() {
+    return {};
+  }
+
   get defaultSettings() {
     return {};
   }

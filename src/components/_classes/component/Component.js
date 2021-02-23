@@ -513,18 +513,30 @@ export default class Component extends Element {
     }
   }
 
-  createPlugin(pluginNameOrSettings) {
-    const name = typeof pluginNameOrSettings === 'string' ? pluginNameOrSettings : pluginNameOrSettings.name;
+  createPlugin(pluginConfiguration) {
+    const name = pluginConfiguration.name;
     if (!name) {
       return;
     }
 
-    const settings = typeof pluginNameOrSettings === 'object' ? pluginNameOrSettings : {};
-    const plugin = Plugins[name] ? new Plugins[name](settings, this) : null;
+    const settings = pluginConfiguration.settings || {};
+    const Plugin = Plugins[name];
 
-    if (plugin) {
-      this.plugins.push(plugin);
+    let plugin = null;
+
+    if (Plugin) {
+      const supportedComponents = Plugin.info.supportedComponents;
+      const supportsThisComponentType = !supportedComponents?.length ||
+        supportedComponents.indexOf(this.component.type) !== -1;
+      if (supportsThisComponentType) {
+        plugin = new Plugin(settings, this);
+        this.plugins.push(plugin);
+      }
+      else {
+        console.warn(`Plugin ${name} does not support component of type ${this.component.type}.`);
+      }
     }
+
     return plugin;
   }
 
