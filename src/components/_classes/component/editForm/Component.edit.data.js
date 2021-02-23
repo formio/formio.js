@@ -93,23 +93,24 @@ export default [
     input: true,
     key: 'plugins',
     label: 'Plugins',
-   components: [
-    {
-      label: 'Name',
-      tableView: true,
-      key: 'name',
-      type: 'textfield',
-      input: true
-    },
-    {
-      label: 'Settings',
-      editor: 'ace',
-      tableView: true,
-      key: 'settings',
-      type: 'textarea',
-      input: true,
-      as: 'json'
-    }]
+    components: [
+      {
+        label: 'Name',
+        tableView: true,
+        key: 'name',
+        type: 'textfield',
+        input: true
+      },
+      {
+        label: 'Settings',
+        editor: 'ace',
+        tableView: true,
+        key: 'settings',
+        type: 'textarea',
+        input: true,
+        as: 'json'
+      }
+    ]
   },
   {
     weight: 700,
