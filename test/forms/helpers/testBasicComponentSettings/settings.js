@@ -59,7 +59,7 @@ export default {
   ),
   customClass: _.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
@@ -72,7 +72,7 @@ export default {
   tabindex: _.reduce(
     [
       "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", 
-      //"tags", //BUG
+      //"tags","form", //BUG
       "address", "dateTime", 
       //"day", //BUG
       "time", "currency", 
@@ -88,7 +88,7 @@ export default {
     {} ),
   hidden: _.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
@@ -99,7 +99,7 @@ export default {
     {} ),
   hideLabel: _.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "panel", "container", "dataMap", "dataGrid", "editGrid", "tree", "file"
     ],
@@ -110,9 +110,9 @@ export default {
     {} ),
   disabled: _.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form", "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
-      "fieldset", "panel", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
+      "fieldset", "panel", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit", 
     ],
     (obj, componentKey) => {
       obj[componentKey] = true;
@@ -164,6 +164,30 @@ export default {
     },
   },
   customDefaultValue: {
+    form: { 
+      js: `value = {
+        data: {
+        dataGridChild: [
+          { textAreaInsideChildDataGrid: data.basis + " default in nested form1" },
+          { textAreaInsideChildDataGrid: data.basis + " default in nested form2" }
+        ],
+        numberInsideChildPanel: data.basis.length,
+        textFieldChild: data.basis + " default in nested form",
+        timeChild: "11:55:00",
+        },
+      }`, 
+      expectedValue: {
+        data: {
+        dataGridChild: [
+          { textAreaInsideChildDataGrid: "base value default in nested form1" },
+          { textAreaInsideChildDataGrid: "base value default in nested form2" }
+        ],
+        numberInsideChildPanel: 10,
+        textFieldChild: "base value default in nested form",
+        timeChild: "11:55:00",
+        },
+      }
+    },
     textField: { js:'value = data.basis + " default"', expectedValue: 'base value default'},
     textArea: { js:'value = data.basis + " default"', expectedValue: 'base value default'},
     number: { js: 'value = data.basis.length', expectedValue: 10 },
@@ -230,7 +254,7 @@ export default {
     {} ),
   modalEdit:_.reduce(
     [ 
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "html", "content", 
       "columns", "fieldset", "panel", "table", "tabs", "well", //BUG: they are excluded from some tests of modalEdit setting
@@ -243,6 +267,32 @@ export default {
     {}
   ),
   calculateValue: {
+    form: { 
+      js: `value = {
+        data: {
+        dataGridChild: [
+          { textAreaInsideChildDataGrid: data.basis + " calculated in nested form1" },
+          { textAreaInsideChildDataGrid: data.basis + " calculated in nested form2" }
+        ],
+        numberInsideChildPanel: data.basis.length,
+        textFieldChild: data.basis + " calculated in nested form",
+        timeChild: "11:55:00",
+        },
+      }`, 
+      expectedValue: (basis) => { 
+        return {
+          data: {
+            dataGridChild: [
+              { textAreaInsideChildDataGrid: basis + " calculated in nested form1" },
+              { textAreaInsideChildDataGrid: basis + " calculated in nested form2" }
+            ],
+            numberInsideChildPanel: basis.length,
+            textFieldChild: basis + " calculated in nested form",
+            timeChild: "11:55:00",
+          },
+        };
+      }
+    },
     textField: { js:'value = `${data.basis} calculated`', expectedValue: (basis) => `${basis} calculated` },
     textArea: { js:'value = `${data.basis} calculated`', expectedValue: (basis) => `${basis} calculated`},
     number: { js: 'value = data.basis.length', expectedValue: (basis) => basis.length },
@@ -322,7 +372,7 @@ export default {
   ),
   'validate_nested_components': _.reduce(
     [
-      "columns", "fieldset", "panel", "table", "tabs", "well", "container", "dataMap", "dataGrid", "editGrid", "tree", "submit"
+      "form","columns", "fieldset", "panel", "table", "tabs", "well", "container", "dataMap", "dataGrid", "editGrid", "tree", "submit"
     ],
     (obj, componentKey) => {
       obj[componentKey] = true;
@@ -332,7 +382,7 @@ export default {
   ), 
   'conditional': _.reduce(    
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
@@ -344,7 +394,7 @@ export default {
   ), 
   'customConditional': _.reduce(    
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
@@ -356,7 +406,7 @@ export default {
   ), 
   logic: _.reduce(    
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
@@ -485,7 +535,7 @@ export default {
   ), 
   'set_get_value': _.reduce(    
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
       //"signature", 
       "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
