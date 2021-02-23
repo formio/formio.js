@@ -900,7 +900,7 @@ class ValidationChecker {
       values.forEach((value) => {
         component.plugins.forEach((plugin) => {
           if (!plugin.checkValidity(value)) {
-            pluginsValidations.push(...plugin.errors);
+            pluginsValidations.push(...(plugin.errors || []));
           }
         });
       });
