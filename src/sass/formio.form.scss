@@ -1250,3 +1250,25 @@ div[data-oembed-url] {
 [ref='buttonMessageContainer'].has-error {
   cursor: pointer;
 }
+
+.formio-security-indicator {
+  display: flex;
+  height: 5px;
+
+  [class^="security-"] {
+    width: 100%;
+    height: 100%;
+  }
+
+  .security-low {
+    background-color: #c51e00;
+  }
+
+  .security-medium {
+    background-color: #ebb400;
+  }
+
+  .security-high {
+    background-color: #009118;
+  }
+}

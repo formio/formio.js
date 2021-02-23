@@ -12,6 +12,7 @@ import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParen
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
+import Plugins from '../../../plugins';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import i18nConfig from '../../../i18n';
 
@@ -193,7 +194,8 @@ export default class Component extends Element {
       showCharCount: false,
       showWordCount: false,
       properties: {},
-      allowMultipleMasks: false
+      allowMultipleMasks: false,
+      plugins: [],
     }, ...sources);
   }
 
@@ -418,6 +420,12 @@ export default class Component extends Element {
      */
     this.tooltips = [];
 
+    /**
+     * List of attached plugins
+     * @type {Array}
+     */
+    this.plugins = [];
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -500,11 +508,30 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
+    if (this.component.plugins.length) {
+      this.component.plugins.forEach((plugin) => this.createPlugin(plugin));
+    }
+  }
+
+  createPlugin(pluginNameOrSettings) {
+    const name = typeof pluginNameOrSettings === 'string' ? pluginNameOrSettings : pluginNameOrSettings.name;
+    if (!name) {
+      return;
+    }
+
+    const settings = typeof pluginNameOrSettings === 'object' ? pluginNameOrSettings : {};
+    const plugin = Plugins[name] ? new Plugins[name](settings, this) : null;
+
+    if (plugin) {
+      this.plugins.push(plugin);
+    }
+    return plugin;
   }
 
   destroy() {
     super.destroy();
     this.detach();
+    this.plugins.forEach((plugin) => plugin.destroy());
   }
 
   get shouldDisabled() {
@@ -1093,6 +1120,8 @@ export default class Component extends Element {
     }
 
     this.restoreFocus();
+
+    this.plugins.forEach((plugin) => plugin.attach(element));
 
     return NativePromise.resolve();
   }

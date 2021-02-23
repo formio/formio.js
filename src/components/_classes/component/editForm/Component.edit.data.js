@@ -86,6 +86,17 @@ export default [
     },
   },
   {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 28,
+    input: true,
+    multiple: true,
+    key: 'plugins',
+    label: 'Plugins configurations',
+    defaultValue: {},
+  },
+  {
     weight: 700,
     type: 'checkbox',
     label: 'Clear Value When Hidden',

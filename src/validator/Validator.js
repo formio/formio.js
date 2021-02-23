@@ -894,11 +894,23 @@ class ValidationChecker {
       ? component.validationValue
       : [component.validationValue];
 
+    const pluginsValidations = [];
+
+    if (component?.plugins?.length) {
+      values.forEach((value) => {
+        component.plugins.forEach((plugin) => {
+          if (!plugin.checkValidity(value)) {
+            pluginsValidations.push(...plugin.errors);
+          }
+        });
+      });
+    }
+
     // If this component has the new validation system enabled, use it instead.
     const validations = _.get(component, 'component.validations');
     if (validations && Array.isArray(validations)) {
       const resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
-
+      resultsOrPromises.push(...pluginsValidations);
       // Define how results should be formatted
       const formatResults = results => {
         return includeWarnings ? results : results.filter(result => result.level === 'error');
@@ -948,6 +960,8 @@ class ValidationChecker {
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
     resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async, conditionallyVisible));
+
+    resultsOrPromises.push(...pluginsValidations);
 
     // Define how results should be formatted
     const formatResults = results => {
