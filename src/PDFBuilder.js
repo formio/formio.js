@@ -450,8 +450,14 @@ export default class PDFBuilder extends WebformBuilder {
 
     const element = e.target;
     const type = element.getAttribute('data-type');
-
+    const key = element.getAttribute('data-key');
+    const group = element.getAttribute('data-group');
     const schema = fastCloneDeep(this.schemas[type]);
+
+    if (key && group) {
+      const info = this.getComponentInfo(key, group);
+      _.merge(schema, info);
+    }
 
     schema.key = _.camelCase(
       schema.label ||

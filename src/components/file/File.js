@@ -304,10 +304,12 @@ export default class FileComponent extends Field {
   }
 
   deleteFile(fileInfo) {
-    if (fileInfo && (this.component.storage === 'url')) {
-      const fileService = this.fileService;
+    const { options = {} } = this.component;
+
+    if (fileInfo && (['url', 'indexeddb'].includes(this.component.storage))) {
+      const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
-        fileService.deleteFile(fileInfo);
+        fileService.deleteFile(fileInfo, options);
       }
       else {
         const formio = this.options.formio || (this.root && this.root.formio);

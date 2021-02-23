@@ -88,8 +88,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
@@ -105,7 +104,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Tree.js~TreeComponent.html">TreeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
@@ -2381,7 +2379,7 @@ describe(&apos;Webform tests&apos;, function() {
         }, 300);
       }, 350);
     }).catch(done);
-  });
+  }).timeout(3000);
 
   describe(&apos;Custom Logic&apos;, () =&gt; {
     it(&apos;Should rerender components using updated properties&apos;, (done) =&gt; {
@@ -2411,22 +2409,47 @@ describe(&apos;Webform tests&apos;, function() {
   });
 
   each(FormTests, (formTest) =&gt; {
-    describe(formTest.title || &apos;&apos;, () =&gt; {
-      each(formTest.tests, (formTestTest, title) =&gt; {
-        it(title, () =&gt; {
-          const formElement = document.createElement(&apos;div&apos;);
-          const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
-          return form.setForm(formTest.form).then(() =&gt; {
-            formTestTest(form, (error) =&gt; {
-              form.destroy();
-              if (error) {
-                throw new Error(error);
-              }
+    const useDoneInsteadOfPromise = formTest.useDone;
+
+    if (useDoneInsteadOfPromise) {
+      describe(formTest.title || &apos;&apos;, () =&gt; {
+        each(formTest.tests, (formTestTest, title) =&gt; {
+          it(title, function(done) {
+            const self = this;
+            const formElement = document.createElement(&apos;div&apos;);
+            let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
+            form.setForm(formTest.form).then(function() {
+              formTestTest(form, function(error) {
+                form = null;
+                formElement.innerHTML = &apos;&apos;;
+                if (error) {
+                  throw new Error(error);
+                }
+                done();
+              }, self);
             });
           });
         });
       });
-    });
+    }
+    else {
+      describe(formTest.title || &apos;&apos;, () =&gt; {
+        each(formTest.tests, (formTestTest, title) =&gt; {
+          it(title, function() {
+            const formElement = document.createElement(&apos;div&apos;);
+            const form = new Webform(formElement, { template: &apos;bootstrap3&apos;, language: &apos;en&apos; });
+            return form.setForm(formTest.form).then(function() {
+              formTestTest(form, function(error) {
+                form.destroy();
+                if (error) {
+                  throw new Error(error);
+                }
+              });
+            });
+          });
+        });
+      });
+    }
   });
 });
 

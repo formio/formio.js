@@ -8,6 +8,7 @@ import EmailAction from './emailaction';
 // import ClearOnHide2 from './clearOnHide2';
 import DateFields from './datefields';
 import SubmissionSetter from './submissionSetter';
+import ComponentsBasicSettingsTests from './componentsBasicSettingsTests';
 // import NestedFormTests from './nested-form-tests';
 // import NestedFormNoSubmit from './nested-nosubmit.js';
 // import NestedConditionallyHidden from './conditional-nested-form-load.js';
@@ -32,4 +33,5 @@ export default [
   // ChildMetadata,
   // WysiwygCursor
   ClearOnHide,
+  ...ComponentsBasicSettingsTests,
 ];
