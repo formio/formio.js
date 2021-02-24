@@ -12,7 +12,7 @@ import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParen
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
-import Plugins from '../../../plugins';
+import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import i18nConfig from '../../../i18n';
 
@@ -195,7 +195,7 @@ export default class Component extends Element {
       showWordCount: false,
       properties: {},
       allowMultipleMasks: false,
-      plugins: [],
+      addons: [],
     }, ...sources);
   }
 
@@ -421,10 +421,10 @@ export default class Component extends Element {
     this.tooltips = [];
 
     /**
-     * List of attached plugins
+     * List of attached addons
      * @type {Array}
      */
-    this.plugins = [];
+    this.addons = [];
 
     // To force this component to be invalid.
     this.invalid = false;
@@ -508,51 +508,51 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
-    if (this.component.plugins.length) {
-      this.component.plugins.forEach((plugin) => this.createPlugin(plugin));
+    if (this.component.addons.length) {
+      this.component.addons.forEach((addon) => this.createAddon(addon));
     }
   }
 
-  createPlugin(pluginConfiguration) {
-    const name = pluginConfiguration.name;
+  createAddon(addonConfiguration) {
+    const name = addonConfiguration.name;
     if (!name) {
       return;
     }
 
-    let settings = pluginConfiguration.settings || {};
+    let settings = addonConfiguration.settings || {};
     if (typeof settings === 'string') {
       try {
         settings = JSON.parse(settings);
       }
       catch (err) {
-        console.warn(`Error while parsing ${name} plugin settings`);
+        console.warn(`Error while parsing ${name} addon settings`);
         settings = {};
       }
     }
-    const Plugin = Plugins[name];
+    const Addon = Addons[name];
 
-    let plugin = null;
+    let addon = null;
 
-    if (Plugin) {
-      const supportedComponents = Plugin.info.supportedComponents;
+    if (Addon) {
+      const supportedComponents = Addon.info.supportedComponents;
       const supportsThisComponentType = !supportedComponents?.length ||
         supportedComponents.indexOf(this.component.type) !== -1;
       if (supportsThisComponentType) {
-        plugin = new Plugin(settings, this);
-        this.plugins.push(plugin);
+        addon = new Addon(settings, this);
+        this.addons.push(addon);
       }
       else {
-        console.warn(`Plugin ${name} does not support component of type ${this.component.type}.`);
+        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
       }
     }
 
-    return plugin;
+    return addon;
   }
 
   destroy() {
     super.destroy();
     this.detach();
-    this.plugins.forEach((plugin) => plugin.destroy());
+    this.addons.forEach((addon) => addon.destroy());
   }
 
   get shouldDisabled() {
@@ -1142,7 +1142,7 @@ export default class Component extends Element {
 
     this.restoreFocus();
 
-    this.plugins.forEach((plugin) => plugin.attach(element));
+    this.addons.forEach((addon) => addon.attach(element));
 
     return NativePromise.resolve();
   }

@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import FormioPlugin from './FormioPlugin';
+import FormioAddon from './FormioAddon';
 
-export default class PasswordStrongnessPlugin extends FormioPlugin {
+export default class PasswordStrongnessAddon extends FormioAddon {
   static get info() {
     return {
       supportedComponents: ['password'],

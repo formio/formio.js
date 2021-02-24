@@ -894,13 +894,13 @@ class ValidationChecker {
       ? component.validationValue
       : [component.validationValue];
 
-    const pluginsValidations = [];
+    const addonsValidations = [];
 
-    if (component?.plugins?.length) {
+    if (component?.addons?.length) {
       values.forEach((value) => {
-        component.plugins.forEach((plugin) => {
-          if (!plugin.checkValidity(value)) {
-            pluginsValidations.push(...(plugin.errors || []));
+        component.addons.forEach((addon) => {
+          if (!addon.checkValidity(value)) {
+            addonsValidations.push(...(addon.errors || []));
           }
         });
       });
@@ -910,7 +910,7 @@ class ValidationChecker {
     const validations = _.get(component, 'component.validations');
     if (validations && Array.isArray(validations)) {
       const resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
-      resultsOrPromises.push(...pluginsValidations);
+      resultsOrPromises.push(...addonsValidations);
       // Define how results should be formatted
       const formatResults = results => {
         return includeWarnings ? results : results.filter(result => result.level === 'error');
@@ -961,7 +961,7 @@ class ValidationChecker {
     component.component.validate.multiple = component.component.multiple;
     resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async, conditionallyVisible));
 
-    resultsOrPromises.push(...pluginsValidations);
+    resultsOrPromises.push(...addonsValidations);
 
     // Define how results should be formatted
     const formatResults = results => {

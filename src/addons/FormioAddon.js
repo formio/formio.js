@@ -2,7 +2,7 @@ import Element from '../Element';
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
-export default class FormioPlugin extends Element {
+export default class FormioAddon extends Element {
   static get info() {
     return {};
   }
