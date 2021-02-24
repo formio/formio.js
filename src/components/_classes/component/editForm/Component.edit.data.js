@@ -86,33 +86,6 @@ export default [
     },
   },
   {
-    type: 'editgrid',
-    addAnother: 'Add Plugin',
-    saveRow: 'Save Plugin',
-    weight: 28,
-    input: true,
-    key: 'plugins',
-    label: 'Plugins',
-    components: [
-      {
-        label: 'Name',
-        tableView: true,
-        key: 'name',
-        type: 'textfield',
-        input: true
-      },
-      {
-        label: 'Settings',
-        editor: 'ace',
-        tableView: true,
-        key: 'settings',
-        type: 'textarea',
-        input: true,
-        as: 'json'
-      }
-    ]
-  },
-  {
     weight: 700,
     type: 'checkbox',
     label: 'Clear Value When Hidden',

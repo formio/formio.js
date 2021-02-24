@@ -1,10 +1,14 @@
 import _ from 'lodash';
-import FormioAddon from './FormioAddon';
+import FormioAddon from '../FormioAddon';
+import PasswordStrongnessEditForm from './PasswordStrongnessAddon.form';
 
 export default class PasswordStrongnessAddon extends FormioAddon {
   static get info() {
     return {
       supportedComponents: ['password'],
+      name: 'passwordStrongness',
+      components: PasswordStrongnessEditForm,
+      label: 'Password Strongness'
     };
   }
 
