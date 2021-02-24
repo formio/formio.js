@@ -1,18 +1,21 @@
-import PasswordStrongnessAddon from './PasswordStrongness/PasswordStrongnessAddon';
+import PasswordStrengthAddon from './PasswordStrength/PasswordStrengthAddon';
 
 export const editForms = [
-  PasswordStrongnessAddon.info
-].map(({ components, name }) => ({
+  PasswordStrengthAddon.info
+].map(({ components, name, defaultSettings }) => ({
   type: 'form',
   key: 'settings',
   display: 'form',
   input: true,
   components,
+  defaultValue: {
+    data: defaultSettings
+  },
   customConditional({ row }) {
     return row.name === name;
   }
 }));
 
 export default {
-  passwordStrongness: PasswordStrongnessAddon,
+  passwordStrength: PasswordStrengthAddon,
 };

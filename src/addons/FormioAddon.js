@@ -4,11 +4,17 @@ import _ from 'lodash';
 
 export default class FormioAddon extends Element {
   static get info() {
-    return {};
+    return {
+      supportedComponents: [],
+      name: 'formioAddon',
+      components: [],
+      label: 'Formio Addon',
+      defaultSettings: {}
+    };
   }
 
   get defaultSettings() {
-    return {};
+    return FormioAddon.info.defaultSettings;
   }
 
   get element() {
