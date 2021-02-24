@@ -10,12 +10,12 @@ export default class PasswordStrengthAddon extends FormioAddon {
       components: PasswordStrengthEditForm,
       label: 'Password Strength',
       defaultSettings: {
-        validations: [
-          { name: 'length' },
-          { name: 'upperCase' },
-          { name: 'numeric' },
-          { name: 'lowerCase' },
-          { name: 'symbols' },
+        rulesSettings: [
+          { name: 'length', required: false, message: 'Value should be longer' },
+          { name: 'upperCase', required: false, message: 'Value should have uppercase letters' },
+          { name: 'numeric', required: false, message: 'Value should have numeric symbols' },
+          { name: 'lowerCase', required: false, message: 'Value should be have lowercase letters' },
+          { name: 'symbols', required: false, message: 'Value should have symbols' }
         ],
         updateOn: 'levelChange',
         required: true,
@@ -146,6 +146,14 @@ export default class PasswordStrengthAddon extends FormioAddon {
     return this.level?.tooltip || `${this.level?.name} strongness`;
   }
 
+  get rulesSettings() {
+    return this.settings.rulesSettings;
+  }
+
+  get customRules() {
+    return this.settings.customRules;
+  }
+
   log2(value) {
     if (typeof Math.log2 === 'function') {
       return Math.log2(value);
@@ -239,11 +247,11 @@ export default class PasswordStrengthAddon extends FormioAddon {
    * @param {string} value - Value which was validated
    * @param {string} message - Message which should be shown if validation was not passed
    */
-  handleValidationResult(valid, validation, value, message, errors) {
+  handleRuleCheckResult(valid, validation, message, errors) {
     if (valid === false) {
       errors.push({
         validation: validation.name,
-        value, message,
+        message,
         level: validation.required ? 'error' : 'warning'
       });
     }
@@ -258,19 +266,20 @@ export default class PasswordStrengthAddon extends FormioAddon {
     const errors = [];
     let charactersPoolSize = 0;
 
-    this.validations.forEach((validation) => {
-      if (typeof validation.check === 'string') {
-        const valid = this.evaluate(this.settings.isValid, { value }, 'valid');
-        const message = validation.message || 'Password is not secure';
-        charactersPoolSize += this.handleValidationResult(valid, validation, value, message, errors);
-      }
-      else if (this.rules[validation.name]) {
-        const rule = { ...this.rules[validation.name] };
-        rule.required = validation.hasOwnProperty('required') ? validation.required : rule.required;
-        rule.name = validation.name;
+    this.rulesSettings.forEach((settings) => {
+      if (this.rules[settings.name]) {
+        const rule = _.merge({}, this.rules[settings.name], settings);
         const valid = rule.check(value);
-        const message = validation.message || rule.message || 'Password is not secure';
-        charactersPoolSize += this.handleValidationResult(valid, rule, value, message, errors);
+        const message = settings.message || this.rules[settings.name].message;
+        charactersPoolSize += this.handleRuleCheckResult(valid, rule, message, errors);
+      }
+    });
+
+    this.customRules.forEach((rule) => {
+      if (typeof rule.check === 'string') {
+        const valid = this.evaluate(this.settings.isValid, { value }, 'valid');
+        const message = rule.message || `Password do not meet validation check ${rule.name}`;
+        charactersPoolSize += this.handleRuleCheckResult(valid, rule, message, errors);
       }
     });
 
@@ -296,7 +305,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
       : null;
 
     if (blackListCheck && blackListCheck !== true) {
-     this.handleBlackListCheckResult(blackListCheck, value);
+     this.handleBlackListCheckResult(blackListCheck);
       this.entropy = Math.min(entropy, blackListCheck.entropy);
     }
     else {
@@ -306,8 +315,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
     const isValid = this.isValid();
     if (!isValid) {
       this.errors.push({
-        value,
-        message: 'Password is not secure enough',
+        message: 'Password is not strong enough',
         level: this.settings.required ? 'error' : 'warning'
       });
     }
@@ -315,20 +323,19 @@ export default class PasswordStrengthAddon extends FormioAddon {
     return !this.errors.length;
   }
 
-  handleBlackListCheckResult(result, value) {
+  handleBlackListCheckResult(result) {
     const blacklistedWords = result.blacklistedWords;
     const isRequired = this.settings.disableBlacklistedWords;
 
-    blacklistedWords.forEach((word) => this.handleValidationResult(false, {
+    blacklistedWords.forEach((word) => this.handleRuleCheckResult(false, {
       name: 'blacklist',
       required: isRequired,
-    }, value, `Password ${isRequired ? 'must' : 'should'} not include word "${word}"`, this.errors));
+    }, `Password ${isRequired ? 'must' : 'should'} not include word "${word}"`, this.errors));
   }
 
   constructor(settings, componentInstance) {
     super(settings, componentInstance);
     this._entropy = 0; // Set initial value of entropy
-    this.validations = [...(this.settings.validations || this.defaultSettings.validations)];
     this.levels = [...(this.settings.levels || this.defaultSettings.levels)];
     this.levels.sort((a, b) => a.maxEntropy - b.maxEntropy); // Sort levels from the lowest one to the highest
     this.level = this.levels[0]; // Set currnt level to the lowest one

@@ -85,10 +85,81 @@ export default [
     ]
   },
   {
-    label: 'Validations',
+    label: 'Rules',
+    reorder: false,
+    addAnotherPosition: 'bottom',
+    layoutFixed: false,
+    enableRowGroups: false,
+    initEmpty: false,
+    tableView: false,
+    defaultValue: [
+      {}
+    ],
+    key: 'rulesSettings',
+    type: 'datagrid',
+    input: true,
+    components: [
+      {
+        label: 'Name',
+        tableView: true,
+        data: {
+          values: [
+            {
+              label: 'Length',
+              value: 'length'
+            },
+            {
+              label: 'Lower Case',
+              value: 'lowerCase'
+            },
+            {
+              label: 'Upper Case',
+              value: 'upperCase'
+            },
+            {
+              label: 'Numeric',
+              value: 'numeric'
+            },
+            {
+              label: 'Symbols',
+              value: 'symbols'
+            }
+          ]
+        },
+        selectThreshold: 0.3,
+        validate: {
+          required: true,
+          onlyAvailableItems: false
+        },
+        key: 'name',
+        type: 'select',
+        indexeddb: {
+          filter: {}
+        },
+        input: true
+      },
+      {
+        label: 'Error Message',
+        tableView: true,
+        key: 'errorMessage',
+        type: 'textfield',
+        input: true
+      },
+      {
+        label: 'Required',
+        tableView: false,
+        key: 'required',
+        type: 'checkbox',
+        input: true,
+        defaultValue: false
+      }
+    ]
+  },
+  {
+    label: 'Custom Rules',
     tableView: false,
     rowDrafts: false,
-    key: 'validations',
+    key: 'customRules',
     type: 'editgrid',
     input: true,
     components: [
@@ -212,7 +283,6 @@ export default [
     key: 'template',
     type: 'textarea',
     input: true,
-    defaultValue: " <div class=\"formio-security-indicator\">\r\n  {% if (!ctx.readOnly && !ctx.pristine) { %}\r\n    <div\r\n      title=\"{{ctx.t(ctx.tooltip)}}\"\r\n      class=\"security-{{ctx.level.name}} {{ ctx.level.style ? 'bg-' + ctx.level.style : ''}}\"\r\n      style=\"{{ctx.level.color ? 'background-color: ' + ctx.level.color + ';' : ''}}\"\r\n    ></div>\r\n  {% } %}\r\n</div>",
     as: 'html'
   },
 ];
