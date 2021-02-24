@@ -136,6 +136,16 @@ export default [
         },
       },
       {
+        weight: 55,
+        label: 'Navigate Pages & Save on Enter',
+        type: 'checkbox',
+        key: 'navigateOrSaveOnEnter',
+        input: true,
+        inputType: 'checkbox',
+        defaultValue: false,
+        tooltip: 'Use the Enter key to go forward through pages and submit form on last page.'
+      },
+      {
         weight: 60,
         label: 'Scroll up on page opening',
         type: 'checkbox',

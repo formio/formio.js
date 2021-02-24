@@ -324,7 +324,26 @@ export default class Wizard extends Webform {
     return _.get(currentPage.component, 'allowPrevious', this.options.allowPrevious);
   }
 
+  handleSaveOnEnter(event) {
+    if (event.keyCode === 13) {
+      const clickEvent = new CustomEvent('click');
+      let buttonElement = null;
+      if (this.buttons.next) {
+        buttonElement = this.refs[`${this.wizardKey}-${this.buttons.next.name}`];
+      }
+      if (this.buttons.submit) {
+        buttonElement = this.refs[`${this.wizardKey}-${this.buttons.submit.name}`];
+      }
+      if (buttonElement) {
+        buttonElement.dispatchEvent(clickEvent);
+      }
+    }
+  }
+
   attachNav() {
+    if (this.component.navigateOrSaveOnEnter) {
+      this.addEventListener(this.root.element, 'keyup', this.handleSaveOnEnter.bind(this));
+    }
     _.each(this.buttons, (button) => {
       const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
       this.addEventListener(buttonElement, 'click', (event) => {
@@ -370,6 +389,9 @@ export default class Wizard extends Webform {
   }
 
   detachNav() {
+    if (this.component.navigateOrSaveOnEnter) {
+      this.removeEventListener(this.root.element, 'keyup', this.handleSaveOnEnter.bind(this));
+    }
     _.each(this.buttons, (button) => {
       this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], 'click');
     });
