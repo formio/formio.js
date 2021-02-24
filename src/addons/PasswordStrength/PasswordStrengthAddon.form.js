@@ -1,3 +1,5 @@
+import EditFormUtils from '../../components/_classes/component/editForm/utils';
+
 export default [
   {
     label: 'Strength Levels',
@@ -83,6 +85,32 @@ export default [
         input: true
       }
     ]
+  },
+  {
+    label: 'Update On',
+    tableView: true,
+    data: {
+      values: [
+        {
+          label: 'Strength Level Change',
+          value: 'levelChange'
+        },
+        {
+          label: 'Entropy Change',
+          value: 'entropyChange'
+        }
+      ]
+    },
+    selectThreshold: 0.3,
+    validate: {
+      onlyAvailableItems: false
+    },
+    key: 'updateOn',
+    type: 'select',
+    indexeddb: {
+      filter: {}
+    },
+    input: true
   },
   {
     label: 'Rules',
@@ -173,6 +201,12 @@ export default [
         type: 'textfield',
         input: true
       },
+      EditFormUtils.javaScriptValue('Check', 'check', '', 1100,
+        '<p><h4>Example:</h4><pre>valid = !value.includes(data.email);</pre></p>',
+        '',
+        '',
+        true
+      ),
       {
         label: 'Message',
         tooltip: 'Message that will be shown if the check was not passed',
@@ -205,6 +239,13 @@ export default [
       }
     ]
   },
+  EditFormUtils.javaScriptValue('Is Valid', 'isValid', '', 1100,
+    '<p><h4>Example:</h4><pre>valid = entropy > maxEntropy / 2 ;</pre></p>',
+    '',
+    '<tr><th>entropy</th><td>Current entropy bits of the password.</td></tr>' +
+    '<tr><th>level</th><td>Current strength level of the password.</td></tr>',
+    true
+  ),
   {
     label: 'Required',
     description: "Check this if you don't want to allow submitting password which does not correspond to the minimal strength requirements.",
@@ -223,6 +264,12 @@ export default [
     type: 'textfield',
     input: true
   },
+  EditFormUtils.javaScriptValue('Custom Blacklisted Words', 'customBlackListedWords', '', 1100,
+    '<p><h4>Example:</h4><pre>values = [ data.name, data.dataOfBirth, data.favoriteColor ];</pre></p>',
+    '',
+    '',
+    true
+  ),
   {
     label: 'Disable Blacklisted Words',
     tooltip: 'Check if you want to disable submitting passwords containing words form the clack list',

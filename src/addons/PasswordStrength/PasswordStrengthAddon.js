@@ -147,11 +147,11 @@ export default class PasswordStrengthAddon extends FormioAddon {
   }
 
   get rulesSettings() {
-    return this.settings.rulesSettings;
+    return this.settings.rulesSettings || [];
   }
 
   get customRules() {
-    return this.settings.customRules;
+    return this.settings.customRules || [];
   }
 
   log2(value) {
@@ -188,8 +188,8 @@ export default class PasswordStrengthAddon extends FormioAddon {
     const blackList = [...this.settings.blackList];
     let customBlacklistedWords = this.settings.customBlacklistedWords;
 
-    if (customBlacklistedWords) {
-      customBlacklistedWords = this.evaluate(customBlacklistedWords, { value }, 'values');
+    if (customBlacklistedWords && typeof customBlacklistedWords === 'string') {
+      customBlacklistedWords = this.evaluate(customBlacklistedWords, this.component.evalContext({ value }), 'values');
       if (customBlacklistedWords && customBlacklistedWords.length) {
         blackList.push(...customBlacklistedWords);
       }
@@ -229,11 +229,11 @@ export default class PasswordStrengthAddon extends FormioAddon {
    */
   isValid() {
     const isValidCheck = this.settings.isValid;
-    if (typeof isValidCheck === 'string') {
-      const valid = this.evaluate(isValidCheck, {
+    if (isValidCheck && typeof isValidCheck === 'string') {
+      const valid = this.evaluate(isValidCheck, this.component.evalContext({
         entropy: this.entropy,
         level: this.level
-      }, 'valid');
+      }), 'valid');
       return valid;
     }
 
@@ -276,8 +276,8 @@ export default class PasswordStrengthAddon extends FormioAddon {
     });
 
     this.customRules.forEach((rule) => {
-      if (typeof rule.check === 'string') {
-        const valid = this.evaluate(this.settings.isValid, { value }, 'valid');
+      if (rule.check && typeof rule.check === 'string') {
+        const valid = this.evaluate(rule.check, this.component.evalContext({ value }), 'valid');
         const message = rule.message || `Password do not meet validation check ${rule.name}`;
         charactersPoolSize += this.handleRuleCheckResult(valid, rule, message, errors);
       }
