@@ -288,27 +288,20 @@ export default class PasswordStrengthAddon extends FormioAddon {
     const passwordLength = value.length;
 
     const { charactersPoolSize, errors } = this.performChecks(value);
+    this.errors = errors;
 
     const entropy = this.calculatePasswordEntropy(passwordLength, charactersPoolSize);
     const blackListCheck = this.settings.blackList?.length || this.settings.customBlacklistedWords ?
-    this.checkBlackList(value)
-    : null;
+      this.checkBlackList(value)
+      : null;
 
     if (blackListCheck && blackListCheck !== true) {
-      const blacklistedWords = blackListCheck.blacklistedWords;
-      if (this.settings.disableBlacklistedWords) {
-        blacklistedWords.forEach((word) => this.handleValidationResult(false, {
-          name: 'blacklist',
-          required: true,
-        }, value, `Password should not include word ${word}`, this.errors));
-      }
+     this.handleBlackListCheckResult(blackListCheck, value);
       this.entropy = Math.min(entropy, blackListCheck.entropy);
     }
     else {
       this.entropy = entropy;
     }
-
-    this.errors = errors;
 
     const isValid = this.isValid();
     if (!isValid) {
@@ -320,6 +313,16 @@ export default class PasswordStrengthAddon extends FormioAddon {
     }
 
     return !this.errors.length;
+  }
+
+  handleBlackListCheckResult(result, value) {
+    const blacklistedWords = result.blacklistedWords;
+    const isRequired = this.settings.disableBlacklistedWords;
+
+    blacklistedWords.forEach((word) => this.handleValidationResult(false, {
+      name: 'blacklist',
+      required: isRequired,
+    }, value, `Password ${isRequired ? 'must' : 'should'} not include word "${word}"`, this.errors));
   }
 
   constructor(settings, componentInstance) {

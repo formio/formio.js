@@ -519,16 +519,7 @@ export default class Component extends Element {
       return;
     }
 
-    let settings = addonConfiguration.settings || {};
-    if (typeof settings === 'string') {
-      try {
-        settings = JSON.parse(settings);
-      }
-      catch (err) {
-        console.warn(`Error while parsing ${name} addon settings`);
-        settings = {};
-      }
-    }
+    const settings = addonConfiguration.settings?.data || {};
     const Addon = Addons[name];
 
     let addon = null;
