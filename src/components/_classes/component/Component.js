@@ -519,7 +519,16 @@ export default class Component extends Element {
       return;
     }
 
-    const settings = pluginConfiguration.settings || {};
+    let settings = pluginConfiguration.settings || {};
+    if (typeof settings === 'string') {
+      try {
+        settings = JSON.parse(settings);
+      }
+      catch (err) {
+        console.warn(`Error while parsing ${name} plugin settings`);
+        settings = {};
+      }
+    }
     const Plugin = Plugins[name];
 
     let plugin = null;

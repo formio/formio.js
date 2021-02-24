@@ -28,7 +28,7 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
             <div
               title="{{ctx.t(ctx.tooltip)}}"
               class="security-{{ctx.level.name}} {{ ctx.level.style ? 'bg-' + ctx.level.style : ''}}"
-              style="{{ctx.level.color ? 'backgroound-color' + ctx.level.color + ';' : ''}}"
+              style="{{ctx.level.color ? 'background-color: ' + ctx.level.color + ';' : ''}}"
             ></div>
           {% } %}
         </div>
@@ -45,7 +45,7 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
       length: {
         check: (value) => {
           const minLength = this.component.component.validate.minLength || 6;
-          const maxLength = this.component.component.validate.maxLength || 24;
+          const maxLength = this.component.component.validate.maxLength || minLength;
           if (value.length < minLength) {
             return false;
           }
@@ -58,9 +58,9 @@ export default class PasswordStrongnessPlugin extends FormioPlugin {
             return 10;
           }
 
-          return 10;
+          return 10 + value.length - minLength;
         },
-        message: 'Value must be longer than 6 characters'
+        message: `Value must be longer than ${this.component.component.validate.minLength || 6} characters`
       },
       upperCase: {
         check: (value) => {
