@@ -202,19 +202,11 @@ export default [
         input: true
       },
       EditFormUtils.javaScriptValue('Check', 'check', '', 1100,
-        '<p><h4>Example:</h4><pre>valid = !value.includes(data.email);</pre></p>',
+        '<p><h4>Example:</h4><pre>valid = !value.includes(data.email) ? true : "Password should not be variation of the email";</pre></p>',
         '',
         '',
         true
       ),
-      {
-        label: 'Message',
-        tooltip: 'Message that will be shown if the check was not passed',
-        tableView: true,
-        key: 'message',
-        type: 'textfield',
-        input: true
-      },
       {
         label: 'Increase Characters Pool Size',
         description: 'Set this to amount of characters that may be used in the password if there is a specific group of characters is used.\nE.g., if your validation checks if there is any numeric symbol in the password, then you should set it to 10 (there are 10 possible numbers).\n',

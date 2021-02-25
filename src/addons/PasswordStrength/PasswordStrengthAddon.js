@@ -61,7 +61,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
         }
       },
       upperCase: {
-        check: (value) => {
+        check: (value, options) => {
           if (/[A-Z]/g.test(value)) {
             return true;
           }
@@ -70,7 +70,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
         increaseCharactersPoolSize: 26
       },
       numeric: {
-        check: (value) => {
+        check: (value, options) => {
           if (/[0-9]/g.test(value)) {
             return true;
           }
@@ -79,7 +79,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
         increaseCharactersPoolSize: 10,
       },
       lowerCase: {
-        check: (value) => {
+        check: (value, options) => {
           if (/[a-z]/g.test(value)) {
             return true;
           }
@@ -88,11 +88,11 @@ export default class PasswordStrengthAddon extends FormioAddon {
         increaseCharactersPoolSize: 26,
       },
       symbols: {
-        check: (value) => {
+        check: (value, options) => {
           if (/[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(value)) {
-            return 'Value must contain symbols';
+            return true;
           }
-          return false;
+          return 'Value must contain symbols';
         },
         increaseCharactersPoolSize: 32,
       },
@@ -249,7 +249,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
    * @param {string} message - Message which should be shown if validation was not passed
    */
   handleRuleCheckResult(valid, validation, message, errors) {
-    if (valid === false) {
+    if (valid !== true) {
       errors.push({
         validation: validation.name,
         message,
@@ -270,7 +270,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
     this.rulesSettings.forEach((settings) => {
       if (this.rules[settings.name]) {
         const rule = _.merge({}, this.rules[settings.name], settings);
-        const valid = rule.check(value);
+        const valid = rule.check(value, settings.options || {});
         const message = settings.message || valid;
         charactersPoolSize += this.handleRuleCheckResult(valid, rule, message, errors);
       }
