@@ -31,7 +31,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
             {% if (!ctx.readOnly && !ctx.pristine) { %}
               <div
                 title="{{ctx.t(ctx.tooltip)}}"
-                class="security-{{ctx.level.name.replace(' ', '')}} {{ ctx.level.style ? 'bg-' + ctx.level.style : ''}}"
+                class="security-{{ctx.levelName}} {{ ctx.level.style ? 'bg-' + ctx.level.style : ''}}"
                 style="{{ctx.level.color ? 'background-color: ' + ctx.level.color + ';' : ''}}"
               ></div>
             {% } %}
@@ -170,6 +170,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
       entropy: this.entropy,
       maxEntropy: this.maxEntropy,
       level: this.level,
+      levelName: this.level.name.replace(' ', '-').toLowerCase(),
       levels: this.levels,
       readOnly: this.component.options.readOnly,
       pristine: this.component.pristine,
