@@ -2,6 +2,7 @@ import Harness from '../test/harness';
 import Wizard from './Wizard';
 import Formio from './Formio';
 import assert from 'power-assert';
+import _ from 'lodash';
 import wizardCond from '../test/forms/wizardConditionalPages';
 import wizard from '../test/forms/wizardValidationOnPageChanged';
 import wizard1 from '../test/forms/wizardValidationOnNextBtn';
@@ -16,8 +17,207 @@ import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import formWithSignature from '../test/forms/formWithSignature';
 import wizardWithTooltip from '../test/forms/wizardWithTooltip';
 import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
+import customWizard from '../test/forms/customWizard';
 
 describe('Wizard tests', () => {
+  it('Should not create a new submission on submission of edited draft submission', function(done) {
+    const formElement = document.createElement('div');
+    const customizedWizard = new Wizard(formElement);
+    const expectedValues = {
+      '1': {
+        method: 'post',
+        urlEnd: 'submission',
+        state: 'draft',
+        data: {
+          number: undefined,
+          textArea1: '',
+          textField: 'test'
+        },
+        id: undefined
+      },
+      '2': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'draft',
+        data: {
+          number: 111111,
+          textArea1: 'test1',
+          textField: 'test1'
+        },
+        id: 'someId'
+      },
+      '3': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'draft',
+        data: {
+          number: 22222,
+          textArea1: 'test',
+          textField: 'test1'
+        },
+        id: 'someId'
+      },
+      '4': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'draft',
+        data: {
+          number: 22222,
+          textArea1: 'test1',
+          textField: 'test1'
+        },
+        id: 'someId'
+      },
+      '5': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'submitted',
+        data: {
+          number: 22222,
+          textArea1: 'test1',
+          textField: 'test1'
+        },
+        id: 'someId'
+      }
+    };
+
+    customizedWizard.setForm(customWizard).then(() => {
+      const formio = new Formio('http://test.localhost/draftwizardpages', {});
+      let number = 1;
+
+      formio.makeRequest = (type, url, method, data) => {
+        assert.equal(method, expectedValues[number].method, `Should send ${expectedValues[number].method} request`);
+        assert.equal(data._id, expectedValues[number].id, `Submission data should ${expectedValues[number].id ? '' : 'not'} contain id of editted submission`);
+        assert.equal(url.endsWith(expectedValues[number].urlEnd), true, `Request url should end with ${expectedValues[number].urlEnd}`);
+        assert.equal(data.state, expectedValues[number].state, `Should set ${expectedValues[number].state} state for submission`);
+        _.each(expectedValues[number].data, function(value, key) {
+          assert.equal(data.data[key], value, `${key} field should contain "${value}" value in submission object`);
+        });
+
+        number = number + 1;
+
+        return new Promise(resolve => resolve({
+          _id: 'someId',
+          data: {
+            number: 22222,
+            textArea1: 'test1',
+            textField: 'test1'
+          },
+          metadata:{},
+          state: data.state
+          })
+        );
+      };
+
+      customizedWizard.formio = formio;
+
+      customizedWizard.on('goToNextPage', function() {
+        customizedWizard.executeSubmit({ state: 'draft' }).then(() => customizedWizard.nextPage());
+      });
+      customizedWizard.on('goToPrevPage', function() {
+        customizedWizard.executeSubmit({ state: 'draft' }).then(() => customizedWizard.prevPage());
+      });
+      customizedWizard.on('saveSubmission', function() {
+        customizedWizard.executeSubmit();
+      });
+
+      const checkPage = (page) => {
+        assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
+      };
+
+      const navigatePage = (btnKey) => {
+        const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
+        const clickEvent = new Event('click');
+        customBtn.dispatchEvent(clickEvent);
+      };
+
+      const setPageCompValue = (compKey, value) => {
+        customizedWizard.components[customizedWizard.page].getComponent(compKey).setValue(value);
+      };
+
+      checkPage(0);
+      setPageCompValue('textField', 'test');
+      navigatePage('nextPage');
+
+      setTimeout(() => {
+        checkPage(1);
+        setPageCompValue('number', 111111);
+        navigatePage('nextPage1');
+
+        setTimeout(() => {
+          checkPage(2);
+          setPageCompValue('textArea1', 'test');
+          navigatePage('prevPage1');
+
+          setTimeout(() => {
+            checkPage(1);
+            navigatePage('nextPage1');
+
+            setTimeout(() => {
+              checkPage(2);
+              navigatePage('save');
+              setTimeout(() => {
+                customizedWizard.destroy();
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should correctly render customized wizard and navigate using custom btns', function(done) {
+    const formElement = document.createElement('div');
+    const customizedWizard = new Wizard(formElement);
+
+    customizedWizard.setForm(customWizard).then(() => {
+      customizedWizard.on('goToNextPage', function() {
+        customizedWizard.nextPage();
+      });
+      customizedWizard.on('goToPrevPage', function() {
+        customizedWizard.prevPage();
+      });
+
+      const checkBtns = (page) => {
+        assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-next`], false, 'Should not render wizard next btn');
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-cancel`], false, 'Should not render wizard cancel btn');
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-previous`], false, 'Should not render wizard previous btn');
+      };
+
+      const navigatePage = (btnKey) => {
+        const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
+        const clickEvent = new Event('click');
+        customBtn.dispatchEvent(clickEvent);
+      };
+      checkBtns(0);
+      navigatePage('nextPage');
+      setTimeout(() => {
+        checkBtns(1);
+        navigatePage('nextPage1');
+        setTimeout(() => {
+          checkBtns(2);
+          navigatePage('prevPage1');
+
+          setTimeout(() => {
+            checkBtns(1);
+            navigatePage('prevPage');
+
+            setTimeout(() => {
+              checkBtns(0);
+              customizedWizard.destroy();
+
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should correctly set values in HTML render mode', function(done) {
     const formElement = document.createElement('div');
     const formHTMLMode = new Wizard(formElement, {
