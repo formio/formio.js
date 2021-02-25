@@ -51,54 +51,49 @@ export default class PasswordStrengthAddon extends FormioAddon {
   get rules() {
     return {
       length: {
-        check: (value) => {
-          const minLength = this.component.component.validate.minLength || 6;
+        check: (value, options) => {
+          const minLength = options.minLength || this.component.component.validate.minLength || 6;
           if (value.length < minLength) {
-            return false;
+            return `Value must be longer than ${minLength} characters`;
           }
           return true;
-        },
-        message: `Value must be longer than ${this.component.component.validate.minLength || 6} characters`
+        }
       },
       upperCase: {
         check: (value) => {
           if (/[A-Z]/g.test(value)) {
             return true;
           }
-          return false;
+          return 'Value must contain uppercased alphabetical characters';
         },
-        increaseCharactersPoolSize: 26,
-        message: 'Value must contain uppercased alphabetical characters',
+        increaseCharactersPoolSize: 26
       },
       numeric: {
         check: (value) => {
           if (/[0-9]/g.test(value)) {
             return true;
           }
-          return false;
+          return 'Value must contain numeric characters';
         },
         increaseCharactersPoolSize: 10,
-        message: 'Value must contain numeric characters',
       },
       lowerCase: {
         check: (value) => {
           if (/[a-z]/g.test(value)) {
             return true;
           }
-          return false;
+          return 'Value must contain lowercased alphabetical characters';
         },
         increaseCharactersPoolSize: 26,
-        message: 'Value must contain lowercased alphabetical characters',
       },
       symbols: {
         check: (value) => {
           if (/[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(value)) {
-            return true;
+            return 'Value must contain symbols';
           }
           return false;
         },
         increaseCharactersPoolSize: 32,
-        message: 'Value must contain symbols',
       },
     };
   }
@@ -207,14 +202,18 @@ export default class PasswordStrengthAddon extends FormioAddon {
         restValue = restValue.replace(regExp, '');
       }
 
+      // If less the 3 symboles left, just stop iterating
       if (restValue.length < 3) {
         break;
       }
     }
 
     if (blacklistedWords.length) {
+      // If there are some random characters except of blacklisted words in the password,
+      // calculate the entropy for them
       const { charactersPoolSize } = restValue.length ? this.performChecks(restValue) : 0;
       const entropyOfNonblacklistedValue = this.calculatePasswordEntropy(restValue.length, charactersPoolSize);
+      // Calculate the entropy if the biggest part of the password could be picked up from dictionary words
       const dictionaryCheckEntropy = this.calculatePasswordEntropyWords(blacklistedWords.length);
       const entropy = dictionaryCheckEntropy + entropyOfNonblacklistedValue;
       return { entropy, blacklistedWords };
@@ -270,7 +269,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
       if (this.rules[settings.name]) {
         const rule = _.merge({}, this.rules[settings.name], settings);
         const valid = rule.check(value);
-        const message = settings.message || this.rules[settings.name].message;
+        const message = settings.message || valid;
         charactersPoolSize += this.handleRuleCheckResult(valid, rule, message, errors);
       }
     });
@@ -278,7 +277,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
     this.customRules.forEach((rule) => {
       if (rule.check && typeof rule.check === 'string') {
         const valid = this.evaluate(rule.check, this.component.evalContext({ value }), 'valid');
-        const message = rule.message || `Password do not meet validation check ${rule.name}`;
+        const message = typeof valid === 'string' ? valid : `Password does not meet ${rule.name} validation`;
         charactersPoolSize += this.handleRuleCheckResult(valid, rule, message, errors);
       }
     });
@@ -304,8 +303,10 @@ export default class PasswordStrengthAddon extends FormioAddon {
       this.checkBlackList(value)
       : null;
 
+    // If there were found some words from the black list
     if (blackListCheck && blackListCheck !== true) {
-     this.handleBlackListCheckResult(blackListCheck);
+      this.handleBlackListCheckResult(blackListCheck);
+      // Select the mininal entropy based on the dictionary check or symbolic check
       this.entropy = Math.min(entropy, blackListCheck.entropy);
     }
     else {
@@ -326,11 +327,13 @@ export default class PasswordStrengthAddon extends FormioAddon {
   handleBlackListCheckResult(result) {
     const blacklistedWords = result.blacklistedWords;
     const isRequired = this.settings.disableBlacklistedWords;
-
-    blacklistedWords.forEach((word) => this.handleRuleCheckResult(false, {
+    const message = `Password ${isRequired ? 'must' : 'should'} not include common words: ${blacklistedWords.join(', ')}`;
+    const validation = {
       name: 'blacklist',
       required: isRequired,
-    }, `Password ${isRequired ? 'must' : 'should'} not include word "${word}"`, this.errors));
+    };
+
+    this.handleRuleCheckResult(false, validation, message, this.errors);
   }
 
   constructor(settings, componentInstance) {
