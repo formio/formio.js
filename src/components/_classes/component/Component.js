@@ -508,7 +508,7 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
-    if (this.component.addons.length) {
+    if (this.component.addons?.length) {
       this.component.addons.forEach((addon) => this.createAddon(addon));
     }
   }
