@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - Cherry picked commits for USWDS/VPAT 2.3.0 release
+
 ### 4.13.0-rc.12
 #### Fixed
  - FIO-1542: Cherry picked commits for USWDS/VPAT 2.3.0 release
