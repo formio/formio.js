@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased]
 #### Fixed
  - Cherry picked commits for USWDS/VPAT 2.3.0 release
+ - Fix: fix rendering of nested wizards
 
 ### 4.13.0-rc.12
 #### Fixed
