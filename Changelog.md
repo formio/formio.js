@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.7-patch.2
+#### Fixed
+ - FIO-1300: Fix: fix rendering of nested wizards
+
 ### 4.12.7-patch.1
 #### Fixed
  - FIO-1300: add the dynamicWizard type to conditions with components that store data as an array
