@@ -57,6 +57,9 @@ Object.keys(templates).forEach(framework => {
     renderForm(forms[form], { template: framework }).then(html => {
       fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, html);
     }).catch(err => console.log(err));
+    renderForm(forms[form], { template: framework, readOnly: true }).then(html => {
+      fs.writeFileSync(`${dir}/form-${framework}-readOnly-${form}.html`, html);
+    }).catch(err => console.log(err));
   });
   // Object.keys(formtests).forEach(form => {
   //   fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, renderForm(formtests[form].form, {}));
@@ -95,6 +98,12 @@ Object.keys(templates).forEach(framework => {
             template: framework,
             flatten: true,
             renderMode: 'html',
+          }, value));
+
+          fs.writeFileSync(`${dir}/component-${framework}-${component}-readOnly-value${index}.html`, renderComponent(AllComponents[component], {}, {
+            template: framework,
+            flatten: true,
+            readOnly: true,
           }, value));
 
           fs.writeFileSync(`${dir}/component-${framework}-${component}-string-value${index}.html`, renderAsString(AllComponents[component], {}, {
