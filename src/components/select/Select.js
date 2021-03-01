@@ -95,11 +95,6 @@ export default class SelectComponent extends Field {
 
     // If this component has been activated.
     this.activated = false;
-
-    // Determine when the items have been loaded.
-    this.itemsLoaded = new NativePromise((resolve) => {
-      this.itemsLoadedResolve = resolve;
-    });
   }
 
   get dataReady() {
@@ -398,15 +393,15 @@ export default class SelectComponent extends Field {
     this.loading = false;
 
     // If a value is provided, then select it.
-    if (this.dataValue) {
+    if (!this.isEmpty()) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
     }
     else {
       // If a default value is provided then select it.
-      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
-      if (defaultValue) {
+      const defaultValue = this.defaultValue;
+      if (!this.isEmpty(defaultValue)) {
         this.setValue(defaultValue);
       }
     }
@@ -415,6 +410,14 @@ export default class SelectComponent extends Field {
     this.itemsLoadedResolve();
   }
   /* eslint-enable max-statements */
+
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && (this.component.defaultValue === false || this.component.defaultValue === 0)) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
 
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
@@ -545,6 +548,10 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
+  isEmpty(value = this.dataValue) {
+    return super.isEmpty(value) || value === undefined;
+  }
+
   refresh(value, { instance }) {
     if (this.component.clearOnRefresh && (instance && !instance.pristine)) {
       this.setValue(this.emptyValue);
@@ -628,6 +635,7 @@ export default class SelectComponent extends Field {
       case 'resource': {
         // If there is no resource, or we are lazyLoading, wait until active.
         if (!this.component.data.resource || (!forceUpdate && !this.active)) {
+          this.itemsLoadedResolve();
           return;
         }
 
@@ -650,6 +658,7 @@ export default class SelectComponent extends Field {
       case 'url': {
         if (!forceUpdate && !this.active && !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
+          this.itemsLoadedResolve();
           return;
         }
         let { url } = this.component.data;
@@ -874,7 +883,7 @@ export default class SelectComponent extends Field {
     this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
-      this.triggerUpdate();
+      this.triggerUpdate(null, true);
 
       if (this.visible) {
         this.setItems(this.selectOptions || []);
@@ -896,7 +905,7 @@ export default class SelectComponent extends Field {
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
-    if (this.choices) {
+    if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
 
@@ -1004,7 +1013,7 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.triggerUpdate();
+    this.updateItems();
     return superAttach;
   }
 
@@ -1097,7 +1106,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if (!value || _.isEmpty(value)) {
+      if (this.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1290,8 +1299,8 @@ export default class SelectComponent extends Field {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
-    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasPreviousValue = !this.isEmpty(previousValue);
+    const hasValue = !this.isEmpty(value);
 
     // Undo typing when searching to set the value.
     if (this.component.multiple && Array.isArray(value)) {
@@ -1341,7 +1350,7 @@ export default class SelectComponent extends Field {
   }
 
   setChoicesValue(value, hasPreviousValue, flags = {}) {
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasValue = !this.isEmpty(value);
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
@@ -1380,6 +1389,14 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  get itemsLoaded() {
+    return this._itemsLoaded || NativePromise.resolve();
+  }
+
+  set itemsLoaded(promise) {
+    this._itemsLoaded = promise;
   }
 
   validateValueAvailability(setting, value) {
@@ -1572,7 +1589,9 @@ export default class SelectComponent extends Field {
   detach() {
     super.detach();
     if (this.choices) {
-      this.choices.destroy();
+      if (this.choices.containerOuter?.element?.parentNode) {
+        this.choices.destroy();
+      }
       this.choices = null;
     }
   }

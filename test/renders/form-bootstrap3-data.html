@@ -30,7 +30,7 @@
           <tr>
             <th class="">
               Show Header
-              <i ref="tooltip" data-title="My Tooltip" class="fa fa-question-circle text-muted"></i>
+              <i ref="tooltip" data-title="My Tooltip" class="fa fa-question-circle text-muted" data-tooltip="My Tooltip"></i>
             </th>
             <th class="">
             </th>
@@ -41,46 +41,46 @@
             </th>
           </tr>
         </thead>
-        <tbody ref="datagrid-dataGrid-tbody">
-          <tr ref="datagrid-dataGrid-row">
-            <td ref="datagrid-dataGrid" class="col-md-">
-              <div id="dataGridText" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText  formio-component-label-hidden" ref="component">
-                <div ref="element">
-                  <input ref="input" name="data[dataGrid][0][dataGridText]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText-dataGridText"></input>
-                </div>
-                <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+        <tbody ref="datagrid-dataGrid-tbody" data-key="datagrid-dataGrid>
+    <tr ref=" datagrid-dataGrid-row">
+          <td ref="datagrid-dataGrid" class="col-md-">
+            <div id="dataGridText" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText  formio-component-label-hidden" ref="component">
+              <div ref="element">
+                <input ref="input" name="data[dataGrid][0][dataGridText]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText-dataGridText"></input>
               </div>
-            </td>
-            <td ref="datagrid-dataGrid" class="col-md-">
-              <div id="dataGridText3" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText3  formio-component-label-hidden" ref="component">
-                <div ref="element">
-                  <input ref="input" name="data[dataGrid][0][dataGridText3]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText3-dataGridText3"></input>
-                </div>
-                <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+          </td>
+          <td ref="datagrid-dataGrid" class="col-md-">
+            <div id="dataGridText3" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText3  formio-component-label-hidden" ref="component">
+              <div ref="element">
+                <input ref="input" name="data[dataGrid][0][dataGridText3]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText3-dataGridText3"></input>
               </div>
-            </td>
-            <td ref="datagrid-dataGrid" class="col-md-">
-              <div id="dataGridText2" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText2 " ref="component">
-                <label class="control-label " for="dataGridText2-dataGridText2">
-                  Show Row
-                </label>
-                <div ref="element">
-                  <input ref="input" name="data[dataGrid][0][dataGridText2]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText2-dataGridText2"></input>
-                </div>
-                <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+          </td>
+          <td ref="datagrid-dataGrid" class="col-md-">
+            <div id="dataGridText2" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText2 " ref="component">
+              <label class="control-label " for="dataGridText2-dataGridText2">
+                Show Row
+              </label>
+              <div ref="element">
+                <input ref="input" name="data[dataGrid][0][dataGridText2]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText2-dataGridText2"></input>
               </div>
-            </td>
-            <td ref="datagrid-dataGrid" class="col-md-">
-              <div id="dataGridText4" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText4 " ref="component">
-                <label class="control-label " for="dataGridText4-dataGridText4">
-                  Show Both
-                </label>
-                <div ref="element">
-                  <input ref="input" name="data[dataGrid][0][dataGridText4]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText4-dataGridText4"></input>
-                </div>
-                <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+          </td>
+          <td ref="datagrid-dataGrid" class="col-md-">
+            <div id="dataGridText4" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGridText4 " ref="component">
+              <label class="control-label " for="dataGridText4-dataGridText4">
+                Show Both
+              </label>
+              <div ref="element">
+                <input ref="input" name="data[dataGrid][0][dataGridText4]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGridText4-dataGridText4"></input>
               </div>
-            </td>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+          </td>
           </tr>
           <tr ref="datagrid-dataGrid-row">
             <td ref="datagrid-dataGrid" class="col-md-">
@@ -181,29 +181,29 @@
       </label>
       <table class="table datagrid-table table-bordered
     ">
-        <tbody ref="datagrid-dataGrid2-tbody">
-          <tr ref="datagrid-dataGrid2-row">
-            <td ref="datagrid-dataGrid2" class="col-md-">
-              <div id="dataGrid2Text" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGrid2Text  formio-component-label-hidden" ref="component">
-                <div ref="element">
-                  <input ref="input" name="data[dataGrid2][0][dataGrid2Text]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGrid2Text-dataGrid2Text"></input>
-                </div>
-                <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+        <tbody ref="datagrid-dataGrid2-tbody" data-key="datagrid-dataGrid2>
+    <tr ref=" datagrid-dataGrid2-row">
+          <td ref="datagrid-dataGrid2" class="col-md-">
+            <div id="dataGrid2Text" class="form-group has-feedback formio-component formio-component-textfield formio-component-dataGrid2Text  formio-component-label-hidden" ref="component">
+              <div ref="element">
+                <input ref="input" name="data[dataGrid2][0][dataGrid2Text]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="dataGrid2Text-dataGrid2Text"></input>
               </div>
-            </td>
-            <td ref="datagrid-dataGrid2" class="col-md-">
-              <div id="text" class="form-group has-feedback formio-component formio-component-textfield formio-component-text  formio-component-label-hidden" ref="component">
-                <div ref="element">
-                  <input ref="input" name="data[dataGrid2][0][text]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="text-text"></input>
-                </div>
-                <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+          </td>
+          <td ref="datagrid-dataGrid2" class="col-md-">
+            <div id="text" class="form-group has-feedback formio-component formio-component-textfield formio-component-text  formio-component-label-hidden" ref="component">
+              <div ref="element">
+                <input ref="input" name="data[dataGrid2][0][text]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="text-text"></input>
               </div>
-            </td>
-            <td>
-              <button type="button" class="btn btn-default formio-button-remove-row" ref="datagrid-dataGrid2-removeRow">
-                <i class="fa fa-times-circle-o"></i>
-              </button>
-            </td>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+          </td>
+          <td>
+            <button type="button" class="btn btn-default formio-button-remove-row" ref="datagrid-dataGrid2-removeRow">
+              <i class="fa fa-times-circle-o"></i>
+            </button>
+          </td>
           </tr>
         </tbody>
         <tfoot>
@@ -243,24 +243,24 @@
             </th>
           </tr>
         </thead>
-        <tbody ref="datagrid-conditionalDataGrid-tbody">
-          <tr ref="datagrid-conditionalDataGrid-row">
-            <td ref="datagrid-conditionalDataGrid" class="col-md-">
-              <div id="conditionalDataGridShow2" class="form-group has-feedback formio-component formio-component-checkbox formio-component-conditionalDataGridShow2  formio-component-label-hidden" ref="component">
-                <div class="form-check checkbox">
-                  <label class=" form-check-label">
-                    <input ref="input" name="data[conditionalDataGrid][0][conditionalDataGridShow2]" type="checkbox" class="form-check-input" lang="en" value="0">
-                    </input>
-                  </label>
-                </div>
-                <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+        <tbody ref="datagrid-conditionalDataGrid-tbody" data-key="datagrid-conditionalDataGrid>
+    <tr ref=" datagrid-conditionalDataGrid-row">
+          <td ref="datagrid-conditionalDataGrid" class="col-md-">
+            <div id="conditionalDataGridShow2" class="form-group has-feedback formio-component formio-component-checkbox formio-component-conditionalDataGridShow2  formio-component-label-hidden" ref="component">
+              <div class="form-check checkbox">
+                <label class=" form-check-label">
+                  <input ref="input" name="data[conditionalDataGrid][0][conditionalDataGridShow2]" type="checkbox" class="form-check-input" lang="en" value="0">
+                  </input>
+                </label>
               </div>
-            </td>
-            <td>
-              <button type="button" class="btn btn-default formio-button-remove-row" ref="datagrid-conditionalDataGrid-removeRow">
-                <i class="fa fa-times-circle-o"></i>
-              </button>
-            </td>
+              <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+            </div>
+          </td>
+          <td>
+            <button type="button" class="btn btn-default formio-button-remove-row" ref="datagrid-conditionalDataGrid-removeRow">
+              <i class="fa fa-times-circle-o"></i>
+            </button>
+          </td>
           </tr>
         </tbody>
         <tfoot>

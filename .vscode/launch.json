@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+              "--require",
+              "@babel/register",
+              "--require",
+              "jsdom-global/register",
+              "-b",
+              "-t",
+              "20000",
+              "--reporter",
+              "dot",
+              "--slow",
+              "5000",
+              "--colors",
+              "${workspaceFolder}/lib/**/*.unit.js",
+
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": [
+              "<node_internals>/**"
+            ]
+          }
+    ]
+}

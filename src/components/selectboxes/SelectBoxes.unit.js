@@ -6,6 +6,7 @@ import Formio from './../../Formio';
 import {
   comp1
 } from './fixtures';
+import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
 
 describe('SelectBoxes Component', () => {
   it('Should build a SelectBoxes component', () => {
@@ -164,5 +165,41 @@ describe('SelectBoxes Component', () => {
           }, 300);
         });
     });
+  });
+
+  it('Should set "checked" attribute correctly when value is changed', (done) => {
+    Formio.createForm(document.createElement('div'), wizardWithSelectBoxes).then((form) => {
+      const selectBoxes = form.getComponent(['selectBoxes']);
+      const value = {
+        five: false,
+        four: false,
+        one: true,
+        three: false,
+        two: true,
+      };
+
+      selectBoxes.setValue(value);
+
+      const checkInputs = (values) => {
+        Object.entries(values).forEach(([key, value]) => {
+          const input = selectBoxes.element.querySelector(`input[value="${key}"]`);
+          assert.equal(input.checked, value, 'Should be checked');
+        });
+      };
+
+      setTimeout(() => {
+        checkInputs(value);
+        form.setPage(1);
+
+        setTimeout(() => {
+          form.setPage(0);
+
+          setTimeout(() => {
+            checkInputs(value);
+            done();
+          });
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });

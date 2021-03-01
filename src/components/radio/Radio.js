@@ -59,6 +59,10 @@ export default class RadioComponent extends Field {
     return this.component.inputType === 'radio';
   }
 
+  get optionSelectedClass() {
+    return 'radio-selected';
+  }
+
   init() {
     super.init();
     this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
@@ -168,17 +172,18 @@ export default class RadioComponent extends Field {
     if (this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
-      const optionSelectedClass = 'radio-selected';
-
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
         const checked  = (input.type === 'checkbox') ? value[input.value] : (input.value.toString() === value.toString());
         if (checked) {
           this.addClass(wrapper, optionSelectedClass);
+          //add class to container when selected
+          this.addClass(wrapper, this.optionSelectedClass);
+          //change "checked" attribute
           input.setAttribute('checked', 'true');
         }
         else {
-          this.removeClass(wrapper, optionSelectedClass);
+          this.removeClass(wrapper, this.optionSelectedClass);
           input.removeAttribute('checked');
         }
        });

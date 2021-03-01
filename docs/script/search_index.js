@@ -462,12 +462,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/components/selectboxes/selectboxes.js~selectboxescomponent",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html",
-    "<span>SelectBoxesComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/selectboxes/SelectBoxes.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/signature/signature.form.js~signature",
     "function/index.html#static-function-Signature",
     "<span>Signature</span> <span class=\"search-result-import-path\">formiojs/src/components/signature/Signature.form.js</span>",
@@ -574,12 +568,6 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-Tree",
     "<span>Tree</span> <span class=\"search-result-import-path\">formiojs/src/components/tree/Tree.form.js</span>",
     "function"
-  ],
-  [
-    "formiojs/src/components/tree/tree.js~treecomponent",
-    "class/src/components/tree/Tree.js~TreeComponent.html",
-    "<span>TreeComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/tree/Tree.js</span>",
-    "class"
   ],
   [
     "formiojs/src/components/unknown/unknown.form.js~unknown",
@@ -5298,6 +5286,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/radio/radio.js~radiocomponent#optionselectedclass",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-get-optionSelectedClass",
+    "src/components/radio/Radio.js~RadioComponent#optionSelectedClass",
+    "member"
+  ],
+  [
     "src/components/radio/radio.js~radiocomponent#previousvalue",
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-member-previousValue",
     "src/components/radio/Radio.js~RadioComponent#previousValue",
@@ -5674,102 +5668,6 @@ window.esdocSearchIndex = [
     "file/src/components/selectboxes/SelectBoxes.form.js.html",
     "src/components/selectboxes/SelectBoxes.form.js",
     "file"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js",
-    "file/src/components/selectboxes/SelectBoxes.js.html",
-    "src/components/selectboxes/SelectBoxes.js",
-    "file"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#checkcomponentvalidity",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-checkComponentValidity",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#checkComponentValidity",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#constructor",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-constructor-constructor",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#constructor",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#defaultschema",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-defaultSchema",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#defaultvalue",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-defaultValue",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#defaultValue",
-    "member"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#emptyvalue",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-emptyValue",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#getvalue",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-getValue",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#getvalueasstring",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-getValueAsString",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#getValueAsString",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#init",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-init",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#init",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#inputinfo",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-inputInfo",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#inputInfo",
-    "member"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#isempty",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-isEmpty",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#isEmpty",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#normalizevalue",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-normalizeValue",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#normalizeValue",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#setvalue",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-setValue",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#setValue",
-    "method"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent#validators",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-member-validators",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#validators",
-    "member"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent.builderinfo",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#static-get-builderInfo",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/selectboxes/selectboxes.js~selectboxescomponent.schema",
-    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#static-method-schema",
-    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.schema",
-    "method"
   ],
   [
     "src/components/selectboxes/selectboxes.unit.js",
@@ -7104,264 +7002,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/tree/tree.js",
-    "file/src/components/tree/Tree.js.html",
-    "src/components/tree/Tree.js",
-    "file"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#_viewcomponents",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-member-_viewComponents",
-    "src/components/tree/Tree.js~TreeComponent#_viewComponents",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#addchild",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-addChild",
-    "src/components/tree/Tree.js~TreeComponent#addChild",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#attach",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-attach",
-    "src/components/tree/Tree.js~TreeComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#attachactions",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-attachActions",
-    "src/components/tree/Tree.js~TreeComponent#attachActions",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#attachchildren",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-attachChildren",
-    "src/components/tree/Tree.js~TreeComponent#attachChildren",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#attachcomponents",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-attachComponents",
-    "src/components/tree/Tree.js~TreeComponent#attachComponents",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#attachnode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-attachNode",
-    "src/components/tree/Tree.js~TreeComponent#attachNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#cancelnode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-cancelNode",
-    "src/components/tree/Tree.js~TreeComponent#cancelNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#checkdata",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-checkData",
-    "src/components/tree/Tree.js~TreeComponent#checkData",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#checknode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-checkNode",
-    "src/components/tree/Tree.js~TreeComponent#checkNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#componentoptions",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-member-componentOptions",
-    "src/components/tree/Tree.js~TreeComponent#componentOptions",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#components",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-member-components",
-    "src/components/tree/Tree.js~TreeComponent#components",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#constructor",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-constructor-constructor",
-    "src/components/tree/Tree.js~TreeComponent#constructor",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#createcomponents",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-createComponents",
-    "src/components/tree/Tree.js~TreeComponent#createComponents",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#datavalue",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-member-dataValue",
-    "src/components/tree/Tree.js~TreeComponent#dataValue",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#destroy",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-destroy",
-    "src/components/tree/Tree.js~TreeComponent#destroy",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#disabled",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-get-disabled",
-    "src/components/tree/Tree.js~TreeComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#disabled",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-set-disabled",
-    "src/components/tree/Tree.js~TreeComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#editnode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-editNode",
-    "src/components/tree/Tree.js~TreeComponent#editNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#emptyvalue",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-get-emptyValue",
-    "src/components/tree/Tree.js~TreeComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#getvalue",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-getValue",
-    "src/components/tree/Tree.js~TreeComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#init",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-init",
-    "src/components/tree/Tree.js~TreeComponent#init",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#removecomponents",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-removeComponents",
-    "src/components/tree/Tree.js~TreeComponent#removeComponents",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#removenode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-removeNode",
-    "src/components/tree/Tree.js~TreeComponent#removeNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#removeroot",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-removeRoot",
-    "src/components/tree/Tree.js~TreeComponent#removeRoot",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#render",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-render",
-    "src/components/tree/Tree.js~TreeComponent#render",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#renderchildnodes",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-renderChildNodes",
-    "src/components/tree/Tree.js~TreeComponent#renderChildNodes",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#renderedit",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-renderEdit",
-    "src/components/tree/Tree.js~TreeComponent#renderEdit",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#rendertree",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-renderTree",
-    "src/components/tree/Tree.js~TreeComponent#renderTree",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#renderview",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-renderView",
-    "src/components/tree/Tree.js~TreeComponent#renderView",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#revertnode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-revertNode",
-    "src/components/tree/Tree.js~TreeComponent#revertNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#savenode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-saveNode",
-    "src/components/tree/Tree.js~TreeComponent#saveNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#setroot",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-setRoot",
-    "src/components/tree/Tree.js~TreeComponent#setRoot",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#setvalue",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-setValue",
-    "src/components/tree/Tree.js~TreeComponent#setValue",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#togglenode",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-toggleNode",
-    "src/components/tree/Tree.js~TreeComponent#toggleNode",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#treeroot",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-member-treeRoot",
-    "src/components/tree/Tree.js~TreeComponent#treeRoot",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#type",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-member-type",
-    "src/components/tree/Tree.js~TreeComponent#type",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#updatetree",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-method-updateTree",
-    "src/components/tree/Tree.js~TreeComponent#updateTree",
-    "method"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#viewcomponents",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-get-viewComponents",
-    "src/components/tree/Tree.js~TreeComponent#viewComponents",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent#viewcomponentsinstantiated",
-    "class/src/components/tree/Tree.js~TreeComponent.html#instance-member-viewComponentsInstantiated",
-    "src/components/tree/Tree.js~TreeComponent#viewComponentsInstantiated",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent.builderinfo",
-    "class/src/components/tree/Tree.js~TreeComponent.html#static-get-builderInfo",
-    "src/components/tree/Tree.js~TreeComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/tree/tree.js~treecomponent.schema",
-    "class/src/components/tree/Tree.js~TreeComponent.html#static-method-schema",
-    "src/components/tree/Tree.js~TreeComponent.schema",
-    "method"
-  ],
-  [
     "src/components/tree/tree.unit.js",
     "file/src/components/tree/Tree.unit.js.html",
     "src/components/tree/Tree.unit.js",
@@ -7371,6 +7011,18 @@ window.esdocSearchIndex = [
     "src/components/tree/fixtures/comp1.js",
     "file/src/components/tree/fixtures/comp1.js.html",
     "src/components/tree/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/tree/fixtures/comp2.js",
+    "file/src/components/tree/fixtures/comp2.js.html",
+    "src/components/tree/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/tree/fixtures/comp3.js",
+    "file/src/components/tree/fixtures/comp3.js.html",
+    "src/components/tree/fixtures/comp3.js",
     "file"
   ],
   [

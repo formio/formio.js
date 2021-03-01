@@ -91,13 +91,23 @@ export default [
     weight: 11,
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'resource',
-            'url',
-          ],
-        ],
+        and: [
+          {
+            in: [
+              { var: 'data.dataSrc' },
+              [
+                'resource',
+                'url',
+              ],
+            ],
+          },
+          {
+            '===': [
+              { var: 'data.widget' },
+              'choicesjs'
+            ]
+          }
+        ]
       },
     },
   },
