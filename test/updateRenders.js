@@ -80,6 +80,12 @@ Object.keys(templates).forEach(framework => {
         template: framework,
       }));
 
+      // Read only
+      fs.writeFileSync(`${dir}/component-${framework}-${component}-readOnly.html`, renderComponent(AllComponents[component], {}, {
+        template: framework,
+        readOnly: true
+      }));
+
       // Multiple
       fs.writeFileSync(`${dir}/component-${framework}-${component}-multiple.html`, renderComponent(AllComponents[component], {
         multiple: true
