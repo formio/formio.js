@@ -12,6 +12,7 @@ import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
 import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
 import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
+import wizardWithNestedWizard from '../test/forms/wizardWithNestedWizard';
 import formWithSignature from '../test/forms/formWithSignature';
 
 describe('Wizard tests', () => {
@@ -371,6 +372,21 @@ describe('Wizard tests', () => {
             done();
           }, 100);
         }, 100);
+      })
+      .catch(done);
+  });
+
+  it('Should show the actual page after re-rendering due to nested wizards.', (done) => {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizardWithNestedWizard)
+      .then(() => {
+        wizardForm.setForm(wizardWithNestedWizard);
+
+        setTimeout(() => {
+          assert.equal(wizardForm.element.querySelector('.wizard-page'), wizardForm.allPages[0].components[0].element.parentNode);
+          done();
+        }, 350);
       })
       .catch(done);
   });
