@@ -116,8 +116,6 @@ export default class CalendarWidget extends InputWidget {
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.position = 'auto center';
     this.settings.onChange = () => {
-      // eslint-disable-next-line no-debugger
-      debugger;
       if (this.settings.allowInput) {
         if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
           this.calendar._input.value = this.settings.manualInputValue;
@@ -391,6 +389,10 @@ export default class CalendarWidget extends InputWidget {
   }
 
   isCalendarElement(element) {
+    if (isIEBrowser && !element) {
+      return true;
+    }
+
     if (this.calendar?.config?.appendTo.contains(element)) {
       return true;
     }
@@ -408,8 +410,6 @@ export default class CalendarWidget extends InputWidget {
     }
 
     this.calendar.altInput.addEventListener('input', (event) => {
-      // eslint-disable-next-line no-debugger
-      debugger;
       if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
         this.settings.manualInputValue = event.target.value;
         this.settings.isManuallyOverriddenValue = true;
@@ -434,14 +434,28 @@ export default class CalendarWidget extends InputWidget {
     if (isIEBrowser) {
       const originalBlurListener = this.calendar._handlers.find(({ event, element }) => event === 'blur' && element === this.calendar._input);
       this.calendar._input.removeEventListener('blur', originalBlurListener.handler);
+      this.addEventListener(this.calendar._input, 'blur', (event) => {
+        const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
+        const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
+        const isInput = event.target === this.calendar._input;
+
+        if (isInput && !this.isCalendarElement(relatedTarget)) {
+          this.calendar.setDate(
+            this.calendar._input.value,
+            true,
+            event.target === this.calendar.altInput
+              ? this.calendar.config.altFormat
+              : this.calendar.config.dateFormat
+          );
+        }
+      });
     }
     // Make sure we commit the value after a blur event occurs.
     this.addEventListener(this.calendar._input, 'blur', (event) => {
-      const isInput = event.target === this.calendar._input;
       const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
-      const target = event.relatedTarget ? event.relatedTarget : activeElement;
+      const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
 
-      if (isInput && target && this.isCalendarElement(target) && !(isIEBrowser && !target)) {
+      if (!(isIEBrowser && !relatedTarget) && !relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
         const inputValue = this.calendar.input.value;
         const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
