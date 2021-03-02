@@ -188,6 +188,7 @@ import wizard5 from &apos;../test/forms/wizardWithCustomConditionalPage&apos;;
 import wizard6 from &apos;../test/forms/wizardWithFirstConditionalPage&apos;;
 import wizardWithHiddenPanel from &apos;../test/forms/wizardWithHiddenPanel&apos;;
 import wizardWithAllowPrevious from &apos;../test/forms/wizardWithAllowPrevious&apos;;
+import wizardWithNestedWizard from &apos;../test/forms/wizardWithNestedWizard&apos;;
 import formWithSignature from &apos;../test/forms/formWithSignature&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
@@ -547,6 +548,21 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
             done();
           }, 100);
         }, 100);
+      })
+      .catch(done);
+  });
+
+  it(&apos;Should show the actual page after re-rendering due to nested wizards.&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    wizardForm = new Wizard(formElement);
+    wizardForm.setForm(wizardWithNestedWizard)
+      .then(() =&gt; {
+        wizardForm.setForm(wizardWithNestedWizard);
+
+        setTimeout(() =&gt; {
+          assert.equal(wizardForm.element.querySelector(&apos;.wizard-page&apos;), wizardForm.allPages[0].components[0].element.parentNode);
+          done();
+        }, 350);
       })
       .catch(done);
   });
