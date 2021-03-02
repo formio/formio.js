@@ -9,10 +9,11 @@ import {
   formatOffset,
   getDateSetting,
   getLocaleDateFormatInfo,
+  getBrowserInfo,
   momentDate,
   zonesLoaded,
   shouldLoadZones,
-  loadZones
+  loadZones, default as FormioUtils
 } from '../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
@@ -24,6 +25,7 @@ const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
 const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
 const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
+const isIEBrowser = getBrowserInfo().ie;
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */
@@ -114,6 +116,8 @@ export default class CalendarWidget extends InputWidget {
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.position = 'auto center';
     this.settings.onChange = () => {
+      // eslint-disable-next-line no-debugger
+      debugger;
       if (this.settings.allowInput) {
         if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
           this.calendar._input.value = this.settings.manualInputValue;
@@ -386,6 +390,14 @@ export default class CalendarWidget extends InputWidget {
     return value.map(val => new Date(val));
   }
 
+  isCalendarElement(element) {
+    if (this.calendar?.config?.appendTo.contains(element)) {
+      return true;
+    }
+
+    return this.calendar?.calendarContainer?.contains(element);
+  }
+
   initFlatpickr(Flatpickr) {
     const dateValue = this._input.value;
     // Create a new flatpickr.
@@ -396,6 +408,8 @@ export default class CalendarWidget extends InputWidget {
     }
 
     this.calendar.altInput.addEventListener('input', (event) => {
+      // eslint-disable-next-line no-debugger
+      debugger;
       if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
         this.settings.manualInputValue = event.target.value;
         this.settings.isManuallyOverriddenValue = true;
@@ -417,12 +431,17 @@ export default class CalendarWidget extends InputWidget {
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
     }
 
+    if (isIEBrowser) {
+      const originalBlurListener = this.calendar._handlers.find(({ event, element }) => event === 'blur' && element === this.calendar._input);
+      this.calendar._input.removeEventListener('blur', originalBlurListener.handler);
+    }
     // Make sure we commit the value after a blur event occurs.
     this.addEventListener(this.calendar._input, 'blur', (event) => {
+      const isInput = event.target === this.calendar._input;
       const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
       const target = event.relatedTarget ? event.relatedTarget : activeElement;
 
-      if (!target?.className.split(/\s+/).includes('flatpickr-day')) {
+      if (isInput && target && this.isCalendarElement(target) && !(isIEBrowser && !target)) {
         const inputValue = this.calendar.input.value;
         const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
