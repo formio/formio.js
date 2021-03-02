@@ -787,8 +787,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.component.components.map((col, colIndex) => {
       const column = _.clone(col);
       const options = _.clone(this.options);
-
-      column.key = `${column.key}#${rowIndex}`;
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
 

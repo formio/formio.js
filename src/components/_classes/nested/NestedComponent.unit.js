@@ -317,7 +317,7 @@ describe('NestedComponent class', () => {
         setTimeout(() => {
           editGrid.saveRow(0);
           setTimeout(() => {
-            assert.equal(editGrid.dataValue[0]['select#0'], 2);
+            assert.equal(editGrid.dataValue[0].select, 2);
             const rowContent = editGrid.element.querySelector('[ref="editgrid-editGrid-row"] .row .col-sm-2 span');
             assert(rowContent);
             assert.equal(rowContent.textContent, 'Banana');
