@@ -1583,7 +1583,7 @@ export default class SelectComponent extends Field {
 
     return !_.isNil(value)
       ? this.itemTemplate(value)
-      : '';
+      : ' ';
   }
 
   detach() {
