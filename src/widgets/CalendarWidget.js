@@ -13,7 +13,7 @@ import {
   momentDate,
   zonesLoaded,
   shouldLoadZones,
-  loadZones, default as FormioUtils
+  loadZones,
 } from '../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
