@@ -431,9 +431,13 @@ export default class CalendarWidget extends InputWidget {
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
     }
 
+    // Fixes an issue with IE11 where value is set only after the second click
+    // TODO: Remove when the issue is solved in the flatpick library
     if (isIEBrowser) {
+      // Remove the original blur listener, because value willbe set to empty since relatedTarget is null in IE11
       const originalBlurListener = this.calendar._handlers.find(({ event, element }) => event === 'blur' && element === this.calendar._input);
       this.calendar._input.removeEventListener('blur', originalBlurListener.handler);
+      // Add the same event listener as in the original library, but with workaround for IE11 issue
       this.addEventListener(this.calendar._input, 'blur', (event) => {
         const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
         const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
