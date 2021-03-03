@@ -762,7 +762,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1].value);
   });
 
-  it('Should correctly count characters if counter counter is enabled', (done) => {
+  it('Should correctly count characters if character counter is enabled', (done) => {
     const form = _.cloneDeep(comp6);
     form.components[0].showCharCount = true;
     const element = document.createElement('div');
