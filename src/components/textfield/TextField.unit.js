@@ -762,7 +762,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1].value);
   });
 
-  it('Should format input according to input mask with low dash when placeholder char is set', (done) => {
+  it('Should correctly count characters if counter counter is enabled', (done) => {
     const form = _.cloneDeep(comp6);
     form.components[0].showCharCount = true;
     const element = document.createElement('div');
@@ -798,9 +798,9 @@ describe('TextField Component', () => {
             checkValue(value);
 
             done();
-          }, 100);
-        }, 100);
-      }, 100);
+          }, 200);
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 
@@ -992,8 +992,8 @@ describe('TextField Component', () => {
 
         assert.equal(component.getValue(), date, 'Should set text field value');
         assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
-        assert.equal(widget.calendar.currentMonth, 2, 'Should set corrent month');
-        assert.equal(widget.calendar.currentYear, 2031, 'Should set corrent year');
+        assert.equal(widget.calendar.currentMonth, 2, 'Should set correct month');
+        assert.equal(widget.calendar.currentYear, 2031, 'Should set correct year');
 
         clickElem('refs.suffix[0]');
 
@@ -1005,6 +1005,173 @@ describe('TextField Component', () => {
             checkCalendarState(false);
             document.body.innerHTML = '';
             done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should allow manual input and set value on blur if calendar widget is enabled with allowed input', (done) => {
+    const form = _.cloneDeep(comp6);
+    form.components[0].widget = {
+      allowInput: true,
+      altInput: true,
+      clickOpens: true,
+      dateFormat: 'dd-MM-yyyy',
+      enableDate: true,
+      enableTime: true,
+      format: 'dd-MM-yyyy',
+      hourIncrement: 1,
+      minuteIncrement: 5,
+      mode: 'single',
+      noCalendar: false,
+      saveAs: 'date',
+     'time_24hr': false,
+      type: 'calendar',
+      useLocaleSettings: false,
+    };
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const component = form.getComponent('textField');
+      const clickElem = (path, element) => {
+        const elem = element || _.get(component, path);
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
+      const checkCalendarState = (open, selectedDay) => {
+        const calendar = document.querySelector('.flatpickr-calendar');
+        assert.equal(calendar.classList.contains('open'), open, `${open ? 'Should open calendar' : 'Should close calendar'}`);
+        if (selectedDay) {
+          const day = calendar.querySelector('.flatpickr-day.selected').textContent;
+          assert.equal(day, selectedDay, 'Should select correct day');
+        }
+      };
+
+      const triggerDateInputEvent = (eventName, value) => {
+        const dateInput = component.element.querySelector('.form-control.input');
+        const event = new Event(eventName);
+        if (eventName === 'input') {
+          dateInput.value = value;
+        }
+        dateInput.dispatchEvent(event);
+      };
+
+      triggerDateInputEvent('focus');
+
+       setTimeout(() => {
+        const date = '21-01-2001';
+        checkCalendarState(true);
+        triggerDateInputEvent('input', date);
+
+        setTimeout(() => {
+          checkCalendarState(true);
+          triggerDateInputEvent('blur');
+
+          setTimeout(() => {
+            checkCalendarState(true, 21);
+
+            assert.equal(component.getValue(), date, 'Should set text field value');
+            const widget = component.element.querySelector('.flatpickr-input').widget;
+            assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
+            assert.equal(widget.calendar.currentMonth, 0, 'Should set correct month');
+            assert.equal(widget.calendar.currentYear, 2001, 'Should set correct year');
+
+            clickElem('refs.suffix[0]');
+
+            setTimeout(() => {
+              checkCalendarState(false);
+              assert.equal(component.getValue(), date, 'Should save text field value');
+
+              document.body.innerHTML = '';
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should allow removing date value if calendar widget is enabled with allowed input', (done) => {
+    const form = _.cloneDeep(comp6);
+    form.components[0].widget = {
+      allowInput: true,
+      altInput: true,
+      clickOpens: true,
+      dateFormat: 'dd-MM-yyyy',
+      enableDate: true,
+      enableTime: true,
+      format: 'dd-MM-yyyy',
+      hourIncrement: 1,
+      minuteIncrement: 5,
+      mode: 'single',
+      noCalendar: false,
+      saveAs: 'date',
+     'time_24hr': false,
+      type: 'calendar',
+      useLocaleSettings: false,
+    };
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const component = form.getComponent('textField');
+      const clickElem = (path, element) => {
+        const elem = element || _.get(component, path);
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
+
+      const checkCalendarState = (open, selectedDay, noSelectedDay) => {
+        const calendar = document.querySelector('.flatpickr-calendar');
+        assert.equal(calendar.classList.contains('open'), open, `${open ? 'Should open calendar' : 'Should close calendar'}`);
+        if (selectedDay) {
+          const day = calendar.querySelector('.flatpickr-day.selected').textContent;
+          assert.equal(day, selectedDay, 'Should select correct day');
+        }
+        if (noSelectedDay) {
+          const day = calendar.querySelector('.flatpickr-day.selected');
+          assert.equal(!!day, false, 'Should not contain selected day');
+        }
+      };
+
+      const triggerDateInputEvent = (eventName, value) => {
+        const dateInput = component.element.querySelector('.form-control.input');
+        const event = new Event(eventName);
+        if (eventName === 'input') {
+          dateInput.value = value;
+        }
+        dateInput.dispatchEvent(event);
+      };
+
+      let date = '12-03-2009';
+      component.setValue(date);
+      triggerDateInputEvent('focus');
+
+       setTimeout(() => {
+        assert.equal(component.getValue(), date, 'Should set text field value');
+        date = '';
+        checkCalendarState(true);
+        triggerDateInputEvent('input', date);
+
+        setTimeout(() => {
+          checkCalendarState(true);
+          triggerDateInputEvent('blur');
+
+          setTimeout(() => {
+            checkCalendarState(true, '', true);
+
+            assert.equal(component.getValue(), date, 'Should set text field value');
+            const widget = component.element.querySelector('.flatpickr-input').widget;
+            assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
+
+            clickElem('refs.suffix[0]');
+
+            setTimeout(() => {
+              checkCalendarState(false);
+              assert.equal(component.getValue(), date, 'Should save text field value');
+              document.body.innerHTML = '';
+              done();
+            }, 300);
           }, 300);
         }, 300);
       }, 300);
