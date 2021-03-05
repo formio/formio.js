@@ -408,7 +408,13 @@ td > .form-group {
   -webkit-animation: formio-dialog-fadein 0.5s;
   animation: formio-dialog-fadein 0.5s;
   pointer-events: all;
-  overflow: initial;
+  overflow: auto;
+}
+
+.formio-component-modal-wrapper-select {
+  .formio-dialog-content {
+    overflow: initial;
+  }
 }
 
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
