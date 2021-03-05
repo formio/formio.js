@@ -801,8 +801,8 @@ body.formio-dialog-open {
 }
 
 .editgrid-table-container {
-  max-width: 85vw;
   margin-bottom: 10px;
+  max-width: calc(100vw - 140px);
 
   .table-responsive {
     display: block;
@@ -814,7 +814,6 @@ body.formio-dialog-open {
 
 .editgrid-table-column {
   border: none;
-  min-width: 300px;
 }
 
 .editgrid-table-head {

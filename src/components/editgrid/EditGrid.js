@@ -69,7 +69,9 @@ export default class EditGridComponent extends NestedArrayComponent {
             <td class="editgrid-table-column">{{ component.label }}</td>
           {% } %}
         {% }) %}
-        <td class="editgrid-table-column">Settings</td>
+        {% if (!instance.options.readOnly && !instance.disabled) { %}
+          <td class="editgrid-table-column">Actions</td>
+        {% } %}
       </tr>
     `;
   }
