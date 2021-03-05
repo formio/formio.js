@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.15
+#### Fixed
+ - FIO-1382: Fixes an issue where scroll does not work properly for modal windows
+
+#### Changed
+ - Upgrade @formio/semantic:2.5.1
+
 ### 4.13.0-rc.14
 #### Fixed
  - Issues where Select items loaded would not trigger and throw an error.
