@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.14
+#### Fixed
+ - Issues where Select items loaded would not trigger and throw an error.
+
 ### 4.13.0-rc.13
 #### Fixed
  - Reference for text-mask to not use ssh.
