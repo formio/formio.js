@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - UIP-279: Added the root change for row's components
+ - UIP-280: add prop inEditGrid to components inside it on form use
+ - UIP-232: EditGrid templates not shown with protected-eval plugin
+
 ### 4.13.0-rc.15
 #### Fixed
  - FIO-1382: Fixes an issue where scroll does not work properly for modal windows
