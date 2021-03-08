@@ -789,13 +789,16 @@ export default class EditGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      options.onChange = (flags, changed, modified) => {
-        const editRow = this.editRows[rowIndex];
+      options.onChange = (flags = {}, changed, modified) => {
+        this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
 
         if (this.inlineEditMode) {
-          this.triggerRootChange(flags, changed, modified);
+          return;
         }
-        else if (editRow?.alerts) {
+
+        const editRow = this.editRows[rowIndex];
+
+        if (editRow?.alerts) {
           this.checkData(null, {
             ...flags,
             changed,
