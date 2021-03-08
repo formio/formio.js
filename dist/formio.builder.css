@@ -419,6 +419,9 @@ td > .form-group {
   -webkit-animation: formio-dialog-fadein 0.5s;
   animation: formio-dialog-fadein 0.5s;
   pointer-events: all;
+  overflow: auto; }
+
+.formio-component-modal-wrapper-select .formio-dialog-content {
   overflow: initial; }
 
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
@@ -1174,6 +1177,9 @@ div[data-oembed-url] {
 
 .formio-drop-zone.enabled {
   display: inherit; }
+
+.component-settings .formio-dialog-content {
+  max-height: 100%; }
 
 .component-btn-group .btn.component-settings-button-paste {
   display: none; }

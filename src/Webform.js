@@ -1101,7 +1101,8 @@ export default class Webform extends NestedDataComponent {
 
       const templateOptions = {
         message: message instanceof HTMLElement ? message.outerHTML : message,
-        attrs: attrs
+        attrs: attrs,
+        type
       };
 
       this.alert = convertStringToHTMLElement(this.renderTemplate('alert', templateOptions),`#${attrs.id}`);

@@ -95,6 +95,9 @@ export default class SelectComponent extends Field {
 
     // If this component has been activated.
     this.activated = false;
+    this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
   }
 
   get dataReady() {
