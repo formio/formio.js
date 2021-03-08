@@ -821,6 +821,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         row: options.row,
       }), options, row);
       comp.rowIndex = rowIndex;
+      comp.inEditGrid = true;
       return comp;
     });
   }
