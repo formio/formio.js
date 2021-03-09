@@ -496,13 +496,24 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const isVisible = checkCondition(item, data, data, this.component, this) && !item.hidden;
+          const forceShow = this.options.show ? this.options.show[item.key] : false;
+          const forceHide = this.options.hide ? this.options.hide[item.key] : false;
+          let isVisible = checkCondition(item, data, data, this.component, this) && !item.hidden;
+
+          if (forceShow) {
+            isVisible = true;
+          }
+          else if (forceHide) {
+            isVisible = false;
+          }
+
           if (isVisible) {
             visible.push(item);
             if (page) {
               this.pages.push(page);
             }
           }
+
           if (!page && isVisible) {
             page = this.createComponent(item, pageOptions);
             page.visible = isVisible;
@@ -546,12 +557,14 @@ export default class Wizard extends Webform {
     if (num === this.page) {
       return NativePromise.resolve();
     }
-    if (!this.wizard.full && num >= 0 && num < this.pages.length) {
+
+    if (num >= 0 && num < this.pages.length) {
       this.page = num;
 
       this.pageFieldLogic(num);
 
       this.getNextPage();
+
       let parentNum = num;
       if (this.hasExtraPages) {
         const pageFromPages = this.pages[num];
@@ -570,7 +583,7 @@ export default class Wizard extends Webform {
       });
       return NativePromise.resolve();
     }
-    else if (this.wizard.full || !this.pages.length) {
+    else if (!this.pages.length) {
       this.redraw();
       return NativePromise.resolve();
     }
@@ -739,6 +752,11 @@ export default class Wizard extends Webform {
       if (item.type === 'panel') {
         item.key = uniqueKey(pageKeys, (item.key || 'panel'));
         pageKeys[item.key] = true;
+
+        if (this.wizard.full) {
+          this.options.show = this.options.show || {};
+          this.options.show[item.key] = true;
+        }
       }
       this.originalComponents.push(_.clone(item));
     });
