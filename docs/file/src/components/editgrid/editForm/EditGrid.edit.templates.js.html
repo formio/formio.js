@@ -184,7 +184,7 @@ export default [
     description: &apos;Two available variables. &quot;value&quot; is the array of row data and &quot;components&quot; is the array of components in the grid.&apos;,
     tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the header of the Edit grid.&apos;,
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || Evaluator.protectedEval;
     }
   },
   {
@@ -201,7 +201,7 @@ export default [
       &apos; To add click events, add the classes &quot;editRow&quot; and &quot;removeRow&quot; to elements.&apos;,
     tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render each row of the Edit grid.&apos;,
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || Evaluator.protectedEval;
     }
   },
   {
@@ -216,7 +216,7 @@ export default [
     description: &apos;Two available variables. &quot;value&quot; is the array of row data and &quot;components&quot; is the array of components in the grid.&apos;,
     tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the footer of the Edit grid.&apos;,
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || Evaluator.protectedEval;
     }
   },
   {
