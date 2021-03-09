@@ -1,0 +1,44 @@
+<div id="" class="field formio-component formio-component-form  formio-component-label-hidden" ref="component">
+  <div class="formio-form formio-read-only ui form" ref="webform" novalidate>
+    <div id="textField" class="field form-group has-feedback formio-component formio-component-textfield formio-component-textField  required" ref="component">
+      <label class=" field-required" for="textField-textField">
+        Text Field
+      </label>
+      <div ref="element">
+        <div class="ui input fluid ">
+          <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField-textField"></input>
+        </div>
+      </div>
+      <div ref="messageContainer"></div>
+    </div>
+    <div id="panel" class="field formio-component formio-component-panel formio-component-panel " ref="component">
+      <h4 class="ui top attached block header " ref="header">
+        Panel
+      </h4>
+      <div class="ui bottom attached segment" ref="nested-panel">
+        <div id="textField" class="field form-group has-feedback formio-component formio-component-textfield formio-component-textField " ref="component">
+          <label class="" for="textField-textField">
+            Text Field
+          </label>
+          <div ref="element">
+            <div class="ui input fluid ">
+              <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField-textField"></input>
+            </div>
+          </div>
+          <div ref="messageContainer"></div>
+        </div>
+      </div>
+      <div ref="messageContainer"></div>
+    </div>
+    <div id="submit" class="field form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+      <button ref="button" class="ui button primary " name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en" disabled="disabled">
+        Submit
+      </button>
+      <div ref="buttonMessageContainer">
+        <span class="help-block" ref="buttonMessage"></span>
+      </div>
+      <div ref="messageContainer"></div>
+    </div>
+  </div>
+  <div ref="messageContainer"></div>
+</div>

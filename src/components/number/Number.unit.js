@@ -2,6 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import _merge from 'lodash/merge';
 import Harness from '../../../test/harness';
+import Formio from './../../Formio';
 import NumberComponent from './Number';
 
 import {
@@ -9,7 +10,8 @@ import {
   comp2,
   comp3,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from './fixtures';
 
 describe('Number Component', () => {
@@ -333,6 +335,72 @@ describe('Number Component', () => {
     return Harness.testCreate(NumberComponent, comp).then(number => {
       assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '4.20');
     });
+  });
+
+  it('Should provide min/max validation', (done) => {
+    const form = _.cloneDeep(comp6);
+
+    const validValues = [
+      null,
+      20,
+      555,
+      34,
+      20.000001,
+      554.999
+    ];
+
+    const invalidMin = [
+      19.99,
+      0,
+      1,
+      0.34,
+      -0.1,
+      -20
+    ];
+
+    const invalidMax = [
+      555.00000001,
+      100000,
+      5555,
+    ];
+
+    const testValidity = (values, valid, message, lastValue) => {
+      _.each(values, (value) => {
+        const element = document.createElement('div');
+
+        Formio.createForm(element, form, { language: 'en-US' }).then(form => {
+          form.setPristine(false);
+
+          const component = form.getComponent('number');
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, 'Should set value');
+          }
+
+          setTimeout(() => {
+            if (valid) {
+              assert.equal(!!component.error, false, 'Should not contain error');
+            }
+            else {
+              assert.equal(!!component.error, true, 'Should contain error');
+              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidMin, false, 'Number cannot be less than 20.');
+    testValidity(invalidMax, false, 'Number cannot be greater than 555.', invalidMax[invalidMax.length-1]);
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
