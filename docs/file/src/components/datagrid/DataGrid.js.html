@@ -471,9 +471,19 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
-        moves: (_draggedElement, _oldParent, clickedElement) =&gt; clickedElement.classList.contains(&apos;formio-drag-button&apos;)
-      }).on(&apos;drop&apos;, this.onReorder.bind(this));
+      if (dragula) {
+        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+          moves: (_draggedElement, _oldParent, clickedElement) =&gt; {
+            const clickedElementKey = clickedElement.getAttribute(&apos;data-key&apos;);
+            const oldParentKey = _oldParent.getAttribute(&apos;data-key&apos;);
+
+            //Check if the clicked button belongs to that container, if false, it belongs to the nested container
+            if (oldParentKey === clickedElementKey) {
+              return clickedElement.classList.contains(&apos;formio-drag-button&apos;);
+            }
+          }
+        }).on(&apos;drop&apos;, this.onReorder.bind(this));
+      }
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) =&gt; {
