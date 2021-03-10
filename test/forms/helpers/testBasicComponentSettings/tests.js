@@ -990,7 +990,7 @@ export default {
   }, 
   logic: {
     'Should execute value/property/merge schema/custom actions if simple logic condition is met'(form, done, test) {
-      test.timeout(6000);
+      test.timeout(8000);
       const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key));
 
       form.getComponent('basis').setValue('value action');
@@ -1034,7 +1034,7 @@ export default {
       }, 500);
     },
     'Should execute value action if js logic condition is met'(form, done, test) {
-      test.timeout(3000);
+      test.timeout(5000);
       const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key));
 
       form.getComponent('basis').setValue('some text value with length over twenty');
@@ -1044,7 +1044,7 @@ export default {
       }, 500);
     },
     'Should execute property action if json logic condition is met'(form, done, test) {
-      test.timeout(2500);
+      test.timeout(3500);
       const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key));
 
       form.getComponent('basis').setValue('add class');
@@ -1059,7 +1059,7 @@ export default {
       }, 500);
     },
     'Should execute property action if logic event is emitted'(form, done, test) {
-      test.timeout(2000);
+      test.timeout(3500);
 
       const componentsWithBug = ['select', 'editgrid', 'tree'];//BUG: remove those components once bug is fixed
       const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key) && !componentsWithBug.includes(comp.component.type));
