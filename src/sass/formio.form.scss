@@ -1218,7 +1218,9 @@ div[data-oembed-url] {
 
 .formio-component-modal-wrapper {
   margin-bottom: 10px;
-
+  .open-modal-button {
+    height: auto;
+  }
   .component-rendering-hidden {
     visibility: hidden;
   }
