@@ -274,6 +274,7 @@ export default class Wizard extends Webform {
       this.enabledIndex = this.pages?.length - 1;
     }
 
+    this.hook('attachWebform', element, this);
     const promises = this.attachComponents(this.refs[this.wizardKey], [
       ...this.prefixComps,
       ...this.currentPage.components,

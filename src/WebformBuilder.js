@@ -124,6 +124,11 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks.renderComponent = (html, { component, self }) => {
       if (self.type === 'form' && !self.key) {
+        if (this.isNextGen) {
+          return this.renderTemplate('builderForm', {
+            html: html.replace('formio-component-form', ''),
+          });
+        }
         // The main webform shouldn't have this class as it adds extra styles.
         return html.replace('formio-component-form', '');
       }
@@ -173,6 +178,35 @@ export default class WebformBuilder extends Component {
       }
       return html;
     };
+
+    if (this.isNextGen) {
+      this.options.hooks.attachWebform = (element, component) => {
+        component.loadRefs(element, {
+          editForm: 'single',
+          editFormJson: 'single',
+        });
+
+        if (component.refs.editForm) {
+          new Tooltip(component.refs.editForm, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Edit'),
+          });
+
+          component.addEventListener(component.refs.editForm, 'click', () => this.editBuildingForm());
+        }
+
+        if (component.refs.editFormJson) {
+          new Tooltip(component.refs.editFormJson, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Edit JSON'),
+          });
+
+          component.addEventListener(component.refs.editFormJson, 'click', () => this.editBuildingForm(true));
+        }
+      };
+    }
 
     this.options.hooks.attachComponents = (element, components, container, component) => {
       // Don't attach if no element was found or component doesn't participate in drag'n'drop.
@@ -271,6 +305,11 @@ export default class WebformBuilder extends Component {
     // Notify components if they need to modify their render.
     this.options.attachMode = 'builder';
     this.webform = this.webform || this.createForm(this.options);
+
+    this.pathComponentsMapping = {};
+    this.arrayDataComponentPaths = [];
+    this.nestedDataComponents = [];
+    this.arrayDataComponents = [];
   }
 
   allowDrop() {
@@ -1266,6 +1305,11 @@ export default class WebformBuilder extends Component {
     editFormOptions.editForm = this.form;
     editFormOptions.editComponent = component;
     editFormOptions.flags = flags;
+
+    if (this.isNextGen) {
+      editFormOptions.editComponentParentInstance = parent.formioComponent;
+    }
+
     this.editForm = new Webform(
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
@@ -1273,6 +1317,15 @@ export default class WebformBuilder extends Component {
         ...editFormOptions
       }
     );
+
+    if (this.isNextGen) {
+      this.getNestedComponentsMap();
+      this.editForm.pathComponentsMapping = this.pathComponentsMapping;
+      this.editForm.arrayDataComponentPaths = this.arrayDataComponentPaths;
+      this.editForm.nestedDataComponents = this.nestedDataComponents;
+      this.editForm.arrayDataComponents = this.arrayDataComponents;
+      this.editForm.parentPath = parent?.formioComponent?.path;
+    }
 
     this.editForm.form = (isJsonEdit && !isCustom) ? {
       components: [
@@ -1293,10 +1346,18 @@ export default class WebformBuilder extends Component {
         }
       ]
     } : ComponentClass.editForm(_.cloneDeep(overrides));
-    const instance = new ComponentClass(componentCopy);
+    const instanceOptions = {};
+
+    if (this.isNextGen) {
+      instanceOptions.preview = true;
+    }
+
+    const instance = new ComponentClass(componentCopy, instanceOptions);
+    const schema = this.isNextGen ? instance.component : component;
+
     this.editForm.submission = isJsonEdit ? {
       data: {
-        componentJson: component,
+        componentJson: schema,
         showFullSchema: this.options.showFullJsonSchema
       },
     } : {
@@ -1314,6 +1375,29 @@ export default class WebformBuilder extends Component {
         'attachMode',
         'calculateValue'
       ]));
+
+      if (this.isNextGen) {
+        this.preview.form = {
+          components: [
+            {
+              key: 'tabs',
+              type: 'tabs',
+              hideHeader: true,
+              components: this.editForm.form.components[0].components.map(({
+                label,
+                key,
+                sidebar,
+              }) => ({
+                label,
+                key,
+                components: (sidebar ?? []).map((component) => (_.isFunction(component) ? component(schema) : component)),
+              })),
+            },
+          ],
+        };
+
+        this.preview.componentEditForm = this.editForm;
+      }
     }
 
     this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
@@ -1328,6 +1412,16 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+
+    if (this.isNextGen) {
+      if (this.preview) {
+        this.preview.attach(this.componentEdit.querySelector('[ref="sidebarForm"]'));
+      }
+
+      this.editFormWrapper = this.componentEdit.querySelector('[ref="editFormWrapper"]');
+      this.sidebarFormWrapper = this.componentEdit.querySelector('[ref="sidebarFormWrapper"]');
+    }
+
     this.updateComponent(componentCopy);
 
     this.editForm.on('change', (event) => {
@@ -1380,12 +1474,16 @@ export default class WebformBuilder extends Component {
         this.updateComponent(event.data.componentJson || event.data, event.changed);
       }
     });
-    this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
-      event.preventDefault();
-      this.editForm.detach();
-      this.emit('cancelComponent', component);
-      this.dialog.close();
-      this.highlightInvalidComponents();
+
+    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
+    cancelButtons.forEach((cancelButton) => {
+      this.addEventListener(cancelButton, 'click', (event) => {
+        event.preventDefault();
+        this.editForm.detach();
+        this.emit('cancelComponent', component);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="removeButton"]'), 'click', (event) => {
@@ -1398,15 +1496,18 @@ export default class WebformBuilder extends Component {
       this.highlightInvalidComponents();
     });
 
-    this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
-      event.preventDefault();
-      if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
-        this.editForm.setPristine(false);
-        this.editForm.showErrors();
-        return false;
-      }
-      saved = true;
-      this.saveComponent(component, parent, isNew, original);
+    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    saveButtons.forEach((saveButton) => {
+      this.addEventListener(saveButton, 'click', (event) => {
+        event.preventDefault();
+        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+          this.editForm.setPristine(false);
+          this.editForm.showErrors();
+          return false;
+        }
+        saved = true;
+        this.saveComponent(component, parent, isNew, original);
+      });
     });
 
     const dialogClose = () => {
@@ -1542,5 +1643,9 @@ export default class WebformBuilder extends Component {
       this.groups[name] = group;
       this.triggerRedraw();
     }
+  }
+
+  get isNextGen() {
+    return false;
   }
 }
