@@ -23,8 +23,12 @@ export default class Input extends Multivalue {
       name: this.options.name,
       type: this.component.inputType || 'text',
       class: 'form-control',
-      lang: this.options.language
+      lang: this.options.language,
     };
+
+    if (this.component.inputMode) {
+      attr.inputmode = this.component.inputMode;
+    }
 
     if (this.component.placeholder) {
       attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
