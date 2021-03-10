@@ -268,7 +268,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         comp.checkConditions();
       });
 
-      const isVisible = checkComponent.visible;
+      const isVisible = checkComponent ? checkComponent.visible : true;
       [...this.components].forEach((comp) => this.removeComponent(comp, this.components));
 
       return isVisible;
