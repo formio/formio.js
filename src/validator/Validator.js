@@ -894,82 +894,64 @@ class ValidationChecker {
       ? component.validationValue
       : [component.validationValue];
 
-      const validateCustom     = _.get(component, 'component.validate.custom');
-      const customErrorMessage = _.get(component, 'component.validate.customMessage');
-
-    // Define how results should be formatted
-    const formatResults = results => {
-      // Condense to a single flat array
-      results = _(results).chain().flatten().compact().value();
-
-      if (customErrorMessage || validateCustom) {
-        _.each(results, result => {
-          result.message = component.t(customErrorMessage || result.message, {
-            field: component.errorLabel,
-            data,
-            row,
-            error: result
-          });
-          result.context.hasLabel = false;
-        });
-      }
-
-      return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
-    };
-
     // If this component has the new validation system enabled, use it instead.
     const validations = _.get(component, 'component.validations');
-    if (validations && Array.isArray(validations) && validations.length && component.calculateCondition) {
-      const groupedValidation = _
-        .chain(validations)
-        .filter('active')
-        .groupBy((validation) => (validation.group || null))
-        .value();
+    if (validations && Array.isArray(validations) && validations.length) {
+      let resultsOrPromises;
 
-      const commonValidations = groupedValidation.null || [];
-      delete groupedValidation.null;
-      const results = [];
+      if (component.calculateCondition) {
+        includeWarnings = true;
+        const groupedValidation = _.chain(validations)
+          .filter('active')
+          .groupBy((validation) => validation.group || null)
+          .value();
 
-      commonValidations.forEach(({
-        condition,
-        message,
-        severity,
-      }) => {
-        if (!component.calculateCondition(condition)) {
-          results.push({
-            level: severity || 'error',
-            message: component.t(message),
-            componentInstance: component,
-          });
-        }
-      });
+        const commonValidations = groupedValidation.null || [];
+        delete groupedValidation.null;
+        resultsOrPromises = [];
 
-      _.forEach(groupedValidation, (validationGroup) => {
-        _.forEach(validationGroup, ({
-          condition,
-          message,
-          severity,
-        }) => {
+        commonValidations.forEach(({ condition, message, severity }) => {
           if (!component.calculateCondition(condition)) {
-            results.push({
+            resultsOrPromises.push({
               level: severity || 'error',
               message: component.t(message),
               componentInstance: component,
             });
-
-            return false;
           }
         });
-      });
 
-      if (async) {
-        return NativePromise.all(results).then(formatResults);
+        _.forEach(groupedValidation, (validationGroup) => {
+          _.forEach(validationGroup, ({ condition, message, severity }) => {
+            if (!component.calculateCondition(condition)) {
+              resultsOrPromises.push({
+                level: severity || 'error',
+                message: component.t(message),
+                componentInstance: component,
+              });
+
+              return false;
+            }
+          });
+        });
       }
       else {
-        return formatResults(results);
+        resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
+      }
+
+      const formatResults = results => {
+        return includeWarnings ? results : results.filter(result => result.level === 'error');
+      };
+
+      if (async) {
+        return NativePromise.all(resultsOrPromises).then(formatResults);
+      }
+      else {
+        return formatResults(resultsOrPromises);
       }
     }
 
+    const validateCustom     = _.get(component, 'component.validate.custom');
+    const customErrorMessage = _.get(component, 'component.validate.customMessage');
     const conditionallyVisible = component.conditionallyVisible();
     // Run primary validators
     const resultsOrPromises = _(component.validators).chain()
@@ -1004,6 +986,26 @@ class ValidationChecker {
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
     resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async, conditionallyVisible));
+
+    // Define how results should be formatted
+    const formatResults = results => {
+      // Condense to a single flat array
+      results = _(results).chain().flatten().compact().value();
+
+      if (customErrorMessage || validateCustom) {
+        _.each(results, result => {
+          result.message = component.t(customErrorMessage || result.message, {
+            field: component.errorLabel,
+            data,
+            row,
+            error: result
+          });
+          result.context.hasLabel = false;
+        });
+      }
+
+      return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
+    };
 
     // Wait for results if using async mode, otherwise process and return immediately
     if (async) {
