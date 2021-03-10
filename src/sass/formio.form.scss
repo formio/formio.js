@@ -1256,3 +1256,23 @@ div[data-oembed-url] {
 [ref='buttonMessageContainer'].has-error {
   cursor: pointer;
 }
+
+.formio-component-textarea {
+  .formio-editor-read-only-content {
+    .text-big {
+      font-size: 1.4em;
+    }
+
+    .text-huge {
+      font-size: 1.8em;
+    }
+
+    .text-small {
+      font-size: 0.85em;
+    }
+
+    .text-tiny {
+      font-size: 0.7em;
+    }
+  }
+}
