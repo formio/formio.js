@@ -4,7 +4,8 @@ import Harness from '../../../test/harness';
 import CheckBoxComponent from './Checkbox';
 
 import {
-  comp1
+  comp1,
+  customDefaultComponent
 } from './fixtures';
 
 describe('Checkbox Component', () => {
@@ -38,6 +39,12 @@ describe('Checkbox Component', () => {
     return Harness.testCreate(CheckBoxComponent, comp1).then((component) => {
       Harness.testSetGet(component, 1);
       Harness.testSetGet(component, 0);
+    });
+  });
+
+  it('Should be able to set custom default value', () => {
+    return Harness.testCreate(CheckBoxComponent, customDefaultComponent).then((component) => {
+      assert.equal(component.dataValue, true);
     });
   });
 });
