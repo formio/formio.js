@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.17
+#### Fixed
+ - FIO-2497: fixed an issue where editGrid row value summary contains values for invisible components
+ - FIO-1555: fixed an issue where unique validation does not work for components inside components that have data of array type
+ - FIO-1551: Modal Button height issue
+ - FIO-1312: Hide cancel on read only for wizards.
+ - FJS-1265: Fixes an issue where Show Full Wizard does not work
+ - FIO-1463: "View as Plain Text" with nested form not working
+ - FIO-1207: fixed an issue where selected value always presents in dropdown with found search results in select resource
+ - FIO-1498: Fixes an issue where words counter shows that there is one less word left after clearing the input
+ - FJS-925: Fixes an issue where the first char is lost when you tab to Select
+ - FIO-1503: Fixes an issue where URl validation is not triggered when insert an email
+ - FIO-1501: Fixes an issue where some inputs remain disabled after the maxCount was exceeded
+ - FJS-726: Fixes an issue where it is possible to check Save as Reference and set Value Property which cause unexpected behavior, because saving a s reference is only possible when there is an _id
+ - FIO-1321: IE fix the error below the progress bar when uploading a PDF file
+ - FOR-1425: Added data to default values component evalContent 
+ - FIO-1352: fix validation for the case when the day is set to dayFirst
+
 ### 4.13.0-rc.16
 #### Fixed
  - UIP-279: Added the root change for row's components
