@@ -3966,6 +3966,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/day/day.js~daycomponent#getvalidationformat",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-getValidationFormat",
+    "src/components/day/Day.js~DayComponent#getValidationFormat",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#getvalue",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-getValue",
     "src/components/day/Day.js~DayComponent#getValue",
@@ -4305,6 +4311,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp8.js",
     "file/src/components/editgrid/fixtures/comp8.js.html",
     "src/components/editgrid/fixtures/comp8.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp9.js",
+    "file/src/components/editgrid/fixtures/comp9.js.html",
+    "src/components/editgrid/fixtures/comp9.js",
     "file"
   ],
   [
@@ -5010,6 +5022,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/number/fixtures/comp6.js",
+    "file/src/components/number/fixtures/comp6.js.html",
+    "src/components/number/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/number/fixtures/index.js",
     "file/src/components/number/fixtures/index.js.html",
     "src/components/number/fixtures/index.js",
@@ -5121,6 +5139,12 @@ window.esdocSearchIndex = [
     "src/components/password/fixtures/comp1.js",
     "file/src/components/password/fixtures/comp1.js.html",
     "src/components/password/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/password/fixtures/comp2.js",
+    "file/src/components/password/fixtures/comp2.js.html",
+    "src/components/password/fixtures/comp2.js",
     "file"
   ],
   [
@@ -6426,6 +6450,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/textarea/fixtures/comp3.js",
+    "file/src/components/textarea/fixtures/comp3.js.html",
+    "src/components/textarea/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/textarea/fixtures/index.js",
     "file/src/components/textarea/fixtures/index.js.html",
     "src/components/textarea/fixtures/index.js",
@@ -6567,6 +6597,12 @@ window.esdocSearchIndex = [
     "src/components/textfield/fixtures/comp5.js",
     "file/src/components/textfield/fixtures/comp5.js.html",
     "src/components/textfield/fixtures/comp5.js",
+    "file"
+  ],
+  [
+    "src/components/textfield/fixtures/comp6.js",
+    "file/src/components/textfield/fixtures/comp6.js.html",
+    "src/components/textfield/fixtures/comp6.js",
     "file"
   ],
   [

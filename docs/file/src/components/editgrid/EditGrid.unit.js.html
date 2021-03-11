@@ -174,7 +174,7 @@
 
 import Harness from &apos;../../../test/harness&apos;;
 import EditGridComponent from &apos;./EditGrid&apos;;
-import { comp1, comp4, comp3, comp5, comp6, comp7, comp8 } from &apos;./fixtures&apos;;
+import { comp1, comp4, comp3, comp5, comp6, comp7, comp8, comp9 } from &apos;./fixtures&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
 import Webform from &apos;../../Webform&apos;;
@@ -849,6 +849,75 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
           }, 150);
         }, 100);
       }, 150);
+    }).catch(done);
+  });
+
+  it(&apos;Should display summary with values only for components that are visible at least in one row&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm(comp9).then(() =&gt; {
+      const editGrid = form.getComponent(&apos;editGrid&apos;);
+
+      const checkRows = (columnsNumber, rowsNumber) =&gt; {
+        const rowWithColumns = editGrid.element.querySelector(&apos;.row&apos;);
+        const rowsWithValues = editGrid.element.querySelectorAll(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;);
+
+        assert.equal(rowWithColumns.children.length, columnsNumber, &apos;Row should contain values only for visible components&apos;);
+        assert.equal(rowsWithValues.length, rowsNumber, &apos;Should have corrent number of rows&apos;);
+      };
+
+      checkRows(2, 0);
+      form.setValue({
+        data: {
+          editGrid: [
+            { textField: &apos;test1&apos;, checkbox: false },
+            { textField: &apos;test2&apos;, checkbox: false },
+          ],
+        }
+      });
+      setTimeout(() =&gt; {
+        checkRows(2, 2);
+        form.setValue({
+          data: {
+            editGrid: [
+              { textField: &apos;test1&apos;, checkbox: false },
+              { textField: &apos;test2&apos;, checkbox: true },
+            ],
+          }
+        });
+
+        setTimeout(() =&gt; {
+          checkRows(3, 2);
+          form.setValue({
+            data: {
+              editGrid: [
+                { textField: &apos;test1&apos;, checkbox: false },
+                { textField: &apos;test2&apos;, checkbox: true, textArea: &apos;test22&apos; },
+                { textField: &apos;show&apos;, checkbox: true, container: { number1: 1111 }, textArea: &apos;test3&apos; }
+              ],
+            }
+          });
+
+          setTimeout(() =&gt; {
+            checkRows(4, 3);
+            form.setValue({
+              data: {
+                editGrid: [
+                  { textField: &apos;test1&apos;, checkbox: false },
+                  { textField: &apos;test2&apos;, checkbox: false },
+                  { textField: &apos;show&apos;, checkbox: false, container: { number1: 1111 } }
+                ],
+              }
+            });
+
+            setTimeout(() =&gt; {
+              checkRows(3, 3);
+
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 });

@@ -173,11 +173,14 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import TextAreaComponent from &apos;./TextArea&apos;;
 import sinon from &apos;sinon&apos;;
+import Formio from &apos;./../../Formio&apos;;
+import assert from &apos;power-assert&apos;;
 import { expect } from &apos;chai&apos;;
-
+import _ from &apos;lodash&apos;;
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from &apos;./fixtures&apos;;
 
 describe(&apos;TextArea Component&apos;, () =&gt; {
@@ -213,6 +216,304 @@ describe(&apos;TextArea Component&apos;, () =&gt; {
       ]);
       expect(emit.callCount).to.equal(1);
     });
+  });
+
+  it(&apos;Should provide min/max length validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].validate = { minLength: 5, maxLength: 10 };
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;te_st&apos;,
+      &apos;test value&apos;,
+      &apos;      &apos;,
+      &apos;What?&apos;,
+      &apos;test: &apos;,
+      &apos;t    &apos;,
+      &apos;   t &apos;
+    ];
+
+    const invalidMin = [
+      &apos;t&apos;,
+      &apos;tt&apos;,
+      &apos;ttt&apos;,
+      &apos;tttt&apos;,
+      &apos;  t &apos;,
+      &apos;  t&apos;,
+      &apos;_4_&apos;
+    ];
+
+    const invalidMax = [
+      &apos;test__value&apos;,
+      &apos;test value &apos;,
+      &apos; test value&apos;,
+      &apos;test: value&apos;,
+    ];
+
+    const testValidity = (values, valid, message, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textArea&apos;);
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidMin, false, &apos;Text Area must have at least 5 characters.&apos;);
+    testValidity(invalidMax, false, &apos;Text Area must have no more than 10 characters.&apos;, invalidMax[invalidMax.length-1]);
+  });
+
+  it(&apos;Should provide min/max words validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].validate = { minWords: 2, maxWords: 5 };
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;test value&apos;,
+      &apos;some, test value&apos;,
+      &apos;some - test - value&apos;,
+      &apos;   value      value     value    value   value      &apos;,
+      &apos; What ?&apos;,
+      &apos;&quot; test &quot;&apos;,
+    ];
+
+    const invalidMin = [
+      &apos;  t   &apos;,
+      &apos;? &apos;,
+      &apos;e&apos;,
+      &apos;_test    &apos;,
+      &apos;   9&apos;,
+      &apos;t  &apos;,
+      &apos;What?&apos;,
+      &apos;&quot;4&quot;&apos;
+    ];
+
+    const invalidMax = [
+      &apos;te st __ va lue &quot;&quot;&apos;,
+      &apos;&quot; te st va lue &quot;&apos;,
+      &apos;11 - 22 - 33 - 44&apos;,
+      &apos;te st : va lue :&apos;,
+    ];
+
+    const testValidity = (values, valid, message, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textArea&apos;);
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidMin, false, &apos;Text Area must have at least 2 words.&apos;);
+    testValidity(invalidMax, false, &apos;Text Area must have no more than 5 words.&apos;, invalidMax[invalidMax.length-1]);
+  });
+
+  it(&apos;Should provide pattern validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].validate = { pattern: &apos;\\D+&apos; };
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;     &apos;,
+      &apos;test value&apos;,
+      &apos;&amp; &quot;&quot; (test) _ ,.*&apos;,
+      &apos;  some - test - value   &apos;,
+    ];
+
+    const invalidValues = [
+      &apos;test(2)&apos;,
+      &apos;123&apos;,
+      &apos;0 waste&apos;,
+      &apos;&quot;9&quot;&apos;,
+      &apos;   9&apos;,
+    ];
+
+    const testValidity = (values, valid, message, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textArea&apos;);
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message.trim(), error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues, false, &apos;does not match the pattern&apos;, invalidValues[invalidValues.length-1]); //BUG: incorrect message, change it in the test once it is fixed
+  });
+
+  it(&apos;Should set custom number of rows&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].rows = 5;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textArea&apos;);
+      assert.equal(component.refs.input[0].rows, component.component.rows, &apos;Should set custom number of rows&apos;);
+
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should correctly count characters if character counter is enabled&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].showCharCount = true;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textArea&apos;);
+      const inputValue = (value) =&gt; {
+        const input = component.refs.input[0];
+        const inputEvent = new Event(&apos;input&apos;);
+        input.value = value;
+        input.dispatchEvent(inputEvent);
+      };
+
+      const checkValue = (value) =&gt; {
+        assert.equal(component.dataValue, value, &apos;Should set value&apos;);
+        assert.equal(parseInt(component.refs.charcount[0].textContent), value.length, &apos;Should show correct chars number&apos;);
+        assert.equal(component.refs.charcount[0].textContent, `${value.length} characters`, &apos;Should show correct message&apos;);
+      };
+
+      let value = &apos;test Value (@#!-&quot;]) _ 23.,5}/*&amp;&amp;&apos;;
+      inputValue(value);
+      setTimeout(() =&gt; {
+        checkValue(value);
+        value = &apos;&apos;;
+        inputValue(value);
+
+        setTimeout(() =&gt; {
+          checkValue(value);
+          value = &apos;  &apos;;
+          inputValue(value);
+
+          setTimeout(() =&gt; {
+            checkValue(value);
+
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should correctly count words if word counter is enabled&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].showWordCount = true;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textArea&apos;);
+      const inputValue = (value) =&gt; {
+        const input = component.refs.input[0];
+        const inputEvent = new Event(&apos;input&apos;);
+        input.value = value;
+        input.dispatchEvent(inputEvent);
+      };
+
+      const checkValue = (value, expected) =&gt; {
+        assert.equal(component.dataValue, value, &apos;Should set value&apos;);
+        assert.equal(parseInt(component.refs.wordcount[0].textContent), expected, &apos;Should show correct words number&apos;);
+        assert.equal(component.refs.wordcount[0].textContent, `${expected} words`, &apos;Should show correct message&apos;);
+      };
+
+      let value = &apos;test , test_test 11 - &quot;so me&quot;&apos;;
+      inputValue(value);
+
+      setTimeout(() =&gt; {
+        checkValue(value, 7);
+        value = &apos; test &apos;;
+        inputValue(value);
+
+        setTimeout(() =&gt; {
+          checkValue(value, 1);
+          value = &apos; .   .  &apos;;
+          inputValue(value);
+
+          setTimeout(() =&gt; {
+            checkValue(value, 2);
+
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });
 </code></pre>

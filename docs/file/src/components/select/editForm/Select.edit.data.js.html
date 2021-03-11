@@ -375,7 +375,7 @@ export default [
     label: &apos;Value Property&apos;,
     key: &apos;valueProperty&apos;,
     skipMerge: true,
-    clearOnHide: false,
+    clearOnHide: true,
     tooltip: &apos;The field to use as the value.&apos;,
     weight: 11,
     refreshOn: &apos;data.resource&apos;,
@@ -418,6 +418,7 @@ export default [
       json: {
         and: [
           { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;resource&apos;] },
+          { &apos;!==&apos;: [{ var: &apos;data.reference&apos; }, true] },
           { var: &apos;data.data.resource&apos; },
         ],
       },

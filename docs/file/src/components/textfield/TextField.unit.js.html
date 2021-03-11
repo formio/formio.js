@@ -175,12 +175,14 @@ import _ from &apos;lodash&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import TextFieldComponent from &apos;./TextField&apos;;
 import Formio from &apos;./../../Formio&apos;;
+import &apos;flatpickr&apos;;
 
 import {
   comp1,
   comp2,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from &apos;./fixtures&apos;;
 
 describe(&apos;TextField Component&apos;, () =&gt; {
@@ -354,6 +356,998 @@ describe(&apos;TextField Component&apos;, () =&gt; {
     }).then((component) =&gt; {
       return Harness.testValid(component, &apos;Joe&apos;).then(() =&gt; component);
     });
+  });
+
+  it(&apos;Should provide validation of number input mask after setting value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;99/99-99.99:99,99&apos;;
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;99/99-99.99:99,99&apos;,
+    ];
+
+    const invalidValues = [
+      &apos;99/99-99.99:99,,99&apos;,
+      &apos;99/99-99.99:99,9&apos;,
+      &apos;9999-99.99:99,,99&apos;,
+      &apos;99/99-99.99:9(9,9)9&apos;,
+      &apos;99999999#999999999&apos;,
+      &apos;fffffff()f99/99-99.99:99,99&apos;,
+      &apos;77ff7777ff7777ff7777&apos;,
+      &apos;9/99-99.99999,99&apos;,
+      &apos;9/99-9/9.9/9:99,9/9&apos;,
+      &apos;99/99-a9.99:99,99&apos;,
+      &apos;99/99---.99:99,99&apos;,
+      &apos;ddddddddddddddd&apos;,
+      &apos;9/99-9/9.9/9:99,9/9ddd&apos;,
+      &apos;9/99-99.99999,fffffff&apos;,
+      &apos;99/_9-99.9f9:99,9g9&apos;,
+      &apos;A8/99-99.99:99,99&apos;,
+    ];
+
+    const testValidity = (values, valid, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const changed = component.setValue(value);
+          const error = &apos;Text Field does not match the mask.&apos;;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+  });
+
+  it(&apos;Should allow inputing only numbers and format input according to input mask&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;99/99-99.99:99,99&apos;;
+
+    const values = [
+      &apos;99/99-99.99:99,,99&apos;,
+      &apos;9999-99.99:999,,99&apos;,
+      &apos;99/99-99.99:9(9,9)9&apos;,
+      &apos;99999999999999999&apos;,
+      &apos;ffffffff99/99-99.99:99,99&apos;,
+      &apos;99ff999999ff999ff9&apos;,
+      &apos;9/99-99.99999,999&apos;,
+      &apos;9/99-9/9.9/9:999,9/9&apos;,
+      &apos;99.99-a9.99:999,99&apos;,
+      &apos;99/99---.99:9999,99&apos;,
+      &apos;999999999999&apos;,
+      &apos;99999-9/9.9/9:99,9/9ddd&apos;,
+      &apos;9----99999-99.99999,fffffff&apos;,
+      &apos;999-9kkkk9.99999f9:99,9g9&apos;,
+      &apos;A9/99-99.999:99,99&apos;,
+    ];
+
+    const testFormatting = (values, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const input = component.refs.input[0];
+          const inputEvent = new Event(&apos;input&apos;);
+          input.value = value;
+          input.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            assert.equal(component.getValue(), &apos;99/99-99.99:99,99&apos;, &apos;Should set and format value&apos;);
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testFormatting(values, values[values.length-1]);
+  });
+
+  it(&apos;Should provide validation for alphabetic input mask after setting value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;a/A/a-a:a.a,aa&apos;;
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;b/V/r-y:d.d,as&apos;,
+      &apos;b/b/r-y:d.d,as&apos;,
+    ];
+
+    const invalidValues = [
+      &apos;b/b/r-y:d.d&apos;,
+      &apos;b/v/r-yCC:d.d,as&apos;,
+      &apos;rD/F/R-y:d.d,DE&apos;,
+      &apos;bv/Sr-y:d.d,as&apos;,
+      &apos;555555555555555&apos;,
+      &apos;ssssEsssssssssssss&apos;,
+      &apos;b/v/Rr-y:d$.d,a&apos;,
+      &apos;3/3/#r-y:d.d,as&apos;,
+      &apos;3/3/6-6&amp;&amp;:d...d,as&apos;,
+      &apos;5/5/5ee-55.5,5&apos;
+    ];
+
+    const testValidity = (values, valid, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const changed = component.setValue(value);
+          const error = &apos;Text Field does not match the mask.&apos;;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+  });
+
+  it(&apos;Should allow inputing only letters and format input according to input mask&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;a/a/a-a:a.a,aa&apos;;
+
+    const values = [
+        &apos;ssssSSSSSSS/sss-ss.s,ss&apos;,
+        &apos;ss/sSss-sSSs.s,ss&apos;,
+        &apos;ssSssssssSSSssssss&apos;,
+        &apos;s/sS/sss-s5555:sss.--s,s&apos;,
+        &apos;3/s3/Ss-s:ss.s,ssSsss&apos;,
+        &apos;ssSs3/3s/s6-s6:s...s,s&apos;,
+        &apos;s5/5sSS/5s-5:sS---5.s5,s5sss&apos;
+    ];
+
+    const testFormatting = (values, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const input = component.refs.input[0];
+          const inputEvent = new Event(&apos;input&apos;);
+          input.value = value;
+          input.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            assert.equal(component.getValue(), &apos;s/s/s-s:s.s,ss&apos;, &apos;Should set and format value&apos;);
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testFormatting(values, values[values.length-1]);
+  });
+
+  it(&apos;Should provide validation for alphanumeric input mask after setting value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;**/***.*-*,**&apos;;
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;f4/D34.3-S,dd&apos;,
+      &apos;gg/ggg.g-g,gg&apos;,
+      &apos;DD/DDD.D-D,DD&apos;,
+      &apos;55/555.5-5,55&apos;,
+    ];
+
+    const invalidValues = [
+      &apos;er432ff&apos;,
+      &apos;rD5/F/R-y:d&apos;,
+      &apos;_=+dsds4&apos;,
+      &apos;sFFFFF--------2&apos;,
+      &apos;sd&apos;,
+      &apos;sf__df&apos;,
+      &apos;gg/ggg.g-g&apos;,
+    ];
+
+    const testValidity = (values, valid, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const changed = component.setValue(value);
+          const error = &apos;Text Field does not match the mask.&apos;;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+  });
+
+  it(&apos;Should allow inputing only letters and digits and format input according to input mask&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;**/***.*-*,**&apos;;
+
+    const values = [
+      { value:&apos;ssssSSSSSSS/sss-ss.s,ss&apos;, expected: &apos;ss/ssS.S-S,SS&apos; },
+      { value:&apos;ss/sSss-sSSs.s,ss&apos;, expected: &apos;ss/sSs.s-s,SS&apos; },
+      { value:&apos;ssS666ssssssSSSssssss&apos;, expected: &apos;ss/S66.6-s,ss&apos; },
+      { value:&apos;s/sS/sss-s5555:sss.--s,s&apos;, expected: &apos;ss/Sss.s-s,55&apos; },
+      { value:&apos;3/s3/Ss-s:ss.s,ssSsss&apos;, expected: &apos;3s/3Ss.s-s,ss&apos; },
+      { value:&apos;ssSs3/3s/s6-s6:s...s,s&apos;, expected: &apos;ss/Ss3.3-s,s6&apos; },
+      { value:&apos;s5/5sSS/5s-5:sS---5.s5,s5sss&apos;, expected: &apos;s5/5sS.S-5,s5&apos; },
+    ];
+
+    const testFormatting = (values, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const input = component.refs.input[0];
+          const inputEvent = new Event(&apos;input&apos;);
+          input.value = value.value;
+          input.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            assert.equal(component.getValue(), value.expected, &apos;Should set and format value&apos;);
+
+            if (_.isEqual(value.value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testFormatting(values, values[values.length-1].value);
+  });
+
+  it(&apos;Should provide validation for mixed input mask after setting value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;**/99-aa&apos;;
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;4r/34-fg&apos;,
+      &apos;46/34-yy&apos;,
+      &apos;ye/56-op&apos;,
+      &apos;We/56-op&apos;,
+    ];
+
+    const invalidValues = [
+      &apos;te/56-Dp&apos;,
+      &apos;te/E6-pp&apos;,
+      &apos;tdddde/E6-pp&apos;,
+      &apos;te/E6&apos;,
+      &apos;te/E6-p&apos;,
+      &apos;gdfgdfgdf&apos;,
+      &apos;43543&apos;,
+      &apos;W&apos;
+    ];
+
+    const testValidity = (values, valid, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const changed = component.setValue(value);
+          const error = &apos;Text Field does not match the mask.&apos;;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+  });
+
+  it(&apos;Should allow inputing only letters and digits and format input according to mixed input mask&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;**/99-aa&apos;;
+
+    const values = [
+      { value:&apos;S67gf-+f34cfd&apos;, expected: &apos;S6/73-cf&apos; },
+      { value:&apos;56DDDfdsf23,DDdsf&apos;, expected: &apos;56/23-ds&apos; },
+      { value:&apos;--fs344d.g234df&apos;, expected: &apos;fs/34-dg&apos; },
+      { value:&apos;000000000g234df&apos;, expected: &apos;00/00-gd&apos; },
+    ];
+
+    const testFormatting = (values, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const input = component.refs.input[0];
+          const inputEvent = new Event(&apos;input&apos;);
+          input.value = value.value;
+          input.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            assert.equal(component.getValue(), value.expected, &apos;Should set and format value&apos;);
+
+            if (_.isEqual(value.value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testFormatting(values, values[values.length-1].value);
+  });
+
+  it(&apos;Should allow multiple masks&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    const tf = form.components[0];
+    tf.allowMultipleMasks = true;
+    tf.inputMasks = [
+      { label: &apos;number&apos;, mask: &apos;99-99&apos; },
+      { label: &apos;letter&apos;, mask: &apos;aa.aa&apos; },
+      { label: &apos;any&apos;, mask: &apos;**/**&apos; }
+    ];
+
+    const masks = [
+      { index: 0, mask: &apos;number&apos;, valueValid:[&apos;33-33&apos;], valueInvalid: [&apos;Bd&apos;] },
+      { index: 1, mask: &apos;letter&apos;, valueValid:[&apos;rr.dd&apos;], valueInvalid: [&apos;Nr-22&apos;] },
+      { index: 2, mask: &apos;any&apos;, valueValid:[&apos;Dv/33&apos;], valueInvalid: [&apos;4/4&apos;] },
+    ];
+
+    const testMask = (mask, valid, lastValue) =&gt; {
+      const values = valid ? mask.valueValid : mask.valueInvalid;
+
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+          const component = form.getComponent(&apos;textField&apos;);
+          const changed = component.setValue({ value: value, maskName: mask.mask });
+          const error = &apos;Text Field does not match the mask.&apos;;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            assert.equal(component.refs.select[0].options[mask.index].selected, true, &apos;Should select correct mask&apos;);
+            assert.equal(component.getValue().maskName, mask.mask, &apos;Should apply correct mask&apos;);
+
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    _.each(masks, (mask, index) =&gt; {
+      testMask(mask, true);
+      testMask(mask, false,  (index === masks.length - 1) ? mask.valueInvalid[mask.valueInvalid.length-1] : undefined);
+    });
+  });
+
+  it(&apos;Should provide validation of number input mask with low dash and placeholder char after setting value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;99_99/99&apos;;
+    form.components[0].inputMaskPlaceholderChar = &apos;.&apos;;
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;55_44/88&apos;,
+    ];
+
+    const invalidValues = [
+      &apos;99 99 99&apos;,
+      &apos;44_44_55&apos;,
+      &apos;55555555&apos;,
+    ];
+
+    const testValidity = (values, valid, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const input = component.refs.input[0];
+
+          assert.equal(input.placeholder, &apos;.._../..&apos;, &apos;Should set placeholder using the char setting&apos;);
+
+          const changed = component.setValue(value);
+          const error = &apos;Text Field does not match the mask.&apos;;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+  });
+
+  it(&apos;Should format input according to input mask with low dash when placeholder char is set&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = &apos;99_99/99&apos;;
+    form.components[0].inputMaskPlaceholderChar = &apos;.&apos;;
+
+    const values = [
+      { value:&apos;4444444&apos;, expected: &apos;44_44/44&apos; },
+    ];
+
+    const testFormatting = (values, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;textField&apos;);
+          const input = component.refs.input[0];
+          const inputEvent = new Event(&apos;input&apos;);
+          input.value = value.value;
+          input.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            assert.equal(component.getValue(), value.expected, &apos;Should set and format value&apos;);
+
+            if (_.isEqual(value.value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testFormatting(values, values[values.length-1].value);
+  });
+
+  it(&apos;Should correctly count characters if character counter is enabled&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].showCharCount = true;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textField&apos;);
+      const inputValue = (value) =&gt; {
+        const input = component.refs.input[0];
+        const inputEvent = new Event(&apos;input&apos;);
+        input.value = value;
+        input.dispatchEvent(inputEvent);
+      };
+
+      const checkValue = (value) =&gt; {
+        assert.equal(component.dataValue, value, &apos;Should set value&apos;);
+        assert.equal(parseInt(component.refs.charcount[0].textContent), value.length, &apos;Should show correct chars number&apos;);
+        assert.equal(component.refs.charcount[0].textContent, `${value.length} characters`, &apos;Should show correct message&apos;);
+      };
+
+      let value = &apos;test Value (@#!-&quot;]) _ 23.,5}/*&amp;&amp;&apos;;
+      inputValue(value);
+      setTimeout(() =&gt; {
+        checkValue(value);
+        value = &apos;&apos;;
+        inputValue(value);
+
+        setTimeout(() =&gt; {
+          checkValue(value);
+          value = &apos;  &apos;;
+          inputValue(value);
+
+          setTimeout(() =&gt; {
+            checkValue(value);
+
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should format value to uppercase&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].case = &apos;uppercase&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textField&apos;);
+      const inputValue = (value) =&gt; {
+        const input = component.refs.input[0];
+        const inputEvent = new Event(&apos;input&apos;);
+        input.value = value;
+        input.dispatchEvent(inputEvent);
+      };
+
+      const checkValue = (value) =&gt; {
+        assert.equal(component.dataValue, value.toUpperCase(), &apos;Should format value to uppercase&apos;);
+        assert.equal(component.getValue(), value.toUpperCase(), &apos;Should format value to uppercase&apos;);
+      };
+
+      let value = &apos;SoMe Value&apos;;
+      inputValue(value);
+      setTimeout(() =&gt; {
+        checkValue(value);
+        value = &apos;test 1 value 1&apos;;
+        inputValue(value);
+
+        setTimeout(() =&gt; {
+          checkValue(value);
+          value = &apos;&apos;;
+          inputValue(value);
+
+          setTimeout(() =&gt; {
+            checkValue(value);
+
+            done();
+          }, 100);
+        }, 100);
+      }, 100);
+    }).catch(done);
+  });
+
+  it(&apos;Should format value to lowercase&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].case = &apos;lowercase&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textField&apos;);
+      const inputValue = (value) =&gt; {
+        const input = component.refs.input[0];
+        const inputEvent = new Event(&apos;input&apos;);
+        input.value = value;
+        input.dispatchEvent(inputEvent);
+      };
+
+      const checkValue = (value) =&gt; {
+        assert.equal(component.dataValue, value.toLowerCase(), &apos;Should format value to lowercase (1)&apos;);
+        assert.equal(component.getValue(), value.toLowerCase(), &apos;Should format value to lowercase (2)&apos;);
+      };
+
+      let value = &apos;SoMe Value&apos;;
+      inputValue(value);
+      setTimeout(() =&gt; {
+        checkValue(value);
+        value = &apos;TEST 1 VALUE (1)&apos;;
+        inputValue(value);
+
+        setTimeout(() =&gt; {
+          checkValue(value);
+          value = &apos;&apos;;
+          inputValue(value);
+
+          setTimeout(() =&gt; {
+            checkValue(value);
+
+            done();
+          }, 100);
+        }, 100);
+      }, 100);
+    }).catch(done);
+  });
+
+  it(&apos;Should render and open/close calendar on click&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].widget = {
+      allowInput: true,
+      altInput: true,
+      clickOpens: true,
+      dateFormat: &apos;dd-MM-yyyy&apos;,
+      enableDate: true,
+      enableTime: true,
+      format: &apos;dd-MM-yyyy&apos;,
+      hourIncrement: 1,
+      minuteIncrement: 5,
+      mode: &apos;single&apos;,
+      noCalendar: false,
+      saveAs: &apos;date&apos;,
+      &apos;time_24hr&apos;: false,
+      type: &apos;calendar&apos;,
+      useLocaleSettings: false,
+    };
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textField&apos;);
+      const clickElem = (path) =&gt; {
+        const elem = _.get(component, path);
+        const clickEvent = new Event(&apos;click&apos;);
+        elem.dispatchEvent(clickEvent);
+      };
+      const checkCalendarState = (open) =&gt; {
+        const calendar = document.querySelector(&apos;.flatpickr-calendar&apos;);
+        assert.equal(calendar.classList.contains(&apos;open&apos;), open, `${open ? &apos;Should open calendar&apos; : &apos;Should close calendar&apos;}`);
+      };
+
+      assert.equal(component.widget.settings.type, &apos;calendar&apos;, &apos;Should create calendar widget&apos;);
+      clickElem(&apos;refs.suffix[0]&apos;);
+
+       setTimeout(() =&gt; {
+        checkCalendarState(true);
+        clickElem(&apos;refs.suffix[0]&apos;);
+
+        setTimeout(() =&gt; {
+          checkCalendarState(false);
+          clickElem(&apos;element.children[1].children[0].children[1]&apos;);
+
+          setTimeout(() =&gt; {
+            checkCalendarState(true);
+            clickElem(&apos;refs.suffix[0]&apos;);
+
+            setTimeout(() =&gt; {
+              checkCalendarState(false);
+              document.body.innerHTML = &apos;&apos;;
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should set value into calendar&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].widget = {
+      allowInput: true,
+      altInput: true,
+      clickOpens: true,
+      dateFormat: &apos;dd-MM-yyyy&apos;,
+      enableDate: true,
+      enableTime: true,
+      format: &apos;dd-MM-yyyy&apos;,
+      hourIncrement: 1,
+      minuteIncrement: 5,
+      mode: &apos;single&apos;,
+      noCalendar: false,
+      saveAs: &apos;date&apos;,
+     &apos;time_24hr&apos;: false,
+      type: &apos;calendar&apos;,
+      useLocaleSettings: false,
+    };
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textField&apos;);
+      const clickElem = (path) =&gt; {
+        const elem = _.get(component, path);
+        const clickEvent = new Event(&apos;click&apos;);
+        elem.dispatchEvent(clickEvent);
+      };
+      const checkCalendarState = (open, selectedDay) =&gt; {
+        const calendar = document.querySelector(&apos;.flatpickr-calendar&apos;);
+        assert.equal(calendar.classList.contains(&apos;open&apos;), open, `${open ? &apos;Should open calendar&apos; : &apos;Should close calendar&apos;}`);
+        if (selectedDay) {
+          const day = calendar.querySelector(&apos;.flatpickr-day.selected&apos;).textContent;
+          assert.equal(day, selectedDay, &apos;Should select correct day&apos;);
+        }
+      };
+
+      const date = &apos;16-03-2031&apos;;
+
+      component.setValue(date);
+
+       setTimeout(() =&gt; {
+        checkCalendarState(false);
+        const widget = component.element.querySelector(&apos;.flatpickr-input&apos;).widget;
+
+        assert.equal(component.getValue(), date, &apos;Should set text field value&apos;);
+        assert.equal(widget.calendar.input.value, date, &apos;Should set flatpickr value&apos;);
+        assert.equal(widget.calendar.currentMonth, 2, &apos;Should set correct month&apos;);
+        assert.equal(widget.calendar.currentYear, 2031, &apos;Should set correct year&apos;);
+
+        clickElem(&apos;refs.suffix[0]&apos;);
+
+        setTimeout(() =&gt; {
+          checkCalendarState(true);
+          clickElem(&apos;refs.suffix[0]&apos;);
+
+          setTimeout(() =&gt; {
+            checkCalendarState(false);
+            document.body.innerHTML = &apos;&apos;;
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should allow manual input and set value on blur if calendar widget is enabled with allowed input&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].widget = {
+      allowInput: true,
+      altInput: true,
+      clickOpens: true,
+      dateFormat: &apos;dd-MM-yyyy&apos;,
+      enableDate: true,
+      enableTime: true,
+      format: &apos;dd-MM-yyyy&apos;,
+      hourIncrement: 1,
+      minuteIncrement: 5,
+      mode: &apos;single&apos;,
+      noCalendar: false,
+      saveAs: &apos;date&apos;,
+     &apos;time_24hr&apos;: false,
+      type: &apos;calendar&apos;,
+      useLocaleSettings: false,
+    };
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textField&apos;);
+      const clickElem = (path, element) =&gt; {
+        const elem = element || _.get(component, path);
+        const clickEvent = new Event(&apos;click&apos;);
+        elem.dispatchEvent(clickEvent);
+      };
+      const checkCalendarState = (open, selectedDay) =&gt; {
+        const calendar = document.querySelector(&apos;.flatpickr-calendar&apos;);
+        assert.equal(calendar.classList.contains(&apos;open&apos;), open, `${open ? &apos;Should open calendar&apos; : &apos;Should close calendar&apos;}`);
+        if (selectedDay) {
+          const day = calendar.querySelector(&apos;.flatpickr-day.selected&apos;).textContent;
+          assert.equal(day, selectedDay, &apos;Should select correct day&apos;);
+        }
+      };
+
+      const triggerDateInputEvent = (eventName, value) =&gt; {
+        const dateInput = component.element.querySelector(&apos;.form-control.input&apos;);
+        const event = new Event(eventName);
+        if (eventName === &apos;input&apos;) {
+          dateInput.value = value;
+        }
+        dateInput.dispatchEvent(event);
+      };
+
+      triggerDateInputEvent(&apos;focus&apos;);
+
+       setTimeout(() =&gt; {
+        const date = &apos;21-01-2001&apos;;
+        checkCalendarState(true);
+        triggerDateInputEvent(&apos;input&apos;, date);
+
+        setTimeout(() =&gt; {
+          checkCalendarState(true);
+          triggerDateInputEvent(&apos;blur&apos;);
+
+          setTimeout(() =&gt; {
+            checkCalendarState(true, 21);
+
+            assert.equal(component.getValue(), date, &apos;Should set text field value&apos;);
+            const widget = component.element.querySelector(&apos;.flatpickr-input&apos;).widget;
+            assert.equal(widget.calendar.input.value, date, &apos;Should set flatpickr value&apos;);
+            assert.equal(widget.calendar.currentMonth, 0, &apos;Should set correct month&apos;);
+            assert.equal(widget.calendar.currentYear, 2001, &apos;Should set correct year&apos;);
+
+            clickElem(&apos;refs.suffix[0]&apos;);
+
+            setTimeout(() =&gt; {
+              checkCalendarState(false);
+              assert.equal(component.getValue(), date, &apos;Should save text field value&apos;);
+
+              document.body.innerHTML = &apos;&apos;;
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should allow removing date value if calendar widget is enabled with allowed input&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].widget = {
+      allowInput: true,
+      altInput: true,
+      clickOpens: true,
+      dateFormat: &apos;dd-MM-yyyy&apos;,
+      enableDate: true,
+      enableTime: true,
+      format: &apos;dd-MM-yyyy&apos;,
+      hourIncrement: 1,
+      minuteIncrement: 5,
+      mode: &apos;single&apos;,
+      noCalendar: false,
+      saveAs: &apos;date&apos;,
+     &apos;time_24hr&apos;: false,
+      type: &apos;calendar&apos;,
+      useLocaleSettings: false,
+    };
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const component = form.getComponent(&apos;textField&apos;);
+      const clickElem = (path, element) =&gt; {
+        const elem = element || _.get(component, path);
+        const clickEvent = new Event(&apos;click&apos;);
+        elem.dispatchEvent(clickEvent);
+      };
+
+      const checkCalendarState = (open, selectedDay, noSelectedDay) =&gt; {
+        const calendar = document.querySelector(&apos;.flatpickr-calendar&apos;);
+        assert.equal(calendar.classList.contains(&apos;open&apos;), open, `${open ? &apos;Should open calendar&apos; : &apos;Should close calendar&apos;}`);
+        if (selectedDay) {
+          const day = calendar.querySelector(&apos;.flatpickr-day.selected&apos;).textContent;
+          assert.equal(day, selectedDay, &apos;Should select correct day&apos;);
+        }
+        if (noSelectedDay) {
+          const day = calendar.querySelector(&apos;.flatpickr-day.selected&apos;);
+          assert.equal(!!day, false, &apos;Should not contain selected day&apos;);
+        }
+      };
+
+      const triggerDateInputEvent = (eventName, value) =&gt; {
+        const dateInput = component.element.querySelector(&apos;.form-control.input&apos;);
+        const event = new Event(eventName);
+        if (eventName === &apos;input&apos;) {
+          dateInput.value = value;
+        }
+        dateInput.dispatchEvent(event);
+      };
+
+      let date = &apos;12-03-2009&apos;;
+      component.setValue(date);
+      triggerDateInputEvent(&apos;focus&apos;);
+
+       setTimeout(() =&gt; {
+        assert.equal(component.getValue(), date, &apos;Should set text field value&apos;);
+        date = &apos;&apos;;
+        checkCalendarState(true);
+        triggerDateInputEvent(&apos;input&apos;, date);
+
+        setTimeout(() =&gt; {
+          checkCalendarState(true);
+          triggerDateInputEvent(&apos;blur&apos;);
+
+          setTimeout(() =&gt; {
+            checkCalendarState(true, &apos;&apos;, true);
+
+            assert.equal(component.getValue(), date, &apos;Should set text field value&apos;);
+            const widget = component.element.querySelector(&apos;.flatpickr-input&apos;).widget;
+            assert.equal(widget.calendar.input.value, date, &apos;Should set flatpickr value&apos;);
+
+            clickElem(&apos;refs.suffix[0]&apos;);
+
+            setTimeout(() =&gt; {
+              checkCalendarState(false);
+              assert.equal(component.getValue(), date, &apos;Should save text field value&apos;);
+              document.body.innerHTML = &apos;&apos;;
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
   });
 });
 </code></pre>

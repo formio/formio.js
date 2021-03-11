@@ -174,6 +174,7 @@
 import Wizard from &apos;./Wizard&apos;;
 import Formio from &apos;./Formio&apos;;
 import assert from &apos;power-assert&apos;;
+import _ from &apos;lodash&apos;;
 import wizardCond from &apos;../test/forms/wizardConditionalPages&apos;;
 import wizard from &apos;../test/forms/wizardValidationOnPageChanged&apos;;
 import wizard1 from &apos;../test/forms/wizardValidationOnNextBtn&apos;;
@@ -189,8 +190,709 @@ import wizardWithNestedWizard from &apos;../test/forms/wizardWithNestedWizard&ap
 import formWithSignature from &apos;../test/forms/formWithSignature&apos;;
 import wizardWithTooltip from &apos;../test/forms/wizardWithTooltip&apos;;
 import wizardForHtmlModeTest from &apos;../test/forms/wizardForHtmlRenderModeTest&apos;;
+import wizardTestForm from &apos;../test/forms/wizardTestForm&apos;;
+import formWithNestedWizard from &apos;../test/forms/formWIthNestedWizard&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
+  it(&apos;Should render nested wizard, navigate pages and trigger validation&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(wizardTestForm.form);
+
+    wizard.setForm(formWithNestedWizard).then(() =&gt; {
+      const nestedFormComp = wizard.getComponent(&apos;formNested&apos;);
+
+      nestedFormComp.loadSubForm = ()=&gt; {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) =&gt; resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+      setTimeout(() =&gt; {
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      checkPage(0);
+      assert.equal(wizard.pages.length, 5, &apos;Should have 5 pages&apos;);
+      assert.equal(wizard.allPages.length, 5, &apos;Should have 5 pages&apos;);
+      assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 5, &apos;Should contain refs to breadcrumbs of parent and nested wizard&apos;);
+
+      clickWizardBtn(&apos;next&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(1);
+        assert.equal(wizard.refs[`${wizard.wizardKey}`].querySelectorAll(&apos;[ref=&quot;component&quot;]&apos;).length, 1, &apos;Should not load nested wizard component of the page of nested form if this page contains other components&apos;);
+        clickWizardBtn(&apos;next&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(2);
+          assert.equal(wizard.refs[`${wizard.wizardKey}`].querySelectorAll(&apos;[ref=&quot;component&quot;]&apos;).length, 4, &apos;Should render nested wizard first page components&apos;);
+
+          clickWizardBtn(&apos;next&apos;);
+
+          setTimeout(() =&gt; {
+            checkPage(2);
+            assert.equal(wizard.errors.length, 1, &apos;Should show validation error for required field&apos;);
+            assert.equal(wizard.refs.errorRef.length, 1, &apos;Should show alert with error&apos;);
+            clickWizardBtn(&apos;previous&apos;);
+
+            setTimeout(() =&gt; {
+              checkPage(1);
+              assert.equal(wizard.errors.length, 0, &apos;Should not have validation errors&apos;);
+
+              clickWizardBtn(&apos;link[4]&apos;);
+
+              setTimeout(() =&gt; {
+                checkPage(4);
+                assert.equal(!!wizard.refs[`${wizard.wizardKey}-submit`], true, &apos;Should have submit btn on the last page&apos;);
+                clickWizardBtn(&apos;submit&apos;);
+
+                setTimeout(() =&gt; {
+                  checkPage(4);
+                  assert.equal(wizard.errors.length, 3, &apos;Should trigger validation errors on submit&apos;);
+                  assert.equal(wizard.refs.errorRef.length, 3, &apos;Should show alert with error on submit&apos;);
+                  wizard.getComponent(&apos;select&apos;).setValue(&apos;value1&apos;);
+                  setTimeout(() =&gt; {
+                    checkPage(4);
+                    assert.equal(wizard.errors.length, 2, &apos;Should remove validation error if a component is valid&apos;);
+                    assert.equal(wizard.refs.errorRef.length, 2, &apos;Should remove error from alert if component is valid&apos;);
+
+                    done();
+                  }, 500);
+                }, 500);
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  }).timeout(3000);
+
+  it(&apos;Should set submission in wizard with nested wizard&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(wizardTestForm.form);
+    const submission = {
+      data: {
+        selectBoxesParent: {
+          a: true,
+          b: false,
+          c: false
+        },
+        formNested: {
+          data: wizardTestForm.submission.data
+        },
+        numberParent: 1111
+      }
+    };
+
+    wizard.setForm(formWithNestedWizard).then(() =&gt; {
+      const nestedFormComp = wizard.getComponent(&apos;formNested&apos;);
+
+      nestedFormComp.loadSubForm = ()=&gt; {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) =&gt; resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+
+      setTimeout(() =&gt; {
+      wizard.submission = _.cloneDeep(submission);
+
+      setTimeout(() =&gt; {
+        assert.deepEqual(wizard.data, submission.data, &apos;Should set wizard submission&apos;);
+        assert.deepEqual(wizard.submission.data, submission.data, &apos;Should get wizard submission data&apos;);
+
+        wizard.everyComponent((comp) =&gt; {
+          const expectedValue = _.get(submission.data, comp.path, &apos;no data&apos;);
+
+          if (expectedValue !== &apos;no data&apos;) {
+            assert.deepEqual(comp.getValue(), expectedValue, `Should set value for ${comp.component.type} inside wizard`);
+            assert.deepEqual(comp.dataValue, expectedValue, `Should set value for ${comp.component.type} inside wizard`);
+          }
+        });
+
+        done();
+      }, 300);
+    }, 300);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should show conditional page inside nested wizard&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(wizardTestForm.form);
+    nestedWizard.components[2].conditional = { show: true, when: &apos;checkbox&apos;, eq: &apos;true&apos; };
+
+    wizard.setForm(formWithNestedWizard).then(() =&gt; {
+      const nestedFormComp = wizard.getComponent(&apos;formNested&apos;);
+
+      nestedFormComp.loadSubForm = ()=&gt; {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) =&gt; resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+
+      setTimeout(() =&gt; {
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      checkPage(0);
+      assert.equal(wizard.pages.length, 4, &apos;Should have 4 pages&apos;);
+      assert.equal(wizard.allPages.length, 4, &apos;Should have 4 pages&apos;);
+      assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, &apos;Should contain refs to breadcrumbs of parent and nested wizard&apos;);
+
+      clickWizardBtn(&apos;link[3]&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(3);
+
+        assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, &apos;Should hav submit btn on the last page&apos;);
+        wizard.getComponent(&apos;checkbox&apos;).setValue(true);
+
+        setTimeout(() =&gt; {
+          checkPage(3);
+
+          assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, &apos;Should have submit btn on the last page&apos;);
+          wizard.getComponent(&apos;checkbox&apos;).setValue(true);
+
+          setTimeout(() =&gt; {
+            checkPage(3);
+            assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], false, &apos;Should not have submit btn &apos;);
+            assert.equal(wizard.pages.length, 5, &apos;Should show conditional page&apos;);
+            assert.equal(wizard.allPages.length, 5, &apos;Should show conditional page&apos;);
+            assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 5, &apos;Should contain refs to breadcrumbs of visible conditional page&apos;);
+
+            clickWizardBtn(&apos;next&apos;);
+
+            setTimeout(() =&gt; {
+              checkPage(4);
+              clickWizardBtn(&apos;previous&apos;);
+
+              setTimeout(() =&gt; {
+                checkPage(3);
+                wizard.getComponent(&apos;checkbox&apos;).setValue(false);
+
+                setTimeout(() =&gt; {
+                  assert.equal(wizard.pages.length, 4, &apos;Should hide conditional page&apos;);
+                  assert.equal(wizard.allPages.length, 4, &apos;Should hide conditional page&apos;);
+                  assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, &apos;Should contain refs to breadcrumbs of visible pages&apos;);
+                  assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, &apos;Should have submit btn on the last page&apos;);
+
+                  done();
+                }, 500);
+              }, 300);
+            }, 300);
+          }, 500);
+        }, 300);
+      }, 300);
+    }, 300);
+    })
+    .catch((err) =&gt; done(err));
+  }).timeout(3000);
+
+  it(&apos;Should render values in HTML render mode&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement, {
+      readOnly: true,
+      renderMode: &apos;html&apos;
+    });
+    const form = _.cloneDeep(wizardTestForm.form);
+
+    wizard.setForm(form, ).then(() =&gt; {
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      const checkValues = () =&gt; {
+        wizard.allPages[wizard.page].everyComponent((comp) =&gt; {
+          const isParent = !!(comp.component.components || comp.component.rows || comp.component.columns);
+
+          if (!isParent) {
+            const isInEditGrid = comp.parent.component.type === &apos;editgrid&apos;;
+            const value = isInEditGrid ? comp.parent.refs[&apos;editgrid-editGrid-row&apos;][comp.rowIndex].textContent.trim() : comp.element.querySelector(&quot;[ref=&apos;value&apos;]&quot;).textContent;
+            const expectedValue = _.get(wizardTestForm.htmlModeValues, comp.path, &apos;no data&apos;);
+
+            assert.equal(value, expectedValue === &apos;true&apos; ?  &apos;True&apos; : expectedValue, `${comp.component.key}: should render value in html render mode`);
+          }
+        });
+      };
+
+      wizard.submission = _.cloneDeep(wizardTestForm.submission);
+
+      setTimeout(() =&gt; {
+        checkPage(0);
+        checkValues();
+        clickWizardBtn(&apos;next&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(1);
+          checkValues();
+          clickWizardBtn(&apos;next&apos;);
+
+          setTimeout(() =&gt; {
+            checkPage(2);
+            checkValues();
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should execute advanced logic for wizard pages&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardTestForm.form);
+    _.each(form.components, (comp, index) =&gt; {
+      if (index === 1) {
+        comp.logic = [
+          {
+            name: &apos;simple logic&apos;,
+            trigger: { type: &apos;simple&apos;, simple: { show: true, when: &apos;textField&apos;, eq: &apos;tooltip&apos; } },
+            actions: [
+              {
+                name: &apos;merge schema action&apos;,
+                type: &apos;mergeComponentSchema&apos;,
+                schemaDefinition: &quot;schema = { tooltip: &apos;some tooltip&apos;}&quot;
+              }
+            ]
+          }
+        ];
+       }
+      if (index === 2) {
+        comp.logic = [
+          {
+            name: &apos;logic test&apos;,
+            trigger: { type: &apos;simple&apos;, simple: { show: true, when: &apos;checkbox&apos;, eq: &apos;true&apos; } },
+            actions: [
+              {
+                name: &apos;disabled&apos;,
+                type: &apos;property&apos;,
+                property: { label: &apos;Disabled&apos;, value: &apos;disabled&apos;, type: &apos;boolean&apos; },
+                state: true
+              }
+            ]
+          }
+        ];
+      }
+     });
+
+    wizard.setForm(form).then(() =&gt; {
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      checkPage(0);
+      wizard.getComponent(&apos;textField&apos;).setValue(&apos;tooltip&apos;);
+      clickWizardBtn(&apos;next&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(1);
+        assert.equal(wizard.tooltips.length, 1, &apos;Should have tooltip after advanced logic execution&apos;);
+        assert.equal(!!wizard.refs[`${wizard.wizardKey}-tooltip`][0], true, &apos;Should render tooltip icon&apos;);
+
+        wizard.getComponent(&apos;checkbox&apos;).setValue(true);
+        clickWizardBtn(&apos;next&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(2);
+          assert.equal(wizard.allPages[wizard.page].disabled, true, &apos;Should disable page components after advanced logic execution&apos;);
+          done();
+        }, 200);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should navigate next page according to advanced next page logic&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardTestForm.form);
+    _.each(form.components, (comp, index) =&gt; {
+      if (index === 0) {
+        comp.nextPage = &quot;next = data.textField === &apos;page3&apos; ? &apos;page3&apos; : &apos;page2&apos;&quot;;
+      }
+      if (index === 1) {
+        comp.nextPage = &quot;next = data.container &amp;&amp; data.container.select === &apos;value1&apos; ? &apos;page1&apos; : &apos;page3&apos;&quot;;
+      }
+     });
+
+    wizard.setForm(form).then(() =&gt; {
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+      checkPage(0);
+      wizard.getComponent(&apos;textField&apos;).setValue(&apos;page3&apos;);
+      clickWizardBtn(&apos;next&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(2);
+        wizard.getComponent(&apos;select&apos;).setValue(&apos;value1&apos;);
+        clickWizardBtn(&apos;previous&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(1);
+          wizard.getComponent(&apos;checkbox&apos;).setValue(true);
+          clickWizardBtn(&apos;next&apos;);
+
+          setTimeout(() =&gt; {
+            checkPage(0);
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not render breadcrumb if it has hidden type&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardTestForm.form);
+    _.each(form.components, (comp) =&gt; {
+      comp.breadcrumb = &apos;none&apos;;
+    });
+
+    wizard.setForm(form).then(() =&gt; {
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      const checkBreadcrumb = () =&gt; {
+        assert.equal(_.get(wizard.refs, `${wizard.wizardKey}-link`).length, 0, &apos;Should not render wizard breadcrumb&apos;);
+      };
+
+      checkBreadcrumb();
+      wizard.setSubmission(_.cloneDeep(wizardTestForm.submission));
+
+      setTimeout(() =&gt; {
+        checkPage(0);
+        checkBreadcrumb();
+        clickWizardBtn(&apos;next&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(1);
+          checkBreadcrumb();
+          clickWizardBtn(&apos;next&apos;);
+
+          setTimeout(() =&gt; {
+            checkPage(2);
+            checkBreadcrumb();
+            done();
+          }, 100);
+        }, 100);
+      }, 100);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not navigate between wizard pages on breadcrumb click if breadcrumbClickable is false&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardTestForm.form);
+    _.each(form.components, (comp) =&gt; {
+      comp.breadcrumbClickable = false;
+    });
+
+    wizard.setForm(form).then(() =&gt; {
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      checkPage(0);
+      clickWizardBtn(&apos;link[1]&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(0);
+        clickWizardBtn(&apos;link[2]&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(0);
+          wizard.setSubmission(_.cloneDeep(wizardTestForm.submission));
+
+          setTimeout(() =&gt; {
+            checkPage(0);
+            clickWizardBtn(&apos;next&apos;);
+
+            setTimeout(() =&gt; {
+              checkPage(1);
+              clickWizardBtn(&apos;link[0]&apos;);
+
+              setTimeout(() =&gt; {
+                checkPage(1);
+                done();
+              }, 100);
+            }, 100);
+          }, 100);
+        }, 100);
+      }, 100);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should set/get wizard submission&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardTestForm.form).then(() =&gt; {
+      wizard.submission = _.cloneDeep(wizardTestForm.submission);
+
+      setTimeout(() =&gt; {
+        assert.deepEqual(wizard.data, wizardTestForm.submission.data, &apos;Should set wizard submission&apos;);
+        assert.deepEqual(wizard.submission.data, wizardTestForm.submission.data, &apos;Should get wizard submission data&apos;);
+
+        wizard.everyComponent((comp) =&gt; {
+          const expectedValue = _.get(wizardTestForm.submission.data, comp.path, &apos;no data&apos;);
+          if (expectedValue !== &apos;no data&apos;) {
+            assert.deepEqual(comp.getValue(), expectedValue, `Should set value for ${comp.component.type} inside wizard`);
+            assert.deepEqual(comp.dataValue, expectedValue, `Should set value for ${comp.component.type} inside wizard`);
+          }
+        });
+        done();
+      }, 300);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should show validation alert and components` errors and navigate pages after clicking alert error&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardTestForm.form).then(() =&gt; {
+      const clickWizardBtn = (pathPart, clickError) =&gt; {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      const checkInvalidComp = (compKey, highLight) =&gt; {
+        const comp = wizard.getComponent(compKey);
+
+        assert.deepEqual(!!comp.error, true, `${compKey}: should have error`);
+        assert.deepEqual(comp.error.message, `${comp.component.label} is required`, `${compKey}: should have correct required validation message`);
+        assert.deepEqual(comp.pristine, false, `${compKey}: should set pristine to false`);
+        assert.deepEqual(comp.element.classList.contains(`${highLight ? &apos;formio-error-wrapper&apos; : &apos;has-error&apos;}`), true, `${compKey}: should set error class`);
+        assert.deepEqual(comp.refs.messageContainer.querySelector(&apos;.error&apos;).textContent.trim(), `${comp.component.label} is required`, `${compKey}: should display error message`);
+      };
+
+      checkPage(0);
+      clickWizardBtn(&apos;link[2]&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(2);
+        assert.equal(wizard.errors.length, 0, &apos;Should not have validation errors&apos;);
+
+        clickWizardBtn(&apos;submit&apos;);
+
+        setTimeout(() =&gt; {
+          assert.equal(wizard.errors.length, 3, &apos;Should have validation errors&apos;);
+          assert.equal(wizard.refs.errorRef.length, wizard.errors.length, &apos;Should show alert with validation errors&apos;);
+          assert.equal(!!wizard.element.querySelector(&apos;.alert-danger&apos;), true, &apos;Should have alert with validation errors&apos;);
+          checkInvalidComp(&apos;select&apos;, true);
+          clickWizardBtn(&apos;errorRef[0]&apos;, true);
+
+          setTimeout(() =&gt; {
+            checkPage(0);
+
+            assert.equal(wizard.errors.length, 1, &apos;Should have page validation error&apos;);
+            assert.equal(wizard.refs.errorRef.length, 3, &apos;Should keep alert with validation errors&apos;);
+            checkInvalidComp(&apos;textField&apos;);
+            clickWizardBtn(&apos;errorRef[1]&apos;, true);
+
+            setTimeout(() =&gt; {
+              checkPage(1);
+
+              assert.equal(wizard.errors.length, 1, &apos;Should have page validation error&apos;);
+              assert.equal(wizard.refs.errorRef.length, 3, &apos;Should keep alert with validation errors&apos;);
+              checkInvalidComp(&apos;checkbox&apos;);
+              wizard.getComponent(&apos;checkbox&apos;).setValue(true);
+
+              setTimeout(() =&gt; {
+                checkPage(1);
+                assert.equal(wizard.errors.length, 0, &apos;Should not have page validation error&apos;);
+                assert.equal(wizard.refs.errorRef.length, 2, &apos;Should keep alert with validation errors&apos;);
+                clickWizardBtn(&apos;errorRef[1]&apos;, true);
+
+                setTimeout(() =&gt; {
+                  checkPage(2);
+
+                  assert.equal(wizard.errors.length, 2, &apos;Should have wizard validation errors&apos;);
+                  assert.equal(wizard.refs.errorRef.length, 2, &apos;Should keep alert with validation errors&apos;);
+                  wizard.getComponent(&apos;select&apos;).setValue(&apos;value1&apos;);
+
+                  setTimeout(() =&gt; {
+                    assert.equal(wizard.errors.length, 1, &apos;Should have wizard validation error&apos;);
+                    assert.equal(wizard.refs.errorRef.length, 1, &apos;Should keep alert with validation errors&apos;);
+                    clickWizardBtn(&apos;errorRef[0]&apos;, true);
+
+                    setTimeout(() =&gt; {
+                      checkPage(0);
+
+                      assert.equal(wizard.errors.length, 1, &apos;Should have page validation error&apos;);
+                      assert.equal(wizard.refs.errorRef.length, 1, &apos;Should keep alert with validation errors&apos;);
+                      wizard.getComponent(&apos;textField&apos;).setValue(&apos;valid&apos;);
+
+                      setTimeout(() =&gt; {
+                        assert.equal(wizard.errors.length, 0, &apos;Should not have page validation error&apos;);
+                        assert.equal(!!wizard.element.querySelector(&apos;.alert-danger&apos;), false, &apos;Should not have alert with validation errors&apos;);
+                        clickWizardBtn(&apos;link[2]&apos;);
+
+                        setTimeout(() =&gt; {
+                          clickWizardBtn(&apos;submit&apos;);
+                          setTimeout(() =&gt; {
+                            assert.equal(wizard.submission.state, &apos;submitted&apos;, &apos;Should submit the form&apos;);
+                            done();
+                          }, 300);
+                        }, 300);
+                      }, 300);
+                    }, 300);
+                  }, 300);
+                }, 300);
+              }, 300);
+            }, 100);
+          }, 100);
+        }, 100);
+      }, 100);
+    })
+    .catch((err) =&gt; done(err));
+  }).timeout(3500);
+
+  it(&apos;Should navigate wizard pages using navigation buttons and breadcrumbs&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardTestForm.form).then(() =&gt; {
+      const clickNavigationBtn = (pathPart) =&gt; {
+        const btn = _.get(wizard.refs, `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+      checkPage(0);
+      clickNavigationBtn(&apos;next&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(0);
+
+        assert.equal(wizard.errors.length, 1, &apos;Should have validation error&apos;);
+        assert.equal(wizard.refs.errorRef.length, wizard.errors.length, &apos;Should show alert with validation error&apos;);
+
+        wizard.getComponent(&apos;textField&apos;).setValue(&apos;valid&apos;);
+
+        clickNavigationBtn(&apos;next&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(1);
+          clickNavigationBtn(&apos;next&apos;);
+
+          setTimeout(() =&gt; {
+            checkPage(1);
+
+            assert.equal(wizard.errors.length, 1, &apos;Should have validation error&apos;);
+            assert.equal(wizard.refs.errorRef.length, wizard.errors.length, &apos;Should show alert with validation error&apos;);
+
+            clickNavigationBtn(&apos;previous&apos;);
+
+            setTimeout(() =&gt; {
+              checkPage(0);
+
+              assert.equal(wizard.errors.length, 0, &apos;Should not have validation error&apos;);
+              assert.equal(!!wizard.refs.errorRef, false, &apos;Should not have alert with validation error&apos;);
+
+              clickNavigationBtn(&apos;next&apos;);
+
+              setTimeout(() =&gt; {
+                checkPage(1);
+                assert.equal(wizard.errors.length, 1, &apos;Should have validation error&apos;);
+                wizard.getComponent(&apos;checkbox&apos;).setValue(true);
+
+                clickNavigationBtn(&apos;next&apos;);
+
+                setTimeout(() =&gt; {
+                  checkPage(2);
+                  assert.equal(wizard.errors.length, 0, &apos;Should not have validation error&apos;);
+                  clickNavigationBtn(&apos;link[0]&apos;);
+
+                  setTimeout(() =&gt; {
+                    checkPage(0);
+                    assert.equal(wizard.errors.length, 0, &apos;Should not have validation error&apos;);
+                    clickNavigationBtn(&apos;link[2]&apos;);
+
+                    setTimeout(() =&gt; {
+                      checkPage(2);
+                      done();
+                    }, 50);
+                  }, 50);
+                }, 50);
+              }, 50);
+            }, 50);
+          }, 50);
+        }, 50);
+      }, 50);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should correctly set values in HTML render mode&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const formHTMLMode = new Wizard(formElement, {
