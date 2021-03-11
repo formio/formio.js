@@ -76,22 +76,13 @@ export default [
   {
     weight: 411,
     type: 'textfield',
-    defaultValue: '_',
     input: true,
     key: 'inputMaskPlaceholderChar',
     label: 'Input Mask Placeholder Char',
     tooltip: 'You can specify a char which will be used as a placeholder in the field. <br/> E.g., "\u02cd" <br/> Make note that placeholder char will be replaced by a space if it is used inside the mask',
     validation: {
       maxLength: 1
-    },/*
-    validate: {
-      custom: `
-        console.log(submission.data.inputMask, input);
-        console.log(!(submission.data.inputMask || '').includes(input));
-        valid = !(submission.data.inputMask || '').includes(input);
-      `,
-      customMessage: 'Input Mask shouldn\'t contain Input Mask Placeholder Char'
-    }, */
+    },
     customConditional(context) {
       return context.data.inputMask;
     }
