@@ -2373,7 +2373,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.isHtmlRenderMode() && changed) {
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.redraw();
       return changed;
     }

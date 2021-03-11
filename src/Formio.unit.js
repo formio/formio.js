@@ -2316,5 +2316,59 @@ describe('Formio.js Tests', () => {
         })
         .catch(done);
     });
+
+    it('Should render after form submission if renderMode = \'html\' with Nested Form', (done) => {
+      const formJson =  {
+        components: [
+          {
+            label: 'Form',
+            key: 'form',
+            type: 'form',
+            input: true,
+            components: [
+              {
+                label: 'Text Field',
+                key: 'textField',
+                type: 'textfield',
+                input: true,
+              },
+              {
+                label: 'Password',
+                key: 'password',
+                type: 'password',
+                input: true
+              },
+            ],
+          },
+          {
+            label: 'Checkbox',
+            type: 'checkbox',
+            input: true
+          },
+        ]
+      };
+      const element = document.createElement('div');
+      Formio.createForm(element, formJson, { renderMode: 'html' })
+        .then(form => {
+          assert.equal(form.getComponent('textField').element.querySelector('[ref=value]').innerHTML, '-');
+          assert.equal(form.getComponent('password').element.querySelector('[ref=value]').innerHTML, '-');
+          form.submission = {
+            data: {
+              form: {
+                data: {
+                  textField: 'textField',
+                  password: 'password'
+                }
+              }
+            }
+          };
+          setTimeout(() => {
+            assert.equal(form.getComponent('textField').element.querySelector('[ref=value]').innerHTML, 'textField');
+            assert.equal(form.getComponent('password').element.querySelector('[ref=value]').innerHTML, 'password');
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
   });
 });
