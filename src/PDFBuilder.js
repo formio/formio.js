@@ -179,6 +179,10 @@ export default class PDFBuilder extends WebformBuilder {
           }
         });
         this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {
+          if (!this.refs.hiddenFileInputElement.value) {
+            return;
+          }
+
           this.upload(this.refs.hiddenFileInputElement.files[0]);
           this.refs.hiddenFileInputElement.value = '';
         });
