@@ -395,23 +395,26 @@ export default class SelectComponent extends Field {
     this.isScrollLoading = false;
     this.loading = false;
 
-    // If a value is provided, then select it.
-    if (!this.isEmpty()) {
-      this.setValue(this.dataValue, {
-        noUpdateEvent: true
-      });
-    }
-    else {
-      // If a default value is provided then select it.
-      const defaultValue = this.defaultValue;
-      if (!this.isEmpty(defaultValue)) {
-        this.setValue(defaultValue);
+    if (!fromSearch) {
+      // If a value is provided, then select it.
+      if (!this.isEmpty()) {
+        this.setValue(this.dataValue, {
+          noUpdateEvent: true
+        });
+      }
+      else {
+        // If a default value is provided then select it.
+        const defaultValue = this.defaultValue;
+        if (!this.isEmpty(defaultValue)) {
+          this.setValue(defaultValue);
+        }
       }
     }
 
     // Say we are done loading the items.
     this.itemsLoadedResolve();
   }
+
   /* eslint-enable max-statements */
 
   get defaultValue() {
