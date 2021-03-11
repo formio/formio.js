@@ -1450,7 +1450,9 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
-      submission: (this.root ? this.root._submission : {}),
+      submission: (this.root ? this.root._submission : {
+        data: this.rootValue
+      }),
       form: this.root ? this.root._form : {},
     }, additional));
   }
