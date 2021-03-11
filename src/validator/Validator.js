@@ -696,7 +696,7 @@ class ValidationChecker {
           if (component.isPartialDay && component.isPartialDay(value)) {
             return true;
           }
-          const date = moment(value);
+          const date = component.getValidationFormat ? moment(value, component.getValidationFormat()) : moment(value);
           const maxDate = getDateSetting(setting);
 
           if (_.isNull(maxDate)) {
@@ -724,7 +724,7 @@ class ValidationChecker {
           if (component.isPartialDay && component.isPartialDay(value)) {
             return true;
           }
-          const date = moment(value);
+          const date = component.getValidationFormat ? moment(value, component.getValidationFormat()) : moment(value);
           const minDate = getDateSetting(setting);
           if (_.isNull(minDate)) {
             return true;
