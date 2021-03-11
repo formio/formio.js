@@ -1235,6 +1235,32 @@ div[data-oembed-url] {
   img {
     max-width: 100%;
   }
+
+  li[data-list="bullet"] {
+    list-style-type: none;
+
+    .ql-ui{
+      padding-right: 0.5rem;
+
+      &::before {
+        content: "\2022";
+      }
+    }
+  }
+
+  li[data-list="ordered"] {
+    list-style-type: none;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    counter-increment: list-0;
+
+    .ql-ui {
+      padding-right: 0.5rem;
+
+      &::before {
+        content: counter(list-0, decimal) '. ';
+      }
+    }
+  }
 }
 
 .formio-component-textfield,
