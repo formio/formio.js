@@ -20,6 +20,7 @@ import wizardWithTooltip from '../test/forms/wizardWithTooltip';
 import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
 import wizardTestForm from '../test/forms/wizardTestForm';
 import formWithNestedWizard from '../test/forms/formWIthNestedWizard';
+import customWizard from '../test/forms/customWizard';
 
 describe('Wizard tests', () => {
   it('Should render nested wizard, navigate pages and trigger validation', function(done) {
@@ -535,6 +536,56 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
+  it('Should correctly render customized wizard and navigate using custom btns', function(done) {
+    const formElement = document.createElement('div');
+    const customizedWizard = new Wizard(formElement);
+
+    customizedWizard.setForm(customWizard).then(() => {
+      customizedWizard.on('goToNextPage', function() {
+        customizedWizard.nextPage();
+      });
+      customizedWizard.on('goToPrevPage', function() {
+        customizedWizard.prevPage();
+      });
+
+      const checkBtns = (page) => {
+        assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-next`], false, 'Should not render wizard next btn');
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-cancel`], false, 'Should not render wizard cancel btn');
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-previous`], false, 'Should not render wizard previous btn');
+      };
+
+      const navigatePage = (btnKey) => {
+        const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
+        const clickEvent = new Event('click');
+        customBtn.dispatchEvent(clickEvent);
+      };
+      checkBtns(0);
+      navigatePage('nextPage');
+      setTimeout(() => {
+        checkBtns(1);
+        navigatePage('nextPage1');
+        setTimeout(() => {
+          checkBtns(2);
+          navigatePage('prevPage1');
+
+          setTimeout(() => {
+            checkBtns(1);
+            navigatePage('prevPage');
+
+            setTimeout(() => {
+              checkBtns(0);
+              customizedWizard.destroy();
+
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should not create a new submission on submission of edited draft submission', function(done) {
     const formElement = document.createElement('div');
     const customizedWizard = new Wizard(formElement);
@@ -865,56 +916,6 @@ describe('Wizard tests', () => {
           }, 50);
         }, 50);
       }, 50);
-    })
-    .catch((err) => done(err));
-  });
-
-  it('Should correctly render customized wizard and navigate using custom btns', function(done) {
-    const formElement = document.createElement('div');
-    const customizedWizard = new Wizard(formElement);
-
-    customizedWizard.setForm(customWizard).then(() => {
-      customizedWizard.on('goToNextPage', function() {
-        customizedWizard.nextPage();
-      });
-      customizedWizard.on('goToPrevPage', function() {
-        customizedWizard.prevPage();
-      });
-
-      const checkBtns = (page) => {
-        assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
-        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-next`], false, 'Should not render wizard next btn');
-        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-cancel`], false, 'Should not render wizard cancel btn');
-        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-previous`], false, 'Should not render wizard previous btn');
-      };
-
-      const navigatePage = (btnKey) => {
-        const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
-        const clickEvent = new Event('click');
-        customBtn.dispatchEvent(clickEvent);
-      };
-      checkBtns(0);
-      navigatePage('nextPage');
-      setTimeout(() => {
-        checkBtns(1);
-        navigatePage('nextPage1');
-        setTimeout(() => {
-          checkBtns(2);
-          navigatePage('prevPage1');
-
-          setTimeout(() => {
-            checkBtns(1);
-            navigatePage('prevPage');
-
-            setTimeout(() => {
-              checkBtns(0);
-              customizedWizard.destroy();
-
-              done();
-            }, 200);
-          }, 200);
-        }, 200);
-      }, 200);
     })
     .catch((err) => done(err));
   });
