@@ -201,7 +201,7 @@ export default class Element {
     this.eventHandlers.forEach((handler, index) => {
       if (
         (handler.id === this.id)
-        && obj.removeEventListener
+        && obj?.removeEventListener
         && (handler.type === type)
         && (!func || handler.func === func)
       ) {
