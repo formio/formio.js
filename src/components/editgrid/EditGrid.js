@@ -3,7 +3,7 @@ import NativePromise from 'native-promise-only';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from '../../utils/utils';
+import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent } from '../../utils/utils';
 import templates from './templates';
 
 const EditRowState = {
@@ -52,7 +52,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   static get defaultHeaderTemplate() {
     return `<div class="row">
       {% util.eachComponent(components, function(component) { %}
-        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+        {% if (displayValue(component)) { %}
           <div class="col-sm-2">{{ component.label }}</div>
         {% } %}
       {% }) %}
@@ -62,9 +62,9 @@ export default class EditGridComponent extends NestedArrayComponent {
   static get defaultRowTemplate() {
     return `<div class="row">
       {% util.eachComponent(components, function(component) { %}
-        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+        {% if (displayValue(component)) { %}
           <div class="col-sm-2">
-            {{ getView(component, row[component.key]) }}
+            {{ isVisibleInRow(component) ? getView(component, row[component.key]) : ''}}
           </div>
         {% } %}
       {% }) %}
@@ -254,6 +254,34 @@ export default class EditGridComponent extends NestedArrayComponent {
     return [EditRowState.New, EditRowState.Editing, EditRowState.Viewing].includes(editRow.state);
   }
 
+  isComponentVisibleInSomeRow(component) {
+    const rows = this.editRows;
+
+    if (_.isEmpty(rows)) {
+      const rowComponents = this.createRowComponents({}, 0);
+      let checkComponent;
+
+      eachComponent(rowComponents, (comp) => {
+        if (comp.component.key === component.key) {
+          checkComponent = comp;
+        }
+        comp.checkConditions();
+      });
+
+      const isVisible = checkComponent ? checkComponent.visible : true;
+      [...this.components].forEach((comp) => this.removeComponent(comp, this.components));
+
+      return isVisible;
+    }
+
+    return  _.some(rows, (row, index) => {
+      const flattenedComponents = this.flattenComponents(index);
+      const instance = flattenedComponents[component.key];
+
+      return instance ? instance.visible : true;
+    });
+  }
+
   render(children) {
     if (this.builderMode) {
       return super.render();
@@ -271,6 +299,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         cancelRow: this.cancelRowRef,
       },
       header: this.renderString(headerTemplate, {
+        displayValue: (component) => this.displayComponentValue(component),
         components: this.component.components,
         value: dataValue,
         t
@@ -401,6 +430,15 @@ export default class EditGridComponent extends NestedArrayComponent {
     return flattened;
   }
 
+  isComponentVisibleInRow(component, flattenedComponents) {
+    const instance = flattenedComponents[component.key];
+    return instance ? instance.visible : true;
+  }
+
+  displayComponentValue(component) {
+    return !!((!component.hasOwnProperty('tableView') || component.tableView) && this.isComponentVisibleInSomeRow(component));
+  }
+
   renderRow(row, rowIndex) {
     const dataValue = this.dataValue || [];
     if (this.isOpen(row)) {
@@ -418,6 +456,8 @@ export default class EditGridComponent extends NestedArrayComponent {
           rowIndex,
           components: this.component.components,
           flattenedComponents,
+          displayValue: (component) => this.displayComponentValue(component),
+          isVisibleInRow: (component) => this.isComponentVisibleInRow(component, flattenedComponents),
           getView: (component, data) => {
             const instance = flattenedComponents[component.key];
             const view = instance ? instance.getView(data || instance.dataValue) : '';

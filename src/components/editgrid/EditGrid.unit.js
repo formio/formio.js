@@ -2,7 +2,7 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp4, comp3, comp5, comp6, comp7, comp8 } from './fixtures';
+import { comp1, comp4, comp3, comp5, comp6, comp7, comp8, comp9 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
@@ -677,6 +677,75 @@ describe('EditGrid Component', () => {
           }, 150);
         }, 100);
       }, 150);
+    }).catch(done);
+  });
+
+  it('Should display summary with values only for components that are visible at least in one row', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(comp9).then(() => {
+      const editGrid = form.getComponent('editGrid');
+
+      const checkRows = (columnsNumber, rowsNumber) => {
+        const rowWithColumns = editGrid.element.querySelector('.row');
+        const rowsWithValues = editGrid.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
+
+        assert.equal(rowWithColumns.children.length, columnsNumber, 'Row should contain values only for visible components');
+        assert.equal(rowsWithValues.length, rowsNumber, 'Should have corrent number of rows');
+      };
+
+      checkRows(2, 0);
+      form.setValue({
+        data: {
+          editGrid: [
+            { textField: 'test1', checkbox: false },
+            { textField: 'test2', checkbox: false },
+          ],
+        }
+      });
+      setTimeout(() => {
+        checkRows(2, 2);
+        form.setValue({
+          data: {
+            editGrid: [
+              { textField: 'test1', checkbox: false },
+              { textField: 'test2', checkbox: true },
+            ],
+          }
+        });
+
+        setTimeout(() => {
+          checkRows(3, 2);
+          form.setValue({
+            data: {
+              editGrid: [
+                { textField: 'test1', checkbox: false },
+                { textField: 'test2', checkbox: true, textArea: 'test22' },
+                { textField: 'show', checkbox: true, container: { number1: 1111 }, textArea: 'test3' }
+              ],
+            }
+          });
+
+          setTimeout(() => {
+            checkRows(4, 3);
+            form.setValue({
+              data: {
+                editGrid: [
+                  { textField: 'test1', checkbox: false },
+                  { textField: 'test2', checkbox: false },
+                  { textField: 'show', checkbox: false, container: { number1: 1111 } }
+                ],
+              }
+            });
+
+            setTimeout(() => {
+              checkRows(3, 3);
+
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 });
