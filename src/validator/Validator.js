@@ -91,14 +91,41 @@ class ValidationChecker {
             const submission = this.config.submission;
             const path = `data.${component.path}`;
 
+            const addPathQueryParams = (pathQueryParams, query, path) => {
+              const pathArray = path.split(/\[\d+\]?./);
+              const needValuesInArray = pathArray.length > 1;
+
+              let pathToValue = path;
+
+              if (needValuesInArray) {
+                pathToValue = pathArray.shift();
+                const pathQueryObj = {};
+
+                _.reduce(pathArray, (pathQueryPath, pathPart, index) => {
+                  const isLastPathPart = index === (pathArray.length - 1);
+                  const obj = _.get(pathQueryObj, pathQueryPath, pathQueryObj);
+                  const addedPath = `$elemMatch['${pathPart}']`;
+
+                  _.set(obj, addedPath, isLastPathPart ? pathQueryParams : {});
+
+                  return pathQueryPath ? `${pathQueryPath}.${addedPath}` : addedPath;
+                }, '');
+
+                query[pathToValue] = pathQueryObj;
+              }
+              else {
+                query[pathToValue] = pathQueryParams;
+              }
+            };
+
             // Build the query
             const query = { form: form._id };
 
             if (_.isString(value)) {
-              query[path] = {
+              addPathQueryParams({
                 $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
                 $options: 'i'
-              };
+              }, query, path);
             }
             // FOR-213 - Pluck the unique location id
             else if (
@@ -107,28 +134,27 @@ class ValidationChecker {
               value.address['address_components'] &&
               value.address['place_id']
             ) {
-              query[`${path}.address.place_id`] = {
+              addPathQueryParams({
                 $regex: new RegExp(`^${escapeRegExCharacters(value.address['place_id'])}$`),
                 $options: 'i'
-              };
+              }, query, `${path}.address.place_id`);
             }
             // Compare the contents of arrays vs the order.
             else if (_.isArray(value)) {
-              query[path] = { $all: value };
+              addPathQueryParams({ $all: value }, query, path);
             }
             else if (_.isObject(value) || _.isNumber(value)) {
-              query[path] = { $eq: value };
+              addPathQueryParams({ $eq: value }, query, path);
             }
             // Only search for non-deleted items
             query.deleted = { $eq: null };
-
             // Try to find an existing value within the form
             this.config.db.findOne(query, (err, result) => {
               if (err) {
                 return resolve(false);
               }
               else if (result) {
-                // Only OK if it matches the current submission
+               // Only OK if it matches the current submission
                 return resolve(submission._id && (result._id.toString() === submission._id));
               }
               else {
