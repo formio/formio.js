@@ -44,6 +44,7 @@ export default class Wizard extends Webform {
     this.lastPromise = NativePromise.resolve();
     this.enabledIndex = 0;
     this.editMode = false;
+    this.originalOptions = _.cloneDeep(this.options);
   }
 
   isLastPage() {
@@ -756,6 +757,9 @@ export default class Wizard extends Webform {
         if (this.wizard.full) {
           this.options.show = this.options.show || {};
           this.options.show[item.key] = true;
+        }
+        else if (this.wizard.hasOwnProperty('full') && !_.isEqual(this.originalOptions.show, this.options.show)) {
+          this.options.show = { ...(this.originalOptions.show || {}) };
         }
       }
       this.originalComponents.push(_.clone(item));
