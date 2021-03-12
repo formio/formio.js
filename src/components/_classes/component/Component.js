@@ -1712,7 +1712,7 @@ export default class Component extends Element {
 
     const newComponent = fastCloneDeep(this.originalComponent);
 
-    let changed = logics.reduce((changed, logic) => {
+    const changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
@@ -1726,11 +1726,13 @@ export default class Component extends Element {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (!_.isEqual(this.component, newComponent)) {
+    if (changed && !_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
-      // If disabled changed, be sure to distribute the setting.
-      this.disabled = this.shouldDisabled;
-      changed = true;
+      const disabled = this.shouldDisabled;
+      // Change disabled state if it has changed
+      if (this.disabled !== disabled) {
+        this.disabled = disabled;
+      }
     }
 
     return changed;
@@ -3097,8 +3099,19 @@ export default class Component extends Element {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
+              const visible = this.conditionallyVisible(null, null);
+              const disabled = this.shouldDisabled;
+
+              // Change states which won't be recalculated during redrawing
+              if (this.visible !== visible) {
+                this.visible = visible;
+              }
+              if (this.disabled !== disabled) {
+                this.disabled = disabled;
+              }
+
+              this.redraw();
             }
-            this.rebuild();
           }
         }, true);
       }
