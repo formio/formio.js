@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-1482: added tests for customized wizard and draft submission
  - FIO-1212: Fixes an issue where user have to click twice on the date to select it in IE11
  - FIO-1068: Fixes an issue where revision of the Nested Form loaded on the front-end side differs from the one which loaded on the server-side
- - FJS-1461: Fixes an issue where it is possible to Cancel Wizard form in readOnly mode
 
 ### 4.13.0-rc.17
 #### Fixed

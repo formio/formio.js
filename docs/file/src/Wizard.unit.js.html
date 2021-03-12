@@ -192,6 +192,7 @@ import wizardWithTooltip from &apos;../test/forms/wizardWithTooltip&apos;;
 import wizardForHtmlModeTest from &apos;../test/forms/wizardForHtmlRenderModeTest&apos;;
 import wizardTestForm from &apos;../test/forms/wizardTestForm&apos;;
 import formWithNestedWizard from &apos;../test/forms/formWIthNestedWizard&apos;;
+import customWizard from &apos;../test/forms/customWizard&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
   it(&apos;Should render nested wizard, navigate pages and trigger validation&apos;, function(done) {
@@ -703,6 +704,204 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         });
         done();
       }, 300);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should correctly render customized wizard and navigate using custom btns&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const customizedWizard = new Wizard(formElement);
+
+    customizedWizard.setForm(customWizard).then(() =&gt; {
+      customizedWizard.on(&apos;goToNextPage&apos;, function() {
+        customizedWizard.nextPage();
+      });
+      customizedWizard.on(&apos;goToPrevPage&apos;, function() {
+        customizedWizard.prevPage();
+      });
+
+      const checkBtns = (page) =&gt; {
+        assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-next`], false, &apos;Should not render wizard next btn&apos;);
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-cancel`], false, &apos;Should not render wizard cancel btn&apos;);
+        assert.equal(!!customizedWizard.refs[`${customizedWizard.wizardKey}-previous`], false, &apos;Should not render wizard previous btn&apos;);
+      };
+
+      const navigatePage = (btnKey) =&gt; {
+        const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
+        const clickEvent = new Event(&apos;click&apos;);
+        customBtn.dispatchEvent(clickEvent);
+      };
+      checkBtns(0);
+      navigatePage(&apos;nextPage&apos;);
+      setTimeout(() =&gt; {
+        checkBtns(1);
+        navigatePage(&apos;nextPage1&apos;);
+        setTimeout(() =&gt; {
+          checkBtns(2);
+          navigatePage(&apos;prevPage1&apos;);
+
+          setTimeout(() =&gt; {
+            checkBtns(1);
+            navigatePage(&apos;prevPage&apos;);
+
+            setTimeout(() =&gt; {
+              checkBtns(0);
+              customizedWizard.destroy();
+
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not create a new submission on submission of edited draft submission&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const customizedWizard = new Wizard(formElement);
+    const expectedValues = {
+      &apos;1&apos;: {
+        method: &apos;post&apos;,
+        urlEnd: &apos;submission&apos;,
+        state: &apos;draft&apos;,
+        data: {
+          number: undefined,
+          textArea1: &apos;&apos;,
+          textField: &apos;test&apos;
+        },
+        id: undefined
+      },
+      &apos;2&apos;: {
+        method: &apos;put&apos;,
+        urlEnd: &apos;someId&apos;,
+        state: &apos;draft&apos;,
+        data: {
+          number: 111111,
+          textArea1: &apos;test1&apos;,
+          textField: &apos;test1&apos;
+        },
+        id: &apos;someId&apos;
+      },
+      &apos;3&apos;: {
+        method: &apos;put&apos;,
+        urlEnd: &apos;someId&apos;,
+        state: &apos;draft&apos;,
+        data: {
+          number: 22222,
+          textArea1: &apos;test&apos;,
+          textField: &apos;test1&apos;
+        },
+        id: &apos;someId&apos;
+      },
+      &apos;4&apos;: {
+        method: &apos;put&apos;,
+        urlEnd: &apos;someId&apos;,
+        state: &apos;draft&apos;,
+        data: {
+          number: 22222,
+          textArea1: &apos;test1&apos;,
+          textField: &apos;test1&apos;
+        },
+        id: &apos;someId&apos;
+      },
+      &apos;5&apos;: {
+        method: &apos;put&apos;,
+        urlEnd: &apos;someId&apos;,
+        state: &apos;submitted&apos;,
+        data: {
+          number: 22222,
+          textArea1: &apos;test1&apos;,
+          textField: &apos;test1&apos;
+        },
+        id: &apos;someId&apos;
+      }
+    };
+
+    customizedWizard.setForm(customWizard).then(() =&gt; {
+      const formio = new Formio(&apos;http://test.localhost/draftwizardpages&apos;, {});
+      let number = 1;
+
+      formio.makeRequest = (type, url, method, data) =&gt; {
+        assert.equal(method, expectedValues[number].method, `Should send ${expectedValues[number].method} request`);
+        assert.equal(data._id, expectedValues[number].id, `Submission data should ${expectedValues[number].id ? &apos;&apos; : &apos;not&apos;} contain id of editted submission`);
+        assert.equal(url.endsWith(expectedValues[number].urlEnd), true, `Request url should end with ${expectedValues[number].urlEnd}`);
+        assert.equal(data.state, expectedValues[number].state, `Should set ${expectedValues[number].state} state for submission`);
+        _.each(expectedValues[number].data, function(value, key) {
+          assert.equal(data.data[key], value, `${key} field should contain &quot;${value}&quot; value in submission object`);
+        });
+
+        number = number + 1;
+
+        return new Promise(resolve =&gt; resolve({
+          _id: &apos;someId&apos;,
+          data: {
+            number: 22222,
+            textArea1: &apos;test1&apos;,
+            textField: &apos;test1&apos;
+          },
+          metadata:{},
+          state: data.state
+          })
+        );
+      };
+
+      customizedWizard.formio = formio;
+
+      customizedWizard.on(&apos;goToNextPage&apos;, function() {
+        customizedWizard.executeSubmit({ state: &apos;draft&apos; }).then(() =&gt; customizedWizard.nextPage());
+      });
+      customizedWizard.on(&apos;goToPrevPage&apos;, function() {
+        customizedWizard.executeSubmit({ state: &apos;draft&apos; }).then(() =&gt; customizedWizard.prevPage());
+      });
+      customizedWizard.on(&apos;saveSubmission&apos;, function() {
+        customizedWizard.executeSubmit();
+      });
+
+      const checkPage = (page) =&gt; {
+        assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
+      };
+
+      const navigatePage = (btnKey) =&gt; {
+        const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
+        const clickEvent = new Event(&apos;click&apos;);
+        customBtn.dispatchEvent(clickEvent);
+      };
+
+      const setPageCompValue = (compKey, value) =&gt; {
+        customizedWizard.components[customizedWizard.page].getComponent(compKey).setValue(value);
+      };
+
+      checkPage(0);
+      setPageCompValue(&apos;textField&apos;, &apos;test&apos;);
+      navigatePage(&apos;nextPage&apos;);
+
+      setTimeout(() =&gt; {
+        checkPage(1);
+        setPageCompValue(&apos;number&apos;, 111111);
+        navigatePage(&apos;nextPage1&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(2);
+          setPageCompValue(&apos;textArea1&apos;, &apos;test&apos;);
+          navigatePage(&apos;prevPage1&apos;);
+
+          setTimeout(() =&gt; {
+            checkPage(1);
+            navigatePage(&apos;nextPage1&apos;);
+
+            setTimeout(() =&gt; {
+              checkPage(2);
+              navigatePage(&apos;save&apos;);
+              setTimeout(() =&gt; {
+                customizedWizard.destroy();
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
     })
     .catch((err) =&gt; done(err));
   });
