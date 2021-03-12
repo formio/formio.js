@@ -371,13 +371,13 @@ export default class Wizard extends Webform {
 
   detachNav() {
     _.each(this.buttons, (button) => {
-      this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], 'click');
+      button && this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], 'click');
     });
   }
 
   detachHeader() {
     this.refs[`${this.wizardKey}-link`].forEach((link) => {
-      this.removeEventListener(link, 'click');
+      link && this.removeEventListener(link, 'click');
     });
   }
 
