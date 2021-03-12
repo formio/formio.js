@@ -758,7 +758,7 @@ export default class Wizard extends Webform {
           this.options.show = this.options.show || {};
           this.options.show[item.key] = true;
         }
-        else if (!_.isEqual(this.originalOptions.show, this.options.show)) {
+        else if (this.wizard.hasOwnProperty('full') && !_.isEqual(this.originalOptions.show, this.options.show)) {
           this.options.show = { ...(this.originalOptions.show || {}) };
         }
       }
