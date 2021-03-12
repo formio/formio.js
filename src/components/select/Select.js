@@ -623,7 +623,7 @@ export default class SelectComponent extends Field {
     }
 
     // Only load the data if it is visible.
-    if (!this.checkConditions()) {
+    if (!this.visible) {
       this.itemsLoadedResolve();
       return;
     }
@@ -1019,7 +1019,7 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.updateItems();
+    this.triggerUpdate();
     return superAttach;
   }
 
