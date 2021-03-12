@@ -1019,7 +1019,7 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.triggerUpdate();
+    this.updateItems();
     return superAttach;
   }
 
