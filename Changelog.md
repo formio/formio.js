@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.18
+#### Fixed
+ - Do not call sanitize when generating pdfs to speed up pdf generation.
+ - FIO-1435: Fixes an issue where Lazy Load checkbox is not shown when ChoicesJS is selected by default
+ - FJS-1265: Fixes an issue where when uncheck Show Full Wizard, all the pages remain visible
+ - FIO-1524: Fixes an issue where EditGrid and Select are not hidden using event-triggered logic 
+ - FIO-1482: added tests for customized wizard and draft submission
+ - FIO-1212: Fixes an issue where user have to click twice on the date to select it in IE11
+ - FIO-1068: Fixes an issue where revision of the Nested Form loaded on the front-end side differs from the one which loaded on the server-side
+ - FJS-1461: Fixes an issue where it is possible to Cancel Wizard form in readOnly mode
+
 ### 4.13.0-rc.17
 #### Fixed
  - FIO-2497: fixed an issue where editGrid row value summary contains values for invisible components
