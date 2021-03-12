@@ -102,9 +102,9 @@ export default [
             ],
           },
           {
-            '===': [
+            '!==': [
               { var: 'data.widget' },
-              'choicesjs'
+              'html5'
             ]
           }
         ]
