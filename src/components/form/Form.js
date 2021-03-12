@@ -90,6 +90,11 @@ export default class FormComponent extends Component {
       }
     }
 
+    if (this.builderMode && this.component.hasOwnProperty('formRevision')) {
+      this.component.revision = this.component.formRevision;
+      delete this.component.formRevision;
+    }
+
     // Add revision version if set.
     if (
       this.component.revision || this.component.revision === 0 ||
