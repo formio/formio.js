@@ -162,9 +162,17 @@ export default class CalendarWidget extends InputWidget {
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
 
       // Make sure we commit the value after a blur event occurs.
-      this.addEventListener(this.calendar._input, 'blur', () =>
-        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
-      );
+      this.addEventListener(this.calendar._input, 'blur', (event) => {
+        const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
+        const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
+
+        if (!relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+          const inputValue = this.calendar.input.value;
+          const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+
+          this.calendar.setDate(dateValue, true, this.settings.altFormat);
+        }
+      });
 
       // Makes it possible to enter the month as text or digits in the same time.
       if (this.settings.format.match(/\bM{3}\b/gi)) {
