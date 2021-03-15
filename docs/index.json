@@ -47372,646 +47372,6 @@
   {
     "__docId__": 2449,
     "kind": "file",
-    "name": "src/widgets/CalendarWidget.js",
-    "content": "import Flatpickr from 'flatpickr';\nimport InputWidget from './InputWidget';\nimport {\n  convertFormatToFlatpickr,\n  convertFormatToMask,\n  convertFormatToMoment,\n  currentTimezone,\n  formatDate,\n  formatOffset,\n  getDateSetting,\n  getLocaleDateFormatInfo,\n  momentDate,\n  zonesLoaded,\n  shouldLoadZones,\n  loadZones\n} from '../utils/utils';\nimport moment from 'moment';\nimport _ from 'lodash';\nconst DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';\nconst ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';\n\nexport default class CalendarWidget extends InputWidget {\n  /* eslint-disable camelcase */\n  static get defaultSettings() {\n    return {\n      type: 'calendar',\n      altInput: true,\n      allowInput: true,\n      clickOpens: true,\n      enableDate: true,\n      enableTime: true,\n      mode: 'single',\n      noCalendar: false,\n      format: DEFAULT_FORMAT,\n      dateFormat: ISO_8601_FORMAT,\n      useLocaleSettings: false,\n      language: 'us-en',\n      defaultDate: null,\n      hourIncrement: 1,\n      minuteIncrement: 5,\n      time_24hr: false,\n      saveAs: 'date',\n      displayInTimezone: '',\n      timezone: '',\n      minDate: '',\n      maxDate: ''\n    };\n  }\n  /* eslint-enable camelcase */\n\n  constructor(settings, component) {\n    super(settings, component);\n    // Change the format to map to the settings.\n    if (this.settings.noCalendar) {\n      this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.settings.enableTime) {\n      this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (this.settings.time_24hr) {\n      this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n    this.component.suffix = true;\n  }\n\n  /**\n   * Load the timezones.\n   *\n   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.\n   */\n  loadZones() {\n    const timezone = this.timezone;\n    if (!zonesLoaded() && shouldLoadZones(timezone)) {\n      loadZones(timezone).then(() => this.emit('redraw'));\n\n      // Return zones are loading.\n      return true;\n    }\n\n    // Zones are already loaded.\n    return false;\n  }\n\n  attach(input) {\n    super.attach(input);\n    if (input && !input.getAttribute('placeholder')) {\n      input.setAttribute('placeholder', this.settings.format);\n    }\n\n    const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);\n    this.defaultFormat = {\n      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',\n      time: 'h:i K'\n    };\n\n    this.closedOn = 0;\n    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;\n    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);\n    this.settings.minDate = getDateSetting(this.settings.minDate);\n    this.settings.maxDate = getDateSetting(this.settings.maxDate);\n    this.settings.defaultDate = getDateSetting(this.settings.defaultDate);\n    this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);\n    this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);\n    this.settings.onChange = () => this.emit('update');\n    this.settings.onClose = () => {\n      this.closedOn = Date.now();\n      this.emit('blur');\n    };\n\n    // Removes console errors from Flatpickr.\n    this.settings.errorHandler = () => null;\n\n    // Extension of the parseDate method for validating input data.\n    this.settings.parseDate = (inputDate, format) => {\n      this.enteredDate = inputDate;\n      if (this.calendar) {\n        this.calendar.clear();\n      }\n\n      // Check for validation errors.\n      if (this.component.widget.checkDataValidity()) {\n        // Solving the problem with parsing dates with MMM or MMMM format.\n        if (!inputDate.match(/[a-z]{3,}/gi)) {\n          if (format.indexOf('M') !== -1) {\n            format = format.replace('M', 'm');\n          }\n          else if (format.indexOf('F') !== -1) {\n            format = format.replace('F', 'm');\n          }\n        }\n        else {\n          const match = inputDate.match(/([a-z]{3})/gi);\n          inputDate = _.replace(inputDate, match, _.capitalize(match));\n        }\n\n        return Flatpickr.parseDate(inputDate, format);\n      }\n\n      if (this.calendar) {\n        this.calendar.close();\n      }\n      return undefined;\n    };\n    this.settings.formatDate = (date, format) => {\n      // Only format this if this is the altFormat and the form is readOnly.\n      if (this.settings.readOnly && (format === this.settings.altFormat)) {\n        if (this.settings.saveAs === 'text' || this.loadZones()) {\n          return Flatpickr.formatDate(date, format);\n        }\n\n        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);\n      }\n\n      return Flatpickr.formatDate(date, format);\n    };\n\n    if (this._input) {\n      // Create a new flatpickr.\n      this.calendar = new Flatpickr(this._input, this.settings);\n\n      // Enforce the input mask of the format.\n      this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));\n\n      // Make sure we commit the value after a blur event occurs.\n      this.addEventListener(this.calendar._input, 'blur', () =>\n        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)\n      );\n\n      // Makes it possible to enter the month as text or digits in the same time.\n      if (this.settings.format.match(/\\bM{3}\\b/gi)) {\n        this.addEventListener(this.calendar._input, 'keyup', e => {\n          let format = this.settings.format;\n          const value = e.target.value;\n\n          if (value && value[format.indexOf('M')].match(/\\d/)) {\n            format = format.replace('MMM', 'MM');\n          }\n          else if (value && value[format.indexOf('M')].match(/[a-z]/i)) {\n            format = format.replace('MMM', 'e');\n          }\n          if (this.inputMasks[0]) {\n            this.inputMasks[0].destroy();\n            this.inputMasks = [];\n          }\n\n          this.setInputMask(this.calendar._input, convertFormatToMask(format));\n        });\n      }\n    }\n  }\n\n  get timezone() {\n    if (this.settings.timezone) {\n      return this.settings.timezone;\n    }\n    if (this.settings.displayInTimezone === 'submission' && this.settings.submissionTimezone) {\n      return this.settings.submissionTimezone;\n    }\n    if (this.settings.displayInTimezone === 'utc') {\n      return 'UTC';\n    }\n\n    // Return current timezone if none are provided.\n    return currentTimezone();\n  }\n\n  get defaultSettings() {\n    return CalendarWidget.defaultSettings;\n  }\n\n  addSuffix(container) {\n    const suffix = this.ce('span', {\n      class: 'input-group-addon input-group-append',\n      style: 'cursor: pointer'\n    });\n    suffix.appendChild(this.ce('span', {\n      class: 'input-group-text'\n    }, this.getIcon(this.settings.enableDate ? 'calendar' : 'time')));\n    this.addEventListener(suffix, 'click', () => {\n      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {\n        this.calendar.open();\n      }\n    });\n    container.appendChild(suffix);\n    return suffix;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    if (this.calendar) {\n      if (disabled) {\n        this.calendar._input.setAttribute('disabled', 'disabled');\n      }\n      else {\n        this.calendar._input.removeAttribute('disabled');\n      }\n      this.calendar.close();\n      this.calendar.redraw();\n    }\n  }\n\n  get input() {\n    return this.calendar ? this.calendar.altInput : null;\n  }\n\n  get localeFormat() {\n    let format = '';\n\n    if (this.settings.enableDate) {\n      format += this.defaultFormat.date;\n    }\n\n    if (this.settings.enableTime) {\n      format += this.defaultFormat.time;\n    }\n\n    return format;\n  }\n\n  get dateTimeFormat() {\n    return this.settings.useLocaleSettings ? this.localeFormat : convertFormatToFlatpickr(this.dateFormat);\n  }\n\n  get dateFormat() {\n    return _.get(this.settings, 'format', DEFAULT_FORMAT);\n  }\n\n  /**\n   * Get the default date for the calendar.\n   * @return {*}\n   */\n  get defaultDate() {\n    return getDateSetting(this.settings.defaultDate);\n  }\n\n  get defaultValue() {\n    const defaultDate = this.defaultDate;\n    return defaultDate ? defaultDate.toISOString() : '';\n  }\n\n  /**\n   * Return the date value.\n   *\n   * @param date\n   * @param format\n   * @return {string}\n   */\n  getDateValue(date, format) {\n    return moment(date).format(convertFormatToMoment(format));\n  }\n\n  /**\n   * Return the value of the selected date.\n   *\n   * @return {*}\n   */\n  getValue() {\n    // Standard output format.\n    if (!this.calendar) {\n      return super.getValue();\n    }\n\n    // Get the selected dates from the calendar widget.\n    const dates = this.calendar.selectedDates;\n    if (!dates || !dates.length) {\n      return super.getValue();\n    }\n\n    if (!(dates[0] instanceof Date)) {\n      return 'Invalid Date';\n    }\n\n    return this.getDateValue(dates[0], this.valueFormat);\n  }\n\n  /**\n   * Set the selected date value.\n   *\n   * @param value\n   */\n  setValue(value) {\n    if (!this.calendar) {\n      return super.setValue(value);\n    }\n    if (value) {\n      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {\n        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);\n      }\n      else {\n        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);\n      }\n    }\n    else {\n      this.calendar.clear(false);\n    }\n  }\n\n  getView(value, format) {\n    format = format || this.dateFormat;\n    if (this.settings.saveAs === 'text') {\n      return this.getDateValue(value, format);\n    }\n\n    return formatDate(value, format, this.timezone);\n  }\n\n  validationValue(value) {\n    if (typeof value === 'string') {\n      if (value) {\n        this.enteredDate = moment(value).format(convertFormatToMoment(this.settings.format));\n        return new Date(value);\n      }\n      return '';\n    }\n    return value.map(val => new Date(val));\n  }\n\n  destroy() {\n    super.destroy();\n    this.calendar.destroy();\n  }\n}\n",
-    "static": true,
-    "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/widgets/CalendarWidget.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 2450,
-    "kind": "variable",
-    "name": "DEFAULT_FORMAT",
-    "memberof": "src/widgets/CalendarWidget.js",
-    "static": true,
-    "longname": "src/widgets/CalendarWidget.js~DEFAULT_FORMAT",
-    "access": "public",
-    "export": false,
-    "importPath": "formiojs/src/widgets/CalendarWidget.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 19,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "ignore": true
-  },
-  {
-    "__docId__": 2451,
-    "kind": "variable",
-    "name": "ISO_8601_FORMAT",
-    "memberof": "src/widgets/CalendarWidget.js",
-    "static": true,
-    "longname": "src/widgets/CalendarWidget.js~ISO_8601_FORMAT",
-    "access": "public",
-    "export": false,
-    "importPath": "formiojs/src/widgets/CalendarWidget.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 20,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "ignore": true
-  },
-  {
-    "__docId__": 2452,
-    "kind": "class",
-    "name": "CalendarWidget",
-    "memberof": "src/widgets/CalendarWidget.js",
-    "static": true,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "access": "public",
-    "export": true,
-    "importPath": "formiojs/src/widgets/CalendarWidget.js",
-    "importStyle": "CalendarWidget",
-    "description": null,
-    "lineNumber": 22,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "src/widgets/InputWidget.js~InputWidget"
-    ]
-  },
-  {
-    "__docId__": 2453,
-    "kind": "get",
-    "name": "defaultSettings",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget.defaultSettings",
-    "access": "public",
-    "description": null,
-    "lineNumber": 24,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{\"type\": string, \"altInput\": boolean, \"allowInput\": boolean, \"clickOpens\": boolean, \"enableDate\": boolean, \"enableTime\": boolean, \"mode\": string, \"noCalendar\": *, \"format\": *, \"dateFormat\": *, \"useLocaleSettings\": *, \"language\": string, \"defaultDate\": *, \"hourIncrement\": number, \"minuteIncrement\": number, \"time_24hr\": *, \"saveAs\": string, \"displayInTimezone\": *, \"timezone\": *, \"minDate\": *, \"maxDate\": *}"
-      ]
-    }
-  },
-  {
-    "__docId__": 2454,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 51,
-    "undocument": true
-  },
-  {
-    "__docId__": 2455,
-    "kind": "method",
-    "name": "loadZones",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#loadZones",
-    "access": "public",
-    "description": "Load the timezones.",
-    "lineNumber": 71,
-    "return": {
-      "nullable": null,
-      "types": [
-        "boolean"
-      ],
-      "spread": false,
-      "description": "TRUE if the zones are loading, FALSE otherwise."
-    },
-    "params": []
-  },
-  {
-    "__docId__": 2456,
-    "kind": "method",
-    "name": "attach",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#attach",
-    "access": "public",
-    "description": null,
-    "lineNumber": 84,
-    "undocument": true,
-    "params": [
-      {
-        "name": "input",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 2457,
-    "kind": "member",
-    "name": "defaultFormat",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultFormat",
-    "access": "public",
-    "description": null,
-    "lineNumber": 91,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{\"date\": *, \"time\": string}"
-      ]
-    }
-  },
-  {
-    "__docId__": 2458,
-    "kind": "member",
-    "name": "closedOn",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#closedOn",
-    "access": "public",
-    "description": null,
-    "lineNumber": 96,
-    "undocument": true,
-    "type": {
-      "types": [
-        "number"
-      ]
-    }
-  },
-  {
-    "__docId__": 2459,
-    "kind": "member",
-    "name": "valueFormat",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#valueFormat",
-    "access": "public",
-    "description": null,
-    "lineNumber": 97,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2460,
-    "kind": "member",
-    "name": "valueMomentFormat",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#valueMomentFormat",
-    "access": "public",
-    "description": null,
-    "lineNumber": 98,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2462,
-    "kind": "member",
-    "name": "enteredDate",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#enteredDate",
-    "access": "public",
-    "description": null,
-    "lineNumber": 115,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2463,
-    "kind": "member",
-    "name": "calendar",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#calendar",
-    "access": "public",
-    "description": null,
-    "lineNumber": 159,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2464,
-    "kind": "member",
-    "name": "inputMasks",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#inputMasks",
-    "access": "public",
-    "description": null,
-    "lineNumber": 183,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*[]"
-      ]
-    }
-  },
-  {
-    "__docId__": 2465,
-    "kind": "get",
-    "name": "timezone",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#timezone",
-    "access": "public",
-    "description": null,
-    "lineNumber": 192,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2466,
-    "kind": "get",
-    "name": "defaultSettings",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultSettings",
-    "access": "public",
-    "description": null,
-    "lineNumber": 207,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2467,
-    "kind": "method",
-    "name": "addSuffix",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#addSuffix",
-    "access": "public",
-    "description": null,
-    "lineNumber": 211,
-    "undocument": true,
-    "params": [
-      {
-        "name": "container",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2468,
-    "kind": "set",
-    "name": "disabled",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disabled",
-    "access": "public",
-    "description": null,
-    "lineNumber": 228,
-    "undocument": true
-  },
-  {
-    "__docId__": 2469,
-    "kind": "get",
-    "name": "input",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#input",
-    "access": "public",
-    "description": null,
-    "lineNumber": 242,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2470,
-    "kind": "get",
-    "name": "localeFormat",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#localeFormat",
-    "access": "public",
-    "description": null,
-    "lineNumber": 246,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2471,
-    "kind": "get",
-    "name": "dateTimeFormat",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateTimeFormat",
-    "access": "public",
-    "description": null,
-    "lineNumber": 260,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2472,
-    "kind": "get",
-    "name": "dateFormat",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateFormat",
-    "access": "public",
-    "description": null,
-    "lineNumber": 264,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2473,
-    "kind": "get",
-    "name": "defaultDate",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultDate",
-    "access": "public",
-    "description": "Get the default date for the calendar.",
-    "lineNumber": 272,
-    "return": {
-      "nullable": null,
-      "types": [
-        "*"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2474,
-    "kind": "get",
-    "name": "defaultValue",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultValue",
-    "access": "public",
-    "description": null,
-    "lineNumber": 276,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2475,
-    "kind": "method",
-    "name": "getDateValue",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getDateValue",
-    "access": "public",
-    "description": "Return the date value.",
-    "lineNumber": 288,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "*"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "date",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "*"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "format",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "string"
-      ],
-      "spread": false,
-      "description": ""
-    }
-  },
-  {
-    "__docId__": 2476,
-    "kind": "method",
-    "name": "getValue",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getValue",
-    "access": "public",
-    "description": "Return the value of the selected date.",
-    "lineNumber": 297,
-    "return": {
-      "nullable": null,
-      "types": [
-        "*"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "params": []
-  },
-  {
-    "__docId__": 2477,
-    "kind": "method",
-    "name": "setValue",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#setValue",
-    "access": "public",
-    "description": "Set the selected date value.",
-    "lineNumber": 321,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "*"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "value",
-        "description": ""
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2478,
-    "kind": "method",
-    "name": "getView",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getView",
-    "access": "public",
-    "description": null,
-    "lineNumber": 338,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "format",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2479,
-    "kind": "method",
-    "name": "validationValue",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#validationValue",
-    "access": "public",
-    "description": null,
-    "lineNumber": 347,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2481,
-    "kind": "method",
-    "name": "destroy",
-    "memberof": "src/widgets/CalendarWidget.js~CalendarWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/CalendarWidget.js~CalendarWidget#destroy",
-    "access": "public",
-    "description": null,
-    "lineNumber": 358,
-    "undocument": true,
-    "params": [],
-    "return": null
-  },
-  {
-    "__docId__": 2482,
-    "kind": "file",
     "name": "src/widgets/InputWidget.js",
     "content": "import _ from 'lodash';\nimport Component from '../Component';\nexport default class InputWidget extends Component {\n  constructor(settings, component) {\n    super(settings);\n    this.namespace = 'formio.widget';\n    this.component = component || {};\n    this.settings = _.merge({}, this.defaultSettings, settings || {});\n  }\n\n  attach(input) {\n    this._input = input;\n  }\n\n  get defaultSettings() {\n    return {};\n  }\n\n  set disabled(disabled) {\n    if (disabled) {\n      this._input.setAttribute('disabled', 'disabled');\n    }\n    else {\n      this._input.removeAttribute('disabled');\n    }\n  }\n\n  get input() {\n    return this._input;\n  }\n\n  get defaultValue() {\n    return '';\n  }\n\n  getValue() {\n    return this._input.value;\n  }\n\n  getView(value) {\n    return value;\n  }\n\n  validationValue(value) {\n    return value;\n  }\n\n  addPrefix() {\n    return null;\n  }\n\n  addSuffix() {\n    return null;\n  }\n\n  setValue(value) {\n    this._input.value = value;\n  }\n}\n",
     "static": true,
@@ -48021,7 +47381,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 2483,
+    "__docId__": 2450,
     "kind": "class",
     "name": "InputWidget",
     "memberof": "src/widgets/InputWidget.js",
@@ -48040,7 +47400,7 @@
     ]
   },
   {
-    "__docId__": 2484,
+    "__docId__": 2451,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48054,7 +47414,7 @@
     "undocument": true
   },
   {
-    "__docId__": 2485,
+    "__docId__": 2452,
     "kind": "member",
     "name": "namespace",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48071,7 +47431,7 @@
     }
   },
   {
-    "__docId__": 2486,
+    "__docId__": 2453,
     "kind": "member",
     "name": "component",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48088,7 +47448,7 @@
     }
   },
   {
-    "__docId__": 2487,
+    "__docId__": 2454,
     "kind": "member",
     "name": "settings",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48105,7 +47465,7 @@
     }
   },
   {
-    "__docId__": 2488,
+    "__docId__": 2455,
     "kind": "method",
     "name": "attach",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48128,7 +47488,7 @@
     "return": null
   },
   {
-    "__docId__": 2489,
+    "__docId__": 2456,
     "kind": "member",
     "name": "_input",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48145,7 +47505,7 @@
     }
   },
   {
-    "__docId__": 2490,
+    "__docId__": 2457,
     "kind": "get",
     "name": "defaultSettings",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48164,7 +47524,7 @@
     }
   },
   {
-    "__docId__": 2491,
+    "__docId__": 2458,
     "kind": "set",
     "name": "disabled",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48178,7 +47538,7 @@
     "undocument": true
   },
   {
-    "__docId__": 2492,
+    "__docId__": 2459,
     "kind": "get",
     "name": "input",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48197,7 +47557,7 @@
     }
   },
   {
-    "__docId__": 2493,
+    "__docId__": 2460,
     "kind": "get",
     "name": "defaultValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48216,7 +47576,7 @@
     }
   },
   {
-    "__docId__": 2494,
+    "__docId__": 2461,
     "kind": "method",
     "name": "getValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48236,7 +47596,7 @@
     }
   },
   {
-    "__docId__": 2495,
+    "__docId__": 2462,
     "kind": "method",
     "name": "getView",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48263,7 +47623,7 @@
     }
   },
   {
-    "__docId__": 2496,
+    "__docId__": 2463,
     "kind": "method",
     "name": "validationValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48290,7 +47650,7 @@
     }
   },
   {
-    "__docId__": 2497,
+    "__docId__": 2464,
     "kind": "method",
     "name": "addPrefix",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48310,7 +47670,7 @@
     }
   },
   {
-    "__docId__": 2498,
+    "__docId__": 2465,
     "kind": "method",
     "name": "addSuffix",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48330,7 +47690,7 @@
     }
   },
   {
-    "__docId__": 2499,
+    "__docId__": 2466,
     "kind": "method",
     "name": "setValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -48353,7 +47713,7 @@
     "return": null
   },
   {
-    "__docId__": 2500,
+    "__docId__": 2467,
     "kind": "file",
     "name": "src/widgets/index.js",
     "content": "import InputWidget from './InputWidget';\nimport CalendarWidget from './CalendarWidget';\nexport default {\n  input: InputWidget,\n  calendar: CalendarWidget\n};\n",
@@ -48373,7 +47733,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.30.0\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin 3.x;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib --tag 3x;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"cross-env NODE_OPTIONS=\\\"--max-old-space-size=8192\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"cross-env NODE_OPTIONS=\\\"--max-old-space-size=8192\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^7.1.5\",\n    \"core-js\": \"^3.6.5\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.4\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.6\",\n    \"i18next\": \"^18.0.0\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"lodash\": \"^4.17.20\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.32\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"vanilla-picker\": \"^2.11.0\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.12.10\",\n    \"@babel/core\": \"^7.12.10\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.12.1\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.12.1\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.12.7\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.12.10\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"babel-plugin-espower\": \"^3.0.1\",\n    \"bootstrap\": \"^4.5.3\",\n    \"bootswatch\": \"^4.5.3\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.7\",\n    \"cross-env\": \"^6.0.3\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^2.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^6.8.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"formio/fetch-mock#7.3.3-formio.1\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"karma\": \"^4.4.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^0.8.2\",\n    \"mocha\": \"^6.2.2\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.5.0\",\n    \"webpack\": \"^4.43.0\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.30.1\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin 3.x;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib --tag 3x;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"cross-env NODE_OPTIONS=\\\"--max-old-space-size=8192\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"cross-env NODE_OPTIONS=\\\"--max-old-space-size=8192\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^7.1.5\",\n    \"core-js\": \"^3.6.5\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.4\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.6\",\n    \"i18next\": \"^18.0.0\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"lodash\": \"^4.17.20\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.32\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"vanilla-picker\": \"^2.11.0\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.12.10\",\n    \"@babel/core\": \"^7.12.10\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.12.1\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.12.1\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.12.7\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.12.10\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"babel-plugin-espower\": \"^3.0.1\",\n    \"bootstrap\": \"^4.5.3\",\n    \"bootswatch\": \"^4.5.3\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.7\",\n    \"cross-env\": \"^6.0.3\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^2.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^6.8.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"formio/fetch-mock#7.3.3-formio.1\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"karma\": \"^4.4.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^0.8.2\",\n    \"mocha\": \"^6.2.2\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.5.0\",\n    \"webpack\": \"^4.43.0\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,

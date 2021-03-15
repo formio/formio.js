@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.30.1
+### Fixed
+ - FIO-2530: Date/Time requires two clicks to set date value
+
 ## 3.30.0
 ### Changed
  - Added image processing feature.
