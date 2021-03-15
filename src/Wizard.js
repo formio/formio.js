@@ -544,10 +544,14 @@ export default class Wizard extends Webform {
 
     this.transformPages();
     if (this.allPages && this.allPages.length) {
-      this.pages = this.allPages;
+      this.updatePages();
     }
 
     return visible;
+  }
+
+  updatePages() {
+    this.pages = this.allPages;
   }
 
   addComponents() {
