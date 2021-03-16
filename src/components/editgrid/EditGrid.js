@@ -224,18 +224,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     const openWhenEmpty = !dataValue.length && this.component.openWhenEmpty;
     if (openWhenEmpty) {
       const dataObj = {};
-      this.editRows = [
-        {
-          components: this.createRowComponents(dataObj, 0),
-          data: dataObj,
-          state: EditRowState.New,
-          backup: null,
-          error: null,
-        },
-      ];
-      if (this.inlineEditMode) {
-        this.dataValue.push(dataObj);
-      }
+      this.editRows = [];
+      this.createRow(dataObj, 0);
     }
     else {
       this.editRows = dataValue.map((row, rowIndex) => ({
@@ -486,7 +476,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   restoreComponentsContext() {
     this.getComponents().forEach((component) => {
       const rowData = this.dataValue[component.rowIndex];
-      const editRowData = this.editRows[component.rowIndex];
+      const editRowData = this.editRows[component.rowIndex]?.data;
       component.data = rowData || editRowData;
     });
   }
@@ -520,13 +510,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     components.forEach((comp) => this.removeComponent(comp, this.components));
   }
 
-  addRow() {
-    if (this.options.readOnly) {
-      return;
-    }
-
-    const dataObj = {};
-    const rowIndex = this.editRows.length;
+  createRow(dataObj, rowIndex) {
     const editRow = {
       components: this.createRowComponents(dataObj, rowIndex),
       data: dataObj,
@@ -534,10 +518,25 @@ export default class EditGridComponent extends NestedArrayComponent {
       backup: null,
       error: null,
     };
-    this.editRows.push(editRow);
 
+    this.editRows.push(editRow);
     if (this.inlineEditMode) {
       this.dataValue.push(dataObj);
+    }
+
+    return editRow;
+  }
+
+  addRow() {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    const dataObj = {};
+    const rowIndex = this.editRows.length;
+    const editRow = this.createRow(dataObj, rowIndex);
+
+    if (this.inlineEditMode) {
       this.triggerChange();
     }
     this.emit('editGridAddRow', {
@@ -1056,8 +1055,9 @@ export default class EditGridComponent extends NestedArrayComponent {
     const shouldBeOpened = !this.dataValue.length && this.component.openWhenEmpty;
     const hasNoRows = !this.editRows.length;
 
-    if (hasNoRows && shouldBeOpened) {
-      this.addRow();
+    if (hasNoRows && shouldBeOpened && !this.builderMode) {
+      const dataObj = {};
+      this.createRow(dataObj, 0);
     }
 
     this.updateOnChange(flags, changed);

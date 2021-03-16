@@ -777,15 +777,17 @@ describe('EditGrid Open when Empty', () => {
           Harness.dispatchEvent(
             'input',
             textField.element,
-            'name="data[editGrid][0][textField]"',
+            '[name="data[editGrid][0][textField]"]',
             (input) => input.value = 'Value'
           );
 
           setTimeout(() => {
-            assert.equal(editGrid.editRows[0].data.textField, 'Value', 'Value should be set properly');
+            const row = editGrid.editRows[0];
+            console.log({ row });
+            assert.equal(row.data.textField, 'Value', 'Value should be set properly');
             editGrid.saveRow(0);
             setTimeout(() => {
-              assert.deepEqual(form.data.editGrid, [{ textField: 'Value', select: '' }], 'Value should be saved correctly');
+              assert.deepEqual(form.data.editGrid, [{ textField: 'Value', select1: '' }], 'Value should be saved correctly');
               radio.setValue('hide');
 
               setTimeout(() => {
@@ -799,8 +801,8 @@ describe('EditGrid Open when Empty', () => {
                   done();
                 }, 300);
               }, 300);
-            }, 250);
-          }, 200);
+            }, 350);
+          }, 350);
         }, 300);
       })
       .catch(done);
