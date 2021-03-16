@@ -484,7 +484,11 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   restoreComponentsContext() {
-    this.getComponents().forEach((component) => component.data = this.dataValue[component.rowIndex]);
+    this.getComponents().forEach((component) => {
+      const rowData = this.dataValue[component.rowIndex];
+      const editRowData = this.editRows[component.rowIndex];
+      component.data = rowData || editRowData;
+    });
   }
 
   flattenComponents(rowIndex) {
@@ -1048,8 +1052,17 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     this.editRows.slice(dataLength).forEach((editRow, index) => this.baseRemoveRow(dataLength + index));
     this.editRows = this.editRows.slice(0, dataLength);
+
+    const shouldBeOpened = !this.dataValue.length && this.component.openWhenEmpty;
+    const hasNoRows = !this.editRows.length;
+
+    if (hasNoRows && shouldBeOpened) {
+      this.addRow();
+    }
+
     this.updateOnChange(flags, changed);
     this.checkData();
+
     if (changed || flags.resetValue) {
       this.rebuild();
     }
