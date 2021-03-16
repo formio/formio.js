@@ -2497,12 +2497,12 @@ export default class Component extends Element {
    * Resets the value of this component.
    */
   resetValue() {
+    this.unset();
     this.setValue(this.emptyValue, {
       noUpdateEvent: true,
       noValidate: true,
       resetValue: true
     });
-    this.unset();
   }
 
   /**

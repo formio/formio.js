@@ -20,9 +20,105 @@ import wizardWithTooltip from '../test/forms/wizardWithTooltip';
 import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
 import wizardTestForm from '../test/forms/wizardTestForm';
 import formWithNestedWizard from '../test/forms/formWIthNestedWizard';
+import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEditGrid';
 import customWizard from '../test/forms/customWizard';
 
 describe('Wizard tests', () => {
+  it('Should correctly reset values', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardWithDataGridAndEditGrid).then(() => {
+      const dataGrid = wizard.getComponent('dataGrid');
+      const editGrid = wizard.getComponent('editGrid');
+
+      const checkComponents = (editGridRowsNumber, dataGridRowsNumber, editGridValue, dataGridValue) => {
+        assert.equal(editGrid.editRows.length, editGridRowsNumber, `EditGrit should have ${dataGridRowsNumber} rows`);
+        assert.equal(editGrid.components.length, editGridRowsNumber, `EditGrit should have ${dataGridRowsNumber} components`);
+        assert.equal(dataGrid.rows.length, dataGridRowsNumber, `DataGrit should have ${dataGridRowsNumber} rows`);
+        assert.equal(dataGrid.components.length, dataGridRowsNumber, `DataGrit should have ${dataGridRowsNumber} components`);
+
+        if (editGridValue) {
+          assert.deepEqual(editGrid.dataValue, editGridValue, 'Should set correct editGrid value');
+        }
+
+        if (dataGridValue) {
+          assert.deepEqual(dataGrid.dataValue, dataGridValue, 'Should set correct dataGrid value');
+        }
+      };
+
+      const event = (name, elem) => {
+        const event = new Event(name);
+        elem.dispatchEvent(event);
+      };
+
+      checkComponents(0, 1, [], [{}]);
+
+      const submission = {
+          data: {
+            dataGrid: [{ number: 1111 }, { number: 2222 }],
+            editGrid: [{ textField: 'test1' }, { textField: 'test2' }]
+        }
+      };
+
+      wizard.submission = _.cloneDeep(submission);
+
+      setTimeout(() => {
+        checkComponents(2, 2,  submission.data.editGrid,submission.data.dataGrid);
+        wizard.cancel(true);
+
+        setTimeout(() => {
+          checkComponents(0, 1, [], [{}]);
+          event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
+
+          setTimeout(() => {
+            const editGridFirstRowInput = editGrid.element.querySelector('[name="data[editGrid][0][textField]"]');
+            editGridFirstRowInput.value = 'test row 1';
+            event('input', editGridFirstRowInput);
+            event('click', editGrid.refs['editgrid-editGrid-saveRow'][0]);
+
+            const dataGridFirstRowInput = dataGrid.element.querySelector('[name="data[dataGrid][0][number]"]');
+            dataGridFirstRowInput.value = 11;
+            event('input', dataGridFirstRowInput);
+
+            setTimeout(() => {
+              checkComponents(1, 1,  [{ textField:'test row 1' }], [{ number: 11 }]);
+
+              event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
+              event('click', dataGrid.refs['datagrid-dataGrid-addRow'][0]);
+
+              setTimeout(() => {
+                const editGridFirstRowInput = editGrid.element.querySelector('[name="data[editGrid][1][textField]"]');
+                editGridFirstRowInput.value = 'test row 2';
+                event('input', editGridFirstRowInput);
+                event('click', editGrid.refs['editgrid-editGrid-saveRow'][0]);
+
+                const dataGridFirstRowInput = dataGrid.element.querySelector('[name="data[dataGrid][1][number]"]');
+                dataGridFirstRowInput.value = 22;
+                event('input', dataGridFirstRowInput);
+
+                setTimeout(() => {
+                  const editGridValue = [{ textField:'test row 1' }, { textField:'test row 2' }];
+                  const dataGridValue  = [{ number: 11 }, { number: 22 }];
+
+                  checkComponents(2, 2, editGridValue, dataGridValue);
+
+                  assert.deepEqual(wizard.submission.data, {
+                    dataGrid: dataGridValue,
+                    editGrid: editGridValue
+                  }, 'Should contain correct submission data');
+
+                  done();
+                }, 200);
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  }).timeout(2500);
+
   it('Should render nested wizard, navigate pages and trigger validation', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
