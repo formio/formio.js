@@ -403,6 +403,8 @@ export default class Element {
    * @param {Object} params - The i18n parameters to use for translation.
    */
   t(text, ...args) {
+    // eslint-disable-next-line no-debugger
+    debugger;
     return this.i18next.t(text, ...args);
   }
 
