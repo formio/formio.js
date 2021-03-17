@@ -888,8 +888,8 @@ export default class NestedComponent extends Field {
   }
 
   resetValue() {
+    super.resetValue();
     this.getComponents().forEach((comp) =&gt; comp.resetValue());
-    this.unset();
     this.setPristine(true);
   }
 

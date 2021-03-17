@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.19
+#### Changed
+ - Add method to overwrite wizard pages (for dynamic wizard)
+
+#### Fixed
+ - FIO-1544: fixed an issue where nested components` values are incorrectly saved after resetting wizard
+
 ### 4.13.0-rc.18
 #### Fixed
  - Do not call sanitize when generating pdfs to speed up pdf generation.
