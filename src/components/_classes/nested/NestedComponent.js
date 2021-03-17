@@ -716,8 +716,8 @@ export default class NestedComponent extends Field {
   }
 
   resetValue() {
+    super.resetValue();
     this.getComponents().forEach((comp) => comp.resetValue());
-    this.unset();
     this.setPristine(true);
   }
 
