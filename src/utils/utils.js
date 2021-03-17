@@ -1393,7 +1393,7 @@ export function getComponentPath(component, path = '') {
   if (!component || !component.key) {
     return path;
   }
-  path = component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
+  path = component.isInputComponent || component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
   return getComponentPath(component.parent, path);
 }
 
