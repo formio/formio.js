@@ -146,7 +146,7 @@ class ChoicesWrapper extends Choices {
     const hasCtrlDownKeyPressed = ctrlKey || metaKey;
 
     // If a user is typing and the dropdown is not active
-    if (!this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
+    if (!hasActiveDropdown && !this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
       this.input.element.value = keyString;
       this.showDropdown();
     }
