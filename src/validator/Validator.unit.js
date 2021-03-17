@@ -2,7 +2,6 @@
 import Validator from './Validator';
 import Component from '../components/_classes/component/Component';
 import assert from 'power-assert';
-import { interpolate } from '../utils/utils';
 
 describe('Legacy Validator Tests', () => {
   const baseComponent = new Component({});
