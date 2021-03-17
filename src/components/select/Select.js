@@ -1454,7 +1454,7 @@ export default class SelectComponent extends Field {
 
   /**
    * If component has static values (values, json) or custom values, returns an array of them
-   * @returns {Array<*>|undefiened}
+   * @returns {Array<*>|undefined}
    */
   getOptionsValues() {
     let rawItems = [];
