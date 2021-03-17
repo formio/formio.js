@@ -72,7 +72,7 @@ describe('Validator Tests', () => {
   const originalT = Component.prototype.t;
   // i18next is not initialized when create a component without a form and returns undefined
   // so just replace with interpolate since it is enough for getting the right error message
-  Component.prototype.t = interpolate;
+  before(() => Component.prototype.t = interpolate);
   it('Validates for required', (done) => {
     const component = new Component({
       key: 'test',
@@ -1134,5 +1134,5 @@ describe('Validator Tests', () => {
       done(e);
     }
   });
-  Component.prototype.t = originalT;
+  after(() => Component.prototype.t = originalT);
 });
