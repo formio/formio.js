@@ -589,11 +589,11 @@ class ValidationChecker {
         key: 'validate.pattern',
         hasLabel: true,
         message(component, setting) {
-          return component.t(_.get(component, 'component.validate.patternMessage', component.errorMessage('pattern'), {
+          return component.t(_.get(component, 'component.validate.patternMessage', component.errorMessage('pattern')), {
             field: component.errorLabel,
             pattern: setting,
             data: component.data
-          }));
+          });
         },
         check(component, setting, value) {
           if (component.isEmpty(value)) return true;
