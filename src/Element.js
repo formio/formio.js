@@ -201,6 +201,10 @@ export default class Element {
    */
   removeEventListener(obj, type, func = null) {
     const indexes = [];
+    if (!obj) {
+      return;
+    }
+
     this.eventHandlers.forEach((handler, index) => {
       if (
         (handler.id === this.id)
