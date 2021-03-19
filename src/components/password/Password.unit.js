@@ -142,6 +142,6 @@ describe('Password Component', () => {
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, 'does not match the pattern', invalidValues[invalidValues.length-1]); //BUG: incorrect message, change it in the test once it is fixed
+    testValidity(invalidValues, false, 'Password does not match the pattern \\D+', invalidValues[invalidValues.length-1]);
   });
 });
