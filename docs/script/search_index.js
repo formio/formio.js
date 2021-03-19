@@ -4266,6 +4266,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp-with-conditions-and-openwhenempty.js",
+    "file/src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js.html",
+    "src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/comp1.js",
     "file/src/components/editgrid/fixtures/comp1.js.html",
     "src/components/editgrid/fixtures/comp1.js",
@@ -4581,6 +4587,12 @@ window.esdocSearchIndex = [
     "src/components/form/fixtures/comp3.js",
     "file/src/components/form/fixtures/comp3.js.html",
     "src/components/form/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/form/fixtures/comp4.js",
+    "file/src/components/form/fixtures/comp4.js.html",
+    "src/components/form/fixtures/comp4.js",
     "file"
   ],
   [

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.20
+#### Fixed
+ - FIO-1393: Fixes an issue where tooltips are rendered wrongly for Input Mask Placeholder Char, Proveder Options
+ - FIO-2498: Fixes an issue where Pattern validation error message does not contain component Label
+ - Fixed an issue where default value field is not updated for custom components in builder
+ - FIO-2566: Fixes an issue where only latest letters are saved inside search input
+ - FIO-979, FIO-2100: Fixed an issue where refreshOn/clearOnRefresh and Conditions do not work inside a NestedForm
+ - FIO-1503: Fixes URL validation is not triggered when value has more than one dot between root domain and top level domain
+ - FIO-2468: Fixes an issue where data in the first row is not saved when the EditGrid is shown conditionally and Open when Empty is checked
+ - FJS-1461: Fixes an issue where it is possible to Cancel Wizard form in readOnly mode
+
 ### 4.13.0-rc.19
 #### Changed
  - Add method to overwrite wizard pages (for dynamic wizard)

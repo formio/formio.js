@@ -415,7 +415,11 @@ describe(&apos;TextArea Component&apos;, () =&gt; {
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, &apos;does not match the pattern&apos;, invalidValues[invalidValues.length-1]); //BUG: incorrect message, change it in the test once it is fixed
+    testValidity(invalidValues,
+      false,
+      &apos;Text Area does not match the pattern \\D+&apos;,
+      invalidValues[invalidValues.length-1]
+    );
   });
 
   it(&apos;Should set custom number of rows&apos;, (done) =&gt; {

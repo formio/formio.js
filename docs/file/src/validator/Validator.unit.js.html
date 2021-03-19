@@ -1250,36 +1250,56 @@ describe(&apos;Validator Tests&apos;, () =&gt; {
         }
       ]
     });
-    component.dataValue = &apos;t&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), fail);
-    component.dataValue = &apos;test&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), fail);
-    component.dataValue = &apos;test.com&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;http://test&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), fail);
-    component.dataValue = &apos;http://test.com&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;https://test.com&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;https://www.test.com&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;https://one.two.three.four.test.io&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;https://www.test.com/test&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;https://www.test.com/test/test.html&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;https://www.test.com/one/two/three/four/test.html&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = &apos;&apos;;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = undefined;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
-    component.dataValue = null;
-    assert.deepEqual(Validator.checkComponent(component, {}), pass);
 
-    done();
+    const valid = [
+      &apos;test.com&apos;,
+      &apos;http://test.com&apos;,
+      &apos;https://test.com&apos;,
+      &apos;https://www.test.com&apos;,
+      &apos;https://one.two.three.four.test.io&apos;,
+      &apos;https://www.test.com/test&apos;,
+      &apos;https://www.test.com/test/test.html&apos;,
+      &apos;https://www.test.com/one/two/three/four/test.html&apos;,
+      &apos;www.example.com&apos;,
+      &apos;http://www.example.com#up&apos;,
+      &apos;https://wikipedia.org/@/ru&apos;,
+      &apos;https://wikipedia.com/@&apos;,
+      &apos;http://www.site.com:8008&apos;,
+      &apos;ftp://www.site.com&apos;,
+      undefined,
+      null,
+    ];
+
+    const invalid = [
+      &apos;t&apos;,
+      &apos;test&apos;,
+      &apos;http://test&apos;,
+      &apos;test@gmail.com&apos;,
+      &apos;test@gmail.com &apos;,
+      &apos;test@gmail...com&apos;,
+      &apos;test..com&apos;,
+      &apos;http://test...com&apos;,
+      &apos;http:://test.com&apos;,
+      &apos;http:///test.com&apos;,
+      &apos;https://www..example.com&apos;,
+    ];
+
+    try {
+      valid.forEach((value) =&gt; {
+        component.dataValue = value;
+        assert.deepEqual(Validator.checkComponent(component, {}), pass);
+      });
+
+      invalid.forEach((value) =&gt; {
+        component.dataValue = value;
+        assert.deepEqual(Validator.checkComponent(component, {}), fail);
+      });
+
+      done();
+    }
+    catch (e) {
+      done(e);
+    }
   });
 });
 </code></pre>
