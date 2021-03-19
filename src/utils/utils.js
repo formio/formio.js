@@ -281,10 +281,10 @@ function getRow(component, row, instance, conditional) {
     setPathToComponentAndPerentSchema(instance);
   }
   const dataParent = getDataParentComponent(instance);
-  const parentPathWithoutIndicies = dataParent?.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
-  if (dataParent && condition.when?.startsWith(parentPathWithoutIndicies)) {
+  const parentPath = dataParent ? getComponentPath(dataParent) : null;
+  if (dataParent && condition.when?.startsWith(parentPath)) {
     const newRow = {};
-    _.set(newRow, parentPathWithoutIndicies, row);
+    _.set(newRow, parentPath, row);
     row = newRow;
   }
 
