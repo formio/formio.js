@@ -2,11 +2,22 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp4, comp3, comp5, comp6, comp7, comp8, comp9 } from './fixtures';
+import {
+  comp1,
+  comp4,
+  comp3,
+  comp5,
+  comp6,
+  comp7,
+  comp8,
+  comp9,
+  withOpenWhenEmptyAndConditions
+} from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
+import Formio from '../../Formio';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -747,5 +758,53 @@ describe('EditGrid Component', () => {
         }, 300);
       }, 300);
     }).catch(done);
+  });
+});
+
+describe('EditGrid Open when Empty', () => {
+  it('Should be opened when shown conditionally', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, withOpenWhenEmptyAndConditions)
+      .then((form) => {
+        const radio = form.getComponent(['radio']);
+        radio.setValue('show');
+
+        setTimeout(() => {
+          const editGrid = form.getComponent(['editGrid']);
+          assert.equal(editGrid.visible, true, 'Should be visible');
+          assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+          const textField = editGrid.editRows[0].components[0];
+          Harness.dispatchEvent(
+            'input',
+            textField.element,
+            '[name="data[editGrid][0][textField]"]',
+            (input) => input.value = 'Value'
+          );
+
+          setTimeout(() => {
+            const row = editGrid.editRows[0];
+            console.log({ row });
+            assert.equal(row.data.textField, 'Value', 'Value should be set properly');
+            editGrid.saveRow(0);
+            setTimeout(() => {
+              assert.deepEqual(form.data.editGrid, [{ textField: 'Value', select1: '' }], 'Value should be saved correctly');
+              radio.setValue('hide');
+
+              setTimeout(() => {
+                assert.equal(editGrid.visible, false, 'Should be hidden');
+                radio.setValue('show');
+
+                setTimeout(() => {
+                  assert.equal(editGrid.visible, true, 'Should be visible');
+                  assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+                  assert.equal(editGrid.editRows[0].state, 'new', 'Row should be a new one');
+                  done();
+                }, 300);
+              }, 300);
+            }, 350);
+          }, 350);
+        }, 300);
+      })
+      .catch(done);
   });
 });
