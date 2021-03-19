@@ -372,12 +372,22 @@ export default class FileComponent extends Field {
       });
     }
 
-    this.refs.fileLink.forEach((fileLink, index) => {
-      this.addEventListener(fileLink, 'click', (event) => {
-        event.preventDefault();
-        this.getFile(this.dataValue[index]);
+    this.dataReady
+      .then(() => {
+        this.refs.fileLink.forEach((fileLink, index) => {
+          this.getFile(this.dataValue[index])
+            .then(file => {
+              if (!file) {
+                return;
+              }
+
+              fileLink.href = file.url;
+              if (['base64', 'indexeddb'].includes(file.storage)) {
+                fileLink.setAttribute('download', file.originalName || file.name || '');
+              }
+            });
+        });
       });
-    });
 
     this.refs.removeLink.forEach((removeLink, index) => {
       this.addEventListener(removeLink, 'click', (event) => {
@@ -784,16 +794,7 @@ export default class FileComponent extends Field {
     if (this.component.privateDownload) {
       fileInfo.private = true;
     }
-    fileService.downloadFile(fileInfo, options).then((file) => {
-      if (file) {
-        if (['base64', 'indexeddb'].includes(file.storage)) {
-          download(file.url, file.originalName || file.name, file.type);
-        }
-        else {
-          window.open(file.url, '_blank');
-        }
-      }
-    })
+    return fileService.downloadFile(fileInfo, options)
       .catch((response) => {
         // Is alert the best way to do this?
         // User is expecting an immediate notification due to attempting to download a file.
