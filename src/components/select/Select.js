@@ -563,13 +563,6 @@ export default class SelectComponent extends Field {
       this.setValue(this.emptyValue);
     }
 
-    if (this.component.lazyLoad) {
-      this.activated = false;
-      this.loading = true;
-      this.setItems([]);
-      return;
-    }
-
     this.updateItems(null, true);
   }
 
