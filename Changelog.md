@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.21
+#### Fixed
+ - FOR-2591: Fixing problems where the select dropdowns would not refresh with the correct labels.
+
 ### 4.13.0-rc.20
 #### Fixed
  - FIO-1393: Fixes an issue where tooltips are rendered wrongly for Input Mask Placeholder Char, Proveder Options
