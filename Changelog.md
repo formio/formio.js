@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.22
+#### Fixed
+ - Reverted PR #3172: FIN-027: Mechanism to indicate once the PDF has completely Loaded
+
 ### 4.13.0-rc.21
 #### Fixed
  - FOR-2591: Fixing problems where the select dropdowns would not refresh with the correct labels.
@@ -31,7 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Do not call sanitize when generating pdfs to speed up pdf generation.
  - FIO-1435: Fixes an issue where Lazy Load checkbox is not shown when ChoicesJS is selected by default
  - FJS-1265: Fixes an issue where when uncheck Show Full Wizard, all the pages remain visible
- - FIO-1524: Fixes an issue where EditGrid and Select are not hidden using event-triggered logic 
+ - FIO-1524: Fixes an issue where EditGrid and Select are not hidden using event-triggered logic
  - FIO-1482: added tests for customized wizard and draft submission
  - FIO-1212: Fixes an issue where user have to click twice on the date to select it in IE11
  - FIO-1068: Fixes an issue where revision of the Nested Form loaded on the front-end side differs from the one which loaded on the server-side
@@ -51,7 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-1501: Fixes an issue where some inputs remain disabled after the maxCount was exceeded
  - FJS-726: Fixes an issue where it is possible to check Save as Reference and set Value Property which cause unexpected behavior, because saving a s reference is only possible when there is an _id
  - FIO-1321: IE fix the error below the progress bar when uploading a PDF file
- - FOR-1425: Added data to default values component evalContent 
+ - FOR-1425: Added data to default values component evalContent
  - FIO-1352: fix validation for the case when the day is set to dayFirst
 
 ### 4.13.0-rc.16
