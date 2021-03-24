@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - UIP-284: Fix interpolation without quotes not working
+
 ### 4.13.0-rc.22
 #### Fixed
  - Reverted PR #3172: FIN-027: Mechanism to indicate once the PDF has completely Loaded
