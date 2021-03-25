@@ -1,0 +1,65 @@
+<div id="day" class="field form-group has-feedback formio-component formio-component-day formio-component-day " ref="component">
+  <label class="" for="day-day">
+    Day
+  </label>
+  <div class="ui grid">
+    <div class="five wide column">
+      <label for="day-month" class="">Month</label>
+      <select ref="month" class="ui search dropdown" id="day-month" class="form-control" name="month" lang="en">
+        <option value="">
+        </option>
+        <option value="1">
+          January
+        </option>
+        <option value="2">
+          February
+        </option>
+        <option value="3">
+          March
+        </option>
+        <option value="4">
+          April
+        </option>
+        <option value="5">
+          May
+        </option>
+        <option value="6">
+          June
+        </option>
+        <option value="7">
+          July
+        </option>
+        <option value="8">
+          August
+        </option>
+        <option value="9">
+          September
+        </option>
+        <option value="10">
+          October
+        </option>
+        <option value="11">
+          November
+        </option>
+        <option value="12">
+          December
+        </option>
+      </select>
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+    </div>
+    <div class="four wide column">
+      <label for="day-day" class="">Day</label>
+      <div class="ui input fluid ">
+        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="day-day"></input>
+      </div>
+    </div>
+    <div class="seven wide column">
+      <label for="day-year" class="">Year</label>
+      <div class="ui input fluid ">
+        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="day-day"></input>
+      </div>
+    </div>
+  </div>
+  <input name="data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">
+  <div ref="messageContainer"></div>
+</div>

@@ -8,7 +8,12 @@ import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '../../../utils/utils';
+import {
+  fastCloneDeep,
+  boolValue,
+  getDataParentComponent,
+  getComponentPath
+} from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
@@ -877,6 +882,10 @@ export default class Component extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
+    // No need to sanitize when generating PDF'S since no users interact with the form.
+    if (this.options.pdf) {
+      return dirty;
+    }
     return FormioUtils.sanitize(dirty, this.options);
   }
 
@@ -1154,7 +1163,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance &&
+      (changePath && getComponentPath(changed.instance) === refreshData) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
@@ -1450,7 +1459,9 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
-      submission: (this.root ? this.root._submission : {}),
+      submission: (this.root ? this.root._submission : {
+        data: this.rootValue
+      }),
       form: this.root ? this.root._form : {},
     }, additional));
   }
@@ -1710,7 +1721,7 @@ export default class Component extends Element {
 
     const newComponent = fastCloneDeep(this.originalComponent);
 
-    let changed = logics.reduce((changed, logic) => {
+    const changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
@@ -1724,11 +1735,13 @@ export default class Component extends Element {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (!_.isEqual(this.component, newComponent)) {
+    if (changed && !_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
-      // If disabled changed, be sure to distribute the setting.
-      this.disabled = this.shouldDisabled;
-      changed = true;
+      const disabled = this.shouldDisabled;
+      // Change disabled state if it has changed
+      if (this.disabled !== disabled) {
+        this.disabled = disabled;
+      }
     }
 
     return changed;
@@ -2388,7 +2401,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.isHtmlRenderMode() && changed) {
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.redraw();
       return changed;
     }
@@ -2504,12 +2517,12 @@ export default class Component extends Element {
    * Resets the value of this component.
    */
   resetValue() {
+    this.unset();
     this.setValue(this.emptyValue, {
       noUpdateEvent: true,
       noValidate: true,
       resetValue: true
     });
-    this.unset();
   }
 
   /**
@@ -3135,8 +3148,19 @@ export default class Component extends Element {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
+              const visible = this.conditionallyVisible(null, null);
+              const disabled = this.shouldDisabled;
+
+              // Change states which won't be recalculated during redrawing
+              if (this.visible !== visible) {
+                this.visible = visible;
+              }
+              if (this.disabled !== disabled) {
+                this.disabled = disabled;
+              }
+
+              this.redraw();
             }
-            this.rebuild();
           }
         }, true);
       }

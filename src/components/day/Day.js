@@ -581,4 +581,8 @@ export default class DayComponent extends Field {
     const values = value.split('/');
     return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');
   }
+
+  getValidationFormat() {
+    return this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+  }
 }

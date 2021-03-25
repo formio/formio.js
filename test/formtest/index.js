@@ -34,6 +34,9 @@ const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftM
 const formWithDateTimeComponents = require('./formWithDateTimeComponents');
 const formWithCollapsedPanel = require('./formWithCollapsedPanel.json');
 const formWithCustomFormatDate = require('./formWithCustomFormatDate.json');
+const wizardWithHiddenPanel = require('./wizardWithHiddenPanel.json');
+const wizardWithSimpleConditionalPage = require('./wizardWithSimpleConditionalPage.json');
+const wizardWithTooltip = require('./wizardWithTooltip.json');
 
 module.exports = {
   advanced,
@@ -71,5 +74,8 @@ module.exports = {
   formWithEditGridAndNestedDraftModalRow,
   formWithDateTimeComponents,
   formWithCollapsedPanel,
-  formWithCustomFormatDate
+  formWithCustomFormatDate,
+  wizardWithHiddenPanel,
+  wizardWithSimpleConditionalPage,
+  wizardWithTooltip,
 };

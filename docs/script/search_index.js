@@ -1326,12 +1326,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/pdfbuilder.js~pdfbuilder#attachloader",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-attachLoader",
-    "src/PDFBuilder.js~PDFBuilder#attachLoader",
-    "method"
-  ],
-  [
     "src/pdfbuilder.js~pdfbuilder#classname",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-className",
     "src/PDFBuilder.js~PDFBuilder#className",
@@ -1450,12 +1444,6 @@ window.esdocSearchIndex = [
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-projectUrl",
     "src/PDFBuilder.js~PDFBuilder#projectUrl",
     "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#removeloader",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-removeLoader",
-    "src/PDFBuilder.js~PDFBuilder#removeLoader",
-    "method"
   ],
   [
     "src/pdfbuilder.js~pdfbuilder#render",
@@ -3966,6 +3954,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/day/day.js~daycomponent#getvalidationformat",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-getValidationFormat",
+    "src/components/day/Day.js~DayComponent#getValidationFormat",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#getvalue",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-getValue",
     "src/components/day/Day.js~DayComponent#getValue",
@@ -4260,6 +4254,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp-with-conditions-and-openwhenempty.js",
+    "file/src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js.html",
+    "src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/comp1.js",
     "file/src/components/editgrid/fixtures/comp1.js.html",
     "src/components/editgrid/fixtures/comp1.js",
@@ -4305,6 +4305,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp8.js",
     "file/src/components/editgrid/fixtures/comp8.js.html",
     "src/components/editgrid/fixtures/comp8.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp9.js",
+    "file/src/components/editgrid/fixtures/comp9.js.html",
+    "src/components/editgrid/fixtures/comp9.js",
     "file"
   ],
   [
@@ -4569,6 +4575,12 @@ window.esdocSearchIndex = [
     "src/components/form/fixtures/comp3.js",
     "file/src/components/form/fixtures/comp3.js.html",
     "src/components/form/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/form/fixtures/comp4.js",
+    "file/src/components/form/fixtures/comp4.js.html",
+    "src/components/form/fixtures/comp4.js",
     "file"
   ],
   [
@@ -5010,6 +5022,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/number/fixtures/comp6.js",
+    "file/src/components/number/fixtures/comp6.js.html",
+    "src/components/number/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/number/fixtures/index.js",
     "file/src/components/number/fixtures/index.js.html",
     "src/components/number/fixtures/index.js",
@@ -5121,6 +5139,12 @@ window.esdocSearchIndex = [
     "src/components/password/fixtures/comp1.js",
     "file/src/components/password/fixtures/comp1.js.html",
     "src/components/password/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/password/fixtures/comp2.js",
+    "file/src/components/password/fixtures/comp2.js.html",
+    "src/components/password/fixtures/comp2.js",
     "file"
   ],
   [
@@ -6426,6 +6450,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/textarea/fixtures/comp3.js",
+    "file/src/components/textarea/fixtures/comp3.js.html",
+    "src/components/textarea/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/textarea/fixtures/index.js",
     "file/src/components/textarea/fixtures/index.js.html",
     "src/components/textarea/fixtures/index.js",
@@ -6567,6 +6597,12 @@ window.esdocSearchIndex = [
     "src/components/textfield/fixtures/comp5.js",
     "file/src/components/textfield/fixtures/comp5.js.html",
     "src/components/textfield/fixtures/comp5.js",
+    "file"
+  ],
+  [
+    "src/components/textfield/fixtures/comp6.js",
+    "file/src/components/textfield/fixtures/comp6.js.html",
+    "src/components/textfield/fixtures/comp6.js",
     "file"
   ],
   [

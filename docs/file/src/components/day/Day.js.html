@@ -753,6 +753,10 @@ export default class DayComponent extends Field {
     const values = value.split(&apos;/&apos;);
     return (values[DAY] === &apos;00&apos; || values[MONTH] === &apos;00&apos; || values[YEAR] === &apos;0000&apos;);
   }
+
+  getValidationFormat() {
+    return this.dayFirst ? &apos;DD-MM-YYYY&apos; : &apos;MM-DD-YYYY&apos;;
+  }
 }
 </code></pre>
 

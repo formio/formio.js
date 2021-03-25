@@ -408,7 +408,13 @@ td > .form-group {
   -webkit-animation: formio-dialog-fadein 0.5s;
   animation: formio-dialog-fadein 0.5s;
   pointer-events: all;
-  overflow: initial;
+  overflow: auto;
+}
+
+.formio-component-modal-wrapper-select {
+  .formio-dialog-content {
+    overflow: initial;
+  }
 }
 
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
@@ -1212,7 +1218,9 @@ div[data-oembed-url] {
 
 .formio-component-modal-wrapper {
   margin-bottom: 10px;
-
+  .open-modal-button {
+    height: auto;
+  }
   .component-rendering-hidden {
     visibility: hidden;
   }
@@ -1249,4 +1257,24 @@ div[data-oembed-url] {
 
 [ref='buttonMessageContainer'].has-error {
   cursor: pointer;
+}
+
+.formio-component-textarea {
+  .formio-editor-read-only-content {
+    .text-big {
+      font-size: 1.4em;
+    }
+
+    .text-huge {
+      font-size: 1.8em;
+    }
+
+    .text-small {
+      font-size: 0.85em;
+    }
+
+    .text-tiny {
+      font-size: 0.7em;
+    }
+  }
 }

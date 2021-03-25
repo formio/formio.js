@@ -201,6 +201,10 @@ export default class Element {
    */
   removeEventListener(obj, type, func = null) {
     const indexes = [];
+    if (!obj) {
+      return;
+    }
+
     this.eventHandlers.forEach((handler, index) => {
       if (
         (handler.id === this.id)
@@ -542,7 +546,8 @@ export default class Element {
    * @return {XML|string|*|void}
    */
   interpolate(string, data) {
-    if (typeof string !== 'function' && this.component.content) {
+    if (typeof string !== 'function' && this.component.content
+      && !FormioUtils.Evaluator.templateSettings.interpolate.test(string)) {
       string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
     }
 

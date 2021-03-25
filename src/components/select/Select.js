@@ -95,6 +95,9 @@ export default class SelectComponent extends Field {
 
     // If this component has been activated.
     this.activated = false;
+    this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
   }
 
   get dataReady() {
@@ -392,23 +395,26 @@ export default class SelectComponent extends Field {
     this.isScrollLoading = false;
     this.loading = false;
 
-    // If a value is provided, then select it.
-    if (!this.isEmpty()) {
-      this.setValue(this.dataValue, {
-        noUpdateEvent: true
-      });
-    }
-    else {
-      // If a default value is provided then select it.
-      const defaultValue = this.defaultValue;
-      if (!this.isEmpty(defaultValue)) {
-        this.setValue(defaultValue);
+    if (!fromSearch) {
+      // If a value is provided, then select it.
+      if (!this.isEmpty()) {
+        this.setValue(this.dataValue, {
+          noUpdateEvent: true
+        });
+      }
+      else {
+        // If a default value is provided then select it.
+        const defaultValue = this.defaultValue;
+        if (!this.isEmpty(defaultValue)) {
+          this.setValue(defaultValue);
+        }
       }
     }
 
     // Say we are done loading the items.
     this.itemsLoadedResolve();
   }
+
   /* eslint-enable max-statements */
 
   get defaultValue() {
@@ -557,13 +563,6 @@ export default class SelectComponent extends Field {
       this.setValue(this.emptyValue);
     }
 
-    if (this.component.lazyLoad) {
-      this.activated = false;
-      this.loading = true;
-      this.setItems([]);
-      return;
-    }
-
     this.updateItems(null, true);
   }
 
@@ -617,7 +616,7 @@ export default class SelectComponent extends Field {
     }
 
     // Only load the data if it is visible.
-    if (!this.checkConditions()) {
+    if (!this.visible) {
       this.itemsLoadedResolve();
       return;
     }
@@ -1448,7 +1447,7 @@ export default class SelectComponent extends Field {
 
   /**
    * If component has static values (values, json) or custom values, returns an array of them
-   * @returns {Array<*>|undefiened}
+   * @returns {Array<*>|undefined}
    */
   getOptionsValues() {
     let rawItems = [];

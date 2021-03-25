@@ -2488,6 +2488,60 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         })
         .catch(done);
     });
+
+    it(&apos;Should render after form submission if renderMode = \&apos;html\&apos; with Nested Form&apos;, (done) =&gt; {
+      const formJson =  {
+        components: [
+          {
+            label: &apos;Form&apos;,
+            key: &apos;form&apos;,
+            type: &apos;form&apos;,
+            input: true,
+            components: [
+              {
+                label: &apos;Text Field&apos;,
+                key: &apos;textField&apos;,
+                type: &apos;textfield&apos;,
+                input: true,
+              },
+              {
+                label: &apos;Password&apos;,
+                key: &apos;password&apos;,
+                type: &apos;password&apos;,
+                input: true
+              },
+            ],
+          },
+          {
+            label: &apos;Checkbox&apos;,
+            type: &apos;checkbox&apos;,
+            input: true
+          },
+        ]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      Formio.createForm(element, formJson, { renderMode: &apos;html&apos; })
+        .then(form =&gt; {
+          assert.equal(form.getComponent(&apos;textField&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          assert.equal(form.getComponent(&apos;password&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          form.submission = {
+            data: {
+              form: {
+                data: {
+                  textField: &apos;textField&apos;,
+                  password: &apos;password&apos;
+                }
+              }
+            }
+          };
+          setTimeout(() =&gt; {
+            assert.equal(form.getComponent(&apos;textField&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;textField&apos;);
+            assert.equal(form.getComponent(&apos;password&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;password&apos;);
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
   });
 });
 </code></pre>

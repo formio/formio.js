@@ -177,7 +177,8 @@ import assert from &apos;power-assert&apos;;
 
 import {
   comp1,
-  comp3
+  comp3,
+  comp4,
 } from &apos;./fixtures&apos;;
 import Webform from &apos;../../Webform&apos;;
 import formModalEdit from &apos;./fixtures/formModalEdit&apos;;
@@ -186,6 +187,31 @@ import { formComponentWithConditionalRenderingForm } from &apos;../../../test/fo
 describe(&apos;Form Component&apos;, () =&gt; {
   it(&apos;Should build a form component&apos;, () =&gt; {
     return Harness.testCreate(FormComponent, comp1);
+  });
+
+  it(&apos;Test refreshOn inside NestedForm&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm(comp4)
+      .then(() =&gt; {
+        const make = form.getComponent([&apos;form&apos;, &apos;make&apos;]);
+        const model = form.getComponent([&apos;form&apos;, &apos;model&apos;]);
+        make.setValue(&apos;ford&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(make.dataValue, &apos;ford&apos;, &apos;Should set value&apos;);
+          model.setValue(&apos;Focus&apos;, { modified: true });
+          setTimeout(() =&gt; {
+            assert.equal(model.dataValue, &apos;Focus&apos;, &apos;Should set value&apos;);
+            make.setValue(&apos;honda&apos;, { modified: true });
+            setTimeout(() =&gt; {
+              assert.equal(make.dataValue, &apos;honda&apos;, &apos;Should set value&apos;);
+              assert.equal(model.dataValue, &apos;&apos;, &apos;Should refresh and clear value&apos;);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
   });
 
   describe(&apos;renderSubForm&apos;, () =&gt; {
