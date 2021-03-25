@@ -1721,7 +1721,7 @@ export default class Component extends Element {
 
     const newComponent = fastCloneDeep(this.originalComponent);
 
-    const changed = logics.reduce((changed, logic) => {
+    let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
@@ -1735,8 +1735,9 @@ export default class Component extends Element {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (changed && !_.isEqual(this.component, newComponent)) {
+    if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
+      changed = true;
       const disabled = this.shouldDisabled;
       // Change disabled state if it has changed
       if (this.disabled !== disabled) {
