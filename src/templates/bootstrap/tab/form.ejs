@@ -1,8 +1,8 @@
 <div class="card">
   <div class="card-header">
-    <ul class="nav nav-tabs card-header-tabs">
+    <ul role="tablist" class="nav nav-tabs card-header-tabs">
       {% ctx.component.components.forEach(function(tab, index) { %}
-      <li class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" role="presentation" ref="{{ctx.tabLikey}}">
+      <li role="tab" class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" ref="{{ctx.tabLikey}}">
         <a class="nav-link{{ ctx.currentTab === index ? ' active' : ''}}" href="#{{tab.key}}" ref="{{ctx.tabLinkKey}}">{{ctx.t(tab.label, { _userInput: true })}}</a>
       </li>
       {% }) %}
