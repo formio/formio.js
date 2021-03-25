@@ -1515,3 +1515,57 @@ div[data-oembed-url] {
 .formio-component [ref="valueMaskInput"] {
   display: none;
 }
+
+//styles for accessible tooltip
+.formio-tooltip__trigger {
+  cursor: pointer;
+}
+
+.formio-tooltip__body {
+  background-color: #1b1b1b;
+  border-radius: 0.25rem;
+  bottom: 0;
+  color: #f0f0f0;
+  display: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+  position: absolute;
+  left: 0;
+  transform: translateX(-50%);
+  width: auto;
+  white-space: pre;
+  z-index: 1000;
+
+  &.formio-tooltip--is-set {
+    display: block;
+  }
+
+  &--whitespace {
+    white-space: normal;
+    width: 250px;
+  }
+
+  &--right {
+    top: auto;
+    transform: translateX(0);
+  }
+
+  &--left {
+    top: auto;
+    left: 0;
+    right: auto;
+    transform: translateX(0);
+  }
+
+  &--bottom {
+    bottom: auto;
+    top: 0;
+  }
+}
+
+.formio-tooltip__wrapper {
+  position: relative;
+  & > span {
+    font-weight: normal;
+  }
+}

@@ -19,6 +19,8 @@
         {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
       id="{{ctx.instance.id}}-{{ctx.component.key}}"
+      aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}} {% if (ctx.component.description) { %}d-{{ctx.instance.id}}-{{ctx.component.key}}{% } %}"
+      aria-required="{{ctx.input.ref === 'input' || !ctx.input.ref ? ctx.component.validate.required : ctx.component.fields[ctx.input.ref].required}}"
     >{{ctx.input.content}}</{{ctx.input.type}}>
     {% if (ctx.hasValueMaskInput) { %}
       <input ref="valueMaskInput" />
@@ -26,6 +28,9 @@
 {% } %}
 {% if (ctx.component.editor || ctx.component.wysiwyg) { %}
   <div ref="input"></div>
+{% } %}
+{% if (ctx.component.type === 'datetime') { %}
+<span aria-live="assertive" id="{{ctx.instance.id}}-liveRegion" class="sr-only" ref="liveRegion"></span>
 {% } %}
 {% if (ctx.suffix) { %}
   <div class="input-group-append" ref="suffix">
@@ -42,8 +47,8 @@
   </div>
 {% } %}
 {% if (ctx.component.showCharCount) { %}
-  <span class="text-muted pull-right" ref="charcount"></span>
+  <span class="text-muted pull-right" ref="charcount" aria-live="polite"></span>
 {% } %}
 {% if (ctx.component.showWordCount) { %}
-  <span class="text-muted pull-right" ref="wordcount"></span>
+  <span class="text-muted pull-right" ref="wordcount" aria-live="polite"></span>
 {% } %}

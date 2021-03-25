@@ -1,8 +1,8 @@
 <div class="card{{ ctx.component.verticalLayout ? ' card-vertical' : ''}}">
   <div class="card-header">
-    <ul class="nav nav-tabs card-header-tabs{{ ctx.component.verticalLayout ? ' nav-tabs-vertical' : ''}}">
+    <ul class="nav nav-tabs card-header-tabs{{ ctx.component.verticalLayout ? ' nav-tabs-vertical' : ''}}" role="tablist">
       {% ctx.component.components.forEach(function(tab, index) { %}
-      <li class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" role="presentation" ref="{{ctx.tabLikey}}">
+      <li class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" role="tab" ref="{{ctx.tabLikey}}">
         <a
                 class="nav-link{{ ctx.currentTab === index ? ' active' : ''}}{{ ctx.component.verticalLayout ? ' nav-link-vertical' : ''}}"
                 href="#{{tab.key}}"
