@@ -6,6 +6,10 @@
       {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
       {% if (ctx.checked) { %}checked=true{% } %}
+      aria-required="{{ctx.component.validate.required}}"
+      {% if (ctx.component.description) { %}
+      aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
+      {% } %}
       >
     {% if (!ctx.self.labelIsHidden()) { %}<span>{{ctx.input.label}}</span>{% } %}
     {% if (ctx.component.tooltip) { %}

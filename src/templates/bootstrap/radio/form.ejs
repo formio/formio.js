@@ -1,4 +1,4 @@
-<div class="form-radio radio">
+<div role="radiogroup" class="form-radio radio">
   {% ctx.values.forEach(function(item) { %}
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
     <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
@@ -18,6 +18,7 @@
           disabled=true
         {% } %}
         id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
+        role="radio"
       >
       {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
       <span>{{ctx.t(item.label, { _userInput: true })}}</span>
