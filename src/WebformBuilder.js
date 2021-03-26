@@ -1045,7 +1045,7 @@ export default class WebformBuilder extends Component {
     // Update the preview.
     if (this.preview) {
       this.preview.form = {
-        components: [_.omit(component, [
+        components: [_.omit({ ...component }, [
           'hidden',
           'conditional',
           'calculateValue',
@@ -1071,7 +1071,7 @@ export default class WebformBuilder extends Component {
       );
 
       if (!defaultChanged) {
-        _.assign(defaultValueComponent.component, _.omit(component, [
+        _.assign(defaultValueComponent.component, _.omit({ ...component }, [
           'key',
           'label',
           'placeholder',
@@ -1328,6 +1328,7 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+    delete componentCopy.id;
     this.updateComponent(componentCopy);
 
     this.editForm.on('change', (event) => {
