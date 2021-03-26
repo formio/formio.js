@@ -171,14 +171,6 @@ export default [
     weight: 32
   },
   {
-    type: 'checkbox',
-    input: true,
-    key: 'refreshOnNewUpload',
-    label: 'Refresh on new file upload',
-    tooltip: 'Remove validation errors on new file upload.',
-    weight: 33
-  },
-  {
     type: 'textfield',
     input: true,
     key: 'webcamSize',
