@@ -376,7 +376,8 @@ class ValidationChecker {
             return total;
           }, 0);
 
-          return count >= min;
+          // Should not be triggered if there is no options selected at all
+          return !count || count >= min;
         }
       },
       maxSelectedCount: {
@@ -417,7 +418,7 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           const minLength = parseInt(setting, 10);
-          if (!minLength || (typeof value !== 'string') || component.isEmpty(value)) {
+          if (!value || !minLength || (typeof value !== 'string') || component.isEmpty(value)) {
             return true;
           }
           return (value.length >= minLength);
@@ -471,7 +472,7 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           const minWords = parseInt(setting, 10);
-          if (!minWords || (typeof value !== 'string')) {
+          if (!minWords || !value || (typeof value !== 'string')) {
             return true;
           }
           return (value.trim().split(/\s+/).length >= minWords);
