@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.13.0-rc.23
 #### Fixed
  - UIP-284: Fix interpolation without quotes not working
+ - FIO-1501: Fixes an issue where Preview component and Default Value component in Builder have the same ids
+ - FIO-2547: Fixes an issue where data is not displayed in modal DataGrid preview in View mode when only one row is added
+ - FIO-2502: Fixes an issue where min validators are triggered for non-required fields when values are empty
+ - FIO-2633: Fixes an issue where component is not reverted back to its initial state when logic is not applying
+ - FIO-1385: Fixes an issue where place is not saved using Google Maps provider
+ - FIO-2597: Fixes an issue where Components order is changed after searching for some fields
+ - FIO-1393: Fixes an issue where EditGrid Templates tooltips are rendered wrongly 
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.11.0
 
 ### 4.13.0-rc.22
 #### Fixed

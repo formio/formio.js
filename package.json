@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "4.13.0-rc.22",
+  "version": "4.13.0-rc.23",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "index.js",
   "types": "index.d.ts",
@@ -52,7 +52,7 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap3": "^2.10.0",
+    "@formio/bootstrap3": "^2.11.0",
     "@formio/semantic": "^2.5.1",
     "autocompleter": "^6.1.0",
     "browser-cookies": "^1.2.0",
@@ -93,9 +93,9 @@
     "@babel/core": "^7.13.10",
     "@babel/plugin-proposal-class-properties": "^7.12.13",
     "@babel/plugin-proposal-export-default-from": "^7.12.13",
-    "@babel/plugin-proposal-optional-chaining": "^7.12.17",
+    "@babel/plugin-proposal-optional-chaining": "^7.13.12",
     "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
     "@babel/register": "^7.12.13",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
@@ -133,7 +133,7 @@
     "jquery": "^3.5.1",
     "jsdom": "^16.5.1",
     "jsdom-global": "^3.0.2",
-    "karma": "^6.2.0",
+    "karma": "^6.3.1",
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
@@ -149,7 +149,7 @@
     "raw-loader": "^4.0.2",
     "shortcut-buttons-flatpickr": "^0.3.1",
     "sinon": "^9.2.4",
-    "webpack": "^5.27.1",
+    "webpack": "^5.28.0",
     "webpack-stream": "^6.1.2",
     "written-number": "^0.9.1"
   }
