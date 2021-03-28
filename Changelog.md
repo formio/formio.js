@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.24
+#### Fixed
+ - FIO-2612: Fixed issues where the submit button is replaced with other components when it re-renders.
+
 ### 4.13.0-rc.23
 #### Fixed
  - UIP-284: Fix interpolation without quotes not working
