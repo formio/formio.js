@@ -22,6 +22,8 @@ import wizardTestForm from '../test/forms/wizardTestForm';
 import formWithNestedWizard from '../test/forms/formWIthNestedWizard';
 import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEditGrid';
 import customWizard from '../test/forms/customWizard';
+import wizardChildForm from '../test/forms/wizardChildForm';
+import wizardParentForm from '../test/forms/wizardParentForm';
 
 describe('Wizard tests', () => {
   it('Should correctly reset values', function(done) {
@@ -1458,5 +1460,63 @@ describe('Wizard tests', () => {
         }, 350);
       })
       .catch(done);
+  });
+
+  it('Should render all pages as a part of wizard pagination', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const childForm = _.cloneDeep(wizardChildForm);
+    const clickEvent = new Event('click');
+
+    wizard.setForm(wizardParentForm).then(() => {
+      assert.equal(wizard.components.length, 2);
+      assert.equal(wizard.allPages.length, 2);
+      assert.equal(wizard.allPages[1].component.title, 'Page 3');
+
+      const radioComp = wizard.getComponent('radio1');
+
+      radioComp.setValue('yes');
+      wizard.render();
+
+      setTimeout(() => {
+        const nestedFormComp = wizard.getComponent('formNested');
+        nestedFormComp.loadSubForm = () => {
+        nestedFormComp.formObj = childForm;
+        nestedFormComp.subFormLoading = false;
+
+          return new Promise((resolve) => resolve(childForm));
+        };
+        nestedFormComp.createSubForm();
+
+        setTimeout(() => {
+          assert.equal(wizard.components.length, 3);
+          assert.equal(wizard.allPages.length, 4);
+          assert.equal(wizard.allPages[1].component.title, 'Child Page 1');
+
+          const checboxComp = wizard.getComponent('checkbox');
+
+          checboxComp.setValue(true);
+          wizard.render();
+
+          setTimeout(() => {
+            assert.equal(wizard.components.length, 3);
+            assert.equal(wizard.allPages.length, 5);
+            assert.equal(wizard.allPages[1].component.title, 'Page 2');
+            assert.equal(wizard.element.querySelector('input[name="data[textFieldNearForm]"]'), null);
+
+            const nextPageBtn = wizard.refs[`${wizard.wizardKey}-next`];
+
+            nextPageBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              assert.equal(wizard.component.title, 'Page 2');
+              assert.ok(wizard.element.querySelector('input[name="data[textFieldNearForm]"]'));
+
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });
