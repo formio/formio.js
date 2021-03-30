@@ -321,6 +321,20 @@ export default class WebformBuilder extends Component {
     const formio = new Formio(Formio.projectUrl);
     const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
+    formio.loadProject().then((project) => {
+      if (project && (_.get(project, 'settings.addConfigToForms', false) ||  _.get(project, 'addConfigToForms', false))) {
+        const config = project.config || {};
+        this.options.formConfig = config;
+
+        const pathToFormConfig = 'webform._form.config';
+        const webformConfig = _.get(this, pathToFormConfig);
+
+        if (this.webform  && !webformConfig) {
+          _.set(this, pathToFormConfig, config);
+        }
+      }
+    });
+
     if (!formio.noProject && !isResourcesDisabled) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
@@ -1019,7 +1033,8 @@ export default class WebformBuilder extends Component {
           'logic',
           'autofocus',
           'customConditional',
-        ])]
+        ])],
+        config: this.options.formConfig || {}
       };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
