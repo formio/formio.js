@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.7-patch.4
+#### Fixed
+ - FJS-3889: fixed an issue where public config is not available for the form and components in builder
+ - FJS-3876: Fixed an isse where default value is not updated in builder for custom components
+
 ### 4.12.7-patch.3
 #### Fixed
  - FJS-1328: Fixes an issue where it is impossible to reorder rows of a child DataGrid
