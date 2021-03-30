@@ -841,6 +841,7 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, 'component.searchFields', ['label']),
+      shadowRoot: this.root ? this.root.shadowRoot : null,
       fuseOptions: this.component.useExactSearch
         ? {}
         : Object.assign(

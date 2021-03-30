@@ -285,25 +285,22 @@ export default class Webform extends NestedDataComponent {
    * @return {Promise}
    */
   set language(lang) {
-    return new NativePromise((resolve, reject) => {
-      this.options.language = lang;
-      if (this.i18next.language === lang) {
-        return resolve();
-      }
-      try {
-        this.i18next.changeLanguage(lang, (err) => {
-          if (err) {
-            return reject(err);
-          }
-          this.redraw();
-          this.emit('languageChanged');
-          resolve();
-        });
-      }
-      catch (err) {
-        return reject(err);
-      }
-    });
+    this.options.language = lang;
+    if (this.i18next.language === lang) {
+      return;
+    }
+    try {
+      this.i18next.changeLanguage(lang, (err) => {
+        if (err) {
+          return;
+        }
+        this.redraw();
+        this.emit('languageChanged');
+      });
+    }
+    catch (err) {
+      return;
+    }
   }
 
   get componentComponents() {
