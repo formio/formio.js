@@ -1,23 +1,7 @@
 export default [
   {
     ignore: true,
-    key: 'validateOn',
-  },
-  {
-    ignore: true,
-    key: 'validate.required',
-  },
-  {
-    ignore: true,
     key: 'unique',
-  },
-  {
-    ignore: true,
-    key: 'errorLabel',
-  },
-  {
-    ignore: true,
-    key: 'validate.customMessage',
   },
   {
     weight: 110,
