@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### 4.13.0-rc.25
+### [Unreleased]
 #### Fixed
  - Added better embedding capabilities.
+ - FIO-1553: fixed an issue where select resource submission is not displayed if lazy load is enabled
 
 ### 4.13.0-rc.24
 #### Fixed
