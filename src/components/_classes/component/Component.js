@@ -2756,7 +2756,6 @@ export default class Component extends Element {
     data = data || this.rootValue;
     row = row || this.data;
     const isValid = this.checkComponentValidity(data, dirty, row, { silentCheck });
-    this.checkModal();
     return isValid;
   }
 
@@ -2813,14 +2812,7 @@ export default class Component extends Element {
       return true;
     }
     const isValid = this.checkComponentValidity(data, isDirty, row, flags);
-    this.checkModal();
     return isValid;
-  }
-
-  checkModal() {
-    if (!this.component.modalEdit || !this.componentModal) {
-      return;
-    }
   }
 
   get validationValue() {
