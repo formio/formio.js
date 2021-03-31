@@ -19,6 +19,7 @@ import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import i18nConfig from '../../../i18n';
+import Components from '../../Components';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
@@ -717,7 +718,7 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return fastCloneDeep(this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema));
+    return fastCloneDeep(this.getModifiedSchema(_.omit(this.component, 'id'), this.component.type==='dynamicWizard'? Components.components[this.component.type].builderInfo.schema : this.defaultSchema));
   }
 
   /**
