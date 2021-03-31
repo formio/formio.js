@@ -1333,7 +1333,9 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
-    delete componentCopy.id;
+    if (!this.hasPDF) {
+      delete componentCopy.id;
+    }
     this.updateComponent(componentCopy);
 
     this.editForm.on('change', (event) => {
