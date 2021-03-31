@@ -1108,7 +1108,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if (this.isEmpty(value)) {
+      if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
