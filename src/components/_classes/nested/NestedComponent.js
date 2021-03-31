@@ -561,6 +561,18 @@ export default class NestedComponent extends Field {
     }, super.checkData(data, flags, row));
   }
 
+  checkModal(isValid = true, dirty = false) {
+    if (!this.component.modalEdit || !this.componentModal) {
+      return;
+    }
+    if (dirty && !isValid) {
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, this.refs.openModalWrapper);
+    }
+    else {
+      this.clearErrorClasses(this.refs.openModalWrapper);
+    }
+  }
+
   checkConditions(data, flags, row) {
     this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));
     return super.checkConditions(data, flags, row);
