@@ -1090,6 +1090,7 @@ export default class WebformBuilder extends Component {
           'calculateValue',
           'conditional',
           'customConditional',
+          'id'
         ]));
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
@@ -1333,7 +1334,6 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
-    delete componentCopy.id;
     this.updateComponent(componentCopy);
 
     this.editForm.on('change', (event) => {
