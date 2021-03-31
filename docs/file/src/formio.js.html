@@ -34,6 +34,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
@@ -1013,6 +1014,7 @@ class Formio {
     if (!url) {
       return NativePromise.reject(&apos;No url provided&apos;);
     }
+    const _Formio = getFormio();
     method = (method || &apos;GET&apos;).toUpperCase();
 
     // For reverse compatibility, if they provided the ignoreCache parameter,
@@ -1028,8 +1030,8 @@ class Formio {
     const cacheKey = btoa(encodeURI(url));
 
     // Get the cached promise to save multiple loads.
-    if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; getFormio().cache.hasOwnProperty(cacheKey)) {
-      return NativePromise.resolve(cloneResponse(getFormio().cache[cacheKey]));
+    if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; _Formio.cache.hasOwnProperty(cacheKey)) {
+      return NativePromise.resolve(cloneResponse(_Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -1037,7 +1039,7 @@ class Formio {
       &apos;Accept&apos;: &apos;application/json&apos;,
       &apos;Content-type&apos;: &apos;application/json&apos;
     });
-    const token = getFormio().getToken(opts);
+    const token = _Formio.getToken(opts);
     if (token &amp;&amp; !opts.noToken) {
       headers.append(&apos;x-jwt-token&apos;, token);
     }
@@ -1058,27 +1060,27 @@ class Formio {
     }
 
     // Allow plugins to alter the options.
-    options = getFormio().pluginAlter(&apos;requestOptions&apos;, options, url);
-    if (options.namespace || getFormio().namespace) {
-      opts.namespace = options.namespace ||  getFormio().namespace;
+    options = _Formio.pluginAlter(&apos;requestOptions&apos;, options, url);
+    if (options.namespace || _Formio.namespace) {
+      opts.namespace = options.namespace ||  _Formio.namespace;
     }
 
     const requestToken = options.headers[&apos;x-jwt-token&apos;];
-    const result = getFormio().pluginAlter(&apos;wrapFetchRequestPromise&apos;, getFormio().fetch(url, options),
+    const result = _Formio.pluginAlter(&apos;wrapFetchRequestPromise&apos;, _Formio.fetch(url, options),
       { url, method, data, opts }).then((response) =&gt; {
       // Allow plugins to respond.
-      response = getFormio().pluginAlter(&apos;requestResponse&apos;, response, Formio, data);
+      response = _Formio.pluginAlter(&apos;requestResponse&apos;, response, _Formio, data);
 
       if (!response.ok) {
         if (response.status === 440) {
-          getFormio().setToken(null, opts);
-          getFormio().events.emit(&apos;formio.sessionExpired&apos;, response.body);
+          _Formio.setToken(null, opts);
+          _Formio.events.emit(&apos;formio.sessionExpired&apos;, response.body);
         }
         else if (response.status === 401) {
-          getFormio().events.emit(&apos;formio.unauthorized&apos;, response.body);
+          _Formio.events.emit(&apos;formio.unauthorized&apos;, response.body);
         }
         else if (response.status === 416) {
-          getFormio().events.emit(&apos;formio.rangeIsNotSatisfiable&apos;, response.body);
+          _Formio.events.emit(&apos;formio.rangeIsNotSatisfiable&apos;, response.body);
         }
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get(&apos;content-type&apos;).includes(&apos;application/json&apos;)
@@ -1116,7 +1118,7 @@ class Formio {
         token !== &apos;&apos; &amp;&amp;
         !tokenIntroduced
       ) {
-        getFormio().setToken(token, opts);
+        _Formio.setToken(token, opts);
       }
       // 204 is no content. Don&apos;t try to .json() it.
       if (response.status === 204) {
@@ -1162,15 +1164,15 @@ class Formio {
 
       // Cache the response.
       if (method === &apos;GET&apos;) {
-        getFormio().cache[cacheKey] = result;
+        _Formio.cache[cacheKey] = result;
       }
 
       return cloneResponse(result);
     })
     .catch((err) =&gt; {
       if (err === &apos;Bad Token&apos;) {
-        getFormio().setToken(null, opts);
-        getFormio().events.emit(&apos;formio.badToken&apos;, err);
+        _Formio.setToken(null, opts);
+        _Formio.events.emit(&apos;formio.badToken&apos;, err);
       }
       if (err.message) {
         err.message = `Could not connect to API server (${err.message})`;
@@ -1178,7 +1180,7 @@ class Formio {
       }
 
       if (method === &apos;GET&apos;) {
-        delete getFormio().cache[cacheKey];
+        delete _Formio.cache[cacheKey];
       }
 
       return NativePromise.reject(err);
@@ -1377,10 +1379,11 @@ class Formio {
   }
 
   static registerPlugin(plugin, name) {
-    getFormio().plugins.push(plugin);
-    getFormio().plugins.sort((a, b) =&gt; (b.priority || 0) - (a.priority || 0));
+    const __Formio = getFormio();
+    __Formio.plugins.push(plugin);
+    __Formio.plugins.sort((a, b) =&gt; (b.priority || 0) - (a.priority || 0));
     plugin.__name = name;
-    (plugin.init || getFormio().noop).call(plugin, Formio);
+    (plugin.init || __Formio.noop).call(plugin, __Formio);
   }
 
   static getPlugin(name) {

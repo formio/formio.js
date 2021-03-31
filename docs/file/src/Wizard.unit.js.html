@@ -34,6 +34,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
@@ -194,6 +195,8 @@ import wizardTestForm from &apos;../test/forms/wizardTestForm&apos;;
 import formWithNestedWizard from &apos;../test/forms/formWIthNestedWizard&apos;;
 import wizardWithDataGridAndEditGrid from &apos;../test/forms/wizardWithDataGridAndEditGrid&apos;;
 import customWizard from &apos;../test/forms/customWizard&apos;;
+import wizardChildForm from &apos;../test/forms/wizardChildForm&apos;;
+import wizardParentForm from &apos;../test/forms/wizardParentForm&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
   it(&apos;Should correctly reset values&apos;, function(done) {
@@ -1630,6 +1633,64 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         }, 350);
       })
       .catch(done);
+  });
+
+  it(&apos;Should render all pages as a part of wizard pagination&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const childForm = _.cloneDeep(wizardChildForm);
+    const clickEvent = new Event(&apos;click&apos;);
+
+    wizard.setForm(wizardParentForm).then(() =&gt; {
+      assert.equal(wizard.components.length, 2);
+      assert.equal(wizard.allPages.length, 2);
+      assert.equal(wizard.allPages[1].component.title, &apos;Page 3&apos;);
+
+      const radioComp = wizard.getComponent(&apos;radio1&apos;);
+
+      radioComp.setValue(&apos;yes&apos;);
+      wizard.render();
+
+      setTimeout(() =&gt; {
+        const nestedFormComp = wizard.getComponent(&apos;formNested&apos;);
+        nestedFormComp.loadSubForm = () =&gt; {
+        nestedFormComp.formObj = childForm;
+        nestedFormComp.subFormLoading = false;
+
+          return new Promise((resolve) =&gt; resolve(childForm));
+        };
+        nestedFormComp.createSubForm();
+
+        setTimeout(() =&gt; {
+          assert.equal(wizard.components.length, 3);
+          assert.equal(wizard.allPages.length, 4);
+          assert.equal(wizard.allPages[1].component.title, &apos;Child Page 1&apos;);
+
+          const checboxComp = wizard.getComponent(&apos;checkbox&apos;);
+
+          checboxComp.setValue(true);
+          wizard.render();
+
+          setTimeout(() =&gt; {
+            assert.equal(wizard.components.length, 3);
+            assert.equal(wizard.allPages.length, 5);
+            assert.equal(wizard.allPages[1].component.title, &apos;Page 2&apos;);
+            assert.equal(wizard.element.querySelector(&apos;input[name=&quot;data[textFieldNearForm]&quot;]&apos;), null);
+
+            const nextPageBtn = wizard.refs[`${wizard.wizardKey}-next`];
+
+            nextPageBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() =&gt; {
+              assert.equal(wizard.component.title, &apos;Page 2&apos;);
+              assert.ok(wizard.element.querySelector(&apos;input[name=&quot;data[textFieldNearForm]&quot;]&apos;));
+
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });
 </code></pre>

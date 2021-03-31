@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
  - Added better embedding capabilities.
  - FIO-1553: fixed an issue where select resource submission is not displayed if lazy load is enabled
+ - FIO-2655: Fixes an issue where it is impossible to reopen components settings in PDF
+ - UIP-283: Fix values not set correctly
+ - UIP-273: Remove file errors on new file upload
+
+### Added
+ - FIO-2553: add tests for nested wizards
 
 ### 4.13.0-rc.24
 #### Fixed
@@ -22,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2633: Fixes an issue where component is not reverted back to its initial state when logic is not applying
  - FIO-1385: Fixes an issue where place is not saved using Google Maps provider
  - FIO-2597: Fixes an issue where Components order is changed after searching for some fields
- - FIO-1393: Fixes an issue where EditGrid Templates tooltips are rendered wrongly 
+ - FIO-1393: Fixes an issue where EditGrid Templates tooltips are rendered wrongly
 
 #### Changed
  - Upgrade @formio/bootstrap3@2.11.0

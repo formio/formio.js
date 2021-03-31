@@ -660,6 +660,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/embed.js~embed",
+    "function/index.html#static-function-embed",
+    "<span>embed</span> <span class=\"search-result-import-path\">formiojs/src/Embed.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/formutils.js~escaperegexcharacters",
     "function/index.html#static-function-escapeRegExCharacters",
     "<span>escapeRegExCharacters</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -1096,6 +1102,12 @@ window.esdocSearchIndex = [
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
     "src/.external-ecmascript.js~undefined",
     "external"
+  ],
+  [
+    "src/embed.js",
+    "file/src/Embed.js.html",
+    "src/Embed.js",
+    "file"
   ],
   [
     "src/eventemitter.js",
