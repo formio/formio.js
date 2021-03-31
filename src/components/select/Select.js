@@ -395,7 +395,9 @@ export default class SelectComponent extends Field {
     this.isScrollLoading = false;
     this.loading = false;
 
-    if (!fromSearch) {
+    const searching = fromSearch && this.choices?.input?.isFocussed;
+
+    if (!searching) {
       // If a value is provided, then select it.
       if (!this.isEmpty()) {
         this.setValue(this.dataValue, {
