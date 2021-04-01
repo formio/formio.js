@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.26
+#### Fixed
+ - FIO-527: add applying of custom styles for textArea in readOnly mode
+ - FIO-2668: fixed an issue where translation does not work for any language if en translation is provided for this value
+
 ### 4.13.0-rc.25
 #### Fixed
  - Added better embedding capabilities.

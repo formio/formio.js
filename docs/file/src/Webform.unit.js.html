@@ -216,13 +216,88 @@ import formWithAddressComponent from &apos;../test/forms/formWithAddressComponen
 import formWithDataGridInitEmpty from &apos;../test/forms/dataGridWithInitEmpty&apos;;
 import nestedFormInsideDataGrid from &apos;../test/forms/dataGrid-nestedForm&apos;;
 import formWithDataGrid from &apos;../test/forms/formWithDataGrid&apos;;
+import translationTestForm from &apos;../test/forms/translationTestForm&apos;;
 import formWithDataGridWithCondColumn from &apos;../test/forms/dataGridWithConditionalColumn&apos;;
 import { nestedFormInWizard } from &apos;../test/fixtures&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import { fastCloneDeep } from &apos;../lib/utils/utils&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should not translate en value if _userInput option is provided and value presents in reserved translation names&apos;, done =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, {
+     language: &apos;en&apos;
+    });
+    form.setForm(translationTestForm).then(() =&gt; {
+      const selectComp = form.getComponent(&apos;select&apos;);
+      const options = selectComp.element.querySelector(&apos;[role=&quot;listbox&quot;]&apos;).children;
+      const option1 = options[0].textContent.trim();
+      const option2 = options[1].textContent.trim();
+      const label = selectComp.element.querySelector(&apos;label&apos;).textContent.trim();
+      assert.equal(option1, translationTestForm.components[0].data.values[0].label);
+      assert.equal(option2, translationTestForm.components[0].data.values[1].label);
+      assert.equal(label, translationTestForm.components[0].label);
+      document.body.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should translate in English if _userInput option is provided and value does not present in reserved translation names&apos;, done =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const selectLabel = &apos;Select test label&apos;;
+    const translationForm = fastCloneDeep(translationTestForm);
+    translationForm.components[0].label = selectLabel;
+    const form = new Webform(formElement, {
+      language: &apos;en&apos;,
+      i18n: {
+        en: {
+          &apos;Select test label&apos;: &apos;English Label&apos;
+        },
+        fr: {
+          &apos;Select test label&apos;: &apos;French Label&apos;
+        }
+      }
+    });
+
+    form.setForm(translationForm).then(() =&gt; {
+      const selectComp = form.getComponent(&apos;select&apos;);
+      const label = selectComp.element.querySelector(&apos;label&apos;).textContent.trim();
+
+      assert.equal(label, &apos;English Label&apos;);
+      document.body.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should translate value in franch if _userInput option is provided and value does not present in reserved translation names&apos;, done =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const selectLabel = &apos;Select test label&apos;;
+    const translationForm = fastCloneDeep(translationTestForm);
+    translationForm.components[0].label = selectLabel;
+    const form = new Webform(formElement, {
+      language: &apos;fr&apos;,
+      i18n: {
+        en: {
+          &apos;Select test label&apos;: &apos;English Label&apos;
+        },
+        fr: {
+          &apos;Select test label&apos;: &apos;French Label&apos;
+        }
+      }
+    });
+
+    form.setForm(translationForm).then(() =&gt; {
+      const selectComp = form.getComponent(&apos;select&apos;);
+      const label = selectComp.element.querySelector(&apos;label&apos;).textContent.trim();
+
+      assert.equal(label, &apos;French Label&apos;);
+      document.body.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
 
   it(&apos;Should display dataGrid conditional column once the condition is met&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);

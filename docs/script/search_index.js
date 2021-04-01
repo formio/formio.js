@@ -8784,6 +8784,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/translations/en.js",
+    "file/src/translations/en.js.html",
+    "src/translations/en.js",
+    "file"
+  ],
+  [
     "src/utils/choiceswrapper.js",
     "file/src/utils/ChoicesWrapper.js.html",
     "src/utils/ChoicesWrapper.js",
