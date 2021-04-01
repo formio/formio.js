@@ -556,20 +556,24 @@ export default class NestedComponent extends Field {
     flags = flags || {};
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
-    return components.reduce((valid, comp) => {
+    const isValid = components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
+    this.checkModal(isValid, this.isDirty);
+    return isValid;
   }
 
   checkModal(isValid = true, dirty = false) {
     if (!this.component.modalEdit || !this.componentModal) {
       return;
     }
+    const openModalWrapperRef = this.refs[`openModalWrapper-${this.component.id}`];
+
     if (dirty && !isValid) {
-      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, this.refs.openModalWrapper);
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, openModalWrapperRef);
     }
     else {
-      this.clearErrorClasses(this.refs.openModalWrapper);
+      this.clearErrorClasses(openModalWrapperRef);
     }
   }
 
@@ -640,11 +644,12 @@ export default class NestedComponent extends Field {
       this.setCustomValidity('');
       return true;
     }
-
-    return this.getComponents().reduce(
+    const isValid = this.getComponents().reduce(
       (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
       super.checkValidity(data, dirty, row, silentCheck)
     );
+    this.checkModal(isValid, dirty);
+    return isValid;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {

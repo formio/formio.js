@@ -1,5 +1,5 @@
 <div class="formio-component-modal-wrapper formio-component-modal-wrapper-{{ ctx.component.type }}" ref="componentModalWrapper">
-  <div ref="openModalWrapper"></div>
+  <div aria-label="modal-wrapper" ref="openModalWrapper-{{ ctx.component.id }}"></div>
   <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
     <div class="formio-dialog-overlay" ref="modalOverlay"></div>
     <div class="formio-dialog-content" ref="modalContents">
@@ -8,10 +8,10 @@
         {{ctx.children}}
         {% } %}
         <div class="formio-dialog-buttons">
-          <button class="btn btn-success formio-dialog-button" ref="modalSave">{{ctx.t('Save')}}</button>
+          <button aria-label="modal-save" class="btn btn-success formio-dialog-button" ref="modalSave-{{ ctx.component.id }}">{{ctx.t('Save')}}</button>
         </div>
       </div>
-      <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="close" ref="modalClose"></button>
+      <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="modal-close" ref="modalClose-{{ ctx.component.id }}"></button>
     </div>
   </div>
 </div>
