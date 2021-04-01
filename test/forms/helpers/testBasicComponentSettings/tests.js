@@ -412,7 +412,7 @@ export default {
         setTimeout(() => {
           assert.deepEqual(isModalWindowOpened(comp), true, `${compKey} (component ${compType}): should open modal window`);
 
-          const closeModalBtn = comp.componentModal.refs.modalClose;
+          const closeModalBtn = comp.componentModal.refs[`modalClose-${comp.id}`];
           closeModalBtn.dispatchEvent(clickEvent);
 
           setTimeout(() => {
@@ -474,7 +474,7 @@ export default {
               );
             }
 
-            const closeModalBtn = comp.refs.modalClose;
+            const closeModalBtn = comp.refs[`modalClose-${comp.id}`];
 
             closeModalBtn.dispatchEvent(clickEvent);
  
@@ -528,7 +528,7 @@ export default {
           comp.setValue(value);
 
           setTimeout(() => {
-            const saveModalBtn = comp.refs.modalSave;
+            const saveModalBtn = comp.refs[`modalSave-${comp.id}`];
             saveModalBtn.dispatchEvent(clickEvent);
  
             setTimeout(() => {
@@ -581,7 +581,7 @@ export default {
           const compKey = comp.component.key;
           const compType = comp.component.type;
 
-          const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
+          const isErrorHighlightClass = !!(comp.refs[`openModalWrapper-${comp.id}`].classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
           assert.deepEqual(comp.subForm ? !!comp.subForm.errors.length : !!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
           //BUG in nested forms, remove the check once it is fixed
           if(compType !== 'form') {

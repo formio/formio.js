@@ -272,19 +272,21 @@ const Harness = {
     assert(element, `${query} not found`);
     assert(element.className.split(' ').includes(className));
   },
-  testModalWrapperErrorClasses(component, shouldBeInvalid = true, query = '[ref="openModalWrapper"]') {
-    const modalWrapper = component.element.querySelector(query);
-    assert(modalWrapper, `${query} not found`);
-    assert.equal(
-      modalWrapper.className.split(' ').includes('formio-error-wrapper'),
-      shouldBeInvalid,
-      `Should ${shouldBeInvalid ? '' : 'not'} have error class`
-    );
-    assert.equal(
-      modalWrapper.className.split(' ').includes('has-message'),
-      shouldBeInvalid,
-      `Should ${shouldBeInvalid ? '' : 'not'} have class indicating that the component has a message`
-    );
+  testModalWrapperErrorClasses(component, shouldBeInvalid = true) {
+    const modalWrappers = component.element.querySelectorAll('[aria-label="modal-wrapper"]');
+    assert(modalWrappers.length !== 0, 'modals not found');
+    _.forEach(modalWrappers, (wrapper) => {
+      assert.equal(
+        wrapper.className.split(' ').includes('formio-error-wrapper'),
+        shouldBeInvalid,
+        `Should ${shouldBeInvalid ? '' : 'not'} have error class`
+      );
+      assert.equal(
+        wrapper.className.split(' ').includes('has-message'),
+        shouldBeInvalid,
+        `Should ${shouldBeInvalid ? '' : 'not'} have class indicating that the component has a message`
+      );
+    });
   },
   testElementAttribute(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {

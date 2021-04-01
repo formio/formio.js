@@ -15,7 +15,7 @@ describe('Tabs Component', () => {
       form.checkValidity(data, true, data);
 
       setTimeout(() => {
-        const openModalWrapper = form.element.querySelector('[ref="openModalWrapper"]');
+        const openModalWrapper = form.element.querySelector('[aria-label="modal-wrapper"]');
         assert(openModalWrapper.className.includes('formio-error-wrapper'), 'Should have error class');
         assert(openModalWrapper.className.includes('has-message'), 'Should have class indicating that the component has a message');
 
@@ -30,7 +30,7 @@ describe('Tabs Component', () => {
         form.setSubmission({ data: validData });
 
         setTimeout(() => {
-          const openModalWrapper = form.element.querySelector('[ref="openModalWrapper"]');
+          const openModalWrapper = form.element.querySelector('[aria-label="modal-wrapper"]');
           assert(!openModalWrapper.className.includes('formio-error-wrapper'), 'Should not have error class');
           assert(!openModalWrapper.className.includes('has-message'), 'Should not have class indicating that the component has a message');
 
