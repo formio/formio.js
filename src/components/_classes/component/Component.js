@@ -18,7 +18,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
-import i18nConfig from '../../../i18n';
+import enTranslation from '../../../translations/en';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
@@ -738,7 +738,7 @@ export default class Component extends Element {
       return '';
     }
     // Use _userInput: true to ignore translations from defaults
-    if (text in i18nConfig.resources.en.translation && params._userInput) {
+    if (text in enTranslation && params._userInput) {
       return text;
     }
     params.data = this.rootValue;

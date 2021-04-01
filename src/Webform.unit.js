@@ -43,13 +43,88 @@ import formWithAddressComponent from '../test/forms/formWithAddressComponent';
 import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
+import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
+import { fastCloneDeep } from '../lib/utils/utils';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should not translate en value if _userInput option is provided and value presents in reserved translation names', done => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+     language: 'en'
+    });
+    form.setForm(translationTestForm).then(() => {
+      const selectComp = form.getComponent('select');
+      const options = selectComp.element.querySelector('[role="listbox"]').children;
+      const option1 = options[0].textContent.trim();
+      const option2 = options[1].textContent.trim();
+      const label = selectComp.element.querySelector('label').textContent.trim();
+      assert.equal(option1, translationTestForm.components[0].data.values[0].label);
+      assert.equal(option2, translationTestForm.components[0].data.values[1].label);
+      assert.equal(label, translationTestForm.components[0].label);
+      document.body.innerHTML = '';
+      done();
+    }).catch(done);
+  });
+
+  it('Should translate in English if _userInput option is provided and value does not present in reserved translation names', done => {
+    const formElement = document.createElement('div');
+    const selectLabel = 'Select test label';
+    const translationForm = fastCloneDeep(translationTestForm);
+    translationForm.components[0].label = selectLabel;
+    const form = new Webform(formElement, {
+      language: 'en',
+      i18n: {
+        en: {
+          'Select test label': 'English Label'
+        },
+        fr: {
+          'Select test label': 'French Label'
+        }
+      }
+    });
+
+    form.setForm(translationForm).then(() => {
+      const selectComp = form.getComponent('select');
+      const label = selectComp.element.querySelector('label').textContent.trim();
+
+      assert.equal(label, 'English Label');
+      document.body.innerHTML = '';
+      done();
+    }).catch(done);
+  });
+
+  it('Should translate value in franch if _userInput option is provided and value does not present in reserved translation names', done => {
+    const formElement = document.createElement('div');
+    const selectLabel = 'Select test label';
+    const translationForm = fastCloneDeep(translationTestForm);
+    translationForm.components[0].label = selectLabel;
+    const form = new Webform(formElement, {
+      language: 'fr',
+      i18n: {
+        en: {
+          'Select test label': 'English Label'
+        },
+        fr: {
+          'Select test label': 'French Label'
+        }
+      }
+    });
+
+    form.setForm(translationForm).then(() => {
+      const selectComp = form.getComponent('select');
+      const label = selectComp.element.querySelector('label').textContent.trim();
+
+      assert.equal(label, 'French Label');
+      document.body.innerHTML = '';
+      done();
+    }).catch(done);
+  });
 
   it('Should display dataGrid conditional column once the condition is met', function(done) {
     const formElement = document.createElement('div');
