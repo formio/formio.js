@@ -1,46 +1,46 @@
 {% if (ctx.prefix || ctx.suffix) { %}
-<div class="input-group">
+  <div class="input-group">
 {% } %}
 {% if (ctx.prefix) { %}
-<div class="input-group-prepend" ref="prefix">
-  <span class="input-group-text">
-    {% if(ctx.prefix instanceof HTMLElement){ %}
-      {{ ctx.t(ctx.prefix.outerHTML, { _userInput: true }) }}
-    {% } else{ %}
-      {{ ctx.t(ctx.prefix, { _userInput: true }) }}
-    {% } %}
-  </span>
-</div>
+  <div class="input-group-prepend" ref="prefix">
+    <span class="input-group-text">
+      {% if(ctx.prefix instanceof HTMLElement){ %}
+        {{ ctx.t(ctx.prefix.outerHTML, { _userInput: true }) }}
+      {% } else{ %}
+        {{ ctx.t(ctx.prefix, { _userInput: true }) }}
+      {% } %}
+    </span>
+  </div>
 {% } %}
-  {% if (!ctx.component.editor && !ctx.component.wysiwyg) { %}
-<{{ctx.input.type}}
-  ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
-  {% for (var attr in ctx.input.attr) { %}
-  {{attr}}="{{ctx.input.attr[attr]}}"
-  {% } %}
-  id="{{ctx.instance.id}}-{{ctx.component.key}}"
->{{ctx.input.content}}</{{ctx.input.type}}>
+{% if (!ctx.component.editor && !ctx.component.wysiwyg) { %}
+  <{{ctx.input.type}}
+    ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
+    {% for (var attr in ctx.input.attr) { %}
+    {{attr}}="{{ctx.input.attr[attr]}}"
+    {% } %}
+    id="{{ctx.instance.id}}-{{ctx.component.key}}"
+  >{{ctx.input.content}}</{{ctx.input.type}}>
 {% } %}
 {% if (ctx.component.editor || ctx.component.wysiwyg) { %}
-<div ref="input"></div>
-{% } %}
-{% if (ctx.component.showCharCount) { %}
-<span class="text-muted pull-right" ref="charcount"></span>
-{% } %}
-{% if (ctx.component.showWordCount) { %}
-<span class="text-muted pull-right" ref="wordcount"></span>
+  <div ref="input"></div>
 {% } %}
 {% if (ctx.suffix) { %}
-<div class="input-group-append" ref="suffix">
-  <span class="input-group-text">
-    {% if(ctx.suffix instanceof HTMLElement){ %}
-      {{ ctx.t(ctx.suffix.outerHTML, { _userInput: true }) }}
-    {% } else{ %}
-      {{ ctx.t(ctx.suffix, { _userInput: true }) }}
-    {% } %}
-  </span>
-</div>
+  <div class="input-group-append" ref="suffix">
+    <span class="input-group-text">
+      {% if(ctx.suffix instanceof HTMLElement){ %}
+        {{ ctx.t(ctx.suffix.outerHTML, { _userInput: true }) }}
+      {% } else{ %}
+        {{ ctx.t(ctx.suffix, { _userInput: true }) }}
+      {% } %}
+    </span>
+  </div>
 {% } %}
 {% if (ctx.prefix || ctx.suffix) { %}
-</div>
+  </div>
+{% } %}
+{% if (ctx.component.showCharCount) { %}
+  <span class="text-muted pull-right" ref="charcount"></span>
+{% } %}
+{% if (ctx.component.showWordCount) { %}
+  <span class="text-muted pull-right" ref="wordcount"></span>
 {% } %}
