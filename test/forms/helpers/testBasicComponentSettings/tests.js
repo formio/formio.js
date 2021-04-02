@@ -412,7 +412,7 @@ export default {
         setTimeout(() => {
           assert.deepEqual(isModalWindowOpened(comp), true, `${compKey} (component ${compType}): should open modal window`);
 
-          const closeModalBtn = comp.componentModal.refs.modalClose;
+          const closeModalBtn = comp.componentModal.refs[`modalClose-${comp.key}`];
           closeModalBtn.dispatchEvent(clickEvent);
 
           setTimeout(() => {
@@ -474,7 +474,7 @@ export default {
               );
             }
 
-            const closeModalBtn = comp.refs.modalClose;
+            const closeModalBtn = comp.refs[`modalClose-${comp.key}`];
 
             closeModalBtn.dispatchEvent(clickEvent);
  
@@ -528,7 +528,7 @@ export default {
           comp.setValue(value);
 
           setTimeout(() => {
-            const saveModalBtn = comp.refs.modalSave;
+            const saveModalBtn = comp.refs[`modalSave-${comp.key}`];
             saveModalBtn.dispatchEvent(clickEvent);
  
             setTimeout(() => {
@@ -572,19 +572,22 @@ export default {
         comp.component.validate = comp.component.validate || {};
         comp.component.validate.required = true;
       });
-      
+
       const clickEvent = new Event('click');
-      form.getComponent('submit').refs.button.dispatchEvent(clickEvent)
+      form.getComponent('submit').refs.button.dispatchEvent(clickEvent);
 
       setTimeout(() => {
         testComponents.forEach((comp, index) => {
           const compKey = comp.component.key;
           const compType = comp.component.type;
 
-          const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
-          assert.deepEqual(comp.subForm ? !!comp.subForm.errors.length : !!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
+          const isErrorHighlightClass = !!(comp.refs[`openModalWrapper-${compKey}`].classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
+          if (comp.subForm) {
+            assert.deepEqual(comp.subForm.errors.length !== 0, true, `${compKey} (component ${compType}): should contain validation error`);
+          }
+
           //BUG in nested forms, remove the check once it is fixed
-          if(compType !== 'form') {
+          if (compType !== 'form') {
             assert.deepEqual(isErrorHighlightClass, true, `${compKey} (component ${compType}): should highlight invalid modal button`);
           }
         });

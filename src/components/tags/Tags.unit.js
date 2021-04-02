@@ -41,7 +41,7 @@ describe('Tags Component', function() {
         const modalWindow = component.componentModal.refs.modalContents;
 
         Harness.setTagsValue(['test', 'test1', 'test2'], component);
-        Harness.dispatchEvent('click', modalWindow, '[ref="modalSave"]');
+        Harness.dispatchEvent('click', modalWindow, '[aria-label="modal-save"]');
 
         setTimeout(() => {
           const modalPreview = component.element.querySelector('[ref="openModal"]');
