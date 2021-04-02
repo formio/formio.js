@@ -65,9 +65,9 @@ export default class ComponentModal {
 
   get templateRefs() {
     return {
-      [`modalClose-${this.component.id}`]: 'single',
-      [`openModalWrapper-${this.component.id}`]: 'single',
-      [`modalSave-${this.component.id}`]: 'single',
+      [`modalClose-${this.component.key}`]: 'single',
+      [`openModalWrapper-${this.component.key}`]: 'single',
+      [`modalSave-${this.component.key}`]: 'single',
       modalOverlay: 'single',
       modalContents: 'single',
       openModal: 'single',
@@ -76,15 +76,15 @@ export default class ComponentModal {
   }
 
   get modalCloseRef() {
-    return this.refs[`modalClose-${this.component.id}`];
+    return this.refs[`modalClose-${this.component.key}`];
   }
 
   get openModalWrapperRef() {
-    return this.refs[`openModalWrapper-${this.component.id}`];
+    return this.refs[`openModalWrapper-${this.component.key}`];
   }
 
   get modalSaveRef() {
-    return this.refs[`modalSave-${this.component.id}`];
+    return this.refs[`modalSave-${this.component.key}`];
   }
 
   loadRefs() {

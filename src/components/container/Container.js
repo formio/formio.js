@@ -74,8 +74,11 @@ export default class ContainerComponent extends NestedDataComponent {
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
 
-    return components.reduce((valid, comp) => {
+    const isValid = components.reduce((valid, comp) => {
       return comp.checkData(data, flags, this.dataValue) && valid;
     }, Component.prototype.checkData.call(this, data, flags, row));
+
+    this.checkModal(isValid, this.dirty);
+    return isValid;
   }
 }

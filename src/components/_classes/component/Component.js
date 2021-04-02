@@ -1914,6 +1914,20 @@ export default class Component extends Element {
     }
   }
 
+  checkModal(isValid = true, dirty = false) {
+    if (!this.component.modalEdit || !this.componentModal) {
+      return;
+    }
+    const openModalWrapperRef = this.refs[`openModalWrapper-${this.component.key}`];
+
+    if (dirty && !isValid) {
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, openModalWrapperRef);
+    }
+    else {
+      this.clearErrorClasses(openModalWrapperRef);
+    }
+  }
+
   setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
     elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
@@ -2756,6 +2770,7 @@ export default class Component extends Element {
     data = data || this.rootValue;
     row = row || this.data;
     const isValid = this.checkComponentValidity(data, dirty, row, { silentCheck });
+    this.checkModal(isValid, dirty);
     return isValid;
   }
 
@@ -2812,6 +2827,7 @@ export default class Component extends Element {
       return true;
     }
     const isValid = this.checkComponentValidity(data, isDirty, row, flags);
+    this.checkModal(isValid, isDirty);
     return isValid;
   }
 
