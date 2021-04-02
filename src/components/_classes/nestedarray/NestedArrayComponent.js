@@ -46,8 +46,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
     flags = flags || {};
     row = row || this.data;
     this.checkAddButtonChanged();
+    const isValid = this.checkRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
 
-    return this.checkRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
+    this.checkModal(isValid, this.dirty);
+    return isValid;
   }
 
   checkRows(method, data, opts, defaultValue, silentCheck) {

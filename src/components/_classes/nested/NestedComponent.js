@@ -216,7 +216,7 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(path, fn, originalPath) {
+   getComponent(path, fn, originalPath) {
     originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
@@ -559,27 +559,8 @@ export default class NestedComponent extends Field {
     const isValid = components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
-
     this.checkModal(isValid, this.isDirty);
     return isValid;
-  }
-
-  checkModal(isValid, dirty) {
-    if (!this.component.modalEdit || !this.componentModal) {
-      return;
-    }
-    const messages = this.errors;
-    this.clearErrorClasses(this.refs.openModalWrapper);
-    this.error = '';
-    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {
-      this.error = {
-        component: this.component,
-        level: 'hidden',
-        message: this.t('Fix the errors'),
-        messages,
-      };
-      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
-    }
   }
 
   checkConditions(data, flags, row) {
@@ -649,7 +630,6 @@ export default class NestedComponent extends Field {
       this.setCustomValidity('');
       return true;
     }
-
     const isValid = this.getComponents().reduce(
       (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
       super.checkValidity(data, dirty, row, silentCheck)
@@ -706,9 +686,7 @@ export default class NestedComponent extends Field {
 
   get errors() {
     const thisErrors = this.error ? [this.error] : [];
-    return this.getComponents()
-      .reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors)
-      .filter(err => err.level !== 'hidden');
+    return this.getComponents().reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors);
   }
 
   getValue() {

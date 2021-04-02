@@ -54,7 +54,7 @@ export default class ComponentModal {
 
   setOpenModalElement(template) {
     this.openModalTemplate = template;
-    this.component.setContent(this.refs.openModalWrapper, template);
+    this.component.setContent(this.openModalWrapperRef, template);
     this.loadRefs();
     this.setEventListeners();
     if (this.isOpened) {
@@ -65,14 +65,26 @@ export default class ComponentModal {
 
   get templateRefs() {
     return {
+      [`modalClose-${this.component.key}`]: 'single',
+      [`openModalWrapper-${this.component.key}`]: 'single',
+      [`modalSave-${this.component.key}`]: 'single',
       modalOverlay: 'single',
       modalContents: 'single',
-      modalClose: 'single',
-      openModalWrapper: 'single',
       openModal: 'single',
-      modalSave: 'single',
       modalWrapper: 'single',
     };
+  }
+
+  get modalCloseRef() {
+    return this.refs[`modalClose-${this.component.key}`];
+  }
+
+  get openModalWrapperRef() {
+    return this.refs[`openModalWrapper-${this.component.key}`];
+  }
+
+  get modalSaveRef() {
+    return this.refs[`modalSave-${this.component.key}`];
   }
 
   loadRefs() {
@@ -81,17 +93,17 @@ export default class ComponentModal {
 
   removeEventListeners() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.removeEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
-    this.component.removeEventListener(this.refs.modalClose, 'click', this.showDialogListener);
-    this.component.removeEventListener(this.refs.modalSave, 'click', this.saveModalListener);
+    this.component.removeEventListener(this.refs.modalOverlay, 'click', this.modalSaveRef ? this.showDialogListener : this.saveModalListener);
+    this.component.removeEventListener(this.modalCloseRef, 'click', this.showDialogListener);
+    this.component.removeEventListener(this.modalSaveRef, 'click', this.saveModalListener);
   }
 
   setEventListeners() {
     this.removeEventListeners();
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.addEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
-    this.component.addEventListener(this.refs.modalClose, 'click', this.showDialogListener);
-    this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalListener);
+    this.component.addEventListener(this.refs.modalOverlay, 'click', this.modalSaveRef ? this.showDialogListener : this.saveModalListener);
+    this.component.addEventListener(this.modalCloseRef, 'click', this.showDialogListener);
+    this.component.addEventListener(this.modalSaveRef, 'click', this.saveModalListener);
   }
 
   isValueChanged() {
@@ -109,7 +121,7 @@ export default class ComponentModal {
 
   setOpenEventListener() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.loadRefs(this.refs.openModalWrapper, {
+    this.component.loadRefs(this.openModalWrapperRef, {
       'openModal': 'single',
     });
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
@@ -142,7 +154,7 @@ export default class ComponentModal {
     const template = _.isEqual(this.currentValue, this.component.defaultValue)
       ? this.openModalTemplate
       : this.component.getModalPreviewTemplate();
-    this.component.setContent(this.refs.openModalWrapper, template);
+    this.component.setContent(this.openModalWrapperRef, template);
     this.setOpenEventListener();
   }
 
