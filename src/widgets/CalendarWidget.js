@@ -393,7 +393,7 @@ export default class CalendarWidget extends InputWidget {
       return true;
     }
 
-    if (this.calendar?.config?.appendTo.contains(element)) {
+    if (this.calendar?.config?.appendTo?.contains(element)) {
       return true;
     }
 
