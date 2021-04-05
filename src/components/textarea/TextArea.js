@@ -333,9 +333,28 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   setReadOnlyValue(value, index) {
     index = index || 0;
+    const brake = '<br>';
+
+    const convertToBrakes = (value) => {
+      return value.split('\n').join(brake);
+    };
+    const getMatchesCount = (value, searchValue) => {
+      return value.split(searchValue).length - 1;
+    };
+    const addBrakes = (value, rowsCount) => {
+      let result = value;
+      const offset = rowsCount - getMatchesCount(value, brake);
+      if (offset > 0) {
+        result += brake.repeat(offset);
+      }
+      return result;
+    };
+
     if (this.options.readOnly || this.disabled) {
       if (this.refs.input && this.refs.input[index]) {
-        this.setContent(this.refs.input[index], this.interpolate(value));
+        let contentValue = convertToBrakes(value); // Convert \n to <br> to display it in readOnly mode correctly
+        contentValue = addBrakes(contentValue, this.inputInfo.attr.rows); // Add brakes to be comparable with textarea height
+        this.setContent(this.refs.input[index], this.interpolate(contentValue));
       }
     }
   }
