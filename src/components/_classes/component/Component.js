@@ -841,6 +841,7 @@ export default class Component extends Element {
     data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
+    data.translate = this.translate.bind(this);
     data.size = this.size.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
@@ -1459,6 +1460,7 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
+      translate: this.translate.bind(this),
       submission: (this.root ? this.root._submission : {
         data: this.rootValue
       }),
@@ -1503,6 +1505,15 @@ export default class Component extends Element {
     return Templates.current.hasOwnProperty('iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
       : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
+  }
+  
+  /**
+   * Gets the translation of the given label/text for the form current language
+   * @param {string} text
+   * @returns {string} - The translation of the text
+   */
+  translate(text) {
+    return this.t(text, null);
   }
 
   size(size) {
