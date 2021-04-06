@@ -1106,7 +1106,7 @@ export default class WebformBuilder extends Component {
           });
         });
 
-        if (tabIndex !== -1 && index !== -1) {
+        if (tabIndex !== -1 && index !== -1 && changed && changed.value) {
           const sibling = parentComponent.tabs[tabIndex][index + 1];
           parentComponent.removeComponent(defaultValueComponent);
           const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
@@ -1117,8 +1117,12 @@ export default class WebformBuilder extends Component {
         }
       }
       else {
-        this.preview._data[changed.instance._data.key] = changed.value;
-        this.webform._data[changed.instance._data.key] = changed.value;
+        const dataPath = _.get(defaultValueComponent, 'component.type') === 'datagrid'
+          ? `_data[${component.key}][${changed.instance.rowIndex}][${changed.instance.key}]`
+          : `_data[${changed.instance._data.key}]`;
+
+        _.set(this.preview, dataPath, changed.value);
+        _.set(this.webform, dataPath, changed.value);
       }
     }
 
