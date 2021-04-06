@@ -59,16 +59,18 @@ describe('Webform tests', function() {
      language: 'en'
     });
     form.setForm(translationTestForm).then(() => {
-      const selectComp = form.getComponent('select');
-      const options = selectComp.element.querySelector('[role="listbox"]').children;
-      const option1 = options[0].textContent.trim();
-      const option2 = options[1].textContent.trim();
-      const label = selectComp.element.querySelector('label').textContent.trim();
-      assert.equal(option1, translationTestForm.components[0].data.values[0].label);
-      assert.equal(option2, translationTestForm.components[0].data.values[1].label);
-      assert.equal(label, translationTestForm.components[0].label);
-      document.body.innerHTML = '';
-      done();
+      setTimeout(() => {
+        const selectComp = form.getComponent('select');
+        const options = selectComp.element.querySelector('[role="listbox"]').children;
+        const option1 = options[0].textContent.trim();
+        const option2 = options[1].textContent.trim();
+        const label = selectComp.element.querySelector('label').textContent.trim();
+        assert.equal(option1, translationTestForm.components[0].data.values[0].label);
+        assert.equal(option2, translationTestForm.components[0].data.values[1].label);
+        assert.equal(label, translationTestForm.components[0].label);
+        document.body.innerHTML = '';
+        done();
+      }, 100);
     }).catch(done);
   });
 
