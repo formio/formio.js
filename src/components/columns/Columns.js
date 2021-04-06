@@ -36,6 +36,13 @@ export default class ColumnsComponent extends NestedComponent {
     this.rows = [];
   }
 
+  mergeSchema(component = {}) {
+    const schema = component.columns?.length
+      ? { ...this.defaultSchema, columns: component.columns }
+      : this.defaultSchema;
+    return _.defaultsDeep(component, schema);
+  }
+
   get schema() {
     const schema = _.omit(super.schema, ['components']);
     schema.columns.map((column, colIndex) => {
