@@ -178,7 +178,6 @@ export default class NumberComponent extends Input {
     const input = this.refs.input[0];
     if (input) {
       super.focus.call(this);
-      input.setSelectionRange(0, input.value.length);
     }
   }
 
