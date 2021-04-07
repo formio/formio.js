@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "4.12.7-patch.6",
+  "version": "4.12.7-patch.7",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "index.js",
   "types": "index.d.ts",
@@ -19,7 +19,7 @@
     "lint"
   ],
   "scripts": {
-    "build": "esdoc;gulp build",
+    "build": "esdoc && gulp build",
     "transpile": "babel ./src/ --out-dir ./lib/",
     "templates": "gulp templates",
     "watch": "babel -w ./src/ --out-dir ./lib/",
