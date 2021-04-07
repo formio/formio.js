@@ -356,7 +356,7 @@ export default class Wizard extends Webform {
     this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
-      this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
+      this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
         if (!isAllowPrevious || index <= this.enabledIndex) {
           this.addEventListener(link, 'click', (event) => {
             this.emit('wizardNavigationClicked', this.pages[index]);
