@@ -377,9 +377,11 @@ export default class Wizard extends Webform {
   }
 
   detachHeader() {
-    this.refs[`${this.wizardKey}-link`].forEach((link) => {
-      this.removeEventListener(link, 'click');
-    });
+    if (this.refs[`${this.wizardKey}-link`]) {
+      this.refs[`${this.wizardKey}-link`].forEach((link) => {
+        this.removeEventListener(link, 'click');
+      });
+    }
   }
 
   transformPages() {
