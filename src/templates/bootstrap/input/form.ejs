@@ -52,3 +52,13 @@
 {% if (ctx.component.showWordCount) { %}
   <span class="text-muted pull-right" ref="wordcount" aria-live="polite"></span>
 {% } %}
+{% if (ctx.component.showCharCount || ctx.component.showWordCount) { %}
+<div class="text-right">
+  {% if (ctx.component.showCharCount) { %}
+  <span aria-live="polite" class="text-muted" ref="charcount"></span>
+  {% } %}
+  {% if (ctx.component.showWordCount) { %}
+  <span aria-live="polite" class="text-muted" ref="wordcount"></span>
+  {% } %}
+</div>
+{% } %}
