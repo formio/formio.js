@@ -1390,7 +1390,7 @@ export function getComponentPathWithoutIndicies(path = '') {
  * @param {*} component is a component's schema containing link to its parent's schema in the 'parent' property
  */
 export function getComponentPath(component, path = '') {
-  if (!component || !component.key) {
+  if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
     return path;
   }
   path = component.isInputComponent || component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
