@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2696: uncaught error in console fix
  - FIO-2697: Fixes console errors when apply conditional logic to Nested Dynamic Wizard
  - FIO-2694: Fixes an issue where eachComponent considers nested components as layout components
+ - FIO-180: fix error message for onlyAvailableItems validation
 
 ### 4.13.0-rc.26
 #### Fixed
