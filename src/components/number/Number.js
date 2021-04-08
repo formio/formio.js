@@ -178,6 +178,16 @@ export default class NumberComponent extends Input {
     const input = this.refs.input[0];
     if (input) {
       super.focus.call(this);
+      try {
+        input.setSelectionRange(0, input.value.length);
+      } catch(exception) {
+        if (exception instanceof DOMException === false) {
+          throw(exception);
+        }
+        /* Standard compliant web browsers don't support setSelectionRange()
+           on number input types and throw a DOMException. This try/catch
+           block swallows that exception while maintaining functionality for older browers. */ 
+      }
     }
   }
 
