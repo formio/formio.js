@@ -1046,21 +1046,25 @@ export default class Component extends Element {
   }
 
   attachTooltips(toolTipsRefs) {
-    toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+    toolTipsRefs?.forEach((tooltip, index) => {
+      if (tooltip) {
+        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+        const tooltipDataTitle = tooltip.getAttribute('data-title');
+        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-      this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: this.t(tooltipText, { _userInput: true }),
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
+        this.tooltips[index] = new Tooltip(tooltip, {
+          trigger: 'hover click focus',
+          placement: 'right',
+          html: true,
+          title: this.t(tooltipText, { _userInput: true }),
+          template: `
+            <div class="tooltip" style="opacity: 1;" role="tooltip">
+              <div class="tooltip-arrow"></div>
+              <div class="tooltip-inner"></div>
+            </div>`,
+        });
+      }
     });
   }
 
