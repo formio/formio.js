@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - FIO-263: fix getting parent path for nested wizards
+ - FIO-2582: Fixes typo in hosted page
+ - FIO-2696: uncaught error in console fix
+ - FIO-2697: Fixes console errors when apply conditional logic to Nested Dynamic Wizard
+ - FIO-2694: Fixes an issue where eachComponent considers nested components as layout components
+
 ### 4.13.0-rc.26
 #### Fixed
  - FIO-527: add applying of custom styles for textArea in readOnly mode
