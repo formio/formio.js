@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.13.0-rc.27
 #### Fixed
  - FIO-263: fix getting parent path for nested wizards
  - FIO-2582: Fixes typo in hosted page
