@@ -29,12 +29,6 @@
 {% if (ctx.component.type === 'datetime') { %}
 <span aria-live="assertive" id="{{ctx.instance.id}}-liveRegion" class="sr-only" ref="liveRegion"></span>
 {% } %}
-{% if (ctx.component.showCharCount) { %}
-<span aria-live="polite" class="text-muted pull-right" ref="charcount"></span>
-{% } %}
-{% if (ctx.component.showWordCount) { %}
-<span aria-live="polite" class="text-muted pull-right" ref="wordcount"></span>
-{% } %}
 {% if (ctx.suffix) { %}
 <div class="input-group-append" ref="suffix">
   <span class="input-group-text">
@@ -47,5 +41,15 @@
 </div>
 {% } %}
 {% if (ctx.prefix || ctx.suffix) { %}
+</div>
+{% } %}
+{% if (ctx.component.showCharCount || ctx.component.showWordCount) { %}
+<div class="text-right">
+  {% if (ctx.component.showCharCount) { %}
+  <span aria-live="polite" class="text-muted" ref="charcount"></span>
+  {% } %}
+  {% if (ctx.component.showWordCount) { %}
+  <span aria-live="polite" class="text-muted" ref="wordcount"></span>
+  {% } %}
 </div>
 {% } %}
