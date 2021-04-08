@@ -51,6 +51,7 @@ class ValidationChecker {
       onlyAvailableItems: {
         key: 'validate.onlyAvailableItems',
         method: 'validateValueAvailability',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('valueIsNotAvailable'), {
             field: component.errorLabel,
