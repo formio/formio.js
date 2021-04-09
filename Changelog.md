@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.28
+#### Fixed
+ - Fix/nested wizard infinit loop
+ - FIO-2691: add condition for inherited components
+ - FIO-2695: fix the display of a wizard inside components in which data
+
+#### Changed
+ - Upgrade core-js@3.10.1, @babel/core@7.13.15, @babel/preset-env@7.13.15, sinon@10.0.1, i18next@20.2.1, webpack@5.31.2z
+
 ### 4.13.0-rc.27
 #### Fixed
  - FIO-263: fix getting parent path for nested wizards
