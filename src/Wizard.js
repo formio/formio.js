@@ -393,7 +393,7 @@ export default class Wizard extends Webform {
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
       const nestedPages = [];
-      const dataArrayComponents = ['datagrid', 'container', 'editgrid', 'dynamicWizard'];
+      const dataArrayComponents = ['datagrid', 'editgrid', 'dynamicWizard'];
       const currentComponents = nestedComp?.subForm ? this.getSortedComponents(nestedComp.subForm) : nestedComp?.components || [];
       const visibleComponents = currentComponents.filter(comp => comp._visible);
       const filteredComponents = visibleComponents.filter(comp => !dataArrayComponents.includes(comp.component.type) && (comp.type !== 'form' || comp.isNestedWizard));
