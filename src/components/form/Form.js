@@ -401,17 +401,7 @@ export default class FormComponent extends Component {
         return this.subForm;
       });
     }).then((subForm) => {
-      if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
-        const existedForm = this.root?.subWizards?.findIndex(form => form.component.form === this.component.form);
-        if (existedForm !== -1) {
-          this.root.subWizards[existedForm] = this;
-        }
-        else {
-          this.root.subWizards.push(this);
-        }
-        this.emit('subWizardsUpdated', subForm);
-      }
-
+      this.updateSubWizards(subForm);
       return subForm;
     });
     return this.subFormReady;
