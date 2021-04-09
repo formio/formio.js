@@ -260,13 +260,11 @@ export default class FormComponent extends Component {
 
           this.setContent(element, this.render());
           if (this.subForm) {
-            if (this.subForm._form?.display === 'wizard' && this.root?._form?.display === 'wizard') {
+            if (this.isNestedWizard) {
               element = this.root.element;
             }
             this.subForm.attach(element);
-            // if (this.subForm._form.display === 'wizard' && this.root._form.display === 'wizard') {
-            //   this.root.redraw();
-            // }
+
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
             }
@@ -346,7 +344,7 @@ export default class FormComponent extends Component {
   }
 
   updateSubWizards(subForm) {
-    if (this.root?.subWizards && subForm?._form?.display === 'wizard') {
+    if (this.isNestedWizard && this.root?.subWizards && subForm?._form?.display === 'wizard') {
       const existedForm = this.root.subWizards.findIndex(form => form.component.form === this.component.form);
       if (existedForm !== -1) {
         this.root.subWizards[existedForm] = this;
@@ -668,6 +666,15 @@ export default class FormComponent extends Component {
     }
   }
 
+  /**
+   * Determines if this form is a Nested Wizard
+   * which means it should be a Wizard itself and should be a direct child of a Wizard's page
+   * @returns {boolean}
+   */
+  get isNestedWizard() {
+    return this.subForm?._form?.display === 'wizard' && this.parent?.parent?._form?.display === 'wizard';
+  }
+
   get visible() {
     return super.visible;
   }
@@ -688,8 +695,8 @@ export default class FormComponent extends Component {
       this.updateSubFormVisibility();
       this.redraw();
     }
-    if (!value && this.subForm?._form?.display === 'wizard') {
-      this.updateSubWizards(this.subForm);
+    if (!value && this.isNestedWizard) {
+      this.root.redraw();
     }
   }
 
