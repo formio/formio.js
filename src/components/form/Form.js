@@ -260,10 +260,13 @@ export default class FormComponent extends Component {
 
           this.setContent(element, this.render());
           if (this.subForm) {
-            this.subForm.attach(element);
-            if (this.subForm._form.display === 'wizard' && this.root._form.display === 'wizard') {
-              this.root.redraw();
+            if (this.subForm._form?.display === 'wizard' && this.root?._form?.display === 'wizard') {
+              element = this.root.element;
             }
+            this.subForm.attach(element);
+            // if (this.subForm._form.display === 'wizard' && this.root._form.display === 'wizard') {
+            //   this.root.redraw();
+            // }
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
             }
@@ -339,6 +342,19 @@ export default class FormComponent extends Component {
   everyComponent(...args) {
     if (this.subForm) {
       this.subForm.everyComponent(...args);
+    }
+  }
+
+  updateSubWizards(subForm) {
+    if (this.root?.subWizards && subForm?._form?.display === 'wizard') {
+      const existedForm = this.root.subWizards.findIndex(form => form.component.form === this.component.form);
+      if (existedForm !== -1) {
+        this.root.subWizards[existedForm] = this;
+      }
+      else {
+        this.root.subWizards.push(this);
+      }
+      this.emit('subWizardsUpdated', subForm);
     }
   }
 
@@ -681,6 +697,9 @@ export default class FormComponent extends Component {
       }
       this.updateSubFormVisibility();
       this.redraw();
+    }
+    if (!value && this.subForm?._form?.display === 'wizard') {
+      this.updateSubWizards(this.subForm);
     }
   }
 
