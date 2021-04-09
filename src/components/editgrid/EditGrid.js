@@ -983,7 +983,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (rowContainer) {
           const errorContainer = rowContainer.querySelector('.editgrid-row-error');
 
-          if (!rowValid) {
+          if (!rowValid && errorContainer) {
             errorContainer.textContent = this.t('invalidRowError');
           }
         }
