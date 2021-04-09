@@ -196,11 +196,13 @@ export default class SignatureComponent extends Input {
           this.refs.padBody.style.maxWidth = '100%';
         }
 
+       if (!this.builderMode && !this.options.preview) {
         this.observer = new _ResizeObserver(() => {
           this.checkSize();
         });
 
         this.observer.observe(this.refs.padBody);
+       }
 
         this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
         setTimeout(function checkWidth() {
