@@ -4,7 +4,7 @@ export default [
     type: 'select',
     datasrc: 'values',
     key: 'fields.day.type',
-    title: 'Type',
+    label: 'Type',
     data: {
       values: [
         {

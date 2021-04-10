@@ -12,12 +12,12 @@ const EditFormUtils = {
       if (objValue.key === srcValue.key) {
         // Create complete objects by including missing keys.
         _.each(objValue, (value, prop) => {
-          if (!srcValue.hasOwnProperty(prop)) {
+          if (objValue.overrideEditForm || !srcValue.hasOwnProperty(prop)) {
             srcValue[prop] = value;
           }
         });
         _.each(srcValue, (value, prop) => {
-          if (!objValue.hasOwnProperty(prop)) {
+          if (srcValue.overrideEditForm || !objValue.hasOwnProperty(prop)) {
             objValue[prop] = value;
           }
         });
@@ -78,7 +78,7 @@ const EditFormUtils = {
           style: { 'margin-bottom': '10px' },
           key: `${property}-js`,
           customConditional() {
-            return !Evaluator.noeval;
+            return !Evaluator.noeval || Evaluator.protectedEval;
           },
           components: [
             {
@@ -87,6 +87,7 @@ const EditFormUtils = {
               rows: 5,
               editor: 'ace',
               hideLabel: true,
+              as: 'javascript',
               input: true
             },
             {

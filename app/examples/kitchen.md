@@ -1079,7 +1079,9 @@ Here is a large form which includes all fields with many different configuration
           },
           type: 'resource',
           defaultPermission: '',
-          validate: '{"required": false}',
+          validate: {
+              required: false
+          },
           persistent: true,
           protected: false,
           multiple: false,

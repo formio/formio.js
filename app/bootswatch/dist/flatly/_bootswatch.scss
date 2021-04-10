@@ -1,10 +1,10 @@
-// Flatly 4.3.1
+// Flatly 4.6.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic" !default;
+$web-font-path: "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" !default;
 @import url($web-font-path);
 
 // Navbar =======================================================================
@@ -16,7 +16,6 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
 }
 
 .bg-dark {
-  background-color: $success !important;
   &.navbar-dark .navbar-nav {
     .nav-link:focus,
     .nav-link:hover,
@@ -33,139 +32,169 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
   &-secondary:hover,
   &-warning,
   &-warning:hover {
-    color: #fff;
+    color: $white;
   }
 }
-
-// Typography ==================================================================
 
 // Tables ======================================================================
 
 .table {
-
   &-primary,
   &-secondary,
   &-success,
   &-info,
   &-warning,
   &-danger {
-    color: #fff;
+    color: $white;
   }
 
   &-primary {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $primary;
     }
   }
 
   &-secondary {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $secondary;
     }
   }
 
   &-light {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $light;
     }
   }
 
   &-dark {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $dark;
     }
   }
 
   &-success {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $success;
     }
   }
 
   &-info {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $info;
     }
   }
 
   &-danger {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $danger;
     }
   }
 
   &-warning {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $warning;
     }
   }
 
   &-active {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $table-active-bg;
     }
   }
 
   &-hover {
-
     .table-primary:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($primary, 5%);
       }
     }
 
     .table-secondary:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($secondary, 5%);
       }
     }
 
     .table-light:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($light, 5%);
       }
     }
 
     .table-dark:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($dark, 5%);
       }
     }
 
     .table-success:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($success, 5%);
       }
     }
 
     .table-info:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($info, 5%);
       }
     }
 
     .table-danger:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($danger, 5%);
       }
     }
 
     .table-warning:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: darken($warning, 5%);
       }
     }
 
     .table-active:hover {
-      &, > th, > td {
+      &,
+      > th,
+      > td {
         background-color: $table-active-bg;
       }
     }
 
   }
 }
-
-// Forms =======================================================================
 
 // Navs ========================================================================
 
@@ -190,7 +219,7 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
 
 .close {
   text-decoration: none;
-  opacity: 0.4;
+  opacity: .4;
 
   &:hover,
   &:focus {
@@ -201,7 +230,7 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
 .badge {
   &-secondary,
   &-warning {
-    color: #fff;
+    color: $white;
   }
 }
 
@@ -211,7 +240,7 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
 
   a,
   .alert-link {
-    color: #fff;
+    color: $white;
     text-decoration: underline;
   }
 
@@ -227,21 +256,23 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Lato:400,700,400italic"
 
   &-light {
     &,
-    & a,
-    & .alert-link {
+    a,
+    .alert-link {
       color: $body-color;
     }
   }
 }
 
-// Progress bars ===============================================================
-
 // Containers ==================================================================
-.modal .close{
-  color: $black;
 
-  &:not(:disabled):not(.disabled):hover,
-  &:not(:disabled):not(.disabled):focus {
+.modal,
+.toast {
+  .close {
     color: $black;
+
+    &:not(:disabled):not(.disabled):hover,
+    &:not(:disabled):not(.disabled):focus {
+      color: $black;
+    }
   }
 }

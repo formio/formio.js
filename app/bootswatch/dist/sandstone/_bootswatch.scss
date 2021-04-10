@@ -1,10 +1,10 @@
-// Sandstone 4.3.1
+// Sandstone 4.6.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Roboto:400,500,700" !default;
+$web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" !default;
 @import url($web-font-path);
 
 // Navbar ======================================================================
@@ -53,8 +53,6 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Roboto:400,500,700" !de
     color: $white;
   }
 }
-
-// Typography ==================================================================
 
 // Tables ======================================================================
 
@@ -144,73 +142,86 @@ input,
 // Indicators ==================================================================
 
 .alert {
-  color: #fff;
+  color: $white;
 
   a,
   .alert-link {
-    color: #fff;
+    color: $white;
     text-decoration: underline;
   }
 
   &-primary {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $primary;
     }
   }
 
   &-secondary {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $secondary;
     }
   }
 
   &-success {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $success;
     }
   }
 
   &-info {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $info;
     }
   }
 
   &-danger {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $danger;
     }
   }
 
   &-warning {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $warning;
     }
   }
 
   &-dark {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $dark;
     }
   }
 
   &-light {
-    &, > th, > td {
+    &,
+    > th,
+    > td {
       background-color: $light;
     }
-  }
 
-  &-light {
     &,
-    & a:not(.btn),
-    & .alert-link {
+    a:not(.btn),
+    .alert-link {
       color: $body-color;
     }
   }
 }
 
 .badge {
-
   &-success,
   &-warning {
     color: $white;
@@ -229,7 +240,3 @@ input,
     color: darken($gray-300, 20%);
   }
 }
-
-// Progress bars ===============================================================
-
-// Containers ==================================================================

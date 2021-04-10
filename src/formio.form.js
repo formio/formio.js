@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import AllComponents from './components';
 import Builders from './builders/Builders';
 import Components from './components/Components';
@@ -5,9 +6,11 @@ import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers';
 import Rules from './validator/Rules';
+import Widgets from './widgets';
 import Formio from './Formio';
 import Form from './Form';
 import Utils from './utils';
+import Evaluator from './utils/Evaluator';
 Components.setComponents(AllComponents);
 const registerPlugin = (plugin) => {
   // Sanity check.
@@ -18,7 +21,7 @@ const registerPlugin = (plugin) => {
     const current = plugin.framework || Templates.framework || 'bootstrap';
     switch (key) {
       case 'options':
-        Formio.options = plugin.options;
+        Formio.options = _.merge(Formio.options, plugin.options);
         break;
       case 'templates':
         for (const framework of Object.keys(plugin.templates)) {
@@ -52,6 +55,9 @@ const registerPlugin = (plugin) => {
         break;
       case 'rules':
         Rules.addRules(plugin.rules);
+        break;
+      case 'evaluator':
+        Evaluator.registerEvaluator(plugin.evaluator);
         break;
       default:
         console.log('Unknown plugin option', key);
@@ -90,9 +96,11 @@ Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
+Formio.Rules = Rules;
+Formio.Widgets = Widgets;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
 
 // Export the components.
-export { Builders, Components, Displays, Providers, Templates, Utils, Form, Formio };
+export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Utils, Form, Formio };

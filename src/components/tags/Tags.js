@@ -1,5 +1,9 @@
 import Input from '../_classes/input/Input';
-import Choices from 'choices.js';
+
+let Choices;
+if (typeof window !== 'undefined') {
+  Choices = require('choices.js');
+}
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -18,7 +22,7 @@ export default class TagsComponent extends Input {
       title: 'Tags',
       icon: 'tags',
       group: 'advanced',
-      documentation: 'http://help.form.io/userguide/#tags',
+      documentation: '/userguide/#tags',
       weight: 30,
       schema: TagsComponent.schema()
     };
@@ -57,22 +61,32 @@ export default class TagsComponent extends Input {
     if (this.choices) {
       this.choices.destroy();
     }
+
+    if (!Choices) {
+      return;
+    }
+
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
       duplicateItemsAllowed: false,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {
       const value = this.choices.input.value;
       const maxTagsNumber = this.component.maxTags;
       const valuesCount = this.choices.getValue(true).length;
+      const isRepeatedValue = this.choices.getValue(true).some(existingValue => existingValue.trim() === value.trim());
 
       if (value) {
         if (maxTagsNumber && valuesCount === maxTagsNumber) {
           this.choices.addItems = false;
+          this.choices.clearInput();
+        }
+        else if (isRepeatedValue) {
           this.choices.clearInput();
         }
         else {
@@ -141,5 +155,18 @@ export default class TagsComponent extends Input {
     if (this.refs.input && this.refs.input.length) {
       this.refs.input[0].parentNode.lastChild.focus();
     }
+  }
+
+  getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    const stringValue = value.toString();
+    return this.sanitize(stringValue);
   }
 }

@@ -1,7 +1,7 @@
 export default [
   {
     key: 'multiple',
-    ignore: true,
+    customConditional: ({ data }) => !data.enableManualMode,
   },
   {
     type: 'address',

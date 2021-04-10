@@ -24,7 +24,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: 'http://help.form.io/userguide/#signature',
+      documentation: '/userguide/#signature',
       schema: SignatureComponent.schema()
     };
   }
@@ -62,12 +62,12 @@ export default class SignatureComponent extends Input {
   }
 
   labelIsHidden() {
-    return true;
+    return this.component.hideLabel;
   }
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && this.options.readOnly) {
+    if (value && this.refs.signatureImage && (this.options.readOnly || this.disabled)) {
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
@@ -79,6 +79,11 @@ export default class SignatureComponent extends Input {
         this.triggerChange();
       }
     }
+
+    if (this.signaturePad && this.dataValue && this.signaturePad.isEmpty()) {
+      this.setDataToSigaturePad();
+    }
+
     return changed;
   }
 
@@ -109,6 +114,9 @@ export default class SignatureComponent extends Input {
         if (this.refs.refresh) {
           this.refs.refresh.classList.add('disabled');
         }
+        if (this.refs.signatureImage && this.dataValue) {
+          this.refs.signatureImage.setAttribute('src', this.dataValue);
+        }
       }
       else {
         this.signaturePad.on();
@@ -120,7 +128,7 @@ export default class SignatureComponent extends Input {
   }
 
   checkSize(force, scale) {
-    if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
+    if (this.refs.padBody && (force || this.refs.padBody && this.refs.padBody.offsetWidth !== this.currentWidth)) {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.offsetWidth;
       this.refs.canvas.width = this.currentWidth * this.scale;
@@ -133,7 +141,7 @@ export default class SignatureComponent extends Input {
       this.signaturePad.clear();
 
       if (this.dataValue) {
-        this.signaturePad.fromDataURL(this.dataValue);
+        this.setDataToSigaturePad();
       }
     }
   }
@@ -145,26 +153,21 @@ export default class SignatureComponent extends Input {
     });
   }
 
-  setOpenModalElement() {
-    const template = `
-      <label class="control-label">${this.component.label}</label><br>
-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
-    `;
-    this.componentModal.setOpenModalElement(template);
+  get hasModalSaveButton() {
+    return false;
   }
 
   getModalPreviewTemplate() {
-    return `
-      <label class="control-label">${this.component.label}</label><br>
-      <img src=${this.dataValue} ref='openModal' />
-    `;
+    return this.renderTemplate('modalPreview', {
+      previewText: this.dataValue ?
+        `<img src=${this.dataValue} ref='openModal' style="width: 100%;height: 100%;" />` :
+        this.t('Click to Sign')
+    });
   }
 
   attach(element) {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
     const superAttach = super.attach(element);
-
-    this.onDisabled();
 
     if (this.refs.refresh && this.options.readOnly) {
       this.refs.refresh.classList.add('disabled');
@@ -181,6 +184,8 @@ export default class SignatureComponent extends Input {
 
       this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
+
+      this.onDisabled();
 
       // Ensure the signature is always the size of its container.
       if (this.refs.padBody) {
@@ -225,5 +230,13 @@ export default class SignatureComponent extends Input {
 
   focus() {
     this.refs.padBody.focus();
+  }
+
+  setDataToSigaturePad() {
+    this.signaturePad.fromDataURL(this.dataValue, {
+      ratio: 1,
+      width: this.refs.canvas.width,
+      height: this.refs.canvas.height,
+    });
   }
 }

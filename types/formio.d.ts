@@ -29,7 +29,7 @@ export class Formio {
   static plugins: any;
   static cache: any;
   static providers: any;
-  static events: any; // EventEmitter2
+  static events: any; // EventEmitter3
   static namespace: string;
   static formOnly?: boolean;
   delete(type: any, opts?: any): any;
@@ -85,7 +85,7 @@ export class Formio {
   downloadFile(file: any, options?: Object): any;
   canSubmit(): any;
   getUrlParts(url: any): any;
-  use(plugin: any): any;
+  static use(plugin: any): any;
   static getUrlParts(url: any, formio?: Formio): any;
   static serialize(obj: any, _interpolate: any): any;
   static getRequestArgs(formio: Formio, type: string, url: string, method?: string, data?: any, opts?: any): any;

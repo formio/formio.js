@@ -1,7 +1,11 @@
 import Component from './_classes/component/Component';
-import NestedComponent from './_classes/nested/NestedComponent';
+import EditFormUtils from './_classes/component/editForm/utils';
 import _ from 'lodash';
 export default class Components {
+  static get EditFormUtils() {
+    return EditFormUtils;
+  }
+
   static get components() {
     if (!Components._components) {
       Components._components = {};
@@ -34,8 +38,17 @@ export default class Components {
     if (component.type && Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
     }
+    else if (component.arrayTree) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components['datagrid'](component, options, data);
+    }
+    else if (component.tree) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components['nesteddata'](component, options, data);
+    }
     else if (Array.isArray(component.components)) {
-      comp = new NestedComponent(component, options, data);
+      // eslint-disable-next-line new-cap
+      comp = new Components.components['nested'](component, options, data);
     }
     else {
       comp = new Component(component, options, data);

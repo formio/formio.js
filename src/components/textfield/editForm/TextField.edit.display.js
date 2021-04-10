@@ -74,6 +74,20 @@ export default [
     }
   },
   {
+    weight: 411,
+    type: 'textfield',
+    input: true,
+    key: 'inputMaskPlaceholderChar',
+    label: 'Input Mask Placeholder Char',
+    tooltip: 'You can specify a char which will be used as a placeholder in the field. <br>E.g., \u02cd<br>Make note that placeholder char will be replaced by a space if it is used inside the mask',
+    validation: {
+      maxLength: 1
+    },
+    customConditional(context) {
+      return context.data.inputMask;
+    }
+  },
+  {
     weight: 413,
     type: 'checkbox',
     input: true,
@@ -126,6 +140,15 @@ export default [
     input: true,
     key: 'suffix',
     label: 'Suffix'
+  },
+  {
+    weight: 700,
+    type: 'textfield',
+    input: true,
+    key: 'autocomplete',
+    label: 'Autocomplete',
+    placeholder: 'on',
+    tooltip: 'Indicates whether input elements can by default have their values automatically completed by the browser. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\'>MDN documentation</a> on autocomplete for more information.'
   },
   {
     weight: 1300,

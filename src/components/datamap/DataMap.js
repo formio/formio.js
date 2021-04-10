@@ -1,7 +1,7 @@
 import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from 'eventemitter3';
 import { uniqueKey } from '../../utils/utils';
 
 export default class DataMapComponent extends DataGridComponent {
@@ -33,7 +33,7 @@ export default class DataMapComponent extends DataGridComponent {
       title: 'Data Map',
       icon: 'th-list',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#datamap',
+      documentation: '/userguide/#datamap',
       weight: 20,
       schema: DataMapComponent.schema()
     };
@@ -103,6 +103,7 @@ export default class DataMapComponent extends DataGridComponent {
       hideLabel: true,
       label: this.component.keyLabel || 'Key',
       key: '__key',
+      disableBuilderActions: true,
     };
   }
 
@@ -118,7 +119,29 @@ export default class DataMapComponent extends DataGridComponent {
     if (_.isEmpty(dataValue)) {
       return [];
     }
+
     return Object.keys(dataValue).map(() => dataValue);
+  }
+
+  getComponentsContainer() {
+    if (this.builderMode) {
+      return this.getComponents().map(comp => comp.component);
+    }
+
+    return super.getComponentsContainer();
+  }
+
+  get iteratableRows() {
+    return this.rows.map((row) => {
+      return Object.keys(row).map(key => ({
+        components: row[key],
+        data: row[key].dataValue,
+    }));
+    });
+  }
+
+  componentContext(component) {
+    return this.iteratableRows[component.row].find(comp => comp.components.key === component.key).data;
   }
 
   hasHeader() {
@@ -145,37 +168,57 @@ export default class DataMapComponent extends DataGridComponent {
   getRowKey(rowIndex) {
     const keys = Object.keys(this.dataValue);
     if (!keys[rowIndex]) {
-      keys[rowIndex] = uniqueKey(this.dataValue, 'key');
+      keys[rowIndex] = uniqueKey(this.dataValue, this.defaultRowKey);
     }
     return keys[rowIndex];
   }
 
+  get defaultRowKey() {
+    return 'key';
+  }
+
+  setRowComponentsData(rowIndex, rowData) {
+    _.each(this.rows[rowIndex], (component) => {
+      if (component.key === '__key') {
+        component.data = {
+          '__key': Object.keys(rowData)[rowIndex],
+        };
+      }
+      else {
+        component.data = rowData;
+      }
+    });
+  }
+
   createRowComponents(row, rowIndex) {
-    let key = this.getRowKey(rowIndex);
+    // Use original value component API key in builder mode to be able to edit value component
+    let key = this.builderMode ? this.valueKey : this.getRowKey(rowIndex);
 
     // Create a new event emitter since fields are isolated.
     const options = _.clone(this.options);
-    options.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    options.events = new EventEmitter();
     options.name += `[${rowIndex}]`;
     options.row = `${rowIndex}`;
 
     const components = {};
-    components['__key'] = this.createComponent(this.keySchema, options, { __key: key });
+    components['__key'] = this.createComponent(this.keySchema, options, { __key: this.builderMode ? this.defaultRowKey : key });
     components['__key'].on('componentChange', (event) => {
       const dataValue = this.dataValue;
       const newKey = uniqueKey(dataValue, event.value);
       dataValue[newKey] = dataValue[key];
       delete dataValue[key];
-      components[this.valueKey].component.key = newKey;
+      const comp = components[this.valueKey];
+      comp.component.key = newKey;
+      comp.path = this.calculateComponentPath(comp);
       key = newKey;
     });
 
     const valueComponent = _.clone(this.component.valueComponent);
     valueComponent.key = key;
-    components[this.valueKey] = this.createComponent(valueComponent, this.options, this.dataValue);
+
+    const componentOptions = this.options;
+    componentOptions.row = options.row;
+    components[this.valueKey] = this.createComponent(valueComponent, componentOptions, this.dataValue);
     return components;
   }
 
@@ -188,7 +231,10 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   saveChildComponent(component) {
-    this.component.valueComponent = component;
+    // Update the Value Component, the Key Component is not allowed to edit
+    if (component.key !== this.keySchema.key) {
+      this.component.valueComponent = component;
+    }
   }
 
   removeChildComponent() {

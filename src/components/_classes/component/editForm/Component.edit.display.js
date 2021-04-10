@@ -99,6 +99,7 @@ export default [
     as: 'html',
     wysiwyg: {
       minLines: 3,
+      isUseWorkerDisabled: true,
     },
   },
   {
@@ -113,6 +114,7 @@ export default [
     as: 'html',
     wysiwyg: {
       minLines: 3,
+      isUseWorkerDisabled: true,
     },
   },
   {
@@ -145,7 +147,7 @@ export default [
     weight: 1200,
     type: 'checkbox',
     label: 'Hide Label',
-    tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
+    tooltip: 'Hide the label (title, if no label) of this component. This allows you to show the label in the form builder, but not when it is rendered.',
     key: 'hideLabel',
     input: true
   },
@@ -165,7 +167,7 @@ export default [
     key: 'dataGridLabel',
     input: true,
     customConditional(context) {
-      return context.instance.options.editComponent.inDataGrid;
+      return context.instance.options?.flags?.inDataGrid;
     }
   },
   {

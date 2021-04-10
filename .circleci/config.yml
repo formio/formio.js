@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:14-browsers
         environment:
             CHROME_BIN: "/usr/bin/google-chrome"
     steps:
@@ -21,4 +21,3 @@ jobs:
           command: npm test
       - store_artifacts:
           path: test-results.xml
-          prefix: tests

@@ -1,4 +1,5 @@
 import { createNumberMask } from 'text-mask-addons';
+import { maskInput } from 'text-mask-all/vanilla';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';
 import NumberComponent from '../number/Number';
@@ -17,7 +18,7 @@ export default class CurrencyComponent extends NumberComponent {
       title: 'Currency',
       group: 'advanced',
       icon: 'usd',
-      documentation: 'http://help.form.io/userguide/#currency',
+      documentation: '/userguide/#currency',
       weight: 70,
       schema: CurrencyComponent.schema()
     };
@@ -44,16 +45,38 @@ export default class CurrencyComponent extends NumberComponent {
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language
     });
-    this.prefix = this.options.prefix || affixes.prefix;
-    this.suffix = this.options.suffix || affixes.suffix;
+    this.currencyPrefix = this.options.prefix || affixes.prefix;
+    this.currencySuffix = this.options.suffix || affixes.suffix;
     return createNumberMask({
-      prefix: this.prefix,
-      suffix: this.suffix,
+      prefix: this.currencyPrefix,
+      suffix: this.currencySuffix,
       thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
       decimalLimit: decimalLimit,
       allowNegative: _.get(this.component, 'allowNegative', true),
-      allowDecimal: _.get(this.component, 'allowDecimal', true)
+      allowDecimal: this.isDecimalAllowed(),
+    });
+  }
+
+  isDecimalAllowed() {
+    return _.get(this.component, 'allowDecimal', true);
+  }
+
+  setInputMask(input) {
+    const affixes = getCurrencyAffixes({
+      currency: this.component.currency,
+      decimalSeparator: this.decimalSeparator,
+      lang: this.options.language,
+    });
+    let numberPattern = `${affixes.prefix}[0-9`;
+    numberPattern += this.decimalSeparator || '';
+    numberPattern += this.delimiter || '';
+    numberPattern += ']*';
+    input.setAttribute('pattern', numberPattern);
+    input.mask = maskInput({
+      inputElement: input,
+      mask: this.numberMask || '',
+      shadowRoot: this.root ? this.root.shadowRoot : null
     });
   }
 
@@ -77,6 +100,12 @@ export default class CurrencyComponent extends NumberComponent {
     let integerPart;
     let decimalPart = '';
     let decimalPartNumbers = [];
+    const negativeValueSymbol = '-';
+    const hasPrefix = this.currencyPrefix ? value.includes(this.currencyPrefix) : false;
+    const hasSuffix = this.currencySuffix ? value.includes(this.currencySuffix) : false;
+    const isNegative = value.includes(negativeValueSymbol) || false;
+
+    value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol,'') : value);
 
     if (value.includes(this.decimalSeparator)) {
       [integerPart, decimalPart] = value.split(this.decimalSeparator);
@@ -92,7 +121,7 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
 
-    const formattedValue = `${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}`;
+    const formattedValue = `${isNegative ? negativeValueSymbol:''}${hasPrefix ? this.currencyPrefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.currencySuffix : ''}`;
 
     return super.formatValue(formattedValue);
   }
@@ -119,16 +148,16 @@ export default class CurrencyComponent extends NumberComponent {
   stripPrefixSuffix(value) {
     if (typeof value === 'string') {
       try {
-        const hasPrefix = this.prefix ? value.includes(this.prefix) : false;
-        const hasSuffix = this.suffix ? value.includes(this.suffix) : false;
+        const hasPrefix = this.currencyPrefix ? value.includes(this.currencyPrefix) : false;
+        const hasSuffix = this.currencySuffix ? value.includes(this.currencySuffix) : false;
         const hasDelimiter = value.includes(this.delimiter);
         const hasDecimalSeparator = value.includes(this.decimalSeparator);
 
-        if (this.prefix) {
-          value = value.replace(this.prefix, '');
+        if (this.currencyPrefix) {
+          value = value.replace(this.currencyPrefix, '');
         }
-        if (this.suffix) {
-          value = value.replace(this.suffix, '');
+        if (this.currencySuffix) {
+          value = value.replace(this.currencySuffix, '');
         }
         //when we enter $ in the field using dashboard, it contains '_' that is NaN
         if ((hasPrefix || hasSuffix) && !hasDelimiter && !hasDecimalSeparator && (Number.isNaN(+value) || !value)) {
@@ -145,6 +174,11 @@ export default class CurrencyComponent extends NumberComponent {
   addFocusBlurEvents(element) {
     super.addFocusBlurEvents(element);
 
+    this.addEventListener(element, 'focus', () => {
+      if (element.defaultValue === element.value) {
+        element.setSelectionRange(0, element.defaultValue.length);
+      }
+    });
     this.addEventListener(element, 'blur', () => {
       element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
     });

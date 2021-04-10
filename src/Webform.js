@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import moment from 'moment';
+import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
+import i18nDefaults from './i18n';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
@@ -9,8 +11,11 @@ import NestedDataComponent from './components/_classes/nesteddata/NestedDataComp
 import {
   fastCloneDeep,
   currentTimezone,
-  getArrayFromComponentPath,
-  getStringFromComponentPath
+  unescapeHTML,
+  getStringFromComponentPath,
+  searchComponents,
+  convertStringToHTMLElement,
+  getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -37,10 +42,7 @@ function getOptions(options) {
     saveDraftThrottle: 5000
   });
   if (!options.events) {
-    options.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    options.events = new EventEmitter();
   }
   return options;
 }
@@ -85,7 +87,7 @@ export default class Webform extends NestedDataComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('./i18n').default;
+    let i18n = i18nDefaults;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
@@ -272,6 +274,10 @@ export default class Webform extends NestedDataComponent {
   }
   /* eslint-enable max-statements */
 
+  get language() {
+    return this.options.language;
+  }
+
   /**
    * Sets the language for this form.
    *
@@ -279,25 +285,30 @@ export default class Webform extends NestedDataComponent {
    * @return {Promise}
    */
   set language(lang) {
-    return new NativePromise((resolve, reject) => {
-      this.options.language = lang;
-      if (i18next.language === lang) {
-        return resolve();
-      }
-      try {
-        i18next.changeLanguage(lang, (err) => {
-          if (err) {
-            return reject(err);
-          }
-          this.redraw();
-          this.emit('languageChanged');
-          resolve();
-        });
-      }
-      catch (err) {
-        return reject(err);
-      }
-    });
+    this.options.language = lang;
+    if (this.i18next.language === lang) {
+      return;
+    }
+    try {
+      this.i18next.changeLanguage(lang, (err) => {
+        if (err) {
+          return;
+        }
+        this.redraw();
+        this.emit('languageChanged');
+      });
+    }
+    catch (err) {
+      return;
+    }
+  }
+
+  get componentComponents() {
+    return this.form.components;
+  }
+
+  get shadowRoot() {
+    return this.options.shadowRoot;
   }
 
   /**
@@ -309,7 +320,7 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    i18next.addResourceBundle(code, 'translation', lang, true, true);
+    this.i18next.addResourceBundle(code, 'translation', lang, true, true);
     if (active) {
       this.language = code;
     }
@@ -320,19 +331,19 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   localize() {
-    if (i18next.initialized) {
-      return NativePromise.resolve(i18next);
+    if (this.i18next.initialized) {
+      return NativePromise.resolve(this.i18next);
     }
-    i18next.initialized = true;
+    this.i18next.initialized = true;
     return new NativePromise((resolve, reject) => {
       try {
-        i18next.init(this.options.i18n, (err) => {
+        this.i18next.init(this.options.i18n, (err) => {
           // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = i18next.language.split(';')[0];
+          this.options.language = this.i18next.language.split(';')[0];
           if (err) {
             return reject(err);
           }
-          resolve(i18next);
+          resolve(this.i18next);
         });
       }
       catch (err) {
@@ -626,15 +637,39 @@ export default class Webform extends NestedDataComponent {
    * });
    *
    * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
+   * @param flags
    * @returns {*}
    */
-  setForm(form) {
-    // Create the form.
-    this._form = form;
+  setForm(form, flags) {
+    const isFormAlreadySet = this._form && this._form.components?.length;
+    try {
+      // Do not set the form again if it has been already set
+      if (isFormAlreadySet && JSON.stringify(this._form) === JSON.stringify(form)) {
+        return NativePromise.resolve();
+      }
+
+      // Create the form.
+      this._form = flags?.keepAsReference ? form : _.cloneDeep(form);
+
+      if (this.onSetForm) {
+        this.onSetForm(_.cloneDeep(this._form), form);
+      }
+    }
+    catch (err) {
+      console.warn(err);
+      // If provided form is not a valid JSON object, do not set it too
+      return NativePromise.resolve();
+    }
 
     // Allow the form to provide component overrides.
     if (form && form.settings && form.settings.components) {
       this.options.components = form.settings.components;
+    }
+
+    if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
+      this.ready.then(() => {
+        this.setAlert('alert alert-danger', 'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.');
+      });
     }
 
     // See if they pass a module, and evaluate it if so.
@@ -668,9 +703,10 @@ export default class Webform extends NestedDataComponent {
       this.triggerRecaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
       setTimeout(() => {
-        this.onChange();
+        this.onChange(flags);
         this.formReadyResolve();
       }, 0);
+
       return this.formReady;
     });
   }
@@ -736,13 +772,20 @@ export default class Webform extends NestedDataComponent {
   setSubmission(submission, flags = {}) {
     flags = {
       ...flags,
-      fromSubmission: true,
+      fromSubmission: _.has(flags, 'fromSubmission') ? flags.fromSubmission : true,
     };
     return this.onSubmission = this.formReady.then(
-      () => {
+      (resolveFlags) => {
+        if (resolveFlags) {
+          flags = {
+            ...flags,
+            ...resolveFlags
+          };
+        }
         this.submissionSet = true;
         this.triggerChange(flags);
         this.setValue(submission, flags);
+        this.setDownloadUrl();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -759,29 +802,24 @@ export default class Webform extends NestedDataComponent {
       return;
     }
     if (!this.formio) {
-      console.warn('Cannot save draft because there is no formio instance.');
+      console.warn(this.t('saveDraftInstanceError'));
       return;
     }
     if (!Formio.getUser()) {
-      console.warn('Cannot save draft unless a user is authenticated.');
+      console.warn(this.t('saveDraftAuthError'));
       return;
     }
-    const draft = this.submission;
+    const draft = fastCloneDeep(this.submission);
     draft.state = 'draft';
+
     if (!this.savingDraft) {
+      this.emit('saveDraftBegin');
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
-        const currentSubmission = _.merge(sub, draft);
-
+        // Set id to submission to avoid creating new draft submission
+        this.submission._id = sub._id;
+        this.savingDraft = false;
         this.emit('saveDraft', sub);
-        if (!draft._id) {
-          this.setSubmission(currentSubmission).then(() => {
-            this.savingDraft = false;
-          });
-        }
-        else {
-          this.savingDraft = false;
-        }
       });
     }
   }
@@ -793,7 +831,7 @@ export default class Webform extends NestedDataComponent {
    */
   restoreDraft(userId) {
     if (!this.formio) {
-      console.warn('Cannot restore draft because there is no formio instance.');
+      console.warn(this.t('restoreDraftInstanceError'));
       return;
     }
     this.savingDraft = true;
@@ -854,6 +892,7 @@ export default class Webform extends NestedDataComponent {
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
+
     submission.data = this.data;
     this._submission = submission;
     return changed;
@@ -925,13 +964,18 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
-  destroy() {
+  destroy(deleteFromGlobal = false) {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
     this.off('resetForm');
     this.off('deleteSubmission');
     this.off('refreshData');
+
+    if (deleteFromGlobal) {
+      delete Formio.forms[this.id];
+    }
+
     return super.destroy();
   }
 
@@ -946,7 +990,11 @@ export default class Webform extends NestedDataComponent {
   }
 
   getClassName() {
-    return 'formio-form';
+    let classes = 'formio-form';
+    if (this.options.readOnly) {
+      classes += ' formio-read-only';
+    }
+    return classes;
   }
 
   render() {
@@ -970,7 +1018,7 @@ export default class Webform extends NestedDataComponent {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.addEventListener(this.element, 'keydown', this.executeShortcuts);
+    this.addEventListener(document, 'keydown', this.executeShortcuts);
     this.currentForm = this;
     return childPromise.then(() => {
       this.emit('render', this.element);
@@ -997,6 +1045,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     this.setPristine(true);
+    this.rebuild();
   }
 
   /**
@@ -1004,9 +1053,9 @@ export default class Webform extends NestedDataComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
-   * @param {string} classes - Styling classes for alert.
+   * @param {Object} options
    */
-  setAlert(type, message, classes) {
+  setAlert(type, message, options) {
     if (!type && this.submitted) {
       if (this.alert) {
         if (this.refs.errorRef && this.refs.errorRef.length) {
@@ -1042,17 +1091,18 @@ export default class Webform extends NestedDataComponent {
       }
     }
     if (message) {
-      this.alert = this.ce('div', {
-        class: classes || `alert alert-${type}`,
+      const attrs = {
+        class: (options && options.classes) || `alert alert-${type}`,
         id: `error-list-${this.id}`,
-        role: 'alert'
-      });
-      if (message instanceof HTMLElement) {
-        this.appendTo(message, this.alert);
-      }
-      else {
-        this.setContent(this.alert, message);
-      }
+      };
+
+      const templateOptions = {
+        message: message instanceof HTMLElement ? message.outerHTML : message,
+        attrs: attrs,
+        type
+      };
+
+      this.alert = convertStringToHTMLElement(this.renderTemplate('alert', templateOptions),`#${attrs.id}`);
     }
     if (!this.alert) {
       return;
@@ -1066,8 +1116,9 @@ export default class Webform extends NestedDataComponent {
           const key = e.currentTarget.dataset.componentKey;
           this.focusOnComponent(key);
         });
-        this.addEventListener(el, 'keypress', (e) => {
+        this.addEventListener(el, 'keydown', (e) => {
           if (e.keyCode === 13) {
+            e.preventDefault();
             const key = e.currentTarget.dataset.componentKey;
             this.focusOnComponent(key);
           }
@@ -1085,8 +1136,7 @@ export default class Webform extends NestedDataComponent {
    */
   focusOnComponent(key) {
     if (key) {
-      const path = getArrayFromComponentPath(key);
-      const component = this.getComponent(path);
+      const component = this.getComponent(key);
       if (component) {
         component.focus();
       }
@@ -1099,7 +1149,8 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-  showErrors(error, triggerEvent) {
+  /* eslint-disable no-unused-vars */
+  showErrors(error, triggerEvent, onChange) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1134,57 +1185,67 @@ export default class Webform extends NestedDataComponent {
       }
 
       components.forEach((path) => {
-        const component = this.getComponent(path, _.identity);
+        const originalPath = this._parentPath + getStringFromComponentPath(path);
+        const component = this.getComponent(path, _.identity, originalPath);
+
+        if (err.fromServer) {
+          if (component.serverErrors) {
+            component.serverErrors.push(err);
+          }
+          else {
+            component.serverErrors = [err];
+          }
+        }
         const components = _.compact(Array.isArray(component) ? component : [component]);
 
         components.forEach((component) => component.setCustomValidity(err.message, true));
       });
     });
 
-    const message = document.createDocumentFragment();
-    const p = this.ce('p');
-    this.setContent(p, this.t('error'));
-    const ul = this.ce('ul');
+    const displayedErrors = [];
+
     errors.forEach(err => {
       if (err) {
         const createListItem = (message, index) => {
-          const params = {
-            ref: 'errorRef',
-            tabIndex: 0,
-            'aria-label': `${message}. Click to navigate to the field with following error.`
-          };
-          const li = this.ce('li', params);
-          this.setContent(li, message);
-
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
-          const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
-          if (keyOrPath) {
-            const formattedKeyOrPath = getStringFromComponentPath(err.messages[index].path);
-            li.dataset.componentKey = formattedKeyOrPath;
+          const keyOrPath = (messageFromIndex && messageFromIndex.formattedKeyOrPath || messageFromIndex.path) || (err.component && err.component.key) || err.fromServer && err.path;
+
+          let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
+          formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
+          if (!err.formattedKeyOrPath) {
+            err.formattedKeyOrPath = formattedKeyOrPath;
           }
 
-          this.appendTo(li, ul);
+          return {
+            message: unescapeHTML(message),
+            keyOrPath: formattedKeyOrPath
+          };
         };
 
         if (err.messages && err.messages.length) {
-          const errLabel = this.t(err.component.label);
-          err.messages.forEach(({ message }, index) => createListItem(`${errLabel}. ${message}`, index));
+          const { component } = err;
+          err.messages.forEach(({ message, context, fromServer }, index) => {
+            const text = context?.hasLabel || fromServer ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+            displayedErrors.push(createListItem(text, index));
+          });
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || '' : err;
-          createListItem(message);
+          displayedErrors.push(createListItem(message));
         }
       }
     });
-    p.appendChild(ul);
-    message.appendChild(p);
-    this.setAlert('danger', message);
+
+    const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
+    this.root.setAlert('danger', errorsList);
+
     if (triggerEvent) {
       this.emit('error', errors);
     }
 
     return errors;
   }
+  /* eslint-enable no-unused-vars */
 
   /**
    * Called when the submission has completed, or if the submission needs to be sent to an external library.
@@ -1203,7 +1264,7 @@ export default class Webform extends NestedDataComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
-    this.emit('submit', submission);
+    this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
     }
@@ -1233,7 +1294,7 @@ export default class Webform extends NestedDataComponent {
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
-      this.emit('change', { isValid: true });
+      this.emit('change', { isValid: true }, { silent: true });
       return false;
     }
 
@@ -1246,7 +1307,7 @@ export default class Webform extends NestedDataComponent {
    * @param changed
    * @param flags
    */
-  onChange(flags, changed, modified) {
+  onChange(flags, changed, modified, changes) {
     flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
@@ -1257,6 +1318,7 @@ export default class Webform extends NestedDataComponent {
     super.onChange(flags, true);
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
+    flags.changes = changes;
 
     if (modified && this.pristine) {
       this.pristine = false;
@@ -1274,7 +1336,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (!flags || !flags.noEmit) {
-      this.emit('change', value, flags);
+      this.emit('change', value, flags, modified);
       isChangeEventEmitted = true;
     }
 
@@ -1311,7 +1373,7 @@ export default class Webform extends NestedDataComponent {
    */
   cancel(noconfirm) {
     const shouldReset = this.hook('beforeCancel', true);
-    if (shouldReset && (noconfirm || confirm('Are you sure you want to cancel?'))) {
+    if (shouldReset && (noconfirm || confirm(this.t('confirmCancel')))) {
       this.resetValue();
       return true;
     }
@@ -1320,7 +1382,24 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
+  setMetadata(submission) {
+    // Add in metadata about client submitting the form
+    submission.metadata = submission.metadata || {};
+    _.defaults(submission.metadata, {
+      timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
+      offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+      origin: document.location.origin,
+      referrer: document.referrer,
+      browserName: navigator.appName,
+      userAgent: navigator.userAgent,
+      pathName: window.location.pathname,
+      onLine: navigator.onLine
+    });
+  }
+
   submitForm(options = {}) {
+    this.clearServerErrors();
+
     return new NativePromise((resolve, reject) => {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
@@ -1332,17 +1411,7 @@ export default class Webform extends NestedDataComponent {
 
       const submission = fastCloneDeep(this.submission || {});
 
-      // Add in metadata about client submitting the form
-      submission.metadata = submission.metadata || {};
-      _.defaults(submission.metadata, {
-        timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-        offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
-        referrer: document.referrer,
-        browserName: navigator.appName,
-        userAgent: navigator.userAgent,
-        pathName: window.location.pathname,
-        onLine: navigator.onLine
-      });
+      this.setMetadata(submission);
 
       submission.state = options.state || 'submitted';
 
@@ -1395,7 +1464,11 @@ export default class Webform extends NestedDataComponent {
                 submission: result,
                 saved: true,
               }))
-              .catch(reject);
+              .catch((error) => {
+                this.setServerErrors(error);
+
+                return reject(error);
+              });
           }
 
           const submitFormio = this.formio;
@@ -1412,10 +1485,23 @@ export default class Webform extends NestedDataComponent {
               submission: result,
               saved: true,
             }))
-            .catch(reject);
+            .catch((error) => {
+              this.setServerErrors(error);
+
+              return reject(error);
+            });
         });
       });
     });
+  }
+
+  setServerErrors(error) {
+    if (error.details) {
+      this.serverErrors = error.details.filter((err) => err.level ? err.level === 'error' : err).map((err) => {
+        err.fromServer = true;
+        return err;
+      });
+    }
   }
 
   executeSubmit(options) {
@@ -1424,6 +1510,20 @@ export default class Webform extends NestedDataComponent {
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
       .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
+  }
+
+  clearServerErrors() {
+    this.serverErrors?.forEach((error) => {
+      if (error.path) {
+        const pathArray = getArrayFromComponentPath(error.path);
+        const component = this.getComponent(pathArray, _.identity, error.formattedKeyOrPath);
+
+        if (component) {
+          component.serverErrors = [];
+        }
+      }
+    });
+    this.serverErrors = [];
   }
 
   /**
@@ -1475,17 +1575,15 @@ export default class Webform extends NestedDataComponent {
       });
     }
     if (API_URL && settings) {
-      try {
         Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() => {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
+        }).catch((e) => {
+          this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+          this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
         });
-      }
-      catch (e) {
-        this.showErrors(`${e.statusText} ${e.status}`);
-        this.emit('error',`${e.statusText} ${e.status}`);
-        console.error(`${e.statusText} ${e.status}`);
-      }
     }
     else {
       this.emit('error', 'You should add a URL to this button.');
@@ -1498,12 +1596,37 @@ export default class Webform extends NestedDataComponent {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = this.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
-        component.component.eventType === 'formLoad';
+    const recaptchaComponent = searchComponents(this.components, {
+      'component.type': 'recaptcha',
+      'component.eventType': 'formLoad'
     });
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    if (recaptchaComponent.length > 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    }
+  }
+
+  setDownloadUrl() {
+    if (this.formio && _.get(this, 'form.settings.showPdfIcon', false)) {
+      this.formio.getDownloadUrl().then((url) => {
+        // Add a download button if it has a download url.
+        if (!url) {
+          return;
+        }
+        if (!this.downloadButton) {
+          if (this.options.primaryProject) {
+            url += `&project=${this.options.primaryProject}`;
+          }
+          this.downloadButton = this.ce('a', {
+            href: url,
+            target: '_blank',
+            style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
+          }, this.ce('img', {
+            src: require('./pdf.image'),
+            style: 'width:3em;'
+          }));
+          this.element.insertBefore(this.downloadButton, this.iframe);
+        }
+      });
     }
   }
 

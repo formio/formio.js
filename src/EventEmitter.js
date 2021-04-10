@@ -1,17 +1,12 @@
-import { EventEmitter2 } from 'eventemitter2';
+import { EventEmitter as EventEmitter3 } from 'eventemitter3';
 import * as utils from './utils/utils';
-
-export default class EventEmitter extends EventEmitter2 {
+export default class EventEmitter extends EventEmitter3 {
   constructor(conf = {}) {
-    const { loadLimit = 50, eventsSafeInterval = 300, pause = 500, ...ee2conf } = conf;
-    super(ee2conf);
-
-    const [isPaused, togglePause] = utils.withSwitch(false, true);
+    const { loadLimit = 1000, eventsSafeInterval = 300 } = conf;
+    super();
 
     const overloadHandler = () => {
-      console.warn('Infinite loop detected', this.id, pause);
-      togglePause();
-      setTimeout(togglePause, pause);
+      console.warn(`There were more than ${loadLimit} events emitted in ${eventsSafeInterval} ms. It might be caused by events' infinite loop`, this.id);
     };
 
     const dispatch = utils.observeOverload(overloadHandler, {
@@ -20,12 +15,18 @@ export default class EventEmitter extends EventEmitter2 {
     });
 
     this.emit = (...args) => {
-      if (isPaused()) {
-        return;
-      }
-
       super.emit(...args);
+      super.emit('any', ...args);
+
       dispatch();
     };
+  }
+
+  onAny = (fn) => {
+    this.on('any', fn);
+  }
+
+  offAny = (fn) => {
+    this.off('any', fn);
   }
 }

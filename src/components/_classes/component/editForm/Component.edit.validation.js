@@ -62,7 +62,7 @@ export default [
     key: 'custom-validation-js',
     weight: 300,
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || Evaluator.protectedEval;
     },
     components: [
       EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
@@ -72,6 +72,7 @@ export default [
         rows: 5,
         editor: 'ace',
         hideLabel: true,
+        as: 'javascript',
         input: true
       },
       {

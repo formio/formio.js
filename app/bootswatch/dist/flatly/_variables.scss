@@ -1,4 +1,4 @@
-// Flatly 4.3.1
+// Flatly 4.6.0
 // Bootswatch
 
 //
@@ -17,16 +17,16 @@ $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 $black:    #000 !default;
 
-$blue:    #2C3E50 !default;
+$blue:    #2c3e50 !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
-$red:     #E74C3C !default;
+$red:     #e74c3c !default;
 $orange:  #fd7e14 !default;
-$yellow:  #F39C12 !default;
-$green:   #18BC9C !default;
+$yellow:  #f39c12 !default;
+$green:   #18bc9c !default;
 $teal:    #20c997 !default;
-$cyan:    #3498DB !default;
+$cyan:    #3498db !default;
 
 $primary:       $blue !default;
 $secondary:     $gray-600 !default;
@@ -45,10 +45,10 @@ $link-color:                $success !default;
 
 // Fonts
 
-$font-family-sans-serif:      "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
-
-$font-size-base:              0.9375rem !default;
-
+// stylelint-disable-next-line value-keyword-case
+$font-family-sans-serif:      Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+$font-size-base:              .9375rem !default;
+$font-size-sm:                $font-size-base * .88 !default;
 $h1-font-size:                3rem !default;
 $h2-font-size:                2.5rem !default;
 $h3-font-size:                2rem !default;
@@ -68,13 +68,11 @@ $dropdown-link-hover-bg:            $primary !default;
 $nav-link-padding-y:                .5rem !default !default;
 $nav-link-padding-x:                2rem !default;
 $nav-link-disabled-color:           $gray-600 !default !default;
-
 $nav-tabs-border-color:             $gray-200 !default;
 
 // Navbar
 
 $navbar-padding-y:                  1rem !default;
-
 $navbar-dark-color:                 $white !default;
 $navbar-dark-hover-color:           $success !default;
 
@@ -84,27 +82,18 @@ $pagination-color:                  $white !default;
 $pagination-bg:                     $success !default;
 $pagination-border-width:           0 !default;
 $pagination-border-color:           transparent !default;
-
 $pagination-hover-color:            $white !default;
 $pagination-hover-bg:               darken($success, 15%) !default;
 $pagination-hover-border-color:     transparent !default;
-
 $pagination-active-bg:              $pagination-hover-bg !default;
 $pagination-active-border-color:    transparent !default;
-
 $pagination-disabled-color:         $gray-200 !default;
 $pagination-disabled-bg:            lighten($success, 15%) !default;
 $pagination-disabled-border-color:  transparent !default;
 
-// Progress bars
-
-$progress-height:                   0.625rem !default;
-$progress-font-size:                0.625rem !default;
-
 // List group
 
 $list-group-hover-bg:               $gray-200 !default;
-
 $list-group-disabled-bg:            $gray-200 !default;
 
 // Close

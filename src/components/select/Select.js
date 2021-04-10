@@ -1,9 +1,14 @@
-import Choices from '../../utils/ChoicesWrapper';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
+import { getRandomComponentId, boolValue } from '../../utils/utils';
+
+let Choices;
+if (typeof window !== 'undefined') {
+  Choices = require('../../utils/ChoicesWrapper').default;
+}
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -11,6 +16,7 @@ export default class SelectComponent extends Field {
       type: 'select',
       label: 'Select',
       key: 'select',
+      idPath: 'id',
       data: {
         values: [],
         json: '',
@@ -29,15 +35,18 @@ export default class SelectComponent extends Field {
       minSearch: 0,
       readOnlyValue: false,
       authenticate: false,
+      ignoreCache: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
+      uniqueOptions: false,
       tableView: true,
       fuseOptions: {
         include: 'score',
         threshold: 0.3,
       },
-      customOptions: {}
+      customOptions: {},
+      useExactSearch: false,
     }, ...extend);
   }
 
@@ -47,14 +56,14 @@ export default class SelectComponent extends Field {
       group: 'basic',
       icon: 'th-list',
       weight: 70,
-      documentation: 'http://help.form.io/userguide/#select',
+      documentation: '/userguide/#select',
       schema: SelectComponent.schema()
     };
   }
 
   init() {
     super.init();
-    this.validators = this.validators.concat(['select']);
+    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
 
     // Trigger an update.
     let updateArgs = [];
@@ -86,14 +95,21 @@ export default class SelectComponent extends Field {
 
     // If this component has been activated.
     this.activated = false;
-
-    // Determine when the items have been loaded.
     this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
   }
 
   get dataReady() {
+    // If the root submission has been set, and we are still not attached, then assume
+    // that our data is ready.
+    if (
+      this.root &&
+      this.root.submissionSet &&
+      !this.attached
+    ) {
+      return NativePromise.resolve();
+    }
     return this.itemsLoaded;
   }
 
@@ -104,6 +120,23 @@ export default class SelectComponent extends Field {
   get emptyValue() {
     if (this.component.multiple) {
       return [];
+    }
+    // if select has JSON data source type, we are defining if empty value would be an object or a string by checking JSON's first item
+    if (this.component.dataSrc === 'json' && this.component.data.json) {
+      const firstItem = this.component.data.json[0];
+      let firstValue;
+      if (this.valueProperty) {
+        firstValue = _.get(firstItem, this.valueProperty);
+      }
+      else {
+        firstValue = firstItem;
+      }
+      if (firstValue && typeof firstValue === 'string') {
+        return '';
+      }
+      else {
+        return {};
+      }
     }
     if (this.valueProperty) {
       return '';
@@ -146,6 +179,10 @@ export default class SelectComponent extends Field {
     return super.shouldDisabled || this.parentDisabled;
   }
 
+  isEntireObjectDisplay() {
+    return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
+  }
+
   itemTemplate(data) {
     if (_.isEmpty(data)) {
       return '';
@@ -159,16 +196,25 @@ export default class SelectComponent extends Field {
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.component.template) {
       const itemLabel = data.label || data;
-      return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;
+      return (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
     }
     if (typeof data === 'string') {
-      return this.t(data);
+      return this.t(data, { _userInput: true });
     }
 
-    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
+    if (data.data) {
+      // checking additional fields in the template for the selected Entire Object option
+      const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
+      data.data = this.isEntireObjectDisplay() && _.isObject(data.data) && !hasNestedFields
+        ? JSON.stringify(data.data)
+        : data.data;
+    }
+    const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
-      return template.replace(label, this.t(label));
+      const hasTranslator = this.i18next?.translator;
+      if (!label || (hasTranslator && !this.t(label, { _userInput: true }))) return;
+      return hasTranslator ? template.replace(label, this.t(label, { _userInput: true })) : label;
     }
     else {
       return JSON.stringify(data);
@@ -181,11 +227,24 @@ export default class SelectComponent extends Field {
    * @param value
    * @param label
    */
-  addOption(value, label, attrs = {}, id) {
+  addOption(value, label, attrs = {}, id = getRandomComponentId()) {
+    if (_.isNil(label)) return;
+    const idPath = this.component.idPath
+      ? this.component.idPath.split('.').reduceRight((obj, key) => ({ [key]: obj }), id)
+      : {};
     const option = {
-      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(this.normalizeSingleValue(value)),
-      label: label
+      value: this.getOptionValue(value),
+      label,
+      ...idPath
     };
+
+    const skipOption = this.component.uniqueOptions
+      ? !!this.selectOptions.find((selectOption) => _.isEqual(selectOption.value, option.value))
+      : false;
+
+    if (skipOption) {
+      return;
+    }
 
     if (value) {
       this.selectOptions.push(option);
@@ -252,10 +311,6 @@ export default class SelectComponent extends Field {
     }
 
     if (!this.choices && this.refs.selectContainer) {
-      if (this.loading) {
-        // this.removeChildFrom(this.refs.input[0], this.selectContainer);
-      }
-
       this.empty(this.refs.selectContainer);
     }
 
@@ -297,6 +352,19 @@ export default class SelectComponent extends Field {
     else {
       this.downloadedResources = items || [];
       this.selectOptions = [];
+      // If there is new select option with same id as already selected, set the new one
+      if (!_.isEmpty(this.dataValue) && this.component.idPath) {
+        const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
+        const newOptionWithSameId = !_.isNil(selectedOptionId) && items.find(item => {
+          const itemId = _.get(item, this.component.idPath);
+
+          return itemId === selectedOptionId;
+        });
+
+        if (newOptionWithSameId) {
+          this.setValue(newOptionWithSameId);
+        }
+      }
     }
 
     // Add the value options.
@@ -310,7 +378,9 @@ export default class SelectComponent extends Field {
 
     // Iterate through each of the items.
     _.each(items, (item, index) => {
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
+      // preventing references of the components inside the form to the parent form when building forms
+      if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
     });
 
     if (this.choices) {
@@ -325,24 +395,37 @@ export default class SelectComponent extends Field {
     this.isScrollLoading = false;
     this.loading = false;
 
-    // If a value is provided, then select it.
-    if (this.dataValue) {
-      this.setValue(this.dataValue, {
-        noUpdateEvent: true
-      });
-    }
-    else {
-      // If a default value is provided then select it.
-      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue);
+    const searching = fromSearch && this.choices?.input?.isFocussed;
+
+    if (!searching) {
+      // If a value is provided, then select it.
+      if (!this.isEmpty()) {
+        this.setValue(this.dataValue, {
+          noUpdateEvent: true
+        });
+      }
+      else {
+        // If a default value is provided then select it.
+        const defaultValue = this.defaultValue;
+        if (!this.isEmpty(defaultValue)) {
+          this.setValue(defaultValue);
+        }
       }
     }
 
     // Say we are done loading the items.
     this.itemsLoadedResolve();
   }
+
   /* eslint-enable max-statements */
+
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && (this.component.defaultValue === false || this.component.defaultValue === 0)) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
 
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
@@ -410,6 +493,9 @@ export default class SelectComponent extends Field {
       url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter);
     }
 
+    // Set ignoreCache if it is
+    options.ignoreCache = this.component.ignoreCache;
+
     // Make the request.
     options.header = headers;
     this.loading = true;
@@ -470,15 +556,13 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
-  refresh() {
-    if (this.component.clearOnRefresh) {
-      this.setValue(this.emptyValue);
-    }
+  isEmpty(value = this.dataValue) {
+    return super.isEmpty(value) || value === undefined;
+  }
 
-    if (this.component.lazyLoad) {
-      this.activated = false;
-      this.loading = true;
-      this.setItems([]);
+  refresh(value, { instance }) {
+    if (this.component.clearOnRefresh && (instance && !instance.pristine)) {
+      this.setValue(this.emptyValue);
     }
 
     this.updateItems(null, true);
@@ -524,6 +608,9 @@ export default class SelectComponent extends Field {
 
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
+    this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
       this.itemsLoadedResolve();
@@ -531,7 +618,7 @@ export default class SelectComponent extends Field {
     }
 
     // Only load the data if it is visible.
-    if (!this.checkConditions()) {
+    if (!this.visible) {
       this.itemsLoadedResolve();
       return;
     }
@@ -549,13 +636,14 @@ export default class SelectComponent extends Field {
       case 'resource': {
         // If there is no resource, or we are lazyLoading, wait until active.
         if (!this.component.data.resource || (!forceUpdate && !this.active)) {
+          this.itemsLoadedResolve();
           return;
         }
 
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (forceUpdate || this.additionalResourcesAvailable) {
+        if (forceUpdate || this.additionalResourcesAvailable || !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
@@ -569,8 +657,9 @@ export default class SelectComponent extends Field {
         break;
       }
       case 'url': {
-        if (!forceUpdate && !this.active) {
+        if (!forceUpdate && !this.active && !this.calculatedValue) {
           // If we are lazyLoading, wait until activated.
+          this.itemsLoadedResolve();
           return;
         }
         let { url } = this.component.data;
@@ -600,6 +689,10 @@ export default class SelectComponent extends Field {
         break;
       }
       case 'indexeddb': {
+        if (typeof window === 'undefined') {
+          return;
+        }
+
         if (!window.indexedDB) {
           window.alert("Your browser doesn't support current version of indexedDB");
         }
@@ -661,21 +754,36 @@ export default class SelectComponent extends Field {
    * Activate this select control.
    */
   activate() {
+    if (this.loading || !this.active) {
+      this.setLoadingItem();
+    }
     if (this.active) {
       return;
     }
     this.activated = true;
+    this.triggerUpdate();
+  }
+
+  setLoadingItem(addToCurrentList = false) {
     if (this.choices) {
-      this.choices.setChoices([{
-        value: '',
-        label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`,
-        disabled: true,
-      }], 'value', 'label', true);
+      if (addToCurrentList) {
+        this.choices.setChoices([{
+          value: `${this.id}-loading`,
+          label: 'Loading...',
+          disabled: true,
+        }], 'value', 'label');
+      }
+      else {
+        this.choices.setChoices([{
+          value: '',
+          label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`,
+          disabled: true,
+        }], 'value', 'label', true);
+      }
     }
     else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
       this.addOption('', this.t('loading...'));
     }
-    this.triggerUpdate();
   }
 
   get active() {
@@ -694,7 +802,7 @@ export default class SelectComponent extends Field {
   }
 
   wrapElement(element) {
-    return this.component.addResource
+    return this.component.addResource && !this.options.readOnly
       ? (
         this.renderTemplate('resourceAdd', {
           element
@@ -705,7 +813,7 @@ export default class SelectComponent extends Field {
 
   choicesOptions() {
     const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
-    const placeholderValue = this.t(this.component.placeholder);
+    const placeholderValue = this.t(this.component.placeholder, { _userInput: true });
     let customOptions = this.component.customOptions || {};
     if (typeof customOptions == 'string') {
       try {
@@ -735,7 +843,10 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, 'component.searchFields', ['label']),
-      fuseOptions: Object.assign(
+      shadowRoot: this.root ? this.root.shadowRoot : null,
+      fuseOptions: this.component.useExactSearch
+        ? {}
+        : Object.assign(
         {},
         _.get(this, 'component.fuseOptions', {}),
         {
@@ -771,9 +882,15 @@ export default class SelectComponent extends Field {
     this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
       modified: true
     }));
+    this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
-      this.triggerUpdate();
+      this.triggerUpdate(null, true);
+
+      if (this.visible) {
+        this.setItems(this.selectOptions || []);
+      }
+
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {
@@ -790,51 +907,34 @@ export default class SelectComponent extends Field {
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
-    if (this.choices) {
+    if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
 
     const choicesOptions = this.choicesOptions();
-    this.choices = new Choices(input, choicesOptions);
 
-    this.addEventListener(input, 'hideDropdown', () => {
-      this.choices.input.element.value = '';
-      this.updateItems(null, true);
-    });
+    if (Choices) {
+      this.choices = new Choices(input, choicesOptions);
 
-    if (this.selectOptions && this.selectOptions.length) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
-    }
-
-    if (this.component.multiple) {
-      this.focusableElement = this.choices.input.element;
-    }
-    else {
-      this.focusableElement = this.choices.containerInner.element;
-      this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-      if (choicesOptions.searchEnabled) {
-        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
+      if (this.selectOptions && this.selectOptions.length) {
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true);
       }
-    }
 
-    if (this.isInfiniteScrollProvided) {
-      this.scrollList = this.choices.choiceList.element;
-      this.onScroll = () => {
-        const isLoadingAvailable = !this.isScrollLoading
-          && this.additionalResourcesAvailable
-          && ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight);
-
-        if (isLoadingAvailable) {
-          this.isScrollLoading = true;
-          this.choices.setChoices([{
-            value: `${this.id}-loading`,
-            label: 'Loading...',
-            disabled: true,
-          }], 'value', 'label');
-          this.triggerUpdate(this.choices.input.element.value);
+      if (this.component.multiple) {
+        this.focusableElement = this.choices.input.element;
+      }
+      else {
+        this.focusableElement = this.choices.containerInner.element;
+        this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
+        if (choicesOptions.searchEnabled) {
+          this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
         }
-      };
-      this.addEventListener(this.scrollList, 'scroll', this.onScroll);
+      }
+
+      if (this.isInfiniteScrollProvided) {
+        this.scrollList = this.choices.choiceList.element;
+        this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
+      }
     }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);
@@ -855,18 +955,27 @@ export default class SelectComponent extends Field {
           }
         });
       }
+
+      this.addEventListener(input, 'choice', () => {
+        if (this.component.multiple && this.component.dataSrc === 'resource' && this.isFromSearch) {
+          this.triggerUpdate();
+        }
+        this.isFromSearch = false;
+      });
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
+      this.addEventListener(input, 'hideDropdown', () => {
+        if (this.choices && this.choices.input && this.choices.input.element) {
+          this.choices.input.element.value = '';
+        }
+
+        this.updateItems(null, true);
+      });
     }
 
-    this.addEventListener(input, 'showDropdown', () => {
-      if (this.dataValue) {
-        this.triggerUpdate();
-      }
-      this.update();
-    });
+    this.addEventListener(input, 'showDropdown', () => this.update());
 
-    if (choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
+    if (this.choices && choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, 'removeItem', () => {
@@ -890,10 +999,14 @@ export default class SelectComponent extends Field {
         new Form(formioForm, formUrl, {}).ready
           .then((form) => {
             form.on('submit', (submission) => {
+              // If valueProperty is set, replace the submission with the corresponding value
+              let value = this.valueProperty ? _.get(submission, this.valueProperty) : submission;
+
               if (this.component.multiple) {
-                submission = [...this.dataValue, submission];
+                value = [...this.dataValue, value];
               }
-              this.setValue(submission);
+              this.setValue(value);
+              this.triggerUpdate();
               dialog.close();
             });
           });
@@ -902,8 +1015,28 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.triggerUpdate();
+    this.updateItems();
     return superAttach;
+  }
+
+  get isLoadingAvailable() {
+    return !this.isScrollLoading && this.additionalResourcesAvailable;
+  }
+
+  onScroll() {
+    if (this.isLoadingAvailable) {
+      this.isScrollLoading = true;
+      this.setLoadingItem(true);
+      this.triggerUpdate(this.choices.input.element.value);
+    }
+  }
+
+  attachRefreshOnBlur() {
+    if (this.component.refreshOnBlur) {
+      this.on('blur', (instance) => {
+        this.checkRefreshOn([{ instance, value: instance.dataValue }], { fromBlur: true });
+      });
+    }
   }
 
   addPlaceholderItem(placeholderValue) {
@@ -916,7 +1049,8 @@ export default class SelectComponent extends Field {
         groupId: -1,
         customProperties: null,
         placeholder: true,
-        keyCode: null });
+        keyCode: null
+      });
     }
   }
 
@@ -1013,11 +1147,9 @@ export default class SelectComponent extends Field {
       if (this.choices) {
         this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
-      else {
-        notFoundValuesToAdd.map(notFoundValue => {
-          this.addOption(notFoundValue.value, notFoundValue.label);
-        });
-      }
+      notFoundValuesToAdd.map(notFoundValue => {
+        this.addOption(notFoundValue.value, notFoundValue.label);
+      });
     }
     return added;
   }
@@ -1046,7 +1178,7 @@ export default class SelectComponent extends Field {
       if (
         !this.component.multiple &&
         this.component.placeholder &&
-        (value === this.t(this.component.placeholder))
+        (value === this.t(this.component.placeholder, { _userInput: true }))
       ) {
         value = this.emptyValue;
       }
@@ -1085,15 +1217,20 @@ export default class SelectComponent extends Field {
     if (_.isNil(value)) {
       return;
     }
-
+    //check if value equals to default emptyValue
+    if (_.isObject(value) && Object.keys(value).length === 0) {
+      return value;
+    }
+    const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || 'auto';
     const normalize = {
       value,
 
       number() {
         const numberValue = Number(this.value);
+        const isEquivalent = value.toString() === numberValue.toString();
 
-        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue)) {
+        if (!Number.isNaN(numberValue) && Number.isFinite(numberValue) && value !== '' && isEquivalent) {
           this.value = numberValue;
         }
 
@@ -1104,7 +1241,7 @@ export default class SelectComponent extends Field {
         if (
           _.isString(this.value)
           && (this.value.toLowerCase() === 'true'
-          || this.value.toLowerCase() === 'false')
+            || this.value.toLowerCase() === 'false')
         ) {
           this.value = (this.value.toLowerCase() === 'true');
         }
@@ -1118,7 +1255,7 @@ export default class SelectComponent extends Field {
       },
 
       object() {
-        if (_.isObject(this.value)) {
+        if (_.isObject(this.value) && displayEntireObject) {
           this.value = JSON.stringify(this.value);
         }
 
@@ -1126,7 +1263,13 @@ export default class SelectComponent extends Field {
       },
 
       auto() {
-        this.value = this.object().string().number().boolean().value;
+        if (_.isObject(this.value)) {
+          this.value = this.object().value;
+        }
+        else {
+          this.value = this.string().number().boolean().value;
+        }
+
         return this;
       }
     };
@@ -1158,8 +1301,8 @@ export default class SelectComponent extends Field {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
-    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasPreviousValue = !this.isEmpty(previousValue);
+    const hasValue = !this.isEmpty(value);
 
     // Undo typing when searching to set the value.
     if (this.component.multiple && Array.isArray(value)) {
@@ -1191,27 +1334,30 @@ export default class SelectComponent extends Field {
     }
 
     // Add the value options.
-    this.addValueOptions();
-    this.setChoicesValue(value, hasPreviousValue);
+    this.itemsLoaded.then(() => {
+      this.addValueOptions();
+      this.setChoicesValue(value, hasPreviousValue, flags);
+    });
+
     return changed;
   }
 
   isInitApiCallNeeded(hasValue) {
     return this.component.lazyLoad &&
-    !this.lazyLoadInit &&
-    !this.active &&
-    !this.selectOptions.length &&
-    hasValue &&
-    this.visible && (this.component.searchField || this.component.valueProperty);
+      !this.lazyLoadInit &&
+      !this.active &&
+      !this.selectOptions.length &&
+      hasValue &&
+      this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
-  setChoicesValue(value, hasPreviousValue) {
-    const hasValue = Array.isArray(value) ? value.length : value;
+  setChoicesValue(value, hasPreviousValue, flags = {}) {
+    const hasValue = !this.isEmpty(value);
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-          this.choices.removeActiveItems();
+        this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
@@ -1219,7 +1365,7 @@ export default class SelectComponent extends Field {
         }
         this.choices.setChoiceByValue(value);
       }
-      else if (hasPreviousValue) {
+      else if (hasPreviousValue || flags.resetValue) {
         this.choices.removeActiveItems();
       }
     }
@@ -1245,6 +1391,96 @@ export default class SelectComponent extends Field {
         });
       }
     }
+  }
+
+  get itemsLoaded() {
+    return this._itemsLoaded || NativePromise.resolve();
+  }
+
+  set itemsLoaded(promise) {
+    this._itemsLoaded = promise;
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.getOptionsValues();
+
+    if (values) {
+      if (_.isObject(value)) {
+        const compareComplexValues = (optionValue) => {
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
+
+          if (!_.isObject(normalizedOptionValue)) {
+            return false;
+          }
+
+          try {
+            return (JSON.stringify(normalizedOptionValue) === JSON.stringify(value));
+          }
+          catch (err) {
+            console.warn.error('Error while comparing items', err);
+            return false;
+          }
+        };
+
+        return values.findIndex((optionValue) => compareComplexValues(optionValue)) !== -1;
+      }
+
+      return values.findIndex((optionValue) => this.normalizeSingleValue(optionValue) === value) !== -1;
+    }
+    return false;
+  }
+
+  /**
+   * Performs required transformations on the initial value to use in selectOptions
+   * @param {*} value
+   */
+  getOptionValue(value) {
+    return _.isObject(value) && this.isEntireObjectDisplay()
+    ? this.normalizeSingleValue(value)
+    : _.isObject(value)
+      ? value
+      : _.isNull(value)
+        ? this.emptyValue
+        : String(this.normalizeSingleValue(value));
+  }
+
+  /**
+   * If component has static values (values, json) or custom values, returns an array of them
+   * @returns {Array<*>|undefined}
+   */
+  getOptionsValues() {
+    let rawItems = [];
+    switch (this.component.dataSrc) {
+      case 'values':
+        rawItems = this.component.data.values;
+        break;
+      case 'json':
+        rawItems = this.component.data.json;
+        break;
+      case 'custom':
+        rawItems = this.getCustomItems();
+        break;
+    }
+
+    if (typeof rawItems === 'string') {
+      try {
+        rawItems = JSON.parse(rawItems);
+      }
+      catch (err) {
+        console.warn(err.message);
+        rawItems = [];
+      }
+    }
+
+    if (!Array.isArray(rawItems)) {
+      return;
+    }
+
+    return rawItems.map((item) => this.getOptionValue(this.itemValue(item)));
   }
 
   /**
@@ -1276,34 +1512,59 @@ export default class SelectComponent extends Field {
     return typeof value === 'number' || typeof value === 'boolean';
   }
 
+  getNormalizedValues() {
+    if (!this.component || !this.component.data || !this.component.data.values) {
+      return;
+    }
+    return this.component.data.values.map(
+      value => ({ label: value.label, value: String(this.normalizeSingleValue(value.value)) })
+    );
+  }
+
   asString(value) {
     value = value || this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
-    if (this.isBooleanOrNumber(value)) {
-      value = value.toString();
-    }
-
-    if (Array.isArray(value) && value.some(item => this.isBooleanOrNumber(item))) {
-      value = value.map(item => {
-        if (this.isBooleanOrNumber(item)) {
-          item = item.toString();
+    const convertToString = (data, valueProperty) => {
+      if (valueProperty) {
+        if (Array.isArray(data)) {
+          data.forEach((item) => item[valueProperty] = item[valueProperty].toString());
         }
-      });
-    }
+        else {
+          data[valueProperty] = data[valueProperty].toString();
+        }
+        return data;
+      }
+
+      if (this.isBooleanOrNumber(data)) {
+        data = data.toString();
+      }
+
+      if (Array.isArray(data) && data.some(item => this.isBooleanOrNumber(item))) {
+        data = data.map(item => {
+          if (this.isBooleanOrNumber(item)) {
+            item = item.toString();
+          }
+        });
+      }
+
+      return data;
+    };
+
+    value = convertToString(value);
 
     if (['values', 'custom'].includes(this.component.dataSrc)) {
       const {
         items,
         valueProperty,
       } = this.component.dataSrc === 'values'
-        ? {
-          items: this.component.data.values,
-          valueProperty: 'value',
-        }
-        : {
-          items: this.getCustomItems(),
-          valueProperty: this.valueProperty,
-        };
+          ? {
+            items: convertToString(this.getNormalizedValues(), 'value'),
+            valueProperty: 'value',
+          }
+          : {
+            items: convertToString(this.getCustomItems(), this.valueProperty),
+            valueProperty: this.valueProperty,
+          };
 
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
@@ -1330,24 +1591,27 @@ export default class SelectComponent extends Field {
   detach() {
     super.detach();
     if (this.choices) {
-      this.choices.destroy();
+      if (this.choices.containerOuter?.element?.parentNode) {
+        this.choices.destroy();
+      }
       this.choices = null;
     }
   }
 
   focus() {
     if (this.focusableElement) {
+      super.focus.call(this);
       this.focusableElement.focus();
     }
   }
 
-  setErrorClasses(elements, dirty, hasError) {
-    super.setErrorClasses(elements, dirty, hasError);
+  setErrorClasses(elements, dirty, hasError, hasMessages, element = this.element) {
+    super.setErrorClasses(elements, dirty, hasError, hasMessages, element);
     if (this.choices) {
-      super.setErrorClasses([this.choices.containerInner.element], dirty, hasError);
+      super.setErrorClasses([this.choices.containerInner.element], dirty, hasError, hasMessages, element);
     }
     else {
-      super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
+      super.setErrorClasses([this.refs.selectContainer], dirty, hasError, hasMessages, element);
     }
   }
 }

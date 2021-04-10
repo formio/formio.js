@@ -32,5 +32,16 @@ describe('Edit Form Utils', function() {
         { key: 'b', one: 1, two: 2, ok: true },
       ]);
     });
+
+    it('should override with "override" flag', () => {
+      const components = [
+        { key: 'a', label: 1, ok: true },
+        { key: 'a', label: 2, overrideEditForm: true }
+      ];
+
+      expect(_.unionWith(components, utils.unifyComponents)).to.deep.equal([
+        { key: 'a', label: 2, ok: true, overrideEditForm: true }
+      ]);
+    });
   });
 });

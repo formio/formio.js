@@ -68,8 +68,15 @@ class ChoicesWrapper extends Choices {
       return;
     }
 
-    this.shouldOpenDropDown = false;
     super._handleButtonAction(activeItems, element);
+  }
+
+  _onEnterKey(args) {
+    // Prevent dropdown form opening when removeItemButton was pressed using 'Enter' on keyboard
+    if (args.event.target.className === 'choices__button') {
+      this.shouldOpenDropDown = false;
+    }
+    super._onEnterKey(args);
   }
 
   _onDirectionKey(...args) {
@@ -139,7 +146,9 @@ class ChoicesWrapper extends Choices {
     const hasCtrlDownKeyPressed = ctrlKey || metaKey;
 
     // If a user is typing and the dropdown is not active
-    if (!this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
+    if (!hasActiveDropdown && !this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
+      const currentValue =  this.input.element.value;
+      this.input.element.value = currentValue ? `${currentValue}${keyString}` : keyString;
       this.showDropdown();
     }
 

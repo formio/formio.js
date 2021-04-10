@@ -1,5 +1,5 @@
 import Input from '../_classes/input/Input';
-import { conformToMask } from 'vanilla-text-mask';
+import { conformToMask } from 'text-mask-all/vanilla';
 import * as FormioUtils from '../../utils/utils';
 
 export default class TextFieldComponent extends Input {
@@ -13,6 +13,7 @@ export default class TextFieldComponent extends Input {
       inputFormat: 'plain',
       inputMask: '',
       tableView: true,
+      spellcheck: true,
       validate: {
         minLength: '',
         maxLength: '',
@@ -26,7 +27,7 @@ export default class TextFieldComponent extends Input {
       title: 'Text Field',
       icon: 'terminal',
       group: 'basic',
-      documentation: 'http://help.form.io/userguide/#textfield',
+      documentation: '/userguide/#textfield',
       weight: 0,
       schema: TextFieldComponent.schema()
     };
@@ -117,7 +118,8 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
-      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask)).conformedValue;
+      const placeholderChar = this.placeholderChar;
+      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
       maskInput.value = value.maskName;
     }
     else {

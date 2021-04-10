@@ -19,7 +19,7 @@ export default class CheckBoxComponent extends Field {
       title: 'Checkbox',
       group: 'basic',
       icon: 'check-square',
-      documentation: 'http://help.form.io/userguide/#checkbox',
+      documentation: '/userguide/#checkbox',
       weight: 50,
       schema: CheckBoxComponent.schema()
     };
@@ -30,7 +30,9 @@ export default class CheckBoxComponent extends Field {
   }
 
   get defaultValue() {
-    return this.component.name ? '' : (this.component.defaultValue || false).toString() === 'true';
+    const { name } = this.component;
+
+    return name ? (this.component[name] || this.emptyValue) : (this.component.defaultValue || false).toString() === 'true';
   }
 
   get labelClass() {
@@ -58,7 +60,7 @@ export default class CheckBoxComponent extends Field {
       info.attr.name = `data[${this.component.name}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
-    info.label = this.t(this.component.label);
+    info.label = this.t(this.component.label, { _userInput: true });
     info.labelClass = this.labelClass;
     return info;
   }
@@ -72,8 +74,8 @@ export default class CheckBoxComponent extends Field {
   render() {
     return super.render(this.renderTemplate('checkbox', {
       input: this.inputInfo,
-      checked: this.dataValue,
-      tooltip: this.interpolate(this.t(this.component.tooltip) || '').replace(/(?:\r\n|\r|\n)/g, '<br />')
+      checked: this.checked,
+      tooltip: this.interpolate(this.t(this.component.tooltip) || '', { _userInput: true }).replace(/(?:\r\n|\r|\n)/g, '<br />')
     }));
   }
 
@@ -93,10 +95,11 @@ export default class CheckBoxComponent extends Field {
     if (element && this.input) {
       this.removeShortcut(this.input);
     }
+    super.detach();
   }
 
   get emptyValue() {
-    return false;
+    return this.component.inputType === 'radio' ? null : false;
   }
 
   isEmpty(value = this.dataValue) {
@@ -122,6 +125,13 @@ export default class CheckBoxComponent extends Field {
     else {
       return (value === '') ? this.dataValue : !!value;
     }
+  }
+
+  get checked() {
+    if (this.component.name) {
+      return (this.dataValue === this.component.value);
+    }
+    return !!this.dataValue;
   }
 
   setCheckedState(value) {
@@ -169,5 +179,21 @@ export default class CheckBoxComponent extends Field {
 
   getValueAsString(value) {
     return value ? 'Yes' : 'No';
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+
+    // Update attributes of the input element
+    if (changed && this.input) {
+      if (this.input.checked) {
+        this.input.setAttribute('checked', 'true');
+      }
+      else {
+        this.input.removeAttribute('checked');
+      }
+    }
+
+    return changed;
   }
 }

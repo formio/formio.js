@@ -8,6 +8,8 @@ import sinon from 'sinon';
 import {
   comp1
 } from './fixtures';
+import Webform from '../../Webform';
+import formWithResetValue from '../../../test/formtest/formWithResetValue';
 
 describe('Button Component', () => {
   it('Should build a button component', () => {
@@ -61,7 +63,7 @@ describe('Button Component', () => {
       .catch(done);
   });
 
-  it('Should disable on invalid', (done) => {
+  it('Test on error', (done) => {
     const element = document.createElement('div');
     Formio.createForm(element, {
       components: [
@@ -85,7 +87,12 @@ describe('Button Component', () => {
       form.on('change', () => {
         const button = form.getComponent('submit');
         assert(button.disabled, 'Button should be disabled');
-        done();
+        button.emit('submitError');
+        setTimeout(() => {
+          console.log('Text Content: ', button.refs.buttonMessage.innerHTML);
+          assert.equal(button.refs.buttonMessage.textContent, 'Please check the form and correct all errors before submitting.');
+          done();
+        }, 100);
       });
       form.submission = { data: {} };
     }).catch(done);
@@ -192,5 +199,90 @@ describe('Button Component', () => {
           });
       })
       .catch(done);
+  });
+
+  it('Should not change color and show message if the error is silent', (done) => {
+    const formJson = {
+      'type': 'form',
+      'components': [
+        {
+          'label': 'Some Field',
+          'type': 'textfield',
+          'input': true,
+          'key': 'someField'
+        },
+        {
+          'label': 'Submit',
+          'action': 'submit',
+          'type': 'button',
+          'input': true,
+          'key': 'submit'
+        }
+      ]
+    };
+    const element = document.createElement('div');
+    Formio.createForm(element, formJson, {
+      hooks: {
+        beforeSubmit: function(submission, callback) {
+          callback({
+            message: 'Err',
+            component: submission.component,
+            silent: true,
+          }, submission);
+        }
+      }
+    })
+      .then(form => {
+        const button = form.getComponent('submit');
+        button.emit('submitButton', {
+          state: button.component.state || 'submitted',
+          component: button.component,
+          instance: button
+        });
+        setTimeout(() => {
+          assert(!button.refs.button.className.includes('btn-danger submit-fail'));
+          assert(!button.refs.button.className.includes('btn-success submit-success'));
+          assert(!button.refs.buttonMessageContainer.className.includes('has-success'));
+          assert(!button.refs.buttonMessageContainer.className.includes('has-error'));
+          assert(button.refs.buttonMessage.innerHTML === '');
+          done();
+        }, 100);
+      })
+      .catch(done);
+  });
+
+  it('Should reset values of all the form\'s components and update properties dependent on values', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithResetValue).then(() => {
+      const select = form.getComponent(['showPanel']);
+
+      select.setValue('yes');
+
+      setTimeout(() => {
+        const panel = form.getComponent(['panel']);
+        const textField = form.getComponent(['textField']);
+        const textArea = form.getComponent(['textArea']);
+
+        assert.equal(panel.visible, true, 'Panel should be visible');
+        assert.equal(textField.visible, true, 'TextFiled should be visible');
+        assert.equal(textArea.visible, true, 'TextArea should be visible');
+
+        const resetButton = form.getComponent(['reset']);
+        resetButton.emit('resetForm');
+
+        setTimeout(() => {
+          const panel = form.getComponent(['panel']);
+          const textField = form.getComponent(['textField']);
+          const textArea = form.getComponent(['textArea']);
+
+          assert.equal(panel.visible, false, 'Panel should NOT be visible');
+          assert.equal(textField.visible, false, 'TextFiled should NOT be visible');
+          assert.equal(textArea.visible, false, 'TextArea should NOT be visible');
+          done();
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
   });
 });

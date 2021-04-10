@@ -15,4 +15,12 @@ export default [
       ],
     },
   },
+  {
+    weight: 1230,
+    type: 'checkbox',
+    label: 'Unique Options',
+    tooltip: 'Display only unique dropdown options.',
+    key: 'uniqueOptions',
+    input: true
+  },
 ];

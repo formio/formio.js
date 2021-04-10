@@ -26,7 +26,7 @@ export default class TabsComponent extends NestedComponent {
       group: 'layout',
       icon: 'folder-o',
       weight: 50,
-      documentation: 'http://help.form.io/userguide/#tabs',
+      documentation: '/userguide/#tabs',
       schema: TabsComponent.schema(),
     };
   }
@@ -92,6 +92,7 @@ export default class TabsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
+    ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));
     const superAttach = super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
@@ -148,5 +149,71 @@ export default class TabsComponent extends NestedComponent {
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
     }
     this.triggerChange();
+  }
+
+  beforeFocus(component) {
+    if ('beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+    const tabIndex = this.tabs.findIndex((tab) => {
+      return tab.some((comp) => comp === component);
+    });
+    if (tabIndex !== -1) {
+      this.setTab(tabIndex);
+    }
+  }
+
+  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
+    if (this.component.modalEdit) {
+      super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);
+    }
+
+    elements.forEach((element) => {
+      this.addClass(element, 'is-invalid');
+
+      if (element.getAttribute('ref') !== 'openModal') {
+        if (this.options.highlightErrors) {
+          this.addClass(element, 'tab-error');
+        }
+        else {
+          this.addClass(element, 'has-error');
+        }
+      }
+    });
+  }
+
+  clearErrorClasses(elements) {
+    if (this.component.modalEdit) {
+      const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;
+      super.clearErrorClasses(element);
+    }
+
+    elements = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];
+
+    elements.forEach((element) => {
+      this.removeClass(element, 'is-invalid');
+      this.removeClass(element, 'tab-error');
+      this.removeClass(element, 'has-error');
+    });
+  }
+
+  handleTabsValidation() {
+    if (!this.refs[this.tabLinkKey] || !this.refs[this.tabLinkKey].length || !this.tabs.length) {
+      return;
+    }
+
+    this.clearErrorClasses(this.refs[this.tabLinkKey]);
+
+    const invalidTabsIndexes = this.tabs.reduce((invalidTabs, tab, tabIndex) => {
+      const hasComponentWithError = tab.some(comp => !!comp.error);
+      return hasComponentWithError ? [...invalidTabs, tabIndex] : invalidTabs;
+    }, []);
+
+    if (!invalidTabsIndexes.length) {
+      return;
+    }
+
+    const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) => invalidTabsIndexes.includes(tabIndex));
+    this.setErrorClasses(invalidTabs);
   }
 }

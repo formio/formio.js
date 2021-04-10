@@ -1,11 +1,13 @@
-// Simplex 4.3.1
+// Simplex 4.6.0
 // Bootswatch
 
 
 // Variables ===================================================================
 
-$web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:400,700" !default;
+$web-font-path: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" !default;
 @import url($web-font-path);
+
+// Mixins ======================================================================
 
 @mixin btn-shadow($color){
   @include gradient-y-three-colors(lighten($color, 3%), $color, 6%, darken($color, 3%));
@@ -20,7 +22,7 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:400,700" !def
   border-style: solid;
 
   &-fixed-top {
-    border-width: 0 0 1px 0;
+    border-width: 0 0 1px;
   }
 
   &-fixed-bottom {
@@ -39,7 +41,7 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:400,700" !def
 }
 
 .bg-light {
-  border-color: darken(#fff, 6.5%);
+  border-color: darken($white, 6.5%);
 }
 
 // Buttons =====================================================================
@@ -57,7 +59,7 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:400,700" !def
 .btn-secondary:focus,
 .btn-secondary:not([disabled]):not(.disabled):active,
 .btn-secondary:not([disabled]):not(.disabled).active {
-  box-shadow: 0 0 0 0.2rem rgba($gray-200, 0.5);
+  box-shadow: 0 0 0 .2rem rgba($gray-200, .5);
 }
 
 .btn-success,
@@ -103,10 +105,8 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:400,700" !def
 // Typography ==================================================================
 
 .text-secondary {
-  color: $gray-700 !important;
+  color: $gray-600 !important;
 }
-
-// Tables ======================================================================
 
 // Forms =======================================================================
 
@@ -118,7 +118,7 @@ label {
 // Navs =======================================================================
 
 .breadcrumb {
-  border: 1px solid darken(#fff, 6.5%);
+  border: 1px solid darken($white, 6.5%);
 }
 
 .pagination {
@@ -126,9 +126,3 @@ label {
     text-decoration: none;
   }
 }
-
-// Indicators ==================================================================
-
-// Progress bars ===============================================================
-
-// Containers ==================================================================

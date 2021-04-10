@@ -27,7 +27,7 @@ export class NestedComponent extends Field {
   readonly templateName: string;
   init(): void;
   addComponents(data: any, options: Object): void;
-  addComponent(component: Object, data: Object, before: HTMLElement, noAdd?: any): Component;
+  addComponent(component: any, data: Object, before: HTMLElement, noAdd?: any): Component;
   render(children: any): any;
   renderComponents(components: any): any;
   attach(element: any): any;
@@ -38,6 +38,7 @@ export class NestedComponent extends Field {
   updateValue(value: any, flags: any, source: any): any;
   hasChanged(): boolean;
   checkData(data: any, flags: any, source: any): boolean;
+  checkModal(isValid: boolean, dirty: boolean): void;
   checkConditions(data: any, norecurse?: any): any;
   clearOnHide(show: boolean): void;
   restoreComponentsContext(): void;

@@ -1,4 +1,4 @@
-import { maskInput, conformToMask } from 'vanilla-text-mask';
+import { maskInput, conformToMask } from 'text-mask-all/vanilla';
 import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import Input from '../_classes/input/Input';
@@ -24,7 +24,7 @@ export default class NumberComponent extends Input {
       title: 'Number',
       icon: 'hashtag',
       group: 'basic',
-      documentation: 'http://help.form.io/userguide/#number',
+      documentation: '/userguide/#number',
       weight: 30,
       schema: NumberComponent.schema()
     };
@@ -76,8 +76,7 @@ export default class NumberComponent extends Input {
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
       decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
       allowNegative: _.get(this.component, 'allowNegative', true),
-      allowDecimal: _.get(this.component, 'allowDecimal',
-        !(this.component.validate && this.component.validate.integer))
+      allowDecimal: this.isDecimalAllowed(),
     });
   }
 
@@ -91,6 +90,10 @@ export default class NumberComponent extends Input {
       defaultValue = this.component.defaultValue;
     }
     return defaultValue;
+  }
+
+  isDecimalAllowed() {
+    return _.get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer));
   }
 
   parseNumber(value) {
@@ -113,7 +116,8 @@ export default class NumberComponent extends Input {
     input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
       inputElement: input,
-      mask: this.numberMask
+      mask: this.numberMask,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
   }
 
@@ -125,7 +129,7 @@ export default class NumberComponent extends Input {
     else {
       info.attr.type = 'text';
     }
-    info.attr.inputmode = 'numeric';
+    info.attr.inputmode = this.isDecimalAllowed() ? 'decimal' : 'numeric';
     info.changeEvent = 'input';
     return info;
   }
@@ -144,6 +148,9 @@ export default class NumberComponent extends Input {
   }
 
   parseValue(input) {
+    if (typeof input === 'string') {
+      input = input.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
+    }
     let value = parseFloat(input);
 
     if (!_.isNaN(value)) {
@@ -170,13 +177,19 @@ export default class NumberComponent extends Input {
   focus() {
     const input = this.refs.input[0];
     if (input) {
-      input.focus();
+      super.focus.call(this);
       input.setSelectionRange(0, input.value.length);
     }
   }
 
   getMaskedValue(value) {
-    return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
+    value = value === null ? '0' : value.toString();
+
+    if (value.includes('.') && '.'!== this.decimalSeparator) {
+      value = value.replace('.', this.decimalSeparator);
+    }
+
+    return conformToMask(this.formatValue(value), this.numberMask).conformedValue;
   }
 
   getValueAsString(value, options) {

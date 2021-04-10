@@ -18,7 +18,7 @@ export default class ContentComponent extends Component {
       group: 'layout',
       icon: 'html5',
       preview: false,
-      documentation: 'http://help.form.io/userguide/#content-component',
+      documentation: '/userguide/#content-component',
       weight: 5,
       schema: ContentComponent.schema()
     };

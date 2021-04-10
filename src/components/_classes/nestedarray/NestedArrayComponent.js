@@ -6,6 +6,12 @@ import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
 export default class NestedArrayComponent extends NestedDataComponent {
+  static schema(...extend) {
+    return NestedDataComponent.schema({
+      disableAddingRemovingRows: false
+    }, ...extend);
+  }
+
   componentContext(component) {
     return this.iteratableRows[component.rowIndex].data;
   }
@@ -22,27 +28,57 @@ export default class NestedArrayComponent extends NestedDataComponent {
     this._rowIndex = value;
   }
 
+  init() {
+    super.init();
+    this.prevHasAddButton = this.hasAddButton();
+  }
+
+  checkAddButtonChanged() {
+    const isAddButton = this.hasAddButton();
+    if (isAddButton !== this.prevHasAddButton) {
+      this.prevHasAddButton = isAddButton;
+      this.redraw();
+    }
+  }
+
   checkData(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+    this.checkAddButtonChanged();
 
     return this.checkRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
   }
 
-  checkRows(method, data, opts, defaultValue) {
+  checkRows(method, data, opts, defaultValue, silentCheck) {
     return this.iteratableRows.reduce(
-      (valid, row) => this.checkRow(method, data, opts, row.data, row.components) && valid,
+      (valid, row, rowIndex) => {
+        if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
+          return this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid;
+        }
+        else {
+          return valid;
+        }
+      },
       defaultValue,
     );
   }
 
-  checkRow(method, data, opts, row, components) {
-    return _.reduce(
+  checkRow(method, data, opts, row, components, silentCheck) {
+    if (opts?.isolateRow) {
+      silentCheck = true;
+      opts.noRefresh = true;
+    }
+
+    const valid = _.reduce(
       components,
-      (valid, component) => component[method](data, opts, row) && valid,
+      (valid, component) => component[method](data, opts, row, silentCheck) && valid,
       true,
     );
+    if (opts?.noRefresh) {
+      delete opts.noRefresh;
+    }
+    return valid;
   }
 
   hasAddButton() {
@@ -60,30 +96,39 @@ export default class NestedArrayComponent extends NestedDataComponent {
       }, 'show'));
   }
 
-  getComponent(path, fn) {
+  getComponent(path, fn, originalPath) {
     path = Array.isArray(path) ? path : [path];
-    const [key, ...remainingPath] = path;
+    let key = path.shift();
+    const remainingPath = path;
     let result = [];
+    let possibleComp = null;
+    let comp = null;
+    let rowIndex = null;
 
+    if (_.isNumber(key)) {
+      rowIndex = key;
+      key = remainingPath.shift();
+    }
     if (!_.isString(key)) {
       return result;
     }
 
     this.everyComponent((component, components) => {
       if (component.component.key === key) {
-        let comp = component;
+        possibleComp = component;
         if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
+          comp = component.getComponent(remainingPath, fn, originalPath);
         }
         else if (fn) {
           fn(component, components);
         }
-
-        result = result.concat(comp);
+        result = rowIndex !== null ? comp : result.concat(comp || possibleComp);
       }
-    });
-
-    return result.length > 0 ? result : null;
+    }, rowIndex);
+    if ((!result || result.length === 0) && possibleComp) {
+      result = rowIndex !== null ? possibleComp : [possibleComp];
+    }
+    return result;
   }
 
   everyComponent(fn, rowIndex, options) {
@@ -118,7 +163,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
             <tr>
       `);
 
-      this.component.components.forEach((component) => {
+      this.component.components?.forEach((component) => {
         const label = component.label || component.key;
         result += `<th style="padding: 5px 10px;">${label}</th>`;
       });
@@ -149,6 +194,20 @@ export default class NestedArrayComponent extends NestedDataComponent {
       return result;
     }
 
+    if (!value || !value.length) {
+      return '';
+    }
+
     return super.getValueAsString(value, options);
+  }
+
+  getComponents(rowIndex) {
+    if (rowIndex) {
+      if (!this.iteratableRows[rowIndex]) {
+        return [];
+      }
+      return this.iteratableRows[rowIndex].components;
+    }
+    return super.getComponents();
   }
 }

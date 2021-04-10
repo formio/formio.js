@@ -1,9 +1,5 @@
 export default [
   {
-    key: 'hideLabel',
-    ignore: true
-  },
-  {
     key: 'labelPosition',
     ignore: true
   },

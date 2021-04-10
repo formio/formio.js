@@ -2,19 +2,131 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import _merge from 'lodash/merge';
 import Harness from '../../../test/harness';
+import Formio from './../../Formio';
 import NumberComponent from './Number';
 
 import {
   comp1,
   comp2,
   comp3,
-  comp5
+  comp4,
+  comp5,
+  comp6
 } from './fixtures';
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
     return Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
+    });
+  });
+
+  it('Should format submissions for table view for French locale', () => {
+    return Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.11);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111);
+
+      assert.equal(value1, '1,00');
+      assert.equal(value2, '1,10');
+      assert.equal(value3, '1,11');
+      assert.equal(value4, '1 111,00');
+      assert.equal(value5, '1 111 111,00');
+      assert.equal(value6, '-11 111,00');
+    });
+  });
+
+  it('Should format sumbissions for table view for USA locale', () => {
+    return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.11);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111);
+
+      assert.equal(value1, '1.00');
+      assert.equal(value2, '1.10');
+      assert.equal(value3, '1.11');
+      assert.equal(value4, '1,111.00');
+      assert.equal(value5, '1,111,111.00');
+      assert.equal(value6, '-11,111.00');
+    });
+  });
+
+  it('Should format value on blur for USA locale', () => {
+   return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
+      component.root = {
+        onChange: ()=>{},
+        triggerChange: ()=>{},
+      };
+
+      const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
+      const valueElement = component.element.querySelector('[name="data[number]"]');
+
+      valueElement.value = 22222222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '22,222,222.00');
+
+      valueElement.value = 22222222.2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '22,222,222.20');
+
+      valueElement.value = 22222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '22,222.00');
+
+      valueElement.value = 2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.equal(valueElement.value, '2.00');
+    });
+  });
+
+  it('Should format value on blur for French locale', (done) => {
+    Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
+      component.root = {
+        onChange: ()=>{},
+        triggerChange: ()=>{},
+      };
+
+      const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
+      const valueElement = component.element.querySelector('[name="data[number]"]');
+
+      valueElement.value = 22222222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '22 222 222,00');
+
+      valueElement.value = '22222222,2';
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '22 222 222,20');
+
+      valueElement.value = 22222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '22 222,00');
+
+      valueElement.value = 222;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '222,00');
+
+      valueElement.value = 2;
+      valueElement.dispatchEvent(inputEvent);
+      valueElement.dispatchEvent(blurEvent);
+      assert.deepEqual(valueElement.value, '2,00');
+
+      done();
     });
   });
 
@@ -54,6 +166,42 @@ describe('Number Component', () => {
       Harness.testSetInput(component, -123456789.123456789, -123456789.123, '-123,456,789.123');
       Harness.testSetInput(component, '123456789.123456789', 123456789.123, '123,456,789.123');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.123, '-123,456,789.123');
+    });
+  });
+
+  it('Should format submissions for table view for French locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, '1');
+      assert.equal(value2, '1,1');
+      assert.equal(value3, '1,1111111');
+      assert.equal(value4, '1 111');
+      assert.equal(value5, '1 111 111');
+      assert.equal(value6, '-11 111,1111');
+    });
+  });
+
+  it('Should format sumissions for table view for USA locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
+      const value1 = component.getValueAsString(1);
+      const value2 = component.getValueAsString(1.1);
+      const value3 = component.getValueAsString(1.1111111);
+      const value4 = component.getValueAsString(1111);
+      const value5 = component.getValueAsString(1111111);
+      const value6 = component.getValueAsString(-11111.1111);
+
+      assert.equal(value1, '1');
+      assert.equal(value2, '1.1');
+      assert.equal(value3, '1.1111111');
+      assert.equal(value4, '1,111');
+      assert.equal(value5, '1,111,111');
+      assert.equal(value6, '-11,111.1111');
     });
   });
 
@@ -187,6 +335,72 @@ describe('Number Component', () => {
     return Harness.testCreate(NumberComponent, comp).then(number => {
       assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '4.20');
     });
+  });
+
+  it('Should provide min/max validation', (done) => {
+    const form = _.cloneDeep(comp6);
+
+    const validValues = [
+      null,
+      20,
+      555,
+      34,
+      20.000001,
+      554.999
+    ];
+
+    const invalidMin = [
+      19.99,
+      0,
+      1,
+      0.34,
+      -0.1,
+      -20
+    ];
+
+    const invalidMax = [
+      555.00000001,
+      100000,
+      5555,
+    ];
+
+    const testValidity = (values, valid, message, lastValue) => {
+      _.each(values, (value) => {
+        const element = document.createElement('div');
+
+        Formio.createForm(element, form, { language: 'en-US' }).then(form => {
+          form.setPristine(false);
+
+          const component = form.getComponent('number');
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, 'Should set value');
+          }
+
+          setTimeout(() => {
+            if (valid) {
+              assert.equal(!!component.error, false, 'Should not contain error');
+            }
+            else {
+              assert.equal(!!component.error, true, 'Should contain error');
+              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidMin, false, 'Number cannot be less than 20.');
+    testValidity(invalidMax, false, 'Number cannot be greater than 555.', invalidMax[invalidMax.length-1]);
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {

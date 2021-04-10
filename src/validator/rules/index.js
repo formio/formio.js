@@ -19,6 +19,7 @@ const unique = require('./Unique');
 const url = require('./Url');
 const minYear = require('./MinYear');
 const maxYear = require('./MaxYear');
+const time = require('./Time');
 
 module.exports = {
   custom,
@@ -41,5 +42,6 @@ module.exports = {
   unique,
   url,
   minYear,
-  maxYear
+  maxYear,
+  time,
 };

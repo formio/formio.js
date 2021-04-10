@@ -4,6 +4,7 @@ export type AnyForJSON = { [key: string]: any } | any;
 
 export namespace Utils {
   const Evaluator: any;
+  const _: any;
   function evaluate(
     func: any,
     args: { component: any; form: any; instance: any; row: any; data: any } | any,
@@ -130,7 +131,7 @@ export namespace Utils {
   };
   function applyFormChanges(form: any, changes: any[]): { form: any; failed: any[] };
   function flattenComponents(components: any[], includeAll: boolean): any;
-  function hasCondition(component: Object): boolean;
+  function hasCondition(component: any): boolean;
   function parseFloatExt(value: any): number;
   function formatAsCurrency(value: any): string;
   function escapeRegExCharacters(value: string): string;

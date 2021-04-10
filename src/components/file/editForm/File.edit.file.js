@@ -134,6 +134,14 @@ export default [
   {
     type: 'checkbox',
     input: true,
+    key: 'uploadOnly',
+    label: 'Upload Only',
+    tooltip: 'When this is checked, will only allow you to upload file(s) and consequently the download, in this component, will be unavailable.',
+    weight: 33,
+  },
+  {
+    type: 'checkbox',
+    input: true,
     key: 'privateDownload',
     label: 'Private Download',
     tooltip: 'When this is checked, the file download will send a POST request to the download URL with the x-jwt-token header. This will allow your endpoint to create a Private download system.',
@@ -201,7 +209,7 @@ export default [
     input: true,
     key: 'filePattern',
     label: 'File Pattern',
-    placeholder: '.pdf,.jpg',
+    placeholder: '.jpg,video/*,application/pdf',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file patterns.',
     weight: 50
   },

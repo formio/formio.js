@@ -4,7 +4,7 @@ export default [
     key: 'validate.minLength',
     label: 'Minimum Length',
     placeholder: 'Minimum Length',
-    type: 'number',
+    type: 'textfield',
     tooltip: 'The minimum length requirement this field must meet.',
     input: true
   },
@@ -13,7 +13,7 @@ export default [
     key: 'validate.maxLength',
     label: 'Maximum Length',
     placeholder: 'Maximum Length',
-    type: 'number',
+    type: 'textfield',
     tooltip: 'The maximum length requirement this field must meet.',
     input: true
   }

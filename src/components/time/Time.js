@@ -1,5 +1,6 @@
 import moment from 'moment';
 import TextFieldComponent from '../textfield/TextField';
+import { getBrowserInfo } from '../../utils/utils';
 
 const defaultDataFormat = 'HH:mm:ss';
 
@@ -17,10 +18,19 @@ export default class TimeComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-
-    this.component.inputMask = '99:99';
-    this.component.inputType = this.component.inputType || 'time';
+    const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();
+    this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
+    this.component.inputType = isEdgeBrowser && edgeVersion <= 18
+      ? 'text'
+      : (this.component.inputType || 'time');
     this.rawData = this.component.multiple ? [] : this.emptyValue;
+  }
+
+  init() {
+    super.init();
+    if (this.component.inputType === 'text') {
+      this.validators.push('time');
+    }
   }
 
   static get builderInfo() {
@@ -28,7 +38,7 @@ export default class TimeComponent extends TextFieldComponent {
       title: 'Time',
       icon: 'clock-o',
       group: 'advanced',
-      documentation: 'http://help.form.io/userguide/#time',
+      documentation: '/userguide/#time',
       weight: 55,
       schema: TimeComponent.schema(),
     };
@@ -56,6 +66,9 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get validationValue() {
+    if (Array.isArray(this.rawData) && !this.rawData.length || !this.rawData) {
+      return this.dataValue;
+    }
     return this.rawData;
   }
 
@@ -122,9 +135,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   setValueAt(index, value) {
-    if (value) {
-      this.setRawValue(this.getValueAsString(value), index);
-    }
+    this.setRawValue(value ? this.getValueAsString(value) : value, index);
     this.refs.input[index].value = this.getRawValue(index);
   }
 
@@ -134,5 +145,24 @@ export default class TimeComponent extends TextFieldComponent {
 
   getValueAsString(value) {
     return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
+  }
+
+  getInputMaskFromFormat(format) {
+    if (format === 'LT') {
+      return '99:99 AA';
+    }
+    if (format === 'LTS') {
+      return '99:99:99 AA';
+    }
+    return format.replace(/[hHmMsSk]/g, '9')
+                 .replace(/[aA]/, 'AA');
+  }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(element.value);
+    });
   }
 }

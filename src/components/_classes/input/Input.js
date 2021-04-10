@@ -1,6 +1,7 @@
 import Multivalue from '../multivalue/Multivalue';
-import { delay } from '../../../utils/utils';
+import { delay, convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -26,7 +27,7 @@ export default class Input extends Multivalue {
     };
 
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder);
+      attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
     if (this.component.tabindex) {
@@ -35,6 +36,10 @@ export default class Input extends Multivalue {
 
     if (this.disabled) {
       attr.disabled = 'disabled';
+    }
+
+    if (this.component.autocomplete) {
+      attr.autocomplete = this.component.autocomplete;
     }
 
     _.defaults(attr, this.component.attributes);
@@ -80,10 +85,35 @@ export default class Input extends Multivalue {
       }));
   }
 
+  getWordCount(value) {
+    return !value ? 0 : value.trim().split(/\s+/).length;
+  }
+
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
-    const wordCount = _.words(this.dataValue).length;
+    const wordCount = this.getWordCount(this.dataValue);
     return maxWords - wordCount;
+  }
+
+  get prefix() {
+    return this.component.prefix;
+  }
+
+  get suffix() {
+    if (this.component.widget && this.component.widget.type === 'calendar') {
+      const calendarIcon = this.renderTemplate('icon', {
+        ref: 'icon',
+        // After font-awesome would be updated to v5.x, "clock-o" should be replaced with "clock"
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'clock-o'),
+        styles: '',
+        content: ''
+      }).trim();
+      if (this.component.prefix !== calendarIcon) {
+        // converting string to HTML markup to render correctly DateTime component in portal.form.io
+        return convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
+      }
+    }
+    return this.component.suffix;
   }
 
   renderElement(value, index) {
@@ -93,21 +123,9 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)));
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value))).replace(/"/g, '&quot;');
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
-    }
-    // This should be in the calendar widget but it doesn't have access to renderTemplate.
-    if (this.component.widget && this.component.widget.type === 'calendar') {
-      const calendarIcon = this.renderTemplate('icon', {
-        ref: 'icon',
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'o-clock'),
-        styles: '',
-        content: ''
-      }).trim();
-      if (this.component.prefix !== calendarIcon) {
-        this.component.suffix = calendarIcon;
-      }
     }
 
     return this.isMultipleMasksField
@@ -118,6 +136,8 @@ export default class Input extends Multivalue {
         selectOptions: this.getMaskOptions() || [],
       })
       : this.renderTemplate('input', {
+        prefix: this.prefix,
+        suffix: this.suffix,
         input: info,
         value: this.formatValue(this.parseValue(value)),
         index
@@ -149,13 +169,13 @@ export default class Input extends Multivalue {
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
-        this.setCounter('words', this.refs.wordcount[index], _.words(value).length, maxWords);
+        this.setCounter(this.t('words'), this.refs.wordcount[index], this.getWordCount(value), maxWords);
       }
     }
     if (_.get(this.component, 'showCharCount', false)) {
       if (this.refs.charcount && this.refs.charcount[index]) {
         const maxChars = _.parseInt(_.get(this.component, 'validate.maxLength', 0), 10);
-        this.setCounter('characters', this.refs.charcount[index], value.length, maxChars);
+        this.setCounter(this.t('characters'), this.refs.charcount[index], value.length, maxChars);
       }
     }
   }
@@ -201,19 +221,16 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value, options) {
-    return super.getValueAsString(this.getWidgetValueAsString(value, options), options);
-  }
-
   attachElement(element, index) {
     super.attachElement(element, index);
     if (element.widget) {
       element.widget.destroy();
     }
     // Attach the widget.
+    let promise = NativePromise.resolve();
     element.widget = this.createWidget(index);
     if (element.widget) {
-      element.widget.attach(element);
+      promise = element.widget.attach(element);
       if (this.refs.prefix && this.refs.prefix[index]) {
         element.widget.addPrefix(this.refs.prefix[index]);
       }
@@ -235,6 +252,7 @@ export default class Input extends Multivalue {
         }
       });
     }
+    return promise;
   }
 
   /**
@@ -252,6 +270,10 @@ export default class Input extends Multivalue {
     const settings = (typeof this.component.widget === 'string') ? {
       type: this.component.widget
     } : this.component.widget;
+
+    if (this.root?.shadowRoot) {
+      settings.shadowRoot = this.root?.shadowRoot;
+    }
 
     // Make sure we have a widget.
     if (!Widgets.hasOwnProperty(settings.type)) {
@@ -277,6 +299,7 @@ export default class Input extends Multivalue {
         }
       }
     }
+    this.refs.input = [];
   }
 
   addFocusBlurEvents(element) {
@@ -299,11 +322,11 @@ export default class Input extends Multivalue {
       this.root.pendingBlur = delay(() => {
         this.emit('blur', this);
         if (this.component.validateOn === 'blur') {
-          this.root.triggerChange({}, {
+          this.root.triggerChange({ fromBlur: true }, {
             instance: this,
             component: this.component,
             value: this.dataValue,
-            flags: {}
+            flags: { fromBlur: true }
           });
         }
         this.root.focusedComponent = null;

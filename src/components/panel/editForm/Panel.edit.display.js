@@ -12,11 +12,11 @@ export default [
     ignore: true
   },
   {
-    key: 'hideLabel',
+    key: 'autofocus',
     ignore: true
   },
   {
-    key: 'autofocus',
+    key: 'tableView',
     ignore: true
   },
   {
@@ -96,6 +96,17 @@ export default [
         }
       },
       {
+        input: true,
+        type: 'checkbox',
+        label: 'Allow Previous',
+        key: 'allowPrevious',
+        defaultValue: false,
+        tooltip: 'Determines if the breadcrumb bar is clickable or not for visited tabs.',
+        conditional: {
+          json: { '===': [{ var: 'data.breadcrumbClickable' }, false] }
+        }
+      },
+      {
         weight: 50,
         label: 'Panel Navigation Buttons',
         optionsLabelPosition: 'right',
@@ -123,6 +134,16 @@ export default [
           cancel: true,
           next: true
         },
+      },
+      {
+        weight: 60,
+        label: 'Scroll up on page opening',
+        type: 'checkbox',
+        key: 'scrollToTop',
+        input: true,
+        inputType: 'checkbox',
+        defaultValue: false,
+        tooltip: 'Scroll to the top of the wizard page when user navigates to it'
       }
     ],
     customConditional(context) {

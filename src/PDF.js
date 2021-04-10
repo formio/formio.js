@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import Formio from './Formio';
 import Webform from './Webform';
-import { fastCloneDeep } from './utils/utils';
+import { fastCloneDeep, eachComponent } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
@@ -21,17 +21,21 @@ export default class PDF extends Webform {
       fromIframe: true
     }), true);
 
-    this.on('iframe-getIframePositions', () => {
-      const iframeBoundingClientRect = document.querySelector('iframe').getBoundingClientRect();
-      this.postMessage({
-        name: 'iframePositions',
-        data: {
-          iframe: {
-            top: iframeBoundingClientRect.top
-          },
-          scrollY: window.scrollY || window.pageYOffset
-        }
-      });
+    this.on('iframe-getIframePositions', (query) => {
+      const iframe = document.getElementById(`iframe-${query.formId}`);
+      if (iframe) {
+        const iframeBoundingClientRect = iframe.getBoundingClientRect();
+        this.postMessage({
+          name: 'iframePositions',
+          data: {
+            formId: query.formId,
+            iframe: {
+              top: iframeBoundingClientRect.top
+            },
+            scrollY: window.scrollY || window.pageYOffset
+          }
+        });
+      }
     });
 
     // Trigger when this form is ready.
@@ -46,7 +50,8 @@ export default class PDF extends Webform {
       internal: true,
       label: 'Submit',
       key: 'submit',
-      ref: 'button'
+      ref: 'button',
+      hidden: this.isSubmitButtonHidden()
     });
 
     return this.renderTemplate('pdf', {
@@ -69,6 +74,14 @@ export default class PDF extends Webform {
     }
     this.postMessage({ name: 'redraw' });
     return super.rebuild();
+  }
+
+  // Do not attach nested components for pdf.
+  attachComponents(element, components, container) {
+    components = components || this.components;
+    container = container || this.component.components;
+    element = this.hook('attachComponents', element, components, container, this);
+    return Promise.resolve();
   }
 
   attach(element) {
@@ -106,6 +119,8 @@ export default class PDF extends Webform {
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
       // Post the form to the iframe
+      this.form.base = Formio.getBaseUrl();
+      this.form.projectUrl = Formio.getProjectUrl();
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
@@ -187,10 +202,6 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
-    if (this.builderMode && this.form.components) {
-      this.postMessage({ name: 'form', data: this.form });
-      return NativePromise.resolve();
-    }
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -198,7 +209,7 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
-      this.postMessage({ name: 'form', data: form });
+      this.postMessage({ name: 'form', data: this.form });
     });
   }
 
@@ -216,34 +227,6 @@ export default class PDF extends Webform {
       });
     }
     return changed;
-  }
-
-  setSubmission(submission) {
-    submission.readOnly = !!this.options.readOnly;
-    return super.setSubmission(submission).then(() => {
-      if (this.formio) {
-        this.formio.getDownloadUrl().then((url) => {
-          // Add a download button if it has a download url.
-          if (!url) {
-            return;
-          }
-          if (!this.downloadButton) {
-            if (this.options.primaryProject) {
-              url += `&project=${this.options.primaryProject}`;
-            }
-            this.downloadButton = this.ce('a', {
-              href: url,
-              target: '_blank',
-              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-            }, this.ce('img', {
-              src: require('./pdf.image'),
-              style: 'width:3em;'
-            }));
-            this.element.insertBefore(this.downloadButton, this.iframe);
-          }
-        });
-      }
-    });
   }
 
   postMessage(message) {
@@ -275,11 +258,13 @@ export default class PDF extends Webform {
 
   showErrors(error, triggerEvent) {
     const helpBlock = document.getElementById('submit-error');
+    const submitError = this.t('submitError');
+    const isSubmitErrorShown = this.refs.buttonMessage?.textContent.trim() === submitError;
 
-    if (!helpBlock) {
+    if (!helpBlock && this.errors.length && !isSubmitErrorShown) {
       const p = this.ce('p', { class: 'help-block' });
 
-      this.setContent(p, this.t('submitError'));
+      this.setContent(p, submitError);
       p.addEventListener('click', () => {
         window.scrollTo(0, 0);
       });
@@ -296,27 +281,43 @@ export default class PDF extends Webform {
 
     super.showErrors(error, triggerEvent);
   }
+
+  isSubmitButtonHidden() {
+    let hidden = false;
+    eachComponent(this.component.components, (component) => {
+      if (
+        (component.type === 'button') &&
+        ((component.action === 'submit') || !component.action)
+      ) {
+        hidden = component.hidden || false;
+      }
+    });
+
+    return hidden;
+  }
 }
 
 /**
  * Listen for window messages.
  */
-window.addEventListener('message', (event) => {
-  let eventData = null;
-  try {
-    eventData = JSON.parse(event.data);
-  }
-  catch (err) {
-    eventData = null;
-  }
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', (event) => {
+    let eventData = null;
+    try {
+      eventData = JSON.parse(event.data);
+    }
+    catch (err) {
+      eventData = null;
+    }
 
-  // If this form exists, then emit the event within this form.
-  if (
-    eventData &&
-    eventData.name &&
-    eventData.formId &&
-    Formio.forms.hasOwnProperty(eventData.formId)
-  ) {
-    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
-  }
-});
+    // If this form exists, then emit the event within this form.
+    if (
+      eventData &&
+      eventData.name &&
+      eventData.formId &&
+      Formio.forms.hasOwnProperty(eventData.formId)
+    ) {
+      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+    }
+  });
+}

@@ -1,0 +1,70 @@
+<div id="" class="field formio-component formio-component-form  formio-component-label-hidden" ref="component">
+  <div class="formio-form ui form" ref="webform" novalidate>
+    <div id="radio" class="field form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
+      <label class="" for="radio-radio">
+        Radio
+      </label>
+      <div class="fields grouped">
+        <div class="field">
+          <div class="ui radio checkbox" ref="wrapper">
+            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="a" id="radio-a">
+            <label class="" for="radio-a">
+              <span>a</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui radio checkbox" ref="wrapper">
+            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="b" id="radio-b">
+            <label class="" for="radio-b">
+              <span>b</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div ref="messageContainer"></div>
+    </div>
+    <div id="selectBoxes" class="field form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
+      <label class="" for="selectBoxes-selectBoxes">
+        Select Boxes
+      </label>
+      <div class="fields grouped">
+        <div class="field">
+          <div class="ui  checkbox" ref="wrapper">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="a" id="selectBoxes-a">
+            <label class="" for="selectBoxes-a">
+              <span>a</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui  checkbox" ref="wrapper">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="b" id="selectBoxes-b">
+            <label class="" for="selectBoxes-b">
+              <span>b</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui  checkbox" ref="wrapper">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="c" id="selectBoxes-c">
+            <label class="" for="selectBoxes-c">
+              <span>c</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div ref="messageContainer"></div>
+    </div>
+    <div id="submit" class="field form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+      <button ref="button" class="ui button primary " name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">
+        Submit
+      </button>
+      <div ref="buttonMessageContainer">
+        <span class="help-block" ref="buttonMessage"></span>
+      </div>
+      <div ref="messageContainer"></div>
+    </div>
+  </div>
+  <div ref="messageContainer"></div>
+</div>

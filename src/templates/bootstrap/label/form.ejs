@@ -1,6 +1,9 @@
-<label class="col-form-label {{ctx.label.className}}">
-  {{ ctx.t(ctx.component.label) }}
+<label
+  class="col-form-label {{ctx.label.className}}"
+  for="{{ctx.instance.id}}-{{ctx.component.key}}"
+>
+  {{ ctx.t(ctx.component.label, { _userInput: true }) }}
   {% if (ctx.component.tooltip) { %}
-    <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+    <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
   {% } %}
 </label>

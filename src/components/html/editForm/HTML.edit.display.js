@@ -32,6 +32,10 @@ export default [
     ignore: true
   },
   {
+    key: 'tableView',
+    ignore: true
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'tag',
