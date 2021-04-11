@@ -1513,7 +1513,7 @@ export default class Component extends Element {
    * @returns {string} - The translation of the text
    */
   translate(text) {
-    return this.t(text, null);
+    return this.t(text);
   }
 
   size(size) {
