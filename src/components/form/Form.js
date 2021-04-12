@@ -566,7 +566,7 @@ export default class FormComponent extends Component {
     const isAlreadySubmitted = submission && submission._id && submission.form;
 
     // This submission has already been submitted, so just return the reference data.
-    if (isAlreadySubmitted && !this.subForm.wizard) {
+    if (isAlreadySubmitted && !this.subForm?.wizard) {
       this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
