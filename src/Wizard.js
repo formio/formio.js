@@ -954,11 +954,14 @@ export default class Wizard extends Webform {
     let pageIndex = 0;
 
     const [page] = this.pages.filter((page, index) => {
-      if (page.getComponent(key)) {
-        pageIndex = index;
-        return true;
-      }
-      return false;
+      let hasComponent = false;
+      page.getComponent(key, (comp) => {
+        if (comp.path === key) {
+          pageIndex = index;
+          hasComponent = true;
+        }
+      });
+      return hasComponent;
     });
 
     if (page && page !== this.currentPage) {
