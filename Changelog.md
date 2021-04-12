@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.0-rc.29
+#### Fixed
+ - FIO-2742: fix re-submit for nested forms
+
 ### 4.13.0-rc.28
 #### Fixed
  - Fix/nested wizard infinit loop
