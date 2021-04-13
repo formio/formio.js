@@ -22,7 +22,7 @@
     </span>
   </div>
   {% } %}
-  {% if (ctx.builder) { %}
+  {% if (!ctx.collapsed || ctx.builder) { %}
   <div class="card-body" ref="{{ctx.nestedKey}}" id="{{ctx.instance.id}}-{{ctx.component.key}}">
     {{ctx.children}}
   </div>
