@@ -9,6 +9,6 @@
     <span class='sr-only'>, {{ctx.t('numeric only')}},</span>
   {% } %}
   {% if (ctx.component.tooltip) { %}
-    <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
+    <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
   {% } %}
 </label>

@@ -13,7 +13,7 @@
       >
     {% if (!ctx.self.labelIsHidden()) { %}<span>{{ctx.input.label}}</span>{% } %}
     {% if (ctx.component.tooltip) { %}
-      <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
+      <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
     {% } %}
     {{ctx.input.content}}
     </{{ctx.input.type}}>
