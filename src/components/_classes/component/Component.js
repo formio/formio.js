@@ -1556,13 +1556,18 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
+        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
         if (input) {
-          input.setSelectionRange(...selection);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(...selection);
+          }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          input.setSelectionRange(lastCharacter, lastCharacter);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(lastCharacter, lastCharacter);
+          }
         }
       }
     }
