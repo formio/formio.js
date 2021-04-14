@@ -833,7 +833,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.onChange = (flags = {}, changed, modified) => {
-        this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
+        if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
+          changed.instance.root.triggerChange({ ...flags, noValidate: true }, changed, modified);
+        }
+        else {
+          this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
+        }
 
         if (this.inlineEditMode) {
           return;
