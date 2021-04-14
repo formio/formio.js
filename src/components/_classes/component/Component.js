@@ -1466,7 +1466,7 @@ export default class Component extends Element {
       // Bind the translate function to the data context of any interpolated string.
       // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
       // and desirable to be publicly available rather than calling the internal {instance.t} function in the template string.
-      translate: this.t.bind(this),
+      t: this.t.bind(this),
       submission: (this.root ? this.root._submission : {
         data: this.rootValue
       }),
