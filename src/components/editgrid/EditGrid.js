@@ -53,7 +53,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     return `<div class="row">
       {% util.eachComponent(components, function(component) { %}
         {% if (displayValue(component)) { %}
-          <div class="col-sm-2">{{ component.label }}</div>
+          <div class="col-sm-2">{{ t(component.label) }}</div>
         {% } %}
       {% }) %}
     </div>`;
@@ -218,7 +218,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.editRows = [];
       return super.init();
     }
-
     this.components = this.components || [];
     const dataValue = this.dataValue || [];
     const openWhenEmpty = !dataValue.length && this.component.openWhenEmpty;
@@ -236,6 +235,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         error: null,
       }));
     }
+    this.prevHasAddButton = this.hasAddButton();
 
     this.checkData();
   }

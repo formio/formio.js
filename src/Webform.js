@@ -1264,6 +1264,10 @@ export default class Webform extends NestedDataComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
+    // Cancel triggered saveDraft to prevent overriding the submitted state
+    if (this.draftEnabled && this.triggerSaveDraft?.cancel) {
+      this.triggerSaveDraft.cancel();
+    }
     this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);

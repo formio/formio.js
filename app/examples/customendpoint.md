@@ -66,6 +66,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
           form.emit('submitDone', submission)
           response.json()
         })
+        .catch(function() {})
     });
   });
 </script>

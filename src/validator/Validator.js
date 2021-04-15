@@ -658,6 +658,8 @@ class ValidationChecker {
           inputMask = inputMask ? getInputMask(inputMask) : null;
 
           if (value && inputMask && !component.skipMaskValidation) {
+            // If char which is used inside mask placeholder was used in the mask, replace it with space to prevent errors
+            inputMask = inputMask.map((char) => char === component.placeholderChar ? ' ' : char);
             return matchInputMask(value, inputMask);
           }
 
