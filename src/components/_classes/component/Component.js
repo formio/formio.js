@@ -74,7 +74,7 @@ export default class Component extends Element {
       multiple: false,
 
       /**
-       * The default value of this compoennt.
+       * The default value of this component.
        */
       defaultValue: null,
 
@@ -748,7 +748,8 @@ export default class Component extends Element {
         (!recursion && (key === 'input')) ||
         (!recursion && (key === 'tableView')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
-        (val !== '' && val !== defaultSchema[key])
+        (val !== '' && val !== defaultSchema[key]) ||
+        (defaultSchema[key] && val !== defaultSchema[key])
       ) {
         modified[key] = val;
       }

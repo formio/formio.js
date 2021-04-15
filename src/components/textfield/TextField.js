@@ -13,6 +13,7 @@ export default class TextFieldComponent extends Input {
       inputType: 'text',
       inputFormat: 'plain',
       inputMask: '',
+      displayMask: '',
       tableView: true,
       spellcheck: true,
       truncateMultipleSpaces: false,
@@ -144,6 +145,13 @@ export default class TextFieldComponent extends Input {
     }
   }
 
+  unmaskValue(value) {
+    const displayMask = this.component.displayMask;
+    const mask = FormioUtils.getInputMask(displayMask, this.placeholderChar);
+
+    return FormioUtils.unmaskValue(value, mask, this.placeholderChar);
+  }
+
   /**
    * Returns the value at this index.
    *
@@ -152,7 +160,15 @@ export default class TextFieldComponent extends Input {
    */
   getValueAt(index) {
     if (!this.isMultipleMasksField) {
-      return super.getValueAt(index);
+      const value = super.getValueAt(index);
+      const inputMask = this.component.inputMask;
+      const displayMask = this.component.displayMask;
+
+      if (inputMask && !displayMask || displayMask === inputMask) {
+        return value;
+      }
+
+      return this.unmaskValue(value);
     }
     const textInput = this.refs.mask ? this.refs.mask[index] : null;
     const maskInput = this.refs.select ? this.refs.select[index]: null;
