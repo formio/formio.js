@@ -29,7 +29,7 @@ export default {
 				},
 				{
 					label: 'Container',
-					tableView: true,
+					tableView: false,
 					key: 'container',
 					conditional: { show: true, when: 'editGrid.textField', eq: 'show' },
 					type: 'container',

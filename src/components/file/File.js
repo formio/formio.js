@@ -379,17 +379,15 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
         this.className = 'fileSelector';
         event.preventDefault();
+        element.statuses = [];
         element.upload(event.dataTransfer.files);
-        return false;
       });
     }
 
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
-        if (!this.component.multiple && this.statuses.some(fileUpload => fileUpload.status === 'progress')) {
-          return;
-        }
+        this.statuses = [];
         this.browseFiles(this.browseOptions)
           .then((files) => {
             this.upload(files);

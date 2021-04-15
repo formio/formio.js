@@ -59,6 +59,21 @@ export default class TextFieldComponent extends Input {
     return '';
   }
 
+  constructor(component, options, data) {
+    super(component, options, data);
+
+    const timezone = (this.component.widget?.timezone || this.options.timezone);
+
+    if (this.component.widget?.type === 'calendar') {
+      this.component.widget = {
+        ...this.component.widget,
+        readOnly: this.options.readOnly,
+        timezone,
+        locale: this.options.language,
+      };
+    }
+  }
+
   /**
    * Returns the mask value object.
    *

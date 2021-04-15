@@ -18,7 +18,7 @@ import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
-import i18nConfig from '../../../i18n';
+import enTranslation from '../../../translations/en';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
@@ -738,7 +738,7 @@ export default class Component extends Element {
       return '';
     }
     // Use _userInput: true to ignore translations from defaults
-    if (text in i18nConfig.resources.en.translation && params._userInput) {
+    if (text in enTranslation && params._userInput) {
       return text;
     }
     params.data = this.rootValue;
@@ -1046,21 +1046,25 @@ export default class Component extends Element {
   }
 
   attachTooltips(toolTipsRefs) {
-    toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+    toolTipsRefs?.forEach((tooltip, index) => {
+      if (tooltip) {
+        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+        const tooltipDataTitle = tooltip.getAttribute('data-title');
+        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-      this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: this.t(tooltipText, { _userInput: true }),
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
+        this.tooltips[index] = new Tooltip(tooltip, {
+          trigger: 'hover click focus',
+          placement: 'right',
+          html: true,
+          title: this.t(tooltipText, { _userInput: true }),
+          template: `
+            <div class="tooltip" style="opacity: 1;" role="tooltip">
+              <div class="tooltip-arrow"></div>
+              <div class="tooltip-inner"></div>
+            </div>`,
+        });
+      }
     });
   }
 
@@ -1459,6 +1463,10 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
+      // Bind the translate function to the data context of any interpolated string.
+      // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
+      // and desirable to be publicly available rather than calling the internal {instance.t} function in the template string.
+      t: this.t.bind(this),
       submission: (this.root ? this.root._submission : {
         data: this.rootValue
       }),
@@ -1552,13 +1560,18 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
+        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
         if (input) {
-          input.setSelectionRange(...selection);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(...selection);
+          }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          input.setSelectionRange(lastCharacter, lastCharacter);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(lastCharacter, lastCharacter);
+          }
         }
       }
     }
@@ -1721,7 +1734,7 @@ export default class Component extends Element {
 
     const newComponent = fastCloneDeep(this.originalComponent);
 
-    const changed = logics.reduce((changed, logic) => {
+    let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
@@ -1735,8 +1748,9 @@ export default class Component extends Element {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (changed && !_.isEqual(this.component, newComponent)) {
+    if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
+      changed = true;
       const disabled = this.shouldDisabled;
       // Change disabled state if it has changed
       if (this.disabled !== disabled) {

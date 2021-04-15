@@ -260,10 +260,11 @@ export default class FormComponent extends Component {
 
           this.setContent(element, this.render());
           if (this.subForm) {
-            this.subForm.attach(element);
-            if (this.subForm._form.display === 'wizard' && this.root._form.display === 'wizard') {
-              this.root.redraw();
+            if (this.isNestedWizard) {
+              element = this.root.element;
             }
+            this.subForm.attach(element);
+
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
             }
@@ -342,6 +343,19 @@ export default class FormComponent extends Component {
     }
   }
 
+  updateSubWizards(subForm) {
+    if (this.isNestedWizard && this.root?.subWizards && subForm?._form?.display === 'wizard') {
+      const existedForm = this.root.subWizards.findIndex(form => form.component.form === this.component.form);
+      if (existedForm !== -1) {
+        this.root.subWizards[existedForm] = this;
+      }
+      else {
+        this.root.subWizards.push(this);
+      }
+      this.emit('subWizardsUpdated', subForm);
+    }
+  }
+
   /**
    * Create a subform instance.
    *
@@ -385,17 +399,7 @@ export default class FormComponent extends Component {
         return this.subForm;
       });
     }).then((subForm) => {
-      if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
-        const existedForm = this.root?.subWizards?.findIndex(form => form.component.form === this.component.form);
-        if (existedForm !== -1) {
-          this.root.subWizards[existedForm] = this;
-        }
-        else {
-          this.root.subWizards.push(this);
-        }
-        this.emit('subWizardsUpdated', subForm);
-      }
-
+      this.updateSubWizards(subForm);
       return subForm;
     });
     return this.subFormReady;
@@ -562,7 +566,7 @@ export default class FormComponent extends Component {
     const isAlreadySubmitted = submission && submission._id && submission.form;
 
     // This submission has already been submitted, so just return the reference data.
-    if (isAlreadySubmitted && !this.subForm.wizard) {
+    if (isAlreadySubmitted && !this.subForm?.wizard) {
       this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
@@ -662,6 +666,15 @@ export default class FormComponent extends Component {
     }
   }
 
+  /**
+   * Determines if this form is a Nested Wizard
+   * which means it should be a Wizard itself and should be a direct child of a Wizard's page
+   * @returns {boolean}
+   */
+  get isNestedWizard() {
+    return this.subForm?._form?.display === 'wizard' && this.parent?.parent?._form?.display === 'wizard';
+  }
+
   get visible() {
     return super.visible;
   }
@@ -681,6 +694,9 @@ export default class FormComponent extends Component {
       }
       this.updateSubFormVisibility();
       this.redraw();
+    }
+    if (!value && this.isNestedWizard) {
+      this.root.redraw();
     }
   }
 

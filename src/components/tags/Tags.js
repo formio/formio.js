@@ -72,6 +72,7 @@ export default class TagsComponent extends Input {
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
       duplicateItemsAllowed: false,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {

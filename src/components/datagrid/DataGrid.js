@@ -49,6 +49,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     this.visibleColumns = {};
+    this.prevHasAddButton = this.hasAddButton();
     this.checkColumns();
   }
 
@@ -609,6 +610,11 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (this.initRows || isSettingSubmission) {
       this.createRows();
     }
+
+    if (this.componentModal && isSettingSubmission) {
+      this.componentModal.setValue(value);
+    }
+
     this.rows.forEach((row, rowIndex) => {
       if (value.length <= rowIndex) {
         return;

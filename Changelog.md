@@ -4,9 +4,87 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.13.1-rc.2
+#### Fixed
+ - FIO-445: TypeError in console in custom endpoint example
+ - FIO-2735: Fixes an issue where Display Timezone does not work for TextField with a Calendar widget
+ - FIO-2739: fix the display of component errors Day and Email for the DynamicWizard
+ - FIO-2496: Fixes an issue when Mask validation errors are not shown if invalid mask value is set for alphanumeric or alphabetic mask (if last symbols are missing)
+ - Fix edit grid not translated column labels. Bind translation function to any interpolated string context.
+ - FIO-2667: Fixes performance regression issues comparing with formiojs 4.11.x /4.10.x
+ - FIO-2641: Fixes an issue when wizard navigation pages cursor had a Text Edit style in bootstrap3
+ - FIO-262: remove the addition of decimal places when typing in the currency field on the sandbox
+ - FIO-345: datagrid cleanup validation
+ - FIO-2603: Fixes an issue where saveDraft is sent after a form was submitted
+ - FIO-254: Add address provider url interpolations
+ - FJS-1272: Form crashes using underscore as a mask
+
+#### Added
+ - FIO-1062: added automated tests for select component
+
+### 4.13.1-rc.1
+#### Fixed
+ - FIO-2531: added conflictId to error data when unique validation is triggered
+
+### 4.13.0
+#### Changed
+ - No changes. Official release off of 4.13.0-rc.29
+
+### 4.13.0-rc.29
+#### Fixed
+ - FIO-2742: fix re-submit for nested forms
+
+### 4.13.0-rc.28
+#### Fixed
+ - Fix/nested wizard infinit loop
+ - FIO-2691: add condition for inherited components
+ - FIO-2695: fix the display of a wizard inside components in which data
+
+#### Changed
+ - Upgrade core-js@3.10.1, @babel/core@7.13.15, @babel/preset-env@7.13.15, sinon@10.0.1, i18next@20.2.1, webpack@5.31.2z
+
+### 4.13.0-rc.27
+#### Fixed
+ - FIO-263: fix getting parent path for nested wizards
+ - FIO-2582: Fixes typo in hosted page
+ - FIO-2696: uncaught error in console fix
+ - FIO-2697: Fixes console errors when apply conditional logic to Nested Dynamic Wizard
+ - FIO-2694: Fixes an issue where eachComponent considers nested components as layout components
+ - FIO-180: fix error message for onlyAvailableItems validation
+
+### 4.13.0-rc.26
+#### Fixed
+ - FIO-527: add applying of custom styles for textArea in readOnly mode
+ - FIO-2668: fixed an issue where translation does not work for any language if en translation is provided for this value
+
+### 4.13.0-rc.25
+#### Fixed
+ - Added better embedding capabilities.
+ - FIO-1553: fixed an issue where select resource submission is not displayed if lazy load is enabled
+ - FIO-2655: Fixes an issue where it is impossible to reopen components settings in PDF
+ - UIP-283: Fix values not set correctly
+ - UIP-273: Remove file errors on new file upload
+
+### Added
+ - FIO-2553: add tests for nested wizards
+
+### 4.13.0-rc.24
+#### Fixed
+ - FIO-2612: Fixed issues where the submit button is replaced with other components when it re-renders.
+
+### 4.13.0-rc.23
 #### Fixed
  - UIP-284: Fix interpolation without quotes not working
+ - FIO-1501: Fixes an issue where Preview component and Default Value component in Builder have the same ids
+ - FIO-2547: Fixes an issue where data is not displayed in modal DataGrid preview in View mode when only one row is added
+ - FIO-2502: Fixes an issue where min validators are triggered for non-required fields when values are empty
+ - FIO-2633: Fixes an issue where component is not reverted back to its initial state when logic is not applying
+ - FIO-1385: Fixes an issue where place is not saved using Google Maps provider
+ - FIO-2597: Fixes an issue where Components order is changed after searching for some fields
+ - FIO-1393: Fixes an issue where EditGrid Templates tooltips are rendered wrongly
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.11.0
 
 ### 4.13.0-rc.22
 #### Fixed
