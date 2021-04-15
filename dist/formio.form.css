@@ -1046,6 +1046,8 @@ div[data-oembed-url] {
 
 .formio-form > div > nav > ul.pagination {
   flex-flow: wrap row; }
+  .formio-form > div > nav > ul.pagination .page-link {
+    cursor: pointer; }
 
 .pac-container {
   z-index: 11000; }
