@@ -1,12 +1,14 @@
 import assert from 'power-assert';
-
+import _ from 'lodash';
 import Harness from '../../../test/harness';
 import ButtonComponent from './Button';
 import Formio from './../../Formio';
 import sinon from 'sinon';
 
 import {
-  comp1
+  comp1,
+  comp2,
+  comp3
 } from './fixtures';
 import Webform from '../../Webform';
 import formWithResetValue from '../../../test/formtest/formWithResetValue';
@@ -284,5 +286,121 @@ describe('Button Component', () => {
         }, 300);
       }, 300);
     }).catch((err) => done(err));
+  });
+
+  it('Should correctly set theme', (done) => {
+    const form = _.cloneDeep(comp2);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(formObj => {
+      const btns = formObj.components;
+      const theme = ['warning', 'danger', 'success', 'info',  'secondary', 'primary'];
+
+      _.each(btns, (btn, index) => {
+        const btnClass = `btn-${theme[index]}`;
+        const includeClass = btn.refs.button.classList.contains(btnClass);
+        assert.equal(includeClass, true, `Should set ${theme[index]} theme for button`);
+      });
+
+      done();
+    }).catch(done);
+  });
+
+  it('Should render block btn', (done) => {
+    const form = _.cloneDeep(comp2);
+    form.components = [
+      {
+        label: 'Submit',
+        showValidations: false,
+        block: true,
+        tableView: false,
+        key: 'submit',
+        type: 'button',
+        input: true
+      }
+    ];
+
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(formObj => {
+      const btn = formObj.components[0];
+      const btnClass = 'btn-block';
+      const includeClass = btn.refs.button.classList.contains(btnClass);
+
+      assert.equal(includeClass, true, 'Should set btn-block class for button');
+
+      done();
+    }).catch(done);
+  });
+
+  it('Test event, reset, post, save in state actions', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+
+    const originalMakeRequest = Formio.makeStaticRequest;
+    Formio.makeStaticRequest = function(url, method, data) {
+      assert.equal(url, 'https://test.com');
+      assert.equal(method, 'POST');
+      assert.deepEqual(data.data, {
+        event: false,
+        post: true,
+        reset: false,
+        saveInState: false
+      });
+
+      return new Promise(resolve => {
+         resolve({ ...data });
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const formio = new Formio('http://test.localhost/test', {});
+
+      formio.makeRequest = (type, url, method, data) => {
+        assert.equal(data.state, 'testState');
+        assert.equal(method.toUpperCase(), 'POST');
+
+        return new Promise(resolve => resolve({ ...data }));
+      };
+
+      form.formio = formio;
+
+      const click = (btnComp) => {
+        const elem = btnComp.refs.button;
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
+
+      const saveInStateBtn = form.getComponent('saveInState');
+      click(saveInStateBtn);
+
+      setTimeout(() => {
+        const eventBtn = form.getComponent('event');
+        click(eventBtn);
+
+        setTimeout(() => {
+          const numberComp = form.getComponent('number');
+          assert.equal(numberComp.dataValue, 2);
+          assert.equal(numberComp.getValue(), 2);
+
+          const resetBtn = form.getComponent('reset');
+          click(resetBtn);
+
+          setTimeout(() => {
+            const numberComp = form.getComponent('number');
+            assert.equal(numberComp.dataValue, null);
+            assert.equal(numberComp.getValue(), null);
+
+            const postBtn = form.getComponent('post');
+            click(postBtn);
+
+            setTimeout(() => {
+              Formio.makeStaticRequest = originalMakeRequest;
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
   });
 });
