@@ -75,7 +75,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   get isDefaultValueComponent() {
-    return this.treeRoot && this.options.editComponent && this.options.editForm && this.component.key === 'defaultValue';
+    return !!this.options.editComponent && !!this.options.editForm && this.component.key === 'defaultValue';
   }
 
   destroy() {
@@ -461,7 +461,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   getComponents() {
-    return this.isDefaultValueComponent
+    return this.treeRoot && this.isDefaultValueComponent
       ? this.treeRoot.getComponents()
       : super.getComponents();
   }
