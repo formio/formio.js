@@ -4,7 +4,7 @@ import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import Formio from './Formio';
-import { fastCloneDeep, bootstrapVersion } from './utils/utils';
+import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -1117,12 +1117,18 @@ export default class WebformBuilder extends Component {
         }
       }
       else {
-        const dataPath = _.get(defaultValueComponent, 'component.type') === 'datagrid'
-          ? `_data[${component.key}][${changed.instance.rowIndex}][${changed.instance.key}]`
-          : `_data[${changed.instance._data.key}]`;
+        let dataPath = changed.instance._data.key;
 
-        _.set(this.preview, dataPath, changed.value);
-        _.set(this.webform, dataPath, changed.value);
+        const path = getArrayFromComponentPath(changed.instance.path);
+        path.shift();
+
+        if (path.length) {
+          path.unshift(component.key);
+          dataPath = getStringFromComponentPath(path);
+        }
+
+        _.set(this.preview._data, dataPath, changed.value);
+        _.set(this.webform._data, dataPath, changed.value);
       }
     }
 
