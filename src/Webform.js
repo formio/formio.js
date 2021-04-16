@@ -271,6 +271,7 @@ export default class Webform extends NestedDataComponent {
 
     // Ensure the root is set to this component.
     this.root = this;
+    this.localRoot = this;
   }
   /* eslint-enable max-statements */
 
