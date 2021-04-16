@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2603: Fixes an issue where saveDraft is sent after a form was submitted
  - FIO-254: Add address provider url interpolations
  - FJS-1272: Form crashes using underscore as a mask
+ - FIO-2740: fix triggerChange call for cases when nested form component changes
 
 #### Added
  - FIO-1062: added automated tests for select component

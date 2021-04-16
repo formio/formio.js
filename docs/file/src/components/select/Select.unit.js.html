@@ -472,9 +472,9 @@ describe(&apos;Select Component&apos;, () =&gt; {
       const selectChoices = form.getComponent(&apos;selectChoices&apos;);
       assert.equal(!!selectHTML.choices, false);
       assert.equal(!!selectChoices.choices, true);
-      assert.equal(selectChoices.element.querySelectorAll(&apos;.choices__item--choice&apos;).length, 3);
 
       setTimeout(() =&gt; {
+        assert.equal(selectChoices.element.querySelectorAll(&apos;.choices__item--choice&apos;).length, 3);
         const value = &apos;b&apos;;
         selectHTML.setValue(value);
         selectChoices.setValue(value);
@@ -540,26 +540,27 @@ describe(&apos;Select Component&apos;, () =&gt; {
     Formio.createForm(element, form).then(form =&gt; {
       const select = form.getComponent(&apos;select&apos;);
       const numberComp = form.getComponent(&apos;number&apos;);
-
-      assert.equal(select.selectOptions.length, 2);
-      assert.deepEqual(select.selectOptions[0].value, { name: &apos;Ivan&apos; });
-
-      const numberValue = 5;
-      const inputEvent = new Event(&apos;input&apos;);
-      const numberInput = numberComp.refs.input[0];
-
-      numberInput.value = numberValue;
-      numberInput.dispatchEvent(inputEvent);
-
       setTimeout(() =&gt; {
-        assert.equal(numberComp.dataValue, numberValue);
-        assert.equal(numberComp.getValue(), numberValue);
-        assert.equal(select.selectOptions.length, 3);
-        assert.deepEqual(select.selectOptions[0].value, { name: &apos;Kate&apos; });
+        assert.equal(select.selectOptions.length, 2);
+        assert.deepEqual(select.selectOptions[0].value, { name: &apos;Ivan&apos; });
 
-        Formio.makeRequest = originalMakeRequest;
-        done();
-      }, 500);
+        const numberValue = 5;
+        const inputEvent = new Event(&apos;input&apos;);
+        const numberInput = numberComp.refs.input[0];
+
+        numberInput.value = numberValue;
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(numberComp.dataValue, numberValue);
+          assert.equal(numberComp.getValue(), numberValue);
+          assert.equal(select.selectOptions.length, 3);
+          assert.deepEqual(select.selectOptions[0].value, { name: &apos;Kate&apos; });
+
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 500);
+      }, 200);
     }).catch(done);
   });
 
@@ -584,29 +585,30 @@ describe(&apos;Select Component&apos;, () =&gt; {
     Formio.createForm(element, form).then(form =&gt; {
       const select = form.getComponent(&apos;select&apos;);
       const numberComp = form.getComponent(&apos;number&apos;);
-
-      assert.equal(select.selectOptions.length, 2);
-      assert.deepEqual(select.selectOptions[0].value, { name: &apos;Ivan&apos; });
-
-      const numberValue = 5;
-      const inputEvent = new Event(&apos;input&apos;);
-      const focusEvent = new Event(&apos;focus&apos;);
-      const blurEvent = new Event(&apos;blur&apos;);
-      const numberInput = numberComp.refs.input[0];
-      numberInput.dispatchEvent(focusEvent);
-      numberInput.value = numberValue;
-      numberInput.dispatchEvent(inputEvent);
-      numberInput.dispatchEvent(blurEvent);
-
       setTimeout(() =&gt; {
-        assert.equal(numberComp.dataValue, numberValue);
-        assert.equal(numberComp.getValue(), numberValue);
-        assert.equal(select.selectOptions.length, 3);
-        assert.deepEqual(select.selectOptions[0].value, { name: &apos;Kate&apos; });
+        assert.equal(select.selectOptions.length, 2);
+        assert.deepEqual(select.selectOptions[0].value, { name: &apos;Ivan&apos; });
 
-        Formio.makeRequest = originalMakeRequest;
-        done();
-      }, 500);
+        const numberValue = 5;
+        const inputEvent = new Event(&apos;input&apos;);
+        const focusEvent = new Event(&apos;focus&apos;);
+        const blurEvent = new Event(&apos;blur&apos;);
+        const numberInput = numberComp.refs.input[0];
+        numberInput.dispatchEvent(focusEvent);
+        numberInput.value = numberValue;
+        numberInput.dispatchEvent(inputEvent);
+        numberInput.dispatchEvent(blurEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(numberComp.dataValue, numberValue);
+          assert.equal(numberComp.getValue(), numberValue);
+          assert.equal(select.selectOptions.length, 3);
+          assert.deepEqual(select.selectOptions[0].value, { name: &apos;Kate&apos; });
+
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 500);
+      }, 200);
     }).catch(done);
   });
 
