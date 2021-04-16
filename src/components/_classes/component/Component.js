@@ -334,6 +334,7 @@ export default class Component extends Element {
      * @type {Component}
      */
     this.root = this.options.root;
+    this.localRoot = this.options.localRoot;
 
     /**
      * If this input has been input and provided value.
