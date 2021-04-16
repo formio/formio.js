@@ -186,6 +186,13 @@ export default class Multivalue extends Field {
 
     if (!this.attachMultiMask(index)) {
       this.setInputMask(element);
+
+      const valueMask = this.component.inputMask;
+      const displayMask = this.component.displayMask;
+
+      if (valueMask && displayMask && displayMask !== valueMask && this.refs.valueMaskInput) {
+        this.setInputMask(this.refs.valueMaskInput, valueMask);
+      }
     }
   }
 

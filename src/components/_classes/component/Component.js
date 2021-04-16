@@ -2473,6 +2473,12 @@ export default class Component extends Element {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
+    const valueMaskInput = this.refs.valueMaskInput;
+
+    if (valueMaskInput?.mask) {
+      valueMaskInput.mask.textMaskInputElement.update(value);
+    }
+
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }

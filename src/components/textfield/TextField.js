@@ -77,6 +77,13 @@ export default class TextFieldComponent extends Input {
     }
   }
 
+  attach(element) {
+    this.loadRefs(element, {
+      valueMaskInput: 'single',
+    });
+    return super.attach(element);
+  }
+
   /**
    * Returns the mask value object.
    *
@@ -145,9 +152,8 @@ export default class TextFieldComponent extends Input {
     }
   }
 
-  unmaskValue(value) {
-    const displayMask = this.component.displayMask;
-    const mask = FormioUtils.getInputMask(displayMask, this.placeholderChar);
+  unmaskValue(value, format = this.component.displayMask) {
+    const mask = FormioUtils.getInputMask(format, this.placeholderChar);
 
     return FormioUtils.unmaskValue(value, mask, this.placeholderChar);
   }
@@ -161,14 +167,26 @@ export default class TextFieldComponent extends Input {
   getValueAt(index) {
     if (!this.isMultipleMasksField) {
       const value = super.getValueAt(index);
-      const inputMask = this.component.inputMask;
+      const valueMask = this.component.inputMask;
       const displayMask = this.component.displayMask;
 
-      if (inputMask && !displayMask || displayMask === inputMask) {
+      // If the input has only the valueMask or the displayMask is the same as the valueMask,
+      // just return the value which is already formatted
+      if (valueMask && !displayMask || displayMask === valueMask) {
         return value;
       }
 
-      return this.unmaskValue(value);
+      // If there is only the displayMask, return the raw (unmasked) value
+      if (displayMask && !valueMask) {
+        return this.unmaskValue(value, displayMask);
+      }
+
+      if (this.refs.valueMaskInput?.mask) {
+        this.refs.valueMaskInput.mask.textMaskInputElement.update(value);
+        return this.refs.valueMaskInput?.value;
+      }
+
+      return value;
     }
     const textInput = this.refs.mask ? this.refs.mask[index] : null;
     const maskInput = this.refs.select ? this.refs.select[index]: null;
