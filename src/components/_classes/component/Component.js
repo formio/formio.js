@@ -240,6 +240,9 @@ export default class Component extends Element {
     // Restore the component id.
     if (component && component.id) {
       this.id = component.id;
+      if (this.options && this.options.preview && !this.id.includes('preview')) {
+        this.id = `${this.id}-preview`;
+      }
     }
 
     /**

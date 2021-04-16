@@ -15,6 +15,7 @@ export default class TreeComponent extends NestedComponent {
       input: true,
       tree: true,
       components: [],
+      multiple: true,
     }, ...extend);
   }
 
@@ -31,6 +32,7 @@ export default class TreeComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.type = 'tree';
+    this.component.multiple = false;
   }
 
   get emptyValue() {
@@ -421,10 +423,11 @@ export default class TreeComponent extends NestedComponent {
   setRoot() {
     const value = this.dataValue;
     this.treeRoot = new Node(null, value, {
-      isNew: !value.data,
+      isNew: this.builderMode ? true : !value.data,
       createComponents: this.createComponents.bind(this),
       checkNode: this.checkNode.bind(this, this.data),
       removeComponents: this.removeComponents,
+      parentPath: this.path || this.component.key,
     });
     this.hook('tree.setRoot', {
       root: this.treeRoot,
@@ -451,6 +454,10 @@ export default class TreeComponent extends NestedComponent {
       (result, child) => this.checkNode(data, child, flags, row) && result,
       super.checkData(data, flags, node.data, node.components),
     );
+  }
+
+  getComponents() {
+    return this.treeRoot ? this.treeRoot.getComponents() : [];
   }
 }
 
