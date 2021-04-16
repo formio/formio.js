@@ -74,6 +74,10 @@ export default class TreeComponent extends NestedComponent {
     this.viewComponents.forEach((component) => component.parentDisabled = disabled);
   }
 
+  get isDefaultValueComponent() {
+    return this.treeRoot && this.options.editComponent && this.options.editForm && this.component.key === 'defaultValue';
+  }
+
   destroy() {
     super.destroy();
 
@@ -427,7 +431,7 @@ export default class TreeComponent extends NestedComponent {
       createComponents: this.createComponents.bind(this),
       checkNode: this.checkNode.bind(this, this.data),
       removeComponents: this.removeComponents,
-      parentPath: this.path || this.component.key,
+      parentPath: this.isDefaultValueComponent ? (this.path || this.component.key) : null,
     });
     this.hook('tree.setRoot', {
       root: this.treeRoot,
@@ -457,7 +461,9 @@ export default class TreeComponent extends NestedComponent {
   }
 
   getComponents() {
-    return this.treeRoot ? this.treeRoot.getComponents() : [];
+    return this.isDefaultValueComponent
+      ? this.treeRoot.getComponents()
+      : super.getComponents();
   }
 }
 

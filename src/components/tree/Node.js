@@ -30,12 +30,12 @@ export default class Node {
     this.parentPath = parentPath;
 
     this.resetData();
-    this.children = children.map((child) => new Node(this, child, {
+    this.children = children.map((child, index) => new Node(this, child, {
       checkNode,
       createComponents,
       isNew: false,
       removeComponents,
-      parentPath: this.childrenPath,
+      parentPath: this.getChildrenPath(index),
     }));
 }
 
@@ -68,8 +68,8 @@ export default class Node {
     return Array.isArray(this.children) && this.children.length > 0;
   }
 
-  get childrenPath() {
-    return `${this.parentPath}.children[0]`;
+  getChildrenPath(index) {
+    return this.parentPath ? `${this.parentPath}.children[${index}]` : '';
   }
 
   eachChild(iteratee) {
@@ -95,7 +95,7 @@ export default class Node {
       createComponents: this.createComponents,
       isNew: true,
       removeComponents: this.removeComponents,
-      parentPath: this.childrenPath,
+      parentPath: this.getChildrenPath(this.children.length),
     });
     this.children = this.children.concat(child);
     return child;
@@ -188,8 +188,10 @@ export default class Node {
   instantiateComponents() {
     this.components = this.createComponents(this.data, this);
     this.components.forEach((component) => {
-      const path = this.calculateComponentPath(component);
-      component.path = path;
+      if (this.parentPath) {
+        const path = this.calculateComponentPath(component);
+        component.path = path;
+      }
     });
     this.checkNode(this);
   }
@@ -208,9 +210,8 @@ export default class Node {
    calculateComponentPath(component) {
     let path = '';
     if (component.component.key) {
-      path = this.parentPath ? `${this.parentPath}.data.` : '';
-      path += component.component.key;
-      return path;
+      path = `${this.parentPath}.data.${component.component.key}`;
     }
+    return path;
   }
 }
