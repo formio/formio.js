@@ -2587,7 +2587,7 @@ export default class Component extends Element {
 
     // Handle all cases when calculated values should not fire.
     if (
-      this.options.readOnly ||
+      (this.options.readOnly && !this.options.pdf) ||
       !this.component.calculateValue ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
