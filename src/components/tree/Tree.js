@@ -15,7 +15,7 @@ export default class TreeComponent extends NestedComponent {
       input: true,
       tree: true,
       components: [],
-      multiple: true,
+      multiple: false,
     }, ...extend);
   }
 
@@ -32,7 +32,6 @@ export default class TreeComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.type = 'tree';
-    this.component.multiple = false;
   }
 
   get emptyValue() {
