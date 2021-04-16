@@ -471,26 +471,16 @@ export default class ButtonComponent extends Field {
       return;
     }
 
-    const getRecaptchaComponent = (components, key) => {
-      var recaptcha;
-      function getComponent(components, key) {
-       for ( let i = 0; i<components.length && !recaptcha; i++) {
-          if (components[i].components) {
-            getComponent(components[i].components, key);
-          }
- else {
-            if (components[i].component.type === 'recaptcha' && components[i].component.eventType === 'buttonClick' && components[i].component.buttonKey === key) {
-              recaptcha = components[i];
-              return;
-            }
-          }
-        }
-      }
-      getComponent(components, key);
-      return recaptcha;
-    };
+    let recaptchaComponent;
 
-    const recaptchaComponent = getRecaptchaComponent(this.root.components, this.component.key);
+    this.root.everyComponent((component)=> {
+      if ( component.component.type === 'recaptcha' &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === this.component.key) {
+          recaptchaComponent = component;
+        }
+    });
+
     if (recaptchaComponent) {
       recaptchaComponent.verify(`${this.component.key}Click`);
     }
