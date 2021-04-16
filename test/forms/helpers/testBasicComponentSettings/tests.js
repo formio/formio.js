@@ -920,7 +920,7 @@ export default {
   },
   conditional: {
     'Should show component if simple condition is met and hide it if simple condition is not fulfilled'(form, done, test) {
-      test.timeout(2500);
+      test.timeout(3000);
       const testComponents = form.components.filter(comp => !['basis'].includes(comp.component.key));
 
       const testVisibility = (shouldBeVisible) => {
@@ -955,7 +955,7 @@ export default {
   }, 
   customConditional: {
     'Should show component if custom condition is met and hide it if custom condition is not fulfilled'(form, done, test) {
-      test.timeout(2500);
+      test.timeout(3000);
       const testComponents = form.components.filter(comp => !['basis'].includes(comp.component.key));
 
       const testVisibility = (shouldBeVisible) => {
