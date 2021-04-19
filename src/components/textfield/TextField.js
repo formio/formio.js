@@ -1,5 +1,5 @@
 import Input from '../_classes/input/Input';
-import { conformToMask } from 'text-mask-all/vanilla';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
 
 export default class TextFieldComponent extends Input {
