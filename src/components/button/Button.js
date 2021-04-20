@@ -145,7 +145,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('submitError'));
+        const resultMessage = _.isString(message) ? this.t(message) : this.t(this.errorMessage('submitError'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
