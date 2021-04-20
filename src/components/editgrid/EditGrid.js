@@ -722,7 +722,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.updateValue();
     this.emit('editGridSaveRow', {
       component: this.component,
-      row: editRow,
+      row: editRow.data,
     });
     this.triggerChange({ modified, noPristineChangeOnModified: modified && this.component.rowDrafts, isolateRow: true });
     if (this.component.rowDrafts) {
