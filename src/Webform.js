@@ -1225,12 +1225,19 @@ export default class Webform extends NestedDataComponent {
         if (err.messages && err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message, context, fromServer }, index) => {
-            const text = context?.hasLabel || fromServer ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+            const text = context?.hasLabel || fromServer
+              ? this.t('alertMessage', { message: this.t(message) })
+              : this.t('alertMessageWithLabel', {
+                label: this.t(component.label),
+                message: this.t(message),
+              });
             displayedErrors.push(createListItem(text, index));
           });
         }
         else if (err) {
-          const message = _.isObject(err) ? err.message || '' : err;
+          const message = _.isObject(err)
+            ? this.t('alertMessage', { message: this.t(err.message || '') })
+            : this.t('alertMessage', { message: this.t(err) });
           displayedErrors.push(createListItem(message));
         }
       }
@@ -1275,22 +1282,27 @@ export default class Webform extends NestedDataComponent {
     return submission;
   }
 
+  normalizeError(error) {
+    if (error) {
+      if (typeof error === 'object' && 'details' in error) {
+        error = error.details;
+      }
+
+      if (typeof error === 'string') {
+        error = { message: error };
+      }
+    }
+
+    return error;
+  }
+
   /**
    * Called when an error occurs during the submission.
    *
    * @param {Object} error - The error that occured.
    */
   onSubmissionError(error) {
-    if (error) {
-      // Normalize the error.
-      if (typeof error === 'string') {
-        error = { message: error };
-      }
-
-      if ('details' in error) {
-        error = error.details;
-      }
-    }
+    error = this.normalizeError(error);
 
     this.submitting = false;
     this.setPristine(false);
