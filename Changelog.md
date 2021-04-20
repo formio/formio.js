@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.1-rc.3
+#### Changed
+ - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github. 
+
 ### 4.13.1-rc.2
 #### Fixed
  - FIO-445: TypeError in console in custom endpoint example
