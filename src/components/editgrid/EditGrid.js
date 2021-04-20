@@ -779,8 +779,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.baseRemoveRow(rowIndex);
     this.splice(rowIndex);
     this.emit('editGridDeleteRow', {
-      component: this.component,
-      row: editRows[rowIndex],
       index: rowIndex
     });
     this.editRows.splice(rowIndex, 1);
