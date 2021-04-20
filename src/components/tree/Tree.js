@@ -394,8 +394,10 @@ export default class TreeComponent extends NestedComponent {
       node,
       component: this,
     }, () => {
-      node.save();
-      this.updateTree();
+      const isSaved = node.save();
+      if (isSaved) {
+        this.updateTree();
+      }
 
       return node;
     });
@@ -460,7 +462,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   getComponents() {
-    return this.treeRoot && this.isDefaultValueComponent
+    return this.treeRoot && (this.isDefaultValueComponent || (!this.isDefaultValueComponent && !this.builderMode))
       ? this.treeRoot.getComponents()
       : super.getComponents();
   }
