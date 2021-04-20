@@ -720,6 +720,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.backup = null;
 
     this.updateValue();
+    this.emit('editGridSaveRow', {
+      component: this.component,
+      row: editRow,
+    });
     this.triggerChange({ modified, noPristineChangeOnModified: modified && this.component.rowDrafts, isolateRow: true });
     if (this.component.rowDrafts) {
       editRow.components.forEach(comp => comp.setPristine(this.pristine));
@@ -774,6 +778,11 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.baseRemoveRow(rowIndex);
     this.splice(rowIndex);
+    this.emit('editGridDeleteRow', {
+      component: this.component,
+      row: editRows[rowIndex],
+      index: rowIndex
+    });
     this.editRows.splice(rowIndex, 1);
     this.updateRowsComponents(rowIndex);
     this.updateValue();
