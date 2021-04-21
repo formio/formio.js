@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.1-rc.4
+#### Fixed
+ - FIO-1151: Fix url option being affected by interpolation for address component.
+ - Fixed Formio from being undefined in example template.
+
+#### Added
+ - Added Save & Delete event for EditGrid.
+
 ### 4.13.1-rc.3
 #### Changed
  - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github. 
