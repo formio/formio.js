@@ -654,6 +654,10 @@ export default class Webform extends NestedDataComponent {
       if (this.onSetForm) {
         this.onSetForm(_.cloneDeep(this._form), form);
       }
+
+      if (this.parent?.component?.modalEdit) {
+        return NativePromise.resolve();
+      }
     }
     catch (err) {
       console.warn(err);
