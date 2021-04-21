@@ -202,6 +202,7 @@ export function embed(config = {}) {
         const form = (config.form || config.src);
         debug('Creating form', form, config.config);
         isReady.then(() => {
+          Formio.license = true;
           Formio.createForm(formElement, form, config.config).then((instance) => {
             const submitDone = (submission) => {
               debug('Submision Complete', submission);
