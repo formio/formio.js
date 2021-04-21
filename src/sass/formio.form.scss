@@ -1336,3 +1336,8 @@ div[data-oembed-url] {
     font-weight: normal;
   }
 }
+
+span[role="link"] {
+  text-decoration: underline;
+  cursor: pointer;
+}
