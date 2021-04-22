@@ -19972,7 +19972,7 @@
     "__docId__": 1115,
     "kind": "file",
     "name": "src/components/tabs/Tabs.js",
-    "content": "import _ from 'lodash';\nimport NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class TabsComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Tabs',\n      type: 'tabs',\n      input: false,\n      key: 'tabs',\n      persistent: false,\n      tableView: false,\n      components: [\n        {\n          label: 'Tab 1',\n          key: 'tab1',\n          components: [],\n        },\n      ],\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Tabs',\n      group: 'layout',\n      icon: 'folder-o',\n      weight: 50,\n      documentation: '/userguide/#tabs',\n      schema: TabsComponent.schema(),\n    };\n  }\n\n  get defaultSchema() {\n    return TabsComponent.schema();\n  }\n\n  get schema() {\n    const schema = super.schema;\n    // We need to clone this because the builder uses the \"components\" reference and this would reset that reference.\n    const components = _.cloneDeep(this.component.components);\n    schema.components = components.map((tab, index) => {\n      tab.components = this.tabs[index].map((component) => component.schema);\n      return tab;\n    });\n\n    return schema;\n  }\n\n  get tabKey() {\n    return `tab-${this.key}`;\n  }\n\n  get tabLikey() {\n    return `tabLi-${this.key}`;\n  }\n\n  get tabLinkKey() {\n    return `tabLink-${this.key}`;\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.currentTab = 0;\n    this.noField = true;\n  }\n\n  init() {\n    this.components = [];\n    this.tabs = [];\n    _.each(this.component.components, (tab, index) => {\n      this.tabs[index] = [];\n      // Initialize empty tabs.\n      tab.components = tab.components || [];\n      _.each(tab.components, (comp) => {\n        const component = this.createComponent(comp);\n        component.tab = index;\n        this.tabs[index].push(component);\n      });\n    });\n  }\n\n  render() {\n    return super.render(this.renderTemplate('tab', {\n      tabKey: this.tabKey,\n      tabLikey: this.tabLikey,\n      tabLinkKey: this.tabLinkKey,\n      currentTab: this.currentTab,\n      tabComponents: this.tabs.map(tab => this.renderComponents(tab))\n    }, (this.options.flatten || this.options.pdf ? 'flat' : null)));\n  }\n\n  attach(element) {\n    this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });\n    ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));\n    const superAttach = super.attach(element);\n    this.refs[this.tabLinkKey].forEach((tabLink, index) => {\n      this.addEventListener(tabLink, 'click', (event) => {\n        event.preventDefault();\n        this.setTab(index);\n      });\n    });\n    this.refs[this.tabKey].forEach((tab, index) => {\n      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);\n    });\n    return superAttach;\n  }\n\n  detach(all) {\n    super.detach(all);\n  }\n\n  /**\n   * Set the current tab.\n   *\n   * @param index\n   */\n  setTab(index) {\n    if (\n      !this.tabs ||\n      !this.tabs[index] ||\n      !this.refs[this.tabKey] ||\n      !this.refs[this.tabKey][index]\n    ) {\n      return;\n    }\n\n    this.currentTab = index;\n\n    _.each(this.refs[this.tabKey], (tab) => {\n      this.removeClass(tab, 'formio-tab-panel-active');\n      tab.style.display = 'none';\n    });\n    this.addClass(this.refs[this.tabKey][index], 'formio-tab-panel-active');\n    this.refs[this.tabKey][index].style.display = 'block';\n\n    _.each(this.refs[this.tabLinkKey], (tabLink, tabIndex) => {\n      if (this.refs[this.tabLinkKey][tabIndex]) {\n        this.removeClass(tabLink, 'formio-tab-link-active');\n      }\n      if (this.refs[this.tabLikey][tabIndex]) {\n        this.removeClass(this.refs[this.tabLikey][tabIndex], 'formio-tab-link-container-active');\n      }\n    });\n    if (this.refs[this.tabLikey][index]) {\n      this.addClass(this.refs[this.tabLikey][index], 'formio-tab-link-container-active');\n    }\n    if (this.refs[this.tabLinkKey][index]) {\n      this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');\n    }\n    this.triggerChange();\n  }\n\n  beforeFocus(component) {\n    if ('beforeFocus' in this.parent) {\n      this.parent.beforeFocus(this);\n    }\n    const tabIndex = this.tabs.findIndex((tab) => {\n      return tab.some((comp) => comp === component);\n    });\n    if (tabIndex !== -1) {\n      this.setTab(tabIndex);\n    }\n  }\n\n  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {\n    if (this.component.modalEdit) {\n      super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);\n    }\n\n    elements.forEach((element) => {\n      this.addClass(element, 'is-invalid');\n\n      if (element.getAttribute('ref') !== 'openModal') {\n        if (this.options.highlightErrors) {\n          this.addClass(element, 'tab-error');\n        }\n        else {\n          this.addClass(element, 'has-error');\n        }\n      }\n    });\n  }\n\n  clearErrorClasses(elements) {\n    if (this.component.modalEdit) {\n      const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;\n      super.clearErrorClasses(element);\n    }\n\n    elements = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];\n\n    elements.forEach((element) => {\n      this.removeClass(element, 'is-invalid');\n      this.removeClass(element, 'tab-error');\n      this.removeClass(element, 'has-error');\n    });\n  }\n\n  handleTabsValidation() {\n    if (!this.refs[this.tabLinkKey] || !this.refs[this.tabLinkKey].length || !this.tabs.length) {\n      return;\n    }\n\n    this.clearErrorClasses(this.refs[this.tabLinkKey]);\n\n    const invalidTabsIndexes = this.tabs.reduce((invalidTabs, tab, tabIndex) => {\n      const hasComponentWithError = tab.some(comp => !!comp.error);\n      return hasComponentWithError ? [...invalidTabs, tabIndex] : invalidTabs;\n    }, []);\n\n    if (!invalidTabsIndexes.length) {\n      return;\n    }\n\n    const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) => invalidTabsIndexes.includes(tabIndex));\n    this.setErrorClasses(invalidTabs);\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class TabsComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Tabs',\n      type: 'tabs',\n      input: false,\n      key: 'tabs',\n      persistent: false,\n      tableView: false,\n      components: [\n        {\n          label: 'Tab 1',\n          key: 'tab1',\n          components: [],\n        },\n      ],\n      verticalLayout: false,\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Tabs',\n      group: 'layout',\n      icon: 'folder-o',\n      weight: 50,\n      documentation: '/userguide/#tabs',\n      schema: TabsComponent.schema(),\n    };\n  }\n\n  get defaultSchema() {\n    return TabsComponent.schema();\n  }\n\n  get schema() {\n    const schema = super.schema;\n    // We need to clone this because the builder uses the \"components\" reference and this would reset that reference.\n    const components = _.cloneDeep(this.component.components);\n    schema.components = components.map((tab, index) => {\n      tab.components = this.tabs[index].map((component) => component.schema);\n      return tab;\n    });\n\n    return schema;\n  }\n\n  get tabKey() {\n    return `tab-${this.key}`;\n  }\n\n  get tabLikey() {\n    return `tabLi-${this.key}`;\n  }\n\n  get tabLinkKey() {\n    return `tabLink-${this.key}`;\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.currentTab = 0;\n    this.noField = true;\n  }\n\n  init() {\n    this.components = [];\n    this.tabs = [];\n    _.each(this.component.components, (tab, index) => {\n      this.tabs[index] = [];\n      // Initialize empty tabs.\n      tab.components = tab.components || [];\n      _.each(tab.components, (comp) => {\n        const component = this.createComponent(comp);\n        component.tab = index;\n        this.tabs[index].push(component);\n      });\n    });\n  }\n\n  render() {\n    return super.render(this.renderTemplate('tab', {\n      tabKey: this.tabKey,\n      tabLikey: this.tabLikey,\n      tabLinkKey: this.tabLinkKey,\n      currentTab: this.currentTab,\n      tabComponents: this.tabs.map(tab => this.renderComponents(tab))\n    }, (this.options.flatten || this.options.pdf ? 'flat' : null)));\n  }\n\n  attach(element) {\n    this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });\n    ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));\n    const superAttach = super.attach(element);\n    this.refs[this.tabLinkKey].forEach((tabLink, index) => {\n      this.addEventListener(tabLink, 'click', (event) => {\n        event.preventDefault();\n        this.setTab(index);\n      });\n    });\n    this.refs[this.tabKey].forEach((tab, index) => {\n      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);\n    });\n    return superAttach;\n  }\n\n  detach(all) {\n    super.detach(all);\n  }\n\n  /**\n   * Set the current tab.\n   *\n   * @param index\n   */\n  setTab(index) {\n    if (\n      !this.tabs ||\n      !this.tabs[index] ||\n      !this.refs[this.tabKey] ||\n      !this.refs[this.tabKey][index]\n    ) {\n      return;\n    }\n\n    this.currentTab = index;\n\n    _.each(this.refs[this.tabKey], (tab) => {\n      this.removeClass(tab, 'formio-tab-panel-active');\n      tab.style.display = 'none';\n    });\n    this.addClass(this.refs[this.tabKey][index], 'formio-tab-panel-active');\n    this.refs[this.tabKey][index].style.display = 'block';\n\n    _.each(this.refs[this.tabLinkKey], (tabLink, tabIndex) => {\n      if (this.refs[this.tabLinkKey][tabIndex]) {\n        this.removeClass(tabLink, 'formio-tab-link-active');\n      }\n      if (this.refs[this.tabLikey][tabIndex]) {\n        this.removeClass(this.refs[this.tabLikey][tabIndex], 'formio-tab-link-container-active');\n      }\n    });\n    if (this.refs[this.tabLikey][index]) {\n      this.addClass(this.refs[this.tabLikey][index], 'formio-tab-link-container-active');\n    }\n    if (this.refs[this.tabLinkKey][index]) {\n      this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');\n    }\n    this.triggerChange();\n  }\n\n  beforeFocus(component) {\n    if ('beforeFocus' in this.parent) {\n      this.parent.beforeFocus(this);\n    }\n    const tabIndex = this.tabs.findIndex((tab) => {\n      return tab.some((comp) => comp === component);\n    });\n    if (tabIndex !== -1) {\n      this.setTab(tabIndex);\n    }\n  }\n\n  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {\n    if (this.component.modalEdit) {\n      super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);\n    }\n\n    elements.forEach((element) => {\n      this.addClass(element, 'is-invalid');\n\n      if (element.getAttribute('ref') !== 'openModal') {\n        if (this.options.highlightErrors) {\n          this.addClass(element, 'tab-error');\n        }\n        else {\n          this.addClass(element, 'has-error');\n        }\n      }\n    });\n  }\n\n  clearErrorClasses(elements) {\n    if (this.component.modalEdit) {\n      const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;\n      super.clearErrorClasses(element);\n    }\n\n    elements = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];\n\n    elements.forEach((element) => {\n      this.removeClass(element, 'is-invalid');\n      this.removeClass(element, 'tab-error');\n      this.removeClass(element, 'has-error');\n    });\n  }\n\n  handleTabsValidation() {\n    if (!this.refs[this.tabLinkKey] || !this.refs[this.tabLinkKey].length || !this.tabs.length) {\n      return;\n    }\n\n    this.clearErrorClasses(this.refs[this.tabLinkKey]);\n\n    const invalidTabsIndexes = this.tabs.reduce((invalidTabs, tab, tabIndex) => {\n      const hasComponentWithError = tab.some(comp => !!comp.error);\n      return hasComponentWithError ? [...invalidTabs, tabIndex] : invalidTabs;\n    }, []);\n\n    if (!invalidTabsIndexes.length) {\n      return;\n    }\n\n    const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) => invalidTabsIndexes.includes(tabIndex));\n    this.setErrorClasses(invalidTabs);\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/tabs/Tabs.js",
     "access": "public",
@@ -20037,7 +20037,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent.builderInfo",
     "access": "public",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -20056,7 +20056,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -20075,7 +20075,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#schema",
     "access": "public",
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 39,
     "undocument": true,
     "type": {
       "types": [
@@ -20094,7 +20094,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabKey",
     "access": "public",
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 51,
     "undocument": true,
     "type": {
       "types": [
@@ -20113,7 +20113,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabLikey",
     "access": "public",
     "description": null,
-    "lineNumber": 54,
+    "lineNumber": 55,
     "undocument": true,
     "type": {
       "types": [
@@ -20132,7 +20132,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabLinkKey",
     "access": "public",
     "description": null,
-    "lineNumber": 58,
+    "lineNumber": 59,
     "undocument": true,
     "type": {
       "types": [
@@ -20151,7 +20151,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 63,
     "undocument": true
   },
   {
@@ -20163,7 +20163,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#currentTab",
     "access": "public",
     "description": null,
-    "lineNumber": 64,
+    "lineNumber": 65,
     "undocument": true,
     "type": {
       "types": [
@@ -20180,7 +20180,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#noField",
     "access": "public",
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 66,
     "undocument": true,
     "type": {
       "types": [
@@ -20199,7 +20199,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#init",
     "access": "public",
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 69,
     "undocument": true,
     "params": [],
     "return": null
@@ -20213,7 +20213,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#components",
     "access": "public",
     "description": null,
-    "lineNumber": 69,
+    "lineNumber": 70,
     "undocument": true,
     "type": {
       "types": [
@@ -20230,7 +20230,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabs",
     "access": "public",
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 71,
     "undocument": true,
     "type": {
       "types": [
@@ -20249,7 +20249,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#render",
     "access": "public",
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 84,
     "undocument": true,
     "params": [],
     "return": {
@@ -20269,7 +20269,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 93,
+    "lineNumber": 94,
     "undocument": true,
     "params": [
       {
@@ -20296,7 +20296,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#detach",
     "access": "public",
     "description": null,
-    "lineNumber": 109,
+    "lineNumber": 110,
     "undocument": true,
     "params": [
       {
@@ -20319,7 +20319,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#setTab",
     "access": "public",
     "description": "Set the current tab.",
-    "lineNumber": 118,
+    "lineNumber": 119,
     "params": [
       {
         "nullable": null,
@@ -20345,7 +20345,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#beforeFocus",
     "access": "public",
     "description": null,
-    "lineNumber": 154,
+    "lineNumber": 155,
     "undocument": true,
     "params": [
       {
@@ -20368,7 +20368,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#setErrorClasses",
     "access": "public",
     "description": null,
-    "lineNumber": 166,
+    "lineNumber": 167,
     "undocument": true,
     "params": [
       {
@@ -20416,7 +20416,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#clearErrorClasses",
     "access": "public",
     "description": null,
-    "lineNumber": 185,
+    "lineNumber": 186,
     "undocument": true,
     "params": [
       {
@@ -20439,7 +20439,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#handleTabsValidation",
     "access": "public",
     "description": null,
-    "lineNumber": 200,
+    "lineNumber": 201,
     "undocument": true,
     "params": [],
     "return": null
@@ -20459,7 +20459,7 @@
     "__docId__": 1140,
     "kind": "file",
     "name": "src/components/tabs/editForm/Tabs.edit.display.js",
-    "content": "export default [\n  {\n    key: 'labelPosition',\n    ignore: true\n  },\n  {\n    key: 'placeholder',\n    ignore: true\n  },\n  {\n    key: 'description',\n    ignore: true\n  },\n  {\n    key: 'autofocus',\n    ignore: true\n  },\n  {\n    key: 'tooltip',\n    ignore: true\n  },\n  {\n    key: 'tabindex',\n    ignore: true\n  },\n  {\n    key: 'disabled',\n    ignore: true\n  },\n  {\n    key: 'tableView',\n    ignore: true\n  },\n  {\n    key: 'components',\n    type: 'datagrid',\n    input: true,\n    label: 'Tabs',\n    weight: 50,\n    reorder: true,\n    components: [\n      {\n        type: 'textfield',\n        input: true,\n        key: 'label',\n        label: 'Label'\n      },\n      {\n        type: 'textfield',\n        input: true,\n        key: 'key',\n        label: 'Key',\n        allowCalculateOverride: true,\n        calculateValue: { _camelCase: [{ var: 'row.label' }] }\n      }\n    ]\n  }\n];\n",
+    "content": "export default [\n  {\n    key: 'labelPosition',\n    ignore: true\n  },\n  {\n    key: 'placeholder',\n    ignore: true\n  },\n  {\n    key: 'description',\n    ignore: true\n  },\n  {\n    key: 'autofocus',\n    ignore: true\n  },\n  {\n    key: 'tooltip',\n    ignore: true\n  },\n  {\n    key: 'tabindex',\n    ignore: true\n  },\n  {\n    key: 'disabled',\n    ignore: true\n  },\n  {\n    key: 'tableView',\n    ignore: true\n  },\n  {\n    key: 'components',\n    type: 'datagrid',\n    input: true,\n    label: 'Tabs',\n    weight: 50,\n    reorder: true,\n    components: [\n      {\n        type: 'textfield',\n        input: true,\n        key: 'label',\n        label: 'Label'\n      },\n      {\n        type: 'textfield',\n        input: true,\n        key: 'key',\n        label: 'Key',\n        allowCalculateOverride: true,\n        calculateValue: { _camelCase: [{ var: 'row.label' }] }\n      }\n    ]\n  },\n  {\n    weight: 1100,\n    type: 'checkbox',\n    label: 'Vertical Layout',\n    tooltip: 'Make this field display in vertical orientation.',\n    key: 'verticalLayout',\n    input: true\n  },\n];\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/tabs/editForm/Tabs.edit.display.js",
     "access": "public",
@@ -34155,7 +34155,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.13.1-rc.4\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.11.0\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.5.1\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.0\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.10.2\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.2.4\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^20.2.1\",\n    \"idb\": \"^6.0.0\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.13.16\",\n    \"@babel/core\": \"^7.13.16\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.12.13\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.12.13\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.13.12\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.13.15\",\n    \"@babel/register\": \"^7.13.16\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.22.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.5.1\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^2.0.0\",\n    \"mocha\": \"^8.3.2\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^10.0.1\",\n    \"webpack\": \"^5.35.0\",\n    \"webpack-stream\": \"^6.1.2\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.14.0-rc.1\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.11.0\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.5.1\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.0\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.10.2\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.2.4\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^20.2.1\",\n    \"idb\": \"^6.0.0\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.13.16\",\n    \"@babel/core\": \"^7.13.16\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.12.13\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.12.13\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.13.12\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.13.15\",\n    \"@babel/register\": \"^7.13.16\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.22.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.5.1\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^2.0.0\",\n    \"mocha\": \"^8.3.2\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^10.0.1\",\n    \"webpack\": \"^5.35.0\",\n    \"webpack-stream\": \"^6.1.2\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,
