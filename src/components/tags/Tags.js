@@ -117,7 +117,8 @@ export default class TagsComponent extends Input {
         if (typeof dataValue === 'string') {
           dataValue = dataValue.split(this.delimiter).filter(result => result);
         }
-        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
+        const value = Array.isArray(dataValue) ? dataValue : [dataValue];
+        this.choices.setValue(value.map((val) => this.sanitize(val, this.shouldSanitizeValue)));
       }
     }
     return changed;
@@ -145,4 +146,20 @@ export default class TagsComponent extends Input {
       this.refs.input[0].parentNode.lastChild.focus();
     }
   }
+<<<<<<< HEAD
+=======
+
+  getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    const stringValue = value.toString();
+    return this.sanitize(stringValue, this.shouldSanitizeValue);
+  }
+>>>>>>> 5a89e2759... Made Sanitize an optional feature
 }
