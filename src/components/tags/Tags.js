@@ -2,7 +2,7 @@ import Input from '../_classes/input/Input';
 
 let Choices;
 if (typeof window !== 'undefined') {
-  Choices = require('choices.js');
+  Choices = require('@formio/choices.js');
 }
 
 export default class TagsComponent extends Input {
