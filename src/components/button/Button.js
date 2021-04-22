@@ -335,6 +335,8 @@ export default class ButtonComponent extends Field {
           flattened,
           components
         });
+
+        this.triggerChange();
         break;
       }
       case 'url':
