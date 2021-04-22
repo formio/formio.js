@@ -908,7 +908,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows = this.editRows.slice(0, dataLength);
     this.updateOnChange(flags, changed);
     this.checkData();
-    if (changed || flags.resetValue) {
+
+    if (changed || (flags.resetValue && this.component.modalEdit)) {
       this.rebuild();
     }
     return changed;

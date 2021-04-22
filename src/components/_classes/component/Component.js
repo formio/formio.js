@@ -730,7 +730,9 @@ export default class Component extends Base {
   }
 
   get transform() {
-    return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
+    return Templates.current.hasOwnProperty('transform')
+      ? Templates.current.transform.bind(Templates.current)
+      : (type, value) => value;
   }
 
   getTemplate(names, modes) {
@@ -848,7 +850,11 @@ export default class Component extends Base {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty) {
+  sanitize(dirty, forceSanitize) {
+    // No need to sanitize when generating PDF'S since no users interact with the form.
+    if ((this.options.pdf || !this.options.sanitize) && !forceSanitize) {
+      return dirty;
+    }
     return FormioUtils.sanitize(dirty, this.options);
   }
 
@@ -859,7 +865,7 @@ export default class Component extends Base {
    * @param data
    * @param actions
    *
-   * @return {HTMLElement} - The created element.
+   * @return {HTMLElement|String} - The created element or an empty string if template is not specified.
    */
   renderString(template, data) {
     if (!template) {
@@ -1268,7 +1274,8 @@ export default class Component extends Base {
     if (value === null || value === undefined) {
       return '';
     }
-    return value.toString();
+    const stringValue = value.toString();
+    return this.sanitize(stringValue, this.shouldSanitizeValue);
   }
 
   getView(value, options) {
@@ -1289,17 +1296,18 @@ export default class Component extends Base {
    * @return {*}
    */
   itemValue(data, forceUseValue = false) {
+    let value = data;
     if (_.isObject(data)) {
       if (this.valueProperty) {
-        return _.get(data, this.valueProperty);
+        value = _.get(data, this.valueProperty);
       }
 
       if (forceUseValue) {
-        return data.value;
+        value = data.value;
       }
     }
 
-    return data;
+    return this.sanitize(value, this.shouldSanitizeValue);
   }
 
   itemValueForHTMLMode(value) {
@@ -1489,9 +1497,9 @@ export default class Component extends Base {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
-  setContent(element, content) {
+  setContent(element, content, forceSanitize) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content);
+      element.innerHTML = this.sanitize(content, forceSanitize);
       return true;
     }
     return false;
@@ -1507,7 +1515,7 @@ export default class Component extends Base {
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
-    this.element.outerHTML = this.sanitize(this.render());
+    this.element.outerHTML = this.options.sanitize ? this.sanitize(this.render()) : this.render();
     this.element = parent.children[index];
     return this.attach(this.element);
   }
@@ -2037,13 +2045,17 @@ export default class Component extends Base {
             }
 
             this.quill.on('text-change', () => {
-              txtArea.value = this.quill.root.innerHTML;
+              txtArea.value = this.sanitize(this.quill.root.innerHTML, this.shouldSanitizeValue);
               onChange(txtArea);
             });
 
             return this.quill;
           });
       });
+  }
+
+  get shouldSanitizeValue() {
+    return (!this.options?.sanitize ? true : false);
   }
 
   addAce(element, settings, onChange) {
@@ -2291,6 +2303,7 @@ export default class Component extends Base {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
+    value = this.sanitize(value, this.shouldSanitizeValue);
     const input = this.performInputMapping(this.refs.input[index]);
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
