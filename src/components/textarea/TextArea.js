@@ -288,6 +288,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     super.setValueAt(index, value, flags);
 
     if (this.editorsReady[index]) {
+      value = this.sanitize(value, this.shouldSanitizeValue);
       const setEditorsValue = (flags) => (editor) => {
         if (!flags.skipWysiwyg) {
           this.autoModified = true;
@@ -339,7 +340,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.refs.input[index].innerText = this.interpolate(value);
         }
         else {
-          this.setContent(this.refs.input[index], this.interpolate(value));
+          this.setContent(this.refs.input[index], this.interpolate(value), true);
         }
       }
     }

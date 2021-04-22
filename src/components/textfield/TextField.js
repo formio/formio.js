@@ -138,7 +138,7 @@ export default class TextFieldComponent extends Input {
       return super.setValueAt(index, value, flags);
     }
     value = this.maskValue(value, flags);
-    const textValue = value.value || '';
+    const textValue = this.sanitize(value.value || '', this.shouldSanitizeValue);
     const textInput = this.refs.mask ? this.refs.mask[index] : null;
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);

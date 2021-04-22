@@ -213,14 +213,15 @@ export default class SelectComponent extends Field {
     if (this.options.readOnly && this.component.readOnlyValue) {
       return this.itemValue(data);
     }
-
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.component.template) {
       const itemLabel = data.label || data;
-      return (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
+      const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
+      return this.sanitize(value, this.shouldSanitizeValue);
     }
     if (typeof data === 'string') {
-      return this.t(data, { _userInput: true });
+      const value = this.t(data, { _userInput: true });
+      return this.sanitize(value, this.shouldSanitizeValue);
     }
 
     if (data.data) {
@@ -230,7 +231,12 @@ export default class SelectComponent extends Field {
         ? JSON.stringify(data.data)
         : data.data;
     }
-    const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
+    const template = this.sanitize(
+      this.component.template
+        ? this.interpolate(this.component.template, { item: data })
+        : data.label,
+      this.shouldSanitizeValue,
+    );
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       const hasTranslator = this.i18next?.translator;
@@ -238,7 +244,7 @@ export default class SelectComponent extends Field {
       return hasTranslator ? template.replace(label, this.t(label, { _userInput: true })) : label;
     }
     else {
-      return JSON.stringify(data);
+      return this.sanitize(JSON.stringify(data), this.shouldSanitizeValue);
     }
   }
 
@@ -284,7 +290,7 @@ export default class SelectComponent extends Field {
         attrs,
         id,
         useId: (this.valueProperty === '') && _.isObject(value) && id,
-      })).trim();
+      }), this.shouldSanitizeValue).trim();
 
       option.element = div.firstChild;
       this.refs.selectContainer.appendChild(option.element);
