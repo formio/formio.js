@@ -1301,8 +1301,7 @@ export default class Component extends Base {
       if (this.valueProperty) {
         value = _.get(data, this.valueProperty);
       }
-
-      if (forceUseValue) {
+      else if (forceUseValue) {
         value = data.value;
       }
     }
@@ -1515,7 +1514,7 @@ export default class Component extends Base {
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
-    this.element.outerHTML = this.options.sanitize ? this.sanitize(this.render()) : this.render();
+    this.element.outerHTML = this.sanitize(this.render());
     this.element = parent.children[index];
     return this.attach(this.element);
   }
@@ -2045,10 +2044,9 @@ export default class Component extends Base {
             }
 
             this.quill.on('text-change', () => {
-              txtArea.value = this.sanitize(this.quill.root.innerHTML, this.shouldSanitizeValue);
+              txtArea.value = this.quill.root.innerHTML;
               onChange(txtArea);
             });
-
             return this.quill;
           });
       });
@@ -2303,7 +2301,7 @@ export default class Component extends Base {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
-    value = this.sanitize(value, this.shouldSanitizeValue);
+
     const input = this.performInputMapping(this.refs.input[index]);
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);

@@ -909,7 +909,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.updateOnChange(flags, changed);
     this.checkData();
 
-    if (changed || (flags.resetValue && this.component.modalEdit)) {
+    if (changed || flags.resetValue) {
       this.rebuild();
     }
     return changed;
