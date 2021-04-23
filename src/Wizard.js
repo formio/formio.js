@@ -74,6 +74,10 @@ export default class Wizard extends Webform {
     return super.data;
   }
 
+  get localData() {
+    return this.pages[this.page]?.root?.submission.data || this.submission.data;
+  }
+
   checkConditions(data, flags, row) {
     this.establishPages(data);
     return super.checkConditions(data, flags, row);
@@ -702,7 +706,7 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form, before go to the next page
-    if (this.checkValidity(this.submission.data, true, this.submission.data, true)) {
+    if (this.checkValidity(this.localData, true, this.localData, true)) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
@@ -888,7 +892,7 @@ export default class Wizard extends Webform {
   onChange(flags, changed, modified, changes) {
     super.onChange(flags, changed, modified, changes);
     if (this.alert && !this.submitted) {
-      this.checkValidity(this.submission.data, false, this.submission.data, true);
+      this.checkValidity(this.localData, false, this.localData, true);
       this.showErrors([], true, true);
     }
 
