@@ -7413,7 +7413,7 @@
     "__docId__": 396,
     "kind": "file",
     "name": "src/components/_classes/nested/NestedComponent.js",
-    "content": "'use strict';\nimport _ from 'lodash';\nimport Field from '../field/Field';\nimport Components from '../../Components';\nimport NativePromise from 'native-promise-only';\nimport { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';\n\nexport default class NestedComponent extends Field {\n  static schema(...extend) {\n    return Field.schema({\n      tree: false\n    }, ...extend);\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.type = 'components';\n    this._collapsed = !!this.component.collapsed;\n  }\n\n  get defaultSchema() {\n    return NestedComponent.schema();\n  }\n\n  get schema() {\n    const schema = super.schema;\n    const components = _.uniqBy(this.getComponents(), 'component.key');\n    schema.components = _.map(components, 'schema');\n    return schema;\n  }\n\n  get collapsed() {\n    return this._collapsed;\n  }\n\n  set collapsed(value) {\n    this._collapsed = value;\n    this.redraw();\n    if (!value && !this.pristine) {\n      this.checkValidity(this.data, true);\n    }\n  }\n\n  set visible(value) {\n    // DO NOT CALL super here.  There is an issue where clearOnHide was getting triggered with\n    // subcomponents because the \"parentVisible\" flag was set to false when it should really be\n    // set to true.\n    const visibilityChanged = this._visible !== value;\n    this._visible = value;\n    const isVisible = this.visible;\n    const forceShow = this.options.show && this.options.show[this.component.key];\n    const forceHide = this.options.hide && this.options.hide[this.component.key];\n    this.components.forEach(component => {\n      // Set the parent visibility first since we may have nested components within nested components\n      // and they need to be able to determine their visibility based on the parent visibility.\n      component.parentVisible = isVisible;\n\n      const conditionallyVisible = component.conditionallyVisible();\n      if (forceShow || conditionallyVisible) {\n        component.visible = true;\n      }\n      else if (forceHide || !isVisible || !conditionallyVisible) {\n        component.visible = false;\n      }\n      // If hiding a nested component, clear all errors below.\n      if (!component.visible) {\n        component.error = '';\n      }\n    });\n    if (visibilityChanged) {\n      this.clearOnHide();\n      this.redraw();\n    }\n  }\n\n  get visible() {\n    return super.visible;\n  }\n\n  set parentVisible(value) {\n    super.parentVisible = value;\n    this.components.forEach(component => component.parentVisible = this.visible);\n  }\n\n  get parentVisible() {\n    return super.parentVisible;\n  }\n\n  get disabled() {\n    return super.disabled;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    this.components.forEach((component) => component.parentDisabled = disabled);\n  }\n\n  set parentDisabled(value) {\n    super.parentDisabled = value;\n    this.components.forEach(component => {\n      component.parentDisabled = this.disabled;\n    });\n  }\n\n  get parentDisabled() {\n    return super.parentDisabled;\n  }\n\n  get ready() {\n    return NativePromise.all(this.getComponents().map(component => component.ready));\n  }\n\n  get currentForm() {\n    return super.currentForm;\n  }\n\n  set currentForm(instance) {\n    super.currentForm = instance;\n    this.getComponents().forEach(component => {\n      component.currentForm = instance;\n    });\n  }\n\n  get rowIndex() {\n    return this._rowIndex;\n  }\n\n  set rowIndex(value) {\n    this._rowIndex = value;\n    this.eachComponent((component) => {\n      component.rowIndex = value;\n    });\n  }\n\n  componentContext() {\n    return this._data;\n  }\n\n  get data() {\n    return this._data;\n  }\n\n  set data(value) {\n    this._data = value;\n    this.eachComponent((component) => {\n      component.data = this.componentContext(component);\n    });\n  }\n\n  getComponents() {\n    return this.components || [];\n  }\n\n  /**\n   * Perform a deep iteration over every component, including those\n   * within other container based components.\n   *\n   * @param {function} fn - Called for every component.\n   */\n  everyComponent(fn, options) {\n    const components = this.getComponents();\n    _.each(components, (component, index) => {\n      if (fn(component, components, index) === false) {\n        return false;\n      }\n\n      if (typeof component.everyComponent === 'function') {\n        if (component.everyComponent(fn, options) === false) {\n          return false;\n        }\n      }\n    });\n  }\n\n  hasComponent(component) {\n    let result = false;\n\n    this.everyComponent((comp) => {\n      if (comp === component) {\n        result = true;\n        return false;\n      }\n    });\n\n    return result;\n  }\n\n  flattenComponents() {\n    const result = {};\n\n    this.everyComponent((component) => {\n      result[component.component.flattenAs || component.key] = component;\n    });\n\n    return result;\n  }\n\n  /**\n   * Perform an iteration over each component within this container component.\n   *\n   * @param {function} fn - Called for each component\n   */\n  eachComponent(fn) {\n    _.each(this.getComponents(), (component, index) => {\n      if (fn(component, index) === false) {\n        return false;\n      }\n    });\n  }\n\n  /**\n   * Returns a component provided a key. This performs a deep search within the\n   * component tree.\n   *\n   * @param {string} key - The key of the component to retrieve.\n   * @param {function} fn - Called with the component once found.\n   * @return {Object} - The component that is located.\n   */\n  getComponent(path, fn, originalPath) {\n    originalPath = originalPath || getStringFromComponentPath(path);\n    path = getArrayFromComponentPath(path);\n    const pathStr = originalPath;\n    const newPath = _.clone(path);\n    let key = newPath.shift();\n    const remainingPath = newPath;\n    let comp = null;\n    let possibleComp = null;\n\n    if (_.isNumber(key)) {\n      key = remainingPath.shift();\n    }\n\n    if (!_.isString(key)) {\n      return comp;\n    }\n\n    this.everyComponent((component, components) => {\n      const matchPath = component.hasInput && component.path ? pathStr.includes(component.path) : true;\n      if (component.component.key === key) {\n        possibleComp = component;\n        if (matchPath) {\n          comp = component;\n          if (remainingPath.length > 0 && 'getComponent' in component) {\n            comp = component.getComponent(remainingPath, fn, originalPath);\n          }\n          else if (fn) {\n            fn(component, components);\n          }\n          return false;\n        }\n      }\n    });\n\n    if (!comp) {\n      comp = possibleComp;\n    }\n\n    return comp;\n  }\n\n  /**\n   * Return a component provided the Id of the component.\n   *\n   * @param {string} id - The Id of the component.\n   * @param {function} fn - Called with the component once it is retrieved.\n   * @return {Object} - The component retrieved.\n   */\n  getComponentById(id, fn) {\n    let comp = null;\n    this.everyComponent((component, components) => {\n      if (component.id === id) {\n        comp = component;\n        if (fn) {\n          fn(component, components);\n        }\n        return false;\n      }\n    });\n    return comp;\n  }\n\n  /**\n   * Return a path of component's value.\n   *\n   * @param {Object} component - The component instance.\n   * @return {string} - The component's value path.\n   */\n  calculateComponentPath(component) {\n    let path = '';\n    if (component.component.key) {\n      let thisPath = this;\n      while (thisPath && !thisPath.allowData && thisPath.parent) {\n        thisPath = thisPath.parent;\n      }\n      const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';\n      path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';\n      path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';\n      path += component.component.key;\n      return path;\n    }\n  }\n\n  /**\n   * Create a new component and add it to the components array.\n   *\n   * @param component\n   * @param data\n   */\n  createComponent(component, options, data, before) {\n    if (!component) {\n      return;\n    }\n    options = options || this.options;\n    data = data || this.data;\n    options.parent = this;\n    options.parentVisible = this.visible;\n    options.root = this.root || this;\n    options.skipInit = true;\n    if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {\n      component.shouldIncludeSubFormPath = true;\n    }\n    const comp = Components.create(component, options, data, true);\n\n    const path = this.calculateComponentPath(comp);\n    if (path) {\n      comp.path = path;\n    }\n    comp.init();\n    if (component.internal) {\n      return comp;\n    }\n\n    if (before) {\n      const index = _.findIndex(this.components, { id: before.id });\n      if (index !== -1) {\n        this.components.splice(index, 0, comp);\n      }\n      else {\n        this.components.push(comp);\n      }\n    }\n    else {\n      this.components.push(comp);\n    }\n    return comp;\n  }\n\n  getContainer() {\n    return this.element;\n  }\n\n  get componentComponents() {\n    return this.component.components || [];\n  }\n\n  get nestedKey() {\n    return `nested-${this.key}`;\n  }\n\n  get templateName() {\n    return 'container';\n  }\n\n  init() {\n    this.components = this.components || [];\n    this.addComponents();\n    return super.init();\n  }\n\n  /**\n   *\n   * @param element\n   * @param data\n   */\n  addComponents(data, options) {\n    data = data || this.data;\n    options = options || this.options;\n    if (options.components) {\n      this.components = options.components;\n    }\n    else {\n      const components = this.hook('addComponents', this.componentComponents, this) || [];\n      components.forEach((component) => this.addComponent(component, data));\n    }\n  }\n\n  /**\n   * Add a new component to the components array.\n   *\n   * @param {Object} component - The component JSON schema to add.\n   * @param {Object} data - The submission data object to house the data for this component.\n   * @param {HTMLElement} before - A DOM element to insert this element before.\n   * @return {Component} - The created component instance.\n   */\n  addComponent(component, data, before, noAdd) {\n    data = data || this.data;\n    if (this.options.parentPath) {\n      component.shouldIncludeSubFormPath = true;\n    }\n    component = this.hook('addComponent', component, data, before, noAdd);\n    const comp = this.createComponent(component, this.options, data, before ? before : null);\n    if (noAdd) {\n      return comp;\n    }\n    return comp;\n  }\n\n  beforeFocus() {\n    if (this.parent && 'beforeFocus' in this.parent) {\n      this.parent.beforeFocus(this);\n    }\n  }\n\n  render(children) {\n    // If already rendering, don't re-render.\n    return super.render(children || this.renderTemplate(this.templateName, {\n      children: this.renderComponents(),\n      nestedKey: this.nestedKey,\n      collapsed: this.options.pdf ? false : this.collapsed,\n    }));\n  }\n\n  renderComponents(components) {\n    components = components || this.getComponents();\n    const children = components.map(component => component.render());\n    return this.renderTemplate('components', {\n      children,\n      components,\n    });\n  }\n\n  attach(element) {\n    const superPromise = super.attach(element);\n\n    this.loadRefs(element, {\n      header: 'single',\n      collapsed: this.collapsed,\n      [this.nestedKey]: 'single',\n    });\n\n    let childPromise = NativePromise.resolve();\n    if (this.refs[this.nestedKey]) {\n      childPromise = this.attachComponents(this.refs[this.nestedKey]);\n    }\n\n    if (this.component.collapsible && this.refs.header) {\n      this.addEventListener(this.refs.header, 'click', () => {\n        this.collapsed = !this.collapsed;\n      });\n    }\n\n    return NativePromise.all([\n      superPromise,\n      childPromise,\n    ]);\n  }\n\n  attachComponents(element, components, container) {\n    components = components || this.components;\n    container = container || this.component.components;\n\n    element = this.hook('attachComponents', element, components, container, this);\n    if (!element) {\n      // Return a non-resolving promise.\n      return (new NativePromise(() => {}));\n    }\n\n    let index = 0;\n    const promises = [];\n    Array.prototype.slice.call(element.children).forEach(child => {\n      if (!child.getAttribute('data-noattach') && components[index]) {\n        promises.push(components[index].attach(child));\n        index++;\n      }\n    });\n    return NativePromise.all(promises);\n  }\n\n  /**\n   * Remove a component from the components array.\n   *\n   * @param {Component} component - The component to remove from the components.\n   * @param {Array<Component>} components - An array of components to remove this component from.\n   */\n  removeComponent(component, components) {\n    components = components || this.components;\n    component.destroy();\n    _.remove(components, { id: component.id });\n  }\n\n  /**\n   * Removes a component provided the API key of that component.\n   *\n   * @param {string} key - The API key of the component to remove.\n   * @param {function} fn - Called once the component is removed.\n   * @return {null}\n   */\n  removeComponentByKey(key, fn) {\n    const comp = this.getComponent(key, (component, components) => {\n      this.removeComponent(component, components);\n      if (fn) {\n        fn(component, components);\n      }\n    });\n    if (!comp) {\n      if (fn) {\n        fn(null);\n      }\n      return null;\n    }\n  }\n\n  /**\n   * Removes a component provided the Id of the component.\n   *\n   * @param {string} id - The Id of the component to remove.\n   * @param {function} fn - Called when the component is removed.\n   * @return {null}\n   */\n  removeComponentById(id, fn) {\n    const comp = this.getComponentById(id, (component, components) => {\n      this.removeComponent(component, components);\n      if (fn) {\n        fn(component, components);\n      }\n    });\n    if (!comp) {\n      if (fn) {\n        fn(null);\n      }\n      return null;\n    }\n  }\n\n  updateValue(value, flags = {}) {\n    return this.components.reduce((changed, comp) => {\n      return comp.updateValue(null, flags) || changed;\n    }, super.updateValue(value, flags));\n  }\n\n  shouldSkipValidation(data, dirty, row) {\n    // Nested components with no input should not be validated.\n    if (!this.component.input) {\n      return true;\n    }\n    else {\n      return super.shouldSkipValidation(data, dirty, row);\n    }\n  }\n\n  checkData(data, flags, row, components) {\n    if (this.builderMode) {\n      return true;\n    }\n    data = data || this.rootValue;\n    flags = flags || {};\n    row = row || this.data;\n    components = components && _.isArray(components) ? components : this.getComponents();\n    const isValid = components.reduce((valid, comp) => {\n      return comp.checkData(data, flags, row) && valid;\n    }, super.checkData(data, flags, row));\n\n    this.checkModal(isValid, this.isDirty);\n    return isValid;\n  }\n\n  checkModal(isValid, dirty) {\n    if (!this.component.modalEdit || !this.componentModal) {\n      return;\n    }\n    const messages = this.errors;\n    this.clearErrorClasses(this.refs.openModalWrapper);\n    this.error = '';\n    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {\n      this.error = {\n        component: this.component,\n        level: 'hidden',\n        message: this.t('Fix the errors'),\n        messages,\n      };\n      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);\n    }\n  }\n\n  checkConditions(data, flags, row) {\n    this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));\n    return super.checkConditions(data, flags, row);\n  }\n\n  clearOnHide(show) {\n    super.clearOnHide(show);\n    if (this.component.clearOnHide) {\n      if (this.allowData && !this.hasValue()) {\n        this.dataValue = this.defaultValue;\n      }\n      if (this.hasValue()) {\n        this.restoreComponentsContext();\n      }\n    }\n    this.getComponents().forEach(component => component.clearOnHide(show));\n  }\n\n  restoreComponentsContext() {\n    this.getComponents().forEach((component) => component.data = this.dataValue);\n  }\n\n  /**\n   * Allow components to hook into the next page trigger to perform their own logic.\n   *\n   * @return {*}\n   */\n  beforePage(next) {\n    return NativePromise.all(this.getComponents().map((comp) => comp.beforePage(next)));\n  }\n\n  /**\n   * Allow components to hook into the submission to provide their own async data.\n   *\n   * @return {*}\n   */\n  beforeSubmit() {\n    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));\n  }\n\n  calculateValue(data, flags, row) {\n    // Do not iterate into children and calculateValues if this nested component is conditionally hidden.\n    if (!this.conditionallyVisible()) {\n      return false;\n    }\n    return this.getComponents().reduce(\n      (changed, comp) => comp.calculateValue(data, flags, row) || changed,\n      super.calculateValue(data, flags, row)\n    );\n  }\n\n  isLastPage() {\n    return this.pages.length - 1 === this.page;\n  }\n\n  isValid(data, dirty) {\n    return this.getComponents().reduce(\n      (valid, comp) => comp.isValid(data, dirty) && valid,\n      super.isValid(data, dirty)\n    );\n  }\n\n  checkValidity(data, dirty, row, silentCheck) {\n    if (!this.checkCondition(row, data)) {\n      this.setCustomValidity('');\n      return true;\n    }\n\n    const isValid = this.getComponents().reduce(\n      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,\n      super.checkValidity(data, dirty, row, silentCheck)\n    );\n    this.checkModal(isValid, dirty);\n    return isValid;\n  }\n\n  checkAsyncValidity(data, dirty, row, silentCheck) {\n    return this.ready.then(() => {\n      const promises = [super.checkAsyncValidity(data, dirty, row, silentCheck)];\n      this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));\n      return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));\n    });\n  }\n\n  setPristine(pristine) {\n    super.setPristine(pristine);\n    this.getComponents().forEach((comp) => comp.setPristine(pristine));\n  }\n\n  get isPristine() {\n    return this.pristine && this.getComponents().every((c) => c.isPristine);\n  }\n\n  get isDirty() {\n    return this.dirty && this.getComponents().every((c) => c.isDirty);\n  }\n\n  detach() {\n    this.components.forEach(component => {\n      component.detach();\n    });\n    super.detach();\n  }\n\n  clear() {\n    this.components.forEach(component => {\n      component.clear();\n    });\n    super.clear();\n  }\n\n  destroy() {\n    this.destroyComponents();\n    super.destroy();\n  }\n\n  destroyComponents() {\n    const components = this.getComponents().slice();\n    components.forEach((comp) => this.removeComponent(comp, this.components));\n    this.components = [];\n  }\n\n  get errors() {\n    const thisErrors = this.error ? [this.error] : [];\n    return this.getComponents()\n      .reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors)\n      .filter(err => err.level !== 'hidden');\n  }\n\n  getValue() {\n    return this.data;\n  }\n\n  resetValue() {\n    super.resetValue();\n    this.getComponents().forEach((comp) => comp.resetValue());\n    this.setPristine(true);\n  }\n\n  get dataReady() {\n    return NativePromise.all(this.getComponents().map((component) => component.dataReady));\n  }\n\n  setNestedValue(component, value, flags = {}) {\n    component._data = this.componentContext(component);\n    if (component.type === 'button') {\n      return false;\n    }\n    if (component.type === 'components') {\n      return component.setValue(value, flags);\n    }\n    else if (value && component.hasValue(value)) {\n      return component.setValue(_.get(value, component.key), flags);\n    }\n    else if (!this.rootPristine || component.visible) {\n      flags.noValidate = !flags.dirty;\n      flags.resetValue = true;\n      return component.setValue(component.defaultValue, flags);\n    }\n  }\n\n  setValue(value, flags = {}) {\n    if (!value) {\n      return false;\n    }\n    return this.getComponents().reduce((changed, component) => {\n      return this.setNestedValue(component, value, flags, changed) || changed;\n    }, false);\n  }\n}\n",
+    "content": "'use strict';\nimport _ from 'lodash';\nimport Field from '../field/Field';\nimport Components from '../../Components';\nimport NativePromise from 'native-promise-only';\nimport { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';\n\nexport default class NestedComponent extends Field {\n  static schema(...extend) {\n    return Field.schema({\n      tree: false\n    }, ...extend);\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.type = 'components';\n    this._collapsed = !!this.component.collapsed;\n  }\n\n  get defaultSchema() {\n    return NestedComponent.schema();\n  }\n\n  get schema() {\n    const schema = super.schema;\n    const components = _.uniqBy(this.getComponents(), 'component.key');\n    schema.components = _.map(components, 'schema');\n    return schema;\n  }\n\n  get collapsed() {\n    return this._collapsed;\n  }\n\n  set collapsed(value) {\n    this._collapsed = value;\n    this.redraw();\n    if (!value && !this.pristine) {\n      this.checkValidity(this.data, true);\n    }\n  }\n\n  set visible(value) {\n    // DO NOT CALL super here.  There is an issue where clearOnHide was getting triggered with\n    // subcomponents because the \"parentVisible\" flag was set to false when it should really be\n    // set to true.\n    const visibilityChanged = this._visible !== value;\n    this._visible = value;\n    const isVisible = this.visible;\n    const forceShow = this.options.show && this.options.show[this.component.key];\n    const forceHide = this.options.hide && this.options.hide[this.component.key];\n    this.components.forEach(component => {\n      // Set the parent visibility first since we may have nested components within nested components\n      // and they need to be able to determine their visibility based on the parent visibility.\n      component.parentVisible = isVisible;\n\n      const conditionallyVisible = component.conditionallyVisible();\n      if (forceShow || conditionallyVisible) {\n        component.visible = true;\n      }\n      else if (forceHide || !isVisible || !conditionallyVisible) {\n        component.visible = false;\n      }\n      // If hiding a nested component, clear all errors below.\n      if (!component.visible) {\n        component.error = '';\n      }\n    });\n    if (visibilityChanged) {\n      this.clearOnHide();\n      this.redraw();\n    }\n  }\n\n  get visible() {\n    return super.visible;\n  }\n\n  set parentVisible(value) {\n    super.parentVisible = value;\n    this.components.forEach(component => component.parentVisible = this.visible);\n  }\n\n  get parentVisible() {\n    return super.parentVisible;\n  }\n\n  get disabled() {\n    return super.disabled;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    this.components.forEach((component) => component.parentDisabled = disabled);\n  }\n\n  set parentDisabled(value) {\n    super.parentDisabled = value;\n    this.components.forEach(component => {\n      component.parentDisabled = this.disabled;\n    });\n  }\n\n  get parentDisabled() {\n    return super.parentDisabled;\n  }\n\n  get ready() {\n    return NativePromise.all(this.getComponents().map(component => component.ready));\n  }\n\n  get currentForm() {\n    return super.currentForm;\n  }\n\n  set currentForm(instance) {\n    super.currentForm = instance;\n    this.getComponents().forEach(component => {\n      component.currentForm = instance;\n    });\n  }\n\n  get rowIndex() {\n    return this._rowIndex;\n  }\n\n  set rowIndex(value) {\n    this._rowIndex = value;\n    this.eachComponent((component) => {\n      component.rowIndex = value;\n    });\n  }\n\n  componentContext() {\n    return this._data;\n  }\n\n  get data() {\n    return this._data;\n  }\n\n  set data(value) {\n    this._data = value;\n    this.eachComponent((component) => {\n      component.data = this.componentContext(component);\n    });\n  }\n\n  getComponents() {\n    return this.components || [];\n  }\n\n  /**\n   * Perform a deep iteration over every component, including those\n   * within other container based components.\n   *\n   * @param {function} fn - Called for every component.\n   */\n  everyComponent(fn, options) {\n    const components = this.getComponents();\n    _.each(components, (component, index) => {\n      if (fn(component, components, index) === false) {\n        return false;\n      }\n\n      if (typeof component.everyComponent === 'function') {\n        if (component.everyComponent(fn, options) === false) {\n          return false;\n        }\n      }\n    });\n  }\n\n  hasComponent(component) {\n    let result = false;\n\n    this.everyComponent((comp) => {\n      if (comp === component) {\n        result = true;\n        return false;\n      }\n    });\n\n    return result;\n  }\n\n  flattenComponents() {\n    const result = {};\n\n    this.everyComponent((component) => {\n      result[component.component.flattenAs || component.key] = component;\n    });\n\n    return result;\n  }\n\n  /**\n   * Perform an iteration over each component within this container component.\n   *\n   * @param {function} fn - Called for each component\n   */\n  eachComponent(fn) {\n    _.each(this.getComponents(), (component, index) => {\n      if (fn(component, index) === false) {\n        return false;\n      }\n    });\n  }\n\n  /**\n   * Returns a component provided a key. This performs a deep search within the\n   * component tree.\n   *\n   * @param {string} key - The key of the component to retrieve.\n   * @param {function} fn - Called with the component once found.\n   * @return {Object} - The component that is located.\n   */\n  getComponent(path, fn, originalPath) {\n    originalPath = originalPath || getStringFromComponentPath(path);\n    path = getArrayFromComponentPath(path);\n    const pathStr = originalPath;\n    const newPath = _.clone(path);\n    let key = newPath.shift();\n    const remainingPath = newPath;\n    let comp = null;\n    let possibleComp = null;\n\n    if (_.isNumber(key)) {\n      key = remainingPath.shift();\n    }\n\n    if (!_.isString(key)) {\n      return comp;\n    }\n\n    this.everyComponent((component, components) => {\n      const matchPath = component.hasInput && component.path ? pathStr.includes(component.path) : true;\n      if (component.component.key === key) {\n        possibleComp = component;\n        if (matchPath) {\n          comp = component;\n          if (remainingPath.length > 0 && 'getComponent' in component) {\n            comp = component.getComponent(remainingPath, fn, originalPath);\n          }\n          else if (fn) {\n            fn(component, components);\n          }\n          return false;\n        }\n      }\n    });\n\n    if (!comp) {\n      comp = possibleComp;\n    }\n\n    return comp;\n  }\n\n  /**\n   * Return a component provided the Id of the component.\n   *\n   * @param {string} id - The Id of the component.\n   * @param {function} fn - Called with the component once it is retrieved.\n   * @return {Object} - The component retrieved.\n   */\n  getComponentById(id, fn) {\n    let comp = null;\n    this.everyComponent((component, components) => {\n      if (component.id === id) {\n        comp = component;\n        if (fn) {\n          fn(component, components);\n        }\n        return false;\n      }\n    });\n    return comp;\n  }\n\n  /**\n   * Return a path of component's value.\n   *\n   * @param {Object} component - The component instance.\n   * @return {string} - The component's value path.\n   */\n  calculateComponentPath(component) {\n    let path = '';\n    if (component.component.key) {\n      let thisPath = this;\n      while (thisPath && !thisPath.allowData && thisPath.parent) {\n        thisPath = thisPath.parent;\n      }\n      const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';\n      path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';\n      path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';\n      path += component.component.key;\n      return path;\n    }\n  }\n\n  /**\n   * Create a new component and add it to the components array.\n   *\n   * @param component\n   * @param data\n   */\n  createComponent(component, options, data, before) {\n    if (!component) {\n      return;\n    }\n    options = options || this.options;\n    data = data || this.data;\n    options.parent = this;\n    options.parentVisible = this.visible;\n    options.root = this.root || this;\n    options.localRoot = this.localRoot;\n    options.skipInit = true;\n    if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {\n      component.shouldIncludeSubFormPath = true;\n    }\n    const comp = Components.create(component, options, data, true);\n\n    const path = this.calculateComponentPath(comp);\n    if (path) {\n      comp.path = path;\n    }\n    comp.init();\n    if (component.internal) {\n      return comp;\n    }\n\n    if (before) {\n      const index = _.findIndex(this.components, { id: before.id });\n      if (index !== -1) {\n        this.components.splice(index, 0, comp);\n      }\n      else {\n        this.components.push(comp);\n      }\n    }\n    else {\n      this.components.push(comp);\n    }\n    return comp;\n  }\n\n  getContainer() {\n    return this.element;\n  }\n\n  get componentComponents() {\n    return this.component.components || [];\n  }\n\n  get nestedKey() {\n    return `nested-${this.key}`;\n  }\n\n  get templateName() {\n    return 'container';\n  }\n\n  init() {\n    this.components = this.components || [];\n    this.addComponents();\n    return super.init();\n  }\n\n  /**\n   *\n   * @param element\n   * @param data\n   */\n  addComponents(data, options) {\n    data = data || this.data;\n    options = options || this.options;\n    if (options.components) {\n      this.components = options.components;\n    }\n    else {\n      const components = this.hook('addComponents', this.componentComponents, this) || [];\n      components.forEach((component) => this.addComponent(component, data));\n    }\n  }\n\n  /**\n   * Add a new component to the components array.\n   *\n   * @param {Object} component - The component JSON schema to add.\n   * @param {Object} data - The submission data object to house the data for this component.\n   * @param {HTMLElement} before - A DOM element to insert this element before.\n   * @return {Component} - The created component instance.\n   */\n  addComponent(component, data, before, noAdd) {\n    data = data || this.data;\n    if (this.options.parentPath) {\n      component.shouldIncludeSubFormPath = true;\n    }\n    component = this.hook('addComponent', component, data, before, noAdd);\n    const comp = this.createComponent(component, this.options, data, before ? before : null);\n    if (noAdd) {\n      return comp;\n    }\n    return comp;\n  }\n\n  beforeFocus() {\n    if (this.parent && 'beforeFocus' in this.parent) {\n      this.parent.beforeFocus(this);\n    }\n  }\n\n  render(children) {\n    // If already rendering, don't re-render.\n    return super.render(children || this.renderTemplate(this.templateName, {\n      children: this.renderComponents(),\n      nestedKey: this.nestedKey,\n      collapsed: this.options.pdf ? false : this.collapsed,\n    }));\n  }\n\n  renderComponents(components) {\n    components = components || this.getComponents();\n    const children = components.map(component => component.render());\n    return this.renderTemplate('components', {\n      children,\n      components,\n    });\n  }\n\n  attach(element) {\n    const superPromise = super.attach(element);\n\n    this.loadRefs(element, {\n      header: 'single',\n      collapsed: this.collapsed,\n      [this.nestedKey]: 'single',\n    });\n\n    let childPromise = NativePromise.resolve();\n    if (this.refs[this.nestedKey]) {\n      childPromise = this.attachComponents(this.refs[this.nestedKey]);\n    }\n\n    if (this.component.collapsible && this.refs.header) {\n      this.addEventListener(this.refs.header, 'click', () => {\n        this.collapsed = !this.collapsed;\n      });\n    }\n\n    return NativePromise.all([\n      superPromise,\n      childPromise,\n    ]);\n  }\n\n  attachComponents(element, components, container) {\n    components = components || this.components;\n    container = container || this.component.components;\n\n    element = this.hook('attachComponents', element, components, container, this);\n    if (!element) {\n      // Return a non-resolving promise.\n      return (new NativePromise(() => {}));\n    }\n\n    let index = 0;\n    const promises = [];\n    Array.prototype.slice.call(element.children).forEach(child => {\n      if (!child.getAttribute('data-noattach') && components[index]) {\n        promises.push(components[index].attach(child));\n        index++;\n      }\n    });\n    return NativePromise.all(promises);\n  }\n\n  /**\n   * Remove a component from the components array.\n   *\n   * @param {Component} component - The component to remove from the components.\n   * @param {Array<Component>} components - An array of components to remove this component from.\n   */\n  removeComponent(component, components) {\n    components = components || this.components;\n    component.destroy();\n    _.remove(components, { id: component.id });\n  }\n\n  /**\n   * Removes a component provided the API key of that component.\n   *\n   * @param {string} key - The API key of the component to remove.\n   * @param {function} fn - Called once the component is removed.\n   * @return {null}\n   */\n  removeComponentByKey(key, fn) {\n    const comp = this.getComponent(key, (component, components) => {\n      this.removeComponent(component, components);\n      if (fn) {\n        fn(component, components);\n      }\n    });\n    if (!comp) {\n      if (fn) {\n        fn(null);\n      }\n      return null;\n    }\n  }\n\n  /**\n   * Removes a component provided the Id of the component.\n   *\n   * @param {string} id - The Id of the component to remove.\n   * @param {function} fn - Called when the component is removed.\n   * @return {null}\n   */\n  removeComponentById(id, fn) {\n    const comp = this.getComponentById(id, (component, components) => {\n      this.removeComponent(component, components);\n      if (fn) {\n        fn(component, components);\n      }\n    });\n    if (!comp) {\n      if (fn) {\n        fn(null);\n      }\n      return null;\n    }\n  }\n\n  updateValue(value, flags = {}) {\n    return this.components.reduce((changed, comp) => {\n      return comp.updateValue(null, flags) || changed;\n    }, super.updateValue(value, flags));\n  }\n\n  shouldSkipValidation(data, dirty, row) {\n    // Nested components with no input should not be validated.\n    if (!this.component.input) {\n      return true;\n    }\n    else {\n      return super.shouldSkipValidation(data, dirty, row);\n    }\n  }\n\n  checkData(data, flags, row, components) {\n    if (this.builderMode) {\n      return true;\n    }\n    data = data || this.rootValue;\n    flags = flags || {};\n    row = row || this.data;\n    components = components && _.isArray(components) ? components : this.getComponents();\n    const isValid = components.reduce((valid, comp) => {\n      return comp.checkData(data, flags, row) && valid;\n    }, super.checkData(data, flags, row));\n\n    this.checkModal(isValid, this.isDirty);\n    return isValid;\n  }\n\n  checkModal(isValid, dirty) {\n    if (!this.component.modalEdit || !this.componentModal) {\n      return;\n    }\n    const messages = this.errors;\n    this.clearErrorClasses(this.refs.openModalWrapper);\n    this.error = '';\n    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {\n      this.error = {\n        component: this.component,\n        level: 'hidden',\n        message: this.t('Fix the errors'),\n        messages,\n      };\n      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);\n    }\n  }\n\n  checkConditions(data, flags, row) {\n    this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));\n    return super.checkConditions(data, flags, row);\n  }\n\n  clearOnHide(show) {\n    super.clearOnHide(show);\n    if (this.component.clearOnHide) {\n      if (this.allowData && !this.hasValue()) {\n        this.dataValue = this.defaultValue;\n      }\n      if (this.hasValue()) {\n        this.restoreComponentsContext();\n      }\n    }\n    this.getComponents().forEach(component => component.clearOnHide(show));\n  }\n\n  restoreComponentsContext() {\n    this.getComponents().forEach((component) => component.data = this.dataValue);\n  }\n\n  /**\n   * Allow components to hook into the next page trigger to perform their own logic.\n   *\n   * @return {*}\n   */\n  beforePage(next) {\n    return NativePromise.all(this.getComponents().map((comp) => comp.beforePage(next)));\n  }\n\n  /**\n   * Allow components to hook into the submission to provide their own async data.\n   *\n   * @return {*}\n   */\n  beforeSubmit() {\n    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));\n  }\n\n  calculateValue(data, flags, row) {\n    // Do not iterate into children and calculateValues if this nested component is conditionally hidden.\n    if (!this.conditionallyVisible()) {\n      return false;\n    }\n    return this.getComponents().reduce(\n      (changed, comp) => comp.calculateValue(data, flags, row) || changed,\n      super.calculateValue(data, flags, row)\n    );\n  }\n\n  isLastPage() {\n    return this.pages.length - 1 === this.page;\n  }\n\n  isValid(data, dirty) {\n    return this.getComponents().reduce(\n      (valid, comp) => comp.isValid(data, dirty) && valid,\n      super.isValid(data, dirty)\n    );\n  }\n\n  checkValidity(data, dirty, row, silentCheck) {\n    if (!this.checkCondition(row, data)) {\n      this.setCustomValidity('');\n      return true;\n    }\n\n    const isValid = this.getComponents().reduce(\n      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,\n      super.checkValidity(data, dirty, row, silentCheck)\n    );\n    this.checkModal(isValid, dirty);\n    return isValid;\n  }\n\n  checkAsyncValidity(data, dirty, row, silentCheck) {\n    return this.ready.then(() => {\n      const promises = [super.checkAsyncValidity(data, dirty, row, silentCheck)];\n      this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));\n      return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));\n    });\n  }\n\n  setPristine(pristine) {\n    super.setPristine(pristine);\n    this.getComponents().forEach((comp) => comp.setPristine(pristine));\n  }\n\n  get isPristine() {\n    return this.pristine && this.getComponents().every((c) => c.isPristine);\n  }\n\n  get isDirty() {\n    return this.dirty && this.getComponents().every((c) => c.isDirty);\n  }\n\n  detach() {\n    this.components.forEach(component => {\n      component.detach();\n    });\n    super.detach();\n  }\n\n  clear() {\n    this.components.forEach(component => {\n      component.clear();\n    });\n    super.clear();\n  }\n\n  destroy() {\n    this.destroyComponents();\n    super.destroy();\n  }\n\n  destroyComponents() {\n    const components = this.getComponents().slice();\n    components.forEach((comp) => this.removeComponent(comp, this.components));\n    this.components = [];\n  }\n\n  get errors() {\n    const thisErrors = this.error ? [this.error] : [];\n    return this.getComponents()\n      .reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors)\n      .filter(err => err.level !== 'hidden');\n  }\n\n  getValue() {\n    return this.data;\n  }\n\n  resetValue() {\n    super.resetValue();\n    this.getComponents().forEach((comp) => comp.resetValue());\n    this.setPristine(true);\n  }\n\n  get dataReady() {\n    return NativePromise.all(this.getComponents().map((component) => component.dataReady));\n  }\n\n  setNestedValue(component, value, flags = {}) {\n    component._data = this.componentContext(component);\n    if (component.type === 'button') {\n      return false;\n    }\n    if (component.type === 'components') {\n      return component.setValue(value, flags);\n    }\n    else if (value && component.hasValue(value)) {\n      return component.setValue(_.get(value, component.key), flags);\n    }\n    else if (!this.rootPristine || component.visible) {\n      flags.noValidate = !flags.dirty;\n      flags.resetValue = true;\n      return component.setValue(component.defaultValue, flags);\n    }\n  }\n\n  setValue(value, flags = {}) {\n    if (!value) {\n      return false;\n    }\n    return this.getComponents().reduce((changed, component) => {\n      return this.setNestedValue(component, value, flags, changed) || changed;\n    }, false);\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/_classes/nested/NestedComponent.js",
     "access": "public",
@@ -8196,7 +8196,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#getContainer",
     "access": "public",
     "description": null,
-    "lineNumber": 348,
+    "lineNumber": 349,
     "undocument": true,
     "params": [],
     "return": {
@@ -8216,7 +8216,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#componentComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 352,
+    "lineNumber": 353,
     "undocument": true,
     "type": {
       "types": [
@@ -8235,7 +8235,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#nestedKey",
     "access": "public",
     "description": null,
-    "lineNumber": 356,
+    "lineNumber": 357,
     "undocument": true,
     "type": {
       "types": [
@@ -8254,7 +8254,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#templateName",
     "access": "public",
     "description": null,
-    "lineNumber": 360,
+    "lineNumber": 361,
     "undocument": true,
     "type": {
       "types": [
@@ -8273,7 +8273,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#init",
     "access": "public",
     "description": null,
-    "lineNumber": 364,
+    "lineNumber": 365,
     "undocument": true,
     "params": [],
     "return": {
@@ -8291,7 +8291,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#components",
     "access": "public",
     "description": null,
-    "lineNumber": 365,
+    "lineNumber": 366,
     "undocument": true,
     "type": {
       "types": [
@@ -8310,7 +8310,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#addComponents",
     "access": "public",
     "description": "",
-    "lineNumber": 375,
+    "lineNumber": 376,
     "params": [
       {
         "nullable": null,
@@ -8346,7 +8346,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#addComponent",
     "access": "public",
     "description": "Add a new component to the components array.",
-    "lineNumber": 395,
+    "lineNumber": 396,
     "params": [
       {
         "nullable": null,
@@ -8399,7 +8399,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#beforeFocus",
     "access": "public",
     "description": null,
-    "lineNumber": 408,
+    "lineNumber": 409,
     "undocument": true,
     "params": [],
     "return": null
@@ -8415,7 +8415,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#render",
     "access": "public",
     "description": null,
-    "lineNumber": 414,
+    "lineNumber": 415,
     "undocument": true,
     "params": [
       {
@@ -8442,7 +8442,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#renderComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 423,
+    "lineNumber": 424,
     "undocument": true,
     "params": [
       {
@@ -8469,7 +8469,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 432,
+    "lineNumber": 433,
     "undocument": true,
     "params": [
       {
@@ -8496,7 +8496,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#attachComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 458,
+    "lineNumber": 459,
     "undocument": true,
     "params": [
       {
@@ -8535,7 +8535,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#removeComponent",
     "access": "public",
     "description": "Remove a component from the components array.",
-    "lineNumber": 485,
+    "lineNumber": 486,
     "params": [
       {
         "nullable": null,
@@ -8571,7 +8571,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#removeComponentByKey",
     "access": "public",
     "description": "Removes a component provided the API key of that component.",
-    "lineNumber": 498,
+    "lineNumber": 499,
     "params": [
       {
         "nullable": null,
@@ -8614,7 +8614,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#removeComponentById",
     "access": "public",
     "description": "Removes a component provided the Id of the component.",
-    "lineNumber": 520,
+    "lineNumber": 521,
     "params": [
       {
         "nullable": null,
@@ -8657,7 +8657,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#updateValue",
     "access": "public",
     "description": null,
-    "lineNumber": 535,
+    "lineNumber": 536,
     "undocument": true,
     "params": [
       {
@@ -8693,7 +8693,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#shouldSkipValidation",
     "access": "public",
     "description": null,
-    "lineNumber": 541,
+    "lineNumber": 542,
     "undocument": true,
     "params": [
       {
@@ -8732,7 +8732,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkData",
     "access": "public",
     "description": null,
-    "lineNumber": 551,
+    "lineNumber": 552,
     "undocument": true,
     "params": [
       {
@@ -8777,7 +8777,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkModal",
     "access": "public",
     "description": null,
-    "lineNumber": 567,
+    "lineNumber": 568,
     "undocument": true,
     "params": [
       {
@@ -8804,7 +8804,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#error",
     "access": "public",
     "description": null,
-    "lineNumber": 573,
+    "lineNumber": 574,
     "undocument": true,
     "type": {
       "types": [
@@ -8823,7 +8823,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkConditions",
     "access": "public",
     "description": null,
-    "lineNumber": 585,
+    "lineNumber": 586,
     "undocument": true,
     "params": [
       {
@@ -8862,7 +8862,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#clearOnHide",
     "access": "public",
     "description": null,
-    "lineNumber": 590,
+    "lineNumber": 591,
     "undocument": true,
     "params": [
       {
@@ -8883,7 +8883,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#dataValue",
     "access": "public",
     "description": null,
-    "lineNumber": 594,
+    "lineNumber": 595,
     "undocument": true,
     "type": {
       "types": [
@@ -8902,7 +8902,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#restoreComponentsContext",
     "access": "public",
     "description": null,
-    "lineNumber": 603,
+    "lineNumber": 604,
     "undocument": true,
     "params": [],
     "return": null
@@ -8918,7 +8918,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#beforePage",
     "access": "public",
     "description": "Allow components to hook into the next page trigger to perform their own logic.",
-    "lineNumber": 612,
+    "lineNumber": 613,
     "return": {
       "nullable": null,
       "types": [
@@ -8947,7 +8947,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#beforeSubmit",
     "access": "public",
     "description": "Allow components to hook into the submission to provide their own async data.",
-    "lineNumber": 621,
+    "lineNumber": 622,
     "return": {
       "nullable": null,
       "types": [
@@ -8969,7 +8969,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#calculateValue",
     "access": "public",
     "description": null,
-    "lineNumber": 625,
+    "lineNumber": 626,
     "undocument": true,
     "params": [
       {
@@ -9008,7 +9008,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#isLastPage",
     "access": "public",
     "description": null,
-    "lineNumber": 636,
+    "lineNumber": 637,
     "undocument": true,
     "params": [],
     "return": {
@@ -9028,7 +9028,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#isValid",
     "access": "public",
     "description": null,
-    "lineNumber": 640,
+    "lineNumber": 641,
     "undocument": true,
     "params": [
       {
@@ -9061,7 +9061,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 647,
+    "lineNumber": 648,
     "undocument": true,
     "params": [
       {
@@ -9106,7 +9106,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkAsyncValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 661,
+    "lineNumber": 662,
     "undocument": true,
     "params": [
       {
@@ -9151,7 +9151,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#setPristine",
     "access": "public",
     "description": null,
-    "lineNumber": 669,
+    "lineNumber": 670,
     "undocument": true,
     "params": [
       {
@@ -9174,7 +9174,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#isPristine",
     "access": "public",
     "description": null,
-    "lineNumber": 674,
+    "lineNumber": 675,
     "undocument": true,
     "type": {
       "types": [
@@ -9193,7 +9193,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#isDirty",
     "access": "public",
     "description": null,
-    "lineNumber": 678,
+    "lineNumber": 679,
     "undocument": true,
     "type": {
       "types": [
@@ -9212,7 +9212,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#detach",
     "access": "public",
     "description": null,
-    "lineNumber": 682,
+    "lineNumber": 683,
     "undocument": true,
     "params": [],
     "return": null
@@ -9228,7 +9228,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#clear",
     "access": "public",
     "description": null,
-    "lineNumber": 689,
+    "lineNumber": 690,
     "undocument": true,
     "params": [],
     "return": null
@@ -9244,7 +9244,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 696,
+    "lineNumber": 697,
     "undocument": true,
     "params": [],
     "return": null
@@ -9260,7 +9260,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#destroyComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 701,
+    "lineNumber": 702,
     "undocument": true,
     "params": [],
     "return": null
@@ -9276,7 +9276,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#errors",
     "access": "public",
     "description": null,
-    "lineNumber": 707,
+    "lineNumber": 708,
     "undocument": true,
     "type": {
       "types": [
@@ -9295,7 +9295,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#getValue",
     "access": "public",
     "description": null,
-    "lineNumber": 714,
+    "lineNumber": 715,
     "undocument": true,
     "params": [],
     "return": {
@@ -9315,7 +9315,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#resetValue",
     "access": "public",
     "description": null,
-    "lineNumber": 718,
+    "lineNumber": 719,
     "undocument": true,
     "params": [],
     "return": null
@@ -9331,7 +9331,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#dataReady",
     "access": "public",
     "description": null,
-    "lineNumber": 724,
+    "lineNumber": 725,
     "undocument": true,
     "type": {
       "types": [
@@ -9350,7 +9350,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#setNestedValue",
     "access": "public",
     "description": null,
-    "lineNumber": 728,
+    "lineNumber": 729,
     "undocument": true,
     "params": [
       {
@@ -9392,7 +9392,7 @@
     "longname": "src/components/_classes/nested/NestedComponent.js~NestedComponent#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 746,
+    "lineNumber": 747,
     "undocument": true,
     "params": [
       {
@@ -34155,7 +34155,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.13.1-rc.4\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.11.0\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.5.1\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.0\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.10.2\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.2.4\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^20.2.1\",\n    \"idb\": \"^6.0.0\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.13.16\",\n    \"@babel/core\": \"^7.13.16\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.12.13\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.12.13\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.13.12\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.13.15\",\n    \"@babel/register\": \"^7.13.16\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.22.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.5.1\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^2.0.0\",\n    \"mocha\": \"^8.3.2\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^10.0.1\",\n    \"webpack\": \"^5.35.0\",\n    \"webpack-stream\": \"^6.1.2\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.13.1-rc.5\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.11.0\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.5.1\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.0\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.11.0\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.2.4\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^20.2.1\",\n    \"idb\": \"^6.0.0\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.13.16\",\n    \"@babel/core\": \"^7.13.16\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.12.13\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.12.13\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.13.12\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.13.15\",\n    \"@babel/register\": \"^7.13.16\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.22.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.0\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.5.1\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.1\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^2.0.0\",\n    \"mocha\": \"^8.3.2\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^10.0.1\",\n    \"webpack\": \"^5.35.0\",\n    \"webpack-stream\": \"^6.1.2\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,
