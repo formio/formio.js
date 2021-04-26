@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.1
+#### Addded
+ - FIO-1112: Add vertical layout for tabs component
+
+### 4.13.1-rc.4
+#### Fixed
+ - FIO-1151: Fix url option being affected by interpolation for address component.
+ - Fixed Formio from being undefined in example template.
+
+#### Added
+ - Added Save & Delete event for EditGrid.
+
+### 4.13.1-rc.3
+#### Changed
+ - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github. 
+
 ### 4.13.1-rc.2
 #### Fixed
  - FIO-445: TypeError in console in custom endpoint example
@@ -18,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2603: Fixes an issue where saveDraft is sent after a form was submitted
  - FIO-254: Add address provider url interpolations
  - FJS-1272: Form crashes using underscore as a mask
+ - FIO-2740: fix triggerChange call for cases when nested form component changes
 
 #### Added
  - FIO-1062: added automated tests for select component
