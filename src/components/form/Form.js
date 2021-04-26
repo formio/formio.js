@@ -681,6 +681,8 @@ export default class FormComponent extends Component {
   }
 
   set visible(value) {
+    const isNestedWizard = this.isNestedWizard;
+
     if (this._visible !== value) {
       this._visible = value;
       this.clearOnHide();
@@ -694,9 +696,9 @@ export default class FormComponent extends Component {
         return;
       }
       this.updateSubFormVisibility();
-      this.redraw();
+      isNestedWizard ? this.rebuild() : this.redraw();
     }
-    if (!value && this.isNestedWizard) {
+    if (!value && isNestedWizard) {
       this.root.redraw();
     }
   }
