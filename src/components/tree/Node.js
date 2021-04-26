@@ -85,15 +85,6 @@ export default class Node {
     );
   }
 
-  validateNode() {
-    let valid = true;
-    this.getComponents().forEach(comp => {
-      comp.setPristine(false);
-      valid &= comp.checkValidity(null, false, this.persistentData);
-    });
-    return valid;
-  }
-
   addChild() {
     if (this.new) {
       return null;
@@ -128,8 +119,7 @@ export default class Node {
   }
 
   save() {
-    const isValid = this.validateNode();
-    if (this.changing && isValid) {
+    if (this.changing) {
       if (this.new) {
         this.new = false;
       }
@@ -140,7 +130,7 @@ export default class Node {
       this.commitData();
     }
 
-    return isValid;
+    return this;
   }
 
   cancel() {
