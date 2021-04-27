@@ -308,20 +308,18 @@ describe('Button Component', () => {
 
     form.setForm(testForm)
       .then(() => {
-        let changeEventTriggered = false;
-        form.getComponent('custom').refs.button.click();
+        const button = form.getComponent('custom');
+        const changeEventTriggered = sinon.spy(button, 'triggerChange');
+        button.refs.button.click();
+        assert(changeEventTriggered.calledOnce, 'Click on custom button should trigger change event');
         form.on('change', () => {
-          changeEventTriggered = true;
           const { data } = form.submission;
           assert.deepEqual(data, {
             number: 5555,
             custom: true
           });
+          done();
         });
-        setTimeout(() => changeEventTriggered
-          ? done()
-          : done(new Error('Click on custom button should trigger change event')),
-          500);
       })
       .catch((err) => done(err));
   });
