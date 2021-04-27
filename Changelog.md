@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### 4.13.1
-#### Changed
- - No changes. Released 4.13.1-rc.5 as official release.
+### 4.13.1-rc.6
+#### Fixed
+ - FIO-2798: Fixes an issue where some errors messages are not translated
+ - FIO-2747: fix conditional appearance of a nested wizard
 
 ### 4.13.1-rc.5
 ### Fixed
