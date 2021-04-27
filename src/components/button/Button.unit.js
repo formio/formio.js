@@ -285,4 +285,44 @@ describe('Button Component', () => {
       }, 300);
     }).catch((err) => done(err));
   });
+
+  it('Should perform custom logic', (done) => {
+    const element = document.createElement('div');
+    const form = new Webform(element);
+    const testForm = {
+      components: [
+        {
+          type: 'number',
+          key: 'number',
+          label: 'Number'
+        },
+        {
+          type: 'button',
+          key: 'custom',
+          label: 'Custom',
+          action: 'custom',
+          custom: 'data[\'number\'] = 5555'
+        }
+      ]
+    };
+
+    form.setForm(testForm)
+      .then(() => {
+        let changeEventTriggered = false;
+        form.getComponent('custom').refs.button.click();
+        form.on('change', () => {
+          changeEventTriggered = true;
+          const { data } = form.submission;
+          assert.deepEqual(data, {
+            number: 5555,
+            custom: true
+          });
+        });
+        setTimeout(() => changeEventTriggered
+          ? done()
+          : done(new Error('Click on custom button should trigger change event')),
+          500);
+      })
+      .catch((err) => done(err));
+  });
 });
