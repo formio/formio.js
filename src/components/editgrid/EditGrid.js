@@ -823,6 +823,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
 
+    this.clearErrors(rowIndex);
     this.baseRemoveRow(rowIndex);
     this.splice(rowIndex);
     this.emit('editGridDeleteRow', {
@@ -845,10 +846,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       options.row = `${rowIndex}-${colIndex}`;
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
-          changed.instance.root.triggerChange({ ...flags, noValidate: true }, changed, modified);
+          changed.instance.root.triggerChange(flags, changed, modified);
         }
         else {
-          this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
+          this.triggerRootChange(flags, changed, modified);
         }
 
         if (this.inlineEditMode) {
