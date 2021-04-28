@@ -680,6 +680,10 @@ export default class EditGridComponent extends NestedArrayComponent {
         comp.setPristine(true);
         comp.setCustomValidity('');
       });
+
+      if (editRow.errors?.length && this.root?.submitted) {
+        this.root.showErrors();
+      }
     }
   }
 
@@ -900,17 +904,13 @@ export default class EditGridComponent extends NestedArrayComponent {
       dirty;
   }
 
-  validateRow(editRow, dirty) {
+  validateRow(editRow, dirty, forceSilentCheck) {
     let valid = true;
     const errorsSnapshot = [...this.errors];
 
     if (this.shouldValidateRow(editRow, dirty)) {
       editRow.components.forEach(comp => {
-        if (!this.component.rowDrafts) {
-          comp.setPristine(!dirty);
-        }
-
-        const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
+        const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
 
         valid &= comp.checkValidity(null, dirty, editRow.data, silentCheck);
       });
@@ -968,7 +968,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
-  checkComponentValidity(data, dirty, row, options) {
+  checkComponentValidity(data, dirty, row, options = {}) {
+    const { silentCheck } = options;
     const superValid = super.checkComponentValidity(data, dirty, row, options);
 
     // If super tells us that component invalid and there is no need to update alerts, just return false
@@ -985,7 +986,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(editRow, editRow.alerts || dirty);
+      const rowValid = this.validateRow(editRow, editRow.alerts || dirty, silentCheck);
 
       rowsValid &= rowValid;
 
@@ -1004,7 +1005,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
-    if (!rowsValid) {
+    if (!rowsValid && !silentCheck) {
       this.setCustomValidity(this.t('invalidRowsError'), dirty);
       return false;
     }
