@@ -750,6 +750,24 @@ describe('Select Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should not have "limit" and "skip" query params when "Disable limit" option checked', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = (_, __, url) => {
+      assert.equal(url, 'https://test.com/');
+      return Promise.resolve({});
+    };
+
+    Formio.createForm(element, form).then(() => {
+      setTimeout(() => {
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
