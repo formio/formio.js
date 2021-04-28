@@ -588,6 +588,9 @@ export default class EditGridComponent extends NestedArrayComponent {
     dialog.refs.dialogContents.appendChild(this.ce('button', {
       class: 'btn btn-primary',
       onClick: () => {
+        if (!this.component.rowDrafts) {
+          editRow.components.forEach((comp) => comp.setPristine(false));
+        }
         if (this.validateRow(editRow, true) || this.component.rowDrafts) {
           editRow.willBeSaved = true;
           dialog.close();
@@ -846,10 +849,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       options.row = `${rowIndex}-${colIndex}`;
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
-          changed.instance.root.triggerChange(flags, changed, modified);
+          changed.instance.root.triggerChange({ ...flags, noValidate: true }, changed, modified);
         }
         else {
-          this.triggerRootChange(flags, changed, modified);
+          this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
         }
 
         if (this.inlineEditMode) {
