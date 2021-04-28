@@ -39,7 +39,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .formio-errors {
   .error {
-    color: #dc3545;
+    color: #BF2231;
   }
   .warning {
     color: #856404;
@@ -198,6 +198,18 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .form-control.flatpickr-input {
   background-color: #fff;
+}
+
+.input-group .flatpickr-wrapper {
+  flex-grow: 1;
+}
+
+.flatpickr-calendar {
+  .flatpickr-current-month .flatpickr-monthDropdown-months:focus,
+  .flatpickr-current-month input.cur-year:focus,
+  .flatpickr-days:focus {
+    outline: auto;
+  }
 }
 
 td > .form-group {
@@ -542,6 +554,10 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default {
   padding-bottom: 160px;
   padding-top: 160px;
+
+  .component-edit-container {
+    padding: 0.5em;
+  }
 }
 
 .formio-dialog.formio-dialog-theme-default.formio-dialog-closing .formio-dialog-content {
@@ -569,8 +585,8 @@ body.formio-dialog-open {
   background: transparent;
   cursor: pointer;
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 1px;
+  top: 1px;
   z-index: 100;
 }
 
@@ -586,7 +602,7 @@ body.formio-dialog-open {
   display: block;
   padding: 3px;
   background: transparent;
-  color: #bbb;
+  color: #8a8a8a;
   content: '×';
   font-size: 26px;
   font-weight: 400;
@@ -1344,6 +1360,11 @@ div[data-oembed-url] {
 
   .page-link {
     cursor: pointer;
+    color: #1C74D9;
+  }
+
+  .page-item.active .page-link {
+    color: #fff;
   }
 }
 
