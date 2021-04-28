@@ -11,5 +11,5 @@ export default {
   'formio-alert-success': 'alert alert-success',
   'formio-alert-warning': 'alert alert-warning',
   'formio-modal-cancel-button': 'btn btn-danger',
-  'formio-modal-confirm-button': 'btn-primary',
+  'formio-modal-confirm-button': 'btn btn-primary',
 };
