@@ -1,4 +1,8 @@
-<p>{{ctx.t('error')}}</p>
+<p>{{ctx.t('error')}}
+  {% if (ctx.options.vpat) { %}
+  <span ref="errorTooltip" class="{{ctx.iconClass('question-sign')}}" tabindex="0"></span>
+  {% } %}
+</p>
 <ul>
   {% ctx.errors.forEach(function(err) { %}
   <li>
