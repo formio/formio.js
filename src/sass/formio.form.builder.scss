@@ -24,6 +24,8 @@
 }
 
 .component-btn-group {
+  display: flex;
+  flex-direction: row-reverse;
   position: absolute;
   right: 0;
   z-index: 1000;
