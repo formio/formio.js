@@ -986,7 +986,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(editRow, editRow.alerts || dirty, silentCheck);
+      const rowValid = this.validateRow(editRow, dirty, silentCheck);
 
       rowsValid &= rowValid;
 
