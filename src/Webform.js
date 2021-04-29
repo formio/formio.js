@@ -1526,7 +1526,8 @@ export default class Webform extends NestedDataComponent {
     this.submitting = true;
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
-      .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
+      .catch((err) => NativePromise.reject(this.onSubmissionError(err)))
+      .finally(() => this.submissionInProcess = false);
   }
 
   clearServerErrors() {
@@ -1564,6 +1565,7 @@ export default class Webform extends NestedDataComponent {
    * @returns {Promise} - A promise when the form is done submitting.
    */
   submit(before, options) {
+    this.submissionInProcess = true;
     if (!before) {
       return this.beforeSubmit(options).then(() => this.executeSubmit(options));
     }
