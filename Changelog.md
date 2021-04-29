@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.1-rc.7
+#### Fixed
+ - FIO-2812: add a flag to track the submission process and add the method for reuse
+ - FIO-2788: fix static Oauth redirectURI
+ - FIO-2785: Fixes an issue when a nested form draft isn't loaded and not populate data from nested level 2 and etc.
+ - FIO-2730: Get rid of formio logo at the bottom when embedding.
+
 ### 4.13.1-rc.6
 #### Fixed
  - FIO-2798: Fixes an issue where some errors messages are not translated
