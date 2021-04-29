@@ -588,6 +588,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     dialog.refs.dialogContents.appendChild(this.ce('button', {
       class: 'btn btn-primary',
       onClick: () => {
+        // After an attempt to save, all the components inside the row should become not pristine
         if (!this.component.rowDrafts) {
           editRow.components.forEach((comp) => comp.setPristine(false));
         }
@@ -739,6 +740,11 @@ export default class EditGridComponent extends NestedArrayComponent {
       return;
     }
 
+    // After an attempt to save, all the components inside the row should become not pristine
+    if (!this.component.rowDrafts) {
+      editRow.components.forEach((comp) => comp.setPristine(false));
+    }
+
     const isRowValid = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
@@ -849,10 +855,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       options.row = `${rowIndex}-${colIndex}`;
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
-          changed.instance.root.triggerChange({ ...flags, noValidate: true }, changed, modified);
+          changed.instance.root.triggerChange(flags, changed, modified);
         }
         else {
-          this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
+          this.triggerRootChange(flags, changed, modified);
         }
 
         if (this.inlineEditMode) {
@@ -905,6 +911,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   shouldValidateRow(editRow, dirty) {
     return this.shouldValidateDraft(editRow) ||
       editRow.state === EditRowState.Editing ||
+      editRow.alerts ||
       dirty;
   }
 
@@ -1011,6 +1018,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (!rowsValid && !silentCheck) {
       this.setCustomValidity(this.t('invalidRowsError'), dirty);
+      this.removeClass(this.element, 'has-error');
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
