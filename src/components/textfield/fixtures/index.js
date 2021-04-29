@@ -4,3 +4,4 @@ export comp3 from './comp3';
 export comp4 from './comp4';
 export comp5 from './comp5';
 export comp6 from './comp6';
+export withDisplayAndInputMasks from './comp-with-display-and-value-masks';
