@@ -17,6 +17,7 @@ export default class TabsComponent extends NestedComponent {
           components: [],
         },
       ],
+      verticalLayout: false,
     }, ...extend);
   }
 

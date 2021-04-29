@@ -1,4 +1,4 @@
-import { maskInput, conformToMask } from 'text-mask-all/vanilla';
+import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import Input from '../_classes/input/Input';

@@ -394,6 +394,7 @@ export default class FormComponent extends Component {
         this.subForm.url = this.formSrc;
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
+        this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
         return this.subForm;
@@ -566,7 +567,7 @@ export default class FormComponent extends Component {
     const isAlreadySubmitted = submission && submission._id && submission.form;
 
     // This submission has already been submitted, so just return the reference data.
-    if (isAlreadySubmitted && !this.subForm.wizard) {
+    if (isAlreadySubmitted && !this.subForm?.wizard) {
       this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
@@ -680,6 +681,8 @@ export default class FormComponent extends Component {
   }
 
   set visible(value) {
+    const isNestedWizard = this.isNestedWizard;
+
     if (this._visible !== value) {
       this._visible = value;
       this.clearOnHide();
@@ -693,9 +696,9 @@ export default class FormComponent extends Component {
         return;
       }
       this.updateSubFormVisibility();
-      this.redraw();
+      isNestedWizard ? this.rebuild() : this.redraw();
     }
-    if (!value && this.isNestedWizard) {
+    if (!value && isNestedWizard) {
       this.root.redraw();
     }
   }

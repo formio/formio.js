@@ -1095,9 +1095,11 @@ export default {
     },
     'Should set and get submission'(form, done, test) {
       form.setSubmission({ data:values.submission }).then(() => {
-        checkSetValue(form.components, 'should set submisson', true);
-        assert.deepEqual(form.submission.data, values.submission, 'Should contain correct submission data');
-        done();
+        setTimeout(() => {
+          checkSetValue(form.components, 'should set submisson', true);
+          assert.deepEqual(form.submission.data, values.submission, 'Should contain correct submission data');
+          done();          
+        }, 100)
       })
     },
   },

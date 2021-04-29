@@ -1,5 +1,5 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
-import { conformToMask } from 'text-mask-all/vanilla';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
@@ -334,6 +334,7 @@ export default class Component extends Element {
      * @type {Component}
      */
     this.root = this.options.root;
+    this.localRoot = this.options.localRoot;
 
     /**
      * If this input has been input and provided value.
@@ -1463,6 +1464,10 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
+      // Bind the translate function to the data context of any interpolated string.
+      // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
+      // and desirable to be publicly available rather than calling the internal {instance.t} function in the template string.
+      t: this.t.bind(this),
       submission: (this.root ? this.root._submission : {
         data: this.rootValue
       }),
@@ -1556,13 +1561,18 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
+        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
         if (input) {
-          input.setSelectionRange(...selection);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(...selection);
+          }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          input.setSelectionRange(lastCharacter, lastCharacter);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(lastCharacter, lastCharacter);
+          }
         }
       }
     }
