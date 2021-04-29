@@ -234,7 +234,8 @@ export default class Component extends Element {
   constructor(component, options, data) {
     super(Object.assign({
       renderMode: 'form',
-      attachMode: 'full'
+      attachMode: 'full',
+      noDefaults: false
     }, options || {}));
 
     // Restore the component id.
@@ -434,7 +435,9 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.defaultValue;
+            if (!this.options.noDefaults) {
+              this.dataValue = this.defaultValue;
+            }
           }
           else {
             // Ensure the dataValue is set.
@@ -1961,7 +1964,7 @@ export default class Component extends Element {
       if (!this.visible) {
         this.deleteValue();
       }
-      else if (!this.hasValue()) {
+      else if (!this.hasValue() && !this.options.noDefaults) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2234,7 +2237,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && !this.options.noDefaults) {
       const empty = this.component.multiple ? [] : this.emptyValue;
       if (!this.rootPristine) {
         this.dataValue = empty;
@@ -2440,7 +2443,7 @@ export default class Component extends Element {
   }
 
   setDefaultValue() {
-    if (this.defaultValue) {
+    if (this.defaultValue && !this.options.noDefaults) {
       const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
       this.setValue(defaultValue, {
         noUpdateEvent: true
