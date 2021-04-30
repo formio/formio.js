@@ -45,6 +45,7 @@ import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
+import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGridContainerConditionals';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
@@ -2352,6 +2353,32 @@ describe('Webform tests', function() {
           assert(requiredFieldLabel.classList.contains('field-required'), 'Should mark a field as required');
           done();
         }, 550);
+      }).catch(done);
+    });
+  });
+
+  describe('Conditionals', () => {
+    it('Should always checkConditions with correct context', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+
+      form.setForm(formWithDataGridWithContainerAndConditionals).then(() => {
+        const radioTrigger = form.getComponent(['dataGrid', 0, 'radio1']);
+        const radioConditional = form.getComponent(['dataGrid', 0, 'radio2']);
+        radioTrigger.setValue('yes', { modified: true });
+
+        setTimeout(() => {
+          assert.equal(radioTrigger.dataValue, 'yes', 'Should set value');
+          assert.equal(radioConditional.visible, true, 'Should become visible');
+
+          radioConditional.setValue('one', { modified: true });
+          setTimeout(() => {
+            assert.equal(radioConditional.dataValue, 'one', 'Should set value and clearOnHide should not be triggered');
+            assert.equal(radioConditional.visible, true, 'Should stay visible');
+
+            done();
+          }, 250);
+        }, 250);
       }).catch(done);
     });
   });
