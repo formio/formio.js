@@ -173,13 +173,14 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   border-bottom: 0;
 }
 
-.card-vertical>.card-header>ul>li>.nav-link-vertical  {
+.card-vertical ul>li>.nav-link-vertical  {
   border-right-color: transparent;
   border-radius: 4px 0 0 4px;
   margin-right: 0;
 
   &.active {
     border-bottom-color: #ddd;
+    border-right-color: transparent;
 
     &:hover {
       border-right-color: transparent;
