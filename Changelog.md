@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.2
+#### Fixed
+ - Fix/empty number submission
+ - FIO-1112: Fix styles for bootstrap3 and hovered tab
+ - Editgrid Error section rendering everytime
+ - FIO-2810: Fixes an issue when set to Radio input type, cannot unselect an option
+ - FIO-2731: Fixes an issue when was unable to disable multiple values on Number component.
+ - FIO-2778: Removes redundant 'Minimum Word Length' and 'Maximum Word Length' settings for the URL component.
+ - FIO-1562: Fixes an issue where clearOnHide mistakenly triggered for components inside a Container nested inside a DataGrid
+ - FIO-346 | FJS-1051: Fixes an issue where multiple select shows "..." in Firefox
+
 ### 4.14.0-rc.1
 #### Addded
  - FIO-1112: Add vertical layout for tabs component
