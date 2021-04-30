@@ -403,6 +403,17 @@ describe('Number Component', () => {
     testValidity(invalidMax, false, 'Number cannot be greater than 555.', invalidMax[invalidMax.length-1]);
   });
 
+  it('Should be able to switch between multiple and single values', (done) => {
+    Harness.testCreate(NumberComponent, comp5).then((component) => {
+      assert.equal(_.isEqual(component.defaultValue, [null]), true);
+      component.component.multiple = false;
+      component.redraw().then(() => {
+        assert.equal(component.defaultValue, null);
+        done();
+      });
+    });
+  });
+
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
   //   const comp = _.cloneDeep(comp3);
   //

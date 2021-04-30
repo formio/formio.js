@@ -89,6 +89,10 @@ export default class NumberComponent extends Input {
     if (!defaultValue && this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
     }
+
+    if (!this.component.multiple && _.isArray(defaultValue)) {
+      defaultValue = !defaultValue[0] &&  defaultValue[0] !== 0 ? null :  defaultValue[0];
+    }
     return defaultValue;
   }
 
