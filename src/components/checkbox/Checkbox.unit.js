@@ -4,7 +4,8 @@ import Harness from '../../../test/harness';
 import CheckBoxComponent from './Checkbox';
 
 import {
-  comp1
+  comp1,
+  comp2
 } from './fixtures';
 
 describe('Checkbox Component', () => {
@@ -38,6 +39,16 @@ describe('Checkbox Component', () => {
     return Harness.testCreate(CheckBoxComponent, comp1).then((component) => {
       Harness.testSetGet(component, 1);
       Harness.testSetGet(component, 0);
+    });
+  });
+
+  it('Should be able to unselect a checkbox component with the radio input type', () => {
+    return Harness.testCreate(CheckBoxComponent, comp2).then((component) => {
+      const input = Harness.testElements(component, 'input[type="radio"]', 1)[0];
+      Harness.clickElement(component, input);
+      assert.equal(input.checked, true);
+      Harness.clickElement(component, input);
+      assert.equal(input.checked, false);
     });
   });
 });
