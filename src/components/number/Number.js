@@ -92,6 +92,10 @@ export default class NumberComponent extends Input {
     return defaultValue;
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   isDecimalAllowed() {
     return _.get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer));
   }
@@ -140,7 +144,7 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : null;
+    return val ? this.parseNumber(val) : this.emptyValue;
   }
 
   setValueAt(index, value, flags = {}) {
