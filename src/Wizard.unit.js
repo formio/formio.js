@@ -54,7 +54,7 @@ describe('Wizard tests', () => {
         elem.dispatchEvent(event);
       };
 
-      checkComponents(0, 1, [], [{}]);
+      checkComponents(0, 1, [], [{ number: '' }]);
 
       const submission = {
           data: {
@@ -70,7 +70,7 @@ describe('Wizard tests', () => {
         wizard.cancel(true);
 
         setTimeout(() => {
-          checkComponents(0, 1, [], [{}]);
+          checkComponents(0, 1, [], [{ number: '' }]);
           event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
 
           setTimeout(() => {
@@ -693,7 +693,7 @@ describe('Wizard tests', () => {
         urlEnd: 'submission',
         state: 'draft',
         data: {
-          number: undefined,
+          number: '',
           textArea1: '',
           textField: 'test'
         },
