@@ -295,6 +295,12 @@ td > .form-group {
 }
 /* end fix for choices.js deletable items in rtl */
 
+@-moz-document url-prefix() {
+  .choices__button {
+    float: right;
+  }
+}
+
 .formio-component-file .fileSelector {
   position: relative;
   padding: 15px;
