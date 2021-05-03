@@ -435,7 +435,7 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            if (!this.options.noDefaults) {
+            if (this.shouldAddDefaultValue) {
               this.dataValue = this.defaultValue;
             }
           }
@@ -1964,7 +1964,7 @@ export default class Component extends Element {
       if (!this.visible) {
         this.deleteValue();
       }
-      else if (!this.hasValue() && !this.options.noDefaults) {
+      else if (!this.hasValue() && this.shouldAddDefaultValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2237,7 +2237,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue() && !this.options.noDefaults) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       const empty = this.component.multiple ? [] : this.emptyValue;
       if (!this.rootPristine) {
         this.dataValue = empty;
@@ -2300,6 +2300,10 @@ export default class Component extends Element {
       noDefault: true
     });
     this.unset();
+  }
+
+  get shouldAddDefaultValue() {
+    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
   }
 
   get defaultValue() {
@@ -2443,7 +2447,7 @@ export default class Component extends Element {
   }
 
   setDefaultValue() {
-    if (this.defaultValue && !this.options.noDefaults) {
+    if (this.defaultValue && this.shouldAddDefaultValue) {
       const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
       this.setValue(defaultValue, {
         noUpdateEvent: true

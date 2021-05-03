@@ -407,7 +407,7 @@ export default class SelectComponent extends Field {
           noUpdateEvent: true
         });
       }
-      else if (!this.options.noDefaults) {
+      else if (this.shouldAddDefaultValue) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
