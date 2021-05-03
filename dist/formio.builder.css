@@ -234,13 +234,14 @@ dialog.fixed {
   margin-right: 10px;
   border-bottom: 0; }
 
-.card-vertical > .card-header > ul > li > .nav-link-vertical {
+.card-vertical ul > li > .nav-link-vertical {
   border-right-color: transparent;
   border-radius: 4px 0 0 4px;
   margin-right: 0; }
-  .card-vertical > .card-header > ul > li > .nav-link-vertical.active {
-    border-bottom-color: #ddd; }
-    .card-vertical > .card-header > ul > li > .nav-link-vertical.active:hover {
+  .card-vertical ul > li > .nav-link-vertical.active {
+    border-bottom-color: #ddd;
+    border-right-color: transparent; }
+    .card-vertical ul > li > .nav-link-vertical.active:hover {
       border-right-color: transparent; }
 
 .nav-tabs-vertical > li {
@@ -330,6 +331,10 @@ td > .form-group {
   overflow: hidden; }
 
 /* end fix for choices.js deletable items in rtl */
+@-moz-document url-prefix() {
+  .choices__button {
+    float: right; } }
+
 .formio-component-file .fileSelector {
   position: relative;
   padding: 15px;

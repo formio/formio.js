@@ -1213,7 +1213,7 @@ export default class Webform extends NestedDataComponent {
 
           let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
           formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
-          if (!err.formattedKeyOrPath) {
+          if (typeof err !== 'string' && !err.formattedKeyOrPath) {
             err.formattedKeyOrPath = formattedKeyOrPath;
           }
 

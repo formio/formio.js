@@ -375,6 +375,7 @@ describe('Button Component', () => {
       assert.equal(method, 'POST');
       assert.deepEqual(data.data, {
         event: false,
+        number: '',
         post: true,
         reset: false,
         saveInState: false
@@ -424,8 +425,8 @@ describe('Button Component', () => {
 
           setTimeout(() => {
             const numberComp = form.getComponent('number');
-            assert.equal(numberComp.dataValue, null);
-            assert.equal(numberComp.getValue(), null);
+            assert.equal(numberComp.dataValue, '');
+            assert.equal(numberComp.getValue(), '');
 
             const postBtn = form.getComponent('post');
             click(postBtn);

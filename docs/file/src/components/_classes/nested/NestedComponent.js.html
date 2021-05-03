@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -486,6 +485,7 @@ export default class NestedComponent extends Field {
     options.parent = this;
     options.parentVisible = this.visible;
     options.root = this.root || this;
+    options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!this.isInputComponent &amp;&amp; this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
@@ -907,7 +907,7 @@ export default class NestedComponent extends Field {
     else if (value &amp;&amp; component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);
     }
-    else if (!this.rootPristine || component.visible) {
+    else if ((!this.rootPristine || component.visible) &amp;&amp; !this.options.noDefaults) {
       flags.noValidate = !flags.dirty;
       flags.resetValue = true;
       return component.setValue(component.defaultValue, flags);

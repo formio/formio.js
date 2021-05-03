@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2778: Removes redundant 'Minimum Word Length' and 'Maximum Word Length' settings for the URL component.
  - FIO-1562: Fixes an issue where clearOnHide mistakenly triggered for components inside a Container nested inside a DataGrid
  - FIO-346 | FJS-1051: Fixes an issue where multiple select shows "..." in Firefox
+ - FIO-2811: Button: fix values not updated when custom logic set
+ - FIO-1525: Fixes an issue where DataMap value is always shown as empty in the DataTable
+ - FIO-196: select request limit
+
+#### Added
+ - Added a way to not have renderer add default values to submission.
 
 ### 4.14.0-rc.1
 #### Addded

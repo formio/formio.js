@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -921,6 +920,24 @@ describe(&apos;Select Component&apos;, () =&gt; {
       }, 200);
     }).catch(done);
   });
+
+  it(&apos;Should not have &quot;limit&quot; and &quot;skip&quot; query params when &quot;Disable limit&quot; option checked&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement(&apos;div&apos;);
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = (_, __, url) =&gt; {
+      assert.equal(url, &apos;https://test.com/&apos;);
+      return Promise.resolve({});
+    };
+
+    Formio.createForm(element, form).then(() =&gt; {
+      setTimeout(() =&gt; {
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
   // it(&apos;should reset input value when called with empty value&apos;, () =&gt; {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
