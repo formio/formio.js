@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.3
+#### Fixed
+ - Issue with the auto-disable default values.
+ - Problem with Edit Grid errors showing up all the time.
+
 ### 4.14.0-rc.2
 #### Fixed
  - Fix/empty number submission
@@ -35,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### 4.13.1-rc.3
 #### Changed
- - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github. 
+ - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github.
 
 ### 4.13.1-rc.2
 #### Fixed
