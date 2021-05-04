@@ -1218,7 +1218,7 @@ export default class Webform extends NestedDataComponent {
           }
 
           return {
-            message: unescapeHTML(message),
+            message: unescapeHTML(message).replace(/"/g, "'"),
             keyOrPath: formattedKeyOrPath
           };
         };

@@ -46,6 +46,7 @@ import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGridContainerConditionals';
+import formWithComponentWithHtmlInLabel from '../test/forms/withHtmlInLabel';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
@@ -2381,6 +2382,25 @@ describe('Webform tests', function() {
         }, 250);
       }).catch(done);
     });
+  });
+
+  it('Test rendering HTML tags in the erorrs alert', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+
+    form.setForm(formWithComponentWithHtmlInLabel).then(() => {
+      Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+      setTimeout(() => {
+        assert(form.alert, 'Should add errors alert');
+        const errorMessage = form.element.querySelector('[data-component-key="spanClassLeadTextFieldAbbrTitleRequiredAbbrSpan"]');
+        assert.equal(
+          errorMessage.innerHTML,
+          '<span><span class="lead">Text Field <abbr title="(required)">*<abbr></abbr></abbr></span>: Text Field</span>',
+          'Should render properly when the label contains an HTML tag'
+        );
+        done();
+      }, 200);
+    }).catch(done);
   });
 
   each(FormTests, (formTest) => {
