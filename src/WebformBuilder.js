@@ -372,7 +372,10 @@ export default class WebformBuilder extends Component {
       this.attachTooltip(component.refs.editComponent, this.t('Edit'));
 
       component.addEventListener(component.refs.editComponent, 'click', () =>
-        this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
+        this.editComponent(component.schema, parent, false, false, component.component, {
+          inDataGrid: component.isInDataGrid,
+          inDataTable: component.isInDataTable
+        }));
     }
 
     if (component.refs.editJson) {
@@ -910,9 +913,13 @@ export default class WebformBuilder extends Component {
     }
 
     const componentInDataGrid = parent.type === 'datagrid';
+    const componentInDataTable = parent.type === 'datatable';
 
     if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
-      this.editComponent(info, target, isNew, null, null, { inDataGrid: componentInDataGrid });
+      this.editComponent(info, target, isNew, null, null, {
+        inDataGrid: componentInDataGrid,
+        inDataTable: componentInDataTable
+      });
     }
 
     // Only rebuild the parts needing to be rebuilt.

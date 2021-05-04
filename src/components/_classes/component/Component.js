@@ -732,6 +732,13 @@ export default class Component extends Element {
   }
 
   /**
+   * Returns true if component is inside DatTable
+   */
+  get isInDataTable() {
+    return this.inDataTable;
+  }
+
+  /**
    * Translate a text using the i18n system.
    *
    * @param {string} text - The i18n identifier.

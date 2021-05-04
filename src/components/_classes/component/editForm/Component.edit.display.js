@@ -171,6 +171,30 @@ export default [
     }
   },
   {
+    weight: 442,
+    type: 'number',
+    input: true,
+    key: 'columnWeight',
+    label: 'Column weight in DataTable',
+    placeholder: '0',
+    defaultValue: 0,
+    tooltip: 'Make columns appear in a different order in the table.',
+    customConditional(context) {
+      return context.instance.options?.flags?.inDataTable;
+    }
+  },
+  {
+    weight: 1370,
+    type: 'checkbox',
+    label: 'Hide column by default',
+    tooltip: 'Hide column by default.',
+    key: 'hideColumnByDefault',
+    input: true,
+    customConditional(context) {
+      return context.instance.options?.flags?.inDataTable;
+    }
+  },
+  {
     weight: 1400,
     type: 'checkbox',
     label: 'Disabled',
