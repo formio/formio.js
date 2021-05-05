@@ -18,7 +18,7 @@ export default class SelectComponent extends Field {
       key: 'select',
       idPath: 'id',
       data: {
-        values: [],
+        values: [{ label: '', value: '' }],
         json: '',
         url: '',
         resource: '',
@@ -44,6 +44,12 @@ export default class SelectComponent extends Field {
       fuseOptions: {
         include: 'score',
         threshold: 0.3,
+      },
+      validate: {
+        onlyAvailableItems: false
+      },
+      indexeddb: {
+        filter: {}
       },
       customOptions: {},
       useExactSearch: false,
@@ -1570,10 +1576,15 @@ export default class SelectComponent extends Field {
             valueProperty: this.valueProperty,
           };
 
+      const getFromValues = () => {
+        const initialValue = _.find(items, [valueProperty, value]);
+        const values = this.defaultSchema.data.values || [];
+        return _.isEqual(initialValue, values[0]) ? '-' : initialValue;
+      };
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
         : valueProperty
-          ? _.find(items, [valueProperty, value])
+          ? getFromValues()
           : value;
     }
 
