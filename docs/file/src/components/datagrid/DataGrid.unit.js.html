@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -213,7 +212,7 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
     }).catch(done);
   });
 
-  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed, 
+  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed,
     and clear values when pushing &apos;yes, delete it&apos; in alert container`, (done) =&gt; {
     Harness.testCreate(DataGridComponent, comp4).then((component) =&gt; {
       const hiddenModalWindow = component.element.querySelector(&apos;.component-rendering-hidden&apos;);
@@ -317,7 +316,8 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
         },
         {
           make: &apos;&apos;,
-          model: &apos;&apos;
+          model: &apos;&apos;,
+          year: &apos;&apos;
         }
       ]);
     });
@@ -349,8 +349,8 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
             { name: &apos;Alex&apos;, age: 1 },
             { name: &apos;Bob&apos;,  age: 2 },
             { name: &apos;Conny&apos;, age: 3 },
-            { name: &apos;&apos; },
-            { name: &apos;&apos; }
+            { name: &apos;&apos;, age: &apos;&apos; },
+            { name: &apos;&apos;, age: &apos;&apos; }
           ]);
           done();
         }, done)
@@ -505,7 +505,7 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
                   done();
                 }).catch(done);
               }, 200);
-            }, 200);
+            }, 300);
           }, 200);
         }, 200);
       })

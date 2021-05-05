@@ -440,7 +440,8 @@ export default class Wizard extends Webform {
       getAllComponents(component, allComponents);
     }, []);
 
-    if (!this.root?.parent) {
+    // recalculate pages only for root wizards, including the situation when the wizard is in a wrapper
+    if (this.localRoot && this.id === this.localRoot.id) {
       allComponents.forEach((comp, index) => {
         comp.eachComponent((component) => {
           component.page = index;

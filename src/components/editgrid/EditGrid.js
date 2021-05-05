@@ -1019,6 +1019,15 @@ export default class EditGridComponent extends NestedArrayComponent {
     return superValid;
   }
 
+  changeState(changed, flags) {
+    if (changed || (flags.resetValue && this.component.modalEdit)) {
+      this.rebuild();
+    }
+    else {
+      this.redraw();
+    }
+  }
+
   setValue(value, flags = {}) {
     if (!value) {
       value = this.defaultValue;
@@ -1075,12 +1084,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.updateOnChange(flags, changed);
     this.checkData();
 
-    if (changed || flags.resetValue) {
-      this.rebuild();
-    }
-    else {
-      this.redraw();
-    }
+    this.changeState(changed, flags);
 
     return changed;
   }
