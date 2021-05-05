@@ -1518,6 +1518,12 @@ class Formio {
     return NativePromise.reject(`${name} library was not required.`);
   }
 
+  static addToGlobal(global) {
+    if (typeof global === 'object' && !global.Formio) {
+      global.Formio = Formio;
+    }
+  }
+
   static setPathType(type) {
     if (typeof type === 'string') {
       Formio.pathType = type;
@@ -1544,4 +1550,12 @@ Formio.Providers = Providers;
 Formio.version = '---VERSION---';
 Formio.pathType = '';
 Formio.events = new EventEmitter();
+
+if (typeof global !== 'undefined') {
+  Formio.addToGlobal(global);
+}
+if (typeof window !== 'undefined') {
+  Formio.addToGlobal(window);
+}
+
 export default Formio;
