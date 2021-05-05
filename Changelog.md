@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.2-rc.1
+#### Fixed
+ - FIO-2936: replace finally method for better compatibility
+
+#### Changed
+ - Adding a more standard export for Formio object.
+
 ### 4.13.1
 #### Changed
  - No changes. Released 4.13.1-rc.7 as official release.
