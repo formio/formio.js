@@ -1526,7 +1526,10 @@ export default class Webform extends NestedDataComponent {
     this.submitting = true;
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
-      .then(() => this.submissionInProcess = false)
+      .then((results) => {
+        this.submissionInProcess = false;
+        return results;
+      })
       .catch((err) => {
         this.submissionInProcess = false;
         return NativePromise.reject(this.onSubmissionError(err));
