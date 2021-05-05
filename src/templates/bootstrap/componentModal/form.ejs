@@ -14,10 +14,10 @@
         {{ctx.children}}
         {% } %}
         <div class="formio-dialog-buttons">
+          <button class="btn btn-success formio-dialog-button" ref="modalSave" aria-label="Save button. Click to save the changes and get back to the form.">{{ctx.t('Save')}}</button>
           {% if (ctx.options.vpat) { %}
           <button class="btn btn-secondary formio-dialog-button" aria-label="Cancel button. Click to cancel the changes and get back to the form." ref="modalClose">{{ctx.t('Cancel')}}</button>
           {% } %}
-          <button class="btn btn-success formio-dialog-button" ref="modalSave" aria-label="Save button. Click to save the changes and get back to the form.">{{ctx.t('Save')}}</button>
         </div>
       </div>
     </div>
