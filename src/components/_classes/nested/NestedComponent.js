@@ -34,12 +34,17 @@ export default class NestedComponent extends Field {
     return this._collapsed;
   }
 
-  set collapsed(value) {
-    this._collapsed = value;
-    this.redraw();
+  collapse(value) {
+    const promise = this.redraw();
     if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
+    return promise;
+  }
+
+  set collapsed(value) {
+    this._collapsed = value;
+    this.collapse(value);
   }
 
   set visible(value) {
@@ -448,6 +453,12 @@ export default class NestedComponent extends Field {
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
+      });
+      this.addEventListener(this.refs.header, 'keydown', (e) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+          e.preventDefault();
+          this.collapsed = !this.collapsed;
+        }
       });
     }
 
