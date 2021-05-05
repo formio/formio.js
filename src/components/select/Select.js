@@ -407,7 +407,7 @@ export default class SelectComponent extends Field {
           noUpdateEvent: true
         });
       }
-      else {
+      else if (this.shouldAddDefaultValue) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
@@ -452,7 +452,7 @@ export default class SelectComponent extends Field {
 
     const limit = this.component.limit || 100;
     const skip = this.isScrollLoading ? this.selectOptions.length : 0;
-    const query = (this.component.dataSrc === 'url') ? {} : {
+    const query = this.component.disableLimit ? {} : {
       limit,
       skip,
     };

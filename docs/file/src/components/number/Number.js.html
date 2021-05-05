@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -169,7 +168,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { maskInput, conformToMask } from &apos;text-mask-all/vanilla&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { maskInput, conformToMask } from &apos;@formio/vanilla-text-mask&apos;;
 import _ from &apos;lodash&apos;;
 import { createNumberMask } from &apos;text-mask-addons&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
@@ -260,7 +259,15 @@ export default class NumberComponent extends Input {
     if (!defaultValue &amp;&amp; this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
     }
+
+    if (!this.component.multiple &amp;&amp; _.isArray(defaultValue)) {
+      defaultValue = !defaultValue[0] &amp;&amp;  defaultValue[0] !== 0 ? null :  defaultValue[0];
+    }
     return defaultValue;
+  }
+
+  get emptyValue() {
+    return &apos;&apos;;
   }
 
   isDecimalAllowed() {
@@ -311,7 +318,7 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : null;
+    return val ? this.parseNumber(val) : this.emptyValue;
   }
 
   setValueAt(index, value, flags = {}) {
