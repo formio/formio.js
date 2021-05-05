@@ -700,6 +700,10 @@ body.formio-dialog-open {
   margin: 0;
 }
 
+.formio-dialog-content [ref="dialogHeader"] {
+  padding-right: 15px;
+}
+
 .formio-placeholder {
   position:absolute;
   color: #999;
@@ -1314,6 +1318,8 @@ div[data-oembed-url] {
 
   .page-item.active .page-link {
     color: #fff;
+    background-color: #1C74D9;
+    border-color: #1C74D9;
   }
 }
 //styles for google maps dropdown
