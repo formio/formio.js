@@ -1,5 +1,5 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
-import { conformToMask } from 'text-mask-all/vanilla';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
@@ -234,7 +234,8 @@ export default class Component extends Element {
   constructor(component, options, data) {
     super(Object.assign({
       renderMode: 'form',
-      attachMode: 'full'
+      attachMode: 'full',
+      noDefaults: false
     }, options || {}));
 
     // Restore the component id.
@@ -334,6 +335,7 @@ export default class Component extends Element {
      * @type {Component}
      */
     this.root = this.options.root;
+    this.localRoot = this.options.localRoot;
 
     /**
      * If this input has been input and provided value.
@@ -433,7 +435,9 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.defaultValue;
+            if (this.shouldAddDefaultValue) {
+              this.dataValue = this.defaultValue;
+            }
           }
           else {
             // Ensure the dataValue is set.
@@ -1046,21 +1050,25 @@ export default class Component extends Element {
   }
 
   attachTooltips(toolTipsRefs) {
-    toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+    toolTipsRefs?.forEach((tooltip, index) => {
+      if (tooltip) {
+        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+        const tooltipDataTitle = tooltip.getAttribute('data-title');
+        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-      this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: this.t(tooltipText, { _userInput: true }),
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
+        this.tooltips[index] = new Tooltip(tooltip, {
+          trigger: 'hover click focus',
+          placement: 'right',
+          html: true,
+          title: this.t(tooltipText, { _userInput: true }),
+          template: `
+            <div class="tooltip" style="opacity: 1;" role="tooltip">
+              <div class="tooltip-arrow"></div>
+              <div class="tooltip-inner"></div>
+            </div>`,
+        });
+      }
     });
   }
 
@@ -1459,6 +1467,10 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
+      // Bind the translate function to the data context of any interpolated string.
+      // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
+      // and desirable to be publicly available rather than calling the internal {instance.t} function in the template string.
+      t: this.t.bind(this),
       submission: (this.root ? this.root._submission : {
         data: this.rootValue
       }),
@@ -1552,13 +1564,18 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
+        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
         if (input) {
-          input.setSelectionRange(...selection);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(...selection);
+          }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          input.setSelectionRange(lastCharacter, lastCharacter);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(lastCharacter, lastCharacter);
+          }
         }
       }
     }
@@ -1947,7 +1964,7 @@ export default class Component extends Element {
       if (!this.visible) {
         this.deleteValue();
       }
-      else if (!this.hasValue()) {
+      else if (!this.hasValue() && this.shouldAddDefaultValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2220,7 +2237,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       const empty = this.component.multiple ? [] : this.emptyValue;
       if (!this.rootPristine) {
         this.dataValue = empty;
@@ -2283,6 +2300,10 @@ export default class Component extends Element {
       noDefault: true
     });
     this.unset();
+  }
+
+  get shouldAddDefaultValue() {
+    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
   }
 
   get defaultValue() {
@@ -2426,7 +2447,7 @@ export default class Component extends Element {
   }
 
   setDefaultValue() {
-    if (this.defaultValue) {
+    if (this.defaultValue && this.shouldAddDefaultValue) {
       const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
       this.setValue(defaultValue, {
         noUpdateEvent: true

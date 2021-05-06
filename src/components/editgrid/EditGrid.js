@@ -53,7 +53,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     return `<div class="row">
       {% util.eachComponent(components, function(component) { %}
         {% if (displayValue(component)) { %}
-          <div class="col-sm-2">{{ component.label }}</div>
+          <div class="col-sm-2">{{ t(component.label) }}</div>
         {% } %}
       {% }) %}
     </div>`;
@@ -218,7 +218,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.editRows = [];
       return super.init();
     }
-
     this.components = this.components || [];
     const dataValue = this.dataValue || [];
     const openWhenEmpty = !dataValue.length && this.component.openWhenEmpty;
@@ -236,6 +235,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         error: null,
       }));
     }
+    this.prevHasAddButton = this.hasAddButton();
 
     this.checkData();
   }
@@ -763,6 +763,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.backup = null;
 
     this.updateValue();
+    this.emit('editGridSaveRow', {
+      component: this.component,
+      row: editRow.data,
+    });
     this.triggerChange({ modified, noPristineChangeOnModified: modified && this.component.rowDrafts, isolateRow: true });
     if (this.component.rowDrafts) {
       editRow.components.forEach(comp => comp.setPristine(this.pristine));
@@ -817,6 +821,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.baseRemoveRow(rowIndex);
     this.splice(rowIndex);
+    this.emit('editGridDeleteRow', {
+      index: rowIndex
+    });
     this.editRows.splice(rowIndex, 1);
     this.updateRowsComponents(rowIndex);
     this.updateValue();
@@ -833,7 +840,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.onChange = (flags = {}, changed, modified) => {
-        this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
+        if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
+          changed.instance.root.triggerChange({ ...flags, noValidate: true }, changed, modified);
+        }
+        else {
+          this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
+        }
 
         if (this.inlineEditMode) {
           return;
@@ -983,7 +995,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (rowContainer) {
           const errorContainer = rowContainer.querySelector('.editgrid-row-error');
 
-          if (!rowValid) {
+          if (!rowValid && errorContainer) {
             errorContainer.textContent = this.t('invalidRowError');
           }
         }
@@ -1005,6 +1017,15 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.setCustomValidity(message, dirty);
 
     return superValid;
+  }
+
+  changeState(changed, flags) {
+    if (changed || (flags.resetValue && this.component.modalEdit)) {
+      this.rebuild();
+    }
+    else {
+      this.redraw();
+    }
   }
 
   setValue(value, flags = {}) {
@@ -1063,12 +1084,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.updateOnChange(flags, changed);
     this.checkData();
 
-    if (changed || flags.resetValue) {
-      this.rebuild();
-    }
-    else {
-      this.redraw();
-    }
+    this.changeState(changed, flags);
 
     return changed;
   }

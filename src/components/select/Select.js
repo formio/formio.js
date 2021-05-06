@@ -72,6 +72,9 @@ export default class SelectComponent extends Field {
       return this.updateItems.apply(this, args);
     }, 100);
     this.triggerUpdate = (...args) => {
+      this.itemsLoaded = new NativePromise((resolve) => {
+        this.itemsLoadedResolve = resolve;
+      });
       if (args.length) {
         updateArgs = args;
       }
@@ -408,7 +411,7 @@ export default class SelectComponent extends Field {
           noUpdateEvent: true
         });
       }
-      else {
+      else if (this.shouldAddDefaultValue) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
@@ -453,7 +456,7 @@ export default class SelectComponent extends Field {
 
     const limit = this.component.limit || 100;
     const skip = this.isScrollLoading ? this.selectOptions.length : 0;
-    const query = (this.component.dataSrc === 'url') ? {} : {
+    const query = this.component.disableLimit ? {} : {
       limit,
       skip,
     };
@@ -612,9 +615,6 @@ export default class SelectComponent extends Field {
 
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
-    this.itemsLoaded = new NativePromise((resolve) => {
-      this.itemsLoadedResolve = resolve;
-    });
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
       this.itemsLoadedResolve();
@@ -1019,7 +1019,7 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.updateItems();
+    this.triggerUpdate();
     return superAttach;
   }
 

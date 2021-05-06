@@ -920,7 +920,7 @@ export default {
   },
   conditional: {
     'Should show component if simple condition is met and hide it if simple condition is not fulfilled'(form, done, test) {
-      test.timeout(2500);
+      test.timeout(3000);
       const testComponents = form.components.filter(comp => !['basis'].includes(comp.component.key));
 
       const testVisibility = (shouldBeVisible) => {
@@ -955,7 +955,7 @@ export default {
   }, 
   customConditional: {
     'Should show component if custom condition is met and hide it if custom condition is not fulfilled'(form, done, test) {
-      test.timeout(2500);
+      test.timeout(3000);
       const testComponents = form.components.filter(comp => !['basis'].includes(comp.component.key));
 
       const testVisibility = (shouldBeVisible) => {
@@ -1095,9 +1095,11 @@ export default {
     },
     'Should set and get submission'(form, done, test) {
       form.setSubmission({ data:values.submission }).then(() => {
-        checkSetValue(form.components, 'should set submisson', true);
-        assert.deepEqual(form.submission.data, values.submission, 'Should contain correct submission data');
-        done();
+        setTimeout(() => {
+          checkSetValue(form.components, 'should set submisson', true);
+          assert.deepEqual(form.submission.data, values.submission, 'Should contain correct submission data');
+          done();          
+        }, 100)
       })
     },
   },

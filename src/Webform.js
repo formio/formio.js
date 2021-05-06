@@ -271,6 +271,7 @@ export default class Webform extends NestedDataComponent {
 
     // Ensure the root is set to this component.
     this.root = this;
+    this.localRoot = this;
   }
   /* eslint-enable max-statements */
 
@@ -652,7 +653,7 @@ export default class Webform extends NestedDataComponent {
       this._form = flags?.keepAsReference ? form : _.cloneDeep(form);
 
       if (this.onSetForm) {
-        this.onSetForm(this._form, form);
+        this.onSetForm(_.cloneDeep(this._form), form);
       }
     }
     catch (err) {
@@ -1212,7 +1213,7 @@ export default class Webform extends NestedDataComponent {
 
           let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
           formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
-          if (!err.formattedKeyOrPath) {
+          if (typeof err !== 'string' && !err.formattedKeyOrPath) {
             err.formattedKeyOrPath = formattedKeyOrPath;
           }
 
@@ -1225,12 +1226,19 @@ export default class Webform extends NestedDataComponent {
         if (err.messages && err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message, context, fromServer }, index) => {
-            const text = context?.hasLabel || fromServer ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+            const text = context?.hasLabel || fromServer
+              ? this.t('alertMessage', { message: this.t(message) })
+              : this.t('alertMessageWithLabel', {
+                label: this.t(component.label),
+                message: this.t(message),
+              });
             displayedErrors.push(createListItem(text, index));
           });
         }
         else if (err) {
-          const message = _.isObject(err) ? err.message || '' : err;
+          const message = _.isObject(err)
+            ? this.t('alertMessage', { message: this.t(err.message || '') })
+            : this.t('alertMessage', { message: this.t(err) });
           displayedErrors.push(createListItem(message));
         }
       }
@@ -1264,11 +1272,29 @@ export default class Webform extends NestedDataComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
+    // Cancel triggered saveDraft to prevent overriding the submitted state
+    if (this.draftEnabled && this.triggerSaveDraft?.cancel) {
+      this.triggerSaveDraft.cancel();
+    }
     this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
     }
     return submission;
+  }
+
+  normalizeError(error) {
+    if (error) {
+      if (typeof error === 'object' && 'details' in error) {
+        error = error.details;
+      }
+
+      if (typeof error === 'string') {
+        error = { message: error };
+      }
+    }
+
+    return error;
   }
 
   /**
@@ -1277,16 +1303,7 @@ export default class Webform extends NestedDataComponent {
    * @param {Object} error - The error that occured.
    */
   onSubmissionError(error) {
-    if (error) {
-      // Normalize the error.
-      if (typeof error === 'string') {
-        error = { message: error };
-      }
-
-      if ('details' in error) {
-        error = error.details;
-      }
-    }
+    error = this.normalizeError(error);
 
     this.submitting = false;
     this.setPristine(false);
@@ -1509,7 +1526,8 @@ export default class Webform extends NestedDataComponent {
     this.submitting = true;
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
-      .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
+      .catch((err) => NativePromise.reject(this.onSubmissionError(err)))
+      .finally(() => this.submissionInProcess = false);
   }
 
   clearServerErrors() {
@@ -1547,6 +1565,7 @@ export default class Webform extends NestedDataComponent {
    * @returns {Promise} - A promise when the form is done submitting.
    */
   submit(before, options) {
+    this.submissionInProcess = true;
     if (!before) {
       return this.beforeSubmit(options).then(() => this.executeSubmit(options));
     }

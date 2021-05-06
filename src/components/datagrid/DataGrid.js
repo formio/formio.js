@@ -49,6 +49,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     this.visibleColumns = {};
+    this.prevHasAddButton = this.hasAddButton();
     this.checkColumns();
   }
 

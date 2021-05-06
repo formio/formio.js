@@ -208,12 +208,12 @@ describe('Number Component', () => {
   it('Should format numbers for USA locale', () => {
     /* eslint-disable max-statements */
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
-      Harness.testSetInput(component, null, null, '');
-      Harness.testSetInput(component, undefined, null, '');
-      Harness.testSetInput(component, '', null, '');
-      Harness.testSetInput(component, {}, null, '');
-      Harness.testSetInput(component, [], null, '');
-      Harness.testSetInput(component, [''], null, '');
+      Harness.testSetInput(component, null, '', '');
+      Harness.testSetInput(component, undefined, '', '');
+      Harness.testSetInput(component, '', '', '');
+      Harness.testSetInput(component, {}, '', '');
+      Harness.testSetInput(component, [], '', '');
+      Harness.testSetInput(component, [''], '', '');
       Harness.testSetInput(component, ['1'], 1, '1');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
@@ -256,7 +256,7 @@ describe('Number Component', () => {
 
   it('Should format numbers for British locale', () => {
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-GB' }).then((component) => {
-      Harness.testSetInput(component, null, null, '');
+      Harness.testSetInput(component, null, '', '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
       Harness.testSetInput(component, -1, -1, '-1');
@@ -278,7 +278,7 @@ describe('Number Component', () => {
   it('Should format numbers for French locale', () => {
     return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
-      Harness.testSetInput(component, null, null, '');
+      Harness.testSetInput(component, null, '', '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
       Harness.testSetInput(component, -1, -1, '-1');
@@ -299,7 +299,7 @@ describe('Number Component', () => {
 
   it('Should format numbers for German locale', () => {
     return Harness.testCreate(NumberComponent, comp2, { language: 'de' }).then((component) => {
-      Harness.testSetInput(component, null, null, '');
+      Harness.testSetInput(component, null, '', '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
       Harness.testSetInput(component, -1, -1, '-1');
@@ -401,6 +401,17 @@ describe('Number Component', () => {
     testValidity(validValues, true);
     testValidity(invalidMin, false, 'Number cannot be less than 20.');
     testValidity(invalidMax, false, 'Number cannot be greater than 555.', invalidMax[invalidMax.length-1]);
+  });
+
+  it('Should be able to switch between multiple and single values', (done) => {
+    Harness.testCreate(NumberComponent, comp5).then((component) => {
+      assert.equal(_.isEqual(component.defaultValue, [null]), true);
+      component.component.multiple = false;
+      component.redraw().then(() => {
+        assert.equal(component.defaultValue, null);
+        done();
+      });
+    });
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {

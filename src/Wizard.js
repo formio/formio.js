@@ -311,7 +311,7 @@ export default class Wizard extends Webform {
       }
     });
 
-    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage.component, 'breadcrumbClickable', true);
+    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage, 'component.breadcrumbClickable', true);
   }
 
   isAllowPrevious() {
@@ -356,7 +356,7 @@ export default class Wizard extends Webform {
     this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
-      this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
+      this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
         if (!isAllowPrevious || index <= this.enabledIndex) {
           this.addEventListener(link, 'click', (event) => {
             this.emit('wizardNavigationClicked', this.pages[index]);
@@ -377,9 +377,11 @@ export default class Wizard extends Webform {
   }
 
   detachHeader() {
-    this.refs[`${this.wizardKey}-link`].forEach((link) => {
-      this.removeEventListener(link, 'click');
-    });
+    if (this.refs[`${this.wizardKey}-link`]) {
+      this.refs[`${this.wizardKey}-link`].forEach((link) => {
+        this.removeEventListener(link, 'click');
+      });
+    }
   }
 
   transformPages() {
@@ -391,12 +393,14 @@ export default class Wizard extends Webform {
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
       const nestedPages = [];
+      const dataArrayComponents = ['datagrid', 'editgrid', 'dynamicWizard'];
       const currentComponents = nestedComp?.subForm ? this.getSortedComponents(nestedComp.subForm) : nestedComp?.components || [];
       const visibleComponents = currentComponents.filter(comp => comp._visible);
+      const filteredComponents = visibleComponents.filter(comp => !dataArrayComponents.includes(comp.component.type) && (comp.type !== 'form' || comp.isNestedWizard));
       const additionalComponents = visibleComponents.filter(comp => comp.subForm?._form.display !== 'wizard');
       let hasNested = false;
 
-      eachComponent(visibleComponents, (comp) => {
+      eachComponent(filteredComponents, (comp) => {
         if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
           if (pushAllowed) {
             this.setRootPanelId(comp);
@@ -405,7 +409,7 @@ export default class Wizard extends Webform {
           hasNested = true;
         }
 
-        if (comp && comp.subForm) {
+        if (comp && comp.isNestedWizard && comp.subForm) {
           const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
           if (!hasNested) {
             hasNested = hasNestedForm;
@@ -435,6 +439,15 @@ export default class Wizard extends Webform {
     components.forEach((component) => {
       getAllComponents(component, allComponents);
     }, []);
+
+    // recalculate pages only for root wizards, including the situation when the wizard is in a wrapper
+    if (this.localRoot && this.id === this.localRoot.id) {
+      allComponents.forEach((comp, index) => {
+        comp.eachComponent((component) => {
+          component.page = index;
+        });
+      });
+    }
 
     this.allPages = allComponents;
   }
