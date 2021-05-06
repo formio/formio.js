@@ -457,7 +457,7 @@ export default class TreeComponent extends NestedComponent {
   checkNode(data, node, flags, row) {
     return node.children.reduce(
       (result, child) => this.checkNode(data, child, flags, row) && result,
-      super.checkData(data, flags, node.data, node.components),
+      super.checkData(data, flags, node.data, node.components) && !node.editing && !node.new,
     );
   }
 
