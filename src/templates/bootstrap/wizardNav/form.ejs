@@ -1,7 +1,7 @@
 <ul class="list-inline" id="{{ ctx.wizardKey }}-nav">
   {% if (ctx.buttons.cancel) { %}
   <li class="list-inline-item">
-    <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel" aria-label="{{ctx.t('previous')}} button. Click to reset the form">{{ctx.t('cancel')}}</button>
+    <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel" aria-label="{{ctx.t('cancel')}} button. Click to reset the form">{{ctx.t('cancel')}}</button>
   </li>
   {% } %}
   {% if (ctx.buttons.previous) { %}
