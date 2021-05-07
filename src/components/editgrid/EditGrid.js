@@ -984,7 +984,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const superValid = super.checkComponentValidity(data, dirty, row, options);
 
     // If super tells us that component invalid and there is no need to update alerts, just return false
-    if (!superValid && (!this.alert || !this.hasOpenRows())) {
+    if (!superValid && (!this.alert && !this.hasOpenRows())) {
       return false;
     }
 
@@ -1007,7 +1007,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (rowContainer) {
           const errorContainer = rowContainer.querySelector('.editgrid-row-error');
 
-          if (!rowValid && errorContainer) {
+          if (!rowValid && errorContainer && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
             errorContainer.textContent = this.t('invalidRowError');
           }
         }
@@ -1016,9 +1016,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       rowsEditing |= (dirty && this.isOpen(editRow));
     });
 
-    if (!rowsValid && !silentCheck) {
-      this.setCustomValidity(this.t('invalidRowsError'), dirty);
-      this.removeClass(this.element, 'has-error');
+    if (!rowsValid) {
+      if (!silentCheck && (!this.component.rowDrafts || this.root?.submitted)) {
+        this.setCustomValidity(this.t('invalidRowsError'), dirty);
+        // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
+        this.removeClass(this.element, 'has-error');
+      }
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
