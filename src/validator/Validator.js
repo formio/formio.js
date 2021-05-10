@@ -123,10 +123,15 @@ class ValidationChecker {
             const query = { form: form._id };
 
             if (_.isString(value)) {
-              addPathQueryParams({
-                $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
-                $options: 'i'
-              }, query, path);
+              if (component.component.dbIndex) {
+                addPathQueryParams(value, query, path);
+              }
+              else {
+                addPathQueryParams({
+                  $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
+                  $options: 'i'
+                }, query, path);
+              }
             }
             // FOR-213 - Pluck the unique location id
             else if (
