@@ -368,7 +368,7 @@ export default class EditGridComponent extends NestedArrayComponent {
               row.classList.toggle('selected');
               let eventName = 'editGridSelectRow';
               if (Array.from(row.classList).includes('selected')) {
-                this.dataValue[rowIndex].isRowSelected = true;
+                // this.dataValue[rowIndex].isRowSelected = true;
               }
               else {
                 delete this.dataValue[rowIndex].isRowSelected;
@@ -689,10 +689,6 @@ export default class EditGridComponent extends NestedArrayComponent {
         comp.setPristine(true);
         comp.setCustomValidity('');
       });
-
-      if (editRow.errors?.length && this.root?.submitted) {
-        this.root.showErrors();
-      }
     }
   }
 
@@ -984,6 +980,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   checkComponentValidity(data, dirty, row, options = {}) {
     const { silentCheck } = options;
+    const errorsLength = this.errors.length;
     const superValid = super.checkComponentValidity(data, dirty, row, options);
 
     // If super tells us that component invalid and there is no need to update alerts, just return false
@@ -1033,8 +1030,13 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const message = this.invalid || this.invalidMessage(data, dirty);
-    this.setCustomValidity(message, dirty);
-
+    if (this.errors?.length !== errorsLength && this.root?.submitted && !message) {
+      this.setCustomValidity(message, dirty);
+      this.root.showErrors();
+    }
+    else {
+      this.setCustomValidity(message, dirty);
+    }
     return superValid;
   }
 
