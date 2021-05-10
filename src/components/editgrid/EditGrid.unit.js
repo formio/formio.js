@@ -566,20 +566,19 @@ describe('EditGrid Component', () => {
         const editGrid = form.components[0];
 
         form.checkValidity(form._data, true, form._data);
-        assert.equal(form.errors.length, 1);
+        assert.equal(form.errors.length, 1, 'Should have an error saying that EditGrid is required');
+
         editGrid.addRow();
 
         setTimeout(() => {
           const editRow = editGrid.editRows[0];
           const dialog = editRow.dialog;
-          const saveButton = dialog.querySelector('.btn.btn-primary');
-          const clickEvent = new Event('click');
-          saveButton.dispatchEvent(clickEvent);
+          Harness.dispatchEvent('click', dialog, '.btn.btn-primary');
 
           setTimeout(() => {
             const alert = dialog.querySelector('.alert.alert-danger');
-            assert.equal(form.errors.length, 1, 'Should not add new errors when drafts are enabled');
-            assert(!alert, 'Should not show an erros alert when drafts are enabled');
+            assert.equal(form.errors.length, 0, 'Should not add new errors when drafts are enabled');
+            assert(!alert, 'Should not show an error alert when drafts are enabled and form is not submitted');
 
             const textField = editRow.components[0].getComponent('textField');
             editGrid.editRow(0);
@@ -596,7 +595,7 @@ describe('EditGrid Component', () => {
                   assert.equal(editGrid.editRows[0].errors.length, 0, 'Should not add error to components inside draft row');
 
                   const textFieldComponent = textField.element;
-                  assert(!textFieldComponent.className.includes('has-error'), 'Should not add error class to component when drafts enabled');
+                  assert(textFieldComponent.className.includes('has-error'), 'Should add error class to component even when drafts enabled if the component is not pristine');
 
                   document.innerHTML = '';
                   done();

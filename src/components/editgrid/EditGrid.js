@@ -573,6 +573,11 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.addEventListener(dialog, 'close', () => {
       if (!editRow.willBeSaved) {
+        if (this.editRows[rowIndex] && this.editRows[rowIndex].state !== EditRowState.New) {
+          this.editRows[rowIndex].components.forEach((comp) => {
+            comp.setPristine(true);
+          });
+        }
         this.cancelRow(rowIndex);
       }
       if (this.alert) {
@@ -718,9 +723,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.data = editRow.backup;
         editRow.backup = null;
         this.restoreRowContext(editRow);
-        if (!this.component.rowDrafts) {
-          this.clearErrors(rowIndex);
-        }
+        this.clearErrors(rowIndex);
         break;
       }
     }
