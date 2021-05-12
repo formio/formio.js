@@ -99,7 +99,8 @@ export default class Webform extends NestedDataComponent {
             _.merge(i18n, lang);
           }
           else if (!i18n.resources[code]) {
-            i18n.resources[code] = { translation: lang };
+            // extend the default translations (validations, buttons etc.) in case they are not in the options.
+            i18n.resources[code] = { translation: _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang) };
           }
           else {
             _.assign(i18n.resources[code].translation, lang);
@@ -321,7 +322,8 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    this.i18next.addResourceBundle(code, 'translation', lang, true, true);
+    var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
+    this.i18next.addResourceBundle(code, 'translation', translations, true, true);
     if (active) {
       this.language = code;
     }
