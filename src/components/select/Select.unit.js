@@ -20,7 +20,8 @@ import {
   comp9,
   comp10,
   comp11,
-  comp12
+  comp12,
+  comp13,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -766,6 +767,14 @@ describe('Select Component', () => {
         done();
       }, 200);
     }).catch(done);
+  });
+
+  it('The empty option in html5 shouldn\'t have the [Object Object] value', () => {
+    return Harness.testCreate(SelectComponent, comp13).then((component) => {
+     const emptyOption = component.element.querySelectorAll('option')[0];
+      assert.notEqual(emptyOption.value, '[object Object]');
+      assert.equal(emptyOption.value, '');
+    });
   });
 
   // it('should reset input value when called with empty value', () => {
