@@ -448,10 +448,10 @@ describe('Webform tests', function() {
             const editGridRows = formWithDraftModals.element.querySelectorAll( '[ref="editgrid-editGrid-row"]');
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
-            const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
+            const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error');
             const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error');
 
-            assert.equal(!!rowError, false);
+            assert.equal(rowError, null);
             assert.equal(!!editGridError, false);
 
             done();
