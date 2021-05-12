@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.2-rc.2
+#### Fixed
+ - FIO-2986: Inherit default (en) translations (validations, buttons) for custom languages
+ - FIO-2786: fix problem with initial button click on Nested Wizard in Modal Edit
+ - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source. 
+ - FIO-2677: Fix submission not set on pdf for components with calculated value
+ - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
+ - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
+ - FIO-2617: Camera on file dropzone
+ - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
+ - FIO-1409: Add save on enter option for button component
+
 ### 4.13.2-rc.1
 #### Fixed
  - FIO-2936: replace finally method for better compatibility

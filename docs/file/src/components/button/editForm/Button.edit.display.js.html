@@ -241,6 +241,18 @@ export default [
     type: &apos;checkbox&apos;,
     input: true,
     inputType: &apos;checkbox&apos;,
+    key: &apos;saveOnEnter&apos;,
+    label: &apos;Save On Enter&apos;,
+    weight: 113,
+    tooltip: &apos;Use the Enter key to submit form.&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;submit&apos;] },
+    },
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    inputType: &apos;checkbox&apos;,
     key: &apos;showValidations&apos;,
     label: &apos;Show Validations&apos;,
     weight: 115,

@@ -5010,6 +5010,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/form/fixtures/comp5.js",
+    "file/src/components/form/fixtures/comp5.js.html",
+    "src/components/form/fixtures/comp5.js",
+    "file"
+  ],
+  [
     "src/components/form/fixtures/formmodaledit.js",
     "file/src/components/form/fixtures/formModalEdit.js.html",
     "src/components/form/fixtures/formModalEdit.js",
@@ -6087,6 +6093,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp12.js",
     "file/src/components/select/fixtures/comp12.js.html",
     "src/components/select/fixtures/comp12.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp13.js",
+    "file/src/components/select/fixtures/comp13.js.html",
+    "src/components/select/fixtures/comp13.js",
     "file"
   ],
   [

@@ -192,7 +192,8 @@ import {
   comp9,
   comp10,
   comp11,
-  comp12
+  comp12,
+  comp13,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -922,6 +923,32 @@ describe(&apos;Select Component&apos;, () =&gt; {
       }, 200);
     }).catch(done);
   });
+
+  it(&apos;Should not have &quot;limit&quot; and &quot;skip&quot; query params when &quot;Disable limit&quot; option checked&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement(&apos;div&apos;);
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = (_, __, url) =&gt; {
+      assert.equal(url, &apos;https://test.com/&apos;);
+      return Promise.resolve({});
+    };
+
+    Formio.createForm(element, form).then(() =&gt; {
+      setTimeout(() =&gt; {
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;The empty option in html5 shouldn\&apos;t have the [Object Object] value&apos;, () =&gt; {
+    return Harness.testCreate(SelectComponent, comp13).then((component) =&gt; {
+     const emptyOption = component.element.querySelectorAll(&apos;option&apos;)[0];
+      assert.notEqual(emptyOption.value, &apos;[object Object]&apos;);
+      assert.equal(emptyOption.value, &apos;&apos;);
+    });
+  });
+
   // it(&apos;should reset input value when called with empty value&apos;, () =&gt; {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;

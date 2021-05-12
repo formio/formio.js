@@ -2302,7 +2302,7 @@ describe(&apos;Webform tests&apos;, function() {
   describe(&apos;Calculate Value&apos;, () =&gt; {
     it(&apos;Should calculate value when set submission if the component is not persistent&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
       form.setForm(calculatedNotPersistentValue).then(() =&gt; {
         form.setSubmission({
           data:
