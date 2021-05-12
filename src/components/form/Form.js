@@ -264,6 +264,7 @@ export default class FormComponent extends Component {
               element = this.root.element;
             }
             this.subForm.attach(element);
+            this.valueChanged = this.hasSetValue;
 
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
@@ -780,5 +781,11 @@ export default class FormComponent extends Component {
       noDefault: true
     });
     this.unset();
+  }
+
+  setDefaultValue() {
+    if (this.defaultValue && !this.isEmpty(this.defaultValue)) {
+      return super.setDefaultValue();
+    }
   }
 }
