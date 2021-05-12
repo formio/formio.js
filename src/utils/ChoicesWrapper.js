@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from '@formio/choices.js';
 
 /**
  * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.

@@ -2,10 +2,12 @@ import Harness from '../../../test/harness';
 import TagsComponent from './Tags';
 import assert from 'power-assert';
 import modalTagsComponent from '../../../test/formtest/modalTagsComponent';
+import _ from 'lodash';
 
 import {
   comp1,
   comp2,
+  comp3
 } from './fixtures';
 import Formio from '../../Formio';
 
@@ -51,5 +53,49 @@ describe('Tags Component', function() {
         }, 150);
       })
       .catch(done);
+  });
+
+  it('Should use correct delimiter for value', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+    form.components[0].delimeter = '-';
+
+    Formio.createForm(element, form).then(form => {
+      const tags = form.getComponent('tags');
+      const value =  ['tag1','tag2', 'tag3'];
+
+      tags.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(tags.getValue(), value.join('-'));
+        assert.equal(tags.dataValue, value.join('-'));
+        assert.equal(form.submission.data.tags, value.join('-'));
+
+        document.innerHTML = '';
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should use store value as array', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+    form.components[0].storeas = 'array';
+
+    Formio.createForm(element, form).then(form => {
+      const tags = form.getComponent('tags');
+      const value =  ['tag1','tag2', 'tag3'];
+
+      tags.setValue(value);
+
+      setTimeout(() => {
+        assert.deepEqual(tags.getValue(), value.join(','));
+        assert.deepEqual(form.submission.data.tags, value);
+        assert.equal(tags.dataValue, value);
+
+        document.innerHTML = '';
+        done();
+      }, 200);
+    }).catch(done);
   });
 });

@@ -4,6 +4,71 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.3
+#### Fixed
+ - Issue with the auto-disable default values.
+ - Problem with Edit Grid errors showing up all the time.
+
+### 4.14.0-rc.2
+#### Fixed
+ - Fix/empty number submission
+ - FIO-1112: Fix styles for bootstrap3 and hovered tab
+ - Editgrid Error section rendering everytime
+ - FIO-2810: Fixes an issue when set to Radio input type, cannot unselect an option
+ - FIO-2731: Fixes an issue when was unable to disable multiple values on Number component.
+ - FIO-2778: Removes redundant 'Minimum Word Length' and 'Maximum Word Length' settings for the URL component.
+ - FIO-1562: Fixes an issue where clearOnHide mistakenly triggered for components inside a Container nested inside a DataGrid
+ - FIO-346 | FJS-1051: Fixes an issue where multiple select shows "..." in Firefox
+ - FIO-2811: Button: fix values not updated when custom logic set
+ - FIO-1525: Fixes an issue where DataMap value is always shown as empty in the DataTable
+ - FIO-196: select request limit
+
+#### Added
+ - Added a way to not have renderer add default values to submission.
+
+### 4.14.0-rc.1
+#### Addded
+ - FIO-1112: Add vertical layout for tabs component
+
+### 4.13.1-rc.4
+#### Fixed
+ - FIO-1151: Fix url option being affected by interpolation for address component.
+ - Fixed Formio from being undefined in example template.
+
+#### Added
+ - Added Save & Delete event for EditGrid.
+
+### 4.13.1-rc.3
+#### Changed
+ - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github.
+
+### 4.13.1-rc.2
+#### Fixed
+ - FIO-445: TypeError in console in custom endpoint example
+ - FIO-2735: Fixes an issue where Display Timezone does not work for TextField with a Calendar widget
+ - FIO-2739: fix the display of component errors Day and Email for the DynamicWizard
+ - FIO-2496: Fixes an issue when Mask validation errors are not shown if invalid mask value is set for alphanumeric or alphabetic mask (if last symbols are missing)
+ - Fix edit grid not translated column labels. Bind translation function to any interpolated string context.
+ - FIO-2667: Fixes performance regression issues comparing with formiojs 4.11.x /4.10.x
+ - FIO-2641: Fixes an issue when wizard navigation pages cursor had a Text Edit style in bootstrap3
+ - FIO-262: remove the addition of decimal places when typing in the currency field on the sandbox
+ - FIO-345: datagrid cleanup validation
+ - FIO-2603: Fixes an issue where saveDraft is sent after a form was submitted
+ - FIO-254: Add address provider url interpolations
+ - FJS-1272: Form crashes using underscore as a mask
+ - FIO-2740: fix triggerChange call for cases when nested form component changes
+
+#### Added
+ - FIO-1062: added automated tests for select component
+
+### 4.13.1-rc.1
+#### Fixed
+ - FIO-2531: added conflictId to error data when unique validation is triggered
+
+### 4.13.0
+#### Changed
+ - No changes. Official release off of 4.13.0-rc.29
+
 ### 4.13.0-rc.29
 #### Fixed
  - FIO-2742: fix re-submit for nested forms
