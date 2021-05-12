@@ -229,6 +229,13 @@ export default class ButtonComponent extends Field {
       }
     }, true);
 
+    if (this.component.saveOnEnter) {
+      this.root.addEventListener(this.root.element, 'keyup', (event) => {
+        if (event.keyCode === 13) {
+          this.onClick.call(this, event);
+        }
+      });
+    }
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
     this.addEventListener(this.refs.buttonMessageContainer, 'click', () => {
       if (this.refs.buttonMessageContainer.classList.contains('has-error')) {
