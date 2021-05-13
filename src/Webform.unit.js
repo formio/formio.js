@@ -2164,7 +2164,7 @@ describe('Webform tests', function() {
         });
         setTimeout(() => {
           const dataSourceDisplay = form.getComponent('dataSourceDisplay');
-          assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set the value');
+          assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set and keep the value');
           done();
         }, 1000);
       }).catch(done);

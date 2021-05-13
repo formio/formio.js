@@ -2600,7 +2600,8 @@ export default class Component extends Element {
     let calculatedValue = dataValue;
     // Calculate the new value.
 
-    if (!flags.fromSubmission && !this.root.editing || !this.component.persistent) { // If data was calculated in a submission and the editing mode is on, skip calculating
+    // If data was calculated in a submission and the editing mode is on, skip calculating
+    if (!flags.fromSubmission && !this.root.editing || !this.component.persistent) {
       calculatedValue = this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
