@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2617: Camera on file dropzone
  - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
  - FIO-1409: Add save on enter option for button component
+ - FIO-2676: Conditionally showing columns are not auto-adjusting when auto adjust column is set to true
 
 ### 4.13.2-rc.1
 #### Fixed
