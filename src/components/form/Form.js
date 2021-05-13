@@ -782,10 +782,4 @@ export default class FormComponent extends Component {
     });
     this.unset();
   }
-
-  setDefaultValue() {
-    if (this.defaultValue && !this.isEmpty(this.defaultValue)) {
-      return super.setDefaultValue();
-    }
-  }
 }
