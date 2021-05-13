@@ -26,6 +26,7 @@ import {
   formWithBlurValidationInsidePanel,
   modalEditComponents,
   calculatedNotPersistentValue,
+  calculateValueInEditingMode,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
@@ -2147,6 +2148,26 @@ describe('Webform tests', function() {
           assert.equal(notPersistentFieldInput.value, 'testValue', 'Should calculate the value');
           done();
         }, 550);
+      }).catch(done);
+    });
+    it('Should calculate value by datasouce component when editing mode is on', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculateValueInEditingMode).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              select: { label: 'Dummy #1', value: 'dummy1' },
+              dataSourceDisplay: 'some value'
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const dataSourceDisplay = form.getComponent('dataSourceDisplay');
+          assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set the value');
+          done();
+        }, 1000);
       }).catch(done);
     });
   });
