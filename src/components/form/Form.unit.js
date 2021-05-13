@@ -7,6 +7,7 @@ import {
   comp1,
   comp3,
   comp4,
+  comp5,
 } from './fixtures';
 import Webform from '../../Webform';
 import formModalEdit from './fixtures/formModalEdit';
@@ -195,6 +196,28 @@ describe('Form Component', () => {
           }, 250);
         });
       }).catch(done);
+    });
+  });
+
+  describe('Inside Collapsed Panel', () => {
+    it('Should be able to set value to Nested Form Component inside collapsed Panel', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp5)
+        .then(() => {
+            const textField = form.getComponent(['form', 'textField']);
+            const panel = form.getComponent('panel333');
+            textField.setValue('123', { modified: true });
+            setTimeout(() => {
+              assert.equal(textField.dataValue, '123', 'Should set value');
+              panel.collapsed = false;
+              setTimeout(() => {
+                assert.equal(textField.dataValue, '123', 'Should keep the set value after the panel was expanded');
+                done();
+              }, 300);
+            }, 300);
+        })
+        .catch(done);
     });
   });
 });

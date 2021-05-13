@@ -260,10 +260,12 @@ export default class FormComponent extends Component {
 
           this.setContent(element, this.render());
           if (this.subForm) {
-            this.subForm.attach(element);
-            if (this.subForm._form.display === 'wizard' && this.root._form.display === 'wizard') {
-              this.root.redraw();
+            if (this.isNestedWizard) {
+              element = this.root.element;
             }
+            this.subForm.attach(element);
+            this.valueChanged = this.hasSetValue;
+
             if (!this.valueChanged && this.dataValue.state !== 'submitted') {
               this.setDefaultValue();
             }
@@ -342,6 +344,19 @@ export default class FormComponent extends Component {
     }
   }
 
+  updateSubWizards(subForm) {
+    if (this.isNestedWizard && this.root?.subWizards && subForm?._form?.display === 'wizard') {
+      const existedForm = this.root.subWizards.findIndex(form => form.component.form === this.component.form);
+      if (existedForm !== -1) {
+        this.root.subWizards[existedForm] = this;
+      }
+      else {
+        this.root.subWizards.push(this);
+      }
+      this.emit('subWizardsUpdated', subForm);
+    }
+  }
+
   /**
    * Create a subform instance.
    *
@@ -380,22 +395,13 @@ export default class FormComponent extends Component {
         this.subForm.url = this.formSrc;
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
+        this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
         return this.subForm;
       });
     }).then((subForm) => {
-      if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
-        const existedForm = this.root?.subWizards?.findIndex(form => form.component.form === this.component.form);
-        if (existedForm !== -1) {
-          this.root.subWizards[existedForm] = this;
-        }
-        else {
-          this.root.subWizards.push(this);
-        }
-        this.emit('subWizardsUpdated', subForm);
-      }
-
+      this.updateSubWizards(subForm);
       return subForm;
     });
     return this.subFormReady;
@@ -562,7 +568,7 @@ export default class FormComponent extends Component {
     const isAlreadySubmitted = submission && submission._id && submission.form;
 
     // This submission has already been submitted, so just return the reference data.
-    if (isAlreadySubmitted && !this.subForm.wizard) {
+    if (isAlreadySubmitted && !this.subForm?.wizard) {
       this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
@@ -614,7 +620,8 @@ export default class FormComponent extends Component {
       && _.isEmpty(submission.data);
 
     if (shouldLoadSubmissionById) {
-      const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+      const formId = submission.form || this.formObj.form || this.component.form;
+      const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id}`;
       this.subForm.setUrl(submissionUrl, this.options);
       this.subForm.loadSubmission();
     }
@@ -662,11 +669,22 @@ export default class FormComponent extends Component {
     }
   }
 
+  /**
+   * Determines if this form is a Nested Wizard
+   * which means it should be a Wizard itself and should be a direct child of a Wizard's page
+   * @returns {boolean}
+   */
+  get isNestedWizard() {
+    return this.subForm?._form?.display === 'wizard' && this.parent?.parent?._form?.display === 'wizard';
+  }
+
   get visible() {
     return super.visible;
   }
 
   set visible(value) {
+    const isNestedWizard = this.isNestedWizard;
+
     if (this._visible !== value) {
       this._visible = value;
       this.clearOnHide();
@@ -680,7 +698,10 @@ export default class FormComponent extends Component {
         return;
       }
       this.updateSubFormVisibility();
-      this.redraw();
+      isNestedWizard ? this.rebuild() : this.redraw();
+    }
+    if (!value && isNestedWizard) {
+      this.root.redraw();
     }
   }
 
@@ -760,5 +781,11 @@ export default class FormComponent extends Component {
       noDefault: true
     });
     this.unset();
+  }
+
+  setDefaultValue() {
+    if (this.defaultValue && !this.isEmpty(this.defaultValue)) {
+      return super.setDefaultValue();
+    }
   }
 }

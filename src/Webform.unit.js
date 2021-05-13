@@ -45,6 +45,7 @@ import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
+import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGridContainerConditionals';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
@@ -59,16 +60,18 @@ describe('Webform tests', function() {
      language: 'en'
     });
     form.setForm(translationTestForm).then(() => {
-      const selectComp = form.getComponent('select');
-      const options = selectComp.element.querySelector('[role="listbox"]').children;
-      const option1 = options[0].textContent.trim();
-      const option2 = options[1].textContent.trim();
-      const label = selectComp.element.querySelector('label').textContent.trim();
-      assert.equal(option1, translationTestForm.components[0].data.values[0].label);
-      assert.equal(option2, translationTestForm.components[0].data.values[1].label);
-      assert.equal(label, translationTestForm.components[0].label);
-      document.body.innerHTML = '';
-      done();
+      setTimeout(() => {
+        const selectComp = form.getComponent('select');
+        const options = selectComp.element.querySelector('[role="listbox"]').children;
+        const option1 = options[0].textContent.trim();
+        const option2 = options[1].textContent.trim();
+        const label = selectComp.element.querySelector('label').textContent.trim();
+        assert.equal(option1, translationTestForm.components[0].data.values[0].label);
+        assert.equal(option2, translationTestForm.components[0].data.values[1].label);
+        assert.equal(label, translationTestForm.components[0].label);
+        document.body.innerHTML = '';
+        done();
+      }, 100);
     }).catch(done);
   });
 
@@ -2128,7 +2131,7 @@ describe('Webform tests', function() {
   describe('Calculate Value', () => {
     it('Should calculate value when set submission if the component is not persistent', (done) => {
       const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
       form.setForm(calculatedNotPersistentValue).then(() => {
         form.setSubmission({
           data:
@@ -2284,6 +2287,49 @@ describe('Webform tests', function() {
     }).catch(done);
   }).timeout(3000);
 
+  it('Should have number and currency fields in empty form submission', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number'
+        },
+        {
+          label: 'Currency',
+          key: 'currency',
+          type: 'currency'
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit'
+        },
+      ],
+    };
+
+    const emptySubmissionData = {
+      number: '',
+      currency: '',
+      submit: true
+    };
+
+    form.setForm(formJson).then(() => {
+      const clickEvent = new Event('click');
+      const submitBtn = form.element.querySelector('[name="data[submit]"]');
+
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.deepEqual(form.data, emptySubmissionData);
+        done();
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   describe('Custom Logic', () => {
     it('Should rerender components using updated properties', (done) => {
       const formElement = document.createElement('div');
@@ -2307,6 +2353,32 @@ describe('Webform tests', function() {
           assert(requiredFieldLabel.classList.contains('field-required'), 'Should mark a field as required');
           done();
         }, 550);
+      }).catch(done);
+    });
+  });
+
+  describe('Conditionals', () => {
+    it('Should always checkConditions with correct context', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+
+      form.setForm(formWithDataGridWithContainerAndConditionals).then(() => {
+        const radioTrigger = form.getComponent(['dataGrid', 0, 'radio1']);
+        const radioConditional = form.getComponent(['dataGrid', 0, 'radio2']);
+        radioTrigger.setValue('yes', { modified: true });
+
+        setTimeout(() => {
+          assert.equal(radioTrigger.dataValue, 'yes', 'Should set value');
+          assert.equal(radioConditional.visible, true, 'Should become visible');
+
+          radioConditional.setValue('one', { modified: true });
+          setTimeout(() => {
+            assert.equal(radioConditional.dataValue, 'one', 'Should set value and clearOnHide should not be triggered');
+            assert.equal(radioConditional.visible, true, 'Should stay visible');
+
+            done();
+          }, 250);
+        }, 250);
       }).catch(done);
     });
   });
