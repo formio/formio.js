@@ -54,18 +54,6 @@ export default [
     },
   },
   {
-    type: 'checkbox',
-    key: 'redirectURIFromSettings',
-    label: 'Use redirect URI from action settings',
-    input: true,
-    weight: 112,
-    tooltip: 'Use if you want to be redirrected to the URI from the Action settings',
-    defaultValue: false,
-    conditional: {
-      json: { '===': [{ var: 'data.action' }, 'oauth'] },
-    },
-  },
-  {
     type: 'textfield',
     label: 'Save in state',
     key: 'state',
