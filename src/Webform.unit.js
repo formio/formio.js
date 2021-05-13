@@ -448,10 +448,10 @@ describe('Webform tests', function() {
             const editGridRows = formWithDraftModals.element.querySelectorAll( '[ref="editgrid-editGrid-row"]');
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
-            const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error');
+            const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
             const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error');
 
-            assert.equal(rowError, null);
+            assert.equal(!!rowError, false);
             assert.equal(!!editGridError, false);
 
             done();
@@ -648,7 +648,7 @@ describe('Webform tests', function() {
               //checking the number of appeared errors
               assert.equal(formWithDraftModals.errors.length, 2);
 
-              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent;
+              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
               const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error').textContent;
               //checking if right errors were shown in right places
               assert.equal(rowError, 'Invalid row. Please correct it or delete.');
