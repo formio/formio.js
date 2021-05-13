@@ -116,10 +116,6 @@ export default class ButtonComponent extends Field {
     return false;
   }
 
-  get isUriFromAction() {
-    return this.component.redirectURIFromSettings;
-  }
-
   render() {
     if (this.viewOnly || this.options.hideButtons) {
       this._visible = false;
@@ -405,6 +401,7 @@ export default class ButtonComponent extends Field {
     };
     /*eslint-enable camelcase */
 
+    // Needs for the correct redirection URI for the OpenID
     const originalRedirectUri = params.redirect_uri;
 
     // Make display optional.
@@ -442,14 +439,10 @@ export default class ButtonComponent extends Field {
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
           let requestPromise = NativePromise.resolve();
-          // Needs for the correct redirection URI for the OpenID
-          const redirectURI = this.isUriFromAction
-            ? originalRedirectUri
-            : (window.location.origin || `${window.location.protocol}//${window.location.host}`);
 
           if (_.has(this, 'root.form.config.oauth') && this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
-            params.redirectURI = redirectURI;
+            params.redirectURI = originalRedirectUri;
 
             // Needs for the exclude oAuth Actions that not related to this button
             params.triggeredBy = this.key;
@@ -458,7 +451,7 @@ export default class ButtonComponent extends Field {
           else {
             const submission = { data: {}, oauth: {} };
             submission.oauth[settings.provider] = params;
-            submission.oauth[settings.provider].redirectURI = redirectURI;
+            submission.oauth[settings.provider].redirectURI = originalRedirectUri;
 
             // Needs for the exclude oAuth Actions that not related to this button
             submission.oauth[settings.provider].triggeredBy = this.key;
