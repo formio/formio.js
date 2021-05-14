@@ -54,6 +54,7 @@ import webform from './webform';
 import well from './well';
 import wizard from './wizard';
 import wizardHeader from './wizardHeader';
+import wizardHeaderClassic from './wizardHeaderClassic';
 import wizardHeaderVertical from './wizardHeaderVertical';
 import wizardNav from './wizardNav';
 import cssClasses from './cssClasses';
@@ -129,6 +130,7 @@ export default {
   well,
   wizard,
   wizardHeader,
+  wizardHeaderClassic,
   wizardHeaderVertical,
   wizardNav,
   errorsList,

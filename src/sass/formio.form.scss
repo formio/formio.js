@@ -1295,6 +1295,111 @@ div[data-oembed-url] {
     cursor: pointer;
   }
 }
+
+.classic-pagination {
+  border-bottom: solid 1px #e0e0e0;
+  padding: 0 0 10px 0;
+  line-height: 1em;
+
+  &-page {
+    padding: 0;
+    position: relative;
+  }
+
+  &-title {
+    color: #595959; 
+    font-size: 16px; 
+    margin-bottom: 5px;
+  }
+
+  &-dot {
+    position: absolute; 
+    width: 30px; 
+    height: 30px; 
+    display: block; 
+    background: #fbe8aa; 
+    top: 40px; 
+    left: 50%; 
+    margin-top: -15px; 
+    margin-left: -15px; 
+    border-radius: 50%;
+
+    &::after {
+      content: ' ';
+      width: 14px; 
+      height: 14px; 
+      background: #fbbd19; 
+      border-radius: 50px; 
+      position: absolute; 
+      top: 8px; 
+      left: 8px; 
+    }
+  }
+
+  .progress {
+    position: relative; 
+    border-radius: 0px; 
+    height: 8px; 
+    box-shadow: none; 
+    margin: 20px 0;
+    border: none;
+    padding: 0;
+
+    &-bar {
+      width:0px; 
+      box-shadow: none; 
+      background: #fbe8aa;
+    }
+  }
+}
+
+.classic-pagination-page {
+  &.complete {
+    .progress-bar {
+      width: 100%;
+    }
+  }
+  &.active {
+    .progress-bar {
+      width: 50%;
+    }
+  }
+  &.disabled {
+    .classic-pagination-dot {
+      background-color: #f5f5f5;
+      &::after{
+        opacity: 0;
+      }
+    }
+  }
+}
+
+.classic-pagination-page  {
+  &:first-child {
+    .progress {
+      left: 50%; 
+      width: 50%;
+    }
+
+    &.active {
+      .progress-bar {
+        width: 0%;
+      }
+    }
+  }
+
+  &:last-child {
+    .progress {
+      width: 50%;
+    }
+
+    &.active {
+      .progress-bar {
+        width: 100%;
+      }
+    }
+  }
+}
 //styles for google maps dropdown
 .pac-container {
   z-index: 11000;
