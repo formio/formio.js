@@ -618,10 +618,10 @@ describe(&apos;Webform tests&apos;, function() {
             const editGridRows = formWithDraftModals.element.querySelectorAll( &apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;);
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
-            const rowError = formWithDraftModals.element.querySelector(&apos;.editgrid-row-error&apos;).textContent.trim();
+            const rowError = formWithDraftModals.element.querySelector(&apos;.editgrid-row-error&apos;);
             const editGridError = formWithDraftModals.element.querySelector(&apos;[ref=&quot;messageContainer&quot;]&apos;).querySelector(&apos;.error&apos;);
 
-            assert.equal(!!rowError, false);
+            assert.equal(rowError, null);
             assert.equal(!!editGridError, false);
 
             done();
@@ -2301,7 +2301,7 @@ describe(&apos;Webform tests&apos;, function() {
   describe(&apos;Calculate Value&apos;, () =&gt; {
     it(&apos;Should calculate value when set submission if the component is not persistent&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
       form.setForm(calculatedNotPersistentValue).then(() =&gt; {
         form.setSubmission({
           data:

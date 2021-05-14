@@ -649,7 +649,7 @@ describe('Webform tests', function() {
               //checking the number of appeared errors
               assert.equal(formWithDraftModals.errors.length, 2);
 
-              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent;
+              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
               const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error').textContent;
               //checking if right errors were shown in right places
               assert.equal(rowError, 'Invalid row. Please correct it or delete.');
