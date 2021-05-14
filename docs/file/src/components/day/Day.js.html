@@ -34,6 +34,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
@@ -752,6 +753,10 @@ export default class DayComponent extends Field {
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split(&apos;/&apos;);
     return (values[DAY] === &apos;00&apos; || values[MONTH] === &apos;00&apos; || values[YEAR] === &apos;0000&apos;);
+  }
+
+  getValidationFormat() {
+    return this.dayFirst ? &apos;DD-MM-YYYY&apos; : &apos;MM-DD-YYYY&apos;;
   }
 }
 </code></pre>

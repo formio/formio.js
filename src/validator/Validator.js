@@ -51,6 +51,7 @@ class ValidationChecker {
       onlyAvailableItems: {
         key: 'validate.onlyAvailableItems',
         method: 'validateValueAvailability',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('valueIsNotAvailable'), {
             field: component.errorLabel,
@@ -91,14 +92,41 @@ class ValidationChecker {
             const submission = this.config.submission;
             const path = `data.${component.path}`;
 
+            const addPathQueryParams = (pathQueryParams, query, path) => {
+              const pathArray = path.split(/\[\d+\]?./);
+              const needValuesInArray = pathArray.length > 1;
+
+              let pathToValue = path;
+
+              if (needValuesInArray) {
+                pathToValue = pathArray.shift();
+                const pathQueryObj = {};
+
+                _.reduce(pathArray, (pathQueryPath, pathPart, index) => {
+                  const isLastPathPart = index === (pathArray.length - 1);
+                  const obj = _.get(pathQueryObj, pathQueryPath, pathQueryObj);
+                  const addedPath = `$elemMatch['${pathPart}']`;
+
+                  _.set(obj, addedPath, isLastPathPart ? pathQueryParams : {});
+
+                  return pathQueryPath ? `${pathQueryPath}.${addedPath}` : addedPath;
+                }, '');
+
+                query[pathToValue] = pathQueryObj;
+              }
+              else {
+                query[pathToValue] = pathQueryParams;
+              }
+            };
+
             // Build the query
             const query = { form: form._id };
 
             if (_.isString(value)) {
-              query[path] = {
+              addPathQueryParams({
                 $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
                 $options: 'i'
-              };
+              }, query, path);
             }
             // FOR-213 - Pluck the unique location id
             else if (
@@ -107,29 +135,34 @@ class ValidationChecker {
               value.address['address_components'] &&
               value.address['place_id']
             ) {
-              query[`${path}.address.place_id`] = {
+              addPathQueryParams({
                 $regex: new RegExp(`^${escapeRegExCharacters(value.address['place_id'])}$`),
                 $options: 'i'
-              };
+              }, query, `${path}.address.place_id`);
             }
             // Compare the contents of arrays vs the order.
             else if (_.isArray(value)) {
-              query[path] = { $all: value };
+              addPathQueryParams({ $all: value }, query, path);
             }
             else if (_.isObject(value) || _.isNumber(value)) {
-              query[path] = { $eq: value };
+              addPathQueryParams({ $eq: value }, query, path);
             }
             // Only search for non-deleted items
             query.deleted = { $eq: null };
-
             // Try to find an existing value within the form
             this.config.db.findOne(query, (err, result) => {
               if (err) {
                 return resolve(false);
               }
               else if (result) {
-                // Only OK if it matches the current submission
-                return resolve(submission._id && (result._id.toString() === submission._id));
+               // Only OK if it matches the current submission
+                if (submission._id && (result._id.toString() === submission._id)) {
+                  resolve(true);
+                }
+                else {
+                  component.conflictId = result._id.toString();
+                  return resolve(false);
+                }
               }
               else {
                 return resolve(true);
@@ -350,7 +383,8 @@ class ValidationChecker {
             return total;
           }, 0);
 
-          return count >= min;
+          // Should not be triggered if there is no options selected at all
+          return !count || count >= min;
         }
       },
       maxSelectedCount: {
@@ -391,7 +425,7 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           const minLength = parseInt(setting, 10);
-          if (!minLength || (typeof value !== 'string') || component.isEmpty(value)) {
+          if (!value || !minLength || (typeof value !== 'string') || component.isEmpty(value)) {
             return true;
           }
           return (value.length >= minLength);
@@ -445,7 +479,7 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           const minWords = parseInt(setting, 10);
-          if (!minWords || (typeof value !== 'string')) {
+          if (!minWords || !value || (typeof value !== 'string')) {
             return true;
           }
           return (value.trim().split(/\s+/).length >= minWords);
@@ -479,12 +513,14 @@ class ValidationChecker {
         },
         check(component, setting, value) {
           /* eslint-disable max-len */
-          // From https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
-          const re = /[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
+          // From https://stackoverflow.com/questions/8667070/javascript-regular-expression-to-validate-url
+          const re = /^(?:(?:(?:https?|ftp):)?\/\/)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
+          // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+          const emailRe = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           /* eslint-enable max-len */
 
           // Allow urls to be valid if the component is pristine and no value is provided.
-          return !value || re.test(value);
+          return !value || (re.test(value) && !emailRe.test(value));
         }
       },
       date: {
@@ -561,11 +597,11 @@ class ValidationChecker {
         key: 'validate.pattern',
         hasLabel: true,
         message(component, setting) {
-          return component.t(_.get(component, 'component.validate.patternMessage', component.errorMessage('pattern'), {
+          return component.t(_.get(component, 'component.validate.patternMessage', component.errorMessage('pattern')), {
             field: component.errorLabel,
             pattern: setting,
             data: component.data
-          }));
+          });
         },
         check(component, setting, value) {
           if (component.isEmpty(value)) return true;
@@ -622,6 +658,8 @@ class ValidationChecker {
           inputMask = inputMask ? getInputMask(inputMask) : null;
 
           if (value && inputMask && !component.skipMaskValidation) {
+            // If char which is used inside mask placeholder was used in the mask, replace it with space to prevent errors
+            inputMask = inputMask.map((char) => char === component.placeholderChar ? ' ' : char);
             return matchInputMask(value, inputMask);
           }
 
@@ -668,7 +706,7 @@ class ValidationChecker {
           if (component.isPartialDay && component.isPartialDay(value)) {
             return true;
           }
-          const date = moment(value);
+          const date = component.getValidationFormat ? moment(value, component.getValidationFormat()) : moment(value);
           const maxDate = getDateSetting(setting);
 
           if (_.isNull(maxDate)) {
@@ -696,7 +734,7 @@ class ValidationChecker {
           if (component.isPartialDay && component.isPartialDay(value)) {
             return true;
           }
-          const date = moment(value);
+          const date = component.getValidationFormat ? moment(value, component.getValidationFormat()) : moment(value);
           const minDate = getDateSetting(setting);
           if (_.isNull(minDate)) {
             return true;
@@ -854,19 +892,28 @@ class ValidationChecker {
     const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row, async);
 
     const processResult = result => {
-      return result ? {
-        message: unescapeHTML(_.get(result, 'message', result)),
-        level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: getArrayFromComponentPath(component.path || ''),
-        context: {
-          validator: validatorName,
-          hasLabel: validator.hasLabel,
-          setting,
-          key: component.key,
-          label: component.label,
-          value
+      if (result) {
+        const resultData = {
+          message: unescapeHTML(_.get(result, 'message', result)),
+          level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
+          path: getArrayFromComponentPath(component.path || ''),
+          context: {
+            validator: validatorName,
+            hasLabel: validator.hasLabel,
+            setting,
+            key: component.key,
+            label: component.label,
+            value
+          }
+        };
+        if (validatorName ==='unique' && component.conflictId) {
+          resultData.conflictId = component.conflictId;
         }
-      } : false;
+        return resultData;
+      }
+      else {
+        return false;
+      }
     };
 
     if (async) {

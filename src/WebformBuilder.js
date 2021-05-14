@@ -110,14 +110,8 @@ export default class WebformBuilder extends Component {
         }
       }
 
-      // Order the compoennts.
-      if (info.components) {
-        info.componentOrder = Object.keys(info.components)
-          .map(key => info.components[key])
-          .filter(component => component && !component.ignore && !component.ignoreForForm)
-          .sort((a, b) => a.weight - b.weight)
-          .map(component => component.key);
-      }
+      // Order the components.
+      this.orderComponents(info);
     }
 
     this.options.hooks = this.options.hooks || {};
@@ -331,6 +325,14 @@ export default class WebformBuilder extends Component {
     this.triggerRedraw();
   }
 
+  attachTooltip(component, title) {
+    return new Tooltip(component, {
+      trigger: 'hover focus',
+      placement: 'top',
+      title
+    });
+  }
+
   attachComponent(element, component) {
     // Add component to element for later reference.
     element.formioComponent = component;
@@ -345,22 +347,14 @@ export default class WebformBuilder extends Component {
     });
 
     if (component.refs.copyComponent) {
-      new Tooltip(component.refs.copyComponent, {
-        trigger: 'hover focus',
-        placement: 'top',
-        title: this.t('Copy')
-      });
+      this.attachTooltip(component.refs.copyComponent, this.t('Copy'));
 
       component.addEventListener(component.refs.copyComponent, 'click', () =>
         this.copyComponent(component));
     }
 
     if (component.refs.pasteComponent) {
-      const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
-        trigger: 'hover focus',
-        placement: 'top',
-        title: this.t('Paste below')
-      });
+      const pasteToolTip = this.attachTooltip(component.refs.pasteComponent, this.t('Paste below'));
 
       component.addEventListener(component.refs.pasteComponent, 'click', () => {
         pasteToolTip.hide();
@@ -369,43 +363,27 @@ export default class WebformBuilder extends Component {
     }
 
     if (component.refs.moveComponent) {
-      new Tooltip(component.refs.moveComponent, {
-        trigger: 'hover focus',
-        placement: 'top',
-        title: this.t('Move')
-      });
+      this.attachTooltip(component.refs.moveComponent, this.t('Move'));
     }
 
     const parent = this.getParentElement(element);
 
     if (component.refs.editComponent) {
-      new Tooltip(component.refs.editComponent, {
-        trigger: 'hover focus',
-        placement: 'top',
-        title: this.t('Edit')
-      });
+      this.attachTooltip(component.refs.editComponent, this.t('Edit'));
 
       component.addEventListener(component.refs.editComponent, 'click', () =>
         this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
     }
 
     if (component.refs.editJson) {
-      new Tooltip(component.refs.editJson, {
-        trigger: 'hover focus',
-        placement: 'top',
-        title: this.t('Edit JSON')
-      });
+      this.attachTooltip(component.refs.editJson, this.t('Edit JSON'));
 
       component.addEventListener(component.refs.editJson, 'click', () =>
         this.editComponent(component.schema, parent, false, true, component.component));
     }
 
     if (component.refs.removeComponent) {
-      new Tooltip(component.refs.removeComponent, {
-        trigger: 'hover focus',
-        placement: 'top',
-        title: this.t('Remove')
-      });
+      this.attachTooltip(component.refs.removeComponent, this.t('Remove'));
 
       component.addEventListener(component.refs.removeComponent, 'click', () =>
         this.removeComponent(component.schema, parent, component.component));
@@ -630,22 +608,22 @@ export default class WebformBuilder extends Component {
     const filterGroupBy = (group, searchValue = '') => {
       const result = _.toPlainObject(group);
       const { subgroups = [], components } = result;
-      const filteredOrder = [];
+      const filteredComponents = [];
 
       for (const key in components) {
         const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
         const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
 
         if (isMatchedToTitle || isMatchedToKey) {
-          filteredOrder.push(components[key].key);
+          filteredComponents.push(components[key]);
         }
       }
 
-      result.componentOrder = filteredOrder;
+      this.orderComponents(result, filteredComponents);
       if (searchValue) {
         result.default = true;
       }
-      if (filteredOrder.length || subgroups.length) {
+      if (result.componentOrder.length || subgroups.length) {
         return result;
       }
       return null;
@@ -690,6 +668,17 @@ export default class WebformBuilder extends Component {
     });
 
     this.updateDragAndDrop();
+  }
+
+  orderComponents(groupInfo, foundComponents) {
+    const components = foundComponents || groupInfo.components;
+    if (components) {
+      groupInfo.componentOrder = Object.keys(components)
+        .map(key => components[key])
+        .filter(component => component && !component.ignore && !component.ignoreForForm)
+        .sort((a, b) => a.weight - b.weight)
+        .map(component => component.key);
+    }
   }
 
   updateDragAndDrop() {
@@ -1061,7 +1050,7 @@ export default class WebformBuilder extends Component {
     // Update the preview.
     if (this.preview) {
       this.preview.form = {
-        components: [_.omit(component, [
+        components: [_.omit({ ...component }, [
           'hidden',
           'conditional',
           'calculateValue',
@@ -1079,7 +1068,7 @@ export default class WebformBuilder extends Component {
     }
 
     // Change the "default value" field to be reflective of this component.
-    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
+    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue', true);
     if (defaultValueComponent && component.type !== 'hidden') {
       const defaultChanged = changed && (
         (changed.component && changed.component.key === 'defaultValue')
@@ -1087,7 +1076,7 @@ export default class WebformBuilder extends Component {
       );
 
       if (!defaultChanged) {
-        _.assign(defaultValueComponent.component, _.omit(component, [
+        _.assign(defaultValueComponent.component, _.omit({ ...component }, [
           'key',
           'label',
           'placeholder',
@@ -1101,6 +1090,7 @@ export default class WebformBuilder extends Component {
           'calculateValue',
           'conditional',
           'customConditional',
+          'id'
         ]));
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;

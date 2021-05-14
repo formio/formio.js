@@ -145,7 +145,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('submitError'));
+        const resultMessage = _.isString(message) ? this.t(message) : this.t(this.errorMessage('submitError'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -229,6 +229,13 @@ export default class ButtonComponent extends Field {
       }
     }, true);
 
+    if (this.component.saveOnEnter) {
+      this.root.addEventListener(this.root.element, 'keyup', (event) => {
+        if (event.keyCode === 13) {
+          this.onClick.call(this, event);
+        }
+      });
+    }
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
     this.addEventListener(this.refs.buttonMessageContainer, 'click', () => {
       if (this.refs.buttonMessageContainer.classList.contains('has-error')) {
@@ -335,6 +342,8 @@ export default class ButtonComponent extends Field {
           flattened,
           components
         });
+
+        this.triggerChange();
         break;
       }
       case 'url':
@@ -388,7 +397,7 @@ export default class ButtonComponent extends Field {
     let params = {
       response_type: 'code',
       client_id: settings.clientId,
-      redirect_uri: window.location.origin || `${window.location.protocol}//${window.location.host}`,
+      redirect_uri: settings.redirectURI || window.location.origin || `${window.location.protocol}//${window.location.host}`,
       state: settings.state,
       scope: settings.scope
     };
