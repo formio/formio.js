@@ -1,15 +1,23 @@
 <div class="{{ctx.className}}">
   <div style="position: relative;">
-    <div class="{{ctx.wizardHeaderType === 'wizardHeaderVertical' ? ' row' : ''}}">
-      <div class="{{ctx.wizardHeaderType === 'wizardHeaderVertical' ? ' col-sm-2' : ''}}">
-        {{ ctx.wizardHeader }}
+    {% if (ctx.wizardHeaderType === 'wizardHeaderVertical') { %}
+      <div class="row">
+        <div class="col-sm-2">
+          {{ ctx.wizardHeader }}
+        </div>
+        <div class="wizard-page col-sm-10" ref="{{ctx.wizardKey}}">
+          {{ctx.components}}
+        </div>
       </div>
-      <div class="wizard-page {{ctx.wizardHeaderType === 'wizardHeaderVertical' ? ' col-sm-10' : ''}}" ref="{{ctx.wizardKey}}">
+      <div class="col-sm-offset-2 col-sm-10">
+        {{ ctx.wizardNav }}
+      </div>
+    {% } else { %} 
+      {{ ctx.wizardHeader }}
+      <div class="wizard-page" ref="{{ctx.wizardKey}}">
         {{ctx.components}}
       </div>
-    </div>
-    <div class="{{ctx.wizardHeaderType === 'wizardHeaderVertical' ? ' col-sm-offset-2 col-sm-10' : ''}}">
       {{ ctx.wizardNav }}
-    </div>
+    {% } %} 
   </div>
 </div>
