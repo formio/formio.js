@@ -2952,9 +2952,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/columns/columns.js~columnscomponent#justifyrow",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justifyRow",
-    "src/components/columns/Columns.js~ColumnsComponent#justifyRow",
+    "src/components/columns/columns.js~columnscomponent#justifycolumn",
+    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justifyColumn",
+    "src/components/columns/Columns.js~ColumnsComponent#justifyColumn",
     "method"
   ],
   [
@@ -3009,6 +3009,12 @@ window.esdocSearchIndex = [
     "src/components/columns/fixtures/comp1.js",
     "file/src/components/columns/fixtures/comp1.js.html",
     "src/components/columns/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/columns/fixtures/comp2.js",
+    "file/src/components/columns/fixtures/comp2.js.html",
+    "src/components/columns/fixtures/comp2.js",
     "file"
   ],
   [
@@ -3783,6 +3789,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editform/editgrid.edit.validation.js",
     "file/src/components/editgrid/editForm/EditGrid.edit.validation.js.html",
     "src/components/editgrid/editForm/EditGrid.edit.validation.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp-with-basic-components.js",
+    "file/src/components/editgrid/fixtures/comp-with-basic-components.js.html",
+    "src/components/editgrid/fixtures/comp-with-basic-components.js",
     "file"
   ],
   [

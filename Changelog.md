@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.4
+#### Fixed
+ - FIO-2848, FIO-2831: Fixes some issues with setting error classes inside EditGrid
+ - Removed setDefaultValues for the NestedForm. Revised that nested form with visible false, works as expected without it.
+ - FJS | Conditionally showing columns are not auto-adjusting when auto adjust column is set to true
+ - FJS-3357 enable selection of closed EditGrid rows
+ - FIO-1409: Add save on enter option for button component 
+ - Fix/fio 2617 camera on file dropzone
+ - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
+ - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
+ - FIO-2677: fix submission not set on pdf for components with calculated value
+ - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source.
+ - FIO-2786: fix problem with initial button click on Nested Wizard in M…
+ - Inherit default (en) translations (validations, buttons) for custom languages
+
 ### 4.14.0-rc.3
 #### Fixed
  - Issue with the auto-disable default values.
