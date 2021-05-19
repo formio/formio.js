@@ -41,8 +41,13 @@ export default class EmailComponent extends TextFieldComponent {
 
   normalizeValue(value, flags = {}) {
     value = super.normalizeValue(value, flags);
-    if (this.options.server) {
-      value = value.toLowerCase();
+    if (this.options.server && !!value) {
+      if (Array.isArray(value)) {
+        value = value.map(val => val.toLowerCase());
+      }
+      else {
+        value = value.toLowerCase();
+      }
     }
     return value;
   }
