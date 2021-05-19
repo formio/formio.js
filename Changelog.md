@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.6
+#### Fixed
+ - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
+ - FIO-2672: Fixes the email normalize to work with the "multiple" flag and not crash the renderer.
+ - FIO-2936: replace finally method for better compatibility
+
 ### 4.14.0-rc.5
 #### Fixed
  - FIO-2672: effective use of the index issue fix
