@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.5
+#### Fixed
+ - FIO-2672: effective use of the index issue fix
+
 ### 4.14.0-rc.4
 #### Fixed
  - FIO-2848, FIO-2831: Fixes some issues with setting error classes inside EditGrid

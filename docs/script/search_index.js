@@ -3906,6 +3906,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/email/email.js~emailcomponent#normalizevalue",
+    "class/src/components/email/Email.js~EmailComponent.html#instance-method-normalizeValue",
+    "src/components/email/Email.js~EmailComponent#normalizeValue",
+    "method"
+  ],
+  [
     "src/components/email/email.js~emailcomponent.builderinfo",
     "class/src/components/email/Email.js~EmailComponent.html#static-get-builderInfo",
     "src/components/email/Email.js~EmailComponent.builderInfo",
