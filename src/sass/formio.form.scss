@@ -1336,7 +1336,7 @@ div[data-oembed-url] {
     }
   }
 
-  .progress {
+  .progress, &-progress {
     position: relative; 
     border-radius: 0px; 
     height: 8px; 
@@ -1344,9 +1344,11 @@ div[data-oembed-url] {
     margin: 20px 0;
     border: none;
     padding: 0;
+    background-color: #f6f6f6;
 
     &-bar {
-      width:0px; 
+      width: 0px; 
+      height: 10px;
       box-shadow: none; 
       background: #fbe8aa;
     }
@@ -1355,12 +1357,12 @@ div[data-oembed-url] {
 
 .classic-pagination-page {
   &.complete {
-    .progress-bar {
+    .progress-bar, .classic-pagination-progress-bar {
       width: 100%;
     }
   }
   &.active {
-    .progress-bar {
+    .progress-bar, .classic-pagination-progress-bar {
       width: 50%;
     }
   }
@@ -1376,25 +1378,25 @@ div[data-oembed-url] {
 
 .classic-pagination-page  {
   &:first-child {
-    .progress {
+    .progress, .classic-pagination-progress {
       left: 50%; 
       width: 50%;
     }
 
     &.active {
-      .progress-bar {
+      .progress-bar, .classic-pagination-progress-bar {
         width: 0%;
       }
     }
   }
 
   &:last-child {
-    .progress {
+    .progress, .classic-pagination-progress {
       width: 50%;
     }
 
     &.active {
-      .progress-bar {
+      .progress-bar, .classic-pagination-progress-bar {
         width: 100%;
       }
     }
