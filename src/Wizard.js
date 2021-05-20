@@ -325,16 +325,20 @@ export default class Wizard extends Webform {
     return _.get(currentPage.component, 'allowPrevious', this.options.allowPrevious);
   }
 
+  handleNaviageteOnEnter(event) {
+    if (event.keyCode === 13) {
+      const clickEvent = new CustomEvent('click');
+      const buttonElement = this.refs[`${this.wizardKey}-${this.buttons.next.name}`];
+      if (buttonElement) {
+        buttonElement.dispatchEvent(clickEvent);
+      }
+    }
+  }
+
   handleSaveOnEnter(event) {
     if (event.keyCode === 13) {
       const clickEvent = new CustomEvent('click');
-      let buttonElement = null;
-      if (this.buttons.next) {
-        buttonElement = this.refs[`${this.wizardKey}-${this.buttons.next.name}`];
-      }
-      if (this.buttons.submit) {
-        buttonElement = this.refs[`${this.wizardKey}-${this.buttons.submit.name}`];
-      }
+      const buttonElement = this.refs[`${this.wizardKey}-${this.buttons.submit.name}`];
       if (buttonElement) {
         buttonElement.dispatchEvent(clickEvent);
       }
@@ -342,8 +346,11 @@ export default class Wizard extends Webform {
   }
 
   attachNav() {
-    if (this.component.navigateOrSaveOnEnter) {
-      this.addEventListener(this.root.element, 'keyup', this.handleSaveOnEnter.bind(this));
+    if (this.component.navigateOnEnter) {
+      this.addEventListener(document, 'keyup', this.handleNaviageteOnEnter.bind(this));
+    }
+    if (this.component.saveOnEnter) {
+      this.addEventListener(document, 'keyup', this.handleSaveOnEnter.bind(this));
     }
     _.each(this.buttons, (button) => {
       const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
@@ -390,8 +397,11 @@ export default class Wizard extends Webform {
   }
 
   detachNav() {
-    if (this.component.navigateOrSaveOnEnter) {
-      this.removeEventListener(this.root.element, 'keyup', this.handleSaveOnEnter.bind(this));
+    if (this.component.navigateOnEnter) {
+      this.removeEventListener(document, 'keyup', this.handleNaviageteOnEnter.bind(this));
+    }
+    if (this.component.saveOnEnter) {
+      this.removeEventListener(document, 'keyup', this.handleSaveOnEnter.bind(this));
     }
     _.each(this.buttons, (button) => {
       this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], 'click');
