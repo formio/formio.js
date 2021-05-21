@@ -488,11 +488,17 @@ export default class ButtonComponent extends Field {
     if (!this.root) {
       return;
     }
-    const recaptchaComponent = this.root.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
+
+    let recaptchaComponent;
+
+    this.root.everyComponent((component)=> {
+      if ( component.component.type === 'recaptcha' &&
         component.component.eventType === 'buttonClick' &&
-        component.component.buttonKey === this.component.key;
+        component.component.buttonKey === this.component.key) {
+          recaptchaComponent = component;
+        }
     });
+
     if (recaptchaComponent) {
       recaptchaComponent.verify(`${this.component.key}Click`);
     }
