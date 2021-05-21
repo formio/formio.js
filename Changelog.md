@@ -21,9 +21,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2505: Fixes an issue when Signatures on different rows are not consistent in size in DataGrid
  - FIO-2625: Fixes an issue where got an infinite loop when changing the default values of the Data Grid components in the Data Grid.
  - FIO-1288: Fixesan issue where Prefix/Suffix is rendered inaccurately when words/chars counter is shown
+ - FIO-1537: fixed submiting issue for wizards recaptcha component. 
+ - FIO-320: Use Webcam when Enable webcam is true
+ - FIO-1488: Fixes an issue where unordered list created in Quill is rendered as an ordered one in read-only mode
 
 #### Added
  - FIO-1239: Implement wizard header type selection
+ - FIO-1422: Add 'Navigate Pages & Save on Enter' option for wizard
 
 #### Changed
  - FIO-487: Remove pdf icon element from submission view
