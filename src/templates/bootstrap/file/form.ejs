@@ -1,4 +1,10 @@
+{% if (ctx.options.vpat) { %}
+  <span tabindex="-1" class="sr-only" id="invisible-{{ctx.instance.id}}-{{ctx.component.key}}"></span>
+{% } %}
 {% if (!ctx.self.imageUpload) { %}
+  {% if (ctx.options.vpat) { %}
+    <div>{{(!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Any file types are allowed' : ctx.t('Allowed file types: ') + ctx.allowedFileTypes}}</div>
+  {% } %}
   <ul class="list-group list-group-striped">
     <li class="list-group-item list-group-header hidden-xs hidden-sm">
       <div class="row">
@@ -16,13 +22,15 @@
       <li class="list-group-item">
         <div class="row">
           {% if (!ctx.disabled) { %}
-            <div class="col-md-1"><i class="{{ctx.iconClass('remove')}}" ref="removeLink"></i></div>
+            <div class="col-md-1"><i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="removeLink"></i></div>
           {% } %}
           <div class="col-md-{% if (ctx.self.hasTypes) { %}7{% } else { %}9{% } %}">
             {% if (ctx.component.uploadOnly) { %}
               {{file.originalName || file.name}}
             {% } else { %}
-              <a href="{{file.url || '#'}}" target="_blank" ref="fileLink">{{file.originalName || file.name}}</a>
+              <a href="{{file.url || '#'}}" target="_blank" ref="fileLink">
+                <span class="sr-only">{{ctx.t('Press to open ')}}</span>{{file.originalName || file.name}}
+              </a>
             {% } %}
           </div>
           <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
@@ -49,7 +57,7 @@
         <span>
           <img ref="fileImage" src="" alt="{{file.originalName || file.name}}" style="width:{{ctx.component.imageSize}}px">
           {% if (!ctx.disabled) { %}
-            <i class="{{ctx.iconClass('remove')}}" ref="removeLink"></i>
+            <i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="removeLink"></i>
           {% } %}
         </span>
       </div>
@@ -68,7 +76,15 @@
         {% if (ctx.self.imageUpload && ctx.component.webcam) { %}
           <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('Use Camera,')}}</a>  {{ctx.t('or')}}
         {% } %}
-      <a href="#" ref="fileBrowse" class="browse">{{ctx.t('browse')}}</a>
+        {{ctx.t('or')}}
+        <a href="#" ref="fileBrowse" class="browse">
+          {{ctx.t('browse')}}
+          <span class="sr-only">
+            {{ctx.t('Browse to attach file for ' + ctx.component.label + '. ' + 
+            (ctx.component.description ? ctx.component.description + '. ' : '') + 
+            ((!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Any file types are allowed' : ctx.t('Allowed file types: ') + ctx.allowedFileTypes))}}
+          </span>
+        </a>
       <div ref="fileProcessingLoader" class="loader-wrapper">
         <div class="loader text-center"></div>
       </div>
@@ -84,7 +100,12 @@
 {% ctx.statuses.forEach(function(status) { %}
   <div class="file {{ctx.statuses.status === 'error' ? ' has-error' : ''}}">
     <div class="row">
-      <div class="fileName col-form-label col-sm-10">{{status.originalName}} <i class="{{ctx.iconClass('remove')}}" ref="fileStatusRemove"></i></div>
+      <div class="fileName col-form-label col-sm-10">{{status.originalName}}
+        <i class="{{ctx.iconClass('remove')}}" ref="fileStatusRemove">
+          <span class="sr-only">{{ctx.t('Remove button. Press to remove ' + status.originalName || status.name + '.')}}</span>
+          <span class="sr-only">{{status.message ? status.message.replace(';', '.') : ''}}</span>
+        </i>
+      </div>
       <div class="fileSize col-form-label col-sm-2 text-right">{{ctx.fileSize(status.size)}}</div>
     </div>
     <div class="row">
