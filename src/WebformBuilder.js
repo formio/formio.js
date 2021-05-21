@@ -1146,7 +1146,7 @@ export default class WebformBuilder extends Component {
       else {
         keys.set(comp.key, [path]);
       }
-    });
+    }, true);
 
     return repeatablePaths;
   }

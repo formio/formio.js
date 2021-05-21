@@ -144,12 +144,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/components/datamap/datamap.js~datamapcomponent",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html",
-    "<span>DataMapComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/datamap/DataMap.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/datetime/datetime.form.js~datetime",
     "function/index.html#static-function-DateTime",
     "<span>DateTime</span> <span class=\"search-result-import-path\">formiojs/src/components/datetime/DateTime.form.js</span>",
@@ -2604,6 +2598,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/address/fixtures/comp2.js",
+    "file/src/components/address/fixtures/comp2.js.html",
+    "src/components/address/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/address/fixtures/index.js",
     "file/src/components/address/fixtures/index.js.html",
     "src/components/address/fixtures/index.js",
@@ -2643,6 +2643,18 @@ window.esdocSearchIndex = [
     "src/components/button/fixtures/comp1.js",
     "file/src/components/button/fixtures/comp1.js.html",
     "src/components/button/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/button/fixtures/comp2.js",
+    "file/src/components/button/fixtures/comp2.js.html",
+    "src/components/button/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/button/fixtures/comp3.js",
+    "file/src/components/button/fixtures/comp3.js.html",
+    "src/components/button/fixtures/comp3.js",
     "file"
   ],
   [
@@ -2832,6 +2844,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/checkbox/fixtures/comp2.js",
+    "file/src/components/checkbox/fixtures/comp2.js.html",
+    "src/components/checkbox/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/checkbox/fixtures/index.js",
     "file/src/components/checkbox/fixtures/index.js.html",
     "src/components/checkbox/fixtures/index.js",
@@ -2934,9 +2952,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/columns/columns.js~columnscomponent#justifyrow",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justifyRow",
-    "src/components/columns/Columns.js~ColumnsComponent#justifyRow",
+    "src/components/columns/columns.js~columnscomponent#justifycolumn",
+    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justifyColumn",
+    "src/components/columns/Columns.js~ColumnsComponent#justifyColumn",
     "method"
   ],
   [
@@ -2994,6 +3012,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/columns/fixtures/comp2.js",
+    "file/src/components/columns/fixtures/comp2.js.html",
+    "src/components/columns/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/columns/fixtures/index.js",
     "file/src/components/columns/fixtures/index.js.html",
     "src/components/columns/fixtures/index.js",
@@ -3015,6 +3039,12 @@ window.esdocSearchIndex = [
     "src/components/container/container.js~containercomponent#addcomponents",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-addComponents",
     "src/components/container/Container.js~ContainerComponent#addComponents",
+    "method"
+  ],
+  [
+    "src/components/container/container.js~containercomponent#checkconditions",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-checkConditions",
+    "src/components/container/Container.js~ContainerComponent#checkConditions",
     "method"
   ],
   [
@@ -3456,222 +3486,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/datamap/datamap.js",
-    "file/src/components/datamap/DataMap.js.html",
-    "src/components/datamap/DataMap.js",
-    "file"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#addchildcomponent",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-addChildComponent",
-    "src/components/datamap/DataMap.js~DataMapComponent#addChildComponent",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#addrow",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-addRow",
-    "src/components/datamap/DataMap.js~DataMapComponent#addRow",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#canaddcolumn",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-canAddColumn",
-    "src/components/datamap/DataMap.js~DataMapComponent#canAddColumn",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#checkcolumns",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-checkColumns",
-    "src/components/datamap/DataMap.js~DataMapComponent#checkColumns",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#componentcontext",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-componentContext",
-    "src/components/datamap/DataMap.js~DataMapComponent#componentContext",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#components",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-member-components",
-    "src/components/datamap/DataMap.js~DataMapComponent#components",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#constructor",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-constructor-constructor",
-    "src/components/datamap/DataMap.js~DataMapComponent#constructor",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#createrowcomponents",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-createRowComponents",
-    "src/components/datamap/DataMap.js~DataMapComponent#createRowComponents",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#datavalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-dataValue",
-    "src/components/datamap/DataMap.js~DataMapComponent#dataValue",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#datavalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-set-dataValue",
-    "src/components/datamap/DataMap.js~DataMapComponent#dataValue",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#defaultrowkey",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-defaultRowKey",
-    "src/components/datamap/DataMap.js~DataMapComponent#defaultRowKey",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#defaultschema",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-defaultSchema",
-    "src/components/datamap/DataMap.js~DataMapComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#defaultvalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-defaultValue",
-    "src/components/datamap/DataMap.js~DataMapComponent#defaultValue",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#emptyvalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-emptyValue",
-    "src/components/datamap/DataMap.js~DataMapComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#getcolumns",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getColumns",
-    "src/components/datamap/DataMap.js~DataMapComponent#getColumns",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#getcomponentscontainer",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getComponentsContainer",
-    "src/components/datamap/DataMap.js~DataMapComponent#getComponentsContainer",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#getrowkey",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getRowKey",
-    "src/components/datamap/DataMap.js~DataMapComponent#getRowKey",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#getrowvalues",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getRowValues",
-    "src/components/datamap/DataMap.js~DataMapComponent#getRowValues",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#hasheader",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-hasHeader",
-    "src/components/datamap/DataMap.js~DataMapComponent#hasHeader",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#hasremovebuttons",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-hasRemoveButtons",
-    "src/components/datamap/DataMap.js~DataMapComponent#hasRemoveButtons",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#init",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-init",
-    "src/components/datamap/DataMap.js~DataMapComponent#init",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#iteratablerows",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-iteratableRows",
-    "src/components/datamap/DataMap.js~DataMapComponent#iteratableRows",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#keyschema",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-keySchema",
-    "src/components/datamap/DataMap.js~DataMapComponent#keySchema",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#removechildcomponent",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-removeChildComponent",
-    "src/components/datamap/DataMap.js~DataMapComponent#removeChildComponent",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#removerow",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-removeRow",
-    "src/components/datamap/DataMap.js~DataMapComponent#removeRow",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#rows",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-member-rows",
-    "src/components/datamap/DataMap.js~DataMapComponent#rows",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#savechildcomponent",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-saveChildComponent",
-    "src/components/datamap/DataMap.js~DataMapComponent#saveChildComponent",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#schema",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-schema",
-    "src/components/datamap/DataMap.js~DataMapComponent#schema",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#setrowcomponentsdata",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-setRowComponentsData",
-    "src/components/datamap/DataMap.js~DataMapComponent#setRowComponentsData",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#setvalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-setValue",
-    "src/components/datamap/DataMap.js~DataMapComponent#setValue",
-    "method"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#type",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-member-type",
-    "src/components/datamap/DataMap.js~DataMapComponent#type",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#valuekey",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-valueKey",
-    "src/components/datamap/DataMap.js~DataMapComponent#valueKey",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent#visiblecolumns",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-member-visibleColumns",
-    "src/components/datamap/DataMap.js~DataMapComponent#visibleColumns",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent.builderinfo",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#static-get-builderInfo",
-    "src/components/datamap/DataMap.js~DataMapComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/datamap/datamap.js~datamapcomponent.schema",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#static-method-schema",
-    "src/components/datamap/DataMap.js~DataMapComponent.schema",
-    "method"
-  ],
-  [
     "src/components/datamap/datamap.unit.js",
     "file/src/components/datamap/DataMap.unit.js.html",
     "src/components/datamap/DataMap.unit.js",
@@ -3840,6 +3654,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datetime/fixtures/comp3.js",
+    "file/src/components/datetime/fixtures/comp3.js.html",
+    "src/components/datetime/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/datetime/fixtures/index.js",
     "file/src/components/datetime/fixtures/index.js.html",
     "src/components/datetime/fixtures/index.js",
@@ -3972,6 +3792,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp-with-basic-components.js",
+    "file/src/components/editgrid/fixtures/comp-with-basic-components.js.html",
+    "src/components/editgrid/fixtures/comp-with-basic-components.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/comp-with-conditions-and-openwhenempty.js",
     "file/src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js.html",
     "src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js",
@@ -3981,6 +3807,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp1.js",
     "file/src/components/editgrid/fixtures/comp1.js.html",
     "src/components/editgrid/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp10.js",
+    "file/src/components/editgrid/fixtures/comp10.js.html",
+    "src/components/editgrid/fixtures/comp10.js",
     "file"
   ],
   [
@@ -4074,6 +3906,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/email/email.js~emailcomponent#normalizevalue",
+    "class/src/components/email/Email.js~EmailComponent.html#instance-method-normalizeValue",
+    "src/components/email/Email.js~EmailComponent#normalizeValue",
+    "method"
+  ],
+  [
     "src/components/email/email.js~emailcomponent.builderinfo",
     "class/src/components/email/Email.js~EmailComponent.html#static-get-builderInfo",
     "src/components/email/Email.js~EmailComponent.builderInfo",
@@ -4107,6 +3945,12 @@ window.esdocSearchIndex = [
     "src/components/email/fixtures/comp1.js",
     "file/src/components/email/fixtures/comp1.js.html",
     "src/components/email/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/email/fixtures/comp2.js",
+    "file/src/components/email/fixtures/comp2.js.html",
+    "src/components/email/fixtures/comp2.js",
     "file"
   ],
   [
@@ -4299,6 +4143,12 @@ window.esdocSearchIndex = [
     "src/components/form/fixtures/comp4.js",
     "file/src/components/form/fixtures/comp4.js.html",
     "src/components/form/fixtures/comp4.js",
+    "file"
+  ],
+  [
+    "src/components/form/fixtures/comp5.js",
+    "file/src/components/form/fixtures/comp5.js.html",
+    "src/components/form/fixtures/comp5.js",
     "file"
   ],
   [
@@ -4593,6 +4443,12 @@ window.esdocSearchIndex = [
     "src/components/number/number.js~numbercomponent#delimiter",
     "class/src/components/number/Number.js~NumberComponent.html#instance-member-delimiter",
     "src/components/number/Number.js~NumberComponent#delimiter",
+    "member"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#emptyvalue",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-get-emptyValue",
+    "src/components/number/Number.js~NumberComponent#emptyValue",
     "member"
   ],
   [
@@ -5136,6 +4992,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp5.js",
+    "file/src/components/radio/fixtures/comp5.js.html",
+    "src/components/radio/fixtures/comp5.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",
@@ -5379,6 +5241,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp12.js",
     "file/src/components/select/fixtures/comp12.js.html",
     "src/components/select/fixtures/comp12.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp13.js",
+    "file/src/components/select/fixtures/comp13.js.html",
+    "src/components/select/fixtures/comp13.js",
     "file"
   ],
   [
@@ -6156,6 +6024,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/tags/fixtures/comp3.js",
+    "file/src/components/tags/fixtures/comp3.js.html",
+    "src/components/tags/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/tags/fixtures/index.js",
     "file/src/components/tags/fixtures/index.js.html",
     "src/components/tags/fixtures/index.js",
@@ -6870,9 +6744,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/url/editform/url.edit.validation.js",
+    "file/src/components/url/editForm/Url.edit.validation.js.html",
+    "src/components/url/editForm/Url.edit.validation.js",
+    "file"
+  ],
+  [
     "src/components/url/fixtures/comp1.js",
     "file/src/components/url/fixtures/comp1.js.html",
     "src/components/url/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/url/fixtures/comp2.js",
+    "file/src/components/url/fixtures/comp2.js.html",
+    "src/components/url/fixtures/comp2.js",
     "file"
   ],
   [
