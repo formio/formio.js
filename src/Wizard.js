@@ -191,11 +191,11 @@ export default class Wizard extends Webform {
     return this.renderTemplate('wizardNav', ctx);
   }
 
-  prepareHeaderSettings(ctx) {
+  prepareHeaderSettings(ctx, headerType) {
     if (this.currentPanel && this.currentPanel.breadcrumb === 'none' || ctx.isSubForm) {
       return null;
     }
-    return this.renderTemplate('wizardHeader', ctx);
+    return this.renderTemplate(headerType, ctx);
   }
 
   render() {
@@ -211,12 +211,15 @@ export default class Wizard extends Webform {
     }
 
     const wizardNav = this.prepareNavigationSettings(ctx);
-    const wizardHeader = this.prepareHeaderSettings(ctx);
+
+    const wizardHeaderType = `wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`;
+    const wizardHeader = this.prepareHeaderSettings(ctx, wizardHeaderType);
 
     return this.renderTemplate('wizard', {
       ...ctx,
       className: super.getClassName(),
       wizardHeader,
+      wizardHeaderType,
       wizardNav,
       components: this.renderComponents([
         ...this.prefixComps,
@@ -249,7 +252,7 @@ export default class Wizard extends Webform {
       let headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
       if (headerElement) {
         this.detachHeader();
-        headerElement.outerHTML = this.renderTemplate('wizardHeader', this.renderContext);
+        headerElement.outerHTML = this.renderTemplate(`wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`, this.renderContext);
         headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
         this.loadRefs(headerElement, {
           [`${this.wizardKey}-link`]: 'multiple',
