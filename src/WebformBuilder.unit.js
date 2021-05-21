@@ -3,6 +3,7 @@ import assert from 'power-assert';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from '../test/formtest';
+import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 
 describe('WebformBuilder tests', function() {
   this.retries(3);
@@ -31,6 +32,16 @@ describe('WebformBuilder tests', function() {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
       assert.equal(component.errors.length, 1);
+      done();
+    }).catch(done);
+  });
+
+  it('Should show unique API error when layout components have same keys', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(sameApiKeysLayoutComps).then(() => {
+      builder.highlightInvalidComponents();
+      const component = builder.webform.getComponent(['tabs']);
+      assert.equal(component.errors.length, 1, 'Should show Unique API Key error');
       done();
     }).catch(done);
   });
