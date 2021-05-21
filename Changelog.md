@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2925: add protection against change loops
  - FIO-249 | FJS-1436: Fixes an issue where Unique API Key validation is not triggered for Layout components
  - FIO-2821: Select field values do not display when rendered in HTML mode
+ - FIO-2822: fix disableSiblings logic for the builder
+ - FIO-2819: Fixes an issue where user is able to delete all the rows of an EditGrid with Open When Empty
+ - FIO-2538: Fixes an issue when Tree component has components with 'required' or 'unique' validation, and the Tree data entry is not saved, the validation is not stopping the form from being submitted
+
+#### Added
+ - FIO-1239: Implement wizard header type selection
+ - 
 
 ### 4.14.0-rc.6
 #### Fixed
