@@ -182,7 +182,8 @@ import {
   comp8,
   comp9,
   comp10,
-  withOpenWhenEmptyAndConditions
+  withOpenWhenEmptyAndConditions,
+  compOpenWhenEmpty,
 } from &apos;./fixtures&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
@@ -1265,7 +1266,6 @@ describe(&apos;EditGrid Open when Empty&apos;, () =&gt; {
 
           setTimeout(() =&gt; {
             const row = editGrid.editRows[0];
-            console.log({ row });
             assert.equal(row.data.textField, &apos;Value&apos;, &apos;Value should be set properly&apos;);
             editGrid.saveRow(0);
             setTimeout(() =&gt; {
@@ -1283,9 +1283,57 @@ describe(&apos;EditGrid Open when Empty&apos;, () =&gt; {
                   done();
                 }, 300);
               }, 300);
-            }, 350);
+            }, 250);
           }, 350);
         }, 300);
+      })
+      .catch(done);
+  });
+
+  it(&apos;Should always add a first row&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, compOpenWhenEmpty)
+      .then((form) =&gt; {
+        const editGrid = form.getComponent([&apos;editGrid&apos;]);
+        assert.equal(editGrid.editRows.length, 1, &apos;Should have 1 row on create&apos;);
+        const textField = editGrid.editRows[0].components[0];
+        Harness.dispatchEvent(
+          &apos;input&apos;,
+          textField.element,
+          &apos;[name=&quot;data[editGrid][0][textField]&quot;]&apos;,
+          (input) =&gt; input.value = &apos;Value&apos;
+        );
+
+        setTimeout(() =&gt; {
+          const row = editGrid.editRows[0];
+          assert.equal(row.data.textField, &apos;Value&apos;, &apos;Value should be set properly&apos;);
+
+          setTimeout(() =&gt; {
+            editGrid.cancelRow(0);
+
+            setTimeout(() =&gt; {
+              assert.equal(editGrid.editRows.length, 1, &apos;Should still have 1 row&apos;);
+              const textField = editGrid.editRows[0].components[0];
+              assert.equal(textField.dataValue, &apos;&apos;, &apos;Value should be cleared after cancelling the row&apos;);
+
+              editGrid.saveRow(0);
+
+              setTimeout(() =&gt; {
+                assert.equal(editGrid.editRows.length, 1, &apos;Should have 1 row&apos;);
+                assert.equal(editGrid.editRows[0].state === &apos;saved&apos;, 1, &apos;Row should be saved&apos;);
+
+                editGrid.removeRow(0);
+
+                setTimeout(() =&gt; {
+                  assert.equal(editGrid.editRows.length, 1, &apos;Should add the first row when delete the last one&apos;);
+                  assert.equal(editGrid.editRows[0].state === &apos;new&apos;, 1, &apos;Should add the new row when the last one was deleted&apos;);
+
+                  done();
+                }, 250);
+              }, 250);
+            }, 250);
+          }, 250);
+        }, 250);
       })
       .catch(done);
   });

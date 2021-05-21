@@ -169,8 +169,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/tree/Tree.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import componentEditForm from &apos;../_classes/component/Component.form&apos;;
+import TreeEditData from &apos;./editForm/Tree.edit.data&apos;;
 export default function(...extend) {
-  return componentEditForm(...extend);
+  return componentEditForm([
+    {
+      key: &apos;data&apos;,
+      components: TreeEditData,
+    },
+  ], ...extend);
 }
 </code></pre>
 

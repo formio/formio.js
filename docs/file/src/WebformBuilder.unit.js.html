@@ -173,6 +173,7 @@
 import Harness from &apos;../test/harness&apos;;
 import WebformBuilder from &apos;./WebformBuilder&apos;;
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from &apos;../test/formtest&apos;;
+import sameApiKeysLayoutComps from &apos;../test/forms/sameApiKeysLayoutComps&apos;;
 
 describe(&apos;WebformBuilder tests&apos;, function() {
   this.retries(3);
@@ -201,6 +202,16 @@ describe(&apos;WebformBuilder tests&apos;, function() {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent([&apos;textField&apos;]);
       assert.equal(component.errors.length, 1);
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should show unique API error when layout components have same keys&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(sameApiKeysLayoutComps).then(() =&gt; {
+      builder.highlightInvalidComponents();
+      const component = builder.webform.getComponent([&apos;tabs&apos;]);
+      assert.equal(component.errors.length, 1, &apos;Should show Unique API Key error&apos;);
       done();
     }).catch(done);
   });

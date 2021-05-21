@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.14.0-rc.7
 #### Fixed
  - FIO-2925: add protection against change loops
  - FIO-249 | FJS-1436: Fixes an issue where Unique API Key validation is not triggered for Layout components
@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-1537: fixed submiting issue for wizards recaptcha component. 
  - FIO-320: Use Webcam when Enable webcam is true
  - FIO-1488: Fixes an issue where unordered list created in Quill is rendered as an ordered one in read-only mode
+ - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
+ - Fix NestedArrayComponent's getComponents(0)
 
 #### Added
  - FIO-1239: Implement wizard header type selection
