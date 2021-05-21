@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - FIO-2925: add protection against change loops
+ - FIO-249 | FJS-1436: Fixes an issue where Unique API Key validation is not triggered for Layout components
+ - FIO-2821: Select field values do not display when rendered in HTML mode
+
 ### 4.14.0-rc.6
 #### Fixed
  - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
