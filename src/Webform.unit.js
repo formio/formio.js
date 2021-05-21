@@ -49,6 +49,7 @@ import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGrid
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
+import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -2328,6 +2329,56 @@ describe('Webform tests', function() {
       }, 200);
     })
     .catch((err) => done(err));
+  });
+
+  it('Test Truncate Multiple Spaces', (done) => {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+
+    form.setForm(truncateMultipleSpaces).then(() => {
+      const textFieldRequired = form.getComponent(['textField1']);
+      const textFieldMinMaxLength = form.getComponent(['textField']);
+      const textAreaMinMaxLength = form.getComponent(['textArea']);
+      Harness.dispatchEvent('input', textFieldRequired.element, 'input', (i) => i.value = '        ');
+      Harness.dispatchEvent(
+        'input',
+        textFieldMinMaxLength.element,
+        'input',
+        (i) => i.value = '     546       456     '
+      );
+      Harness.dispatchEvent(
+        'input',
+        textAreaMinMaxLength.element,
+        'textarea',
+        (i) => i.value = '     546       456     '
+      );
+
+      setTimeout(() => {
+        assert.equal(textFieldRequired.dataValue, '        ', 'Should set value');
+        assert.equal(textFieldMinMaxLength.dataValue, '     546       456     ', 'Should set value');
+        assert.equal(textAreaMinMaxLength.dataValue, '     546       456     ', 'Should set value');
+
+        assert.equal(textFieldRequired.errors.length, 1, 'Should be invalid since it does not have a value');
+        assert.equal(
+          textFieldMinMaxLength.errors.length,
+          0,
+          'Should be valid since it value does not exceed the max length after truncating spaces'
+        );
+        assert.equal(
+          textAreaMinMaxLength.errors.length,
+          0,
+          'Should be valid since it value does not exceed the max length after truncating spaces'
+        );
+
+        form.submit(false, {}).finally(() => {
+          assert.equal(textFieldRequired.dataValue, '', 'Should truncate the value before submit');
+          assert.equal(textFieldMinMaxLength.dataValue, '546 456', 'Should truncate the value before submit');
+          assert.equal(textAreaMinMaxLength.dataValue, '546 456', 'Should truncate the value before submit');
+
+          done();
+        });
+      }, 400);
+    }).catch(done);
   });
 
   describe('Custom Logic', () => {

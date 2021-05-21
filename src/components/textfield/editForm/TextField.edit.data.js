@@ -47,7 +47,7 @@ export default [
     ]
   },
   {
-    weight: 123,
+    weight: 205,
     type: 'checkbox',
     input: true,
     key: 'truncateMultipleSpaces',
