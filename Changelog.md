@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2822: fix disableSiblings logic for the builder
  - FIO-2819: Fixes an issue where user is able to delete all the rows of an EditGrid with Open When Empty
  - FIO-2538: Fixes an issue when Tree component has components with 'required' or 'unique' validation, and the Tree data entry is not saved, the validation is not stopping the form from being submitted
+ - FIO-2533: Fixes an issue when the data of all the components inside the Tree component displays in the Tree column in the Data table instead of [Complex Data]
+ - FIO-2532: Fixes an issue when canceling the root tree while editing was removing all data.
 
 #### Added
  - FIO-1239: Implement wizard header type selection
