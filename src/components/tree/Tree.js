@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import Components from '../Components';
-import NestedComponent from '../_classes/nested/NestedComponent';
+import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 import Node from './Node';
 import NativePromise from 'native-promise-only';
 
-export default class TreeComponent extends NestedComponent {
+export default class TreeComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedDataComponent.schema({
       label: 'Tree',
       key: 'tree',
       type: 'tree',
@@ -469,4 +469,3 @@ export default class TreeComponent extends NestedComponent {
 }
 
 TreeComponent.prototype.hasChanged = Component.prototype.hasChanged;
-TreeComponent.prototype.updateValue = Component.prototype.updateValue;
