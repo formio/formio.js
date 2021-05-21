@@ -1323,6 +1323,11 @@ export default class SelectComponent extends Field {
       }
     }
 
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
+      this.redraw();
+      return changed;
+    }
+
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
       return changed;
@@ -1402,6 +1407,10 @@ export default class SelectComponent extends Field {
   }
 
   set itemsLoaded(promise) {
+    // Make sure we always resolve the previous promise before reassign it
+    if (typeof this.itemsLoadedResolve === 'function') {
+      this.itemsLoadedResolve();
+    }
     this._itemsLoaded = promise;
   }
 

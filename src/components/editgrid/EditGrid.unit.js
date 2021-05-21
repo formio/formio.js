@@ -507,7 +507,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should not show row errors alerts if drafts enabled', (done) => {
+    it('Should not show row errors alerts if drafts enabled in modal-edit EditGrid', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -539,7 +539,6 @@ describe('EditGrid Component', () => {
                       setTimeout(() => {
                         const errorAlert = editGrid.editRows[0].dialog.querySelector(`#error-list-${editGrid.id}`);
                         const hasError = textField.className.includes('has-error');
-
                         assert(!hasError, 'Should stay valid until form is submitted');
                         assert.equal(errorAlert, null, 'Should be valid');
 
@@ -558,7 +557,7 @@ describe('EditGrid Component', () => {
       });
     });
 
-    it('Should keep fields valid inside NestedForms id drafts are enabled', (done) => {
+    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -567,29 +566,35 @@ describe('EditGrid Component', () => {
         const editGrid = form.components[0];
 
         form.checkValidity(form._data, true, form._data);
-        assert.equal(form.errors.length, 1);
+        assert.equal(form.errors.length, 1, 'Should have an error saying that EditGrid is required');
+
+        // 1. Add a row
         editGrid.addRow();
 
         setTimeout(() => {
           const editRow = editGrid.editRows[0];
           const dialog = editRow.dialog;
-          const saveButton = dialog.querySelector('.btn.btn-primary');
-          const clickEvent = new Event('click');
-          saveButton.dispatchEvent(clickEvent);
+
+          // 2. Save the row
+          Harness.dispatchEvent('click', dialog, '.btn.btn-primary');
 
           setTimeout(() => {
             const alert = dialog.querySelector('.alert.alert-danger');
-            assert.equal(form.errors.length, 1, 'Should not add new errors when drafts are enabled');
-            assert(!alert, 'Should not show an erros alert when drafts are enabled');
+            assert.equal(form.errors.length, 0, 'Should not add new errors when drafts are enabled');
+            assert(!alert, 'Should not show an error alert when drafts are enabled and form is not submitted');
 
             const textField = editRow.components[0].getComponent('textField');
+
+            // 3. Edit the row
             editGrid.editRow(0);
 
             setTimeout(() => {
+              // 4. Change the value of the text field
               textField.setValue('new value', { modified: true });
 
               setTimeout(() => {
                 assert.equal(textField.dataValue, 'new value');
+                // 5. Clear the value of the text field
                 textField.setValue('', { modified: true });
 
                 setTimeout(() => {
@@ -597,7 +602,7 @@ describe('EditGrid Component', () => {
                   assert.equal(editGrid.editRows[0].errors.length, 0, 'Should not add error to components inside draft row');
 
                   const textFieldComponent = textField.element;
-                  assert(!textFieldComponent.className.includes('has-error'), 'Should not add error class to component when drafts enabled');
+                  assert(textFieldComponent.className.includes('has-error'), 'Should add error class to component even when drafts enabled if the component is not pristine');
 
                   document.innerHTML = '';
                   done();
@@ -610,6 +615,115 @@ describe('EditGrid Component', () => {
       .finally(() => {
         delete ModalEditGrid.components[0].rowDrafts;
       });
+    });
+
+    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        // 1. Add a row
+        editGrid.addRow();
+
+        setTimeout(() => {
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
+
+          // 2. Save the row
+          Harness.dispatchEvent('click', dialog, '.btn.btn-primary');
+
+          setTimeout(() => {
+            // 3. Submit the form
+            Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+
+            setTimeout(() => {
+              assert.equal(editGrid.errors.length, 3, 'Should be validated after an attempt to submit');
+              assert.equal(editGrid.editRows[0].errors.length, 2, 'Should dd errors to the row after an attempt to submit');
+              const rows = editGrid.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
+              const firstRow = rows[0];
+              Harness.dispatchEvent('click', firstRow, '.editRow');
+
+              setTimeout(() => {
+                assert(form.submitted, 'Form should be submitted');
+                const editRow = editGrid.editRows[0];
+                assert(editRow.alerts, 'Should add an error alert to the modal');
+                assert.equal(editRow.errors.length, 2, 'Should add errors to components inside draft row aftre it was submitted');
+                const textField = editRow.components[0].getComponent('textField');
+
+                const alert = editGrid.alert;
+                assert(alert, 'Should show an error alert when drafts are enabled and form is submitted');
+                assert(textField.element.className.includes('has-error'), 'Should add error class to component even when drafts enabled if the form was submitted');
+
+                // 4. Change the value of the text field
+                textField.setValue('new value', { modified: true });
+
+                setTimeout(() => {
+                  const textFieldEl = textField.element;
+                  assert.equal(textField.dataValue, 'new value');
+                  assert(!textFieldEl.className.includes('has-error'), 'Should remove an error class from component when it was fixed');
+                  const editRow = editGrid.editRows[0];
+                  const textField2 = editRow.components[0].getComponent('textField2');
+
+                  textField2.setValue('test val', { modified: true });
+
+                  setTimeout(() => {
+                    assert.equal(textField2.dataValue, 'test val');
+                    assert(!textField2.element.className.includes('has-error'), 'Should remove an error class from component when it was fixed');
+
+                    editGrid.saveRow(0);
+
+                    setTimeout(() => {
+                      assert(!form.alert, 'Should remove an error alert after all the rows were fixed');
+
+                      const rows = editGrid.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
+                      const firstRow = rows[0];
+                      Harness.dispatchEvent('click', firstRow, '.editRow');
+                      setTimeout(() => {
+                        const editRow = editGrid.editRows[0];
+                        const textField2 = editRow.components[0].getComponent('textField2');
+
+                        Harness.dispatchEvent(
+                          'input',
+                          editRow.dialog,
+                          '[name="data[textField2]"',
+                          (i) => i.value = ''
+                        );
+                        setTimeout(() => {
+                          assert.equal(textField2.dataValue, '');
+                          Harness.dispatchEvent(
+                            'click',
+                            editGrid.editRows[0].dialog,
+                            `.editgrid-row-modal-${editGrid.id} [ref="dialogClose"]`
+                          );
+                          setTimeout(() => {
+                            const dialog = editGrid.editRows[0].confirmationDialog;
+
+                            Harness.dispatchEvent('click', dialog, '[ref="dialogYesButton"]');
+
+                              setTimeout(() => {
+                                assert(
+                                  !document.querySelector(`#error-list-${form.id}`),
+                                  'Should not add an error alert when the changes that made the row invalid, were discarded by Cancel'
+                                );
+                                document.innerHTML = '';
+                                done();
+                            }, 100);
+                          }, 100);
+                        }, 200);
+                      }, 300);
+                    }, 300);
+                  }, 300);
+                }, 300);
+              }, 450);
+            }, 250);
+          }, 100);
+        }, 100);
+      }).catch(done)
+        .finally(() => {
+          delete ModalEditGrid.components[0].rowDrafts;
+        });
     });
 
     // it('', (done) => {

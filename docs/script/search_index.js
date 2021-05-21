@@ -2952,9 +2952,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/columns/columns.js~columnscomponent#justifyrow",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justifyRow",
-    "src/components/columns/Columns.js~ColumnsComponent#justifyRow",
+    "src/components/columns/columns.js~columnscomponent#justifycolumn",
+    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justifyColumn",
+    "src/components/columns/Columns.js~ColumnsComponent#justifyColumn",
     "method"
   ],
   [
@@ -3009,6 +3009,12 @@ window.esdocSearchIndex = [
     "src/components/columns/fixtures/comp1.js",
     "file/src/components/columns/fixtures/comp1.js.html",
     "src/components/columns/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/columns/fixtures/comp2.js",
+    "file/src/components/columns/fixtures/comp2.js.html",
+    "src/components/columns/fixtures/comp2.js",
     "file"
   ],
   [
@@ -3786,6 +3792,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp-with-basic-components.js",
+    "file/src/components/editgrid/fixtures/comp-with-basic-components.js.html",
+    "src/components/editgrid/fixtures/comp-with-basic-components.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/comp-with-conditions-and-openwhenempty.js",
     "file/src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js.html",
     "src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js",
@@ -3892,6 +3904,12 @@ window.esdocSearchIndex = [
     "class/src/components/email/Email.js~EmailComponent.html#instance-get-inputInfo",
     "src/components/email/Email.js~EmailComponent#inputInfo",
     "member"
+  ],
+  [
+    "src/components/email/email.js~emailcomponent#normalizevalue",
+    "class/src/components/email/Email.js~EmailComponent.html#instance-method-normalizeValue",
+    "src/components/email/Email.js~EmailComponent#normalizeValue",
+    "method"
   ],
   [
     "src/components/email/email.js~emailcomponent.builderinfo",
