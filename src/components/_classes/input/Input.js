@@ -86,7 +86,7 @@ export default class Input extends Multivalue {
   }
 
   getWordCount(value) {
-    return value.trim().split(/\s+/).length;
+    return !value ? 0 : value.trim().split(/\s+/).length;
   }
 
   get remainingWords() {

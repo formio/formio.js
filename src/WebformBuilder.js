@@ -4,7 +4,7 @@ import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import Formio from './Formio';
-import { fastCloneDeep, bootstrapVersion } from './utils/utils';
+import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -110,14 +110,8 @@ export default class WebformBuilder extends Component {
         }
       }
 
-      // Order the compoennts.
-      if (info.components) {
-        info.componentOrder = Object.keys(info.components)
-          .map(key => info.components[key])
-          .filter(component => component && !component.ignore && !component.ignoreForForm)
-          .sort((a, b) => a.weight - b.weight)
-          .map(component => component.key);
-      }
+      // Order the components.
+      this.orderComponents(info);
     }
 
     this.options.hooks = this.options.hooks || {};
@@ -614,22 +608,22 @@ export default class WebformBuilder extends Component {
     const filterGroupBy = (group, searchValue = '') => {
       const result = _.toPlainObject(group);
       const { subgroups = [], components } = result;
-      const filteredOrder = [];
+      const filteredComponents = [];
 
       for (const key in components) {
         const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
         const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
 
         if (isMatchedToTitle || isMatchedToKey) {
-          filteredOrder.push(components[key].key);
+          filteredComponents.push(components[key]);
         }
       }
 
-      result.componentOrder = filteredOrder;
+      this.orderComponents(result, filteredComponents);
       if (searchValue) {
         result.default = true;
       }
-      if (filteredOrder.length || subgroups.length) {
+      if (result.componentOrder.length || subgroups.length) {
         return result;
       }
       return null;
@@ -674,6 +668,17 @@ export default class WebformBuilder extends Component {
     });
 
     this.updateDragAndDrop();
+  }
+
+  orderComponents(groupInfo, foundComponents) {
+    const components = foundComponents || groupInfo.components;
+    if (components) {
+      groupInfo.componentOrder = Object.keys(components)
+        .map(key => components[key])
+        .filter(component => component && !component.ignore && !component.ignoreForForm)
+        .sort((a, b) => a.weight - b.weight)
+        .map(component => component.key);
+    }
   }
 
   updateDragAndDrop() {
@@ -857,7 +862,7 @@ export default class WebformBuilder extends Component {
     if (draggableComponent.disableSiblings) {
       let isCompAlreadyExists = false;
       eachComponent(this.webform.components, (component) => {
-        if (component.key === draggableComponent.key) {
+        if (component.type === draggableComponent.schema.type) {
           isCompAlreadyExists = true;
           return;
         }
@@ -1045,7 +1050,7 @@ export default class WebformBuilder extends Component {
     // Update the preview.
     if (this.preview) {
       this.preview.form = {
-        components: [_.omit(component, [
+        components: [_.omit({ ...component }, [
           'hidden',
           'conditional',
           'calculateValue',
@@ -1063,7 +1068,7 @@ export default class WebformBuilder extends Component {
     }
 
     // Change the "default value" field to be reflective of this component.
-    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
+    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue', true);
     if (defaultValueComponent && component.type !== 'hidden') {
       const defaultChanged = changed && (
         (changed.component && changed.component.key === 'defaultValue')
@@ -1071,7 +1076,7 @@ export default class WebformBuilder extends Component {
       );
 
       if (!defaultChanged) {
-        _.assign(defaultValueComponent.component, _.omit(component, [
+        _.assign(defaultValueComponent.component, _.omit({ ...component }, [
           'key',
           'label',
           'placeholder',
@@ -1085,6 +1090,7 @@ export default class WebformBuilder extends Component {
           'calculateValue',
           'conditional',
           'customConditional',
+          'id'
         ]));
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
@@ -1100,7 +1106,7 @@ export default class WebformBuilder extends Component {
           });
         });
 
-        if (tabIndex !== -1 && index !== -1) {
+        if (tabIndex !== -1 && index !== -1 && changed && changed.value) {
           const sibling = parentComponent.tabs[tabIndex][index + 1];
           parentComponent.removeComponent(defaultValueComponent);
           const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
@@ -1111,8 +1117,18 @@ export default class WebformBuilder extends Component {
         }
       }
       else {
-        this.preview._data[changed.instance._data.key] = changed.value;
-        this.webform._data[changed.instance._data.key] = changed.value;
+        let dataPath = changed.instance._data.key;
+
+        const path = getArrayFromComponentPath(changed.instance.path);
+        path.shift();
+
+        if (path.length) {
+          path.unshift(component.key);
+          dataPath = getStringFromComponentPath(path);
+        }
+
+        _.set(this.preview._data, dataPath, changed.value);
+        _.set(this.webform._data, dataPath, changed.value);
       }
     }
 
@@ -1140,7 +1156,7 @@ export default class WebformBuilder extends Component {
       else {
         keys.set(comp.key, [path]);
       }
-    });
+    }, true);
 
     return repeatablePaths;
   }

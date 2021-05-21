@@ -44,6 +44,7 @@ export default class Wizard extends Webform {
     this.lastPromise = NativePromise.resolve();
     this.enabledIndex = 0;
     this.editMode = false;
+    this.originalOptions = _.cloneDeep(this.options);
   }
 
   isLastPage() {
@@ -190,11 +191,11 @@ export default class Wizard extends Webform {
     return this.renderTemplate('wizardNav', ctx);
   }
 
-  prepareHeaderSettings(ctx) {
+  prepareHeaderSettings(ctx, headerType) {
     if (this.currentPanel && this.currentPanel.breadcrumb === 'none' || ctx.isSubForm) {
       return null;
     }
-    return this.renderTemplate('wizardHeader', ctx);
+    return this.renderTemplate(headerType, ctx);
   }
 
   render() {
@@ -210,12 +211,15 @@ export default class Wizard extends Webform {
     }
 
     const wizardNav = this.prepareNavigationSettings(ctx);
-    const wizardHeader = this.prepareHeaderSettings(ctx);
+
+    const wizardHeaderType = `wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`;
+    const wizardHeader = this.prepareHeaderSettings(ctx, wizardHeaderType);
 
     return this.renderTemplate('wizard', {
       ...ctx,
       className: super.getClassName(),
       wizardHeader,
+      wizardHeaderType,
       wizardNav,
       components: this.renderComponents([
         ...this.prefixComps,
@@ -248,7 +252,7 @@ export default class Wizard extends Webform {
       let headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
       if (headerElement) {
         this.detachHeader();
-        headerElement.outerHTML = this.renderTemplate('wizardHeader', this.renderContext);
+        headerElement.outerHTML = this.renderTemplate(`wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`, this.renderContext);
         headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
         this.loadRefs(headerElement, {
           [`${this.wizardKey}-link`]: 'multiple',
@@ -310,7 +314,7 @@ export default class Wizard extends Webform {
       }
     });
 
-    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage.component, 'breadcrumbClickable', true);
+    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage, 'component.breadcrumbClickable', true);
   }
 
   isAllowPrevious() {
@@ -355,7 +359,7 @@ export default class Wizard extends Webform {
     this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
-      this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
+      this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
         if (!isAllowPrevious || index <= this.enabledIndex) {
           this.addEventListener(link, 'click', (event) => {
             this.emit('wizardNavigationClicked', this.pages[index]);
@@ -376,9 +380,11 @@ export default class Wizard extends Webform {
   }
 
   detachHeader() {
-    this.refs[`${this.wizardKey}-link`].forEach((link) => {
-      this.removeEventListener(link, 'click');
-    });
+    if (this.refs[`${this.wizardKey}-link`]) {
+      this.refs[`${this.wizardKey}-link`].forEach((link) => {
+        this.removeEventListener(link, 'click');
+      });
+    }
   }
 
   transformPages() {
@@ -390,12 +396,14 @@ export default class Wizard extends Webform {
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
       const nestedPages = [];
+      const dataArrayComponents = ['datagrid', 'editgrid', 'dynamicWizard'];
       const currentComponents = nestedComp?.subForm ? this.getSortedComponents(nestedComp.subForm) : nestedComp?.components || [];
       const visibleComponents = currentComponents.filter(comp => comp._visible);
+      const filteredComponents = visibleComponents.filter(comp => !dataArrayComponents.includes(comp.component.type) && (comp.type !== 'form' || comp.isNestedWizard));
       const additionalComponents = visibleComponents.filter(comp => comp.subForm?._form.display !== 'wizard');
       let hasNested = false;
 
-      eachComponent(visibleComponents, (comp) => {
+      eachComponent(filteredComponents, (comp) => {
         if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
           if (pushAllowed) {
             this.setRootPanelId(comp);
@@ -404,7 +412,7 @@ export default class Wizard extends Webform {
           hasNested = true;
         }
 
-        if (comp && comp.subForm) {
+        if (comp && comp.isNestedWizard && comp.subForm) {
           const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
           if (!hasNested) {
             hasNested = hasNestedForm;
@@ -434,6 +442,15 @@ export default class Wizard extends Webform {
     components.forEach((component) => {
       getAllComponents(component, allComponents);
     }, []);
+
+    // recalculate pages only for root wizards, including the situation when the wizard is in a wrapper
+    if (this.localRoot && this.id === this.localRoot.id) {
+      allComponents.forEach((comp, index) => {
+        comp.eachComponent((component) => {
+          component.page = index;
+        });
+      });
+    }
 
     this.allPages = allComponents;
   }
@@ -496,13 +513,24 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const isVisible = checkCondition(item, data, data, this.component, this) && !item.hidden;
+          const forceShow = this.options.show ? this.options.show[item.key] : false;
+          const forceHide = this.options.hide ? this.options.hide[item.key] : false;
+          let isVisible = checkCondition(item, data, data, this.component, this) && !item.hidden;
+
+          if (forceShow) {
+            isVisible = true;
+          }
+          else if (forceHide) {
+            isVisible = false;
+          }
+
           if (isVisible) {
             visible.push(item);
             if (page) {
               this.pages.push(page);
             }
           }
+
           if (!page && isVisible) {
             page = this.createComponent(item, pageOptions);
             page.visible = isVisible;
@@ -532,10 +560,14 @@ export default class Wizard extends Webform {
 
     this.transformPages();
     if (this.allPages && this.allPages.length) {
-      this.pages = this.allPages;
+      this.updatePages();
     }
 
     return visible;
+  }
+
+  updatePages() {
+    this.pages = this.allPages;
   }
 
   addComponents() {
@@ -546,12 +578,14 @@ export default class Wizard extends Webform {
     if (num === this.page) {
       return NativePromise.resolve();
     }
-    if (!this.wizard.full && num >= 0 && num < this.pages.length) {
+
+    if (num >= 0 && num < this.pages.length) {
       this.page = num;
 
       this.pageFieldLogic(num);
 
       this.getNextPage();
+
       let parentNum = num;
       if (this.hasExtraPages) {
         const pageFromPages = this.pages[num];
@@ -570,7 +604,7 @@ export default class Wizard extends Webform {
       });
       return NativePromise.resolve();
     }
-    else if (this.wizard.full || !this.pages.length) {
+    else if (!this.pages.length) {
       this.redraw();
       return NativePromise.resolve();
     }
@@ -665,8 +699,10 @@ export default class Wizard extends Webform {
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
-      return this.setPage(this.getNextPage()).then(() => {
-        this.emit('nextPage', { page: this.page, submission: this.submission });
+      return this.beforePage(true).then(() => {
+        return this.setPage(this.getNextPage()).then(() => {
+          this.emitNextPage();
+        });
       });
     }
 
@@ -703,6 +739,10 @@ export default class Wizard extends Webform {
   }
 
   cancel(noconfirm) {
+    if (this.options.readOnly) {
+      return NativePromise.resolve();
+    }
+
     if (super.cancel(noconfirm)) {
       this.setPristine(true);
       return this.setPage(0).then(() => {
@@ -739,6 +779,14 @@ export default class Wizard extends Webform {
       if (item.type === 'panel') {
         item.key = uniqueKey(pageKeys, (item.key || 'panel'));
         pageKeys[item.key] = true;
+
+        if (this.wizard.full) {
+          this.options.show = this.options.show || {};
+          this.options.show[item.key] = true;
+        }
+        else if (this.wizard.hasOwnProperty('full') && !_.isEqual(this.originalOptions.show, this.options.show)) {
+          this.options.show = { ...(this.originalOptions.show || {}) };
+        }
       }
       this.originalComponents.push(_.clone(item));
     });
@@ -818,7 +866,7 @@ export default class Wizard extends Webform {
       case 'next':
         return next && (nextPage !== null) && (nextPage !== -1);
       case 'cancel':
-        return cancel;
+        return cancel && !this.options.readOnly;
       case 'submit':
         return submit && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
       default:
