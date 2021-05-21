@@ -287,6 +287,15 @@ export default class DataGridComponent extends NestedArrayComponent {
     }, false);
   }
 
+  loadRefs(element, refs) {
+    super.loadRefs(element, refs);
+
+    if (refs['messageContainer'] === 'single') {
+      const container = _.last(element.querySelectorAll('[ref=messageContainer]'));
+      this.refs['messageContainer'] = container || this.refs['messageContainer'];
+    }
+  }
+
   attach(element) {
     this.loadRefs(element, {
       [`${this.datagridKey}-row`]: 'multiple',
@@ -295,6 +304,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       [`${this.datagridKey}-removeRow`]: 'multiple',
       [`${this.datagridKey}-group-header`]: 'multiple',
       [this.datagridKey]: 'multiple',
+      'messageContainer': 'single'
     });
 
     if (this.allowReorder) {
