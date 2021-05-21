@@ -229,6 +229,13 @@ export default class ButtonComponent extends Field {
       }
     }, true);
 
+    if (this.component.saveOnEnter) {
+      this.root.addEventListener(this.root.element, 'keyup', (event) => {
+        if (event.keyCode === 13) {
+          this.onClick.call(this, event);
+        }
+      });
+    }
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
     this.addEventListener(this.refs.buttonMessageContainer, 'click', () => {
       if (this.refs.buttonMessageContainer.classList.contains('has-error')) {
@@ -396,6 +403,9 @@ export default class ButtonComponent extends Field {
     };
     /*eslint-enable camelcase */
 
+    // Needs for the correct redirection URI for the OpenID
+    const originalRedirectUri = params.redirect_uri;
+
     // Make display optional.
     if (settings.display) {
       params.display = settings.display;
@@ -431,16 +441,22 @@ export default class ButtonComponent extends Field {
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
           let requestPromise = NativePromise.resolve();
+
           if (_.has(this, 'root.form.config.oauth') && this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
-            params.redirectURI = window.location.origin;
+            params.redirectURI = originalRedirectUri;
+
+            // Needs for the exclude oAuth Actions that not related to this button
+            params.triggeredBy = this.key;
             requestPromise = this.root.formio.makeRequest('oauth', `${this.root.formio.projectUrl}/oauth2`, 'POST', params);
           }
           else {
             const submission = { data: {}, oauth: {} };
             submission.oauth[settings.provider] = params;
-            submission.oauth[settings.provider].redirectURI = window.location.origin
-              || `${window.location.protocol}//${window.location.host}`;
+            submission.oauth[settings.provider].redirectURI = originalRedirectUri;
+
+            // Needs for the exclude oAuth Actions that not related to this button
+            submission.oauth[settings.provider].triggeredBy = this.key;
             requestPromise = this.root.formio.saveSubmission(submission);
           }
           requestPromise.then((result) => {
