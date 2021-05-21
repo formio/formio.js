@@ -38,4 +38,17 @@ export default class EmailComponent extends TextFieldComponent {
     info.attr.type = this.component.mask ? 'password' : 'email';
     return info;
   }
+
+  normalizeValue(value, flags = {}) {
+    value = super.normalizeValue(value, flags);
+    if (this.options.server && !!value) {
+      if (Array.isArray(value)) {
+        value = value.map(val => val.toLowerCase());
+      }
+      else {
+        value = value.toLowerCase();
+      }
+    }
+    return value;
+  }
 }

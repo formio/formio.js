@@ -344,7 +344,8 @@ export default class PDFBuilder extends WebformBuilder {
     return super.attach(element).then(() =&gt; {
       this.loadRefs(this.element, {
         iframeDropzone: &apos;single&apos;,
-        &apos;sidebar-container&apos;: &apos;multiple&apos;
+        &apos;sidebar-container&apos;: &apos;multiple&apos;,
+        &apos;sidebar&apos;: &apos;single&apos;,
       });
 
       this.afterAttach();
@@ -363,6 +364,20 @@ export default class PDFBuilder extends WebformBuilder {
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
     this.prepSidebarComponentsForDrag();
+
+    const sidebar = this.refs.sidebar;
+    if (sidebar) {
+      this.addClass(sidebar, &apos;disabled&apos;);
+      const prevent = (e) =&gt; {
+        e.stopPropagation();
+        e.preventDefault();
+      };
+      this.addEventListener(sidebar, &apos;dragstart&apos;, prevent);
+      this.webform.on(&apos;iframe-ready&apos;, () =&gt; {
+        this.removeEventListener(sidebar, &apos;dragstart&apos;, prevent);
+        this.removeClass(sidebar, &apos;disabled&apos;);
+      }, true);
+    }
   }
 
   upload(file) {

@@ -254,6 +254,10 @@ export default class SelectComponent extends Field {
     }
 
     if (this.refs.selectContainer && (this.component.widget === 'html5')) {
+      // Replace an empty Object value to an empty String.
+      if (option.value && _.isObject(option.value) && _.isEmpty(option.value)) {
+        option.value = '';
+      }
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
       div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
@@ -1319,6 +1323,11 @@ export default class SelectComponent extends Field {
       }
     }
 
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
+      this.redraw();
+      return changed;
+    }
+
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
       return changed;
@@ -1398,6 +1407,10 @@ export default class SelectComponent extends Field {
   }
 
   set itemsLoaded(promise) {
+    // Make sure we always resolve the previous promise before reassign it
+    if (typeof this.itemsLoadedResolve === 'function') {
+      this.itemsLoadedResolve();
+    }
     this._itemsLoaded = promise;
   }
 
