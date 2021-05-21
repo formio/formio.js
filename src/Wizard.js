@@ -328,7 +328,33 @@ export default class Wizard extends Webform {
     return _.get(currentPage.component, 'allowPrevious', this.options.allowPrevious);
   }
 
+  handleNaviageteOnEnter(event) {
+    if (event.keyCode === 13) {
+      const clickEvent = new CustomEvent('click');
+      const buttonElement = this.refs[`${this.wizardKey}-${this.buttons.next.name}`];
+      if (buttonElement) {
+        buttonElement.dispatchEvent(clickEvent);
+      }
+    }
+  }
+
+  handleSaveOnEnter(event) {
+    if (event.keyCode === 13) {
+      const clickEvent = new CustomEvent('click');
+      const buttonElement = this.refs[`${this.wizardKey}-${this.buttons.submit.name}`];
+      if (buttonElement) {
+        buttonElement.dispatchEvent(clickEvent);
+      }
+    }
+  }
+
   attachNav() {
+    if (this.component.navigateOnEnter) {
+      this.addEventListener(document, 'keyup', this.handleNaviageteOnEnter.bind(this));
+    }
+    if (this.component.saveOnEnter) {
+      this.addEventListener(document, 'keyup', this.handleSaveOnEnter.bind(this));
+    }
     _.each(this.buttons, (button) => {
       const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
       this.addEventListener(buttonElement, 'click', (event) => {
@@ -374,6 +400,12 @@ export default class Wizard extends Webform {
   }
 
   detachNav() {
+    if (this.component.navigateOnEnter) {
+      this.removeEventListener(document, 'keyup', this.handleNaviageteOnEnter.bind(this));
+    }
+    if (this.component.saveOnEnter) {
+      this.removeEventListener(document, 'keyup', this.handleSaveOnEnter.bind(this));
+    }
     _.each(this.buttons, (button) => {
       this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], 'click');
     });
