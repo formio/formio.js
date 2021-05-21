@@ -321,7 +321,13 @@ export default class TreeComponent extends NestedDataComponent {
       component: this,
     }, () => {
       if (node.isRoot) {
-        this.removeRoot();
+        if (node.persistentData && !_.isEmpty(node.persistentData)) {
+          node.cancel();
+          this.redraw();
+        }
+        else {
+          this.removeRoot();
+        }
       }
       else {
         node.cancel();
