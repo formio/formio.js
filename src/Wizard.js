@@ -699,8 +699,10 @@ export default class Wizard extends Webform {
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
-      return this.setPage(this.getNextPage()).then(() => {
-        this.emit('nextPage', { page: this.page, submission: this.submission });
+      return this.beforePage(true).then(() => {
+        return this.setPage(this.getNextPage()).then(() => {
+          this.emitNextPage();
+        });
       });
     }
 
