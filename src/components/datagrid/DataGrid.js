@@ -314,6 +314,30 @@ export default class DataGridComponent extends NestedArrayComponent {
             }
           }
         }).on('drop', this.onReorder.bind(this));
+
+        this.dragula.on('cloned', (el, original) => {
+          if (el && el.children && original && original.children) {
+            original.children.forEach((child, index) => {
+              const styles = getComputedStyle(child, null);
+
+              if (styles.cssText !== '') {
+                el.children[index].style.cssText = styles.cssText;
+              }
+              else {
+                const cssText = Object.values(styles).reduce(
+                  (css, propertyName) => {
+                    return `${css}${propertyName}:${styles.getPropertyValue(
+                      propertyName
+                    )};`;
+                  },
+                  ''
+                );
+
+                el.children[index].style.cssText = cssText;
+              }
+            });
+          }
+        });
       }
     }
 
