@@ -147,9 +147,9 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   initializeProvider(provider, options = {}) {
-    options.url = this.interpolate(options.url);
+    const url = this.interpolate(options.url);
     const Provider = Formio.Providers.getProvider('address', provider);
-    return new Provider(options);
+    return new Provider({ ...options, url });
   }
 
   get emptyValue() {

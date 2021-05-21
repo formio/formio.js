@@ -99,7 +99,8 @@ export default class Webform extends NestedDataComponent {
             _.merge(i18n, lang);
           }
           else if (!i18n.resources[code]) {
-            i18n.resources[code] = { translation: lang };
+            // extend the default translations (validations, buttons etc.) in case they are not in the options.
+            i18n.resources[code] = { translation: _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang) };
           }
           else {
             _.assign(i18n.resources[code].translation, lang);
@@ -271,6 +272,7 @@ export default class Webform extends NestedDataComponent {
 
     // Ensure the root is set to this component.
     this.root = this;
+    this.localRoot = this;
   }
   /* eslint-enable max-statements */
 
@@ -320,7 +322,8 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    this.i18next.addResourceBundle(code, 'translation', lang, true, true);
+    var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
+    this.i18next.addResourceBundle(code, 'translation', translations, true, true);
     if (active) {
       this.language = code;
     }
@@ -653,6 +656,10 @@ export default class Webform extends NestedDataComponent {
 
       if (this.onSetForm) {
         this.onSetForm(_.cloneDeep(this._form), form);
+      }
+
+      if (this.parent?.component?.modalEdit) {
+        return NativePromise.resolve();
       }
     }
     catch (err) {
@@ -1212,7 +1219,7 @@ export default class Webform extends NestedDataComponent {
 
           let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
           formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
-          if (!err.formattedKeyOrPath) {
+          if (typeof err !== 'string' && !err.formattedKeyOrPath) {
             err.formattedKeyOrPath = formattedKeyOrPath;
           }
 
@@ -1225,12 +1232,19 @@ export default class Webform extends NestedDataComponent {
         if (err.messages && err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message, context, fromServer }, index) => {
-            const text = context?.hasLabel || fromServer ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+            const text = context?.hasLabel || fromServer
+              ? this.t('alertMessage', { message: this.t(message) })
+              : this.t('alertMessageWithLabel', {
+                label: this.t(component.label),
+                message: this.t(message),
+              });
             displayedErrors.push(createListItem(text, index));
           });
         }
         else if (err) {
-          const message = _.isObject(err) ? err.message || '' : err;
+          const message = _.isObject(err)
+            ? this.t('alertMessage', { message: this.t(err.message || '') })
+            : this.t('alertMessage', { message: this.t(err) });
           displayedErrors.push(createListItem(message));
         }
       }
@@ -1275,22 +1289,27 @@ export default class Webform extends NestedDataComponent {
     return submission;
   }
 
+  normalizeError(error) {
+    if (error) {
+      if (typeof error === 'object' && 'details' in error) {
+        error = error.details;
+      }
+
+      if (typeof error === 'string') {
+        error = { message: error };
+      }
+    }
+
+    return error;
+  }
+
   /**
    * Called when an error occurs during the submission.
    *
    * @param {Object} error - The error that occured.
    */
   onSubmissionError(error) {
-    if (error) {
-      // Normalize the error.
-      if (typeof error === 'string') {
-        error = { message: error };
-      }
-
-      if ('details' in error) {
-        error = error.details;
-      }
-    }
+    error = this.normalizeError(error);
 
     this.submitting = false;
     this.setPristine(false);
@@ -1513,7 +1532,14 @@ export default class Webform extends NestedDataComponent {
     this.submitting = true;
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
-      .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
+      .then((results) => {
+        this.submissionInProcess = false;
+        return results;
+      })
+      .catch((err) => {
+        this.submissionInProcess = false;
+        return NativePromise.reject(this.onSubmissionError(err));
+      });
   }
 
   clearServerErrors() {
@@ -1551,6 +1577,7 @@ export default class Webform extends NestedDataComponent {
    * @returns {Promise} - A promise when the form is done submitting.
    */
   submit(before, options) {
+    this.submissionInProcess = true;
     if (!before) {
       return this.beforeSubmit(options).then(() => this.executeSubmit(options));
     }

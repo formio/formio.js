@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -171,14 +170,106 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/address/Address.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import AddressComponent from &apos;./Address&apos;;
+import assert from &apos;power-assert&apos;;
+import Formio from &apos;./../../Formio&apos;;
+import _ from &apos;lodash&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Address Component&apos;, () =&gt; {
   it(&apos;Should build an address component&apos;, () =&gt; {
     return Harness.testCreate(AddressComponent, comp1);
+  });
+
+  it(&apos;Should set default value and clear it on &quot;clear icon&quot; click (openStreetMap provider)&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const address = form.getComponent(&apos;address&apos;);
+      assert.equal(!!address.provider, true);
+      assert.equal(address.refs.searchInput[0].value, &apos;Dallas County, Texas, United States&apos;);
+      const clearIcon = address.refs.removeValueIcon[0];
+
+      const clickEvent = new Event(&apos;click&apos;);
+      clearIcon.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(address.refs.searchInput[0].value, &apos;&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should disable &quot;clear icon&quot;&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].disableClearIcon = true;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const address = form.getComponent(&apos;address&apos;);
+      assert.equal(!!address.provider, true);
+      assert.equal(address.refs.removeValueIcon.length, 0);
+
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Test manual mode&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].disableClearIcon = true;
+    form.components[0].enableManualMode = true;
+    form.components[0].switchToManualModeLabel = &apos;Check it to switch to manual mode&apos;;
+      Formio.createForm(element, form).then(form =&gt; {
+      const address = form.getComponent(&apos;address&apos;);
+      assert.equal(!!address.provider, true);
+      assert.equal(address.mode, &apos;autocomplete&apos;);
+      assert.equal(address.refs.modeSwitcher.checked, false, &apos;Manual mode should be turned off&apos;);
+      assert.equal(address.refs.modeSwitcher.nextElementSibling.textContent, &apos;Check it to switch to manual mode&apos;, &apos;Should set custom label for manual mode checkbox&apos;);
+
+      address.components.forEach(comp =&gt; {
+        assert.equal(comp.visible, false, &apos;Manual mode components should be hidden&apos;);
+      });
+      address.refs.modeSwitcher.checked = true;
+
+      const changeEvent = new Event(&apos;change&apos;);
+      address.refs.modeSwitcher.dispatchEvent(changeEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(address.refs.modeSwitcher.checked, true, &apos;Manual mode should be turned on&apos;);
+        assert.equal(address.mode, &apos;manual&apos;);
+        const manualModeValue = {
+          address1: &apos;test address1&apos;,
+          address2: &apos;test address2&apos;,
+          city: &apos;test city&apos;,
+          country: &apos;test country&apos;,
+          state: &apos;test state&apos;,
+          zip: &apos;1111111&apos;,
+        };
+
+        address.components.forEach(comp =&gt; {
+          assert.equal(comp.visible, true, &apos;Manual mode components should be visible&apos;);
+
+          const inputEvent = new Event(&apos;input&apos;);
+          const input = comp.refs.input[0];
+          input.value = manualModeValue[`${comp.component.key}`];
+          input.dispatchEvent(inputEvent);
+        });
+
+        setTimeout(() =&gt; {
+          assert.deepEqual(address.dataValue, { address: manualModeValue, mode: &apos;manual&apos; }, &apos;Should set manual mode value&apos;);
+
+          document.innerHTML = &apos;&apos;;
+          done();
+        }, 300);
+      }, 300);
+    }).catch(done);
   });
 });
 </code></pre>

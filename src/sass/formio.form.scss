@@ -157,6 +157,41 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   line-height: 1;
 }
 
+
+.card-vertical {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+}
+
+.nav-tabs-vertical {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ddd;
+  padding-left: 5px;
+  margin-right: 10px;
+  border-bottom: 0;
+}
+
+.card-vertical ul>li>.nav-link-vertical  {
+  border-right-color: transparent;
+  border-radius: 4px 0 0 4px;
+  margin-right: 0;
+
+  &.active {
+    border-bottom-color: #ddd;
+    border-right-color: transparent;
+
+    &:hover {
+      border-right-color: transparent;
+    }
+  }
+}
+
+.nav-tabs-vertical>li {
+  margin: 0 -1px 0 0;
+}
+
 .formio-component-submit .submit-fail[disabled] {
   opacity: 1;
 }
@@ -259,6 +294,12 @@ td > .form-group {
   overflow: hidden;
 }
 /* end fix for choices.js deletable items in rtl */
+
+@-moz-document url-prefix() {
+  .choices__button {
+    float: right;
+  }
+}
 
 .formio-component-file .fileSelector {
   position: relative;
@@ -1252,6 +1293,113 @@ div[data-oembed-url] {
 
   .page-link {
     cursor: pointer;
+  }
+}
+
+.classic-pagination {
+  border-bottom: solid 1px #e0e0e0;
+  padding: 0 15px 10px 15px;
+  line-height: 1em;
+
+  &-page {
+    padding: 0;
+    position: relative;
+  }
+
+  &-title {
+    color: #595959; 
+    font-size: 16px; 
+    margin-bottom: 5px;
+  }
+
+  &-dot {
+    position: absolute; 
+    width: 30px; 
+    height: 30px; 
+    display: block; 
+    background: #fbe8aa; 
+    top: 40px; 
+    left: 50%; 
+    margin-top: -15px; 
+    margin-left: -15px; 
+    border-radius: 50%;
+
+    &::after {
+      content: ' ';
+      width: 14px; 
+      height: 14px; 
+      background: #fbbd19; 
+      border-radius: 50px; 
+      position: absolute; 
+      top: 8px; 
+      left: 8px; 
+    }
+  }
+
+  .progress, &-progress {
+    position: relative; 
+    border-radius: 0px; 
+    height: 8px; 
+    box-shadow: none; 
+    margin: 20px 0;
+    border: none;
+    padding: 0;
+    background-color: #f6f6f6;
+
+    &-bar {
+      width: 0px; 
+      height: 10px;
+      box-shadow: none; 
+      background: #fbe8aa;
+    }
+  }
+}
+
+.classic-pagination-page {
+  &.complete {
+    .progress-bar, .classic-pagination-progress-bar {
+      width: 100%;
+    }
+  }
+  &.active {
+    .progress-bar, .classic-pagination-progress-bar {
+      width: 50%;
+    }
+  }
+  &.disabled {
+    .classic-pagination-dot {
+      background-color: #f5f5f5;
+      &::after{
+        opacity: 0;
+      }
+    }
+  }
+}
+
+.classic-pagination-page  {
+  &:first-child {
+    .progress, .classic-pagination-progress {
+      left: 50%; 
+      width: 50%;
+    }
+
+    &.active {
+      .progress-bar, .classic-pagination-progress-bar {
+        width: 0%;
+      }
+    }
+  }
+
+  &:last-child {
+    .progress, .classic-pagination-progress {
+      width: 50%;
+    }
+
+    &.active {
+      .progress-bar, .classic-pagination-progress-bar {
+        width: 100%;
+      }
+    }
   }
 }
 //styles for google maps dropdown

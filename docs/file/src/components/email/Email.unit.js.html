@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -171,14 +170,218 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/email/Email.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import EmailComponent from &apos;./Email&apos;;
+import Formio from &apos;./../../Formio&apos;;
+import assert from &apos;power-assert&apos;;
+import _ from &apos;lodash&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Email Component&apos;, () =&gt; {
   it(&apos;Should build a email component&apos;, () =&gt; {
     return Harness.testCreate(EmailComponent, comp1);
+  });
+
+  it(&apos;Should provide min/max length validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+    form.components[0].validate = { minLength: 7, maxLength: 10 };
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;test@te.st&apos;,
+      &apos;t__t@t.st&apos;,
+      &apos;_t@test.st&apos;
+    ];
+
+    const invalidMin = [
+      &apos;t@t.st&apos;,
+    ];
+
+    const invalidMax = [
+      &apos;t@test.test&apos;,
+      &apos;test@test.test&apos;,
+    ];
+
+    const testValidity = (values, valid, message, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;email&apos;);
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message, error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidMin, false, &apos;Email must have at least 7 characters.&apos;);
+    testValidity(invalidMax, false, &apos;Email must have no more than 10 characters.&apos;, invalidMax[invalidMax.length-1]);
+  });
+
+  it(&apos;Should provide pattern validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+    form.components[0].validate = { pattern: &apos;^[0-9]+@[0-9]+\\.[a-z]{2,4}$&apos; };
+
+    const validValues = [
+      &apos;000@12.ts&apos;,
+      &apos;123456@1234.com&apos;,
+      &apos;123456@1234.come&apos;,
+      &apos;&apos;
+    ];
+
+    const invalidValues = [
+      &apos;123_456@1234.com&apos;,
+      &apos;123456@12.34.com&apos;,
+      &apos;test@123.com&apos;,
+      &apos;00000@123t.com&apos;
+    ];
+
+    const testValidity = (values, valid, message, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;email&apos;);
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message.trim(), error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues,
+      false,
+      &apos;Email does not match the pattern ^[0-9]+@[0-9]+\\.[a-z]{2,4}$&apos;,
+      invalidValues[invalidValues.length-1]
+    );
+  });
+
+  it(&apos;Should provide email validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+
+    const validValues = [
+      &apos;&apos;,
+      &apos;test_test@test.test&apos;,
+      &apos;123456@1234.test&apos;,
+      &apos;TEST@TEST.test&apos;,
+      &apos;te.st_te%st@test.com&apos;,
+      &apos;te/st___te%st@test.com&apos;,
+      &apos;&quot;John..Doe&quot;@example.com&apos;,
+      &apos;test-test@test.com&apos;,
+      &apos;test-test@te-st.com&apos;,
+      &apos;0-0-0-0-0@12-3-t.com&apos;
+    ];
+
+    const invalidValues = [
+      &apos;te.st_te%st@test.123&apos;,
+      &apos;      &apos;,
+      &apos;test.test&apos;,
+      &apos;test-te st@test.com&apos;,
+      &apos;   test_test@test.test&apos;,
+      &apos;.test_te%st@test.com&apos;,
+      &apos;te/st___t,e%st@test.com&apos;,
+      &apos;te[st]t@test.com&apos;,
+      &apos;test@test.com     &apos;,
+      &apos;test@&apos;,
+      &apos;test@test&apos;,
+      &apos;test@test.&apos;,
+      &apos;@test.com&apos;,
+      &apos;test@.com&apos;,
+      &apos;00000@123t.m&apos;,
+      &apos;00000@123t.m-com&apos;,
+      &apos;test(test)@mail.com&apos;,
+      &apos;John..Doe@example.com&apos;,
+      &apos;john.smith(comment)@example.com&apos;,
+      &apos;test-test.@test.com&apos;
+    ];
+
+    const testValidity = (values, valid, message, lastValue) =&gt; {
+      _.each(values, (value) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
+
+        Formio.createForm(element, form).then(form =&gt; {
+          form.setPristine(false);
+
+          const component = form.getComponent(&apos;email&apos;);
+          const changed = component.setValue(value);
+          const error = message;
+
+          if (value) {
+            assert.equal(changed, true, &apos;Should set value&apos;);
+          }
+
+          setTimeout(() =&gt; {
+            if (valid) {
+              assert.equal(!!component.error, false, &apos;Should not contain error&apos;);
+            }
+            else {
+              assert.equal(!!component.error, true, &apos;Should contain error&apos;);
+              assert.equal(component.error.message.trim(), error, &apos;Should contain error message&apos;);
+              assert.equal(component.element.classList.contains(&apos;has-error&apos;), true, &apos;Should contain error class&apos;);
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, &apos;Should show error&apos;);
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues,
+      false,
+      &apos;Email must be a valid email.&apos;,
+      invalidValues[invalidValues.length-1]
+    );
   });
 });
 </code></pre>

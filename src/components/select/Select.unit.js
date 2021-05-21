@@ -20,7 +20,8 @@ import {
   comp9,
   comp10,
   comp11,
-  comp12
+  comp12,
+  comp13,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -750,6 +751,32 @@ describe('Select Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should not have "limit" and "skip" query params when "Disable limit" option checked', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = (_, __, url) => {
+      assert.equal(url, 'https://test.com/');
+      return Promise.resolve({});
+    };
+
+    Formio.createForm(element, form).then(() => {
+      setTimeout(() => {
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('The empty option in html5 shouldn\'t have the [Object Object] value', () => {
+    return Harness.testCreate(SelectComponent, comp13).then((component) => {
+     const emptyOption = component.element.querySelectorAll('option')[0];
+      assert.notEqual(emptyOption.value, '[object Object]');
+      assert.equal(emptyOption.value, '');
+    });
+  });
+
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;

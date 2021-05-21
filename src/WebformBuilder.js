@@ -862,7 +862,7 @@ export default class WebformBuilder extends Component {
     if (draggableComponent.disableSiblings) {
       let isCompAlreadyExists = false;
       eachComponent(this.webform.components, (component) => {
-        if (component.key === draggableComponent.key) {
+        if (component.type === draggableComponent.schema.type) {
           isCompAlreadyExists = true;
           return;
         }
@@ -1156,7 +1156,7 @@ export default class WebformBuilder extends Component {
       else {
         keys.set(comp.key, [path]);
       }
-    });
+    }, true);
 
     return repeatablePaths;
   }
