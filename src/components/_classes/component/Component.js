@@ -2594,7 +2594,7 @@ export default class Component extends Element {
 
     // Handle all cases when calculated values should not fire.
     if (
-      this.options.readOnly ||
+      (this.options.readOnly && !this.options.pdf) ||
       !this.component.calculateValue ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
@@ -2652,7 +2652,11 @@ export default class Component extends Element {
 
     this.calculatedValue = calculatedValue;
 
-    return changed ? this.setValue(calculatedValue, flags) : false;
+    if (changed) {
+      flags.triggeredComponentId = this.id;
+      return this.setValue(calculatedValue, flags);
+    }
+    return false;
   }
 
   /**
@@ -2806,7 +2810,9 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data, flags, row);
+    if (this.id !== flags.triggeredComponentId) {
+      this.calculateComponentValue(data, flags, row);
+    }
     this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {

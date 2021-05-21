@@ -329,7 +329,7 @@ export default class TabsComponent extends NestedComponent {
     const tabIndex = this.tabs.findIndex((tab) =&gt; {
       return tab.some((comp) =&gt; comp === component);
     });
-    if (tabIndex !== -1) {
+    if (tabIndex !== -1 &amp;&amp;  this.currentTab !== tabIndex) {
       this.setTab(tabIndex);
     }
   }
