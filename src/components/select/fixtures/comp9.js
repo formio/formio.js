@@ -45,7 +45,7 @@ export default {
 				filter: {}
 			},
 			input: true,
-			disableLimit: false
+			disableLimit: true
 		},
 		{
 			type: 'button',

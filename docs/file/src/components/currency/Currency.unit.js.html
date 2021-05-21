@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -359,11 +358,11 @@ describe(&apos;Currency Component&apos;, () =&gt; {
   it(&apos;Should format currency for USA locale&apos;, () =&gt; {
     /* eslint-disable max-statements */
     return Harness.testCreate(CurrencyComponent, comp1, { language: &apos;en-US&apos; }).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, undefined, null, &apos;&apos;);
-      Harness.testSetInput(component, {}, null, &apos;&apos;);
-      Harness.testSetInput(component, [], null, &apos;&apos;);
-      Harness.testSetInput(component, [&apos;&apos;], null, &apos;&apos;);
+      Harness.testSetInput(component, null, &apos;&apos;, &apos;&apos;);
+      Harness.testSetInput(component, undefined, &apos;&apos;, &apos;&apos;);
+      Harness.testSetInput(component, {}, &apos;&apos;, &apos;&apos;);
+      Harness.testSetInput(component, [], &apos;&apos;, &apos;&apos;);
+      Harness.testSetInput(component, [&apos;&apos;], &apos;&apos;, &apos;&apos;);
       Harness.testSetInput(component, [&apos;1&apos;], 1, &apos;$1.00&apos;);
       Harness.testSetInput(component, [&apos;$1.00&apos;], 1, &apos;$1.00&apos;);
       Harness.testSetInput(component, 0, 0, &apos;$0.00&apos;);
@@ -413,7 +412,7 @@ describe(&apos;Currency Component&apos;, () =&gt; {
 
   it(&apos;Should format currency for British locale&apos;, () =&gt; {
     return Harness.testCreate(CurrencyComponent, comp1, { language: &apos;en-GB&apos; }).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, null, &apos;&apos;, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;US$0.00&apos;);
       Harness.testSetInput(component, 1.00, 1, &apos;US$1.00&apos;);
       Harness.testSetInput(component, -1.00, -1, &apos;-US$1.00&apos;);
@@ -433,7 +432,7 @@ describe(&apos;Currency Component&apos;, () =&gt; {
   it(&apos;Should format currency for French locale&apos;, () =&gt; {
     return Harness.testCreate(CurrencyComponent, comp1, { language: &apos;fr&apos; }).then((component) =&gt; {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
-      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, null, &apos;&apos;, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0,00&#xA0;$US&apos;);
       Harness.testSetInput(component, 1.00, 1, &apos;1,00&#xA0;$US&apos;);
       Harness.testSetInput(component, -1.00, -1, &apos;-1,00&#xA0;$US&apos;);
@@ -452,7 +451,7 @@ describe(&apos;Currency Component&apos;, () =&gt; {
 
   it(&apos;Should format currency for German locale&apos;, () =&gt; {
     return Harness.testCreate(CurrencyComponent, comp1, { language: &apos;de&apos; }).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, null, &apos;&apos;, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0,00&#xA0;$&apos;);
       Harness.testSetInput(component, 1.00, 1.00, &apos;1,00&#xA0;$&apos;);
       Harness.testSetInput(component, -1.00, -1.00, &apos;-1,00&#xA0;$&apos;);

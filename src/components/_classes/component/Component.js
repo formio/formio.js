@@ -234,7 +234,8 @@ export default class Component extends Element {
   constructor(component, options, data) {
     super(Object.assign({
       renderMode: 'form',
-      attachMode: 'full'
+      attachMode: 'full',
+      noDefaults: false
     }, options || {}));
 
     // Restore the component id.
@@ -434,7 +435,9 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.defaultValue;
+            if (this.shouldAddDefaultValue) {
+              this.dataValue = this.defaultValue;
+            }
           }
           else {
             // Ensure the dataValue is set.
@@ -1961,7 +1964,7 @@ export default class Component extends Element {
       if (!this.visible) {
         this.deleteValue();
       }
-      else if (!this.hasValue()) {
+      else if (!this.hasValue() && this.shouldAddDefaultValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2234,7 +2237,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       const empty = this.component.multiple ? [] : this.emptyValue;
       if (!this.rootPristine) {
         this.dataValue = empty;
@@ -2297,6 +2300,10 @@ export default class Component extends Element {
       noDefault: true
     });
     this.unset();
+  }
+
+  get shouldAddDefaultValue() {
+    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
   }
 
   get defaultValue() {
@@ -2440,7 +2447,7 @@ export default class Component extends Element {
   }
 
   setDefaultValue() {
-    if (this.defaultValue) {
+    if (this.defaultValue && this.shouldAddDefaultValue) {
       const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
       this.setValue(defaultValue, {
         noUpdateEvent: true
@@ -2587,7 +2594,7 @@ export default class Component extends Element {
 
     // Handle all cases when calculated values should not fire.
     if (
-      this.options.readOnly ||
+      (this.options.readOnly && !this.options.pdf) ||
       !this.component.calculateValue ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
@@ -2645,7 +2652,11 @@ export default class Component extends Element {
 
     this.calculatedValue = calculatedValue;
 
-    return changed ? this.setValue(calculatedValue, flags) : false;
+    if (changed) {
+      flags.triggeredComponentId = this.id;
+      return this.setValue(calculatedValue, flags);
+    }
+    return false;
   }
 
   /**
@@ -2799,7 +2810,9 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data, flags, row);
+    if (this.id !== flags.triggeredComponentId) {
+      this.calculateComponentValue(data, flags, row);
+    }
     this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {

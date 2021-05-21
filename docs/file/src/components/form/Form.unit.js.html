@@ -56,8 +56,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
@@ -178,6 +177,7 @@ import {
   comp1,
   comp3,
   comp4,
+  comp5,
 } from &apos;./fixtures&apos;;
 import Webform from &apos;../../Webform&apos;;
 import formModalEdit from &apos;./fixtures/formModalEdit&apos;;
@@ -366,6 +366,28 @@ describe(&apos;Form Component&apos;, () =&gt; {
           }, 250);
         });
       }).catch(done);
+    });
+  });
+
+  describe(&apos;Inside Collapsed Panel&apos;, () =&gt; {
+    it(&apos;Should be able to set value to Nested Form Component inside collapsed Panel&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(comp5)
+        .then(() =&gt; {
+            const textField = form.getComponent([&apos;form&apos;, &apos;textField&apos;]);
+            const panel = form.getComponent(&apos;panel333&apos;);
+            textField.setValue(&apos;123&apos;, { modified: true });
+            setTimeout(() =&gt; {
+              assert.equal(textField.dataValue, &apos;123&apos;, &apos;Should set value&apos;);
+              panel.collapsed = false;
+              setTimeout(() =&gt; {
+                assert.equal(textField.dataValue, &apos;123&apos;, &apos;Should keep the set value after the panel was expanded&apos;);
+                done();
+              }, 300);
+            }, 300);
+        })
+        .catch(done);
     });
   });
 });
