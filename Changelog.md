@@ -17,10 +17,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-1434: Fixes an issue when Default value settings did not work for Tree component. Removed Multiple values settings for Tree component.
  - FIO-1372: Fixes an issue when beforeNext hook not fired when form is rendered with readOnly flag
  - FIO-2590: Fixes an issue when During dragging data grid row, its styling does not preserve.
+ - FIO-1513: Fixes an issue when in the DataGrid component custom validation errors were shown in an incorrect place.
+ - FIO-2505: Fixes an issue when Signatures on different rows are not consistent in size in DataGrid
+ - FIO-2625: Fixes an issue where got an infinite loop when changing the default values of the Data Grid components in the Data Grid.
+ - FIO-1288: Fixesan issue where Prefix/Suffix is rendered inaccurately when words/chars counter is shown
 
 #### Added
  - FIO-1239: Implement wizard header type selection
- - 
+
+#### Changed
+ - FIO-487: Remove pdf icon element from submission view
 
 ### 4.14.0-rc.6
 #### Fixed
