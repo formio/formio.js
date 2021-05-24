@@ -1,4 +1,5 @@
-<p>{{ctx.t('error')}}
+<p>
+  {{ctx.t('error')}}
   {% if (ctx.options.vpat) { %}
   <span ref="errorTooltip" class="{{ctx.iconClass('question-sign')}}" tabindex="0"></span>
   {% } %}
@@ -14,6 +15,7 @@
     >
       {{err.message}}
     </span>
+    <span class="sr-only">{{ctx.t('errorsListNavigationMessage')}}</span>
   </li>
   {% }) %}
 </ul>

@@ -700,7 +700,8 @@ body.formio-dialog-open {
   margin: 0;
 }
 
-.formio-dialog-content [ref="dialogHeader"] {
+.formio-dialog-content [ref="dialogHeader"],
+.formio-dialog-content [ref="label"] {
   padding-right: 15px;
 }
 
