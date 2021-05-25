@@ -2604,13 +2604,17 @@ export default class Component extends Element {
     }
 
     const dataValue = this.dataValue;
-
+    let calculatedValue = dataValue;
     // Calculate the new value.
-    let calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: dataValue,
-      data,
-      row: row || this.data
-    }, 'value');
+
+    // If data was calculated in a submission and the editing mode is on, skip calculating
+    if (!flags.fromSubmission && !this.root.editing || !this.component.persistent) {
+      calculatedValue = this.evaluate(this.component.calculateValue, {
+        value: dataValue,
+        data,
+        row: row || this.data
+      }, 'value');
+    }
 
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
