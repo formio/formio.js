@@ -446,7 +446,11 @@ export default class FileComponent extends Field {
           encodingType: webViewCamera.EncodingType.PNG,
           mediaType: webViewCamera.MediaType.PICTURE,
           saveToPhotoAlbum: true,
-          correctOrientation: false,
+          correctOrientation: true,
+          quality: 75,
+          targetWidth: 2000,
+          targetHeight: 2000,
+
         });
       });
     }
