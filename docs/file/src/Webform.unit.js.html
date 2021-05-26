@@ -196,6 +196,7 @@ import {
   formWithBlurValidationInsidePanel,
   modalEditComponents,
   calculatedNotPersistentValue,
+  calculateValueInEditingMode,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
@@ -220,6 +221,7 @@ import { nestedFormInWizard } from &apos;../test/fixtures&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { fastCloneDeep } from &apos;../lib/utils/utils&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
+import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -2318,6 +2320,54 @@ describe(&apos;Webform tests&apos;, function() {
           assert.equal(notPersistentFieldInput.value, &apos;testValue&apos;, &apos;Should calculate the value&apos;);
           done();
         }, 550);
+      }).catch(done);
+    });
+    it(&apos;Should calculate value by datasouce component when editing mode is on&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+      form.setForm(calculateValueInEditingMode).then(() =&gt; {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              select: { label: &apos;Dummy #1&apos;, value: &apos;dummy1&apos; },
+              dataSourceDisplay: &apos;some value&apos;
+            },
+          state: &apos;submitted&apos;
+        });
+        setTimeout(() =&gt; {
+          const dataSourceDisplay = form.getComponent(&apos;dataSourceDisplay&apos;);
+          assert.equal(dataSourceDisplay.dataValue, &apos;some value&apos;, &apos;Should set and keep the value&apos;);
+          done();
+        }, 1000);
+      }).catch(done);
+    });
+    it(&apos;Should calculate value properly in editing mode&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+      form.setForm(calculatedValue).then(() =&gt; {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              a: 4,
+              b: 5,
+              total: 9,
+            },
+          state: &apos;submitted&apos;
+        });
+        setTimeout(() =&gt; {
+          const total = form.getComponent([&apos;total&apos;]);
+          assert.equal(total.dataValue, 9, &apos;Should set and keep the value&apos;);
+
+          const b = form.getComponent([&apos;b&apos;]);
+          Harness.dispatchEvent(&apos;input&apos;, b.element, &apos;input&apos;, (i) =&gt; i.value = &apos;6&apos;);
+
+          setTimeout(() =&gt; {
+            assert.equal(total.dataValue, 10, &apos;Should recalculate the value&apos;);
+          }, 300);
+          done();
+        }, 1000);
       }).catch(done);
     });
   });

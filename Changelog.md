@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.8
+#### Fixed
+ - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+
 ### 4.14.0-rc.7
 #### Fixed
  - FIO-2925: add protection against change loops
