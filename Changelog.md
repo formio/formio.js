@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.2-rc.4
+#### Fixed
+ - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+
 ### 4.13.2-rc.3
 #### Fixed
  - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
