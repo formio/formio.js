@@ -95,7 +95,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .field-required:after, .tab-error::after {
   content:" *";
-  color:#F00000;
+  color:#C20000;
 }
 
 .field-required:after {
@@ -702,7 +702,7 @@ body.formio-dialog-open {
 
 .formio-dialog-content [ref="dialogHeader"],
 .formio-dialog-content [ref="label"] {
-  padding-right: 15px;
+  padding-right: 30px;
 }
 
 .formio-placeholder {
