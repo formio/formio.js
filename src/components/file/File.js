@@ -447,9 +447,9 @@ export default class FileComponent extends Field {
           mediaType: webViewCamera.MediaType.PICTURE,
           saveToPhotoAlbum: true,
           correctOrientation: true,
-          quality: 75,
-          targetWidth: 2000,
-          targetHeight: 2000,
+          quality: 100,
+          targetWidth: 3000,
+          targetHeight: 3000,
 
         });
       });
