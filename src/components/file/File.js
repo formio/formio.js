@@ -443,14 +443,13 @@ export default class FileComponent extends Field {
           console.error(err);
         }, {
           sourceType: webViewCamera.PictureSourceType.CAMERA,
-          encodingType: webViewCamera.EncodingType.PNG,
+          encodingType: webViewCamera.EncodingType.JPEG,
           mediaType: webViewCamera.MediaType.PICTURE,
           saveToPhotoAlbum: true,
           correctOrientation: true,
-          quality: 100,
-          targetWidth: 3000,
-          targetHeight: 3000,
-
+          quality: 90,
+          targetWidth: 2000,
+          targetHeight: 2000
         });
       });
     }
