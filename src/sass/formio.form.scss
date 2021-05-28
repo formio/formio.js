@@ -93,9 +93,13 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   background-color: #fff;
 }
 
+.formio-error-wrapper .field-required:after {
+  color:#C20000;
+}
+
 .field-required:after, .tab-error::after {
   content:" *";
-  color:#C20000;
+  color:#EB0000;
 }
 
 .field-required:after {
@@ -331,6 +335,10 @@ td > .form-group {
       margin-top: -23px;
       margin-left: -23px;
     }
+  }
+
+  a {
+    text-decoration: underline;
   }
 }
 
@@ -647,6 +655,11 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="url"]:focus {
   box-shadow: inset 0 0 0 2px #8dbdf1;
   outline: none;
+}
+
+.formio-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .formio-dialog.formio-dialog-theme-default .formio-dialog-buttons {
@@ -1348,6 +1361,27 @@ div[data-oembed-url] {
 
     .text-tiny {
       font-size: 0.7em;
+    }
+  }
+}
+
+.formio-wizard-nav-container {
+  display: flex;
+
+  li {
+    margin-right: 0.25rem;
+  }
+
+  @media not all and (min-width: 30em) {
+    flex-direction: column;
+
+    li {
+      margin-right: 0;
+    }
+
+    li .btn {
+      width: 100%;
+      margin-bottom: 0.25rem;
     }
   }
 }
