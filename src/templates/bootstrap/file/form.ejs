@@ -74,7 +74,7 @@
     <div class="fileSelector" ref="fileDrop" {{ctx.fileDropHidden ?'hidden' : ''}}>
       <i class="{{ctx.iconClass('cloud-upload')}}"></i> {{ctx.t('Drop files to attach,')}}
         {% if (ctx.self.imageUpload && ctx.component.webcam) { %}
-          <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('Use Camera,')}}</a>  {{ctx.t('or')}}
+          <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('use camera')}}</a>
         {% } %}
         {{ctx.t('or')}}
         <a href="#" ref="fileBrowse" class="browse">
@@ -91,7 +91,7 @@
     </div>
   {% } else { %}
     <div class="video-container">
-      <video class="video" autoplay="true" ref="videoPlayer"></video>
+      <video class="video" autoplay="true" ref="videoPlayer" tabindex="-1"></video>
     </div>
     <button class="btn btn-primary" ref="takePictureButton"><i class="fa fa-camera"></i> {{ctx.t('Take Picture')}}</button>
     <button class="btn btn-primary" ref="toggleCameraMode">{{ctx.t('Switch to file upload')}}</button>
