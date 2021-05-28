@@ -81,9 +81,11 @@ export default class RadioComponent extends Field {
   attach(element) {
     this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });
     this.refs.input.forEach((input, index) => {
-      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
-        modified: true,
-      }));
+      this.addEventListener(input, this.inputInfo.changeEvent, () => {
+        this.updateValue(null, {
+          modified: true,
+        });
+      });
       this.addShortcut(input, this.component.values[index].shortcut);
 
       if (this.isRadio) {
