@@ -167,18 +167,12 @@ export default class RadioComponent extends Field {
   }
 
   setSelectedClasses() {
-    this.component.values.forEach(item => {
-      item.selected = this.inputInfo.attr.type === 'checkbox' ? this.dataValue[item.value] : (item.value === this.dataValue);
-    });
-
     if (this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        const checked  = (input.type === 'checkbox') ? value[input.value] : (input.value.toString() === value.toString());
-        if (checked) {
-          this.addClass(wrapper, optionSelectedClass);
+        if (input && input.value.toString() === value.toString()) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
           //change "checked" attribute
@@ -188,7 +182,7 @@ export default class RadioComponent extends Field {
           this.removeClass(wrapper, this.optionSelectedClass);
           input.removeAttribute('checked');
         }
-       });
+      });
     }
   }
 

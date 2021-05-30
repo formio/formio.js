@@ -81,7 +81,7 @@ export default class CheckBoxComponent extends Field {
   }
 
   attach(element) {
-    this.loadRefs(element, { input: 'multiple', formCheck: 'single' });
+    this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
     if (this.refs.input) {
       this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
@@ -89,7 +89,6 @@ export default class CheckBoxComponent extends Field {
       }));
       this.addShortcut(this.input);
     }
-    this.setChecked();
     return super.attach(element);
   }
 
@@ -186,7 +185,6 @@ export default class CheckBoxComponent extends Field {
 
   updateValue(value, flags) {
     const changed = super.updateValue(value, flags);
-    this.setChecked();
 
     // Update attributes of the input element
     if (changed && this.input) {
@@ -197,19 +195,7 @@ export default class CheckBoxComponent extends Field {
         this.input.removeAttribute('checked');
       }
     }
-    return changed;
-  }
 
-  setChecked() {
-    const checkBoxChecked = 'checkbox-checked';
-    const val = this.getValue();
-    if (this.refs.formCheck) {
-      if (val) {
-        this.addClass(this.refs.formCheck, checkBoxChecked);
-      }
-      else {
-        this.removeClass(this.refs.formCheck, checkBoxChecked);
-      }
-    }
+    return changed;
   }
 }
