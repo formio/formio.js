@@ -133,7 +133,7 @@ export default [
     rows: 5,
     as: 'json',
     editor: 'ace',
-    tooltip: 'Specify Google Maps Autocomplete options used for address searching as JSON object. Follow the <a href ="https://developers.google.com/maps/documentation/javascript/places-autocomplete" target="_blank">link</a> for available options',
+    tooltip: 'Specify Google Maps Autocomplete options used for address searching as JSON object. Follow the <a href =\'https://developers.google.com/maps/documentation/javascript/places-autocomplete\' target=\'_blank\'>link</a> for available options',
     conditional: {
       json: { '===': [{ var: 'data.provider' }, 'google'] },
     },

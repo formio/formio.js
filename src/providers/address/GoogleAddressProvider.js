@@ -15,7 +15,7 @@ export class GoogleAddressProvider extends AddressProvider {
 
   constructor(options = {}) {
     super(options);
-    this.addRequiredProviderOptions();
+    this.setAutocompleteOptions();
 
     let src = 'https://maps.googleapis.com/maps/api/js?v=quarterly&libraries=places&callback=googleMapsCallback';
 
@@ -34,14 +34,23 @@ export class GoogleAddressProvider extends AddressProvider {
     return 'formatted_address';
   }
 
+  set autocompleteOptions(options) {
+    this._autocompleteOptions = options;
+  }
+
   get autocompleteOptions() {
+    return this._autocompleteOptions;
+  }
+
+  setAutocompleteOptions() {
     let options = _.get(this.options, 'params.autocompleteOptions', {});
 
     if (!_.isObject(options)) {
       options = {};
     }
 
-    return options;
+    this.addRequiredProviderOptions(options);
+    this.autocompleteOptions = options;
   }
 
   beforeMergeOptions(options) {
@@ -74,8 +83,7 @@ export class GoogleAddressProvider extends AddressProvider {
     return ['address_components', 'formatted_address','geometry','place_id', 'plus_code', 'types'];
   }
 
-  addRequiredProviderOptions() {
-    const options = this.autocompleteOptions;
+  addRequiredProviderOptions(options) {
     const addressProperties = this.getRequiredAddressProperties();
 
     if (_.isArray(options.fields) && options.fields.length > 0 ) {

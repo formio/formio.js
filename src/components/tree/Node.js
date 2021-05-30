@@ -12,6 +12,7 @@ export default class Node {
       createComponents,
       isNew = true,
       removeComponents,
+      parentPath = ''
     } = {},
   ) {
     this.parent = parent;
@@ -26,13 +27,15 @@ export default class Node {
     this.collapsed = false;
     this.components = [];
     this.children = [];
+    this.parentPath = parentPath;
 
     this.resetData();
-    this.children = children.map((child) => new Node(this, child, {
+    this.children = children.map((child, index) => new Node(this, child, {
       checkNode,
       createComponents,
       isNew: false,
       removeComponents,
+      parentPath: this.getChildrenPath(index),
     }));
 }
 
@@ -65,6 +68,10 @@ export default class Node {
     return Array.isArray(this.children) && this.children.length > 0;
   }
 
+  getChildrenPath(index) {
+    return this.parentPath ? `${this.parentPath}.children[${index}]` : '';
+  }
+
   eachChild(iteratee) {
     iteratee(this);
     this.children.forEach((child) => child.eachChild(iteratee));
@@ -78,6 +85,15 @@ export default class Node {
     );
   }
 
+  validateNode() {
+    let valid = true;
+    this.getComponents().forEach(comp => {
+      comp.setPristine(false);
+      valid &= comp.checkValidity(null, false, this.persistentData);
+    });
+    return valid;
+  }
+
   addChild() {
     if (this.new) {
       return null;
@@ -88,6 +104,7 @@ export default class Node {
       createComponents: this.createComponents,
       isNew: true,
       removeComponents: this.removeComponents,
+      parentPath: this.getChildrenPath(this.children.length),
     });
     this.children = this.children.concat(child);
     return child;
@@ -111,7 +128,8 @@ export default class Node {
   }
 
   save() {
-    if (this.changing) {
+    const isValid = this.validateNode();
+    if (this.changing && isValid) {
       if (this.new) {
         this.new = false;
       }
@@ -122,7 +140,7 @@ export default class Node {
       this.commitData();
     }
 
-    return this;
+    return isValid;
   }
 
   cancel() {
@@ -179,11 +197,31 @@ export default class Node {
 
   instantiateComponents() {
     this.components = this.createComponents(this.data, this);
+    this.components.forEach((component) => {
+      if (this.parentPath) {
+        const path = this.calculateComponentPath(component);
+        component.path = path;
+      }
+    });
     this.checkNode(this);
   }
 
   clearComponents() {
     this.removeComponents(this.components);
     this.components = [];
+  }
+
+  /**
+   * Return a path of component's value.
+   *
+   * @param {Object} component - The component instance.
+   * @return {string} - The component's value path.
+   */
+   calculateComponentPath(component) {
+    let path = '';
+    if (component.component.key) {
+      path = `${this.parentPath}.data.${component.component.key}`;
+    }
+    return path;
   }
 }

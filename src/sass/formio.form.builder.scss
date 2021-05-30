@@ -124,6 +124,10 @@
   display: inherit;
 }
 
+.component-settings .formio-dialog-content {
+  max-height: 100%;
+}
+
 .component-btn-group .btn.component-settings-button-paste {
   display: none;
 }
@@ -215,4 +219,12 @@
 .progress.pdf-progress .progress-bar {
   font-size: 1rem;
   line-height: 2rem;
+}
+
+.builder-sidebar.disabled {
+  .formcomponent {
+    cursor: not-allowed;
+    opacity: 0.65;
+    box-shadow: none;
+  }
 }

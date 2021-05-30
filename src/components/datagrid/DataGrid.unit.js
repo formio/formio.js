@@ -42,7 +42,7 @@ describe('DataGrid Component', () => {
     }).catch(done);
   });
 
-  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed, 
+  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed,
     and clear values when pushing 'yes, delete it' in alert container`, (done) => {
     Harness.testCreate(DataGridComponent, comp4).then((component) => {
       const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
@@ -146,7 +146,8 @@ describe('DataGrid Component', () => {
         },
         {
           make: '',
-          model: ''
+          model: '',
+          year: ''
         }
       ]);
     });
@@ -178,8 +179,8 @@ describe('DataGrid Component', () => {
             { name: 'Alex', age: 1 },
             { name: 'Bob',  age: 2 },
             { name: 'Conny', age: 3 },
-            { name: '' },
-            { name: '' }
+            { name: '', age: '' },
+            { name: '', age: '' }
           ]);
           done();
         }, done)

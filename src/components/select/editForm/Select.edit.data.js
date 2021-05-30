@@ -102,9 +102,9 @@ export default [
             ],
           },
           {
-            '===': [
+            '!==': [
               { var: 'data.widget' },
-              'choicesjs'
+              'html5'
             ]
           }
         ]
@@ -203,7 +203,7 @@ export default [
     label: 'Value Property',
     key: 'valueProperty',
     skipMerge: true,
-    clearOnHide: false,
+    clearOnHide: true,
     tooltip: 'The field to use as the value.',
     weight: 11,
     refreshOn: 'data.resource',
@@ -246,6 +246,7 @@ export default [
       json: {
         and: [
           { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { '!==': [{ var: 'data.reference' }, true] },
           { var: 'data.data.resource' },
         ],
       },
@@ -414,18 +415,21 @@ export default [
     key: 'limit',
     label: 'Limit',
     weight: 18,
-    defaultValue: 100,
     description: 'Maximum number of items to view per page of results.',
     tooltip: 'Use this to limit the number of items to request or view.',
+    clearOnHide: false,
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource'
-          ],
-        ],
+        and: [
+          { in: [
+            { var: 'data.dataSrc' },
+            [
+              'url',
+              'resource'
+            ],
+          ] },
+          { '!==': [{ var: 'data.disableLimit' }, true] }
+        ]
       },
     },
   },
