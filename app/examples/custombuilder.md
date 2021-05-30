@@ -12,8 +12,8 @@ the builder configuration.
 To see this in action, you can use the pre-built formio builder libraries as follows.
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.builder.min.css">
-<script src="https://unpkg.com/formiojs@latest/dist/formio.builder.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
 <div id="builder"></div>
 ```
 

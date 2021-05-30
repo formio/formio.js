@@ -26,8 +26,12 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
+    if (this.component.inputMode) {
+      attr.inputmode = this.component.inputMode;
+    }
+
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder);
+      attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
     if (this.component.tabindex) {
@@ -86,7 +90,7 @@ export default class Input extends Multivalue {
   }
 
   getWordCount(value) {
-    return value.trim().split(/\s+/).length;
+    return !value ? 0 : value.trim().split(/\s+/).length;
   }
 
   get remainingWords() {
@@ -123,7 +127,7 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)));
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value))).replace(/"/g, '&quot;');
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
     }
@@ -221,10 +225,6 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value, options) {
-    return super.getValueAsString(this.getWidgetValueAsString(value, options), options);
-  }
-
   attachElement(element, index) {
     super.attachElement(element, index);
     if (element.widget) {
@@ -275,6 +275,10 @@ export default class Input extends Multivalue {
       type: this.component.widget
     } : this.component.widget;
 
+    if (this.root?.shadowRoot) {
+      settings.shadowRoot = this.root?.shadowRoot;
+    }
+
     // Make sure we have a widget.
     if (!Widgets.hasOwnProperty(settings.type)) {
       return null;
@@ -299,6 +303,7 @@ export default class Input extends Multivalue {
         }
       }
     }
+    this.refs.input = [];
   }
 
   addFocusBlurEvents(element) {
@@ -321,11 +326,11 @@ export default class Input extends Multivalue {
       this.root.pendingBlur = delay(() => {
         this.emit('blur', this);
         if (this.component.validateOn === 'blur') {
-          this.root.triggerChange({}, {
+          this.root.triggerChange({ fromBlur: true }, {
             instance: this,
             component: this.component,
             value: this.dataValue,
-            flags: {}
+            flags: { fromBlur: true }
           });
         }
         this.root.focusedComponent = null;

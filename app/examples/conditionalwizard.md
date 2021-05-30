@@ -10,8 +10,8 @@ conditional logic that is executed as the person is filling out the form.
 ```html
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
-<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
 <div id="wizard"></div>
 ```
 
@@ -29,8 +29,8 @@ This wizard will render conditionally based on the data input from the first pag
   <script type="text/javascript">
   Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/conditionalwizard').then(function(wizard) {
     document.getElementById('showfull').addEventListener('click', function(event) {
-      wizard.wizard.full = event.target.checked;
-      wizard.setForm(wizard.wizard);
+      var updatedWizardSchema = Object.assign({}, wizard.wizard, { full: event.target.checked });
+      wizard.setForm(updatedWizardSchema);
     });
   });
   </script>

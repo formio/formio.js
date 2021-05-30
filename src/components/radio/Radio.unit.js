@@ -1,12 +1,15 @@
 import assert from 'power-assert';
-
+import Formio from './../../Formio';
+import _ from 'lodash';
 import Harness from '../../../test/harness';
 import RadioComponent from './Radio';
 
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4,
+  comp5
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -50,5 +53,51 @@ describe('Radio Component', () => {
       assert.equal(spans[2].innerHTML, 'Blue');
       assert.equal(spans[3].innerHTML, 'Yellow');
     });
+  });
+
+  it('Should set false as defaultValue correctly', (done) => {
+    Harness.testCreate(RadioComponent, comp4).then((component) => {
+      assert.equal(component.dataValue, false, 'Should be equal to false');
+      const input = component.element.querySelector('input[value="false"]');
+      assert.equal(input.getAttribute('checked'), 'true', 'Should be checked');
+      done();
+    });
+  });
+
+  it('Should provide "Allow only available values" validation', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+      let value = 'five';
+      radio.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(radio.getValue(), value);
+        assert.equal(radio.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(form.errors.length, 1);
+          assert.equal(radio.error.message, 'Radio is an invalid value.');
+          value = 'one';
+          radio.setValue(value);
+
+          setTimeout(() => {
+            assert.equal(radio.getValue(), value);
+            assert.equal(radio.dataValue, value);
+            assert.equal(form.errors.length, 0);
+            assert.equal(!!radio.error, false);
+
+            document.innerHTML = '';
+            done();
+          }, 300);
+        }, 300);
+      }, 200);
+    }).catch(done);
   });
 });

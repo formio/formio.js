@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 
 export default class ContainerComponent extends NestedDataComponent {
@@ -22,7 +23,7 @@ export default class ContainerComponent extends NestedDataComponent {
       title: 'Container',
       icon: 'folder-open',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#container',
+      documentation: '/userguide/#container',
       weight: 10,
       schema: ContainerComponent.schema()
     };
@@ -72,10 +73,15 @@ export default class ContainerComponent extends NestedDataComponent {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    components = components || this.getComponents();
+    components = components && _.isArray(components) ? components : this.getComponents();
 
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, this.dataValue) && valid;
     }, Component.prototype.checkData.call(this, data, flags, row));
+  }
+
+  checkConditions(data, flags, row) {
+    this.getComponents().forEach(comp => comp.checkConditions(data, flags, this.dataValue));
+    return Field.prototype.checkConditions.call(this, data, flags, row);
   }
 }

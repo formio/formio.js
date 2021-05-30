@@ -57,6 +57,9 @@ Object.keys(templates).forEach(framework => {
     renderForm(forms[form], { template: framework }).then(html => {
       fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, html);
     }).catch(err => console.log(err));
+    renderForm(forms[form], { template: framework, readOnly: true }).then(html => {
+      fs.writeFileSync(`${dir}/form-${framework}-readOnly-${form}.html`, html);
+    }).catch(err => console.log(err));
   });
   // Object.keys(formtests).forEach(form => {
   //   fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, renderForm(formtests[form].form, {}));
@@ -64,44 +67,58 @@ Object.keys(templates).forEach(framework => {
 
   // Render components
   Object.keys(AllComponents).forEach(component => {
-    // Basic
-    fs.writeFileSync(`${dir}/component-${framework}-${component}.html`, renderComponent(AllComponents[component], {}, { template: framework }));
+    if (component !== 'componentmodal') {
+      // Basic
+      fs.writeFileSync(`${dir}/component-${framework}-${component}.html`, renderComponent(AllComponents[component], {}, { template: framework }));
 
-    // Required
-    fs.writeFileSync(`${dir}/component-${framework}-${component}-required.html`, renderComponent(AllComponents[component], {
-      validate: {
-        required: true
+      // Required
+      fs.writeFileSync(`${dir}/component-${framework}-${component}-required.html`, renderComponent(AllComponents[component], {
+        validate: {
+          required: true
+        }
+      }, {
+        template: framework,
+      }));
+
+      // Read only
+      fs.writeFileSync(`${dir}/component-${framework}-${component}-readOnly.html`, renderComponent(AllComponents[component], {}, {
+        template: framework,
+        readOnly: true
+      }));
+
+      // Multiple
+      fs.writeFileSync(`${dir}/component-${framework}-${component}-multiple.html`, renderComponent(AllComponents[component], {
+        multiple: true
+      }, {
+        template: framework,
+      }));
+
+      // Values
+      if (fs.existsSync(`${componentDir}/${component}/fixtures/values.js`)) {
+        const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
+
+        values.unshift(undefined);
+
+        values.forEach((value, index) => {
+          fs.writeFileSync(`${dir}/component-${framework}-${component}-html-value${index}.html`, renderComponent(AllComponents[component], {}, {
+            template: framework,
+            flatten: true,
+            renderMode: 'html',
+          }, value));
+
+          fs.writeFileSync(`${dir}/component-${framework}-${component}-readOnly-value${index}.html`, renderComponent(AllComponents[component], {}, {
+            template: framework,
+            flatten: true,
+            readOnly: true,
+          }, value));
+
+          fs.writeFileSync(`${dir}/component-${framework}-${component}-string-value${index}.html`, renderAsString(AllComponents[component], {}, {
+            template: framework,
+            flatten: true,
+            renderMode: 'html',
+          }, value));
+        });
       }
-    }, {
-      template: framework,
-    }));
-
-    // Multiple
-    fs.writeFileSync(`${dir}/component-${framework}-${component}-multiple.html`, renderComponent(AllComponents[component], {
-      multiple: true
-    }, {
-      template: framework,
-    }));
-
-    // Values
-    if (fs.existsSync(`${componentDir}/${component}/fixtures/values.js`)) {
-      const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
-
-      values.unshift(undefined);
-
-      values.forEach((value, index) => {
-        fs.writeFileSync(`${dir}/component-${framework}-${component}-html-value${index}.html`, renderComponent(AllComponents[component], {}, {
-          template: framework,
-          flatten: true,
-          renderMode: 'html',
-        }, value));
-
-        fs.writeFileSync(`${dir}/component-${framework}-${component}-string-value${index}.html`, renderAsString(AllComponents[component], {}, {
-          template: framework,
-          flatten: true,
-          renderMode: 'html',
-        }, value));
-      });
     }
   });
 });

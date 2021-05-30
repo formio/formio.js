@@ -17,7 +17,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       group: 'basic',
       icon: 'plus-square',
       weight: 60,
-      documentation: 'http://help.form.io/userguide/#selectboxes',
+      documentation: '/userguide/#selectboxes',
       schema: SelectBoxesComponent.schema()
     };
   }
@@ -46,9 +46,28 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   get emptyValue() {
     return this.component.values.reduce((prev, value) => {
-      prev[value.value] = false;
+      if (value.value) {
+        prev[value.value] = false;
+      }
       return prev;
     }, {});
+  }
+
+  get defaultValue() {
+    let defaultValue = this.emptyValue;
+
+    if (!_.isEmpty(this.component.defaultValue)) {
+      defaultValue = this.component.defaultValue;
+    }
+    if (this.component.customDefaultValue && !this.options.preview) {
+      defaultValue = this.evaluate(
+        this.component.customDefaultValue,
+        { value: '' },
+        'value'
+      );
+    }
+
+    return defaultValue;
   }
 
   /**
@@ -135,11 +154,49 @@ export default class SelectBoxesComponent extends RadioComponent {
       .join(', ');
   }
 
-  checkComponentValidity(data, dirty, rowData) {
+  setSelectedClasses() {
+    if (this.refs.wrapper) {
+      //add/remove selected option class
+      const value = this.dataValue;
+      const valuesKeys = Object.keys(value);
+
+      this.refs.wrapper.forEach((wrapper, index) => {
+        let key = valuesKeys[index];
+        const input = this.refs.input[index];
+        if (input?.value.toString() !== key) {
+          key = valuesKeys.find((k) => input?.value.toString() === k);
+        }
+        const isChecked = value[key];
+        if (isChecked && key) {
+          //add class to container when selected
+          this.addClass(wrapper, this.optionSelectedClass);
+          //change "checked" attribute
+          input.setAttribute('checked', 'true');
+        }
+        else if (!isChecked && key) {
+          this.removeClass(wrapper, this.optionSelectedClass);
+          input.removeAttribute('checked');
+        }
+      });
+    }
+  }
+
+  setInputsDisabled(value, onlyUnchecked) {
+    if (this.refs.input) {
+      this.refs.input.forEach(item => {
+        if (onlyUnchecked && !item.checked || !onlyUnchecked) {
+          item.disabled = value;
+        }
+      });
+    }
+  }
+
+  checkComponentValidity(data, dirty, rowData, options) {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
+    const isValid = this.isValid(data, dirty);
 
-    if ((maxCount || minCount) && !this.isValid(data, dirty)) {
+    if (maxCount || minCount) {
       const count = Object.keys(this.validationValue).reduce((total, key) => {
         if (this.validationValue[key]) {
           total++;
@@ -147,43 +204,33 @@ export default class SelectBoxesComponent extends RadioComponent {
         return total;
       }, 0);
 
+      // Disable the rest of inputs if the max amount is already checked
       if (maxCount && count >= maxCount) {
-        if (this.refs.input) {
-          this.refs.input.forEach(item => {
-            if (!item.checked) {
-              item.disabled = true;
-            }
-          });
-        }
-        if (maxCount && count > maxCount) {
-          const message = this.component.maxSelectedCountMessage
-            ? this.component.maxSelectedCountMessage
-            : `You can only select up to ${maxCount} items.`;
-          this.setCustomValidity(message, dirty);
-          return false;
-        }
+        this.setInputsDisabled(true, true);
       }
-      else if (minCount && count < minCount) {
-        if (this.refs.input) {
-          this.refs.input.forEach(item => {
-            item.disabled = false;
-          });
-        }
-        const message = this.component.minSelectedCountMessage
-          ? this.component.minSelectedCountMessage
-          : `You must select at least ${minCount} items.`;
+      else if (maxCount && !this.shouldDisabled) {
+        this.setInputsDisabled(false);
+      }
+
+      if (!isValid && maxCount && count > maxCount) {
+        const message = this.t(
+          this.component.maxSelectedCountMessage || 'You can only select up to {{maxCount}} items.',
+          { maxCount }
+        );
         this.setCustomValidity(message, dirty);
         return false;
       }
-      else {
-        if (this.refs.input) {
-          this.refs.input.forEach(item => {
-            item.disabled = false;
-          });
-        }
+      else if (!isValid && minCount && count < minCount) {
+        this.setInputsDisabled(false);
+        const message = this.t(
+          this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items.',
+          { minCount }
+        );
+        this.setCustomValidity(message, dirty);
+        return false;
       }
     }
 
-    return super.checkComponentValidity(data, dirty, rowData);
+    return super.checkComponentValidity(data, dirty, rowData, options);
   }
 }

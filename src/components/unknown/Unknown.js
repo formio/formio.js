@@ -15,7 +15,7 @@ export default class UnknownComponent extends Component {
       title: 'Custom',
       icon: 'cubes',
       group: 'premium',
-      documentation: 'https://help.form.io/userguide/form-components/#custom',
+      documentation: '/userguide/form-components/#custom',
       weight: 120,
       schema: UnknownComponent.schema()
     };

@@ -7,7 +7,8 @@ export default class PhoneNumberComponent extends TextFieldComponent {
       label: 'Phone Number',
       key: 'phoneNumber',
       inputType: 'tel',
-      inputMask: '(999) 999-9999'
+      inputMask: '(999) 999-9999',
+      inputMode: 'decimal',
     }, ...extend);
   }
 
@@ -17,7 +18,7 @@ export default class PhoneNumberComponent extends TextFieldComponent {
       group: 'advanced',
       icon: 'phone-square',
       weight: 30,
-      documentation: 'http://help.form.io/userguide/#phonenumber',
+      documentation: '/userguide/#phonenumber',
       schema: PhoneNumberComponent.schema()
     };
   }

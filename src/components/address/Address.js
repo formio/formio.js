@@ -87,7 +87,7 @@ export default class AddressComponent extends ContainerComponent {
       title: 'Address',
       group: 'advanced',
       icon: 'home',
-      documentation: 'http://help.form.io/userguide/#address',
+      documentation: '/userguide/#address',
       weight: 35,
       schema: AddressComponent.schema(),
     };
@@ -147,8 +147,9 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   initializeProvider(provider, options = {}) {
+    const url = this.interpolate(options.url);
     const Provider = Formio.Providers.getProvider('address', provider);
-    return new Provider(options);
+    return new Provider({ ...options, url });
   }
 
   get emptyValue() {
@@ -217,7 +218,13 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get defaultValue() {
-    return this.isMultiple ? [this.emptyValue] : this.emptyValue;
+    let defaultValue = super.defaultValue;
+
+    if (this.isMultiple) {
+      defaultValue = _.isArray(defaultValue) ? defaultValue : [defaultValue];
+    }
+
+    return  defaultValue;
   }
 
   get defaultSchema() {
@@ -244,7 +251,7 @@ export default class AddressComponent extends ContainerComponent {
       this.restoreComponentsContext();
     }
 
-    if (changed) {
+    if (changed || !_.isEmpty(value) && flags.fromSubmission) {
       this.redraw();
     }
 
@@ -311,7 +318,7 @@ export default class AddressComponent extends ContainerComponent {
     };
 
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder);
+      attr.placeholder = this.t(this.component.placeholder), { _userInput: true };
     }
 
     if (this.disabled) {
@@ -385,6 +392,26 @@ export default class AddressComponent extends ContainerComponent {
     return super.render(this.renderElement());
   }
 
+  onSelectAddress(address, element, index) {
+    if (this.isMultiple) {
+      this.address[index] = address;
+      this.address = [...this.address];
+    }
+    else {
+      this.address = address;
+    }
+
+    this.triggerChange({
+      modified: true,
+    });
+
+    if (element) {
+      element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
+    }
+
+    this.updateRemoveIcon(index);
+  }
+
   addRow() {
     this.address = this.address.concat(this.emptyValue);
     super.redraw();
@@ -413,38 +440,27 @@ export default class AddressComponent extends ContainerComponent {
 
     this.searchInput.forEach((element, index) => {
       if (!this.builderMode && element && this.provider) {
-        autocompleter({
-          input: element,
-          debounceWaitMs: 300,
-          fetch: (text, update) => {
-            const query = text;
-            this.provider.search(query).then(update);
-          },
-          render: (address) => {
-            const div = this.ce('div');
-            div.textContent = this.getDisplayValue(address);
-            return div;
-          },
-          onSelect: (address) => {
-            if (this.isMultiple) {
-              this.address[index] = address;
-              this.address = [...this.address];
-            }
-            else {
-              this.address = address;
-            }
-
-            this.triggerChange({
-              modified: true,
-            });
-
-            if (element) {
-              element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
-            }
-
-            this.updateRemoveIcon(index);
-          },
-        });
+        if (this.component.provider === 'google') {
+          this.provider.attachAutocomplete(element, index, this.onSelectAddress.bind(this));
+        }
+        else {
+          autocompleter({
+            input: element,
+            debounceWaitMs: 300,
+            fetch: (text, update) => {
+              const query = text;
+              this.provider.search(query).then(update);
+            },
+            render: (address) => {
+              const div = this.ce('div');
+              div.textContent = this.getDisplayValue(address);
+              return div;
+            },
+            onSelect: (address) => {
+              this.onSelectAddress(address, element, index);
+            },
+          });
+        }
 
         this.addEventListener(element, 'blur', () => {
           if (!element) {

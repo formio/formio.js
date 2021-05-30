@@ -1,4 +1,4 @@
-import { maskInput, conformToMask } from 'vanilla-text-mask';
+import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import Input from '../_classes/input/Input';
@@ -24,7 +24,7 @@ export default class NumberComponent extends Input {
       title: 'Number',
       icon: 'hashtag',
       group: 'basic',
-      documentation: 'http://help.form.io/userguide/#number',
+      documentation: '/userguide/#number',
       weight: 30,
       schema: NumberComponent.schema()
     };
@@ -89,7 +89,15 @@ export default class NumberComponent extends Input {
     if (!defaultValue && this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
     }
+
+    if (!this.component.multiple && _.isArray(defaultValue)) {
+      defaultValue = !defaultValue[0] &&  defaultValue[0] !== 0 ? null :  defaultValue[0];
+    }
     return defaultValue;
+  }
+
+  get emptyValue() {
+    return '';
   }
 
   isDecimalAllowed() {
@@ -116,7 +124,8 @@ export default class NumberComponent extends Input {
     input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
       inputElement: input,
-      mask: this.numberMask
+      mask: this.numberMask,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
   }
 
@@ -139,7 +148,7 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : null;
+    return val ? this.parseNumber(val) : this.emptyValue;
   }
 
   setValueAt(index, value, flags = {}) {
@@ -176,7 +185,7 @@ export default class NumberComponent extends Input {
   focus() {
     const input = this.refs.input[0];
     if (input) {
-      input.focus();
+      super.focus.call(this);
       input.setSelectionRange(0, input.value.length);
     }
   }

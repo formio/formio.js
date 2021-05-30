@@ -54,8 +54,12 @@ import webform from './webform';
 import well from './well';
 import wizard from './wizard';
 import wizardHeader from './wizardHeader';
+import wizardHeaderClassic from './wizardHeaderClassic';
+import wizardHeaderVertical from './wizardHeaderVertical';
 import wizardNav from './wizardNav';
 import cssClasses from './cssClasses';
+import errorsList from './errorsList';
+import alert from './alert';
 
 export default {
   transform(type, text) {
@@ -126,5 +130,9 @@ export default {
   well,
   wizard,
   wizardHeader,
-  wizardNav
+  wizardHeaderClassic,
+  wizardHeaderVertical,
+  wizardNav,
+  errorsList,
+  alert
 };

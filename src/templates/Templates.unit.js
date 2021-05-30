@@ -54,72 +54,74 @@ describe('Rendering Tests', () => {
       });
 
       Object.keys(AllComponents).forEach(component => {
-        describe(`Component ${component}`, () => {
-          it(`Renders ${component} for ${framework}`, (done) => {
-            const instance = new AllComponents[component]({}, { template: framework });
-            fixComponent(instance);
-            assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
-            done();
-          });
-          it(`Renders ${component} for ${framework} as required`, (done) => {
-            const instance = new AllComponents[component]({
-              validate: {
-                required: true
-              }
-            }, {
-              template: framework,
+        if (component !== 'componentmodal') {
+          describe(`Component ${component}`, () => {
+            it(`Renders ${component} for ${framework}`, (done) => {
+              const instance = new AllComponents[component]({}, { template: framework });
+              fixComponent(instance);
+              assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
+              done();
             });
-            fixComponent(instance);
-            assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render(), { ocd: true }));
-            done();
-          });
-          it(`Renders ${component} for ${framework} as multiple`, (done) => {
-            const instance = new AllComponents[component]({
-              multiple: true
-            }, {
-              template: framework,
-            });
-            fixComponent(instance);
-            assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render(), { ocd: true }));
-            done();
-          });
-
-          if (fs.existsSync(`./lib/${componentDir}/${component}/fixtures/values.js`)) {
-            const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
-
-            values.unshift(undefined);
-
-            values.forEach((value, index) => {
-              it(`Renders ${component} for ${framework} value ${index} as html`, (done) => {
-                const instance = new AllComponents[component]({}, {
-                  template: framework,
-                  flatten: true,
-                  renderMode: 'html',
-                });
-                instance.dataValue = value;
-                fixComponent(instance);
-                assert.equal(renders[`component-${framework}-${component}-html-value${index}`], pretty(instance.render(), { ocd: true }));
-                done();
-              });
-              it(`Renders ${component} for ${framework} value ${index} as string`, (done) => {
-                const instance = new AllComponents[component]({}, {
-                  template: framework,
-                  flatten: true,
-                  renderMode: 'html',
-                });
-                fixComponent(instance);
-                const file = renders[`component-${framework}-${component}-string-value${index}`];
-                const val = instance.getValueAsString(value);
-
-                if (val !== file) {
-                  console.log('er');
+            it(`Renders ${component} for ${framework} as required`, (done) => {
+              const instance = new AllComponents[component]({
+                validate: {
+                  required: true
                 }
-                assert.equal(renders[`component-${framework}-${component}-string-value${index}`], pretty(instance.getValueAsString(value), { ocd: true }));
-                done();
+              }, {
+                template: framework,
               });
+              fixComponent(instance);
+              assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render(), { ocd: true }));
+              done();
             });
-          }
-        });
+            it(`Renders ${component} for ${framework} as multiple`, (done) => {
+              const instance = new AllComponents[component]({
+                multiple: true
+              }, {
+                template: framework,
+              });
+              fixComponent(instance);
+              assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render(), { ocd: true }));
+              done();
+            });
+
+            if (fs.existsSync(`./lib/${componentDir}/${component}/fixtures/values.js`)) {
+              const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
+
+              values.unshift(undefined);
+
+              values.forEach((value, index) => {
+                it(`Renders ${component} for ${framework} value ${index} as html`, (done) => {
+                  const instance = new AllComponents[component]({}, {
+                    template: framework,
+                    flatten: true,
+                    renderMode: 'html',
+                  });
+                  instance.dataValue = value;
+                  fixComponent(instance);
+                  assert.equal(renders[`component-${framework}-${component}-html-value${index}`], pretty(instance.render(), { ocd: true }));
+                  done();
+                });
+                it(`Renders ${component} for ${framework} value ${index} as string`, (done) => {
+                  const instance = new AllComponents[component]({}, {
+                    template: framework,
+                    flatten: true,
+                    renderMode: 'html',
+                  });
+                  fixComponent(instance);
+                  const file = renders[`component-${framework}-${component}-string-value${index}`];
+                  const val = instance.getValueAsString(value);
+
+                  if (val !== file) {
+                    console.log('er');
+                  }
+                  assert.equal(renders[`component-${framework}-${component}-string-value${index}`], pretty(instance.getValueAsString(value), { ocd: true }));
+                  done();
+                });
+              });
+            }
+          });
+        }
       });
     });
   });

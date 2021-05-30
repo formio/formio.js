@@ -1,5 +1,5 @@
 import Input from '../_classes/input/Input';
-import { conformToMask } from 'vanilla-text-mask';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
 
 export default class TextFieldComponent extends Input {
@@ -27,7 +27,7 @@ export default class TextFieldComponent extends Input {
       title: 'Text Field',
       icon: 'terminal',
       group: 'basic',
-      documentation: 'http://help.form.io/userguide/#textfield',
+      documentation: '/userguide/#textfield',
       weight: 0,
       schema: TextFieldComponent.schema()
     };
@@ -57,6 +57,21 @@ export default class TextFieldComponent extends Input {
 
   get emptyValue() {
     return '';
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+
+    const timezone = (this.component.widget?.timezone || this.options.timezone);
+
+    if (this.component.widget?.type === 'calendar') {
+      this.component.widget = {
+        ...this.component.widget,
+        readOnly: this.options.readOnly,
+        timezone,
+        locale: this.options.language,
+      };
+    }
   }
 
   /**
@@ -118,7 +133,8 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
-      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask)).conformedValue;
+      const placeholderChar = this.placeholderChar;
+      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
       maskInput.value = value.maskName;
     }
     else {

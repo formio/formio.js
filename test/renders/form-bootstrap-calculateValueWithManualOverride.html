@@ -5,10 +5,14 @@
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item active" role="presentation" ref="tabLi-tabs">
-              <a class="nav-link active" href="#tab1" ref="tabLink-tabs">Tab 1</a>
+              <a class="nav-link active" href="#tab1" ref="tabLink-tabs">
+                Tab 1
+              </a>
             </li>
             <li class="nav-item" role="presentation" ref="tabLi-tabs">
-              <a class="nav-link" href="#tab2" ref="tabLink-tabs">Tab 2</a>
+              <a class="nav-link" href="#tab2" ref="tabLink-tabs">
+                Tab 2
+              </a>
             </li>
           </ul>
         </div>
@@ -43,7 +47,7 @@
                   </th>
                 </tr>
               </thead>
-              <tbody ref="datagrid-dataGrid-tbody">
+              <tbody ref="datagrid-dataGrid-tbody" data-key="datagrid-dataGrid">
                 <tr ref="datagrid-dataGrid-row">
                   <td ref="datagrid-dataGrid">
                     <div id="label" class="form-group has-feedback formio-component formio-component-textfield formio-component-label  formio-component-label-hidden" ref="component">
@@ -62,7 +66,7 @@
                     </div>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow">
+                    <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0">
                       <i class="fa fa-times-circle-o"></i>
                     </button>
                   </td>
@@ -71,7 +75,7 @@
               <tfoot>
                 <tr>
                   <td colspan="4">
-                    <button class="btn btn-primary formio-button-add-row" ref="datagrid-dataGrid-addRow">
+                    <button class="btn btn-primary formio-button-add-row" ref="datagrid-dataGrid-addRow" tabindex="0">
                       <i class="fa fa-plus"></i> Add Another
                     </button>
                   </td>

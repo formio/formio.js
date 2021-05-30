@@ -1,8 +1,9 @@
 import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from 'eventemitter3';
 import { uniqueKey } from '../../utils/utils';
+import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -33,7 +34,7 @@ export default class DataMapComponent extends DataGridComponent {
       title: 'Data Map',
       icon: 'th-list',
       group: 'data',
-      documentation: 'http://help.form.io/userguide/#datamap',
+      documentation: '/userguide/#datamap',
       weight: 20,
       schema: DataMapComponent.schema()
     };
@@ -103,6 +104,7 @@ export default class DataMapComponent extends DataGridComponent {
       hideLabel: true,
       label: this.component.keyLabel || 'Key',
       key: '__key',
+      disableBuilderActions: true,
     };
   }
 
@@ -118,7 +120,16 @@ export default class DataMapComponent extends DataGridComponent {
     if (_.isEmpty(dataValue)) {
       return [];
     }
+
     return Object.keys(dataValue).map(() => dataValue);
+  }
+
+  getComponentsContainer() {
+    if (this.builderMode) {
+      return this.getComponents().map(comp => comp.component);
+    }
+
+    return super.getComponentsContainer();
   }
 
   get iteratableRows() {
@@ -158,9 +169,13 @@ export default class DataMapComponent extends DataGridComponent {
   getRowKey(rowIndex) {
     const keys = Object.keys(this.dataValue);
     if (!keys[rowIndex]) {
-      keys[rowIndex] = uniqueKey(this.dataValue, 'key');
+      keys[rowIndex] = uniqueKey(this.dataValue, this.defaultRowKey);
     }
     return keys[rowIndex];
+  }
+
+  get defaultRowKey() {
+    return 'key';
   }
 
   setRowComponentsData(rowIndex, rowData) {
@@ -176,20 +191,78 @@ export default class DataMapComponent extends DataGridComponent {
     });
   }
 
+  getValueAsString(value, options) {
+    if (options?.email && this.visible && !this.skipInEmail && _.isObject(value)) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <tbody>
+      `);
+
+      result = Object.keys(value).reduce((result, key) => {
+        result += (`
+          <tr>
+            <th style="padding: 5px 10px;">${key}</th>
+            <td style="width:100%;padding:5px 10px;">${this.getView(value[key], options)}</td>
+          </tr>
+        `);
+        return result;
+      }, result);
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    }
+    if (_.isEmpty(value)) {
+      return '';
+    }
+    if (options?.modalPreview) {
+      delete options.modalPreview;
+      return this.getDataValueAsTable(value, options);
+    }
+
+    return typeof value === 'object' ? '[Complex Data]' : value;
+  }
+
+  getDataValueAsTable(value, options) {
+    let result = (`
+      <table border="1" style="width:100%">
+        <tbody>
+    `);
+
+    if (this.visible && _.isObject(value)) {
+      Object.keys(value).forEach((key) => {
+        result += (`
+          <tr>
+            <th style="padding: 5px 10px;">${key}</th>
+            <td style="width:100%;padding:5px 10px;">${this.getView(value[key], options)}</td>
+          </tr>
+        `);
+      });
+    }
+
+    result += (`
+        </tbody>
+      </table>
+    `);
+
+    return result;
+  }
+
   createRowComponents(row, rowIndex) {
-    let key = this.getRowKey(rowIndex);
+    // Use original value component API key in builder mode to be able to edit value component
+    let key = this.builderMode ? this.valueKey : this.getRowKey(rowIndex);
 
     // Create a new event emitter since fields are isolated.
     const options = _.clone(this.options);
-    options.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    options.events = new EventEmitter();
     options.name += `[${rowIndex}]`;
     options.row = `${rowIndex}`;
 
     const components = {};
-    components['__key'] = this.createComponent(this.keySchema, options, { __key: key });
+    components['__key'] = this.createComponent(this.keySchema, options, { __key: this.builderMode ? this.defaultRowKey : key });
     components['__key'].on('componentChange', (event) => {
       const dataValue = this.dataValue;
       const newKey = uniqueKey(dataValue, event.value);
@@ -219,7 +292,10 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   saveChildComponent(component) {
-    this.component.valueComponent = component;
+    // Update the Value Component, the Key Component is not allowed to edit
+    if (component.key !== this.keySchema.key) {
+      this.component.valueComponent = component;
+    }
   }
 
   removeChildComponent() {
