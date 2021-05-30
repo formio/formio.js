@@ -950,7 +950,7 @@ describe('EditGrid Component', () => {
         const clickEvent = new Event('click');
         elem.dispatchEvent(clickEvent);
       };
-      
+
       assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 0, 'Should not have rows');
       assert.equal(editGrid.editRows.length, 0, 'Should not have rows');
 

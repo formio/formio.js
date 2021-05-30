@@ -32,9 +32,12 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
@@ -161,7 +164,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
@@ -229,7 +231,69 @@ const EditFormUtils = {
       /* eslint-enable prefer-template */
     };
   },
-  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON, additionalParams) {
+  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON, additionalParams = &apos;&apos;, excludeJSONLogic) {
+    const components = [
+      this.logicVariablesTable(additionalParams),
+      {
+        type: &apos;panel&apos;,
+        title: &apos;JavaScript&apos;,
+        collapsible: true,
+        collapsed: false,
+        style: { &apos;margin-bottom&apos;: &apos;10px&apos; },
+        key: `${property}-js`,
+        customConditional() {
+          return !Evaluator.noeval || Evaluator.protectedEval;
+        },
+        components: [
+          {
+            type: &apos;textarea&apos;,
+            key: property,
+            rows: 5,
+            editor: &apos;ace&apos;,
+            hideLabel: true,
+            as: &apos;javascript&apos;,
+            input: true
+          },
+          {
+            type: &apos;htmlelement&apos;,
+            tag: &apos;div&apos;,
+            content: `&lt;p&gt;Enter custom javascript code.&lt;/p&gt;${exampleHTML}`
+          }
+        ]
+      },
+      {
+        type: &apos;panel&apos;,
+        title: &apos;JSONLogic&apos;,
+        collapsible: true,
+        collapsed: true,
+        key: `${property}-json`,
+        components: [
+          {
+            type: &apos;htmlelement&apos;,
+            tag: &apos;div&apos;,
+            /* eslint-disable prefer-template */
+            content: &apos;&lt;p&gt;Execute custom logic using &lt;a href=&quot;http://jsonlogic.com/&quot; target=&quot;_blank&quot;&gt;JSONLogic&lt;/a&gt;.&lt;/p&gt;&apos; +
+              &apos;&lt;p&gt;Full &lt;a href=&quot;https://lodash.com/docs&quot; target=&quot;_blank&quot;&gt;Lodash&lt;/a&gt; support is provided using an &quot;_&quot; before each operation, such as &lt;code&gt;{&quot;_sum&quot;: {var: &quot;data.a&quot;}}&lt;/code&gt;&lt;/p&gt;&apos; +
+               exampleJSON
+            /* eslint-enable prefer-template */
+          },
+          {
+            type: &apos;textarea&apos;,
+            key: propertyJSON,
+            rows: 5,
+            editor: &apos;ace&apos;,
+            hideLabel: true,
+            as: &apos;json&apos;,
+            input: true
+          }
+        ]
+      }
+    ];
+
+    if (excludeJSONLogic) {
+      components.splice(2, 1);
+    }
+
     return {
       type: &apos;panel&apos;,
       title: title,
@@ -238,63 +302,7 @@ const EditFormUtils = {
       collapsed: true,
       key: `${property}Panel`,
       weight: weight,
-      components: [
-        this.logicVariablesTable(additionalParams),
-        {
-          type: &apos;panel&apos;,
-          title: &apos;JavaScript&apos;,
-          collapsible: true,
-          collapsed: false,
-          style: { &apos;margin-bottom&apos;: &apos;10px&apos; },
-          key: `${property}-js`,
-          customConditional() {
-            return !Evaluator.noeval || Evaluator.protectedEval;
-          },
-          components: [
-            {
-              type: &apos;textarea&apos;,
-              key: property,
-              rows: 5,
-              editor: &apos;ace&apos;,
-              hideLabel: true,
-              as: &apos;javascript&apos;,
-              input: true
-            },
-            {
-              type: &apos;htmlelement&apos;,
-              tag: &apos;div&apos;,
-              content: `&lt;p&gt;Enter custom javascript code.&lt;/p&gt;${exampleHTML}`
-            }
-          ]
-        },
-        {
-          type: &apos;panel&apos;,
-          title: &apos;JSONLogic&apos;,
-          collapsible: true,
-          collapsed: true,
-          key: `${property}-json`,
-          components: [
-            {
-              type: &apos;htmlelement&apos;,
-              tag: &apos;div&apos;,
-              /* eslint-disable prefer-template */
-              content: &apos;&lt;p&gt;Execute custom logic using &lt;a href=&quot;http://jsonlogic.com/&quot; target=&quot;_blank&quot;&gt;JSONLogic&lt;/a&gt;.&lt;/p&gt;&apos; +
-                &apos;&lt;p&gt;Full &lt;a href=&quot;https://lodash.com/docs&quot; target=&quot;_blank&quot;&gt;Lodash&lt;/a&gt; support is provided using an &quot;_&quot; before each operation, such as &lt;code&gt;{&quot;_sum&quot;: {var: &quot;data.a&quot;}}&lt;/code&gt;&lt;/p&gt;&apos; +
-                 exampleJSON
-              /* eslint-enable prefer-template */
-            },
-            {
-              type: &apos;textarea&apos;,
-              key: propertyJSON,
-              rows: 5,
-              editor: &apos;ace&apos;,
-              hideLabel: true,
-              as: &apos;json&apos;,
-              input: true
-            }
-          ]
-        }
-      ]
+      components
     };
   }
 };

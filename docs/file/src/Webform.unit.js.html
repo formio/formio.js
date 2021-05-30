@@ -32,9 +32,12 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
@@ -161,7 +164,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
@@ -222,6 +224,7 @@ import NativePromise from &apos;native-promise-only&apos;;
 import { fastCloneDeep } from &apos;../lib/utils/utils&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
+import conditionalDataGridWithTableAndRadio from &apos;../test/forms/conditionalDataGridWithTableAndRadio&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -2370,6 +2373,73 @@ describe(&apos;Webform tests&apos;, function() {
         }, 1000);
       }).catch(done);
     });
+  });
+
+  it(&apos;Should set different ids for components inside different Table rows&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+    form.setForm(conditionalDataGridWithTableAndRadio).then(() =&gt; {
+      const radioInspection0 = form.getComponent([&apos;inspectionDataGrid&apos;, 0, &apos;initialExam&apos;]);
+      Harness.dispatchEvent(
+        &apos;click&apos;,
+        radioInspection0.element,
+        &apos;input[value=&quot;reject&quot;]&apos;,
+        i =&gt; i.checked = true,
+      );
+
+      setTimeout(() =&gt; {
+        const repairDataGrid0 = form.getComponent([&apos;inspectionDataGrid&apos;, 0, &apos;repairDataGrid&apos;]);
+        assert.equal(radioInspection0.dataValue, &apos;reject&apos;, &apos;Should set value&apos;);
+        assert.equal(repairDataGrid0.visible, true, &apos;Should become visible&apos;);
+
+        const radioRepair0 = form.getComponent([&apos;inspectionDataGrid&apos;, 0, &apos;repairDataGrid&apos;, 0, &apos;repairExam&apos;]);
+        Harness.dispatchEvent(
+          &apos;click&apos;,
+          radioRepair0.element,
+          &apos;input[value=&quot;accept&quot;]&apos;,
+            i =&gt; i.checked = true,
+        );
+
+        setTimeout(() =&gt; {
+          assert.equal(radioRepair0.dataValue, &apos;accept&apos;, &apos;Should set value&apos;);
+          const inspectionDataGrid = form.getComponent([&apos;inspectionDataGrid&apos;]);
+          inspectionDataGrid.addRow();
+
+          setTimeout(() =&gt; {
+            assert.equal(inspectionDataGrid.rows.length, 2, &apos;Should add a row&apos;);
+
+            const radioInspection1 = form.getComponent([&apos;inspectionDataGrid&apos;, 1, &apos;initialExam&apos;]);
+            Harness.dispatchEvent(
+              &apos;click&apos;,
+              radioInspection1.element,
+              &apos;input[value=&quot;reject&quot;]&apos;,
+              i =&gt; i.checked = true,
+            );
+
+            setTimeout(() =&gt; {
+              const repairDataGrid1 = form.getComponent([&apos;inspectionDataGrid&apos;, 1, &apos;repairDataGrid&apos;]);
+              assert.equal(radioInspection1.dataValue, &apos;reject&apos;, &apos;Should set value&apos;);
+              assert.equal(repairDataGrid1.visible, true, &apos;Should become visible&apos;);
+
+              const radioRepair1 = form.getComponent([&apos;inspectionDataGrid&apos;, 1, &apos;repairDataGrid&apos;, 0, &apos;repairExam&apos;]);
+              Harness.dispatchEvent(
+                &apos;click&apos;,
+                form.element,
+                form.element.querySelector(`#${radioRepair1.id}${radioRepair1.row}-accept`),
+                i =&gt; i.checked = true
+              );
+
+              setTimeout(() =&gt; {
+                assert.equal(radioRepair1.dataValue, &apos;accept&apos;, &apos;Should set value of the clicked radio&apos;);
+                assert.equal(radioRepair0.dataValue, &apos;accept&apos;, &apos;Value of the radio inside another row should stay the same&apos;);
+
+                done();
+              }, 300);
+            }, 350);
+          }, 300);
+        }, 250);
+      }, 350);
+    }).catch(done);
   });
 
   it(&apos;Should render components properly&apos;, (done) =&gt; {

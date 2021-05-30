@@ -61,7 +61,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
         }
       },
       upperCase: {
-        check: (value, options) => {
+        check: (value) => {
           if (/[A-Z]/g.test(value)) {
             return true;
           }
@@ -70,7 +70,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
         increaseCharactersPoolSize: 26
       },
       numeric: {
-        check: (value, options) => {
+        check: (value) => {
           if (/[0-9]/g.test(value)) {
             return true;
           }
@@ -79,7 +79,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
         increaseCharactersPoolSize: 10,
       },
       lowerCase: {
-        check: (value, options) => {
+        check: (value) => {
           if (/[a-z]/g.test(value)) {
             return true;
           }
@@ -88,7 +88,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
         increaseCharactersPoolSize: 26,
       },
       symbols: {
-        check: (value, options) => {
+        check: (value) => {
           if (/[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(value)) {
             return true;
           }

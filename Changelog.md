@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### 4.14.0-rc.8
 #### Fixed
  - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+ - FJS-971: fix entering period as a first character in currency input
+ - FIO-2784, FIO-2927: Make Builder replace all the " where they may cause a rendering issue
+ - FIO-2494: Fixes an issue where Wizard page hidden by the logic is still shown in the Header
+ - FIO-2497: fixed an issue where editGrid header is updated when component becomes visible in unsaved row and new row is added
+ - Fixed an issue where public config is not available for the form and its components in builer mode
+ - FIO-2504: Fixes an issue with redundant settings for a non-wizard Panel component in a Wizard form.
+ - FIO-1433: Fixed default custom value for checkbox
+ - Fix nested wizard fields validation
+
+#### Added
+ - SEC-19: Password Strength Addon
+ - FIO-290 | FJS-1367: Feat: add an ability to specify Survey questions' and values' tooltips
+
+#### Changed
+ - Adding a more standard export for Formio object.
 
 ### 4.14.0-rc.7
 #### Fixed
