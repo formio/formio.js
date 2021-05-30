@@ -1,0 +1,16 @@
+<nav aria-label="navigation" id="{{ ctx.wizardKey }}-header">
+  <div class="classic-pagination row justify-content-center" style="border-bottom:0;">
+    {% ctx.panels.forEach(function(panel, index) { %}
+      <div class="classic-pagination-page col-xs-12 col-sm-6 col-md-3
+          {{ctx.currentPage < index ? ' disabled' : ''}}
+          {{ctx.currentPage === index ? ' active' : ''}}
+          {{ctx.currentPage > index ? ' complete' : ''}}">
+        <div class="text-center classic-pagination-title">{{ctx.t(panel.title, { _userInput: true })}}</div>
+        {% if (ctx.panels.length > 1) { %}
+          <div class="progress"><div class="progress-bar"></div></div>
+        {% } %} 
+        <span ref="{{ctx.wizardKey}}-link" class="classic-pagination-dot"></span>
+      </div>
+    {% }) %}
+  </div>
+</nav>

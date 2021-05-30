@@ -174,8 +174,10 @@ import TreeComponent from &apos;./Tree&apos;;
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4
 } from &apos;./fixtures&apos;;
+import Webform from &apos;../../Webform&apos;;
 import _ from &apos;lodash&apos;;
 
 describe(&apos;Tree Component&apos;, () =&gt; {
@@ -331,6 +333,28 @@ describe(&apos;Tree Component&apos;, () =&gt; {
         });
       });
     });
+  });
+
+  it(&apos;Should stop the submission if component didn\&apos;t saved and has required fields&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    form.setForm(comp4).then(() =&gt; {
+      const submitButton = form.getComponent([&apos;submit&apos;]);
+      assert.equal(submitButton.disabled, true, &apos;Submit button should being disabled&apos;);
+      const tree = form.getComponent([&apos;tree&apos;]);
+      const textField = tree.getComponents()[0].getComponent([&apos;textField&apos;]);
+      textField.setValue(&apos;123&apos;);
+
+      setTimeout(() =&gt; {
+        assert.equal(submitButton.disabled, true, &apos;Submit button should being disabled&apos;);
+        tree.saveNode(tree.treeRoot);
+
+        setTimeout(() =&gt; {
+          assert.equal(submitButton.disabled, false, &apos;Submit button should being disabled&apos;);
+          done();
+        }, 300);
+      }, 300);
+    }).catch(done);
   });
 });
 </code></pre>

@@ -236,8 +236,8 @@ const Harness = {
     return element ? element.dispatchEvent(clickEvent) : null;
   },
   dispatchEvent(eventType, element, query, beforeDispatch) {
-    const event = new Event(eventType);
-    const el = element.querySelector(query);
+    const event = new Event(eventType, { bubbles: true, cancelable: true });
+    const el = query instanceof HTMLElement ? query : element.querySelector(query);
     assert(el, 'Element is not found');
     beforeDispatch && beforeDispatch(el);
     el.dispatchEvent(event);

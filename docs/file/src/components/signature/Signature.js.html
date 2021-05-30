@@ -169,6 +169,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/signature/Signature.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import SignaturePad from &apos;signature_pad/dist/signature_pad.js&apos;;
+import _ResizeObserver from &apos;resize-observer-polyfill&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
 import _ from &apos;lodash&apos;;
 
@@ -303,6 +304,8 @@ export default class SignatureComponent extends Input {
       this.currentWidth = this.refs.padBody.offsetWidth;
       this.refs.canvas.width = this.currentWidth * this.scale;
       this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
+      this.refs.canvas.style.maxWidth = `${this.currentWidth * this.scale}px`;
+      this.refs.canvas.style.maxHeight = `${this.refs.padBody.offsetHeight * this.scale}px`;
       const ctx = this.refs.canvas.getContext(&apos;2d&apos;);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
@@ -363,6 +366,14 @@ export default class SignatureComponent extends Input {
           this.refs.padBody.style.maxWidth = &apos;100%&apos;;
         }
 
+       if (!this.builderMode &amp;&amp; !this.options.preview) {
+        this.observer = new _ResizeObserver(() =&gt; {
+          this.checkSize();
+        });
+
+        this.observer.observe(this.refs.padBody);
+       }
+
         this.addEventListener(window, &apos;resize&apos;, _.debounce(() =&gt; this.checkSize(), 100));
         setTimeout(function checkWidth() {
           if (this.refs.padBody &amp;&amp; this.refs.padBody.offsetWidth) {
@@ -386,6 +397,11 @@ export default class SignatureComponent extends Input {
   /* eslint-enable max-statements */
 
   detach() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+
     if (this.signaturePad) {
       this.signaturePad.off();
     }

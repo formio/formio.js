@@ -9,3 +9,4 @@ export comp8 from './comp8';
 export comp9 from './comp9';
 export comp10 from './comp10';
 export withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenEmpty';
+export compOpenWhenEmpty from './comp-openWhenEmpty';

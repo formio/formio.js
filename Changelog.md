@@ -4,11 +4,39 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.14.0-rc.8
+#### Fixed
+ - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+
+### 4.14.0-rc.7
 #### Fixed
  - FIO-2925: add protection against change loops
  - FIO-249 | FJS-1436: Fixes an issue where Unique API Key validation is not triggered for Layout components
  - FIO-2821: Select field values do not display when rendered in HTML mode
+ - FIO-2822: fix disableSiblings logic for the builder
+ - FIO-2819: Fixes an issue where user is able to delete all the rows of an EditGrid with Open When Empty
+ - FIO-2538: Fixes an issue when Tree component has components with 'required' or 'unique' validation, and the Tree data entry is not saved, the validation is not stopping the form from being submitted
+ - FIO-2533: Fixes an issue when the data of all the components inside the Tree component displays in the Tree column in the Data table instead of [Complex Data]
+ - FIO-2532: Fixes an issue when canceling the root tree while editing was removing all data.
+ - FIO-1434: Fixes an issue when Default value settings did not work for Tree component. Removed Multiple values settings for Tree component.
+ - FIO-1372: Fixes an issue when beforeNext hook not fired when form is rendered with readOnly flag
+ - FIO-2590: Fixes an issue when During dragging data grid row, its styling does not preserve.
+ - FIO-1513: Fixes an issue when in the DataGrid component custom validation errors were shown in an incorrect place.
+ - FIO-2505: Fixes an issue when Signatures on different rows are not consistent in size in DataGrid
+ - FIO-2625: Fixes an issue where got an infinite loop when changing the default values of the Data Grid components in the Data Grid.
+ - FIO-1288: Fixesan issue where Prefix/Suffix is rendered inaccurately when words/chars counter is shown
+ - FIO-1537: fixed submiting issue for wizards recaptcha component. 
+ - FIO-320: Use Webcam when Enable webcam is true
+ - FIO-1488: Fixes an issue where unordered list created in Quill is rendered as an ordered one in read-only mode
+ - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
+ - Fix NestedArrayComponent's getComponents(0)
+
+#### Added
+ - FIO-1239: Implement wizard header type selection
+ - FIO-1422: Add 'Navigate Pages & Save on Enter' option for wizard
+
+#### Changed
+ - FIO-487: Remove pdf icon element from submission view
 
 ### 4.14.0-rc.6
 #### Fixed

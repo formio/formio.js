@@ -26,6 +26,7 @@ import {
   formWithBlurValidationInsidePanel,
   modalEditComponents,
   calculatedNotPersistentValue,
+  calculateValueInEditingMode,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
@@ -50,6 +51,8 @@ import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
+import calculatedValue from '../test/forms/calculatedValue';
+import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -2150,6 +2153,121 @@ describe('Webform tests', function() {
         }, 550);
       }).catch(done);
     });
+    it('Should calculate value by datasouce component when editing mode is on', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculateValueInEditingMode).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              select: { label: 'Dummy #1', value: 'dummy1' },
+              dataSourceDisplay: 'some value'
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const dataSourceDisplay = form.getComponent('dataSourceDisplay');
+          assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set and keep the value');
+          done();
+        }, 1000);
+      }).catch(done);
+    });
+    it('Should calculate value properly in editing mode', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculatedValue).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              a: 4,
+              b: 5,
+              total: 9,
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const total = form.getComponent(['total']);
+          assert.equal(total.dataValue, 9, 'Should set and keep the value');
+
+          const b = form.getComponent(['b']);
+          Harness.dispatchEvent('input', b.element, 'input', (i) => i.value = '6');
+
+          setTimeout(() => {
+            assert.equal(total.dataValue, 10, 'Should recalculate the value');
+          }, 300);
+          done();
+        }, 1000);
+      }).catch(done);
+    });
+  });
+
+  it('Should set different ids for components inside different Table rows', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+    form.setForm(conditionalDataGridWithTableAndRadio).then(() => {
+      const radioInspection0 = form.getComponent(['inspectionDataGrid', 0, 'initialExam']);
+      Harness.dispatchEvent(
+        'click',
+        radioInspection0.element,
+        'input[value="reject"]',
+        i => i.checked = true,
+      );
+
+      setTimeout(() => {
+        const repairDataGrid0 = form.getComponent(['inspectionDataGrid', 0, 'repairDataGrid']);
+        assert.equal(radioInspection0.dataValue, 'reject', 'Should set value');
+        assert.equal(repairDataGrid0.visible, true, 'Should become visible');
+
+        const radioRepair0 = form.getComponent(['inspectionDataGrid', 0, 'repairDataGrid', 0, 'repairExam']);
+        Harness.dispatchEvent(
+          'click',
+          radioRepair0.element,
+          'input[value="accept"]',
+            i => i.checked = true,
+        );
+
+        setTimeout(() => {
+          assert.equal(radioRepair0.dataValue, 'accept', 'Should set value');
+          const inspectionDataGrid = form.getComponent(['inspectionDataGrid']);
+          inspectionDataGrid.addRow();
+
+          setTimeout(() => {
+            assert.equal(inspectionDataGrid.rows.length, 2, 'Should add a row');
+
+            const radioInspection1 = form.getComponent(['inspectionDataGrid', 1, 'initialExam']);
+            Harness.dispatchEvent(
+              'click',
+              radioInspection1.element,
+              'input[value="reject"]',
+              i => i.checked = true,
+            );
+
+            setTimeout(() => {
+              const repairDataGrid1 = form.getComponent(['inspectionDataGrid', 1, 'repairDataGrid']);
+              assert.equal(radioInspection1.dataValue, 'reject', 'Should set value');
+              assert.equal(repairDataGrid1.visible, true, 'Should become visible');
+
+              const radioRepair1 = form.getComponent(['inspectionDataGrid', 1, 'repairDataGrid', 0, 'repairExam']);
+              Harness.dispatchEvent(
+                'click',
+                form.element,
+                form.element.querySelector(`#${radioRepair1.id}${radioRepair1.row}-accept`),
+                i => i.checked = true
+              );
+
+              setTimeout(() => {
+                assert.equal(radioRepair1.dataValue, 'accept', 'Should set value of the clicked radio');
+                assert.equal(radioRepair0.dataValue, 'accept', 'Value of the radio inside another row should stay the same');
+
+                done();
+              }, 300);
+            }, 350);
+          }, 300);
+        }, 250);
+      }, 350);
+    }).catch(done);
   });
 
   it('Should render components properly', (done) => {

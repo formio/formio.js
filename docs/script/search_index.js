@@ -3792,6 +3792,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp-openwhenempty.js",
+    "file/src/components/editgrid/fixtures/comp-openWhenEmpty.js.html",
+    "src/components/editgrid/fixtures/comp-openWhenEmpty.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/comp-with-basic-components.js",
     "file/src/components/editgrid/fixtures/comp-with-basic-components.js.html",
     "src/components/editgrid/fixtures/comp-with-basic-components.js",
@@ -5448,6 +5454,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/signature/signature.js~signaturecomponent#observer",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-observer",
+    "src/components/signature/Signature.js~SignatureComponent#observer",
+    "member"
+  ],
+  [
     "src/components/signature/signature.js~signaturecomponent#ondisabled",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-onDisabled",
     "src/components/signature/Signature.js~SignatureComponent#onDisabled",
@@ -6396,6 +6408,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/tree/node.js~node#calculatecomponentpath",
+    "class/src/components/tree/Node.js~Node.html#instance-method-calculateComponentPath",
+    "src/components/tree/Node.js~Node#calculateComponentPath",
+    "method"
+  ],
+  [
     "src/components/tree/node.js~node#cancel",
     "class/src/components/tree/Node.js~Node.html#instance-method-cancel",
     "src/components/tree/Node.js~Node#cancel",
@@ -6480,6 +6498,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/tree/node.js~node#getchildrenpath",
+    "class/src/components/tree/Node.js~Node.html#instance-method-getChildrenPath",
+    "src/components/tree/Node.js~Node#getChildrenPath",
+    "method"
+  ],
+  [
     "src/components/tree/node.js~node#getcomponents",
     "class/src/components/tree/Node.js~Node.html#instance-method-getComponents",
     "src/components/tree/Node.js~Node#getComponents",
@@ -6525,6 +6549,12 @@ window.esdocSearchIndex = [
     "src/components/tree/node.js~node#parent",
     "class/src/components/tree/Node.js~Node.html#instance-member-parent",
     "src/components/tree/Node.js~Node#parent",
+    "member"
+  ],
+  [
+    "src/components/tree/node.js~node#parentpath",
+    "class/src/components/tree/Node.js~Node.html#instance-member-parentPath",
+    "src/components/tree/Node.js~Node#parentPath",
     "member"
   ],
   [
@@ -6588,6 +6618,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/tree/node.js~node#validatenode",
+    "class/src/components/tree/Node.js~Node.html#instance-method-validateNode",
+    "src/components/tree/Node.js~Node#validateNode",
+    "method"
+  ],
+  [
     "src/components/tree/node.js~node#value",
     "class/src/components/tree/Node.js~Node.html#instance-get-value",
     "src/components/tree/Node.js~Node#value",
@@ -6606,6 +6642,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/tree/editform/tree.edit.data.js",
+    "file/src/components/tree/editForm/Tree.edit.data.js.html",
+    "src/components/tree/editForm/Tree.edit.data.js",
+    "file"
+  ],
+  [
     "src/components/tree/fixtures/comp1.js",
     "file/src/components/tree/fixtures/comp1.js.html",
     "src/components/tree/fixtures/comp1.js",
@@ -6621,6 +6663,12 @@ window.esdocSearchIndex = [
     "src/components/tree/fixtures/comp3.js",
     "file/src/components/tree/fixtures/comp3.js.html",
     "src/components/tree/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/tree/fixtures/comp4.js",
+    "file/src/components/tree/fixtures/comp4.js.html",
+    "src/components/tree/fixtures/comp4.js",
     "file"
   ],
   [
@@ -8331,6 +8379,18 @@ window.esdocSearchIndex = [
     "src/templates/bootstrap/wizardheader/index.js",
     "file/src/templates/bootstrap/wizardHeader/index.js.html",
     "src/templates/bootstrap/wizardHeader/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap/wizardheaderclassic/index.js",
+    "file/src/templates/bootstrap/wizardHeaderClassic/index.js.html",
+    "src/templates/bootstrap/wizardHeaderClassic/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap/wizardheadervertical/index.js",
+    "file/src/templates/bootstrap/wizardHeaderVertical/index.js.html",
+    "src/templates/bootstrap/wizardHeaderVertical/index.js",
     "file"
   ],
   [

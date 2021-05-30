@@ -708,6 +708,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           this.splice(rowIndex);
         }
         this.editRows.splice(rowIndex, 1);
+        this.openWhenEmpty();
         break;
       }
       case EditRowState.Editing: {
@@ -838,6 +839,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       index: rowIndex
     });
     this.editRows.splice(rowIndex, 1);
+    this.openWhenEmpty();
     this.updateRowsComponents(rowIndex);
     this.updateValue();
     this.triggerChange({ modified, noPristineChangeOnModified: modified && this.component.rowDrafts, isolateRow: true });
@@ -1094,6 +1096,16 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.editRows.slice(dataLength).forEach((editRow, index) => this.baseRemoveRow(dataLength + index));
     this.editRows = this.editRows.slice(0, dataLength);
 
+    this.openWhenEmpty();
+    this.updateOnChange(flags, changed);
+    this.checkData();
+
+    this.changeState(changed, flags);
+
+    return changed;
+  }
+
+  openWhenEmpty() {
     const shouldBeOpened = !this.dataValue.length && this.component.openWhenEmpty;
     const hasNoRows = !this.editRows.length;
 
@@ -1101,13 +1113,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       const dataObj = {};
       this.createRow(dataObj, 0);
     }
-
-    this.updateOnChange(flags, changed);
-    this.checkData();
-
-    this.changeState(changed, flags);
-
-    return changed;
   }
 
   restoreRowContext(editRow, flags = {}) {

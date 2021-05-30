@@ -198,6 +198,7 @@ import wizardWithPanel from &apos;../test/forms/wizardWithPanel&apos;;
 import wizardWithWizard from &apos;../test/forms/wizardWithWizard&apos;;
 import simpleTwoPagesWizard from &apos;../test/forms/simpleTwoPagesWizard&apos;;
 import wizardWithNestedWizardInEditGrid from &apos;../test/forms/wizardWithNestedWizardInEditGrid&apos;;
+import wizardNavigateOrSaveOnEnter from &apos;../test/forms/wizardNavigateOrSaveOnEnter&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
   it(&apos;Should correctly reset values&apos;, function(done) {
@@ -1768,6 +1769,48 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         }, 200);
       }, 200);
     });
+  });
+
+  it(&apos;Should navigate wizard pages and submit form using \&apos;Save on Enter\&apos; option&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardNavigateOrSaveOnEnter.form).then(() =&gt; {
+      const pressEnter = () =&gt; {
+        const event = new KeyboardEvent(&apos;keyup&apos;, {
+          bubbles : true,
+          cancelable : true,
+          key : &apos;Enter&apos;,
+          keyCode : 13
+        });
+        document.dispatchEvent(event);
+      };
+
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+      checkPage(0);
+      pressEnter();
+
+      setTimeout(() =&gt; {
+        checkPage(1);
+
+        pressEnter();
+
+        setTimeout(() =&gt; {
+          checkPage(2);
+
+          pressEnter();
+
+          setTimeout(() =&gt; {
+            assert.equal(wizard.submission.state, &apos;submitted&apos;, &apos;Should submit the form&apos;);
+
+            done();
+          }, 50);
+        }, 50);
+      }, 50);
+    })
+    .catch((err) =&gt; done(err));
   });
 });
 </code></pre>

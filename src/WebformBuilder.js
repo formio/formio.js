@@ -4,7 +4,7 @@ import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import Formio from './Formio';
-import { fastCloneDeep, bootstrapVersion } from './utils/utils';
+import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -862,7 +862,7 @@ export default class WebformBuilder extends Component {
     if (draggableComponent.disableSiblings) {
       let isCompAlreadyExists = false;
       eachComponent(this.webform.components, (component) => {
-        if (component.key === draggableComponent.key) {
+        if (component.type === draggableComponent.schema.type) {
           isCompAlreadyExists = true;
           return;
         }
@@ -1106,7 +1106,7 @@ export default class WebformBuilder extends Component {
           });
         });
 
-        if (tabIndex !== -1 && index !== -1) {
+        if (tabIndex !== -1 && index !== -1 && changed && changed.value) {
           const sibling = parentComponent.tabs[tabIndex][index + 1];
           parentComponent.removeComponent(defaultValueComponent);
           const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
@@ -1117,8 +1117,18 @@ export default class WebformBuilder extends Component {
         }
       }
       else {
-        this.preview._data[changed.instance._data.key] = changed.value;
-        this.webform._data[changed.instance._data.key] = changed.value;
+        let dataPath = changed.instance._data.key;
+
+        const path = getArrayFromComponentPath(changed.instance.path);
+        path.shift();
+
+        if (path.length) {
+          path.unshift(component.key);
+          dataPath = getStringFromComponentPath(path);
+        }
+
+        _.set(this.preview._data, dataPath, changed.value);
+        _.set(this.webform._data, dataPath, changed.value);
       }
     }
 
