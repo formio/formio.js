@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from '@formio/choices.js';
 
 /**
  * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.
@@ -146,8 +146,9 @@ class ChoicesWrapper extends Choices {
     const hasCtrlDownKeyPressed = ctrlKey || metaKey;
 
     // If a user is typing and the dropdown is not active
-    if (!this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
-      this.input.element.value = keyString;
+    if (!hasActiveDropdown && !this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
+      const currentValue =  this.input.element.value;
+      this.input.element.value = currentValue ? `${currentValue}${keyString}` : keyString;
       this.showDropdown();
     }
 

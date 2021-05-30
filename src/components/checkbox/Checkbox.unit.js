@@ -5,7 +5,8 @@ import CheckBoxComponent from './Checkbox';
 
 import {
   comp1,
-  customDefaultComponent
+  customDefaultComponent,
+  comp2
 } from './fixtures';
 
 describe('Checkbox Component', () => {
@@ -45,6 +46,16 @@ describe('Checkbox Component', () => {
   it('Should be able to set custom default value', () => {
     return Harness.testCreate(CheckBoxComponent, customDefaultComponent).then((component) => {
       assert.equal(component.dataValue, true);
+      });
+  });
+
+  it('Should be able to unselect a checkbox component with the radio input type', () => {
+    return Harness.testCreate(CheckBoxComponent, comp2).then((component) => {
+      const input = Harness.testElements(component, 'input[type="radio"]', 1)[0];
+      Harness.clickElement(component, input);
+      assert.equal(input.checked, true);
+      Harness.clickElement(component, input);
+      assert.equal(input.checked, false);
     });
   });
 });

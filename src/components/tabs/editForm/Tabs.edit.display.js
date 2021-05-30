@@ -54,5 +54,13 @@ export default [
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }
     ]
-  }
+  },
+  {
+    weight: 1100,
+    type: 'checkbox',
+    label: 'Vertical Layout',
+    tooltip: 'Make this field display in vertical orientation.',
+    key: 'verticalLayout',
+    input: true
+  },
 ];

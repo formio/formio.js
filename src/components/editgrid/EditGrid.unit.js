@@ -1,12 +1,25 @@
 import assert from 'power-assert';
-
+import _ from 'lodash';
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-import { comp1, comp4, comp3, comp5, comp6, comp7, comp8, comp9 } from './fixtures';
+import {
+  comp1,
+  comp4,
+  comp3,
+  comp5,
+  comp6,
+  comp7,
+  comp8,
+  comp9,
+  comp10,
+  withOpenWhenEmptyAndConditions,
+  compOpenWhenEmpty,
+} from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
+import Formio from '../../Formio';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -495,7 +508,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should not show row errors alerts if drafts enabled', (done) => {
+    it('Should not show row errors alerts if drafts enabled in modal-edit EditGrid', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -527,7 +540,6 @@ describe('EditGrid Component', () => {
                       setTimeout(() => {
                         const errorAlert = editGrid.editRows[0].dialog.querySelector(`#error-list-${editGrid.id}`);
                         const hasError = textField.className.includes('has-error');
-
                         assert(!hasError, 'Should stay valid until form is submitted');
                         assert.equal(errorAlert, null, 'Should be valid');
 
@@ -546,7 +558,7 @@ describe('EditGrid Component', () => {
       });
     });
 
-    it('Should keep fields valid inside NestedForms id drafts are enabled', (done) => {
+    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -555,29 +567,35 @@ describe('EditGrid Component', () => {
         const editGrid = form.components[0];
 
         form.checkValidity(form._data, true, form._data);
-        assert.equal(form.errors.length, 1);
+        assert.equal(form.errors.length, 1, 'Should have an error saying that EditGrid is required');
+
+        // 1. Add a row
         editGrid.addRow();
 
         setTimeout(() => {
           const editRow = editGrid.editRows[0];
           const dialog = editRow.dialog;
-          const saveButton = dialog.querySelector('.btn.btn-primary');
-          const clickEvent = new Event('click');
-          saveButton.dispatchEvent(clickEvent);
+
+          // 2. Save the row
+          Harness.dispatchEvent('click', dialog, '.btn.btn-primary');
 
           setTimeout(() => {
             const alert = dialog.querySelector('.alert.alert-danger');
-            assert.equal(form.errors.length, 1, 'Should not add new errors when drafts are enabled');
-            assert(!alert, 'Should not show an erros alert when drafts are enabled');
+            assert.equal(form.errors.length, 0, 'Should not add new errors when drafts are enabled');
+            assert(!alert, 'Should not show an error alert when drafts are enabled and form is not submitted');
 
             const textField = editRow.components[0].getComponent('textField');
+
+            // 3. Edit the row
             editGrid.editRow(0);
 
             setTimeout(() => {
+              // 4. Change the value of the text field
               textField.setValue('new value', { modified: true });
 
               setTimeout(() => {
                 assert.equal(textField.dataValue, 'new value');
+                // 5. Clear the value of the text field
                 textField.setValue('', { modified: true });
 
                 setTimeout(() => {
@@ -585,7 +603,7 @@ describe('EditGrid Component', () => {
                   assert.equal(editGrid.editRows[0].errors.length, 0, 'Should not add error to components inside draft row');
 
                   const textFieldComponent = textField.element;
-                  assert(!textFieldComponent.className.includes('has-error'), 'Should not add error class to component when drafts enabled');
+                  assert(textFieldComponent.className.includes('has-error'), 'Should add error class to component even when drafts enabled if the component is not pristine');
 
                   document.innerHTML = '';
                   done();
@@ -598,6 +616,115 @@ describe('EditGrid Component', () => {
       .finally(() => {
         delete ModalEditGrid.components[0].rowDrafts;
       });
+    });
+
+    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      ModalEditGrid.components[0].rowDrafts = true;
+
+      form.setForm(ModalEditGrid).then(() => {
+        const editGrid = form.components[0];
+        // 1. Add a row
+        editGrid.addRow();
+
+        setTimeout(() => {
+          const editRow = editGrid.editRows[0];
+          const dialog = editRow.dialog;
+
+          // 2. Save the row
+          Harness.dispatchEvent('click', dialog, '.btn.btn-primary');
+
+          setTimeout(() => {
+            // 3. Submit the form
+            Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+
+            setTimeout(() => {
+              assert.equal(editGrid.errors.length, 3, 'Should be validated after an attempt to submit');
+              assert.equal(editGrid.editRows[0].errors.length, 2, 'Should dd errors to the row after an attempt to submit');
+              const rows = editGrid.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
+              const firstRow = rows[0];
+              Harness.dispatchEvent('click', firstRow, '.editRow');
+
+              setTimeout(() => {
+                assert(form.submitted, 'Form should be submitted');
+                const editRow = editGrid.editRows[0];
+                assert(editRow.alerts, 'Should add an error alert to the modal');
+                assert.equal(editRow.errors.length, 2, 'Should add errors to components inside draft row aftre it was submitted');
+                const textField = editRow.components[0].getComponent('textField');
+
+                const alert = editGrid.alert;
+                assert(alert, 'Should show an error alert when drafts are enabled and form is submitted');
+                assert(textField.element.className.includes('has-error'), 'Should add error class to component even when drafts enabled if the form was submitted');
+
+                // 4. Change the value of the text field
+                textField.setValue('new value', { modified: true });
+
+                setTimeout(() => {
+                  const textFieldEl = textField.element;
+                  assert.equal(textField.dataValue, 'new value');
+                  assert(!textFieldEl.className.includes('has-error'), 'Should remove an error class from component when it was fixed');
+                  const editRow = editGrid.editRows[0];
+                  const textField2 = editRow.components[0].getComponent('textField2');
+
+                  textField2.setValue('test val', { modified: true });
+
+                  setTimeout(() => {
+                    assert.equal(textField2.dataValue, 'test val');
+                    assert(!textField2.element.className.includes('has-error'), 'Should remove an error class from component when it was fixed');
+
+                    editGrid.saveRow(0);
+
+                    setTimeout(() => {
+                      assert(!form.alert, 'Should remove an error alert after all the rows were fixed');
+
+                      const rows = editGrid.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
+                      const firstRow = rows[0];
+                      Harness.dispatchEvent('click', firstRow, '.editRow');
+                      setTimeout(() => {
+                        const editRow = editGrid.editRows[0];
+                        const textField2 = editRow.components[0].getComponent('textField2');
+
+                        Harness.dispatchEvent(
+                          'input',
+                          editRow.dialog,
+                          '[name="data[textField2]"',
+                          (i) => i.value = ''
+                        );
+                        setTimeout(() => {
+                          assert.equal(textField2.dataValue, '');
+                          Harness.dispatchEvent(
+                            'click',
+                            editGrid.editRows[0].dialog,
+                            `.editgrid-row-modal-${editGrid.id} [ref="dialogClose"]`
+                          );
+                          setTimeout(() => {
+                            const dialog = editGrid.editRows[0].confirmationDialog;
+
+                            Harness.dispatchEvent('click', dialog, '[ref="dialogYesButton"]');
+
+                              setTimeout(() => {
+                                assert(
+                                  !document.querySelector(`#error-list-${form.id}`),
+                                  'Should not add an error alert when the changes that made the row invalid, were discarded by Cancel'
+                                );
+                                document.innerHTML = '';
+                                done();
+                            }, 100);
+                          }, 100);
+                        }, 200);
+                      }, 300);
+                    }, 300);
+                  }, 300);
+                }, 300);
+              }, 450);
+            }, 250);
+          }, 100);
+        }, 100);
+      }).catch(done)
+        .finally(() => {
+          delete ModalEditGrid.components[0].rowDrafts;
+        });
     });
 
     // it('', (done) => {
@@ -747,5 +874,351 @@ describe('EditGrid Component', () => {
         }, 300);
       }, 300);
     }).catch(done);
+  });
+
+  it('Should add component to the header only if it is visible in saved row', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(comp9).then(() => {
+      const editGrid = form.getComponent('editGrid');
+
+      const checkHeader = (componentsNumber) => {
+        const header = editGrid.element.querySelector('.list-group-header').querySelector('.row');
+
+        assert.equal(editGrid.visibleInHeader.length, componentsNumber);
+        assert.equal(header.children.length, componentsNumber);
+      };
+
+      const clickElem = (elem) => {
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
+      const clickAddRow = () => {
+        const addAnotherBtn = editGrid.refs['editgrid-editGrid-addRow'][0];
+        clickElem(addAnotherBtn);
+      };
+
+      checkHeader(2);
+      clickAddRow();
+
+      setTimeout(() => {
+        assert.equal(editGrid.editRows.length, 1);
+        checkHeader(2);
+        const checkbox = editGrid.getComponent('checkbox')[0];
+        checkbox.setValue(true);
+
+        setTimeout(() => {
+          checkHeader(2);
+          assert.equal(editGrid.getComponent('textArea')[0].visible, true);
+          clickAddRow();
+
+          setTimeout(() => {
+            assert.equal(editGrid.editRows.length, 2);
+            checkHeader(2);
+            const saveFirstRowBtn = editGrid.refs['editgrid-editGrid-saveRow'][0];
+            clickElem(saveFirstRowBtn);
+
+            setTimeout(() => {
+              assert.equal(editGrid.editRows[0].state, 'saved');
+              checkHeader(3);
+
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  }).timeout(3000);
+
+  it('Should add/save/cancel/delete/edit rows', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+
+      const click = (btn, index, selector) => {
+        let elem;
+
+        if (selector) {
+          elem = editGrid.element.querySelectorAll(`.${btn}`)[index];
+        }
+        else {
+          elem = editGrid.refs[`editgrid-editGrid-${btn}`][index];
+        }
+
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
+      
+      assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 0, 'Should not have rows');
+      assert.equal(editGrid.editRows.length, 0, 'Should not have rows');
+
+      click('addRow', 0);
+
+      setTimeout(() => {
+        assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 1, 'Should have 1 row');
+        assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+        assert.equal(editGrid.editRows[0].state, 'new', 'Should have state "new"');
+        editGrid.editRows[0].components.forEach((comp) => {
+          comp.setValue(11111);
+        });
+
+        setTimeout(() => {
+          assert.deepEqual(editGrid.editRows[0].data, { number: 11111, textField: '11111' }, 'Should set row data');
+          click('saveRow', 0);
+
+          setTimeout(() => {
+            assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 1, 'Should have 1 row');
+            assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+            assert.equal(editGrid.editRows[0].state, 'saved', 'Should have state "saved"');
+            assert.deepEqual(editGrid.editRows[0].data, { number: 11111, textField: '11111' }, 'Should set row data');
+            click('editRow', 0, true);
+
+            setTimeout(() => {
+              assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 1, 'Should have 1 row');
+              assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+              assert.equal(editGrid.editRows[0].state, 'editing', 'Should have state "editing"');
+              editGrid.editRows[0].components.forEach((comp) => {
+                comp.setValue(22222);
+              });
+
+              setTimeout(() => {
+                assert.deepEqual(editGrid.editRows[0].data, { number: 22222, textField: '22222' }, 'Should set row data');
+                click('cancelRow', 0);
+
+                setTimeout(() => {
+                  assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 1, 'Should have 1 row');
+                  assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+                  assert.equal(editGrid.editRows[0].state, 'saved', 'Should have state "saved"');
+                  assert.deepEqual(editGrid.editRows[0].data, { number: 11111, textField: '11111' }, 'Should cancel changed data');
+                  click('removeRow', 0, true);
+
+                  setTimeout(() => {
+                    assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 0, 'Should not have rows');
+                    assert.equal(editGrid.editRows.length, 0, 'Should have 0 rows');
+
+                    document.innerHTML = '';
+                    done();
+                  }, 200);
+                }, 200);
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
+  }).timeout(3000);
+
+  it('Should open first row when empty and allow saving openned row', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+    form.components[0].openWhenEmpty = true;
+
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+
+      const click = (btn, index, selector) => {
+        let elem;
+
+        if (selector) {
+          elem = editGrid.element.querySelectorAll(`.${btn}`)[index];
+        }
+        else {
+          elem = editGrid.refs[`editgrid-editGrid-${btn}`][index];
+        }
+
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
+
+      assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 1, 'Should have 1 row');
+      assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+      assert.equal(editGrid.editRows[0].state, 'new', 'Should have state "new"');
+      click('saveRow', 0);
+
+        setTimeout(() => {
+          assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 1, 'Should have 1 row');
+          assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+          assert.equal(editGrid.editRows[0].state, 'saved', 'Should have state "saved"');
+
+          document.innerHTML = '';
+          done();
+      }, 200);
+    }).catch(done);
+  }).timeout(3000);
+
+  it('Should disable adding/removing rows', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+    form.components[0].disableAddingRemovingRows = true;
+    const value = [{ number: 1, textField: 'test' }, { number: 2, textField: 'test2' }];
+
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+      editGrid.setValue(value);
+
+        setTimeout(() => {
+          assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 2, 'Should have 2 rows');
+          assert.equal(editGrid.editRows.length, 2, 'Should have 2 rows');
+          assert.equal(editGrid.refs['editgrid-editGrid-addRow'].length, 0, 'Should not have add row btn');
+          assert.equal(editGrid.element.querySelectorAll('.removeRow').length, 0, 'Should not have remove row btn');
+
+          document.innerHTML = '';
+          done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should show conditional eddRow btn if condition is met', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+    form.components[0].conditionalAddButton = 'show = data.number11 === 5';
+    form.components.unshift({
+      label: 'Number',
+      mask: false,
+      spellcheck: true,
+      tableView: false,
+      delimiter: false,
+      requireDecimal: false,
+      inputFormat: 'plain',
+      key: 'number11',
+      type: 'number',
+      input: true
+    });
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+      assert.equal(editGrid.refs['editgrid-editGrid-addRow'].length, 0, 'Should not have add row btn');
+      const numberComp = form.getComponent('number11');
+      const inputEvent = new Event('input');
+      const numberInput = numberComp.refs.input[0];
+      numberInput.value = 5;
+      numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(editGrid.refs['editgrid-editGrid-addRow'].length, 1, 'Should have add row btn');
+
+          document.innerHTML = '';
+          done();
+      }, 400);
+    }).catch(done);
+  });
+
+  it('Should use custom text for save/cancel/add btns', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+    form.components[0].addAnother = 'add custom';
+    form.components[0].saveRow = 'save custom';
+    form.components[0].removeRow = 'cancel custom';
+
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+      assert.equal(editGrid.refs['editgrid-editGrid-addRow'][0].textContent.trim(), 'add custom');
+      const clickEvent = new Event('click');
+      editGrid.refs['editgrid-editGrid-addRow'][0].dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(editGrid.refs['editgrid-editGrid-saveRow'][0].textContent.trim(), 'save custom');
+          assert.equal(editGrid.refs['editgrid-editGrid-cancelRow'][0].textContent.trim(), 'cancel custom');
+
+          document.innerHTML = '';
+          done();
+      }, 400);
+    }).catch(done);
+  });
+});
+
+describe('EditGrid Open when Empty', () => {
+  it('Should be opened when shown conditionally', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, withOpenWhenEmptyAndConditions)
+      .then((form) => {
+        const radio = form.getComponent(['radio']);
+        radio.setValue('show');
+
+        setTimeout(() => {
+          const editGrid = form.getComponent(['editGrid']);
+          assert.equal(editGrid.visible, true, 'Should be visible');
+          assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+          const textField = editGrid.editRows[0].components[0];
+          Harness.dispatchEvent(
+            'input',
+            textField.element,
+            '[name="data[editGrid][0][textField]"]',
+            (input) => input.value = 'Value'
+          );
+
+          setTimeout(() => {
+            const row = editGrid.editRows[0];
+            assert.equal(row.data.textField, 'Value', 'Value should be set properly');
+            editGrid.saveRow(0);
+            setTimeout(() => {
+              assert.deepEqual(form.data.editGrid, [{ textField: 'Value', select1: '' }], 'Value should be saved correctly');
+              radio.setValue('hide');
+
+              setTimeout(() => {
+                assert.equal(editGrid.visible, false, 'Should be hidden');
+                radio.setValue('show');
+
+                setTimeout(() => {
+                  assert.equal(editGrid.visible, true, 'Should be visible');
+                  assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+                  assert.equal(editGrid.editRows[0].state, 'new', 'Row should be a new one');
+                  done();
+                }, 300);
+              }, 300);
+            }, 250);
+          }, 350);
+        }, 300);
+      })
+      .catch(done);
+  });
+
+  it('Should always add a first row', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, compOpenWhenEmpty)
+      .then((form) => {
+        const editGrid = form.getComponent(['editGrid']);
+        assert.equal(editGrid.editRows.length, 1, 'Should have 1 row on create');
+        const textField = editGrid.editRows[0].components[0];
+        Harness.dispatchEvent(
+          'input',
+          textField.element,
+          '[name="data[editGrid][0][textField]"]',
+          (input) => input.value = 'Value'
+        );
+
+        setTimeout(() => {
+          const row = editGrid.editRows[0];
+          assert.equal(row.data.textField, 'Value', 'Value should be set properly');
+
+          setTimeout(() => {
+            editGrid.cancelRow(0);
+
+            setTimeout(() => {
+              assert.equal(editGrid.editRows.length, 1, 'Should still have 1 row');
+              const textField = editGrid.editRows[0].components[0];
+              assert.equal(textField.dataValue, '', 'Value should be cleared after cancelling the row');
+
+              editGrid.saveRow(0);
+
+              setTimeout(() => {
+                assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
+                assert.equal(editGrid.editRows[0].state === 'saved', 1, 'Row should be saved');
+
+                editGrid.removeRow(0);
+
+                setTimeout(() => {
+                  assert.equal(editGrid.editRows.length, 1, 'Should add the first row when delete the last one');
+                  assert.equal(editGrid.editRows[0].state === 'new', 1, 'Should add the new row when the last one was deleted');
+
+                  done();
+                }, 250);
+              }, 250);
+            }, 250);
+          }, 250);
+        }, 250);
+      })
+      .catch(done);
   });
 });
