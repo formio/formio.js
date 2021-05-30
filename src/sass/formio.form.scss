@@ -1437,6 +1437,36 @@ div[data-oembed-url] {
   cursor: pointer;
 }
 
+[ref="passwordStrengthIndicator"] {
+  display: inline;
+}
+
+.formio-security-indicator {
+  display: flex;
+  height: 5px;
+
+  [class^="security-"] {
+    width: 100%;
+    height: 100%;
+  }
+
+  .security-low {
+    background-color: #c51e00;
+  }
+
+  .security-medium {
+    background-color: #ebb400;
+  }
+
+  .security-high {
+    background-color: #bddf00;
+  }
+
+  .security-very-high {
+    background-color: #009118;
+  }
+}
+
 .formio-component-textarea {
   .formio-editor-read-only-content {
     .text-big {

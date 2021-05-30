@@ -17,6 +17,7 @@ import {
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
+import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import enTranslation from '../../../translations/en';
 
@@ -198,7 +199,8 @@ export default class Component extends Element {
       showCharCount: false,
       showWordCount: false,
       properties: {},
-      allowMultipleMasks: false
+      allowMultipleMasks: false,
+      addons: [],
     }, ...sources);
   }
 
@@ -425,6 +427,12 @@ export default class Component extends Element {
      */
     this.tooltips = [];
 
+    /**
+     * List of attached addons
+     * @type {Array}
+     */
+    this.addons = [];
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -509,11 +517,42 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
+    if (this.component.addons?.length) {
+      this.component.addons.forEach((addon) => this.createAddon(addon));
+    }
+  }
+
+  createAddon(addonConfiguration) {
+    const name = addonConfiguration.name;
+    if (!name) {
+      return;
+    }
+
+    const settings = addonConfiguration.settings?.data || {};
+    const Addon = Addons[name];
+
+    let addon = null;
+
+    if (Addon) {
+      const supportedComponents = Addon.info.supportedComponents;
+      const supportsThisComponentType = !supportedComponents?.length ||
+        supportedComponents.indexOf(this.component.type) !== -1;
+      if (supportsThisComponentType) {
+        addon = new Addon(settings, this);
+        this.addons.push(addon);
+      }
+      else {
+        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+      }
+    }
+
+    return addon;
   }
 
   destroy() {
     super.destroy();
     this.detach();
+    this.addons.forEach((addon) => addon.destroy());
   }
 
   get shouldDisabled() {
@@ -1110,6 +1149,8 @@ export default class Component extends Element {
     }
 
     this.restoreFocus();
+
+    this.addons.forEach((addon) => addon.attach(element));
 
     return NativePromise.resolve();
   }

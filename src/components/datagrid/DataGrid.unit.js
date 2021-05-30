@@ -334,10 +334,10 @@ describe('DataGrid Component', () => {
                   assert(valid, 'Form should be valid');
                   done();
                 }).catch(done);
-              }, 200);
+              }, 300);
             }, 300);
-          }, 200);
-        }, 200);
+          }, 300);
+        }, 300);
       })
       .catch(done);
   });
