@@ -876,6 +876,60 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
+  it('Should add component to the header only if it is visible in saved row', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(comp9).then(() => {
+      const editGrid = form.getComponent('editGrid');
+
+      const checkHeader = (componentsNumber) => {
+        const header = editGrid.element.querySelector('.list-group-header').querySelector('.row');
+
+        assert.equal(editGrid.visibleInHeader.length, componentsNumber);
+        assert.equal(header.children.length, componentsNumber);
+      };
+
+      const clickElem = (elem) => {
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
+      const clickAddRow = () => {
+        const addAnotherBtn = editGrid.refs['editgrid-editGrid-addRow'][0];
+        clickElem(addAnotherBtn);
+      };
+
+      checkHeader(2);
+      clickAddRow();
+
+      setTimeout(() => {
+        assert.equal(editGrid.editRows.length, 1);
+        checkHeader(2);
+        const checkbox = editGrid.getComponent('checkbox')[0];
+        checkbox.setValue(true);
+
+        setTimeout(() => {
+          checkHeader(2);
+          assert.equal(editGrid.getComponent('textArea')[0].visible, true);
+          clickAddRow();
+
+          setTimeout(() => {
+            assert.equal(editGrid.editRows.length, 2);
+            checkHeader(2);
+            const saveFirstRowBtn = editGrid.refs['editgrid-editGrid-saveRow'][0];
+            clickElem(saveFirstRowBtn);
+
+            setTimeout(() => {
+              assert.equal(editGrid.editRows[0].state, 'saved');
+              checkHeader(3);
+
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  }).timeout(3000);
+
   it('Should add/save/cancel/delete/edit rows', (done) => {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
@@ -896,7 +950,7 @@ describe('EditGrid Component', () => {
         const clickEvent = new Event('click');
         elem.dispatchEvent(clickEvent);
       };
-
+      
       assert.equal(editGrid.refs['editgrid-editGrid-row'].length, 0, 'Should not have rows');
       assert.equal(editGrid.editRows.length, 0, 'Should not have rows');
 
