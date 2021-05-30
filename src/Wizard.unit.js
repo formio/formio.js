@@ -24,6 +24,7 @@ import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEd
 import customWizard from '../test/forms/customWizard';
 import wizardChildForm from '../test/forms/wizardChildForm';
 import wizardParentForm from '../test/forms/wizardParentForm';
+import wizardWithConditionallyVisiblePage from '../test/forms/conditionallyVisiblePage';
 import wizardWithPanel from '../test/forms/wizardWithPanel';
 import wizardWithWizard from '../test/forms/wizardWithWizard';
 import simpleTwoPagesWizard from '../test/forms/simpleTwoPagesWizard';
@@ -1519,6 +1520,33 @@ describe('Wizard tests', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  describe('Conditional pages', () => {
+    it('Should remove page from header when it is hidden', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Wizard(formElement);
+      form.setForm(wizardWithConditionallyVisiblePage)
+        .then(() => {
+          const textField = form.getComponent(['textField']);
+          Harness.dispatchEvent(
+            'input',
+            textField.element,
+            '[name="data[textField]"]',
+            (input) => input.value = 'hide',
+          );
+          assert.equal(form.refs[`wizard-${form.id}-link`].length, 3, 'Should show all the pages in header');
+
+          setTimeout(() => {
+            assert.equal(textField.dataValue, 'hide', 'Should set value');
+            const page2 = form.getComponent(['page2']);
+            assert.equal(page2.visible, false, 'Should be hidden by logic');
+            assert.equal(form.refs[`wizard-${form.id}-link`].length, 2, 'Should remove invisible pages from header');
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
   });
 
   it('Should have proper values for localRoot', (done) => {

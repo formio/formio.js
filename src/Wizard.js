@@ -472,7 +472,9 @@ export default class Wizard extends Webform {
     };
 
     components.forEach((component) => {
-      getAllComponents(component, allComponents);
+      if (component.visible) {
+        getAllComponents(component, allComponents);
+      }
     }, []);
 
     // recalculate pages only for root wizards, including the situation when the wizard is in a wrapper
@@ -532,12 +534,13 @@ export default class Wizard extends Webform {
     const currentPages = {};
     const pageOptions = _.clone(this.options);
     if (this.components && this.components.length) {
-      this.components.map(page => {
+      this.components.forEach(page => {
         if (page.component.type === 'panel') {
           currentPages[page.component.key || page.component.title] = page;
         }
       });
     }
+
     if (this.originalComponents) {
       this.originalComponents.forEach((item) => {
         if (item.type === 'panel') {
@@ -547,7 +550,10 @@ export default class Wizard extends Webform {
           let page = currentPages[item.key];
           const forceShow = this.options.show ? this.options.show[item.key] : false;
           const forceHide = this.options.hide ? this.options.hide[item.key] : false;
-          let isVisible = checkCondition(item, data, data, this.component, this) && !item.hidden;
+
+          let isVisible = !page
+            ? checkCondition(item, data, data, this.component, this) && !item.hidden
+            : page.visible;
 
           if (forceShow) {
             isVisible = true;
@@ -570,9 +576,6 @@ export default class Wizard extends Webform {
             page.eachComponent((component) => {
               component.page = (this.pages.length - 1);
             });
-          }
-          else if (page && !isVisible) {
-            this.removeComponent(page);
           }
         }
         else if (item.type !== 'button') {
