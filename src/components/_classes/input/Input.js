@@ -26,6 +26,10 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
+    if (this.component.inputMode) {
+      attr.inputmode = this.component.inputMode;
+    }
+
     if (this.component.placeholder) {
       attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
