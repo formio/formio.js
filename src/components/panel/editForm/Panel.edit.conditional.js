@@ -1,4 +1,8 @@
 import EditFormUtils from '../../_classes/component/editForm/utils';
+import _isEqual from 'lodash/isEqual';
+import _omit from 'lodash/omit';
+import _difference from 'lodash/difference';
+import _keys from 'lodash/keys';
 /* eslint-disable quotes, max-len */
 const title = 'Advanced Next Page';
 const jsonProp = 'nextPage';
@@ -26,7 +30,19 @@ export default [
   {
     ...settingComponent,
     customConditional(context) {
-      return context.instance.options.editForm.display === 'wizard';
+      let isWizardPanel = false;
+      if (context.instance.options.editForm.display === 'wizard') {
+        const { components } = context.instance.options.editForm;
+        const component = context.instance.options.editComponent;
+        if (components && component) {
+          isWizardPanel = components.some((comp) => {
+            const diff = _difference(_keys(comp), _keys(component)) || [];
+            diff.push('components');
+            return _isEqual(_omit(comp, diff), _omit(component, diff));
+          });
+        }
+      }
+      return isWizardPanel;
     }
   }
 ];

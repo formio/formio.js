@@ -24,10 +24,14 @@ import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEd
 import customWizard from '../test/forms/customWizard';
 import wizardChildForm from '../test/forms/wizardChildForm';
 import wizardParentForm from '../test/forms/wizardParentForm';
+import wizardWithConditionallyVisiblePage from '../test/forms/conditionallyVisiblePage';
 import wizardWithPanel from '../test/forms/wizardWithPanel';
 import wizardWithWizard from '../test/forms/wizardWithWizard';
 import simpleTwoPagesWizard from '../test/forms/simpleTwoPagesWizard';
 import wizardWithNestedWizardInEditGrid from '../test/forms/wizardWithNestedWizardInEditGrid';
+import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnter';
+import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
+import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 
 describe('Wizard tests', () => {
   it('Should correctly reset values', function(done) {
@@ -1520,6 +1524,33 @@ describe('Wizard tests', () => {
     }).catch(done);
   });
 
+  describe('Conditional pages', () => {
+    it('Should remove page from header when it is hidden', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Wizard(formElement);
+      form.setForm(wizardWithConditionallyVisiblePage)
+        .then(() => {
+          const textField = form.getComponent(['textField']);
+          Harness.dispatchEvent(
+            'input',
+            textField.element,
+            '[name="data[textField]"]',
+            (input) => input.value = 'hide',
+          );
+          assert.equal(form.refs[`wizard-${form.id}-link`].length, 3, 'Should show all the pages in header');
+
+          setTimeout(() => {
+            assert.equal(textField.dataValue, 'hide', 'Should set value');
+            const page2 = form.getComponent(['page2']);
+            assert.equal(page2.visible, false, 'Should be hidden by logic');
+            assert.equal(form.refs[`wizard-${form.id}-link`].length, 2, 'Should remove invisible pages from header');
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
+  });
+
   it('Should have proper values for localRoot', (done) => {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
@@ -1595,6 +1626,97 @@ describe('Wizard tests', () => {
           assert.equal(wizard.components.length, 1);
           assert.equal(wizard.allPages.length, 1);
           done();
+        }, 200);
+      }, 200);
+    });
+  });
+
+  it('Should navigate wizard pages and submit form using \'Save on Enter\' option', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardNavigateOrSaveOnEnter.form).then(() => {
+      const pressEnter = () => {
+        const event = new KeyboardEvent('keyup', {
+          bubbles : true,
+          cancelable : true,
+          key : 'Enter',
+          keyCode : 13
+        });
+        document.dispatchEvent(event);
+      };
+
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+      checkPage(0);
+      pressEnter();
+
+      setTimeout(() => {
+        checkPage(1);
+
+        pressEnter();
+
+        setTimeout(() => {
+          checkPage(2);
+
+          pressEnter();
+
+          setTimeout(() => {
+            assert.equal(wizard.submission.state, 'submitted', 'Should submit the form');
+
+            done();
+          }, 50);
+        }, 50);
+      }, 50);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should proper validate nested wizard fields', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const childForm = _.cloneDeep(wizardWithFieldsValidationChild);
+    const parentForm = _.cloneDeep(wizardWithFieldsValidationParent);
+    const clickEvent = new Event('click');
+
+    wizard.setForm(parentForm).then(() => {
+      const nestedFormComp = wizard.getComponent('formNested');
+      nestedFormComp.loadSubForm = () => {
+        nestedFormComp.formObj = childForm;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(childForm));
+      };
+      nestedFormComp.createSubForm();
+
+      setTimeout(() => {
+        const textField = wizard.getComponent('textField');
+        const testValidation = wizard.getComponent('testValidation');
+        textField.setValue('one');
+        testValidation.setValue('two');
+        wizard.render();
+
+        const checkPage = (pageNumber) => {
+          assert.equal(wizard.page, pageNumber);
+        };
+        const nextPageBtn = wizard.refs[`${wizard.wizardKey}-next`];
+
+        setTimeout(() => {
+          nextPageBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            checkPage(0);
+            assert.equal(wizard.errors.length, 1);
+            assert.equal(wizard.refs.errorRef.length, wizard.errors.length);
+            testValidation.setValue('one');
+            nextPageBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              checkPage(1);
+              assert.equal(wizard.errors.length, 0);
+              done();
+            }, 200);
+          }, 200);
         }, 200);
       }, 200);
     });

@@ -74,7 +74,7 @@ const stringValues = {
   dataMap: '[Complex Data]',
   dataGrid: '[Complex Data]',
   editGrid: '[Complex Data]',
-  tree: '{"children":[{"children":[],"data":{"textFieldTree":"value2"}}],"data":{"textFieldTree":"value1"}}',
+  tree: '[Complex Data]',
   file: 'test file.docx',
   submit: 'true',
 };

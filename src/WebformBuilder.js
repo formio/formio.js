@@ -4,7 +4,7 @@ import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import Formio from './Formio';
-import { fastCloneDeep, bootstrapVersion } from './utils/utils';
+import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -228,8 +228,16 @@ export default class WebformBuilder extends Component {
     const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
     formio.loadProject().then((project) => {
-      if (project && _.get(project, 'settings.addConfigToForms', false)) {
-        this.options.formConfig = project.config || {};
+      if (project && (_.get(project, 'settings.addConfigToForms', false) ||  _.get(project, 'addConfigToForms', false))) {
+        const config = project.config || {};
+        this.options.formConfig = config;
+
+        const pathToFormConfig = 'webform._form.config';
+        const webformConfig = _.get(this, pathToFormConfig);
+
+        if (this.webform  && !webformConfig) {
+          _.set(this, pathToFormConfig, config);
+        }
       }
     });
 
@@ -862,7 +870,7 @@ export default class WebformBuilder extends Component {
     if (draggableComponent.disableSiblings) {
       let isCompAlreadyExists = false;
       eachComponent(this.webform.components, (component) => {
-        if (component.key === draggableComponent.key) {
+        if (component.type === draggableComponent.schema.type) {
           isCompAlreadyExists = true;
           return;
         }
@@ -1106,7 +1114,7 @@ export default class WebformBuilder extends Component {
           });
         });
 
-        if (tabIndex !== -1 && index !== -1) {
+        if (tabIndex !== -1 && index !== -1 && changed && changed.value) {
           const sibling = parentComponent.tabs[tabIndex][index + 1];
           parentComponent.removeComponent(defaultValueComponent);
           const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
@@ -1117,8 +1125,18 @@ export default class WebformBuilder extends Component {
         }
       }
       else {
-        this.preview._data[changed.instance._data.key] = changed.value;
-        this.webform._data[changed.instance._data.key] = changed.value;
+        let dataPath = changed.instance._data.key;
+
+        const path = getArrayFromComponentPath(changed.instance.path);
+        path.shift();
+
+        if (path.length) {
+          path.unshift(component.key);
+          dataPath = getStringFromComponentPath(path);
+        }
+
+        _.set(this.preview._data, dataPath, changed.value);
+        _.set(this.webform._data, dataPath, changed.value);
       }
     }
 
@@ -1146,7 +1164,7 @@ export default class WebformBuilder extends Component {
       else {
         keys.set(comp.key, [path]);
       }
-    });
+    }, true);
 
     return repeatablePaths;
   }
@@ -1189,6 +1207,16 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+
+      if (submissionData) {
+        fieldsToRemoveDoubleQuotes.forEach((key) => {
+          if (submissionData[key]) {
+            submissionData[key] = submissionData[key].replace(/"/g, "'");
+          }
+        });
+      }
+
       let comp = null;
       parentComponent.getComponents().forEach((component) => {
         if (component.component.key === original.key) {
