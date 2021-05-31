@@ -737,7 +737,7 @@ export default class Component extends Element {
         }
       }
       else if (_.isArray(val)) {
-        if (val.length !== 0) {
+        if (val.length !== 0 && !_.isEqual(val, defaultSchema[key])) {
           modified[key] = val;
         }
       }

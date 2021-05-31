@@ -9,7 +9,8 @@ import {
   comp2,
   comp3,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -98,6 +99,26 @@ describe('Radio Component', () => {
           }, 300);
         }, 300);
       }, 200);
+    }).catch(done);
+  });
+  it('Should not have default values in schema', (done) => {
+    const form = _.cloneDeep(comp6);
+    const element = document.createElement('div');
+
+    const requiredSchema = {
+      label: 'Radio',
+      optionsLabelPosition: 'right',
+      inline: true,
+      tableView: false,
+      key: 'radio',
+      type: 'radio',
+      input: true
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+      assert.deepEqual(requiredSchema, radio.schema);
+      done();
     }).catch(done);
   });
 });
