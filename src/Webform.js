@@ -792,7 +792,6 @@ export default class Webform extends NestedDataComponent {
         this.submissionSet = true;
         this.triggerChange(flags);
         this.setValue(submission, flags);
-        this.setDownloadUrl();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -1532,8 +1531,14 @@ export default class Webform extends NestedDataComponent {
     this.submitting = true;
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
-      .catch((err) => NativePromise.reject(this.onSubmissionError(err)))
-      .finally(() => this.submissionInProcess = false);
+      .then((results) => {
+        this.submissionInProcess = false;
+        return results;
+      })
+      .catch((err) => {
+        this.submissionInProcess = false;
+        return NativePromise.reject(this.onSubmissionError(err));
+      });
   }
 
   clearServerErrors() {
@@ -1627,31 +1632,6 @@ export default class Webform extends NestedDataComponent {
     });
     if (recaptchaComponent.length > 0) {
       recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
-    }
-  }
-
-  setDownloadUrl() {
-    if (this.formio && _.get(this, 'form.settings.showPdfIcon', false)) {
-      this.formio.getDownloadUrl().then((url) => {
-        // Add a download button if it has a download url.
-        if (!url) {
-          return;
-        }
-        if (!this.downloadButton) {
-          if (this.options.primaryProject) {
-            url += `&project=${this.options.primaryProject}`;
-          }
-          this.downloadButton = this.ce('a', {
-            href: url,
-            target: '_blank',
-            style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-          }, this.ce('img', {
-            src: require('./pdf.image'),
-            style: 'width:3em;'
-          }));
-          this.element.insertBefore(this.downloadButton, this.iframe);
-        }
-      });
     }
   }
 

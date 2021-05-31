@@ -32,9 +32,12 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
@@ -161,14 +164,17 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/panel/editForm/Panel.edit.display.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _isEqual from &apos;lodash/isEqual&apos;;
+import _omit from &apos;lodash/omit&apos;;
+import _difference from &apos;lodash/difference&apos;;
+import _keys from &apos;lodash/keys&apos;;
+export default [
   {
     key: &apos;labelPosition&apos;,
     ignore: true
@@ -306,6 +312,26 @@
         },
       },
       {
+        weight: 55,
+        label: &apos;Navigate Wizard on Enter&apos;,
+        type: &apos;checkbox&apos;,
+        key: &apos;navigateOnEnter&apos;,
+        input: true,
+        inputType: &apos;checkbox&apos;,
+        defaultValue: false,
+        tooltip: &apos;Use the Enter key to go forward through pages.&apos;
+      },
+      {
+        weight: 56,
+        label: &apos;Save on Enter&apos;,
+        type: &apos;checkbox&apos;,
+        key: &apos;saveOnEnter&apos;,
+        input: true,
+        inputType: &apos;checkbox&apos;,
+        defaultValue: false,
+        tooltip: &apos;Use the Enter key to submit form on last page.&apos;
+      },
+      {
         weight: 60,
         label: &apos;Scroll up on page opening&apos;,
         type: &apos;checkbox&apos;,
@@ -317,7 +343,19 @@
       }
     ],
     customConditional(context) {
-      return context.instance.options.editForm.display === &apos;wizard&apos;;
+      let isWizardPanel = false;
+      if (context.instance.options.editForm.display === &apos;wizard&apos;) {
+        const { components } = context.instance.options.editForm;
+        const component = context.instance.options.editComponent;
+        if (components &amp;&amp; component) {
+          isWizardPanel = components.some((comp) =&gt; {
+            const diff = _difference(_keys(comp), _keys(component)) || [];
+            diff.push(&apos;components&apos;);
+            return _isEqual(_omit(comp, diff), _omit(component, diff));
+          });
+        }
+      }
+      return isWizardPanel;
     }
   },
   {

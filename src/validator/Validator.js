@@ -123,10 +123,15 @@ class ValidationChecker {
             const query = { form: form._id };
 
             if (_.isString(value)) {
-              addPathQueryParams({
-                $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
-                $options: 'i'
-              }, query, path);
+              if (component.component.dbIndex) {
+                addPathQueryParams(value, query, path);
+              }
+              else {
+                addPathQueryParams({
+                  $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
+                  $options: 'i'
+                }, query, path);
+              }
             }
             // FOR-213 - Pluck the unique location id
             else if (
@@ -941,11 +946,23 @@ class ValidationChecker {
       ? component.validationValue
       : [component.validationValue];
 
+    const addonsValidations = [];
+
+    if (component?.addons?.length) {
+      values.forEach((value) => {
+        component.addons.forEach((addon) => {
+          if (!addon.checkValidity(value)) {
+            addonsValidations.push(...(addon.errors || []));
+          }
+        });
+      });
+    }
+
     // If this component has the new validation system enabled, use it instead.
     const validations = _.get(component, 'component.validations');
     if (validations && Array.isArray(validations)) {
       const resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
-
+      resultsOrPromises.push(...addonsValidations);
       // Define how results should be formatted
       const formatResults = results => {
         return includeWarnings ? results : results.filter(result => result.level === 'error');
@@ -995,6 +1012,8 @@ class ValidationChecker {
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
     resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async, conditionallyVisible));
+
+    resultsOrPromises.push(...addonsValidations);
 
     // Define how results should be formatted
     const formatResults = results => {

@@ -32,9 +32,12 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
@@ -161,7 +164,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
@@ -169,6 +171,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/signature/Signature.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import SignaturePad from &apos;signature_pad/dist/signature_pad.js&apos;;
+import _ResizeObserver from &apos;resize-observer-polyfill&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
 import _ from &apos;lodash&apos;;
 
@@ -303,6 +306,8 @@ export default class SignatureComponent extends Input {
       this.currentWidth = this.refs.padBody.offsetWidth;
       this.refs.canvas.width = this.currentWidth * this.scale;
       this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
+      this.refs.canvas.style.maxWidth = `${this.currentWidth * this.scale}px`;
+      this.refs.canvas.style.maxHeight = `${this.refs.padBody.offsetHeight * this.scale}px`;
       const ctx = this.refs.canvas.getContext(&apos;2d&apos;);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
@@ -363,6 +368,14 @@ export default class SignatureComponent extends Input {
           this.refs.padBody.style.maxWidth = &apos;100%&apos;;
         }
 
+       if (!this.builderMode &amp;&amp; !this.options.preview) {
+        this.observer = new _ResizeObserver(() =&gt; {
+          this.checkSize();
+        });
+
+        this.observer.observe(this.refs.padBody);
+       }
+
         this.addEventListener(window, &apos;resize&apos;, _.debounce(() =&gt; this.checkSize(), 100));
         setTimeout(function checkWidth() {
           if (this.refs.padBody &amp;&amp; this.refs.padBody.offsetWidth) {
@@ -386,6 +399,11 @@ export default class SignatureComponent extends Input {
   /* eslint-enable max-statements */
 
   detach() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+
     if (this.signaturePad) {
       this.signaturePad.off();
     }
