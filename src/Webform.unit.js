@@ -2498,7 +2498,7 @@ describe('Webform tests', function() {
         });
       }, 400);
     }).catch(done);
-  });      
+  });
 
   it('HTML render mode', (done) => {
     const element = document.createElement('div');

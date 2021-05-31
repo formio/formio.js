@@ -50,8 +50,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
@@ -222,6 +221,7 @@ import formWithDataGridWithContainerAndConditionals from &apos;../test/forms/dat
 import { nestedFormInWizard } from &apos;../test/fixtures&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { fastCloneDeep } from &apos;../lib/utils/utils&apos;;
+import truncateMultipleSpaces from &apos;../test/forms/truncateMultipleSpaces&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
 import conditionalDataGridWithTableAndRadio from &apos;../test/forms/conditionalDataGridWithTableAndRadio&apos;;
@@ -2620,6 +2620,56 @@ describe(&apos;Webform tests&apos;, function() {
     })
     .catch((err) =&gt; done(err));
   });
+
+  it(&apos;Test Truncate Multiple Spaces&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form= new Webform(formElement);
+
+    form.setForm(truncateMultipleSpaces).then(() =&gt; {
+      const textFieldRequired = form.getComponent([&apos;textField1&apos;]);
+      const textFieldMinMaxLength = form.getComponent([&apos;textField&apos;]);
+      const textAreaMinMaxLength = form.getComponent([&apos;textArea&apos;]);
+      Harness.dispatchEvent(&apos;input&apos;, textFieldRequired.element, &apos;input&apos;, (i) =&gt; i.value = &apos;        &apos;);
+      Harness.dispatchEvent(
+        &apos;input&apos;,
+        textFieldMinMaxLength.element,
+        &apos;input&apos;,
+        (i) =&gt; i.value = &apos;     546       456     &apos;
+      );
+      Harness.dispatchEvent(
+        &apos;input&apos;,
+        textAreaMinMaxLength.element,
+        &apos;textarea&apos;,
+        (i) =&gt; i.value = &apos;     546       456     &apos;
+      );
+
+      setTimeout(() =&gt; {
+        assert.equal(textFieldRequired.dataValue, &apos;        &apos;, &apos;Should set value&apos;);
+        assert.equal(textFieldMinMaxLength.dataValue, &apos;     546       456     &apos;, &apos;Should set value&apos;);
+        assert.equal(textAreaMinMaxLength.dataValue, &apos;     546       456     &apos;, &apos;Should set value&apos;);
+
+        assert.equal(textFieldRequired.errors.length, 1, &apos;Should be invalid since it does not have a value&apos;);
+        assert.equal(
+          textFieldMinMaxLength.errors.length,
+          0,
+          &apos;Should be valid since it value does not exceed the max length after truncating spaces&apos;
+        );
+        assert.equal(
+          textAreaMinMaxLength.errors.length,
+          0,
+          &apos;Should be valid since it value does not exceed the max length after truncating spaces&apos;
+        );
+
+        form.submit(false, {}).finally(() =&gt; {
+          assert.equal(textFieldRequired.dataValue, &apos;&apos;, &apos;Should truncate the value before submit&apos;);
+          assert.equal(textFieldMinMaxLength.dataValue, &apos;546 456&apos;, &apos;Should truncate the value before submit&apos;);
+          assert.equal(textAreaMinMaxLength.dataValue, &apos;546 456&apos;, &apos;Should truncate the value before submit&apos;);
+
+          done();
+        });
+      }, 400);
+    }).catch(done);
+  });      
 
   it(&apos;HTML render mode&apos;, (done) =&gt; {
     const element = document.createElement(&apos;div&apos;);

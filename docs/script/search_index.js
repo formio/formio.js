@@ -60,12 +60,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/components/columns/columns.js~columnscomponent",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html",
-    "<span>ColumnsComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/columns/Columns.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/_classes/component/component.form.js~component",
     "function/index.html#static-function-Component",
     "<span>Component</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/component/Component.form.js</span>",
@@ -1762,6 +1756,12 @@ window.esdocSearchIndex = [
     "class/src/Formio.js~Formio.html#static-method-currentUser",
     "src/Formio.js~Formio.currentUser",
     "method"
+  ],
+  [
+    "src/formio.js~formio.currentuserresolved",
+    "class/src/Formio.js~Formio.html#static-member-currentUserResolved",
+    "src/Formio.js~Formio.currentUserResolved",
+    "member"
   ],
   [
     "src/formio.js~formio.deregisterplugin",
@@ -3582,12 +3582,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#setchecked",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-setChecked",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#setChecked",
-    "method"
-  ],
-  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#setcheckedstate",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-setCheckedState",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#setCheckedState",
@@ -3676,132 +3670,6 @@ window.esdocSearchIndex = [
     "file/src/components/columns/Columns.form.js.html",
     "src/components/columns/Columns.form.js",
     "file"
-  ],
-  [
-    "src/components/columns/columns.js",
-    "file/src/components/columns/Columns.js.html",
-    "src/components/columns/Columns.js",
-    "file"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#attach",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-attach",
-    "src/components/columns/Columns.js~ColumnsComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#checkcomponentconditions",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-checkComponentConditions",
-    "src/components/columns/Columns.js~ColumnsComponent#checkComponentConditions",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#classname",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-get-className",
-    "src/components/columns/Columns.js~ColumnsComponent#className",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#columnkey",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-get-columnKey",
-    "src/components/columns/Columns.js~ColumnsComponent#columnKey",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#columns",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-member-columns",
-    "src/components/columns/Columns.js~ColumnsComponent#columns",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#constructor",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-constructor-constructor",
-    "src/components/columns/Columns.js~ColumnsComponent#constructor",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#defaultschema",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-get-defaultSchema",
-    "src/components/columns/Columns.js~ColumnsComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#destroy",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-destroy",
-    "src/components/columns/Columns.js~ColumnsComponent#destroy",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#detach",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-detach",
-    "src/components/columns/Columns.js~ColumnsComponent#detach",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#gridsize",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-get-gridSize",
-    "src/components/columns/Columns.js~ColumnsComponent#gridSize",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#groupbyrow",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-groupByRow",
-    "src/components/columns/Columns.js~ColumnsComponent#groupByRow",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#init",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-init",
-    "src/components/columns/Columns.js~ColumnsComponent#init",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#justify",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justify",
-    "src/components/columns/Columns.js~ColumnsComponent#justify",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#justifycolumn",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-justifyColumn",
-    "src/components/columns/Columns.js~ColumnsComponent#justifyColumn",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#labelishidden",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-labelIsHidden",
-    "src/components/columns/Columns.js~ColumnsComponent#labelIsHidden",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#render",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-method-render",
-    "src/components/columns/Columns.js~ColumnsComponent#render",
-    "method"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#rows",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-member-rows",
-    "src/components/columns/Columns.js~ColumnsComponent#rows",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent#schema",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-get-schema",
-    "src/components/columns/Columns.js~ColumnsComponent#schema",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent.builderinfo",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#static-get-builderInfo",
-    "src/components/columns/Columns.js~ColumnsComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/columns/columns.js~columnscomponent.schema",
-    "class/src/components/columns/Columns.js~ColumnsComponent.html#static-method-schema",
-    "src/components/columns/Columns.js~ColumnsComponent.schema",
-    "method"
   ],
   [
     "src/components/columns/columns.unit.js",
@@ -5820,6 +5688,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp6.js",
+    "file/src/components/radio/fixtures/comp6.js.html",
+    "src/components/radio/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",
@@ -6069,6 +5943,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp13.js",
     "file/src/components/select/fixtures/comp13.js.html",
     "src/components/select/fixtures/comp13.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp14.js",
+    "file/src/components/select/fixtures/comp14.js.html",
+    "src/components/select/fixtures/comp14.js",
     "file"
   ],
   [

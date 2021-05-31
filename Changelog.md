@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.9
+#### Fixed
+ - FIO-2824: remove Spellcheck setting for Number Component
+ - FIO-2844: Fix several api calls to /current endpoint
+ - FIO-3038: remove 'Hide Input' setting from Password component
+ - FIO-2554: add properties to the default schemas
+
+#### Added
+ - FIO-2503: Feat: adds Truncate Multiple Spaces option
+ - Add option for errors to builder
+
 ### 4.14.0-rc.8
 #### Fixed
  - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
