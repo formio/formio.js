@@ -15,6 +15,7 @@ export default class TextFieldComponent extends Input {
       inputMask: '',
       tableView: true,
       spellcheck: true,
+      truncateMultipleSpaces: false,
       validate: {
         minLength: '',
         maxLength: '',
