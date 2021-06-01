@@ -8,7 +8,8 @@ import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../
 export default class NestedComponent extends Field {
   static schema(...extend) {
     return Field.schema({
-      tree: false
+      tree: false,
+      lazyLoad: false,
     }, ...extend);
   }
 
@@ -751,5 +752,9 @@ export default class NestedComponent extends Field {
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);
+  }
+
+  get lazyLoad() {
+    return this.component.lazyLoad ?? false;
   }
 }

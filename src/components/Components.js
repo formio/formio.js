@@ -1,9 +1,26 @@
 import Component from './_classes/component/Component';
 import EditFormUtils from './_classes/component/editForm/utils';
+import BaseEditForm from './_classes/component/Component.form';
 import _ from 'lodash';
 export default class Components {
+  static _editFormUtils = EditFormUtils
+
+  static _baseEditForm = BaseEditForm;
+
+  static set EditFormUtils(value) {
+    Components._editFormUtils = value;
+  }
+
   static get EditFormUtils() {
-    return EditFormUtils;
+    return Components._editFormUtils;
+  }
+
+  static set baseEditForm(value) {
+    Components._baseEditForm = value;
+  }
+
+  static get baseEditForm() {
+    return Components._baseEditForm;
   }
 
   static get components() {

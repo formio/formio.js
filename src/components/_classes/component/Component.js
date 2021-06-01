@@ -365,6 +365,9 @@ export default class Component extends Element {
     // Nested forms don't have parents so we need to pass their path in.
     this._parentPath = this.options.parentPath || '';
 
+    // Needs for Nextgen Rules Engine
+    this.resetCaches();
+
     /**
      * Determines if this component is visible, or not.
      */
@@ -613,7 +616,7 @@ export default class Component extends Element {
    */
   get visible() {
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (this.builderMode || this.options.showHiddenFields) {
+    if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
     if (
@@ -1068,7 +1071,7 @@ export default class Component extends Element {
     const isVisible = this.visible;
     this.rendered = true;
 
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
         showSaveButton: this.hasModalSaveButton,
@@ -1113,7 +1116,7 @@ export default class Component extends Element {
   }
 
   attach(element) {
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
       const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
       this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
@@ -1517,6 +1520,7 @@ export default class Component extends Element {
         data: this.rootValue
       }),
       form: this.root ? this.root._form : {},
+      options: this.options,
     }, additional));
   }
 
@@ -1699,7 +1703,7 @@ export default class Component extends Element {
   conditionallyVisible(data, row) {
     data = data || this.rootValue;
     row = row || this.data;
-    if (this.builderMode || !this.hasCondition()) {
+    if (this.builderMode || this.previewMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
@@ -1733,7 +1737,7 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    if (!this.builderMode && this.fieldLogic(data, row)) {
+    if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
 
@@ -2344,6 +2348,17 @@ export default class Component extends Element {
     this.unset();
   }
 
+  getCustomDefaultValue(defaultValue) {
+    if (this.component.customDefaultValue && !this.options.preview) {
+     defaultValue = this.evaluate(
+        this.component.customDefaultValue,
+        { value: '' },
+        'value'
+      );
+    }
+    return defaultValue;
+  }
+
   get shouldAddDefaultValue() {
     return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
   }
@@ -2353,13 +2368,8 @@ export default class Component extends Element {
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
-    if (this.component.customDefaultValue && !this.options.preview) {
-      defaultValue = this.evaluate(
-        this.component.customDefaultValue,
-        { value: '' },
-        'value'
-      );
-    }
+
+    defaultValue = this.getCustomDefaultValue(defaultValue);
 
     const checkMask = (value) => {
       if (typeof value === 'string') {
@@ -2634,6 +2644,19 @@ export default class Component extends Element {
     return value;
   }
 
+  doValueCalculation(dataValue, data, row, flags) {
+    // If data was calculated in a submission and the editing mode is on, skip calculating
+    if (!flags.fromSubmission || !this.component.persistent) {
+      return this.evaluate(this.component.calculateValue, {
+        value: dataValue,
+        data,
+        row: row || this.data
+      }, 'value');
+    }
+
+    return dataValue;
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -2643,7 +2666,7 @@ export default class Component extends Element {
     // Handle all cases when calculated values should not fire.
     if (
       (this.options.readOnly && !this.options.pdf) ||
-      !this.component.calculateValue ||
+      !(this.component.calculateValue || this.component.calculateValueVariable) ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
       flags.dataSourceInitialLoading
@@ -2652,17 +2675,8 @@ export default class Component extends Element {
     }
 
     const dataValue = this.dataValue;
-    let calculatedValue = dataValue;
     // Calculate the new value.
-
-    // If data was calculated in a submission and the editing mode is on, skip calculating
-    if (!flags.fromSubmission || !this.component.persistent) {
-      calculatedValue = this.evaluate(this.component.calculateValue, {
-        value: dataValue,
-        data,
-        row: row || this.data
-      }, 'value');
-    }
+    let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
 
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
@@ -2854,6 +2868,10 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+
+    // Needs for Nextgen Rules Engine
+    this.resetCaches();
+
     // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
     if (!flags.fromBlur) {
       this.checkRefreshOn(flags.changes, flags);
@@ -3305,6 +3323,12 @@ export default class Component extends Element {
       formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
     }
     return formio;
+  }
+
+  resetCaches() {}
+
+  get previewMode() {
+    return false;
   }
 }
 

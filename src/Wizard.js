@@ -282,6 +282,7 @@ export default class Wizard extends Webform {
       this.enabledIndex = this.pages?.length - 1;
     }
 
+    this.hook('attachWebform', element, this);
     const promises = this.attachComponents(this.refs[this.wizardKey], [
       ...this.prefixComps,
       ...this.currentPage.components,
@@ -999,11 +1000,14 @@ export default class Wizard extends Webform {
     let pageIndex = 0;
 
     const [page] = this.pages.filter((page, index) => {
-      if (page.getComponent(key)) {
-        pageIndex = index;
-        return true;
-      }
-      return false;
+      let hasComponent = false;
+      page.getComponent(key, (comp) => {
+        if (comp.path === key) {
+          pageIndex = index;
+          hasComponent = true;
+        }
+      });
+      return hasComponent;
     });
 
     if (page && page !== this.currentPage) {

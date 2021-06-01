@@ -800,6 +800,31 @@ body.formio-dialog-open {
   margin-bottom: 0;
 }
 
+.editgrid-table-container {
+  margin-bottom: 10px;
+  max-width: calc(100vw - 140px);
+
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.editgrid-table-column {
+  border: none;
+}
+
+.editgrid-table-head {
+  border: 1px solid #ddd;
+}
+
+.editgrid-table-body {
+  border: 1px solid #ddd;
+  border-top: 0;
+}
+
 .formio-hide-label-panel-tooltip {
   margin-top: -10px;
   margin-left: -10px;
