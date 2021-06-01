@@ -24,6 +24,7 @@ import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEd
 import customWizard from '../test/forms/customWizard';
 import wizardChildForm from '../test/forms/wizardChildForm';
 import wizardParentForm from '../test/forms/wizardParentForm';
+import wizardWithComponentsWithSameApi from '../test/forms/wizardWithComponentsWithSameApi';
 import wizardWithConditionallyVisiblePage from '../test/forms/conditionallyVisiblePage';
 import wizardWithPanel from '../test/forms/wizardWithPanel';
 import wizardWithWizard from '../test/forms/wizardWithWizard';
@@ -398,6 +399,48 @@ describe('Wizard tests', () => {
             done();
           }, 200);
         }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should redirect to the correct page from the Error list', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement, {
+      renderMode: 'html'
+    });
+
+    wizard.setForm(wizardWithComponentsWithSameApi, ).then(() => {
+      const clickWizardBtn = (pathPart) => {
+        const [btnKey] = Object.keys(wizard.refs).filter((key) => key.indexOf(pathPart) !== -1);
+        const btn = _.get(wizard.refs, btnKey);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      setTimeout(() => {
+        checkPage(0);
+        wizard.setPage(1);
+
+        setTimeout(() => {
+          checkPage(1);
+          clickWizardBtn('submit');
+
+          setTimeout(() => {
+            assert.equal(wizard.refs.errorRef.length, 1, 'Should have an error');
+            const clickEvent = new Event('click');
+            wizard.refs.errorRef[0].dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              checkPage(0);
+              done();
+            }, 200);
+          }, 200);
+        }, 300);
       }, 200);
     })
     .catch((err) => done(err));
