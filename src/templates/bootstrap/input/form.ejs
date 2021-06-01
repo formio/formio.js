@@ -19,9 +19,7 @@
         {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
       id="{{ctx.instance.id}}-{{ctx.component.key}}"
-    >
-      {{ctx.input.content}}
-    </{{ctx.input.type}}>
+    >{{ctx.input.content}}</{{ctx.input.type}}>
     {% if (ctx.hasValueMaskInput) { %}
       <input ref="valueMaskInput" />
     {% } %}
