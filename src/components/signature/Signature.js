@@ -1,4 +1,5 @@
 import SignaturePad from 'signature_pad/dist/signature_pad.js';
+import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
 
@@ -133,6 +134,8 @@ export default class SignatureComponent extends Input {
       this.currentWidth = this.refs.padBody.offsetWidth;
       this.refs.canvas.width = this.currentWidth * this.scale;
       this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
+      this.refs.canvas.style.maxWidth = `${this.currentWidth * this.scale}px`;
+      this.refs.canvas.style.maxHeight = `${this.refs.padBody.offsetHeight * this.scale}px`;
       const ctx = this.refs.canvas.getContext('2d');
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
@@ -193,6 +196,14 @@ export default class SignatureComponent extends Input {
           this.refs.padBody.style.maxWidth = '100%';
         }
 
+       if (!this.builderMode && !this.options.preview) {
+        this.observer = new _ResizeObserver(() => {
+          this.checkSize();
+        });
+
+        this.observer.observe(this.refs.padBody);
+       }
+
         this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
         setTimeout(function checkWidth() {
           if (this.refs.padBody && this.refs.padBody.offsetWidth) {
@@ -216,6 +227,11 @@ export default class SignatureComponent extends Input {
   /* eslint-enable max-statements */
 
   detach() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+
     if (this.signaturePad) {
       this.signaturePad.off();
     }

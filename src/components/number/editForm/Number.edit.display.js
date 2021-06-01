@@ -1,5 +1,9 @@
 export default [
   {
+    key: 'spellcheck',
+    ignore: true
+  },
+  {
     key: 'inputMask',
     ignore: true
   },

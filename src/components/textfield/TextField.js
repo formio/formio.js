@@ -1,6 +1,7 @@
 import Input from '../_classes/input/Input';
-import { conformToMask } from 'text-mask-all/vanilla';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
+import NativePromise from 'native-promise-only';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -14,6 +15,7 @@ export default class TextFieldComponent extends Input {
       inputMask: '',
       tableView: true,
       spellcheck: true,
+      truncateMultipleSpaces: false,
       validate: {
         minLength: '',
         maxLength: '',
@@ -57,6 +59,21 @@ export default class TextFieldComponent extends Input {
 
   get emptyValue() {
     return '';
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+
+    const timezone = (this.component.widget?.timezone || this.options.timezone);
+
+    if (this.component.widget?.type === 'calendar') {
+      this.component.widget = {
+        ...this.component.widget,
+        readOnly: this.options.readOnly,
+        timezone,
+        locale: this.options.language,
+      };
+    }
   }
 
   /**
@@ -150,5 +167,31 @@ export default class TextFieldComponent extends Input {
       return super.isEmpty((value || '').toString().trim());
     }
     return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
+  }
+
+  truncateMultipleSpaces(value) {
+    if (value) {
+      return value.trim().replace(/\s{2,}/g, ' ');
+    }
+    return value;
+  }
+
+  get validationValue() {
+    const value = super.validationValue;
+    if (value && this.component.truncateMultipleSpaces) {
+      return this.truncateMultipleSpaces(value);
+    }
+    return value;
+  }
+
+  beforeSubmit() {
+    let value = this.dataValue;
+
+    if (!this.component.truncateMultipleSpaces || !value) {
+      return NativePromise.resolve(value);
+    }
+    value = this.truncateMultipleSpaces(value);
+    this.dataValue = value;
+    return NativePromise.resolve(value).then(() => super.beforeSubmit());
   }
 }

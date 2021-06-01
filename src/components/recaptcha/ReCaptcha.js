@@ -74,15 +74,13 @@ export default class ReCaptchaComponent extends Component {
                   action: actionName
                 })
                 .then((token) => {
-                  return this.sendVerificationRequest(token);
-                })
-                .then(({ verificationResult, token }) => {
-                  this.setValue({
-                    ...verificationResult,
-                    token,
+                  return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {
+                    this.setValue({
+                      ...verificationResult,
+                      token,
+                    });
+                    return resolve(verificationResult);
                   });
-
-                  return resolve(verificationResult);
                 });
             });
           })
