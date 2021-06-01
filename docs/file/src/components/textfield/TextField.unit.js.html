@@ -44,8 +44,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -163,6 +162,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-conjunctions">validator/conjunctions</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/conjunctions/index.js~Conjunctions.html">Conjunctions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-operators">validator/operators</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/operators/index.js~Operators.html">Operators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-quickrules">validator/quickRules</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/quickRules/index.js~QuickRules.html">QuickRules</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-transformers">validator/transformers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/transformers/index.js~Transformers.html">Transformers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-valuesources">validator/valueSources</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/valueSources/index.js~ValueSources.html">ValueSources</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
@@ -181,7 +185,8 @@ import {
   comp2,
   comp4,
   comp5,
-  comp6
+  comp6,
+  withDisplayAndInputMasks,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;TextField Component&apos;, () =&gt; {
@@ -1346,6 +1351,71 @@ describe(&apos;TextField Component&apos;, () =&gt; {
           }, 300);
         }, 300);
       }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Test Display mask&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, withDisplayAndInputMasks).then(form =&gt; {
+      const textField = form.getComponent([&apos;textField&apos;]);
+      const textFieldDisplayMask = form.getComponent([&apos;textFieldDisplayMask&apos;]);
+      const textFieldDisplayAndInputMasks = form.getComponent([&apos;textFieldDisplayAndInputMasks&apos;]);
+      const textFieldDisplayAndInputMasksReverse = form.getComponent([&apos;textFieldDisplayAndInputMasksReverse&apos;]);
+
+      Harness.dispatchEvent(
+        &apos;input&apos;,
+        form.element,
+        &apos;[name=&quot;data[textField]&quot;&apos;,
+        (input) =&gt; input.value = &apos;123123&apos;,
+      );
+      Harness.dispatchEvent(
+        &apos;input&apos;,
+        form.element,
+        &apos;[name=&quot;data[textFieldDisplayMask]&quot;&apos;,
+        (input) =&gt; input.value = &apos;123123&apos;,
+      );
+      Harness.dispatchEvent(
+        &apos;input&apos;,
+        form.element,
+        &apos;[name=&quot;data[textFieldDisplayAndInputMasks]&quot;&apos;,
+        (input) =&gt; input.value = &apos;123123&apos;,
+      );
+      Harness.dispatchEvent(
+        &apos;input&apos;,
+        form.element,
+        &apos;[name=&quot;data[textFieldDisplayAndInputMasksReverse]&quot;&apos;,
+        (input) =&gt; input.value = &apos;123123&apos;,
+      );
+
+      setTimeout(() =&gt; {
+        Harness.getInputValue(textField, &apos;data[textField]&apos;, &apos;123-123&apos;);
+        Harness.getInputValue(textFieldDisplayMask, &apos;data[textFieldDisplayMask]&apos;, &apos;123-123&apos;);
+        Harness.getInputValue(textFieldDisplayAndInputMasks, &apos;data[textFieldDisplayAndInputMasks]&apos;, &apos;+1(23)-123&apos;);
+        Harness.getInputValue(textFieldDisplayAndInputMasksReverse, &apos;data[textFieldDisplayAndInputMasksReverse]&apos;, &apos;123-123&apos;);
+
+        assert.equal(
+          textField.dataValue,
+          &apos;123-123&apos;,
+          &apos;If only Input mask is set, it should affect both value and view&apos;,
+        );
+        assert.equal(
+          textFieldDisplayMask.dataValue,
+          &apos;123123&apos;,
+          &apos;If only Display mask is set, it should affect only view&apos;,
+        );
+        assert.equal(
+          textFieldDisplayAndInputMasks.dataValue,
+          &apos;123-123&apos;,
+          &apos;If both Input and Display masks are set, the Input mask should be applied to value&apos;,
+        );
+        assert.equal(
+          textFieldDisplayAndInputMasksReverse.dataValue,
+          &apos;+1(23)-123&apos;,
+          &apos;If both Input and Display masks are set, the Input mask should be applied to value&apos;,
+        );
+        done();
+      }, 200);
     }).catch(done);
   });
 });

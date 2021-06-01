@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.10
+#### Added
+ - FIO-1317: Implements capability to use NextGen Rules Engine from premium in 4x.
+ - FJS-1459: Add Display as Table feature for EditGrid
+ - FJS-1212 | FIO-175: Adds Display Mask option
+
+#### Fixed
+ - FIO-301: Fixes columns to work with single columns.
+ - FIO-2492: Fixes an issue when there is a component in one wizard page that has the same API key as the one on another wizard page where validation isn't met for some reasons, there will be misredirection from such an error in the Error list
+ - Call onChange on resetValue in Webform
+
 ### 4.14.0-rc.9
 #### Fixed
  - FIO-2824: remove Spellcheck setting for Number Component
