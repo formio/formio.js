@@ -174,7 +174,8 @@ export default class PDFBuilder extends WebformBuilder {
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
         iframeDropzone: 'single',
-        'sidebar-container': 'multiple'
+        'sidebar-container': 'multiple',
+        'sidebar': 'single',
       });
 
       this.afterAttach();
@@ -193,6 +194,20 @@ export default class PDFBuilder extends WebformBuilder {
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
     this.prepSidebarComponentsForDrag();
+
+    const sidebar = this.refs.sidebar;
+    if (sidebar) {
+      this.addClass(sidebar, 'disabled');
+      const prevent = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      };
+      this.addEventListener(sidebar, 'dragstart', prevent);
+      this.webform.on('iframe-ready', () => {
+        this.removeEventListener(sidebar, 'dragstart', prevent);
+        this.removeClass(sidebar, 'disabled');
+      }, true);
+    }
   }
 
   upload(file) {

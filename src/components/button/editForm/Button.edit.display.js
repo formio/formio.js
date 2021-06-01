@@ -69,6 +69,18 @@ export default [
     type: 'checkbox',
     input: true,
     inputType: 'checkbox',
+    key: 'saveOnEnter',
+    label: 'Save On Enter',
+    weight: 113,
+    tooltip: 'Use the Enter key to submit form.',
+    conditional: {
+      json: { '===': [{ var: 'data.action' }, 'submit'] },
+    },
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    inputType: 'checkbox',
     key: 'showValidations',
     label: 'Show Validations',
     weight: 115,
