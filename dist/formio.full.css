@@ -3067,6 +3067,25 @@ body.formio-dialog-open {
 .formio-component .table {
   margin-bottom: 0; }
 
+.editgrid-table-container {
+  margin-bottom: 10px;
+  max-width: calc(100vw - 140px); }
+  .editgrid-table-container .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; }
+
+.editgrid-table-column {
+  border: none; }
+
+.editgrid-table-head {
+  border: 1px solid #ddd; }
+
+.editgrid-table-body {
+  border: 1px solid #ddd;
+  border-top: 0; }
+
 .formio-hide-label-panel-tooltip {
   margin-top: -10px;
   margin-left: -10px; }
@@ -3561,6 +3580,9 @@ div[data-oembed-url] {
 
 .formio-component-textarea .formio-editor-read-only-content .text-tiny {
   font-size: 0.7em; }
+
+.formio-component [ref="valueMaskInput"] {
+  display: none; }
 
 .formbuilder {
   position: relative; }

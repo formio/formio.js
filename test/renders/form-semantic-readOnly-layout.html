@@ -200,32 +200,34 @@
       <div ref="messageContainer"></div>
     </div>
     <div id="tabs" class="field formio-component formio-component-tabs formio-component-tabs " ref="component">
-      <div class="ui top attached tabular menu">
-        <a class="item active" role="presentation" ref="tabLink-tabs">Tab 1</a>
-        <a class="item" role="presentation" ref="tabLink-tabs">Tab2</a>
+      <div class="tab-container">
+        <div class="ui top attached tabular menu">
+          <a class="item active" role="presentation" ref="tabLink-tabs">Tab 1</a>
+          <a class="item" role="presentation" ref="tabLink-tabs">Tab2</a>
+        </div>
+        <div role="tabpanel" class="ui bottom attached tab segment active" ref="tab-tabs""><div id=" time" class="field form-group has-feedback formio-component formio-component-textfield formio-component-time " ref="component">
+          <label class="" for="time-time">
+            Time
+          </label>
+          <div ref="element">
+            <div class="ui input fluid ">
+              <input ref="input" name="data[time]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="time-time"></input>
+            </div>
+          </div>
+          <div ref="messageContainer"></div>
+        </div>
       </div>
-      <div role="tabpanel" class="ui bottom attached tab segment active" ref="tab-tabs""><div id=" time" class="field form-group has-feedback formio-component formio-component-textfield formio-component-time " ref="component">
-        <label class="" for="time-time">
-          Time
+      <div role="tabpanel" class="ui bottom attached tab segment" ref="tab-tabs""><div id=" time2" class="field form-group has-feedback formio-component formio-component-textfield formio-component-time2 " ref="component">
+        <label class="" for="time2-time2">
+          Time2
         </label>
         <div ref="element">
           <div class="ui input fluid ">
-            <input ref="input" name="data[time]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="time-time"></input>
+            <input ref="input" name="data[time2]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="time2-time2"></input>
           </div>
         </div>
         <div ref="messageContainer"></div>
       </div>
-    </div>
-    <div role="tabpanel" class="ui bottom attached tab segment" ref="tab-tabs""><div id=" time2" class="field form-group has-feedback formio-component formio-component-textfield formio-component-time2 " ref="component">
-      <label class="" for="time2-time2">
-        Time2
-      </label>
-      <div ref="element">
-        <div class="ui input fluid ">
-          <input ref="input" name="data[time2]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="time2-time2"></input>
-        </div>
-      </div>
-      <div ref="messageContainer"></div>
     </div>
   </div>
   <div ref="messageContainer"></div>
