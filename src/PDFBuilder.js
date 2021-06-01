@@ -103,26 +103,6 @@ export default class PDFBuilder extends WebformBuilder {
     return result;
   }
 
-  attachLoader(element) {
-    this.loadRefs(element, {
-      'sidebar-loader': 'single'
-    });
-    const sidebarLoader = this.refs['sidebar-loader'];
-    if (sidebarLoader && sidebarLoader.parentNode) {
-      sidebarLoader.parentNode.appendChild(sidebarLoader);
-    }
-  }
-
-  removeLoader(element) {
-    this.loadRefs(element, {
-      'sidebar-loader': 'single'
-    });
-    const sidebarLoader = this.refs['sidebar-loader'];
-    if (sidebarLoader && sidebarLoader.parentNode) {
-      sidebarLoader.parentNode.removeChild(sidebarLoader);
-    }
-  }
-
   attach(element) {
     // PDF Upload
     if (!this.hasPDF) {
@@ -135,7 +115,6 @@ export default class PDFBuilder extends WebformBuilder {
         'uploadProgressWrapper': 'single',
         'dragDropText': 'single'
       });
-      this.removeLoader(element);
       this.addEventListener(this.refs['pdf-upload-button'], 'click', (event) => {
         event.preventDefault();
       });
@@ -179,6 +158,10 @@ export default class PDFBuilder extends WebformBuilder {
           }
         });
         this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {
+          if (!this.refs.hiddenFileInputElement.value) {
+            return;
+          }
+
           this.upload(this.refs.hiddenFileInputElement.files[0]);
           this.refs.hiddenFileInputElement.value = '';
         });
@@ -191,31 +174,40 @@ export default class PDFBuilder extends WebformBuilder {
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
         iframeDropzone: 'single',
-        'sidebar-container': 'multiple'
+        'sidebar-container': 'multiple',
+        'sidebar': 'single',
       });
 
-      this.afterAttach(element);
+      this.afterAttach();
       return this.element;
     });
   }
 
-  afterAttach(element) {
-    this.attachLoader(element);
+  afterAttach() {
     this.on('saveComponent', (component) => {
       this.webform.postMessage({ name: 'updateElement', data: component });
     });
     this.on('removeComponent', (component) => {
       this.webform.postMessage({ name: 'removeElement', data: component });
     });
-    if (this.refs['sidebar-loader']) {
-      this.webform.on('iframe-ready', () => {
-        this.removeLoader(element);
-      }, true);
-    }
     this.initIframeEvents();
     this.updateDropzoneDimensions();
     this.initDropzoneEvents();
     this.prepSidebarComponentsForDrag();
+
+    const sidebar = this.refs.sidebar;
+    if (sidebar) {
+      this.addClass(sidebar, 'disabled');
+      const prevent = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      };
+      this.addEventListener(sidebar, 'dragstart', prevent);
+      this.webform.on('iframe-ready', () => {
+        this.removeEventListener(sidebar, 'dragstart', prevent);
+        this.removeClass(sidebar, 'disabled');
+      }, true);
+    }
   }
 
   upload(file) {

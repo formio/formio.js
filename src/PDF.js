@@ -76,6 +76,14 @@ export default class PDF extends Webform {
     return super.rebuild();
   }
 
+  // Do not attach nested components for pdf.
+  attachComponents(element, components, container) {
+    components = components || this.components;
+    container = container || this.component.components;
+    element = this.hook('attachComponents', element, components, container, this);
+    return Promise.resolve();
+  }
+
   attach(element) {
     return super.attach(element).then(() => {
       this.loadRefs(element, {
@@ -184,10 +192,6 @@ export default class PDF extends Webform {
 
     if (this.builderMode) {
       params.push('builder=1');
-    }
-
-    if (this.options.hideLoader) {
-      params.push(`hide-loader=${this.options.hideLoader}`);
     }
 
     if (params.length) {

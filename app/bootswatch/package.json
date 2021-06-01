@@ -1,36 +1,40 @@
 {
-  "_from": "bootswatch@^4.6.0",
+  "_args": [
+    [
+      "bootswatch@4.6.0",
+      "/Users/travistidwell/Documents/formio/modules/formio.js"
+    ]
+  ],
+  "_development": true,
+  "_from": "bootswatch@4.6.0",
   "_id": "bootswatch@4.6.0",
   "_inBundle": false,
   "_integrity": "sha512-Yr6YqFBC8jwTzoJoLViYlvO97IhPWGqZEm+6FXHfD/G6gbUok6sZkdXxdh4Zb6iCGEwr9p7zGCn38yKQD/bh2Q==",
   "_location": "/bootswatch",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "bootswatch@^4.6.0",
+    "raw": "bootswatch@4.6.0",
     "name": "bootswatch",
     "escapedName": "bootswatch",
-    "rawSpec": "^4.6.0",
+    "rawSpec": "4.6.0",
     "saveSpec": null,
-    "fetchSpec": "^4.6.0"
+    "fetchSpec": "4.6.0"
   },
   "_requiredBy": [
     "#DEV:/"
   ],
   "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.6.0.tgz",
-  "_shasum": "295237ed0e118decb3e3543f2ac14e9bb8ae48ea",
-  "_spec": "bootswatch@^4.6.0",
-  "_where": "/var/lib/jenkins/workspace/Master build jobs/formio.js",
+  "_spec": "4.6.0",
+  "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
   "author": {
     "name": "Thomas Park"
   },
   "bugs": {
     "url": "https://github.com/thomaspark/bootswatch/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {},
-  "deprecated": false,
   "description": "Bootswatch is a collection of themes for Bootstrap.",
   "devDependencies": {
     "@lodder/grunt-postcss": "^3.0.0",

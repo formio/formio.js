@@ -1,4 +1,15 @@
 export default  {
+  form: {
+    data: {
+    dataGridChild: [
+      { textAreaInsideChildDataGrid: "test value in nested form1" },
+      { textAreaInsideChildDataGrid: "test value in nested form2" }
+    ],
+    numberInsideChildPanel: 111111,
+    textFieldChild: "test value in nested form",
+    timeChild: "11:55:00",
+    },
+  },
   textField: 'test value',
   textArea: 'test value',
   number: 280,

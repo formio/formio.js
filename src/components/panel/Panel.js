@@ -34,20 +34,6 @@ export default class PanelComponent extends NestedComponent {
     return PanelComponent.schema();
   }
 
-  checkValidity(data, dirty, row, silentCheck) {
-    if (!this.checkCondition(row, data)) {
-      this.setCustomValidity('');
-      return true;
-    }
-
-    return this.getComponents().reduce(
-      (check, comp) => {
-        return comp.checkValidity(data, dirty, row, silentCheck) && check;
-      },
-      super.checkValidity(data, dirty, row, silentCheck)
-    );
-  }
-
   get templateName() {
     return 'panel';
   }

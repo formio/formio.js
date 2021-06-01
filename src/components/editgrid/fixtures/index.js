@@ -6,3 +6,7 @@ export comp5 from './comp5';
 export comp6 from './comp6';
 export comp7 from './comp7';
 export comp8 from './comp8';
+export comp9 from './comp9';
+export comp10 from './comp10';
+export withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenEmpty';
+export compOpenWhenEmpty from './comp-openWhenEmpty';

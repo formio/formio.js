@@ -1,5 +1,5 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
-import { conformToMask } from 'text-mask-all/vanilla';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
@@ -8,12 +8,18 @@ import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '../../../utils/utils';
+import {
+  fastCloneDeep,
+  boolValue,
+  getDataParentComponent,
+  getComponentPath
+} from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
+import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
-import i18nConfig from '../../../i18n';
+import enTranslation from '../../../translations/en';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
 const CKEDITOR_URL = isIEBrowser
@@ -193,7 +199,8 @@ export default class Component extends Element {
       showCharCount: false,
       showWordCount: false,
       properties: {},
-      allowMultipleMasks: false
+      allowMultipleMasks: false,
+      addons: [],
     }, ...sources);
   }
 
@@ -229,7 +236,8 @@ export default class Component extends Element {
   constructor(component, options, data) {
     super(Object.assign({
       renderMode: 'form',
-      attachMode: 'full'
+      attachMode: 'full',
+      noDefaults: false
     }, options || {}));
 
     // Restore the component id.
@@ -329,6 +337,7 @@ export default class Component extends Element {
      * @type {Component}
      */
     this.root = this.options.root;
+    this.localRoot = this.options.localRoot;
 
     /**
      * If this input has been input and provided value.
@@ -421,6 +430,12 @@ export default class Component extends Element {
      */
     this.tooltips = [];
 
+    /**
+     * List of attached addons
+     * @type {Array}
+     */
+    this.addons = [];
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -431,7 +446,9 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.defaultValue;
+            if (this.shouldAddDefaultValue) {
+              this.dataValue = this.defaultValue;
+            }
           }
           else {
             // Ensure the dataValue is set.
@@ -503,11 +520,42 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
+    if (this.component.addons?.length) {
+      this.component.addons.forEach((addon) => this.createAddon(addon));
+    }
+  }
+
+  createAddon(addonConfiguration) {
+    const name = addonConfiguration.name;
+    if (!name) {
+      return;
+    }
+
+    const settings = addonConfiguration.settings?.data || {};
+    const Addon = Addons[name];
+
+    let addon = null;
+
+    if (Addon) {
+      const supportedComponents = Addon.info.supportedComponents;
+      const supportsThisComponentType = !supportedComponents?.length ||
+        supportedComponents.indexOf(this.component.type) !== -1;
+      if (supportsThisComponentType) {
+        addon = new Addon(settings, this);
+        this.addons.push(addon);
+      }
+      else {
+        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+      }
+    }
+
+    return addon;
   }
 
   destroy() {
     super.destroy();
     this.detach();
+    this.addons.forEach((addon) => addon.destroy());
   }
 
   get shouldDisabled() {
@@ -692,7 +740,7 @@ export default class Component extends Element {
         }
       }
       else if (_.isArray(val)) {
-        if (val.length !== 0) {
+        if (val.length !== 0 && !_.isEqual(val, defaultSchema[key])) {
           modified[key] = val;
         }
       }
@@ -736,7 +784,7 @@ export default class Component extends Element {
       return '';
     }
     // Use _userInput: true to ignore translations from defaults
-    if (text in i18nConfig.resources.en.translation && params._userInput) {
+    if (text in enTranslation && params._userInput) {
       return text;
     }
     params.data = this.rootValue;
@@ -880,6 +928,10 @@ export default class Component extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
+    // No need to sanitize when generating PDF'S since no users interact with the form.
+    if (this.options.pdf) {
+      return dirty;
+    }
     return FormioUtils.sanitize(dirty, this.options);
   }
 
@@ -1040,21 +1092,25 @@ export default class Component extends Element {
   }
 
   attachTooltips(toolTipsRefs) {
-    toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
+    toolTipsRefs?.forEach((tooltip, index) => {
+      if (tooltip) {
+        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+        const tooltipDataTitle = tooltip.getAttribute('data-title');
+        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-      this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: this.t(tooltipText, { _userInput: true }),
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
+        this.tooltips[index] = new Tooltip(tooltip, {
+          trigger: 'hover click focus',
+          placement: 'right',
+          html: true,
+          title: this.t(tooltipText, { _userInput: true }),
+          template: `
+            <div class="tooltip" style="opacity: 1;" role="tooltip">
+              <div class="tooltip-arrow"></div>
+              <div class="tooltip-inner"></div>
+            </div>`,
+        });
+      }
     });
   }
 
@@ -1096,6 +1152,8 @@ export default class Component extends Element {
     }
 
     this.restoreFocus();
+
+    this.addons.forEach((addon) => addon.attach(element));
 
     return NativePromise.resolve();
   }
@@ -1157,7 +1215,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance &&
+      (changePath && getComponentPath(changed.instance) === refreshData) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
@@ -1453,7 +1511,13 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
-      submission: (this.root ? this.root._submission : {}),
+      // Bind the translate function to the data context of any interpolated string.
+      // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
+      // and desirable to be publicly available rather than calling the internal {instance.t} function in the template string.
+      t: this.t.bind(this),
+      submission: (this.root ? this.root._submission : {
+        data: this.rootValue
+      }),
       form: this.root ? this.root._form : {},
       options: this.options,
     }, additional));
@@ -1545,13 +1609,18 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
+        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
         if (input) {
-          input.setSelectionRange(...selection);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(...selection);
+          }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          input.setSelectionRange(lastCharacter, lastCharacter);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(lastCharacter, lastCharacter);
+          }
         }
       }
     }
@@ -1730,9 +1799,12 @@ export default class Component extends Element {
     // If component definition changed, replace and mark as changed.
     if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
-      // If disabled changed, be sure to distribute the setting.
-      this.disabled = this.shouldDisabled;
       changed = true;
+      const disabled = this.shouldDisabled;
+      // Change disabled state if it has changed
+      if (this.disabled !== disabled) {
+        this.disabled = disabled;
+      }
     }
 
     return changed;
@@ -1937,7 +2009,7 @@ export default class Component extends Element {
       if (!this.visible) {
         this.deleteValue();
       }
-      else if (!this.hasValue()) {
+      else if (!this.hasValue() && this.shouldAddDefaultValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2210,7 +2282,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       const empty = this.component.multiple ? [] : this.emptyValue;
       if (!this.rootPristine) {
         this.dataValue = empty;
@@ -2284,6 +2356,10 @@ export default class Component extends Element {
       );
     }
     return defaultValue;
+  }
+
+  get shouldAddDefaultValue() {
+    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
   }
 
   get defaultValue() {
@@ -2383,7 +2459,7 @@ export default class Component extends Element {
     ) {
       this.redraw();
     }
-    if (this.isHtmlRenderMode() && changed) {
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.redraw();
       return changed;
     }
@@ -2422,7 +2498,7 @@ export default class Component extends Element {
   }
 
   setDefaultValue() {
-    if (this.defaultValue) {
+    if (this.defaultValue && this.shouldAddDefaultValue) {
       const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
       this.setValue(defaultValue, {
         noUpdateEvent: true
@@ -2499,12 +2575,12 @@ export default class Component extends Element {
    * Resets the value of this component.
    */
   resetValue() {
+    this.unset();
     this.setValue(this.emptyValue, {
       noUpdateEvent: true,
       noValidate: true,
       resetValue: true
     });
-    this.unset();
   }
 
   /**
@@ -2561,12 +2637,17 @@ export default class Component extends Element {
     return value;
   }
 
-  doValueCalculation(dataValue, data, row) {
-    return this.evaluate(this.component.calculateValue, {
-      value: dataValue,
-      data,
-      row: row || this.data
-    }, 'value');
+  doValueCalculation(dataValue, data, row, flags) {
+    // If data was calculated in a submission and the editing mode is on, skip calculating
+    if (!flags.fromSubmission || !this.component.persistent) {
+      return this.evaluate(this.component.calculateValue, {
+        value: dataValue,
+        data,
+        row: row || this.data
+      }, 'value');
+    }
+
+    return dataValue;
   }
 
   calculateComponentValue(data, flags, row) {
@@ -2577,7 +2658,7 @@ export default class Component extends Element {
 
     // Handle all cases when calculated values should not fire.
     if (
-      this.options.readOnly ||
+      (this.options.readOnly && !this.options.pdf) ||
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
@@ -2587,9 +2668,8 @@ export default class Component extends Element {
     }
 
     const dataValue = this.dataValue;
-
     // Calculate the new value.
-    let calculatedValue = this.doValueCalculation(dataValue, data, row);
+    let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
 
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
@@ -2631,7 +2711,11 @@ export default class Component extends Element {
 
     this.calculatedValue = calculatedValue;
 
-    return changed ? this.setValue(calculatedValue, flags) : false;
+    if (changed) {
+      flags.triggeredComponentId = this.id;
+      return this.setValue(calculatedValue, flags);
+    }
+    return false;
   }
 
   /**
@@ -2789,7 +2873,9 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data, flags, row);
+    if (this.id !== flags.triggeredComponentId) {
+      this.calculateComponentValue(data, flags, row);
+    }
     this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
@@ -3113,8 +3199,19 @@ export default class Component extends Element {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
+              const visible = this.conditionallyVisible(null, null);
+              const disabled = this.shouldDisabled;
+
+              // Change states which won't be recalculated during redrawing
+              if (this.visible !== visible) {
+                this.visible = visible;
+              }
+              if (this.disabled !== disabled) {
+                this.disabled = disabled;
+              }
+
+              this.redraw();
             }
-            this.rebuild();
           }
         }, true);
       }

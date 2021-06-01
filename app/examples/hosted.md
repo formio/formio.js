@@ -4,7 +4,7 @@ layout: vtabs
 section: examples
 weight: 10
 ---
-Every form within Form.io within [Form.io](https://form.io) can be rendered within this library using the Embed URL of that form. You can then provide the ```src``` parameter of the Form renderer to show the form within your page.
+Every form within [Form.io](https://form.io) can be rendered within this library using the Embed URL of that form. You can then provide the ```src``` parameter of the Form renderer to show the form within your page.
 
 ```html
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">

@@ -316,6 +316,7 @@ export default class NestedComponent extends Field {
     options.parent = this;
     options.parentVisible = this.visible;
     options.root = this.root || this;
+    options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
@@ -717,8 +718,8 @@ export default class NestedComponent extends Field {
   }
 
   resetValue() {
+    super.resetValue();
     this.getComponents().forEach((comp) => comp.resetValue());
-    this.unset();
     this.setPristine(true);
   }
 
@@ -737,7 +738,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);
     }
-    else if (!this.rootPristine || component.visible) {
+    else if ((!this.rootPristine || component.visible) && component.shouldAddDefaultValue) {
       flags.noValidate = !flags.dirty;
       flags.resetValue = true;
       return component.setValue(component.defaultValue, flags);

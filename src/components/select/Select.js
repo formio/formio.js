@@ -18,7 +18,7 @@ export default class SelectComponent extends Field {
       key: 'select',
       idPath: 'id',
       data: {
-        values: [],
+        values: [{ label: '', value: '' }],
         json: '',
         url: '',
         resource: '',
@@ -44,6 +44,12 @@ export default class SelectComponent extends Field {
       fuseOptions: {
         include: 'score',
         threshold: 0.3,
+      },
+      validate: {
+        onlyAvailableItems: false
+      },
+      indexeddb: {
+        filter: {}
       },
       customOptions: {},
       useExactSearch: false,
@@ -72,6 +78,9 @@ export default class SelectComponent extends Field {
       return this.updateItems.apply(this, args);
     }, 100);
     this.triggerUpdate = (...args) => {
+      this.itemsLoaded = new NativePromise((resolve) => {
+        this.itemsLoadedResolve = resolve;
+      });
       if (args.length) {
         updateArgs = args;
       }
@@ -95,6 +104,9 @@ export default class SelectComponent extends Field {
 
     // If this component has been activated.
     this.activated = false;
+    this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
   }
 
   get dataReady() {
@@ -248,6 +260,10 @@ export default class SelectComponent extends Field {
     }
 
     if (this.refs.selectContainer && (this.component.widget === 'html5')) {
+      // Replace an empty Object value to an empty String.
+      if (option.value && _.isObject(option.value) && _.isEmpty(option.value)) {
+        option.value = '';
+      }
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
       div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
@@ -392,23 +408,28 @@ export default class SelectComponent extends Field {
     this.isScrollLoading = false;
     this.loading = false;
 
-    // If a value is provided, then select it.
-    if (!this.isEmpty()) {
-      this.setValue(this.dataValue, {
-        noUpdateEvent: true
-      });
-    }
-    else {
-      // If a default value is provided then select it.
-      const defaultValue = this.defaultValue;
-      if (!this.isEmpty(defaultValue)) {
-        this.setValue(defaultValue);
+    const searching = fromSearch && this.choices?.input?.isFocussed;
+
+    if (!searching) {
+      // If a value is provided, then select it.
+      if (!this.isEmpty()) {
+        this.setValue(this.dataValue, {
+          noUpdateEvent: true
+        });
+      }
+      else if (this.shouldAddDefaultValue) {
+        // If a default value is provided then select it.
+        const defaultValue = this.defaultValue;
+        if (!this.isEmpty(defaultValue)) {
+          this.setValue(defaultValue);
+        }
       }
     }
 
     // Say we are done loading the items.
     this.itemsLoadedResolve();
   }
+
   /* eslint-enable max-statements */
 
   get defaultValue() {
@@ -441,7 +462,7 @@ export default class SelectComponent extends Field {
 
     const limit = this.component.limit || 100;
     const skip = this.isScrollLoading ? this.selectOptions.length : 0;
-    const query = (this.component.dataSrc === 'url') ? {} : {
+    const query = this.component.disableLimit ? {} : {
       limit,
       skip,
     };
@@ -557,13 +578,6 @@ export default class SelectComponent extends Field {
       this.setValue(this.emptyValue);
     }
 
-    if (this.component.lazyLoad) {
-      this.activated = false;
-      this.loading = true;
-      this.setItems([]);
-      return;
-    }
-
     this.updateItems(null, true);
   }
 
@@ -607,9 +621,6 @@ export default class SelectComponent extends Field {
 
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
-    this.itemsLoaded = new NativePromise((resolve) => {
-      this.itemsLoadedResolve = resolve;
-    });
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
       this.itemsLoadedResolve();
@@ -617,7 +628,7 @@ export default class SelectComponent extends Field {
     }
 
     // Only load the data if it is visible.
-    if (!this.checkConditions()) {
+    if (!this.visible) {
       this.itemsLoadedResolve();
       return;
     }
@@ -842,6 +853,7 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, 'component.searchFields', ['label']),
+      shadowRoot: this.root ? this.root.shadowRoot : null,
       fuseOptions: this.component.useExactSearch
         ? {}
         : Object.assign(
@@ -1013,7 +1025,7 @@ export default class SelectComponent extends Field {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.updateItems();
+    this.triggerUpdate();
     return superAttach;
   }
 
@@ -1106,7 +1118,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if (this.isEmpty(value)) {
+      if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1317,6 +1329,11 @@ export default class SelectComponent extends Field {
       }
     }
 
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
+      this.redraw();
+      return changed;
+    }
+
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
       return changed;
@@ -1396,6 +1413,10 @@ export default class SelectComponent extends Field {
   }
 
   set itemsLoaded(promise) {
+    // Make sure we always resolve the previous promise before reassign it
+    if (typeof this.itemsLoadedResolve === 'function') {
+      this.itemsLoadedResolve();
+    }
     this._itemsLoaded = promise;
   }
 
@@ -1448,7 +1469,7 @@ export default class SelectComponent extends Field {
 
   /**
    * If component has static values (values, json) or custom values, returns an array of them
-   * @returns {Array<*>|undefiened}
+   * @returns {Array<*>|undefined}
    */
   getOptionsValues() {
     let rawItems = [];
@@ -1564,10 +1585,15 @@ export default class SelectComponent extends Field {
             valueProperty: this.valueProperty,
           };
 
+      const getFromValues = () => {
+        const initialValue = _.find(items, [valueProperty, value]);
+        const values = this.defaultSchema.data.values || [];
+        return _.isEqual(initialValue, values[0]) ? '-' : initialValue;
+      };
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
         : valueProperty
-          ? _.find(items, [valueProperty, value])
+          ? getFromValues()
           : value;
     }
 

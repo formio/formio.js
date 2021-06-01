@@ -281,10 +281,10 @@ function getRow(component, row, instance, conditional) {
     setPathToComponentAndPerentSchema(instance);
   }
   const dataParent = getDataParentComponent(instance);
-  const parentPathWithoutIndicies = dataParent?.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
-  if (dataParent && condition.when?.startsWith(parentPathWithoutIndicies)) {
+  const parentPath = dataParent ? getComponentPath(dataParent) : null;
+  if (dataParent && condition.when?.startsWith(parentPath)) {
     const newRow = {};
-    _.set(newRow, parentPathWithoutIndicies, row);
+    _.set(newRow, parentPath, row);
     row = newRow;
   }
 
@@ -815,7 +815,7 @@ export function matchInputMask(value, inputMask) {
   }
 
   for (let i = 0; i < inputMask.length; i++) {
-    const char = value[i];
+    const char = value[i] || '';
     const charPart = inputMask[i];
 
     if (!(_.isRegExp(charPart) && charPart.test(char) || charPart === char)) {
@@ -1390,10 +1390,10 @@ export function getComponentPathWithoutIndicies(path = '') {
  * @param {*} component is a component's schema containing link to its parent's schema in the 'parent' property
  */
 export function getComponentPath(component, path = '') {
-  if (!component || !component.key) {
+  if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
     return path;
   }
-  path = component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
+  path = component.isInputComponent || component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
   return getComponentPath(component.parent, path);
 }
 

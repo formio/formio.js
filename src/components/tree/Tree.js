@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import Components from '../Components';
-import NestedComponent from '../_classes/nested/NestedComponent';
+import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 import Node from './Node';
 import NativePromise from 'native-promise-only';
 
-export default class TreeComponent extends NestedComponent {
+export default class TreeComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedDataComponent.schema({
       label: 'Tree',
       key: 'tree',
       type: 'tree',
@@ -15,6 +15,7 @@ export default class TreeComponent extends NestedComponent {
       input: true,
       tree: true,
       components: [],
+      multiple: false,
     }, ...extend);
   }
 
@@ -70,6 +71,10 @@ export default class TreeComponent extends NestedComponent {
   set disabled(disabled) {
     super.disabled = disabled;
     this.viewComponents.forEach((component) => component.parentDisabled = disabled);
+  }
+
+  get isDefaultValueComponent() {
+    return !!this.options.editComponent && !!this.options.editForm && this.component.key === 'defaultValue';
   }
 
   destroy() {
@@ -316,7 +321,13 @@ export default class TreeComponent extends NestedComponent {
       component: this,
     }, () => {
       if (node.isRoot) {
-        this.removeRoot();
+        if (node.persistentData && !_.isEmpty(node.persistentData)) {
+          node.cancel();
+          this.redraw();
+        }
+        else {
+          this.removeRoot();
+        }
       }
       else {
         node.cancel();
@@ -389,8 +400,10 @@ export default class TreeComponent extends NestedComponent {
       node,
       component: this,
     }, () => {
-      node.save();
-      this.updateTree();
+      const isSaved = node.save();
+      if (isSaved) {
+        this.updateTree();
+      }
 
       return node;
     });
@@ -421,10 +434,11 @@ export default class TreeComponent extends NestedComponent {
   setRoot() {
     const value = this.dataValue;
     this.treeRoot = new Node(null, value, {
-      isNew: !value.data,
+      isNew: this.builderMode ? true : !value.data,
       createComponents: this.createComponents.bind(this),
       checkNode: this.checkNode.bind(this, this.data),
       removeComponents: this.removeComponents,
+      parentPath: this.isDefaultValueComponent ? (this.path || this.component.key) : null,
     });
     this.hook('tree.setRoot', {
       root: this.treeRoot,
@@ -449,10 +463,15 @@ export default class TreeComponent extends NestedComponent {
   checkNode(data, node, flags, row) {
     return node.children.reduce(
       (result, child) => this.checkNode(data, child, flags, row) && result,
-      super.checkData(data, flags, node.data, node.components),
+      super.checkData(data, flags, node.data, node.components) && !node.editing && !node.new,
     );
+  }
+
+  getComponents() {
+    return this.treeRoot && (this.isDefaultValueComponent || (!this.isDefaultValueComponent && !this.builderMode))
+      ? this.treeRoot.getComponents()
+      : super.getComponents();
   }
 }
 
 TreeComponent.prototype.hasChanged = Component.prototype.hasChanged;
-TreeComponent.prototype.updateValue = Component.prototype.updateValue;
