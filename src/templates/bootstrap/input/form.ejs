@@ -1,8 +1,8 @@
 {% if (ctx.prefix || ctx.suffix) { %}
-  <div class="input-group">
-{% } %}
-{% if (ctx.prefix) { %}
-  <div class="input-group-prepend" ref="prefix">
+<div class="input-group">
+  {% } %}
+  {% if (ctx.prefix) { %}
+    <div class="input-group-prepend" ref="prefix">
     <span class="input-group-text">
       {% if(ctx.prefix instanceof HTMLElement){ %}
         {{ ctx.t(ctx.prefix.outerHTML, { _userInput: true }) }}
@@ -10,16 +10,19 @@
         {{ ctx.t(ctx.prefix, { _userInput: true }) }}
       {% } %}
     </span>
-  </div>
-{% } %}
-{% if (!ctx.component.editor && !ctx.component.wysiwyg) { %}
-  <{{ctx.input.type}}
-    ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
-    {% for (var attr in ctx.input.attr) { %}
-    {{attr}}="{{ctx.input.attr[attr]}}"
+    </div>
+  {% } %}
+  {% if (!ctx.component.editor && !ctx.component.wysiwyg) { %}
+    <{{ctx.input.type}}
+      ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
+      {% for (var attr in ctx.input.attr) { %}
+        {{attr}}="{{ctx.input.attr[attr]}}"
+      {% } %}
+      id="{{ctx.instance.id}}-{{ctx.component.key}}"
+    >{{ctx.input.content}}</{{ctx.input.type}}>
+    {% if (ctx.hasValueMaskInput) { %}
+      <input ref="valueMaskInput" />
     {% } %}
-    id="{{ctx.instance.id}}-{{ctx.component.key}}"
-  >{{ctx.input.content}}</{{ctx.input.type}}>
 {% } %}
 {% if (ctx.component.editor || ctx.component.wysiwyg) { %}
   <div ref="input"></div>

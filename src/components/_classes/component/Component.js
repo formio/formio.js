@@ -74,7 +74,7 @@ export default class Component extends Element {
       multiple: false,
 
       /**
-       * The default value of this compoennt.
+       * The default value of this component.
        */
       defaultValue: null,
 
@@ -751,7 +751,8 @@ export default class Component extends Element {
         (!recursion && (key === 'input')) ||
         (!recursion && (key === 'tableView')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
-        (val !== '' && val !== defaultSchema[key])
+        (val !== '' && val !== defaultSchema[key]) ||
+        (defaultSchema[key] && val !== defaultSchema[key])
       ) {
         modified[key] = val;
       }
@@ -2482,6 +2483,12 @@ export default class Component extends Element {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
+    const valueMaskInput = this.refs.valueMaskInput;
+
+    if (valueMaskInput?.mask) {
+      valueMaskInput.mask.textMaskInputElement.update(value);
+    }
+
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }

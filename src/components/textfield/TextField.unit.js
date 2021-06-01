@@ -10,7 +10,8 @@ import {
   comp2,
   comp4,
   comp5,
-  comp6
+  comp6,
+  withDisplayAndInputMasks,
 } from './fixtures';
 
 describe('TextField Component', () => {
@@ -1175,6 +1176,71 @@ describe('TextField Component', () => {
           }, 300);
         }, 300);
       }, 300);
+    }).catch(done);
+  });
+
+  it('Test Display mask', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, withDisplayAndInputMasks).then(form => {
+      const textField = form.getComponent(['textField']);
+      const textFieldDisplayMask = form.getComponent(['textFieldDisplayMask']);
+      const textFieldDisplayAndInputMasks = form.getComponent(['textFieldDisplayAndInputMasks']);
+      const textFieldDisplayAndInputMasksReverse = form.getComponent(['textFieldDisplayAndInputMasksReverse']);
+
+      Harness.dispatchEvent(
+        'input',
+        form.element,
+        '[name="data[textField]"',
+        (input) => input.value = '123123',
+      );
+      Harness.dispatchEvent(
+        'input',
+        form.element,
+        '[name="data[textFieldDisplayMask]"',
+        (input) => input.value = '123123',
+      );
+      Harness.dispatchEvent(
+        'input',
+        form.element,
+        '[name="data[textFieldDisplayAndInputMasks]"',
+        (input) => input.value = '123123',
+      );
+      Harness.dispatchEvent(
+        'input',
+        form.element,
+        '[name="data[textFieldDisplayAndInputMasksReverse]"',
+        (input) => input.value = '123123',
+      );
+
+      setTimeout(() => {
+        Harness.getInputValue(textField, 'data[textField]', '123-123');
+        Harness.getInputValue(textFieldDisplayMask, 'data[textFieldDisplayMask]', '123-123');
+        Harness.getInputValue(textFieldDisplayAndInputMasks, 'data[textFieldDisplayAndInputMasks]', '+1(23)-123');
+        Harness.getInputValue(textFieldDisplayAndInputMasksReverse, 'data[textFieldDisplayAndInputMasksReverse]', '123-123');
+
+        assert.equal(
+          textField.dataValue,
+          '123-123',
+          'If only Input mask is set, it should affect both value and view',
+        );
+        assert.equal(
+          textFieldDisplayMask.dataValue,
+          '123123',
+          'If only Display mask is set, it should affect only view',
+        );
+        assert.equal(
+          textFieldDisplayAndInputMasks.dataValue,
+          '123-123',
+          'If both Input and Display masks are set, the Input mask should be applied to value',
+        );
+        assert.equal(
+          textFieldDisplayAndInputMasksReverse.dataValue,
+          '+1(23)-123',
+          'If both Input and Display masks are set, the Input mask should be applied to value',
+        );
+        done();
+      }, 200);
     }).catch(done);
   });
 });

@@ -78,7 +78,8 @@ export default class Input extends Multivalue {
   }
 
   setInputMask(input, inputMask) {
-    return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
+    const mask = inputMask || this.component.displayMask || this.component.inputMask;
+    return super.setInputMask(input, mask, !this.component.placeholder);
   }
 
   getMaskOptions() {
@@ -127,7 +128,13 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value))).replace(/"/g, '&quot;');
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)))
+      .replace(/"/g, '&quot;');
+
+    const valueMask = this.component.inputMask;
+    const displayMask = this.component.displayMask;
+    const hasDifferentDisplayAndSaveFormats = valueMask && displayMask && valueMask !== displayMask;
+
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
     }
@@ -144,6 +151,7 @@ export default class Input extends Multivalue {
         suffix: this.suffix,
         input: info,
         value: this.formatValue(this.parseValue(value)),
+        hasValueMaskInput: hasDifferentDisplayAndSaveFormats,
         index
       });
   }

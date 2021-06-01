@@ -804,6 +804,27 @@ export function getInputMask(mask, placeholderChar) {
   return maskArray;
 }
 
+export function unmaskValue(value, mask, placeholderChar) {
+  if (!mask || !value || value.length > mask.length) {
+    return value;
+  }
+
+  let unmaskedValue = value.split('');
+
+  for (let i = 0; i < mask.length; i++) {
+    const char = value[i] || '';
+    const charPart = mask[i];
+
+    if (!_.isRegExp(charPart) && char === charPart) {
+      unmaskedValue[i] = '';
+    }
+  }
+
+  unmaskedValue = unmaskedValue.join('').replace(placeholderChar, '');
+
+  return unmaskedValue;
+}
+
 export function matchInputMask(value, inputMask) {
   if (!inputMask) {
     return true;
