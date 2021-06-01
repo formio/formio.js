@@ -1538,6 +1538,17 @@ class Formio {
   static getPathType() {
     return Formio.pathType;
   }
+
+  static get rulesEntities() {
+    return {
+      ValueSources: Formio.ValueSources,
+      Conjunctions: Formio.Conjunctions,
+      Operators: Formio.Operators,
+      Transformers: Formio.Transformers,
+      QuickRules: Formio.QuickRules,
+      Rules: Formio.Rules,
+    };
+  }
 }
 
 // Define all the static properties.

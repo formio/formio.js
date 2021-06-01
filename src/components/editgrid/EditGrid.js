@@ -228,7 +228,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     else {
       this.editRows = dataValue.map((row, rowIndex) => ({
-        components: this.createRowComponents(row, rowIndex),
+        components: this.lazyLoad ? [] : this.createRowComponents(row, rowIndex),
         data: row,
         state: EditRowState.Saved,
         backup: null,
@@ -696,6 +696,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     editRow.prevState = editRow.state;
     editRow.state = this.options.readOnly ? EditRowState.Viewing : EditRowState.Editing;
 
+    if (this.lazyLoad && (editRow.components.length === 0)) {
+      editRow.components = this.createRowComponents(editRow.data, rowIndex);
+    }
+
     const dataSnapshot = fastCloneDeep(editRow.data);
 
     if (this.inlineEditMode) {
@@ -1111,7 +1115,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
       else {
         this.editRows[rowIndex] = {
-          components: this.createRowComponents(row, rowIndex),
+          components: this.lazyLoad ? [] : this.createRowComponents(row, rowIndex),
           data: row,
           state: EditRowState.Saved,
           backup: null,

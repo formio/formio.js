@@ -1,9 +1,9 @@
-import baseEditForm from '../_classes/component/Component.form';
+import Components from '../Components';
 
 import TagsEditData from './editForm/Tags.edit.data';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'data',
       components: TagsEditData

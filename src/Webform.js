@@ -1026,6 +1026,7 @@ export default class Webform extends NestedDataComponent {
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(document, 'keydown', this.executeShortcuts);
     this.currentForm = this;
+    this.hook('attachWebform', element, this);
     return childPromise.then(() => {
       this.emit('render', this.element);
 
@@ -1642,6 +1643,14 @@ export default class Webform extends NestedDataComponent {
 
   get nosubmit() {
     return this._nosubmit || false;
+  }
+
+  get conditions() {
+    return this.schema.settings?.conditions ?? [];
+  }
+
+  get variables() {
+    return this.schema.settings?.variables ?? [];
   }
 }
 
