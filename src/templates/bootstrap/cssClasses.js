@@ -10,6 +10,6 @@ export default {
   'formio-alert-danger': 'alert alert-danger',
   'formio-alert-success': 'alert alert-success',
   'formio-alert-warning': 'alert alert-warning',
-  'formio-modal-cancel-button': 'btn btn-danger',
-  'formio-modal-confirm-button': 'btn btn-primary',
+  'formio-modal-cancel-button': 'btn btn-danger formio-dialog-button',
+  'formio-modal-confirm-button': 'btn btn-primary formio-dialog-button',
 };
