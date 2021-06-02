@@ -675,6 +675,10 @@ export default class Webform extends NestedDataComponent {
       this.options.components = form.settings.components;
     }
 
+    if (form && form.properties) {
+      this.options.properties = form.properties;
+    }
+
     if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
       this.ready.then(() => {
         this.setAlert('alert alert-danger', 'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.');
