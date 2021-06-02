@@ -1,7 +1,7 @@
 <div 
-  role="radiogroup"
   class="form-radio radio"
   ref="radioGroup"
+  role="{{ctx.component.type === 'selectboxes' ? 'group' : 'radiogroup'}}"
   aria-required="{{ctx.input.component.validate.required}}"
   aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}"
   {% if (ctx.component.description) { %}
@@ -27,7 +27,7 @@
           disabled=true
         {% } %}
         id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
-        role="radio"
+        role="{{ctx.component.type === 'selectboxes' ? 'checkbox' : 'radio'}}"
       >
       {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
       <span>{{ctx.t(item.label, { _userInput: true })}}</span>
