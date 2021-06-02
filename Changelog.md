@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+<<<<<<< HEAD
 ### 4.14.0-rc.3
 #### Fixed
  - Issue with the auto-disable default values.
@@ -29,6 +30,63 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### 4.14.0-rc.1
 #### Addded
  - FIO-1112: Add vertical layout for tabs component
+=======
+### 4.13.2
+#### Changes
+ - No changes. Released 4.13.2-rc.4 as official release.
+
+### 4.13.2-rc.4
+#### Fixed
+ - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+
+### 4.13.2-rc.3
+#### Fixed
+ - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
+
+#### Changed
+ - Upgrade @babel/core@7.14.3, @babel/preset-env@7.14.2, marked@2.0.5, webpack@5.37.1, i18next@20.3.0, idb@6.1.1, @babel/cli@7.14.3, @babel/plugin-proposal-optional-chaining@7.14.2, eslint@7.27.0, jsdom@16.6.0
+
+### 4.13.2-rc.2
+#### Fixed
+ - FIO-2986: Inherit default (en) translations (validations, buttons) for custom languages
+ - FIO-2786: fix problem with initial button click on Nested Wizard in Modal Edit
+ - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source. 
+ - FIO-2677: Fix submission not set on pdf for components with calculated value
+ - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
+ - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
+ - FIO-2617: Camera on file dropzone
+ - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
+ - FIO-1409: Add save on enter option for button component
+ - FIO-2676: Conditionally showing columns are not auto-adjusting when auto adjust column is set to true
+
+### 4.13.2-rc.1
+#### Fixed
+ - FIO-2936: replace finally method for better compatibility
+
+#### Changed
+ - Adding a more standard export for Formio object.
+
+### 4.13.1
+#### Changed
+ - No changes. Released 4.13.1-rc.7 as official release.
+
+### 4.13.1-rc.7
+#### Fixed
+ - FIO-2812: add a flag to track the submission process and add the method for reuse
+ - FIO-2788: fix static Oauth redirectURI
+ - FIO-2785: Fixes an issue when a nested form draft isn't loaded and not populate data from nested level 2 and etc.
+ - FIO-2730: Get rid of formio logo at the bottom when embedding.
+
+### 4.13.1-rc.6
+#### Fixed
+ - FIO-2798: Fixes an issue where some errors messages are not translated
+ - FIO-2747: fix conditional appearance of a nested wizard
+
+### 4.13.1-rc.5
+### Fixed
+ - FIO-2747: change checking way for component pagination
+ - FIO-2812: remove unnecessary rebuilds
+>>>>>>> master
 
 ### 4.13.1-rc.4
 #### Fixed

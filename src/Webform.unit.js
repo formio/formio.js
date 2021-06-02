@@ -26,6 +26,7 @@ import {
   formWithBlurValidationInsidePanel,
   modalEditComponents,
   calculatedNotPersistentValue,
+  calculateValueInEditingMode,
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
@@ -49,6 +50,7 @@ import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGrid
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
+import calculatedValue from '../test/forms/calculatedValue';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -2131,7 +2133,7 @@ describe('Webform tests', function() {
   describe('Calculate Value', () => {
     it('Should calculate value when set submission if the component is not persistent', (done) => {
       const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
       form.setForm(calculatedNotPersistentValue).then(() => {
         form.setSubmission({
           data:
@@ -2147,6 +2149,54 @@ describe('Webform tests', function() {
           assert.equal(notPersistentFieldInput.value, 'testValue', 'Should calculate the value');
           done();
         }, 550);
+      }).catch(done);
+    });
+    it('Should calculate value by datasouce component when editing mode is on', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculateValueInEditingMode).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              select: { label: 'Dummy #1', value: 'dummy1' },
+              dataSourceDisplay: 'some value'
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const dataSourceDisplay = form.getComponent('dataSourceDisplay');
+          assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set and keep the value');
+          done();
+        }, 1000);
+      }).catch(done);
+    });
+    it('Should calculate value properly in editing mode', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculatedValue).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              a: 4,
+              b: 5,
+              total: 9,
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const total = form.getComponent(['total']);
+          assert.equal(total.dataValue, 9, 'Should set and keep the value');
+
+          const b = form.getComponent(['b']);
+          Harness.dispatchEvent('input', b.element, 'input', (i) => i.value = '6');
+
+          setTimeout(() => {
+            assert.equal(total.dataValue, 10, 'Should recalculate the value');
+          }, 300);
+          done();
+        }, 1000);
       }).catch(done);
     });
   });

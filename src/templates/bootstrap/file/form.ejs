@@ -73,7 +73,7 @@
   {% } else if (!ctx.self.cameraMode) { %}
     <div class="fileSelector" ref="fileDrop" {{ctx.fileDropHidden ? 'hidden' : ''}}>
       <i class="{{ctx.iconClass('cloud-upload')}}"></i> {{ctx.t('Drop files to attach,')}}
-        {% if (ctx.self.imageUpload) { %}
+        {% if (ctx.component.webcam) { %}
           <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('use camera')}}</a>
         {% } %}
         {{ctx.t('or')}}
