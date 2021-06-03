@@ -222,6 +222,7 @@ import { nestedFormInWizard } from &apos;../test/fixtures&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { fastCloneDeep } from &apos;../lib/utils/utils&apos;;
 import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
+import conditionalDataGridWithTableAndRadio from &apos;../test/forms/conditionalDataGridWithTableAndRadio&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -2370,6 +2371,73 @@ describe(&apos;Webform tests&apos;, function() {
         }, 1000);
       }).catch(done);
     });
+  });
+
+  it(&apos;Should set different ids for components inside different Table rows&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+    form.setForm(conditionalDataGridWithTableAndRadio).then(() =&gt; {
+      const radioInspection0 = form.getComponent([&apos;inspectionDataGrid&apos;, 0, &apos;initialExam&apos;]);
+      Harness.dispatchEvent(
+        &apos;click&apos;,
+        radioInspection0.element,
+        &apos;input[value=&quot;reject&quot;]&apos;,
+        i =&gt; i.checked = true,
+      );
+
+      setTimeout(() =&gt; {
+        const repairDataGrid0 = form.getComponent([&apos;inspectionDataGrid&apos;, 0, &apos;repairDataGrid&apos;]);
+        assert.equal(radioInspection0.dataValue, &apos;reject&apos;, &apos;Should set value&apos;);
+        assert.equal(repairDataGrid0.visible, true, &apos;Should become visible&apos;);
+
+        const radioRepair0 = form.getComponent([&apos;inspectionDataGrid&apos;, 0, &apos;repairDataGrid&apos;, 0, &apos;repairExam&apos;]);
+        Harness.dispatchEvent(
+          &apos;click&apos;,
+          radioRepair0.element,
+          &apos;input[value=&quot;accept&quot;]&apos;,
+            i =&gt; i.checked = true,
+        );
+
+        setTimeout(() =&gt; {
+          assert.equal(radioRepair0.dataValue, &apos;accept&apos;, &apos;Should set value&apos;);
+          const inspectionDataGrid = form.getComponent([&apos;inspectionDataGrid&apos;]);
+          inspectionDataGrid.addRow();
+
+          setTimeout(() =&gt; {
+            assert.equal(inspectionDataGrid.rows.length, 2, &apos;Should add a row&apos;);
+
+            const radioInspection1 = form.getComponent([&apos;inspectionDataGrid&apos;, 1, &apos;initialExam&apos;]);
+            Harness.dispatchEvent(
+              &apos;click&apos;,
+              radioInspection1.element,
+              &apos;input[value=&quot;reject&quot;]&apos;,
+              i =&gt; i.checked = true,
+            );
+
+            setTimeout(() =&gt; {
+              const repairDataGrid1 = form.getComponent([&apos;inspectionDataGrid&apos;, 1, &apos;repairDataGrid&apos;]);
+              assert.equal(radioInspection1.dataValue, &apos;reject&apos;, &apos;Should set value&apos;);
+              assert.equal(repairDataGrid1.visible, true, &apos;Should become visible&apos;);
+
+              const radioRepair1 = form.getComponent([&apos;inspectionDataGrid&apos;, 1, &apos;repairDataGrid&apos;, 0, &apos;repairExam&apos;]);
+              Harness.dispatchEvent(
+                &apos;click&apos;,
+                form.element,
+                form.element.querySelector(`#${radioRepair1.id}${radioRepair1.row}-accept`),
+                i =&gt; i.checked = true
+              );
+
+              setTimeout(() =&gt; {
+                assert.equal(radioRepair1.dataValue, &apos;accept&apos;, &apos;Should set value of the clicked radio&apos;);
+                assert.equal(radioRepair0.dataValue, &apos;accept&apos;, &apos;Value of the radio inside another row should stay the same&apos;);
+
+                done();
+              }, 300);
+            }, 350);
+          }, 300);
+        }, 250);
+      }, 350);
+    }).catch(done);
   });
 
   it(&apos;Should render components properly&apos;, (done) =&gt; {

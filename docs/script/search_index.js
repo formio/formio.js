@@ -1764,6 +1764,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio.currentuserresolved",
+    "class/src/Formio.js~Formio.html#static-member-currentUserResolved",
+    "src/Formio.js~Formio.currentUserResolved",
+    "member"
+  ],
+  [
     "src/formio.js~formio.deregisterplugin",
     "class/src/Formio.js~Formio.html#static-method-deregisterPlugin",
     "src/Formio.js~Formio.deregisterPlugin",

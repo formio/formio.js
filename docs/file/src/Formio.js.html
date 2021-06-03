@@ -213,6 +213,7 @@ function cloneResponse(response) {
  *   let formio = new Formio(&apos;https://examples.form.io/example&apos;);
  */
 class Formio {
+  static currentUserResolved = true;
   /* eslint-disable max-statements */
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
@@ -1242,7 +1243,9 @@ class Formio {
       }
     }
     // Return or updates the current user
-    return Formio.currentUser(opts.formio, opts);
+    return this.currentUserResolved
+      ? Formio.currentUser(opts.formio, opts)
+      : NativePromise.resolve(null);
   }
 
   static getToken(options) {
@@ -1458,8 +1461,11 @@ class Formio {
         options
       });
     }
+
+    this.currentUserResolved = false;
     return Formio.makeRequest(formio, &apos;currentUser&apos;, authUrl, &apos;GET&apos;, null, options)
       .then((response) =&gt; {
+        this.currentUserResolved = true;
         Formio.setUser(response, options);
         return response;
       });
