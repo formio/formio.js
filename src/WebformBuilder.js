@@ -466,8 +466,9 @@ export default class WebformBuilder extends Component {
    * @param component
    */
   findNamespaceRoot(component) {
+    const path = getArrayFromComponentPath(component.path);
     // First get the component with nested parents.
-    const comp = getComponent(this.webform.form.components, component.key, true);
+    const comp = this.webform.getComponent(path);
     const namespaceKey = this.recurseNamespace(comp);
 
     // If there is no key, it is the root form.
@@ -475,9 +476,10 @@ export default class WebformBuilder extends Component {
       return this.form.components;
     }
 
+    const componentSchema = component.component;
     // If the current component is the namespace, we don't need to find it again.
     if (namespaceKey === component.key) {
-      return [...component.components, component];
+      return [...componentSchema.components, componentSchema];
     }
 
     // Get the namespace component so we have the original object.
@@ -876,7 +878,7 @@ export default class WebformBuilder extends Component {
 
     if (target !== source) {
       // Ensure the key remains unique in its new container.
-      BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent.component), info);
+      BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent), info);
     }
 
     const parent = target.formioComponent;
@@ -1372,7 +1374,7 @@ export default class WebformBuilder extends Component {
             }
 
             if (this.form) {
-              let formComponents = this.findNamespaceRoot(parent.formioComponent.component);
+              let formComponents = this.findNamespaceRoot(parent.formioComponent);
               // excluding component which key uniqueness is to be checked to prevent the comparing of the same keys
               formComponents = formComponents.filter(comp => editFormOptions.editComponent.id !== comp.id);
 
@@ -1464,7 +1466,7 @@ export default class WebformBuilder extends Component {
         const schema = JSON.parse(data);
         const parent = this.getParentElement(component.element);
         if (parent) {
-          BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
+          BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent), schema);
           let path = '';
           let index = 0;
 
