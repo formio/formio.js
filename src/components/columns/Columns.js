@@ -15,8 +15,7 @@ export default class ColumnsComponent extends NestedComponent {
       input: false,
       tableView: false,
       persistent: false,
-      autoAdjust: false,
-      hideOnChildrenHidden: false
+      autoAdjust: false
     }, ...extend);
   }
 
@@ -77,18 +76,20 @@ export default class ColumnsComponent extends NestedComponent {
       if (!column.size) {
         column.size = 'md';
       }
-
+      column.currentWidth = column.width || 0;
       // Ensure there is a components array.
       if (!Array.isArray(column.components)) {
         column.components = [];
       }
       _.each(column.components, (comp) => {
-        comp.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
         const component = this.createComponent(comp);
         component.column = index;
         this.columns[index].push(component);
       });
     });
+    if (this.component.autoAdjust) {
+      this.justify();
+    }
     this.rows = this.groupByRow();
   }
 
@@ -101,6 +102,21 @@ export default class ColumnsComponent extends NestedComponent {
       columnKey: this.columnKey,
       columnComponents: this.columns.map(column => this.renderComponents(column))
     }));
+  }
+
+  justifyColumn(items, index) {
+    const toAdjust = _.every(items, item => !item.visible);
+    const column = this.component.columns[index];
+    if (toAdjust && items.length) {
+      column.currentWidth = 0;
+    }
+    else {
+      column.currentWidth = column.width;
+    }
+  }
+
+  justify() {
+    _.each(this.columns, this.justifyColumn.bind(this));
   }
 
   attach(element) {
@@ -116,32 +132,6 @@ export default class ColumnsComponent extends NestedComponent {
 
   get gridSize() {
     return 12;
-  }
-
-  justifyRow(columns) {
-    const visible = _.filter(columns, 'visible');
-    const nbColumns = columns.length;
-    const nbVisible = visible.length;
-
-    if (nbColumns > 0 && nbVisible > 0) {
-      const w = Math.floor(this.gridSize / nbVisible);
-      const totalWidth = w * nbVisible;
-      const span = this.gridSize - totalWidth;
-
-      _.each(visible, column => {
-        column.component.width = w;
-      });
-
-      // In case when row is not fully filled,
-      // extending last col to fill empty space.
-      _.last(visible).component.width += span;
-
-      _.each(visible, col => {
-        if (col.element) {
-          col.element.setAttribute('class', col.className);
-        }
-      });
-    }
   }
 
   /**
@@ -167,19 +157,12 @@ export default class ColumnsComponent extends NestedComponent {
     return _.concat(result.rows, [result.stack]);
   }
 
-  justify() {
-    _.each(this.columns, this.justifyRow.bind(this));
-  }
-
   checkComponentConditions(data, flags, row) {
     if (this.component.autoAdjust) {
-      const result = super.checkComponentConditions(data, flags, row);
+      this.rebuild();
       this.justify();
-      return result;
     }
-    else {
-      return super.checkComponentConditions(data, flags, row);
-    }
+    return super.checkComponentConditions(data, flags, row);
   }
 
   detach(all) {
