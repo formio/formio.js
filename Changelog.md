@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.11
+#### Changed
+ - Revert FIO-301: Fixes columns to work with single columns.
+
 ### 4.14.0-rc.10
 #### Added
  - FIO-1317: Implements capability to use NextGen Rules Engine from premium in 4x.
