@@ -4,7 +4,7 @@ import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import Formio from './Formio';
-import { fastCloneDeep, bootstrapVersion } from './utils/utils';
+import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
