@@ -476,7 +476,8 @@ export default class WebformBuilder extends Component {
   findNamespaceRoot(component) {
     const path = getArrayFromComponentPath(component.path);
     // First get the component with nested parents.
-    const comp = this.webform.getComponent(path);
+    let comp = this.webform.getComponent(path);
+    comp = Array.isArray(comp) ? comp[0] : comp;
     const namespaceKey = this.recurseNamespace(comp);
 
     // If there is no key, it is the root form.
