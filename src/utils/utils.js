@@ -866,21 +866,21 @@ export function getCurrencyAffixes({
    lang,
  }) {
   // Get the prefix and suffix from the localized string.
-  let regex = '(.*)?100';
+  let regex = `(.*)?${(100).toLocaleString(lang)}`;
   if (decimalLimit) {
-    regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}`;
+    regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}${(0).toLocaleString(lang)}{${decimalLimit}}`;
   }
   regex += '(.*)?';
   const parts = (100).toLocaleString(lang, {
     style: 'currency',
     currency,
     useGrouping: true,
-    maximumFractionDigits: decimalLimit,
-    minimumFractionDigits: decimalLimit
+    maximumFractionDigits: decimalLimit || 0,
+    minimumFractionDigits: decimalLimit || 0
   }).replace('.', decimalSeparator).match(new RegExp(regex));
   return {
-    prefix: parts[1] || '',
-    suffix: parts[2] || ''
+    prefix: parts?.[1] || '',
+    suffix: parts?.[2] || ''
   };
 }
 

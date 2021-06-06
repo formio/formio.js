@@ -821,4 +821,54 @@ describe('Util Tests', () => {
       expect(unescapedString).to.equal('<p>ampersand & "quotes" test</p>');
     });
   });
+
+  describe('getCurrencyAffixes', () => {
+    it('USD en', (done) => {
+      try {
+        const affixis = utils.getCurrencyAffixes({
+          currency: 'USD',
+          decimalLimit: 2,
+          decimalSeparator: '.',
+          lang: 'en',
+        });
+        const expectedResult = {
+          prefix: '$',
+          suffix: '',
+        };
+        assert.deepEqual(
+          affixis,
+          expectedResult,
+          'Should return $ as prefix and no suffix for USD currency using English'
+        );
+        done();
+      }
+      catch (err) {
+        done(err);
+      }
+    });
+
+    it('USD ar-SA', (done) => {
+      try {
+        const affixis = utils.getCurrencyAffixes({
+          currency: 'USD',
+          decimalLimit: 2,
+          decimalSeparator: '٫',
+          lang: 'ar-SA',
+        });
+        const expectedResult = {
+          prefix: '',
+          suffix: ' US$',
+        };
+        assert.deepEqual(
+          affixis,
+          expectedResult,
+          'Should return US$ as suffix and no prefix for USD currency using Arabic Saudi Arabia'
+        );
+        done();
+      }
+      catch (err) {
+        done(err);
+      }
+    });
+  });
 });
