@@ -835,11 +835,8 @@ describe('Util Tests', () => {
           prefix: '$',
           suffix: '',
         };
-        assert.deepEqual(
-          affixes,
-          expectedResult,
-          'Should return $ as prefix and no suffix for USD currency using English'
-        );
+        expect(affixes.prefix).to.equal(expectedResult.prefix);
+        expect(affixes.suffix).to.equal(expectedResult.suffix);
         done();
       }
       catch (err) {
@@ -849,7 +846,7 @@ describe('Util Tests', () => {
 
     it('USD ar-SA', (done) => {
       try {
-        const affixes = utils.getCurrencyAffixes({
+        const affixes2 = utils.getCurrencyAffixes({
           currency: 'USD',
           decimalLimit: 2,
           decimalSeparator: '٫',
@@ -859,11 +856,8 @@ describe('Util Tests', () => {
           prefix: '',
           suffix: ' US$',
         };
-        assert.deepEqual(
-          affixes,
-          expectedResult,
-          'Should return US$ as suffix and no prefix for USD currency using Arabic Saudi Arabia'
-        );
+        expect(affixes2.prefix).to.equal(expectedResult.prefix);
+        expect(affixes2.suffix).to.equal(expectedResult.suffix);
         done();
       }
       catch (err) {
