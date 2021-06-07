@@ -70,6 +70,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
       opts.noRefresh = true;
     }
 
+    if (components.label && typeof opts !== 'boolean') {
+      opts.previousLabel = components.label.previousDataValue;
+    }
+
     const valid = _.reduce(
       components,
       (valid, component) => component[method](data, opts, row, silentCheck) && valid,

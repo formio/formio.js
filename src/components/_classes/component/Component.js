@@ -2549,6 +2549,7 @@ export default class Component extends Element {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
     const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
+    this.previousDataValue = this.dataValue;
     if (changed) {
       this.dataValue = newValue;
       this.updateOnChange(flags, changed);
@@ -2646,7 +2647,7 @@ export default class Component extends Element {
 
   doValueCalculation(dataValue, data, row, flags) {
     // If data was calculated in a submission and the editing mode is on, skip calculating
-    if (!flags.fromSubmission || !this.component.persistent) {
+    if ((!flags.fromSubmission || !this.component.persistent) && row.label !== flags.previousLabel) {
       return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
