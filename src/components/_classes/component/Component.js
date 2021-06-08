@@ -1979,12 +1979,16 @@ export default class Component extends Element {
 
   setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
-    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    elements.forEach((element) => {
+      this.setElementInvalid(this.performInputMapping(element), false);
+    });
     this.setInputWidgetErrorClasses(elements, hasErrors);
 
     if (hasErrors) {
       // Add error classes
-      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+      elements.forEach((input) => {
+        this.setElementInvalid(this.performInputMapping(input), true);
+      });
 
       if (dirty && this.options.highlightErrors) {
         this.addClass(element, this.options.componentErrorClass);
@@ -1996,6 +2000,18 @@ export default class Component extends Element {
     if (hasMessages) {
       this.addClass(element, 'has-message');
     }
+  }
+
+  setElementInvalid(element, invalid) {
+    if (!element) return;
+
+    if (invalid) {
+      this.addClass(element, 'is-invalid');
+    }
+    else {
+      this.removeClass(element, 'is-invalid');
+    }
+    element.setAttribute('aria-invalid', invalid ? 'true' : 'false');
   }
 
   clearOnHide() {
