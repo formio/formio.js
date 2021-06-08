@@ -374,10 +374,12 @@ export default class CalendarWidget extends InputWidget {
     }
 
     if (hasErrors) {
-      this.input.className = `${this.input.className} is-invalid`;
+      this.addClass(this.input, 'is-invalid');
+      this.input.setAttribute('aria-invalid', 'true');
     }
     else {
-      this.input.className = this.input.className.replace('is-invalid', '');
+      this.removeClass(this.input, 'is-invalid');
+      this.input.setAttribute('aria-invalid', 'false');
     }
   }
 
