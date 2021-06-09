@@ -2597,23 +2597,23 @@ export default class Component extends Element {
     }
 
     const dataValue = this.dataValue;
-    let calculatedValue = dataValue;
-    // Calculate the new value.
-
-    // If data was calculated in a submission and the editing mode is on, skip calculating
-    if (!flags.fromSubmission || !this.component.persistent) {
-      calculatedValue = this.evaluate(this.component.calculateValue, {
-        value: dataValue,
-        data,
-        row: row || this.data
-      }, 'value');
-    }
+    let calculatedValue =  this.evaluate(this.component.calculateValue, {
+      value: dataValue,
+      data,
+      row: row || this.data
+    }, 'value');
 
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
     }
 
     const changed = !_.isEqual(dataValue, calculatedValue);
+
+    if (flags.fromSubmission && this.component.persistent === true) {
+      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
 
     // Do not override calculations on server if they have calculateServer set.
     if (this.component.allowCalculateOverride) {
@@ -2631,12 +2631,6 @@ export default class Component extends Element {
       }
 
       if (flags.isReordered || !calculationChanged) {
-        return false;
-      }
-
-      if (flags.fromSubmission && this.component.persistent === true) {
-        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-        this.calculatedValue = calculatedValue;
         return false;
       }
 
