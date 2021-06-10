@@ -459,7 +459,7 @@ export default class CalendarWidget extends InputWidget {
       const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
       const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
 
-      if (!(isIEBrowser && !relatedTarget) && !relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+      if (!(isIEBrowser && !relatedTarget) && !this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
         const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
