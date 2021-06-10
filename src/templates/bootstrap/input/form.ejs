@@ -46,19 +46,13 @@
 {% if (ctx.prefix || ctx.suffix) { %}
   </div>
 {% } %}
-{% if (ctx.component.showCharCount) { %}
-  <span class="text-muted pull-right" ref="charcount" aria-live="polite"></span>
-{% } %}
-{% if (ctx.component.showWordCount) { %}
-  <span class="text-muted pull-right" ref="wordcount" aria-live="polite"></span>
-{% } %}
 {% if (ctx.component.showCharCount || ctx.component.showWordCount) { %}
 <div class="form-text {{ctx.component.description ? 'pull-right' : 'text-right'}}">
   {% if (ctx.component.showCharCount) { %}
-  <span aria-live="polite" class="text-muted" ref="charcount"></span>
+  <span class="text-muted" ref="charcount" aria-live="polite"></span>
   {% } %}
   {% if (ctx.component.showWordCount) { %}
-  <span aria-live="polite" class="text-muted" ref="wordcount"></span>
+  <span class="text-muted" ref="wordcount" aria-live="polite"></span>
   {% } %}
 </div>
 {% } %}
