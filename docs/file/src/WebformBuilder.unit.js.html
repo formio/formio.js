@@ -175,6 +175,7 @@
 import Harness from &apos;../test/harness&apos;;
 import WebformBuilder from &apos;./WebformBuilder&apos;;
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from &apos;../test/formtest&apos;;
+import testApiKeysUniquifying from &apos;../test/forms/testApiKeysUniquifying&apos;;
 
 describe(&apos;WebformBuilder tests&apos;, function() {
   this.retries(3);
@@ -230,6 +231,39 @@ describe(&apos;WebformBuilder tests&apos;, function() {
       const component = builder.webform.getComponent([&apos;textField&apos;]);
       assert.equal(component.errors.length, 1);
       done();
+    }).catch(done);
+  });
+
+  it(&apos;Should uniquify API keys when add a component to the container which already has the same type component&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(testApiKeysUniquifying).then(() =&gt; {
+      const columnInsideDataGrid = builder.webform.element.querySelector(&apos;[ref=&quot;columns-container&quot;]&apos;);
+      Harness.buildComponent(&apos;textfield&apos;, columnInsideDataGrid);
+      setTimeout(() =&gt; {
+        const apiKeyComp = builder.editForm.getComponent(&apos;key&apos;);
+        assert.equal(
+          apiKeyComp.dataValue,
+          &apos;textField1&apos;,
+          &apos;Should add a number to the API key, because DataGrid already has a textField&apos;
+        );
+        Harness.saveComponent();
+
+        setTimeout(() =&gt; {
+          const panelInsideEditGrid = builder.webform.element.querySelector(&apos;[ref=&quot;editGrid-container&quot;] [ref=&quot;panel-container&quot;]&apos;);
+          Harness.buildComponent(&apos;textfield&apos;, panelInsideEditGrid);
+
+          setTimeout(() =&gt; {
+            const apiKeyComp = builder.editForm.getComponent(&apos;key&apos;);
+            assert.equal(
+              apiKeyComp.dataValue,
+              &apos;textField1&apos;,
+              &apos;Should add a number to the API key, because DataGrid already has a textField&apos;
+            );
+
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 });
