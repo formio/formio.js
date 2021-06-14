@@ -164,6 +164,18 @@ describe('Select Component', () => {
     });
   });
 
+  it('should format unlisted values', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      const formattedValue1 = component.getView('Unlisted value');
+      const formattedValue2 = component.getView(0);
+
+      assert.equal(formattedValue1, '<span>Unlisted value</span>');
+      assert.equal(formattedValue2, '<span>0</span>');
+      done();
+    });
+  });
+
   it('should set multiple selected values not repeating them', function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);
