@@ -237,7 +237,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
-    const layoutFixed = columns.some(col => col.type === 'select') || this.component.layoutFixed;
+    const colWidth = Math.floor(12 / (columns.length + 1)).toString();
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
@@ -260,7 +260,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
-      layoutFixed
+      colWidth
     }));
   }
 
