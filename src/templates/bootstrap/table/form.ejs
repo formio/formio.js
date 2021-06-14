@@ -6,16 +6,16 @@
   ">
   {% if (ctx.component.header && ctx.component.header.length > 0) { %}
   <thead>
-    <tr class="row">
+    <tr>
       {% ctx.component.header.forEach(function(header) { %}
-      <th class="col-md-{{ctx.colWidth}}">{{ctx.t(header, { _userInput: true })}}</th>
+      <th>{{ctx.t(header)}}</th>
       {% }) %}
     </tr>
   </thead>
   {% } %}
   <tbody>
     {% ctx.tableComponents.forEach(function(row, rowIndex) { %}
-    <tr class="row" ref="row-{{ctx.id}}">
+    <tr ref="row-{{ctx.id}}">
       {% row.forEach(function(column, colIndex) { %}
       <td ref="{{ctx.tableKey}}-{{rowIndex}}"{% if (ctx.cellClassName) { %} class="{{ctx.cellClassName}} col-md-{{ctx.colWidth}}"{% } %}>{{column}}</td>
       {% }) %}
