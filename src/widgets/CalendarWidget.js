@@ -56,8 +56,8 @@ export default class CalendarWidget extends InputWidget {
   }
   /* eslint-enable camelcase */
 
-  constructor(settings, component) {
-    super(settings, component);
+  constructor(settings, component, instance) {
+    super(settings, component, instance);
     // Change the format to map to the settings.
     if (this.settings.noCalendar) {
       this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');
@@ -500,6 +500,10 @@ export default class CalendarWidget extends InputWidget {
           return Flatpickr.formatDate(date, format);
         }
 
+        const currentValue = new Date(this.getValue());
+        if (currentValue.toString() === date.toString()) {
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), new Date(this.componentInstance.dataValue), format, this.timezone);
+        }
         return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
