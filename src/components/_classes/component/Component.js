@@ -964,7 +964,7 @@ export default class Component extends Element {
       settings.shadowRoot = this.root.shadowRoot;
     }
 
-    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component): null;
+    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component, this): null;
     return widget;
   }
 
