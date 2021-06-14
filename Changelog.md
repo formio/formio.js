@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.3-rc.4
+#### Fixed
+ - FIO-3309: Fixes console errors which occur sometimes with CalendarWidget
+
 ### 4.13.3-rc.3
 #### Fixed
  - FIO-3229: Fixes an issue where checkbox value in HTML more is always False
