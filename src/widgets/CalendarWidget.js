@@ -389,11 +389,11 @@ export default class CalendarWidget extends InputWidget {
   }
 
   isCalendarElement(element) {
-    if (isIEBrowser && !element) {
+    if (isIEBrowser || !element) {
       return true;
     }
 
-    if (this.calendar?.config?.appendTo.contains(element)) {
+    if (this.calendar?.config?.appendTo?.contains(element)) {
       return true;
     }
 
