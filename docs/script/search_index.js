@@ -2142,6 +2142,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#pdfloaded",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-pdfLoaded",
+    "src/PDFBuilder.js~PDFBuilder#pdfLoaded",
+    "member"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#prepsidebarcomponentsfordrag",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-prepSidebarComponentsForDrag",
     "src/PDFBuilder.js~PDFBuilder#prepSidebarComponentsForDrag",

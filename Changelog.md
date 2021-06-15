@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.3-rc.5
+#### Fixed
+ - FIO-3087: Prevent user from Drag'n'Drop components while PDF is loading
+
 ### 4.13.3-rc.4
 #### Fixed
  - FIO-3309: Fixes console errors which occur sometimes with CalendarWidget
