@@ -2162,7 +2162,8 @@ export default class Component extends Element {
     settings = {
       ...settings,
       modules: {
-        table: true
+        table: true,
+        ...settings.modules
       }
     };
     // Lazy load the quill css.
