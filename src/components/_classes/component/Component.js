@@ -928,12 +928,16 @@ export default class Component extends Element {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty) {
+  sanitize(dirty, options) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
     if (this.options.pdf) {
       return dirty;
     }
-    return FormioUtils.sanitize(dirty, this.options);
+    return FormioUtils.sanitize(
+      dirty,
+      {
+        sanitizeConfig: _.merge(this.options?.sanitizeConfig || {}, options || {}),
+      });
   }
 
   /**
@@ -1597,9 +1601,9 @@ export default class Component extends Element {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
-  setContent(element, content) {
+  setContent(element, content, sanitizeOptions) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content);
+      element.innerHTML = this.sanitize(content, sanitizeOptions);
       return true;
     }
     return false;
