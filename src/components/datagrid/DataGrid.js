@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep } from '../../utils/utils';
+import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 
 let dragula;
 if (typeof window !== 'undefined') {
@@ -386,6 +386,17 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.rebuild();
   }
 
+  focusOnNewRowElement(row) {
+    Object.keys(row).find((key) => {
+      const focusableElements = getFocusableElements(row[key].element);
+      if (focusableElements && focusableElements[0]) {
+        focusableElements[0].focus();
+        return true;
+      }
+      return false;
+    });
+  }
+
   addRow() {
     const index = this.rows.length;
 
@@ -409,7 +420,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.rows[index] = this.createRowComponents(row, index);
     this.checkConditions();
     this.triggerChange();
-    this.redraw();
+    this.redraw().then(() => {
+      this.focusOnNewRowElement(this.rows[index]);
+    });
   }
 
   updateComponentsRowIndex(components, rowIndex) {
