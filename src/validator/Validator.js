@@ -683,6 +683,11 @@ class ValidationChecker {
           if (!setting) {
             return true;
           }
+
+          if (component.type === 'time') {
+            value = component.dataValue;
+          }
+
           const valid = component.evaluate(setting, {
             valid: true,
             data,
