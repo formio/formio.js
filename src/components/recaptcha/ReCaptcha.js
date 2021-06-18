@@ -25,6 +25,7 @@ export default class ReCaptchaComponent extends Component {
   }
 
   render() {
+    this.recaptchaResult = null;
     if (this.builderMode) {
       return super.render('reCAPTCHA');
     }
@@ -75,10 +76,11 @@ export default class ReCaptchaComponent extends Component {
                 })
                 .then((token) => {
                   return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {
-                    this.setValue({
+                    this.recaptchaResult = {
                       ...verificationResult,
                       token,
-                    });
+                    };
+                    this.updateValue(this.recaptchaResult);
                     return resolve(verificationResult);
                   });
                 });
@@ -128,13 +130,8 @@ export default class ReCaptchaComponent extends Component {
       });
   }
 
-  setValue(value) {
-    const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    return changed;
-  }
-
-  getValue() {
-    return this.dataValue;
+  normalizeValue(newValue) {
+    // If a recaptcha result has already been established, then do not allow it to be reset.
+    return this.recaptchaResult ? this.recaptchaResult : newValue;
   }
 }

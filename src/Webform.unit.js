@@ -54,6 +54,8 @@ import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
+import calculateValueWithManualOverrideLableValueDataGrid
+  from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -2202,6 +2204,32 @@ describe('Webform tests', function() {
         }, 1000);
       }).catch(done);
     });
+    it('Should not override value which was set from submission', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculateValueWithManualOverrideLableValueDataGrid).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          state: 'submitted',
+          data: {
+            dataGrid: [
+              { label: '1', value: '1a' },
+              { label: '2', value: '2a' },
+              { label: '3', value: '3a' },
+            ]
+          },
+        });
+        setTimeout(() => {
+          const value1 = form.getComponent(['dataGrid', 0, 'value']);
+          assert.equal(value1.dataValue, '1a', 'Should have a value set from submission');
+          const value2 = form.getComponent(['dataGrid', 1, 'value']);
+          assert.equal(value2.dataValue, '2a', 'Should have a value set from submission');
+          const value3 = form.getComponent(['dataGrid', 2, 'value']);
+          assert.equal(value3.dataValue, '3a', 'Should have a value set from submission');
+          done();
+        }, 1000);
+      }).catch(done);
+    });
   });
 
   it('Should set different ids for components inside different Table rows', (done) => {
@@ -2551,9 +2579,12 @@ describe('Webform tests', function() {
         const customerSelectValueEl = customerSelectEl.querySelector('[ref="value"]');
         const htmlSelectEl = form.element.querySelector('.formio-component-panelHtml5Select');
         const htmlSelectValueEl = htmlSelectEl.querySelector('[ref="value"]');
+        const checkboxEl = form.element.querySelector('.formio-component-page3Iagreetothefollowtherules');
+        const checkboxValueEl = checkboxEl.querySelector('[ref="value"]');
 
         assert.equal(customerSelectValueEl.textContent.trim(), 'bob@example.com', 'Should render Select value properly');
         assert.equal(htmlSelectValueEl.textContent.trim(), 'banana', 'Should render HTML5 Select value properly');
+        assert.equal(checkboxValueEl.textContent.trim(), 'True', 'Should render Checkbox value properly');
 
         done();
       }, 300);

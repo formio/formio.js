@@ -1541,7 +1541,7 @@ export default class SelectComponent extends Field {
   }
 
   asString(value) {
-    value = value || this.getValue();
+    value = value ?? this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
       if (valueProperty) {
@@ -1593,7 +1593,7 @@ export default class SelectComponent extends Field {
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
         : valueProperty
-          ? getFromValues()
+          ? getFromValues() ?? { value, label: value }
           : value;
     }
 
