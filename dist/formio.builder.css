@@ -1062,6 +1062,33 @@ div[data-oembed-url] {
 .formio-editor-read-only-content img {
   max-width: 100%; }
 
+.formio-editor-read-only-content li[data-list="bullet"] {
+  list-style-type: none; }
+  .formio-editor-read-only-content li[data-list="bullet"] .ql-ui {
+    padding-right: 0.5rem; }
+    .formio-editor-read-only-content li[data-list="bullet"] .ql-ui::before {
+      content: "\2022"; }
+
+.formio-editor-read-only-content li[data-list="ordered"] {
+  list-style-type: none;
+  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  counter-increment: list-0; }
+  .formio-editor-read-only-content li[data-list="ordered"] .ql-ui {
+    padding-right: 0.5rem; }
+    .formio-editor-read-only-content li[data-list="ordered"] .ql-ui::before {
+      content: counter(list-0, decimal) ". "; }
+
+.formio-editor-read-only-content figure.table table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px double #b3b3b3; }
+  .formio-editor-read-only-content figure.table table th, .formio-editor-read-only-content figure.table table td {
+    min-width: 2em;
+    padding: .4em;
+    border: 1px solid #bfbfbf; }
+
 .formio-component-textfield .pull-right:not(:last-child),
 .formio-component-textarea .pull-right:not(:last-child),
 .formio-component-password .pull-right:not(:last-child) {

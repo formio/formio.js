@@ -17333,7 +17333,7 @@
     "__docId__": 959,
     "kind": "file",
     "name": "src/components/recaptcha/ReCaptcha.js",
-    "content": "/*globals grecaptcha*/\nimport Component from '../_classes/component/Component';\nimport Formio from '../../Formio';\nimport _get from 'lodash/get';\nimport NativePromise from 'native-promise-only';\n\nexport default class ReCaptchaComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      type: 'recaptcha',\n      key: 'recaptcha',\n      label: 'reCAPTCHA'\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'reCAPTCHA',\n      group: 'premium',\n      icon: 'refresh',\n      documentation: '/userguide/#recaptcha',\n      weight: 40,\n      schema: ReCaptchaComponent.schema()\n    };\n  }\n\n  render() {\n    if (this.builderMode) {\n      return super.render('reCAPTCHA');\n    }\n    else {\n      return super.render('', true);\n    }\n  }\n\n  createInput() {\n    if (this.builderMode) {\n      // We need to see it in builder mode.\n      this.append(this.text(this.name));\n    }\n    else {\n      const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n      if (siteKey) {\n        const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;\n        this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n      }\n      else {\n        console.warn('There is no Site Key specified in settings in form JSON');\n      }\n    }\n  }\n\n  createLabel() {\n    return;\n  }\n\n  verify(actionName) {\n    const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n    if (!siteKey) {\n      console.warn('There is no Site Key specified in settings in form JSON');\n      return;\n    }\n    if (!this.recaptchaApiReady) {\n      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, 'settings.recaptcha.siteKey')}`;\n      this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n    }\n    if (this.recaptchaApiReady) {\n      this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) => {\n        this.recaptchaApiReady\n          .then(() => {\n            grecaptcha.ready(() => {\n              grecaptcha\n                .execute(siteKey, {\n                  action: actionName\n                })\n                .then((token) => {\n                  return this.sendVerificationRequest(token);\n                })\n                .then(({ verificationResult, token }) => {\n                  this.setValue({\n                    ...verificationResult,\n                    token,\n                  });\n\n                  return resolve(verificationResult);\n                });\n            });\n          })\n          .catch(() => {\n            return reject();\n          });\n      });\n    }\n  }\n\n  beforeSubmit() {\n    if (this.recaptchaVerifiedPromise) {\n      return this.recaptchaVerifiedPromise\n        .then(() => super.beforeSubmit());\n    }\n    return super.beforeSubmit();\n  }\n\n  sendVerificationRequest(token) {\n    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)\n      .then((verificationResult) => ({ verificationResult, token }));\n  }\n\n  checkComponentValidity(data, dirty, row, options = {}) {\n    data = data || this.rootValue;\n    row = row || this.data;\n    const { async = false } = options;\n\n    // Verification could be async only\n    if (!async) {\n      return super.checkComponentValidity(data, dirty, row, options);\n    }\n\n    const componentData = row[this.component.key];\n    if (!componentData || !componentData.token) {\n      this.setCustomValidity('ReCaptcha: Token is not specified in submission');\n      return NativePromise.resolve(false);\n    }\n\n    return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))\n      .then((success) => success)\n      .catch((err) => {\n        this.setCustomValidity(err.message || err);\n        return false;\n      });\n  }\n\n  setValue(value) {\n    const changed = this.hasChanged(value, this.dataValue);\n    this.dataValue = value;\n    return changed;\n  }\n\n  getValue() {\n    return this.dataValue;\n  }\n}\n",
+    "content": "/*globals grecaptcha*/\nimport Component from '../_classes/component/Component';\nimport Formio from '../../Formio';\nimport _get from 'lodash/get';\nimport NativePromise from 'native-promise-only';\n\nexport default class ReCaptchaComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      type: 'recaptcha',\n      key: 'recaptcha',\n      label: 'reCAPTCHA'\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'reCAPTCHA',\n      group: 'premium',\n      icon: 'refresh',\n      documentation: '/userguide/#recaptcha',\n      weight: 40,\n      schema: ReCaptchaComponent.schema()\n    };\n  }\n\n  render() {\n    this.recaptchaResult = null;\n    if (this.builderMode) {\n      return super.render('reCAPTCHA');\n    }\n    else {\n      return super.render('', true);\n    }\n  }\n\n  createInput() {\n    if (this.builderMode) {\n      // We need to see it in builder mode.\n      this.append(this.text(this.name));\n    }\n    else {\n      const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n      if (siteKey) {\n        const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;\n        this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n      }\n      else {\n        console.warn('There is no Site Key specified in settings in form JSON');\n      }\n    }\n  }\n\n  createLabel() {\n    return;\n  }\n\n  verify(actionName) {\n    const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n    if (!siteKey) {\n      console.warn('There is no Site Key specified in settings in form JSON');\n      return;\n    }\n    if (!this.recaptchaApiReady) {\n      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, 'settings.recaptcha.siteKey')}`;\n      this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n    }\n    if (this.recaptchaApiReady) {\n      this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) => {\n        this.recaptchaApiReady\n          .then(() => {\n            grecaptcha.ready(() => {\n              grecaptcha\n                .execute(siteKey, {\n                  action: actionName\n                })\n                .then((token) => {\n                  return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {\n                    this.recaptchaResult = {\n                      ...verificationResult,\n                      token,\n                    };\n                    this.updateValue(this.recaptchaResult);\n                    return resolve(verificationResult);\n                  });\n                });\n            });\n          })\n          .catch(() => {\n            return reject();\n          });\n      });\n    }\n  }\n\n  beforeSubmit() {\n    if (this.recaptchaVerifiedPromise) {\n      return this.recaptchaVerifiedPromise\n        .then(() => super.beforeSubmit());\n    }\n    return super.beforeSubmit();\n  }\n\n  sendVerificationRequest(token) {\n    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)\n      .then((verificationResult) => ({ verificationResult, token }));\n  }\n\n  checkComponentValidity(data, dirty, row, options = {}) {\n    data = data || this.rootValue;\n    row = row || this.data;\n    const { async = false } = options;\n\n    // Verification could be async only\n    if (!async) {\n      return super.checkComponentValidity(data, dirty, row, options);\n    }\n\n    const componentData = row[this.component.key];\n    if (!componentData || !componentData.token) {\n      this.setCustomValidity('ReCaptcha: Token is not specified in submission');\n      return NativePromise.resolve(false);\n    }\n\n    return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))\n      .then((success) => success)\n      .catch((err) => {\n        this.setCustomValidity(err.message || err);\n        return false;\n      });\n  }\n\n  normalizeValue(newValue) {\n    // If a recaptcha result has already been established, then do not allow it to be reset.\n    return this.recaptchaResult ? this.recaptchaResult : newValue;\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/recaptcha/ReCaptcha.js",
     "access": "public",
@@ -17428,6 +17428,23 @@
   },
   {
     "__docId__": 964,
+    "kind": "member",
+    "name": "recaptchaResult",
+    "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
+    "static": false,
+    "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaResult",
+    "access": "public",
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 965,
     "kind": "method",
     "name": "createInput",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17437,13 +17454,13 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createInput",
     "access": "public",
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 37,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 965,
+    "__docId__": 966,
     "kind": "member",
     "name": "recaptchaApiReady",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17451,7 +17468,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaApiReady",
     "access": "public",
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 46,
     "undocument": true,
     "type": {
       "types": [
@@ -17460,7 +17477,7 @@
     }
   },
   {
-    "__docId__": 966,
+    "__docId__": 967,
     "kind": "method",
     "name": "createLabel",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17470,13 +17487,13 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createLabel",
     "access": "public",
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 54,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 967,
+    "__docId__": 968,
     "kind": "method",
     "name": "verify",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17486,7 +17503,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#verify",
     "access": "public",
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 58,
     "undocument": true,
     "params": [
       {
@@ -17499,7 +17516,7 @@
     "return": null
   },
   {
-    "__docId__": 969,
+    "__docId__": 970,
     "kind": "member",
     "name": "recaptchaVerifiedPromise",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17507,7 +17524,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaVerifiedPromise",
     "access": "public",
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 69,
     "undocument": true,
     "type": {
       "types": [
@@ -17516,7 +17533,7 @@
     }
   },
   {
-    "__docId__": 970,
+    "__docId__": 972,
     "kind": "method",
     "name": "beforeSubmit",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17536,7 +17553,7 @@
     }
   },
   {
-    "__docId__": 971,
+    "__docId__": 973,
     "kind": "method",
     "name": "sendVerificationRequest",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17563,7 +17580,7 @@
     }
   },
   {
-    "__docId__": 972,
+    "__docId__": 974,
     "kind": "method",
     "name": "checkComponentValidity",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
@@ -17611,63 +17628,26 @@
     }
   },
   {
-    "__docId__": 973,
+    "__docId__": 975,
     "kind": "method",
-    "name": "setValue",
+    "name": "normalizeValue",
     "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#setValue",
+    "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#normalizeValue",
     "access": "public",
     "description": null,
     "lineNumber": 133,
     "undocument": true,
     "params": [
       {
-        "name": "value",
+        "name": "newValue",
         "types": [
           "*"
         ]
       }
     ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 974,
-    "kind": "member",
-    "name": "dataValue",
-    "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
-    "static": false,
-    "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#dataValue",
-    "access": "public",
-    "description": null,
-    "lineNumber": 135,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 975,
-    "kind": "method",
-    "name": "getValue",
-    "memberof": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#getValue",
-    "access": "public",
-    "description": null,
-    "lineNumber": 139,
-    "undocument": true,
-    "params": [],
     "return": {
       "types": [
         "*"
@@ -33391,7 +33371,7 @@
     "__docId__": 1845,
     "kind": "file",
     "name": "src/widgets/InputWidget.js",
-    "content": "import _ from 'lodash';\nimport Element from '../Element';\nimport NativePromise from 'native-promise-only';\nexport default class InputWidget extends Element {\n  static get defaultSettings() {\n    return {\n      type: 'input'\n    };\n  }\n\n  constructor(settings, component, instance) {\n    super(settings);\n    this.componentInstance = instance;\n    this.namespace = 'formio.widget';\n    this.component = component || {};\n    this.settings = _.merge({}, this.defaultSettings, settings || {});\n  }\n\n  attach(input) {\n    this._input = input;\n    return NativePromise.resolve();\n  }\n\n  get defaultSettings() {\n    return {};\n  }\n\n  set disabled(disabled) {\n    if (disabled) {\n      this._input.setAttribute('disabled', 'disabled');\n    }\n    else {\n      this._input.removeAttribute('disabled');\n    }\n  }\n\n  get input() {\n    return this._input;\n  }\n\n  getValue() {\n    return this._input.value;\n  }\n\n  getValueAsString(value) {\n    return value;\n  }\n\n  validationValue(value) {\n    return value;\n  }\n\n  addPrefix() {\n    return null;\n  }\n\n  addSuffix() {\n    return null;\n  }\n\n  setValue(value) {\n    this._input.value = value;\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport Element from '../Element';\nimport NativePromise from 'native-promise-only';\nexport default class InputWidget extends Element {\n  static get defaultSettings() {\n    return {\n      type: 'input'\n    };\n  }\n\n  constructor(settings, component, instance, index) {\n    super(settings);\n    this.valueIndex = index || 0;\n    this.componentInstance = instance;\n    this.namespace = 'formio.widget';\n    this.component = component || {};\n    this.settings = _.merge({}, this.defaultSettings, settings || {});\n  }\n\n  attach(input) {\n    this._input = input;\n    return NativePromise.resolve();\n  }\n\n  get defaultSettings() {\n    return {};\n  }\n\n  set disabled(disabled) {\n    if (disabled) {\n      this._input.setAttribute('disabled', 'disabled');\n    }\n    else {\n      this._input.removeAttribute('disabled');\n    }\n  }\n\n  get input() {\n    return this._input;\n  }\n\n  getValue() {\n    return this._input.value;\n  }\n\n  getValueAsString(value) {\n    return value;\n  }\n\n  validationValue(value) {\n    return value;\n  }\n\n  addPrefix() {\n    return null;\n  }\n\n  addSuffix() {\n    return null;\n  }\n\n  setValue(value) {\n    this._input.value = value;\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/widgets/InputWidget.js",
     "access": "public",
@@ -33453,10 +33433,10 @@
   {
     "__docId__": 1849,
     "kind": "member",
-    "name": "componentInstance",
+    "name": "valueIndex",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
     "static": false,
-    "longname": "src/widgets/InputWidget.js~InputWidget#componentInstance",
+    "longname": "src/widgets/InputWidget.js~InputWidget#valueIndex",
     "access": "public",
     "description": null,
     "lineNumber": 13,
@@ -33470,30 +33450,13 @@
   {
     "__docId__": 1850,
     "kind": "member",
-    "name": "namespace",
+    "name": "componentInstance",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
     "static": false,
-    "longname": "src/widgets/InputWidget.js~InputWidget#namespace",
+    "longname": "src/widgets/InputWidget.js~InputWidget#componentInstance",
     "access": "public",
     "description": null,
     "lineNumber": 14,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 1851,
-    "kind": "member",
-    "name": "component",
-    "memberof": "src/widgets/InputWidget.js~InputWidget",
-    "static": false,
-    "longname": "src/widgets/InputWidget.js~InputWidget#component",
-    "access": "public",
-    "description": null,
-    "lineNumber": 15,
     "undocument": true,
     "type": {
       "types": [
@@ -33502,12 +33465,29 @@
     }
   },
   {
-    "__docId__": 1852,
+    "__docId__": 1851,
     "kind": "member",
-    "name": "settings",
+    "name": "namespace",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
     "static": false,
-    "longname": "src/widgets/InputWidget.js~InputWidget#settings",
+    "longname": "src/widgets/InputWidget.js~InputWidget#namespace",
+    "access": "public",
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "__docId__": 1852,
+    "kind": "member",
+    "name": "component",
+    "memberof": "src/widgets/InputWidget.js~InputWidget",
+    "static": false,
+    "longname": "src/widgets/InputWidget.js~InputWidget#component",
     "access": "public",
     "description": null,
     "lineNumber": 16,
@@ -33520,6 +33500,23 @@
   },
   {
     "__docId__": 1853,
+    "kind": "member",
+    "name": "settings",
+    "memberof": "src/widgets/InputWidget.js~InputWidget",
+    "static": false,
+    "longname": "src/widgets/InputWidget.js~InputWidget#settings",
+    "access": "public",
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 1854,
     "kind": "method",
     "name": "attach",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -33529,7 +33526,7 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 20,
     "undocument": true,
     "params": [
       {
@@ -33546,7 +33543,7 @@
     }
   },
   {
-    "__docId__": 1854,
+    "__docId__": 1855,
     "kind": "member",
     "name": "_input",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -33554,7 +33551,7 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#_input",
     "access": "private",
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 21,
     "undocument": true,
     "type": {
       "types": [
@@ -33563,7 +33560,7 @@
     }
   },
   {
-    "__docId__": 1855,
+    "__docId__": 1856,
     "kind": "get",
     "name": "defaultSettings",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -33573,7 +33570,7 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#defaultSettings",
     "access": "public",
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "undocument": true,
     "type": {
       "types": [
@@ -33582,7 +33579,7 @@
     }
   },
   {
-    "__docId__": 1856,
+    "__docId__": 1857,
     "kind": "set",
     "name": "disabled",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -33592,11 +33589,11 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#disabled",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 29,
     "undocument": true
   },
   {
-    "__docId__": 1857,
+    "__docId__": 1858,
     "kind": "get",
     "name": "input",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -33606,7 +33603,7 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#input",
     "access": "public",
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "undocument": true,
     "type": {
       "types": [
@@ -33615,7 +33612,7 @@
     }
   },
   {
-    "__docId__": 1858,
+    "__docId__": 1859,
     "kind": "method",
     "name": "getValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -33625,7 +33622,7 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#getValue",
     "access": "public",
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 42,
     "undocument": true,
     "params": [],
     "return": {
@@ -33635,7 +33632,7 @@
     }
   },
   {
-    "__docId__": 1859,
+    "__docId__": 1860,
     "kind": "method",
     "name": "getValueAsString",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
@@ -33645,34 +33642,7 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#getValueAsString",
     "access": "public",
     "description": null,
-    "lineNumber": 45,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 1860,
-    "kind": "method",
-    "name": "validationValue",
-    "memberof": "src/widgets/InputWidget.js~InputWidget",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/widgets/InputWidget.js~InputWidget#validationValue",
-    "access": "public",
-    "description": null,
-    "lineNumber": 49,
+    "lineNumber": 46,
     "undocument": true,
     "params": [
       {
@@ -33691,17 +33661,24 @@
   {
     "__docId__": 1861,
     "kind": "method",
-    "name": "addPrefix",
+    "name": "validationValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/widgets/InputWidget.js~InputWidget#addPrefix",
+    "longname": "src/widgets/InputWidget.js~InputWidget#validationValue",
     "access": "public",
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 50,
     "undocument": true,
-    "params": [],
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
     "return": {
       "types": [
         "*"
@@ -33711,15 +33688,15 @@
   {
     "__docId__": 1862,
     "kind": "method",
-    "name": "addSuffix",
+    "name": "addPrefix",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
     "generator": false,
     "async": false,
     "static": false,
-    "longname": "src/widgets/InputWidget.js~InputWidget#addSuffix",
+    "longname": "src/widgets/InputWidget.js~InputWidget#addPrefix",
     "access": "public",
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 54,
     "undocument": true,
     "params": [],
     "return": {
@@ -33731,6 +33708,26 @@
   {
     "__docId__": 1863,
     "kind": "method",
+    "name": "addSuffix",
+    "memberof": "src/widgets/InputWidget.js~InputWidget",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/widgets/InputWidget.js~InputWidget#addSuffix",
+    "access": "public",
+    "description": null,
+    "lineNumber": 58,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 1864,
+    "kind": "method",
     "name": "setValue",
     "memberof": "src/widgets/InputWidget.js~InputWidget",
     "generator": false,
@@ -33739,7 +33736,7 @@
     "longname": "src/widgets/InputWidget.js~InputWidget#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 62,
     "undocument": true,
     "params": [
       {
@@ -33752,7 +33749,7 @@
     "return": null
   },
   {
-    "__docId__": 1864,
+    "__docId__": 1865,
     "kind": "file",
     "name": "src/widgets/index.js",
     "content": "import InputWidget from './InputWidget';\nimport CalendarWidget from './CalendarWidget';\nexport default {\n  input: InputWidget,\n  calendar: CalendarWidget\n};\n",
@@ -33772,7 +33769,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.13.3-rc.5\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.11.0\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.5.1\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.0\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.14.0\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.2.9\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^20.3.1\",\n    \"idb\": \"^6.1.2\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.14.5\",\n    \"@babel/core\": \"^7.14.5\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.14.5\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.14.5\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.14.5\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.14.5\",\n    \"@babel/register\": \"^7.14.5\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.28.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.6.0\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.4\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^2.0.7\",\n    \"mocha\": \"^9.0.0\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^11.1.1\",\n    \"webpack\": \"^5.38.1\",\n    \"webpack-stream\": \"^6.1.2\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.13.3-rc.6\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.11.1\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.5.2\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.0\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.14.0\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.2.9\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^20.3.2\",\n    \"idb\": \"^6.1.2\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.14.5\",\n    \"@babel/core\": \"^7.14.6\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.14.5\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.14.5\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.14.5\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.14.5\",\n    \"@babel/register\": \"^7.14.5\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.2\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.7\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.28.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^4.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^16.6.0\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.4\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^2.1.1\",\n    \"mocha\": \"^9.0.1\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^11.1.1\",\n    \"webpack\": \"^5.39.1\",\n    \"webpack-stream\": \"^6.1.2\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,

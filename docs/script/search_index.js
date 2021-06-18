@@ -5784,21 +5784,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/recaptcha/recaptcha.js~recaptchacomponent#datavalue",
-    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-dataValue",
-    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#dataValue",
-    "member"
-  ],
-  [
-    "src/components/recaptcha/recaptcha.js~recaptchacomponent#getvalue",
-    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-getValue",
-    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#getValue",
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#normalizevalue",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-normalizeValue",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#normalizeValue",
     "method"
   ],
   [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent#recaptchaapiready",
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-recaptchaApiReady",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaApiReady",
+    "member"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#recaptcharesult",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-recaptchaResult",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaResult",
     "member"
   ],
   [
@@ -5817,12 +5817,6 @@ window.esdocSearchIndex = [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent#sendverificationrequest",
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-sendVerificationRequest",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#sendVerificationRequest",
-    "method"
-  ],
-  [
-    "src/components/recaptcha/recaptcha.js~recaptchacomponent#setvalue",
-    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-setValue",
-    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#setValue",
     "method"
   ],
   [
@@ -9562,6 +9556,12 @@ window.esdocSearchIndex = [
     "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-validationValue",
     "src/widgets/InputWidget.js~InputWidget#validationValue",
     "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#valueindex",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-member-valueIndex",
+    "src/widgets/InputWidget.js~InputWidget#valueIndex",
+    "member"
   ],
   [
     "src/widgets/inputwidget.js~inputwidget.defaultsettings",
