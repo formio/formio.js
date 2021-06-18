@@ -249,15 +249,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       columnExtra++;
     }
     const colWidth = Math.floor(12 / (columns.length + columnExtra));
-    let remainder = 12 - columnExtra - (colWidth * columns.length);
-    columns.forEach((col) => {
-      col.colWidth = colWidth;
-      if (remainder > 0) {
-        col.colWidth++;
-        remainder--;
-      }
-      col.colWidth = col.colWidth.toString();
-    });
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
