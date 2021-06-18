@@ -216,7 +216,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasRemoveButtons() {
-    return !this.component.disableAddingRemovingRows &&
+    return !this.builderMode && !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
@@ -237,7 +237,27 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
-    const colWidth = Math.floor(12 / (columns.length + 1)).toString();
+    let columnExtra = 0;
+    const hasRemoveButtons = this.hasRemoveButtons();
+    if (this.component.reorder) {
+      columnExtra++;
+    }
+    if (hasRemoveButtons) {
+      columnExtra++;
+    }
+    if (this.canAddColumn) {
+      columnExtra++;
+    }
+    const colWidth = Math.floor(12 / (columns.length + columnExtra));
+    let remainder = 12 - columnExtra - (colWidth * columns.length);
+    columns.forEach((col) => {
+      col.colWidth = colWidth;
+      if (remainder > 0) {
+        col.colWidth++;
+        remainder--;
+      }
+      col.colWidth = col.colWidth.toString();
+    });
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
@@ -247,7 +267,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       hasHeader: this.hasHeader(),
       hasExtraColumn: this.hasExtraColumn(),
       hasAddButton: this.hasAddButton(),
-      hasRemoveButtons: this.hasRemoveButtons(),
+      hasRemoveButtons,
       hasTopSubmit: this.hasTopSubmit(),
       hasBottomSubmit: this.hasBottomSubmit(),
       hasGroups: this.hasRowGroups(),
@@ -260,7 +280,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
-      colWidth
+      colWidth: colWidth.toString()
     }));
   }
 
