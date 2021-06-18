@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+[Unreleased]
+### Fixed
+ - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.
+
 ### 4.14.0-rc.11
 #### Changed
  - Revert FIO-301: Fixes columns to work with single columns.
