@@ -195,16 +195,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.type = 'editgrid';
   }
 
-  loadRefs(element, refs) {
-    super.loadRefs(element, refs);
-
-    const massageContainerRef = 'messageContainer';
-
-    if (refs[`${massageContainerRef}`] === 'single') {
-      this.refs[`${massageContainerRef}`] = [...element.children].filter(elem => elem.attributes?.ref?.value === massageContainerRef)[0];
-    }
-  }
-
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
