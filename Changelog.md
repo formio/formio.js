@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.3-rc.6
+#### Fixed
+ - FIO-3323: Fixing the datagrid spacing.
+ - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.
+
 ### 4.13.3-rc.5
 #### Fixed
  - FIO-3087: Prevent user from Drag'n'Drop components while PDF is loading
