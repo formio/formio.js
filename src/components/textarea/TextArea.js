@@ -289,8 +289,8 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.editorsReady[index]) {
       const setEditorsValue = (flags) => (editor) => {
-        this.autoModified = true;
         if (!flags.skipWysiwyg) {
+          this.autoModified = true;
           switch (this.component.editor) {
             case 'ace':
               editor.setValue(this.setConvertedValue(value, index));
