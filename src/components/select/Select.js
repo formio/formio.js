@@ -994,7 +994,7 @@ export default class SelectComponent extends Field {
         const formioForm = this.ce('div');
         const dialog = this.createModal(formioForm);
 
-        const projectUrl = _.get(this.root, 'formio.projectUrl', Formio.getBaseUrl());
+        const projectUrl = _.get(this.root, 'formio.projectUrl', Formio.getProjectUrl());
         const formUrl = `${projectUrl}/form/${this.component.data.resource}`;
         new Form(formioForm, formUrl, {}).ready
           .then((form) => {
