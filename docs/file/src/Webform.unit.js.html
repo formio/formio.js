@@ -229,6 +229,8 @@ import truncateMultipleSpaces from &apos;../test/forms/truncateMultipleSpaces&ap
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
 import conditionalDataGridWithTableAndRadio from &apos;../test/forms/conditionalDataGridWithTableAndRadio&apos;;
+import calculateValueWithManualOverrideLableValueDataGrid
+  from &apos;../test/forms/calculateValueWithManualOverrideLableValueDataGrid&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -2377,6 +2379,32 @@ describe(&apos;Webform tests&apos;, function() {
         }, 1000);
       }).catch(done);
     });
+    it(&apos;Should not override value which was set from submission&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+      form.setForm(calculateValueWithManualOverrideLableValueDataGrid).then(() =&gt; {
+        form.editing = true;
+        form.setSubmission({
+          state: &apos;submitted&apos;,
+          data: {
+            dataGrid: [
+              { label: &apos;1&apos;, value: &apos;1a&apos; },
+              { label: &apos;2&apos;, value: &apos;2a&apos; },
+              { label: &apos;3&apos;, value: &apos;3a&apos; },
+            ]
+          },
+        });
+        setTimeout(() =&gt; {
+          const value1 = form.getComponent([&apos;dataGrid&apos;, 0, &apos;value&apos;]);
+          assert.equal(value1.dataValue, &apos;1a&apos;, &apos;Should have a value set from submission&apos;);
+          const value2 = form.getComponent([&apos;dataGrid&apos;, 1, &apos;value&apos;]);
+          assert.equal(value2.dataValue, &apos;2a&apos;, &apos;Should have a value set from submission&apos;);
+          const value3 = form.getComponent([&apos;dataGrid&apos;, 2, &apos;value&apos;]);
+          assert.equal(value3.dataValue, &apos;3a&apos;, &apos;Should have a value set from submission&apos;);
+          done();
+        }, 1000);
+      }).catch(done);
+    });
   });
 
   it(&apos;Should set different ids for components inside different Table rows&apos;, (done) =&gt; {
@@ -2726,9 +2754,12 @@ describe(&apos;Webform tests&apos;, function() {
         const customerSelectValueEl = customerSelectEl.querySelector(&apos;[ref=&quot;value&quot;]&apos;);
         const htmlSelectEl = form.element.querySelector(&apos;.formio-component-panelHtml5Select&apos;);
         const htmlSelectValueEl = htmlSelectEl.querySelector(&apos;[ref=&quot;value&quot;]&apos;);
+        const checkboxEl = form.element.querySelector(&apos;.formio-component-page3Iagreetothefollowtherules&apos;);
+        const checkboxValueEl = checkboxEl.querySelector(&apos;[ref=&quot;value&quot;]&apos;);
 
         assert.equal(customerSelectValueEl.textContent.trim(), &apos;bob@example.com&apos;, &apos;Should render Select value properly&apos;);
         assert.equal(htmlSelectValueEl.textContent.trim(), &apos;banana&apos;, &apos;Should render HTML5 Select value properly&apos;);
+        assert.equal(checkboxValueEl.textContent.trim(), &apos;True&apos;, &apos;Should render Checkbox value properly&apos;);
 
         done();
       }, 300);

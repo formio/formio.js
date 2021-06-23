@@ -183,8 +183,10 @@ export default class InputWidget extends Element {
     };
   }
 
-  constructor(settings, component) {
+  constructor(settings, component, instance, index) {
     super(settings);
+    this.valueIndex = index || 0;
+    this.componentInstance = instance;
     this.namespace = &apos;formio.widget&apos;;
     this.component = component || {};
     this.settings = _.merge({}, this.defaultSettings, settings || {});

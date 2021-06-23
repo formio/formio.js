@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]
-### Fixed
+### 4.14.0-rc.12
+#### Fixed
  - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.
+ - FIO-2903: ProjectURL not being in context when adding new Resource
 
 ### 4.14.0-rc.11
 #### Changed
