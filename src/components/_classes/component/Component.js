@@ -2661,11 +2661,7 @@ export default class Component extends Element {
     // Handle all cases when calculated values should not fire.
     if (
       (this.options.readOnly && !this.options.pdf) ||
-<<<<<<< HEAD
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
-=======
-      !this.component.calculateValue ||
->>>>>>> 4.13.x
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
       flags.dataSourceInitialLoading
@@ -2674,16 +2670,8 @@ export default class Component extends Element {
     }
 
     const dataValue = this.dataValue;
-<<<<<<< HEAD
     // Calculate the new value.
     let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
-=======
-    let calculatedValue =  this.evaluate(this.component.calculateValue, {
-      value: dataValue,
-      data,
-      row: row || this.data
-    }, 'value');
->>>>>>> 4.13.x
 
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
