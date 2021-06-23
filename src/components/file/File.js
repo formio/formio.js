@@ -419,6 +419,10 @@ export default class FileComponent extends Field {
           console.error(err);
         }, {
           sourceType: webViewCamera.PictureSourceType.PHOTOLIBRARY,
+          correctOrientation: true,
+          quality: 90,
+          targetWidth: 2000,
+          targetHeight: 2000
         });
       });
     }
