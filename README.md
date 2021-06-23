@@ -1,8 +1,9 @@
 # A Oneserve fork of formiojs
 The main aim of the fork is to decrease the size of images taken with the webview camera on a form and fix orientation issues we've been seeing.
 
-When editing this repo, make sure you update the version in package.json and then run 'npm run oneservepublish'.
+When editing this repo, make sure you update the version in package.json and then run 'npm run oneservepublish'. 
 
+Also note, you must be logged into NPM CLI as oneserve-user
 # JavaScript powered forms and SDK for Form.io
 This library is a plain JavaScript form renderer and SDK for Form.io. This allows you to render the JSON schema forms produced by Form.io and render those within your application using plain JavaScript, as well as provides an interface SDK to communicate to the Form.io API's. The benefits of this library include.
 
