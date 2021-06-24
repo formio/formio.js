@@ -86,6 +86,13 @@ export default class ColumnsComponent extends NestedComponent {
     this.rows = this.groupByRow();
   }
 
+  mergeSchema(component = {}) {
+    const schema = component.columns?.length
+      ? { ...this.defaultSchema, columns: component.columns }
+      : this.defaultSchema;
+    return _.defaultsDeep(component, schema);
+  }
+
   labelIsHidden() {
     return true;
   }
