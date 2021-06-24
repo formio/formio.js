@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]
-### Fixed
+### 4.14.0-rc.12
+#### Fixed
  - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.
+ - FIO-2903: ProjectURL not being in context when adding new Resource
 
 ### 4.14.0-rc.11
 #### Changed
@@ -70,7 +71,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2505: Fixes an issue when Signatures on different rows are not consistent in size in DataGrid
  - FIO-2625: Fixes an issue where got an infinite loop when changing the default values of the Data Grid components in the Data Grid.
  - FIO-1288: Fixesan issue where Prefix/Suffix is rendered inaccurately when words/chars counter is shown
- - FIO-1537: fixed submiting issue for wizards recaptcha component. 
+ - FIO-1537: fixed submiting issue for wizards recaptcha component.
  - FIO-320: Use Webcam when Enable webcam is true
  - FIO-1488: Fixes an issue where unordered list created in Quill is rendered as an ordered one in read-only mode
  - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
@@ -99,7 +100,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Removed setDefaultValues for the NestedForm. Revised that nested form with visible false, works as expected without it.
  - FJS | Conditionally showing columns are not auto-adjusting when auto adjust column is set to true
  - FJS-3357 enable selection of closed EditGrid rows
- - FIO-1409: Add save on enter option for button component 
+ - FIO-1409: Add save on enter option for button component
  - Fix/fio 2617 camera on file dropzone
  - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
  - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
@@ -133,6 +134,104 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### 4.14.0-rc.1
 #### Addded
  - FIO-1112: Add vertical layout for tabs component
+
+### 4.13.3-rc.7
+#### Changed
+ - Upgrade @formio/bootstrap3 to resolve builder issue with resize polyfill.
+
+### 4.13.3-rc.6
+#### Fixed
+ - FIO-3323: Fixing the datagrid spacing.
+ - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.
+
+### 4.13.3-rc.5
+#### Fixed
+ - FIO-3087: Prevent user from Drag'n'Drop components while PDF is loading
+ - FIO-3283: Resolving issues where EditGrid components do not show validation messages correctly.
+ - FIO-3342: Fixed issue where multiple flag on DateTime component would display dates incorrectly.
+ - FIO-3303: Table does not render correctly when vieweing submission and in PDF download
+
+### 4.13.3-rc.4
+#### Fixed
+ - FIO-3309: Fixes console errors which occur sometimes with CalendarWidget
+
+### 4.13.3-rc.3
+#### Fixed
+ - FIO-3229: Fixes an issue where checkbox value in HTML more is always False
+ - FIO-3187: Fixes an issue where after you click on the time input it closes and time is visible, but not actually persist within submission
+ - FIO-2880: Fixes an issue where time is converted multiple times and the result is wrong
+ - FIO-3230: Select getView don't format unlisted values
+
+### 4.13.3-rc.2
+#### Fixed
+ - FIO-3114: Fixed an issue with uniquifying API keys
+ - FIO-3254: Fixed an issue where Select/Radio/SelectBoxes/etc values changed manually are recalculated again after reopening an edit window
+ - Spacing issues with DataGrid.
+
+### 4.13.3-rc.1
+#### Fixed
+ - FIO-3090: Fixes an issue where Radios inside Table nested in DataGrid could have the same IDs which leads to setting value of a wrong instance
+ - FIO-2844: Fix several api calls to /current endpoint
+ - FIO-2824: remove Spellcheck setting for Number Component
+
+#### Changes
+ - Update dependencies.
+
+### 4.13.2
+#### Changes
+ - No changes. Released 4.13.2-rc.4 as official release.
+
+### 4.13.2-rc.4
+#### Fixed
+ - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+
+### 4.13.2-rc.3
+#### Fixed
+ - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
+
+#### Changed
+ - Upgrade @babel/core@7.14.3, @babel/preset-env@7.14.2, marked@2.0.5, webpack@5.37.1, i18next@20.3.0, idb@6.1.1, @babel/cli@7.14.3, @babel/plugin-proposal-optional-chaining@7.14.2, eslint@7.27.0, jsdom@16.6.0
+
+### 4.13.2-rc.2
+#### Fixed
+ - FIO-2986: Inherit default (en) translations (validations, buttons) for custom languages
+ - FIO-2786: fix problem with initial button click on Nested Wizard in Modal Edit
+ - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source.
+ - FIO-2677: Fix submission not set on pdf for components with calculated value
+ - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
+ - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
+ - FIO-2617: Camera on file dropzone
+ - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
+ - FIO-1409: Add save on enter option for button component
+ - FIO-2676: Conditionally showing columns are not auto-adjusting when auto adjust column is set to true
+
+### 4.13.2-rc.1
+#### Fixed
+ - FIO-2936: replace finally method for better compatibility
+
+#### Changed
+ - Adding a more standard export for Formio object.
+
+### 4.13.1
+#### Changed
+ - No changes. Released 4.13.1-rc.7 as official release.
+
+### 4.13.1-rc.7
+#### Fixed
+ - FIO-2812: add a flag to track the submission process and add the method for reuse
+ - FIO-2788: fix static Oauth redirectURI
+ - FIO-2785: Fixes an issue when a nested form draft isn't loaded and not populate data from nested level 2 and etc.
+ - FIO-2730: Get rid of formio logo at the bottom when embedding.
+
+### 4.13.1-rc.6
+#### Fixed
+ - FIO-2798: Fixes an issue where some errors messages are not translated
+ - FIO-2747: fix conditional appearance of a nested wizard
+
+### 4.13.1-rc.5
+### Fixed
+ - FIO-2747: change checking way for component pagination
+ - FIO-2812: remove unnecessary rebuilds
 
 ### 4.13.1-rc.4
 #### Fixed

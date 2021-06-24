@@ -340,6 +340,18 @@ describe(&apos;Select Component&apos;, () =&gt; {
     });
   });
 
+  it(&apos;should format unlisted values&apos;, function(done) {
+    comp5.template = &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;;
+    Harness.testCreate(SelectComponent, comp5).then((component) =&gt; {
+      const formattedValue1 = component.getView(&apos;Unlisted value&apos;);
+      const formattedValue2 = component.getView(0);
+
+      assert.equal(formattedValue1, &apos;&lt;span&gt;Unlisted value&lt;/span&gt;&apos;);
+      assert.equal(formattedValue2, &apos;&lt;span&gt;0&lt;/span&gt;&apos;);
+      done();
+    });
+  });
+
   it(&apos;should set multiple selected values not repeating them&apos;, function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) =&gt; {
       component.setItems(multiSelectOptions, false);
