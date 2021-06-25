@@ -137,6 +137,7 @@ export default class CalendarWidget extends InputWidget {
       if (this.settings.allowInput && this.settings.enableTime) {
         this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;
         this.settings.isManuallyOverriddenValue = false;
+        this.emit('update');
       }
 
       if (this.settings.wasDefaultValueChanged) {
