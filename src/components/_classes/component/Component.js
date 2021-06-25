@@ -17,6 +17,7 @@ import {
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
+import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import enTranslation from '../../../translations/en';
 
@@ -73,7 +74,7 @@ export default class Component extends Element {
       multiple: false,
 
       /**
-       * The default value of this compoennt.
+       * The default value of this component.
        */
       defaultValue: null,
 
@@ -198,7 +199,8 @@ export default class Component extends Element {
       showCharCount: false,
       showWordCount: false,
       properties: {},
-      allowMultipleMasks: false
+      allowMultipleMasks: false,
+      addons: [],
     }, ...sources);
   }
 
@@ -234,7 +236,8 @@ export default class Component extends Element {
   constructor(component, options, data) {
     super(Object.assign({
       renderMode: 'form',
-      attachMode: 'full'
+      attachMode: 'full',
+      noDefaults: false
     }, options || {}));
 
     // Restore the component id.
@@ -362,6 +365,9 @@ export default class Component extends Element {
     // Nested forms don't have parents so we need to pass their path in.
     this._parentPath = this.options.parentPath || '';
 
+    // Needs for Nextgen Rules Engine
+    this.resetCaches();
+
     /**
      * Determines if this component is visible, or not.
      */
@@ -424,6 +430,12 @@ export default class Component extends Element {
      */
     this.tooltips = [];
 
+    /**
+     * List of attached addons
+     * @type {Array}
+     */
+    this.addons = [];
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -434,7 +446,9 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.defaultValue;
+            if (this.shouldAddDefaultValue) {
+              this.dataValue = this.defaultValue;
+            }
           }
           else {
             // Ensure the dataValue is set.
@@ -506,11 +520,42 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
+    if (this.component.addons?.length) {
+      this.component.addons.forEach((addon) => this.createAddon(addon));
+    }
+  }
+
+  createAddon(addonConfiguration) {
+    const name = addonConfiguration.name;
+    if (!name) {
+      return;
+    }
+
+    const settings = addonConfiguration.settings?.data || {};
+    const Addon = Addons[name];
+
+    let addon = null;
+
+    if (Addon) {
+      const supportedComponents = Addon.info.supportedComponents;
+      const supportsThisComponentType = !supportedComponents?.length ||
+        supportedComponents.indexOf(this.component.type) !== -1;
+      if (supportsThisComponentType) {
+        addon = new Addon(settings, this);
+        this.addons.push(addon);
+      }
+      else {
+        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+      }
+    }
+
+    return addon;
   }
 
   destroy() {
     super.destroy();
     this.detach();
+    this.addons.forEach((addon) => addon.destroy());
   }
 
   get shouldDisabled() {
@@ -571,7 +616,7 @@ export default class Component extends Element {
    */
   get visible() {
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (this.builderMode || this.options.showHiddenFields) {
+    if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
     if (
@@ -695,7 +740,7 @@ export default class Component extends Element {
         }
       }
       else if (_.isArray(val)) {
-        if (val.length !== 0) {
+        if (val.length !== 0 && !_.isEqual(val, defaultSchema[key])) {
           modified[key] = val;
         }
       }
@@ -706,7 +751,8 @@ export default class Component extends Element {
         (!recursion && (key === 'input')) ||
         (!recursion && (key === 'tableView')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
-        (val !== '' && val !== defaultSchema[key])
+        (val !== '' && val !== defaultSchema[key]) ||
+        (defaultSchema[key] && val !== defaultSchema[key])
       ) {
         modified[key] = val;
       }
@@ -918,7 +964,7 @@ export default class Component extends Element {
       settings.shadowRoot = this.root.shadowRoot;
     }
 
-    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component): null;
+    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component, this): null;
     return widget;
   }
 
@@ -1025,7 +1071,7 @@ export default class Component extends Element {
     const isVisible = this.visible;
     this.rendered = true;
 
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
         showSaveButton: this.hasModalSaveButton,
@@ -1070,7 +1116,7 @@ export default class Component extends Element {
   }
 
   attach(element) {
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
       const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
       this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
@@ -1107,6 +1153,8 @@ export default class Component extends Element {
     }
 
     this.restoreFocus();
+
+    this.addons.forEach((addon) => addon.attach(element));
 
     return NativePromise.resolve();
   }
@@ -1472,6 +1520,7 @@ export default class Component extends Element {
         data: this.rootValue
       }),
       form: this.root ? this.root._form : {},
+      options: this.options,
     }, additional));
   }
 
@@ -1654,7 +1703,7 @@ export default class Component extends Element {
   conditionallyVisible(data, row) {
     data = data || this.rootValue;
     row = row || this.data;
-    if (this.builderMode || !this.hasCondition()) {
+    if (this.builderMode || this.previewMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
@@ -1688,7 +1737,7 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    if (!this.builderMode && this.fieldLogic(data, row)) {
+    if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
 
@@ -1961,7 +2010,7 @@ export default class Component extends Element {
       if (!this.visible) {
         this.deleteValue();
       }
-      else if (!this.hasValue()) {
+      else if (!this.hasValue() && this.shouldAddDefaultValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2234,7 +2283,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       const empty = this.component.multiple ? [] : this.emptyValue;
       if (!this.rootPristine) {
         this.dataValue = empty;
@@ -2299,18 +2348,28 @@ export default class Component extends Element {
     this.unset();
   }
 
-  get defaultValue() {
-    let defaultValue = this.emptyValue;
-    if (this.component.defaultValue) {
-      defaultValue = this.component.defaultValue;
-    }
+  getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-      defaultValue = this.evaluate(
+     defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
         'value'
       );
     }
+    return defaultValue;
+  }
+
+  get shouldAddDefaultValue() {
+    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
+  }
+
+  get defaultValue() {
+    let defaultValue = this.emptyValue;
+    if (this.component.defaultValue) {
+      defaultValue = this.component.defaultValue;
+    }
+
+    defaultValue = this.getCustomDefaultValue(defaultValue);
 
     const checkMask = (value) => {
       if (typeof value === 'string') {
@@ -2424,6 +2483,12 @@ export default class Component extends Element {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
+    const valueMaskInput = this.refs.valueMaskInput;
+
+    if (valueMaskInput?.mask) {
+      valueMaskInput.mask.textMaskInputElement.update(value);
+    }
+
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }
@@ -2440,7 +2505,7 @@ export default class Component extends Element {
   }
 
   setDefaultValue() {
-    if (this.defaultValue) {
+    if (this.defaultValue && this.shouldAddDefaultValue) {
       const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
       this.setValue(defaultValue, {
         noUpdateEvent: true
@@ -2579,6 +2644,14 @@ export default class Component extends Element {
     return value;
   }
 
+  doValueCalculation(dataValue, data, row, flags) {
+      return this.evaluate(this.component.calculateValue, {
+        value: dataValue,
+        data,
+        row: row || this.data
+      }, 'value');
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -2588,7 +2661,7 @@ export default class Component extends Element {
     // Handle all cases when calculated values should not fire.
     if (
       (this.options.readOnly && !this.options.pdf) ||
-      !this.component.calculateValue ||
+      !(this.component.calculateValue || this.component.calculateValueVariable) ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
       flags.dataSourceInitialLoading
@@ -2597,23 +2670,20 @@ export default class Component extends Element {
     }
 
     const dataValue = this.dataValue;
-    let calculatedValue = dataValue;
     // Calculate the new value.
-
-    // If data was calculated in a submission and the editing mode is on, skip calculating
-    if (!flags.fromSubmission && !this.root.editing || !this.component.persistent) {
-      calculatedValue = this.evaluate(this.component.calculateValue, {
-        value: dataValue,
-        data,
-        row: row || this.data
-      }, 'value');
-    }
+    let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
 
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
     }
 
     const changed = !_.isEqual(dataValue, calculatedValue);
+
+    if (flags.fromSubmission && this.component.persistent === true) {
+      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
 
     // Do not override calculations on server if they have calculateServer set.
     if (this.component.allowCalculateOverride) {
@@ -2634,12 +2704,6 @@ export default class Component extends Element {
         return false;
       }
 
-      if (flags.fromSubmission && this.component.persistent === true) {
-        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-        this.calculatedValue = calculatedValue;
-        return false;
-      }
-
       // If this is the firstPass, and the dataValue is different than to the calculatedValue.
       if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
         // Return that we have a change so it will perform another pass.
@@ -2649,7 +2713,11 @@ export default class Component extends Element {
 
     this.calculatedValue = calculatedValue;
 
-    return changed ? this.setValue(calculatedValue, flags) : false;
+    if (changed) {
+      flags.triggeredComponentId = this.id;
+      return this.setValue(calculatedValue, flags);
+    }
+    return false;
   }
 
   /**
@@ -2795,6 +2863,10 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+
+    // Needs for Nextgen Rules Engine
+    this.resetCaches();
+
     // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
     if (!flags.fromBlur) {
       this.checkRefreshOn(flags.changes, flags);
@@ -2803,7 +2875,9 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data, flags, row);
+    if (this.id !== flags.triggeredComponentId) {
+      this.calculateComponentValue(data, flags, row);
+    }
     this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
@@ -3244,6 +3318,12 @@ export default class Component extends Element {
       formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
     }
     return formio;
+  }
+
+  resetCaches() {}
+
+  get previewMode() {
+    return false;
   }
 }
 

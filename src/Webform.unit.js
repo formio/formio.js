@@ -46,9 +46,16 @@ import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
+import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGridContainerConditionals';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
+import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
+import htmlRenderMode from '../test/forms/htmlRenderMode';
+import calculatedValue from '../test/forms/calculatedValue';
+import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
+import calculateValueWithManualOverrideLableValueDataGrid
+  from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -648,7 +655,7 @@ describe('Webform tests', function() {
               //checking the number of appeared errors
               assert.equal(formWithDraftModals.errors.length, 2);
 
-              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent;
+              const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
               const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error').textContent;
               //checking if right errors were shown in right places
               assert.equal(rowError, 'Invalid row. Please correct it or delete.');
@@ -2169,6 +2176,127 @@ describe('Webform tests', function() {
         }, 1000);
       }).catch(done);
     });
+    it('Should calculate value properly in editing mode', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculatedValue).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          data:
+            {
+              a: 4,
+              b: 5,
+              total: 9,
+            },
+          state: 'submitted'
+        });
+        setTimeout(() => {
+          const total = form.getComponent(['total']);
+          assert.equal(total.dataValue, 9, 'Should set and keep the value');
+
+          const b = form.getComponent(['b']);
+          Harness.dispatchEvent('input', b.element, 'input', (i) => i.value = '6');
+
+          setTimeout(() => {
+            assert.equal(total.dataValue, 10, 'Should recalculate the value');
+          }, 300);
+          done();
+        }, 1000);
+      }).catch(done);
+    });
+    it('Should not override value which was set from submission', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculateValueWithManualOverrideLableValueDataGrid).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          state: 'submitted',
+          data: {
+            dataGrid: [
+              { label: '1', value: '1a' },
+              { label: '2', value: '2a' },
+              { label: '3', value: '3a' },
+            ]
+          },
+        });
+        setTimeout(() => {
+          const value1 = form.getComponent(['dataGrid', 0, 'value']);
+          assert.equal(value1.dataValue, '1a', 'Should have a value set from submission');
+          const value2 = form.getComponent(['dataGrid', 1, 'value']);
+          assert.equal(value2.dataValue, '2a', 'Should have a value set from submission');
+          const value3 = form.getComponent(['dataGrid', 2, 'value']);
+          assert.equal(value3.dataValue, '3a', 'Should have a value set from submission');
+          done();
+        }, 1000);
+      }).catch(done);
+    });
+  });
+
+  it('Should set different ids for components inside different Table rows', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+    form.setForm(conditionalDataGridWithTableAndRadio).then(() => {
+      const radioInspection0 = form.getComponent(['inspectionDataGrid', 0, 'initialExam']);
+      Harness.dispatchEvent(
+        'click',
+        radioInspection0.element,
+        'input[value="reject"]',
+        i => i.checked = true,
+      );
+
+      setTimeout(() => {
+        const repairDataGrid0 = form.getComponent(['inspectionDataGrid', 0, 'repairDataGrid']);
+        assert.equal(radioInspection0.dataValue, 'reject', 'Should set value');
+        assert.equal(repairDataGrid0.visible, true, 'Should become visible');
+
+        const radioRepair0 = form.getComponent(['inspectionDataGrid', 0, 'repairDataGrid', 0, 'repairExam']);
+        Harness.dispatchEvent(
+          'click',
+          radioRepair0.element,
+          'input[value="accept"]',
+            i => i.checked = true,
+        );
+
+        setTimeout(() => {
+          assert.equal(radioRepair0.dataValue, 'accept', 'Should set value');
+          const inspectionDataGrid = form.getComponent(['inspectionDataGrid']);
+          inspectionDataGrid.addRow();
+
+          setTimeout(() => {
+            assert.equal(inspectionDataGrid.rows.length, 2, 'Should add a row');
+
+            const radioInspection1 = form.getComponent(['inspectionDataGrid', 1, 'initialExam']);
+            Harness.dispatchEvent(
+              'click',
+              radioInspection1.element,
+              'input[value="reject"]',
+              i => i.checked = true,
+            );
+
+            setTimeout(() => {
+              const repairDataGrid1 = form.getComponent(['inspectionDataGrid', 1, 'repairDataGrid']);
+              assert.equal(radioInspection1.dataValue, 'reject', 'Should set value');
+              assert.equal(repairDataGrid1.visible, true, 'Should become visible');
+
+              const radioRepair1 = form.getComponent(['inspectionDataGrid', 1, 'repairDataGrid', 0, 'repairExam']);
+              Harness.dispatchEvent(
+                'click',
+                form.element,
+                form.element.querySelector(`#${radioRepair1.id}${radioRepair1.row}-accept`),
+                i => i.checked = true
+              );
+
+              setTimeout(() => {
+                assert.equal(radioRepair1.dataValue, 'accept', 'Should set value of the clicked radio');
+                assert.equal(radioRepair0.dataValue, 'accept', 'Value of the radio inside another row should stay the same');
+
+                done();
+              }, 300);
+            }, 350);
+          }, 300);
+        }, 250);
+      }, 350);
+    }).catch(done);
   });
 
   it('Should render components properly', (done) => {
@@ -2307,6 +2435,162 @@ describe('Webform tests', function() {
     }).catch(done);
   }).timeout(3000);
 
+  it('Should have number and currency fields in empty form submission', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number'
+        },
+        {
+          label: 'Currency',
+          key: 'currency',
+          type: 'currency'
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit'
+        },
+      ],
+    };
+
+    const emptySubmissionData = {
+      number: '',
+      currency: '',
+      submit: true
+    };
+
+    form.setForm(formJson).then(() => {
+      const clickEvent = new Event('click');
+      const submitBtn = form.element.querySelector('[name="data[submit]"]');
+
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.deepEqual(form.data, emptySubmissionData);
+        done();
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Test Truncate Multiple Spaces', (done) => {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+
+    form.setForm(truncateMultipleSpaces).then(() => {
+      const textFieldRequired = form.getComponent(['textField1']);
+      const textFieldMinMaxLength = form.getComponent(['textField']);
+      const textAreaMinMaxLength = form.getComponent(['textArea']);
+      Harness.dispatchEvent('input', textFieldRequired.element, 'input', (i) => i.value = '        ');
+      Harness.dispatchEvent(
+        'input',
+        textFieldMinMaxLength.element,
+        'input',
+        (i) => i.value = '     546       456     '
+      );
+      Harness.dispatchEvent(
+        'input',
+        textAreaMinMaxLength.element,
+        'textarea',
+        (i) => i.value = '     546       456     '
+      );
+
+      setTimeout(() => {
+        assert.equal(textFieldRequired.dataValue, '        ', 'Should set value');
+        assert.equal(textFieldMinMaxLength.dataValue, '     546       456     ', 'Should set value');
+        assert.equal(textAreaMinMaxLength.dataValue, '     546       456     ', 'Should set value');
+
+        assert.equal(textFieldRequired.errors.length, 1, 'Should be invalid since it does not have a value');
+        assert.equal(
+          textFieldMinMaxLength.errors.length,
+          0,
+          'Should be valid since it value does not exceed the max length after truncating spaces'
+        );
+        assert.equal(
+          textAreaMinMaxLength.errors.length,
+          0,
+          'Should be valid since it value does not exceed the max length after truncating spaces'
+        );
+
+        form.submit(false, {}).finally(() => {
+          assert.equal(textFieldRequired.dataValue, '', 'Should truncate the value before submit');
+          assert.equal(textFieldMinMaxLength.dataValue, '546 456', 'Should truncate the value before submit');
+          assert.equal(textAreaMinMaxLength.dataValue, '546 456', 'Should truncate the value before submit');
+
+          done();
+        });
+      }, 400);
+    }).catch(done);
+  });
+
+  it('HTML render mode', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, htmlRenderMode, {
+      readOnly: true,
+      renderMode: 'html',
+    }).then(form => {
+      form.submission = {
+        data: {
+          textfieldonPage3: 'test',
+          signature: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABTIAAACWCAYAAADt5XcLAAAgAElEQVR4Xu3dfWydV30H8NM1dLRdndIOKKJxGHSh0MalgBilpLAJyIsatQgJu4rT8peNiFOEhl0pyR8gxZHq/DGJJAhHCNbEEU5BHVWyJpWYuja0tOPdSctLQVBHWmAwkTi0lEFh+j3h3tqOG9vJvfa59/kcybKT3Ps85/mcE0f+5nfOOe/ZZ3/156QRIECAAAECBAgQIECAAAECBAgQIEAgY4HzBJkZj46uESBAgAABAgQIECBAgAABAgQIECBQCAgyTQQCBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIO1Fjhx4kQaGTlSXHbhwoXFx6WXthSfNQIECBAgQIAAAQIECBAgQIAAgTwFBJl5jotezUIggslnnjmaTpwYS/F1fBw/furrZ54Z/cufnfr9eN2Z2uLFi1Jb29J06vO16d3vvrH4WiNAgAABAgQIECBAgAABAgQIEJhfAUHm/Pq7+ywFIoj8+tcfTbt3D6fR0VMhZT3bggUL0sUXX1yEmjfddGO6+eaVxdcaAQIECBAgQIAAAQIECBAgQIDA3AoIMufW293OUmDfvgfSF7+4Oz3++DeLysrZtNbWRdWqymXLbizeGsvIr7tuYiAZoWhUcEY7dOjRdPz4ifT00z9Nzz///ITbRYXmunUfTevWdc2mG15LgAABAgQIECBAgAABAgQIECBwDgKCzHPA89b6CkSwuGfPcBoa+lJReblkyVVpyZK/T6tXr0oRSFaWfFf2u4zeRMjZ2tpa0z0v494RbEaYun//gepDR2Xm4OA2FZr1nQauToAAAQIECBAgQIAAAQIECBAoBASZJkJWAhFERlgYS8cjPIzW0tKSenq6U2fnbfO+X2WEmhGsbtmytehbVHbu3XtPEaxqBAgQIECAAAECBAgQIECAAAEC9RMQZNbP1pVnIRAB4ZYtA2nfvgNFVWWEl7H0O8LLzs6OWVxpbl4aIWtX1/o0Onpqj84NG3rTxo19c3NzdyFAgAABAgQIECBAgAABAgQIlFBAkFnCQc/pkYeGhtOOHYOpsjw8Asy1azuKADP3Q3UicF2+/JZ0+PCTBenVVy9J9903PO9VozmNr74QIECAAAECBAgQIECAAAECBGolIMislaTrzFggAsAdO3ZW976MN8aBPFHRmGP15ZkeLJ6lt3dTsZdnpe3cua043TyWnWsECBAgQIAAAQIECBAgQIAAAQK1ERBk1sbRVWYgUAkwt28frJ48vmzZu4oAs9H3mPzCF3al9ev/uaoQBxLdffdm1ZkzmBdeQoAAAQIECBAgQIAAAQIECBCYiYAgcyZKXnPOAv39A0UVZoSZ0das6SgCzMrJ4+d8gwwuEPt8trevrS41j2fbsKHxqkwzoNQFAgQIECBAgAABAgQIECBAgMBpAoJMk6KuAvv2PZDuumtTipCvWQPMyYAR2kbV6djYWPFHsVx+YGCzpeZ1nWkuToAAAQIECBAgQIAAAQIECDS7gCCz2Ud4np4vgsvu7vUpTveOFntGDgz0N1UF5ploJ59qHtWZw8O7sj/AaJ6mi9sSIECAAAECBAgQIECAAAECBKYVEGROS+QFsxGIpeNbtmwtKhKjNcsemLMxqLx28kFAcfhPT0932rCh92wu5z0ECBAgQIAAAQIECBAgQIAAgVILCDJLPfy1ffioQowqzKjGXLr0mtTT89GGO4W8tiKnrhahbiw3ryw1dxBQPZRdkwABAgQIECBAgAABAgQIEGh2AUFms4/wHDzfyMiRIqjbv/9Acbc4rXvt2g57Qo6zD6Ourp4JBwEdOHB/aZbaz8E0dAsCBAgQIECAAAECBAgQIECgyQUEmU0+wPV8vPHLyK+88rXpLW9pK9U+mLO1Da+urvXVwDeWmg8OfiZFhaZGgAABAgQIECBAgAABAgQIECBwZgFBphlyVgKxXHrPnuEUlYatrYuKU7kFcjOjHL/U3L6ZMzPzKgIECBAgQIAAAQIECBAgQICAINMcmJVABJexD2Z8jrZmTUfaunWzZeSzUkzFae5RnTk6erR4Z2dnRxoc3DbLq3g5AQIECBAgQIAAAQIECBAgQKA8AoLM8oz1OT9pBG9RhRktqjB37tyWli278ZyvW9YLxKFI3d096dChxwqCsNy79x6hcFknhOcmQIAAAQIECBAgQIAAAQIEziggyDRBphXYt++B1N19Z4o9HqOtW9eVNm7sE7hNKzf9C8I0lppv2bK1ePHixYuSQ4Cmd/MKAgQIECBAgAABAgQIECBAoHwCgszyjfmMnzhCtr6+TWloSBXmjNHO8oURFnd03FENM+Pkd3uOniWmtxEgQIAAAQIECBAgQIAAAQJNKSDIbMphPfeHij0c29vvUIV57pQzvkIsNW9vX5sOH36yqHatVL7O+AJeSIAAAQIECBAgQIAAAQIECBBoYgFBZhMP7tk+Wix1vuuuTcXb7YV5topn976ogu3t3VTdizQOU4q9SDUCBAgQIECAAAECBAgQIECAQNkFBJllnwHjnj9CtNgLM5Y5R1u27F1pcHB7sW+jNrcClaXmL3/5y9OSJVelgwe/ak/SuR0CdyNAgAABAgQIECBAgAABAgQyExBkZjYg89WdCDFXrLg1jYwcKbrgQJ/5GokX7xtjsnz5LcVS82gRZjolfv7HRQ8IECBAgAABAgQIECBAgACB+REQZM6Pe1Z3jf0wu7vXp9ijsaWlJfX0dBenkmt5CPT1bUw7duwsOhPjsmFDbx4d0wsCBAgQIECAAAECBAgQIECAwBwKCDLnEDvHW8US5lhOHtV/EWLee+8uVX8ZDlScHN/buzGNjY0V4xPVmRoBAgQIECBAgAABAgQIECBAoEwCgswyjfakZx1/qM/SpdeknTu3p7a2a0sskvejR+VsV9f6NDp6tNi3dHh4l/HKe8j0jgABAgQIECBAgAABAgQIEKihgCCzhpiNdKn+/oG0ZcvWoss337yyOBl74cKFjfQIpezr+H0zY7wGBz+TVq9eVUoLD02AAAECBAgQIECAAAECBAiUS0CQWa7xLp62vf32tH//geLrONRnYKC/hAqN+8gRZsYYHjr0WPEQ9s1s3LHUcwIECBAgQIAAAQIECBAgQGDmAoLMmVs1xSvf+c73Vk/BvvvuzcXBPlpjCoyvqo2qzKjOVFXbmGOp1wQI1E4gDq6LLTiitbVd4/ti7WhdiQABAgQIECBAgMC8Cwgy530I5qYDIyNH0gc+sDqdPPnb4oZxWEwcGqM1tkAc1tTRcUfxEDGeg4Pbiv0zNQIECJRJIMLLT32qPz300MPpV7/69YRHj72f43ujPaDLNCM8KwECBAgQIECAQLMKCDKbdWTHPVflUJ/zzjsvXXLJJemHP/yOCpUmGvcIqWOpuUOAmmhQPQoBAjMSiADzs58dTLt3D6fYduOl2po1HcVe0BoBAgQIECBAgAABAo0tIMhs7PE7Y+/jh7ru7jtTVO1Fa2lpSceO/bSJn7i8jzZ538yoPurs7CgviCcnQKDpBQ4dejR1d69PEWZO1+wHPZ2QPydAgAABAgQIECDQGAKCzMYYp1n3Mn6wW7nyluoPeELMWRM25Bv6+jamHTt2Fn2PIHPDhj5LzRtyJHWaAIEzCZwpxHzFKy5Nq1atSKOjo+n48ROprW1pcSiabTfMKQIECBAgQIAAAQKNLyDIbPwxPO0JJv+A19q6KD3++EOWkzfhWE/1SFGB29W1Po2NjRV7wg0MbLYfaknG3mMSKINA/BvX3n7HaUvJly17VxFY2v+5DLPAMxIgQIAAAQIECJRVQJDZZCM//vCXeLQIMQ8evF8lSpON83SPExW5UZ25f/+BIsCOZZXxA75GgACBRhaIEPPDH769+I+a8e3uuzennp7uRn40fSdAgAABAgQIECBAYAYCgswZIDXKS4aGhov9wsa3p576jhCzUQawDv2szImWlkvS6163OA0P7zIf6uDskgQI1F9g8pYpccfYNiUO8Vm9elX9O+AOBAgQIECAAAECBAjMu4Agc96HoDYdmBxixg939967yxK72vA29FXih//29rXp8OEni+eIH/pvvnmlrQYaelR1nkD5BGLLjD17hqsPHv9Bc++9u/07V76p4IkJECBAgAABAgRKLCDIbILBj6V2K1bcOuFJhofvUaHSBGNby0fo7x9IEXiPjh4tfvCPk80dflFLYdciQKBeApP/nfOfdfWSdl0CBAgQIECAAAECeQsIMvMen2l7N9Vy8g0beu2HOK1cOV8QYUBv78ZqdWbsmxnzRSNAgECuAlMtKbcnZq6jpV8ECBAgQIAAAQIE6isgyKyvb12vHgf7dHffOeHk1jjUZWCgv673dfHGFjhx4kTavn0wbdmytXiQqMqM6kwn/Tb2uOo9gWYUGBk5kvr6NqX4T5hKi9PJ4xA7jQABAgQIECBAgACB8gkIMht0zOOHu46O21NUqlRa7HsY+x/GKdUagekEYg51dfVUqzM7OzvSwMBm82c6OH9OgMCcCER4edttH0m/+c3x6v1aWxcVIaZtMeZkCNyEAAECBAgQIECAQHYCgszshmT6Dk21zG7p0mvSgw/eL4Sans8rJgnE3pmV6swIwbdu3ZzWrOngVAOBqH49fnysuNKll7b4+1kD02a9RMyVkZEniwr7+Dh27H/SsWP/nS6//PLi18ePx++fmkvRIsiLv6/PP//79Oyzvy1eN1274IK/Tn/84x/SokWvLeZlXHeqFtdM6c/p1a9+9YTXxOvj35+FC1uKt1144YVpwYIF6frr24pfL116bWpru3a6bkz757HaYM+evSk+j2/x79zWrf2qx6cV9AICBAgQIECAAAECzSsgyGywsZ0qxIwKlccff0hI0mBjmVN3Y151d/ekQ4ceK7oVy8w3buwVGMxgkKKy9Yknvpl+/vPRIiT6/vePpPi9lwqJIuiJACqCqMWLW6tfv+xlL0sXXXRR9Y6VQKsShL7461OBVgRbU7W47qWXLqxeN+4VwZOtA2YwmHPwkpgbP/jBj9LTT/8knTx5spgv45dNz0EX6n6LG274h/Tcc8+lWAIebfwqgZjHv//9/6Wf/ezn6eqrlxR/Fh8jI4fTj370dPrxj38y5d+deO0XvzhYk6C07gBuQIAAAQIECBAgQIBA3QQEmXWjrf2Fp1pOHiHm3r27/HBXe+5SXjEqoKJC8/DhJ4vnX716VYpDNSzjnDgdIoyJKtbwGr+9Q86T5oILLigq6KIytLW1NV133bXF5/h1rSrpcn7++ehbfM+O/xyIkC6+jg9t9gIRiMa/c7ZNmb2ddxAgQIAAAQIECBBoNgFBZoOM6FQHHrS0tKTHH/9PIVODjGEjdTMOA4pAc2xsrAgPenq6UxwkJUhIaWhoOHV3r5/X4Yy/+1F1OT5gnjw24ytCo+rvD3/4Q/rd7353xn5HtWh83HTTjend777R95ZZjHJ4P/bYE+nb3/5uOnLkqdOWRc/kUrF0OsY12hvfuKT4+3fVVW8441tPLS1/Nl1++WXT3uLFpeVX/mWp+tRVvfG6kyfH0qte9arimvFslfl1qtq3pagKPnbsl0UV8p/+9KeiqjRC/dHRF/dtnrZD07wgAsx167qL/1DRCBAgQIAAAQIECBAgEAKCzAaYB/EDYn//1gnLDx140AAD1+BdjPCit3dT2rNnuHiSsp9uHh7d3XdOGVBdcsklacmSq9KHP/yhwinCnsoS8so0qASLk6vyKkvEo2LyoosunDBrKuFRfK7VHpuVZe8ROlUqBaMPlSrc8R2IZ4kQKZalR6gkyH5RJ/z27z9QfF8Ox9lU5t5wwzvSxRf/TXr/+/+pWhnbLFXPMb8efPA/0hNP/Fe67LLL0ujo6GnfCa+44op07NixdN11S4sq1bD79a//Ny1YcH56+9vflpYvf18x75rFpMH/KdB9AgQIECBAgAABAlkJCDKzGo7TOxOVcZ/+dH967rkXK6miamfnzu2Wk2c+ds3SvVPVwBur+2eWcbn5VBXRMb4R7m3c2NcU+09G0PrIIxHKndqzsbJf6vh5XKnWLGuwefTo0RTfkytOM/k7Ht+v29qWFlWulYrXmbzPawgQIECAAAECBAgQIEDgdAFBZqazIoKEvr5Np+2p5tTWTAesBN2KJdXbt3+uqNyLSqkNG/pSZ2fzn24ewd6qVR9Mv/nN8eoox9LuCDBjyX0zt/g+FKFd7AU6VcVmJZiLoK6t7ZqmCHSnGs+YA5U9Uacb77e97fqiMjf2IHXA0nRa/pwAAQIECBAgQIAAAQKzExBkzs6r7q+uHCISVT+T2ytecWl64IF/U4lZ91Fwg5cSiPkZczNCnZaWS9LrXrc4DQ/vatoloBFgrVhx64RTlMtaET25YjP23Yw9HMe317zmivTKV/5tsQQ9KhDjc4SdsRVGIy4Tni7AjOeKsHL16pXFCfTxrBoBAgQIECBAgAABAgQI1E9AkFk/21lfOYKCCE1e6mTbgwe/qsJn1qreUA+B2NOuvX1ttUpvYKA/dXa2N90eim9601snHF7y+tf/Xdqz5wsCq79MqvH7bEb15i9+8cv09NM/fckpF2FmnJQeLSoWK3tuxu/H16eCz2uKP5+v/TjjoJ6HH/56Ghr60pTfi2M/1Ntvvy11dt5mHtTjm4trEiBAgAABAgQIECBA4AwCgsyMpsfk0GR81+6+e3PTL2PNaCh0ZYYCsdw8TjePk4qjGm1gYHPThO2TTyePSsy9e3c3ZGXhDIezZi+rnGD9zDOjfznMZbQ40GVyBeeZblip5ozXRNAZFY+VryuhZ/z6/PP/Kr3wwgtxdl1xmnblYKTxYWjloKXjx8eK6tr4OP/889MLL/yp+LpyANKZ9r6M6suY307Qrtk0cSECBAgQIECAAAECBAjMWkCQOWuy+rzhNa95w0v+kD84uK0UexHWR9ZV6y0QAVV3d0/1cJjYO3LDht5637bu13/nO987YV/Ib3zjIRV4NVAff2p6BJ3RKr/3ve8dTidPnqzBXWp3iTjQKaovy7AfbO3UXIkAAQIECBAgQIAAAQL1ERBk1sd1VleNgzQ6Ou447T1xoMi99+5qmgq3WaF4ccMJxN6Zd921qeh3VGc28t6Zk/9OrlnTkXbu3NZwY9KIHY4KyaicHB09VcUZYWd8jl8fP35i1pWdszV485uvThdeeGFxYE9UXzbi3p6zfWavJ0CAAAECBAgQIECAQKMICDIzGKmpgswIMR988H4VYBmMjy7MXCAq69rbby+WmscS36jOXLeua+YXyOSV73nP8vStb32n2hv702YyMOO6EYFnBJzRToWfsWR8rPhc+b3JvR6/J+cFF1yQLrrowmKexvvHL2XP72n1iAABAgQIECBAgAABAgRCQJCZyTwYv7Q8Qsxjx176wIxMuqwbBKYUiFCoq2t92r//QPHncapz7C3YKCc6Rzj25je/tfpsN9zwjvS1r/270SZAgAABAgQIECBAgAABAgTmWUCQOc8DMP72UZkZzWESGQ2Krpy1wORK456e7vSxj3Vnv1R3/BL5ePgdO/4lfeQjnWft4I0ECBAgQIAAAQIECBAgQIBAbQQEmbVxdBUCBKYQmFydGfsNfuhDH0yf/OSdxVLeHNuKFbdUDy6Kk6p/8IMXl5jn2F99IkCAAAECBAgQIECAAAECZREQZJZlpD0ngXkUOHTo0dTbu3HCKeADA/2ps7M9u0Bz/DYPDvmZx0nj1gQIECBAgAABAgQIECBAYJKAINOUIEBgTgSiOnPv3vvSJz7RV71fVGiuW/fRbALNoaHh1N29vtq/wcFtqbOzY0583IQAAQIECBAgQIAAAQIECBA4s4Ag0wwhQGBOBSLQ7O8fSPv2HShON4+WS6C5cuWt6ZFHHq16PPXUd7Lf03NOB8/NCBAgQIAAAQIECBAgQIDAPAoIMucR360JlFkgTgffseNzaceOnVWG2DczDgWKJd0Rbs5lm3xa+bJl70oHD94/l11wLwIECBAgQIAAAQIECBAgQOAMAoJM04MAgXkVmCrQjA6tXr0qrV69sgg156L19W2cEKred9+X0vLl75uLW7sHAQIECBAgQIAAAQIECBAgMAMBQeYMkLyEAIH6C8SS8+3bB4uPsbGx6g2jSnPt2o4i0Gxru7YuHYnDiFasuLV6bdWYdWF2UQIECBAgQIAAAQIECBAgcE4Cgsxz4vNmAgTqIbBv3wNpx47BdOjQYxMuH0Hmxz++Lq1c+f6anXY+MnKkOOAnPlfa8PA9RUWoRoAAAQIECBAgQIAAAQIECOQjIMjMZyz0hACBSQKx7Hxo6EspThOvHAxUeUmcJh5h4803rzwnt5tu+kD69re/W71GXG/v3l3ndE1vJkCAAAECBAgQIECAAAECBGovIMisvakrEiBQB4FY/v2Vr3w1ff7z/3ra1ZctuzFdffWStGDBgnT99W1p6dJrZ7QMPU5P37Jl64QQc+fObTWr9qwDg0sSIECAAAECBAgQIECAAIHSCggySzv0HpxAYwrEXpq7dw8XS88nV2lOfqIIOG+66cYi1Iy9NqP99rfPph//+On0jW88kWIJe6VdeeVr05e/PDSjALQx5fSaAAECBAgQIECAAAECBAg0toAgs7HHT+8JlFog9rWMpef79h2YNtQ8E1Rr66J08OD9afHiRaX29PAECBAgQIAAAQIECBAgQCBnAUFmzqOjbwQIzFjg6NGj6eGHH00jI4eLg3smHxT0UheKE8oHB7cLMWcs7YUECBAgQIAAAQIECBAgQGB+BASZ8+PurgQIzIFA7Kv5yCOPpjg0aHR0tLjjFVdcUXx+3/v+sVhGHh8aAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIEL7bi68AAAGrSURBVCBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv8D/A4EQEWXi+YzZAAAAAElFTkSuQmCC',
+          panelDataGrid: [
+            {
+              panelDataGridD: 'd',
+              panelDataGridC: 'c',
+              panelDataGridB: 'b',
+              panelDataGridA: 'a'
+            },
+            {
+              panelDataGridD: 'h',
+              panelDataGridC: 'g',
+              panelDataGridB: 'f',
+              panelDataGridA: 'e'
+            },
+            {
+              panelDataGridD: 'l',
+              panelDataGridC: 'k',
+              panelDataGridB: 'j',
+              panelDataGridA: 'i'
+            }
+          ],
+          textfield: 'testing',
+          page2Customer: 'bob@example.com',
+          textfieldonPage2: 'test',
+          numberField: 234,
+          textfieldonpage1: [
+            'a',
+            'b',
+            'c'
+          ],
+          panelHtml5Select: 'banana',
+          page3Iagreetothefollowtherules: true,
+          panelText: 'hello'
+        },
+      };
+
+      setTimeout(() => {
+        const customerSelectEl = form.element.querySelector('.formio-component-page2Customer');
+        const customerSelectValueEl = customerSelectEl.querySelector('[ref="value"]');
+        const htmlSelectEl = form.element.querySelector('.formio-component-panelHtml5Select');
+        const htmlSelectValueEl = htmlSelectEl.querySelector('[ref="value"]');
+        const checkboxEl = form.element.querySelector('.formio-component-page3Iagreetothefollowtherules');
+        const checkboxValueEl = checkboxEl.querySelector('[ref="value"]');
+
+        assert.equal(customerSelectValueEl.textContent.trim(), 'bob@example.com', 'Should render Select value properly');
+        assert.equal(htmlSelectValueEl.textContent.trim(), 'banana', 'Should render HTML5 Select value properly');
+        assert.equal(checkboxValueEl.textContent.trim(), 'True', 'Should render Checkbox value properly');
+
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
   describe('Custom Logic', () => {
     it('Should rerender components using updated properties', (done) => {
       const formElement = document.createElement('div');
@@ -2330,6 +2614,32 @@ describe('Webform tests', function() {
           assert(requiredFieldLabel.classList.contains('field-required'), 'Should mark a field as required');
           done();
         }, 550);
+      }).catch(done);
+    });
+  });
+
+  describe('Conditionals', () => {
+    it('Should always checkConditions with correct context', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+
+      form.setForm(formWithDataGridWithContainerAndConditionals).then(() => {
+        const radioTrigger = form.getComponent(['dataGrid', 0, 'radio1']);
+        const radioConditional = form.getComponent(['dataGrid', 0, 'radio2']);
+        radioTrigger.setValue('yes', { modified: true });
+
+        setTimeout(() => {
+          assert.equal(radioTrigger.dataValue, 'yes', 'Should set value');
+          assert.equal(radioConditional.visible, true, 'Should become visible');
+
+          radioConditional.setValue('one', { modified: true });
+          setTimeout(() => {
+            assert.equal(radioConditional.dataValue, 'one', 'Should set value and clearOnHide should not be triggered');
+            assert.equal(radioConditional.visible, true, 'Should stay visible');
+
+            done();
+          }, 250);
+        }, 250);
       }).catch(done);
     });
   });

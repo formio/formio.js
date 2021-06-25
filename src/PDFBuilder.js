@@ -192,19 +192,13 @@ export default class PDFBuilder extends WebformBuilder {
     });
     this.initIframeEvents();
     this.updateDropzoneDimensions();
-    this.initDropzoneEvents();
-    this.prepSidebarComponentsForDrag();
 
     const sidebar = this.refs.sidebar;
     if (sidebar) {
       this.addClass(sidebar, 'disabled');
-      const prevent = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      };
-      this.addEventListener(sidebar, 'dragstart', prevent);
       this.webform.on('iframe-ready', () => {
-        this.removeEventListener(sidebar, 'dragstart', prevent);
+        this.pdfLoaded = true;
+        this.updateDragAndDrop();
         this.removeClass(sidebar, 'disabled');
       }, true);
     }
@@ -375,6 +369,9 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   updateDragAndDrop() {
+    if (!this.pdfLoaded) {
+      return;
+    }
     this.initDropzoneEvents();
     this.prepSidebarComponentsForDrag();
   }

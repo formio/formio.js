@@ -56,8 +56,8 @@ export default class CalendarWidget extends InputWidget {
   }
   /* eslint-enable camelcase */
 
-  constructor(settings, component) {
-    super(settings, component);
+  constructor(settings, component, instance, index) {
+    super(settings, component, instance, index);
     // Change the format to map to the settings.
     if (this.settings.noCalendar) {
       this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');
@@ -389,11 +389,11 @@ export default class CalendarWidget extends InputWidget {
   }
 
   isCalendarElement(element) {
-    if (isIEBrowser && !element) {
+    if (isIEBrowser || !element) {
       return true;
     }
 
-    if (this.calendar?.config?.appendTo.contains(element)) {
+    if (this.calendar?.config?.appendTo?.contains(element)) {
       return true;
     }
 
@@ -459,7 +459,7 @@ export default class CalendarWidget extends InputWidget {
       const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
       const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
 
-      if (!(isIEBrowser && !relatedTarget) && !relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+      if (!(isIEBrowser && !relatedTarget) && !this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
         const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
@@ -500,6 +500,14 @@ export default class CalendarWidget extends InputWidget {
           return Flatpickr.formatDate(date, format);
         }
 
+        const currentValue = new Date(this.getValue());
+        if (currentValue.toString() === date.toString()) {
+          let compValue = this.componentInstance.dataValue;
+          if (Array.isArray(compValue)) {
+            compValue = compValue[this.valueIndex];
+          }
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), new Date(compValue), format, this.timezone);
+        }
         return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 

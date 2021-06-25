@@ -4,6 +4,186 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+[Unreleased]
+### Fixed
+ - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.
+
+### 4.14.0-rc.11
+#### Changed
+ - Revert FIO-301: Fixes columns to work with single columns.
+
+### 4.14.0-rc.10
+#### Added
+ - FIO-1317: Implements capability to use NextGen Rules Engine from premium in 4x.
+ - FJS-1459: Add Display as Table feature for EditGrid
+ - FJS-1212 | FIO-175: Adds Display Mask option
+
+#### Fixed
+ - FIO-301: Fixes columns to work with single columns.
+ - FIO-2492: Fixes an issue when there is a component in one wizard page that has the same API key as the one on another wizard page where validation isn't met for some reasons, there will be misredirection from such an error in the Error list
+ - Call onChange on resetValue in Webform
+
+### 4.14.0-rc.9
+#### Fixed
+ - FIO-2824: remove Spellcheck setting for Number Component
+ - FIO-2844: Fix several api calls to /current endpoint
+ - FIO-3038: remove 'Hide Input' setting from Password component
+ - FIO-2554: add properties to the default schemas
+
+#### Added
+ - FIO-2503: Feat: adds Truncate Multiple Spaces option
+ - Add option for errors to builder
+
+### 4.14.0-rc.8
+#### Fixed
+ - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+ - FJS-971: fix entering period as a first character in currency input
+ - FIO-2784, FIO-2927: Make Builder replace all the " where they may cause a rendering issue
+ - FIO-2494: Fixes an issue where Wizard page hidden by the logic is still shown in the Header
+ - FIO-2497: fixed an issue where editGrid header is updated when component becomes visible in unsaved row and new row is added
+ - Fixed an issue where public config is not available for the form and its components in builer mode
+ - FIO-2504: Fixes an issue with redundant settings for a non-wizard Panel component in a Wizard form.
+ - FIO-1433: Fixed default custom value for checkbox
+ - Fix nested wizard fields validation
+
+#### Added
+ - SEC-19: Password Strength Addon
+ - FIO-290 | FJS-1367: Feat: add an ability to specify Survey questions' and values' tooltips
+
+#### Changed
+ - Adding a more standard export for Formio object.
+
+### 4.14.0-rc.7
+#### Fixed
+ - FIO-2925: add protection against change loops
+ - FIO-249 | FJS-1436: Fixes an issue where Unique API Key validation is not triggered for Layout components
+ - FIO-2821: Select field values do not display when rendered in HTML mode
+ - FIO-2822: fix disableSiblings logic for the builder
+ - FIO-2819: Fixes an issue where user is able to delete all the rows of an EditGrid with Open When Empty
+ - FIO-2538: Fixes an issue when Tree component has components with 'required' or 'unique' validation, and the Tree data entry is not saved, the validation is not stopping the form from being submitted
+ - FIO-2533: Fixes an issue when the data of all the components inside the Tree component displays in the Tree column in the Data table instead of [Complex Data]
+ - FIO-2532: Fixes an issue when canceling the root tree while editing was removing all data.
+ - FIO-1434: Fixes an issue when Default value settings did not work for Tree component. Removed Multiple values settings for Tree component.
+ - FIO-1372: Fixes an issue when beforeNext hook not fired when form is rendered with readOnly flag
+ - FIO-2590: Fixes an issue when During dragging data grid row, its styling does not preserve.
+ - FIO-1513: Fixes an issue when in the DataGrid component custom validation errors were shown in an incorrect place.
+ - FIO-2505: Fixes an issue when Signatures on different rows are not consistent in size in DataGrid
+ - FIO-2625: Fixes an issue where got an infinite loop when changing the default values of the Data Grid components in the Data Grid.
+ - FIO-1288: Fixesan issue where Prefix/Suffix is rendered inaccurately when words/chars counter is shown
+ - FIO-1537: fixed submiting issue for wizards recaptcha component.
+ - FIO-320: Use Webcam when Enable webcam is true
+ - FIO-1488: Fixes an issue where unordered list created in Quill is rendered as an ordered one in read-only mode
+ - FIO-1429: Fixes an issue where the alphabetical keypad opens for the Phone Number on mobile
+ - Fix NestedArrayComponent's getComponents(0)
+
+#### Added
+ - FIO-1239: Implement wizard header type selection
+ - FIO-1422: Add 'Navigate Pages & Save on Enter' option for wizard
+
+#### Changed
+ - FIO-487: Remove pdf icon element from submission view
+
+### 4.14.0-rc.6
+#### Fixed
+ - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
+ - FIO-2672: Fixes the email normalize to work with the "multiple" flag and not crash the renderer.
+ - FIO-2936: replace finally method for better compatibility
+
+### 4.14.0-rc.5
+#### Fixed
+ - FIO-2672: effective use of the index issue fix
+
+### 4.14.0-rc.4
+#### Fixed
+ - FIO-2848, FIO-2831: Fixes some issues with setting error classes inside EditGrid
+ - Removed setDefaultValues for the NestedForm. Revised that nested form with visible false, works as expected without it.
+ - FJS | Conditionally showing columns are not auto-adjusting when auto adjust column is set to true
+ - FJS-3357 enable selection of closed EditGrid rows
+ - FIO-1409: Add save on enter option for button component
+ - Fix/fio 2617 camera on file dropzone
+ - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
+ - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
+ - FIO-2677: fix submission not set on pdf for components with calculated value
+ - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source.
+ - FIO-2786: fix problem with initial button click on Nested Wizard in M…
+ - Inherit default (en) translations (validations, buttons) for custom languages
+
+### 4.14.0-rc.3
+#### Fixed
+ - Issue with the auto-disable default values.
+ - Problem with Edit Grid errors showing up all the time.
+
+### 4.14.0-rc.2
+#### Fixed
+ - Fix/empty number submission
+ - FIO-1112: Fix styles for bootstrap3 and hovered tab
+ - Editgrid Error section rendering everytime
+ - FIO-2810: Fixes an issue when set to Radio input type, cannot unselect an option
+ - FIO-2731: Fixes an issue when was unable to disable multiple values on Number component.
+ - FIO-2778: Removes redundant 'Minimum Word Length' and 'Maximum Word Length' settings for the URL component.
+ - FIO-1562: Fixes an issue where clearOnHide mistakenly triggered for components inside a Container nested inside a DataGrid
+ - FIO-346 | FJS-1051: Fixes an issue where multiple select shows "..." in Firefox
+ - FIO-2811: Button: fix values not updated when custom logic set
+ - FIO-1525: Fixes an issue where DataMap value is always shown as empty in the DataTable
+ - FIO-196: select request limit
+
+#### Added
+ - Added a way to not have renderer add default values to submission.
+
+### 4.14.0-rc.1
+#### Addded
+ - FIO-1112: Add vertical layout for tabs component
+
+### 4.13.3-rc.7
+#### Changed
+ - Upgrade @formio/bootstrap3 to resolve builder issue with resize polyfill.
+
+### 4.13.3-rc.6
+#### Fixed
+ - FIO-3323: Fixing the datagrid spacing.
+ - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.
+
+### 4.13.3-rc.5
+#### Fixed
+ - FIO-3087: Prevent user from Drag'n'Drop components while PDF is loading
+ - FIO-3283: Resolving issues where EditGrid components do not show validation messages correctly.
+ - FIO-3342: Fixed issue where multiple flag on DateTime component would display dates incorrectly.
+ - FIO-3303: Table does not render correctly when vieweing submission and in PDF download
+
+### 4.13.3-rc.4
+#### Fixed
+ - FIO-3309: Fixes console errors which occur sometimes with CalendarWidget
+
+### 4.13.3-rc.3
+#### Fixed
+ - FIO-3229: Fixes an issue where checkbox value in HTML more is always False
+ - FIO-3187: Fixes an issue where after you click on the time input it closes and time is visible, but not actually persist within submission
+ - FIO-2880: Fixes an issue where time is converted multiple times and the result is wrong
+ - FIO-3230: Select getView don't format unlisted values
+
+### 4.13.3-rc.2
+#### Fixed
+ - FIO-3114: Fixed an issue with uniquifying API keys
+ - FIO-3254: Fixed an issue where Select/Radio/SelectBoxes/etc values changed manually are recalculated again after reopening an edit window
+ - Spacing issues with DataGrid.
+
+### 4.13.3-rc.1
+#### Fixed
+ - FIO-3090: Fixes an issue where Radios inside Table nested in DataGrid could have the same IDs which leads to setting value of a wrong instance
+ - FIO-2844: Fix several api calls to /current endpoint
+ - FIO-2824: remove Spellcheck setting for Number Component
+
+#### Changes
+ - Update dependencies.
+
+### 4.13.2
+#### Changes
+ - No changes. Released 4.13.2-rc.4 as official release.
+
+### 4.13.2-rc.4
+#### Fixed
+ - FIO-3086: Fixes an issue where value is not recalculated while editing a submission
+
 ### 4.13.2-rc.3
 #### Fixed
  - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
@@ -15,7 +195,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
  - FIO-2986: Inherit default (en) translations (validations, buttons) for custom languages
  - FIO-2786: fix problem with initial button click on Nested Wizard in Modal Edit
- - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source. 
+ - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source.
  - FIO-2677: Fix submission not set on pdf for components with calculated value
  - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
  - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
@@ -62,7 +242,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### 4.13.1-rc.3
 #### Changed
- - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github. 
+ - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github.
 
 ### 4.13.1-rc.2
 #### Fixed

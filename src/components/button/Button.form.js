@@ -1,9 +1,8 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import ButtonEditDisplay from './editForm/Button.edit.display';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: ButtonEditDisplay

@@ -792,7 +792,6 @@ export default class Webform extends NestedDataComponent {
         this.submissionSet = true;
         this.triggerChange(flags);
         this.setValue(submission, flags);
-        this.setDownloadUrl();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -1027,6 +1026,7 @@ export default class Webform extends NestedDataComponent {
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(document, 'keydown', this.executeShortcuts);
     this.currentForm = this;
+    this.hook('attachWebform', element, this);
     return childPromise.then(() => {
       this.emit('render', this.element);
 
@@ -1052,7 +1052,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     this.setPristine(true);
-    this.rebuild();
+    this.onChange();
   }
 
   /**
@@ -1219,7 +1219,7 @@ export default class Webform extends NestedDataComponent {
 
           let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
           formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
-          if (!err.formattedKeyOrPath) {
+          if (typeof err !== 'string' && !err.formattedKeyOrPath) {
             err.formattedKeyOrPath = formattedKeyOrPath;
           }
 
@@ -1636,31 +1636,6 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  setDownloadUrl() {
-    if (this.formio && _.get(this, 'form.settings.showPdfIcon', false)) {
-      this.formio.getDownloadUrl().then((url) => {
-        // Add a download button if it has a download url.
-        if (!url) {
-          return;
-        }
-        if (!this.downloadButton) {
-          if (this.options.primaryProject) {
-            url += `&project=${this.options.primaryProject}`;
-          }
-          this.downloadButton = this.ce('a', {
-            href: url,
-            target: '_blank',
-            style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-          }, this.ce('img', {
-            src: require('./pdf.image'),
-            style: 'width:3em;'
-          }));
-          this.element.insertBefore(this.downloadButton, this.iframe);
-        }
-      });
-    }
-  }
-
   set nosubmit(value) {
     this._nosubmit = !!value;
     this.emit('nosubmit', this._nosubmit);
@@ -1668,6 +1643,14 @@ export default class Webform extends NestedDataComponent {
 
   get nosubmit() {
     return this._nosubmit || false;
+  }
+
+  get conditions() {
+    return this.schema.settings?.conditions ?? [];
+  }
+
+  get variables() {
+    return this.schema.settings?.variables ?? [];
   }
 }
 

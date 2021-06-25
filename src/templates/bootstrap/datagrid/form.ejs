@@ -2,7 +2,7 @@
     {{ ctx.component.striped ? 'table-striped' : ''}}
     {{ ctx.component.hover ? 'table-hover' : ''}}
     {{ ctx.component.condensed ? 'table-sm' : ''}}
-    " {% if (ctx.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
+    " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
   {% if (ctx.hasHeader) { %}
   <thead>
     <tr>
@@ -47,7 +47,7 @@
         </td>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
-        {% if (!ctx.builder && ctx.hasRemoveButtons) { %}
+        {% if (ctx.hasRemoveButtons) { %}
         <td>
           <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow" tabindex="{{ctx.tabIndex}}">
             <i class="{{ctx.iconClass('remove-circle')}}"></i>

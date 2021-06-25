@@ -17,6 +17,7 @@ export default class TabsComponent extends NestedComponent {
           components: [],
         },
       ],
+      verticalLayout: false,
     }, ...extend);
   }
 
@@ -158,7 +159,7 @@ export default class TabsComponent extends NestedComponent {
     const tabIndex = this.tabs.findIndex((tab) => {
       return tab.some((comp) => comp === component);
     });
-    if (tabIndex !== -1) {
+    if (tabIndex !== -1 &&  this.currentTab !== tabIndex) {
       this.setTab(tabIndex);
     }
   }

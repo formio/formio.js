@@ -1,7 +1,7 @@
 {
-  "coverage": "6.75%",
-  "expectCount": 1185,
-  "actualCount": 80,
+  "coverage": "6.05%",
+  "expectCount": 1090,
+  "actualCount": 66,
   "files": {
     "src/Embed.js": {
       "expectCount": 1,
@@ -55,7 +55,7 @@
       ]
     },
     "src/Formio.js": {
-      "expectCount": 123,
+      "expectCount": 125,
       "actualCount": 7,
       "undocumentLines": [
         18,
@@ -63,8 +63,8 @@
         23,
         24,
         26,
-        45,
-        52,
+        44,
+        46,
         53,
         54,
         55,
@@ -84,96 +84,98 @@
         69,
         70,
         71,
-        74,
+        72,
         75,
-        108,
-        129,
-        133,
+        76,
+        109,
+        130,
         134,
-        211,
-        221,
-        223,
+        135,
+        212,
+        222,
         224,
-        237,
-        247,
-        256,
-        268,
-        286,
-        290,
-        294,
-        298,
-        302,
-        310,
-        314,
-        318,
-        322,
-        326,
-        360,
-        364,
-        368,
-        372,
-        381,
-        388,
-        392,
-        396,
-        400,
-        404,
-        408,
-        412,
-        416,
-        420,
-        425,
-        439,
-        453,
-        457,
-        533,
-        566,
-        593,
-        744,
-        748,
-        761,
-        774,
-        797,
-        811,
-        840,
-        1020,
-        1029,
-        1037,
-        1076,
-        1101,
-        1132,
-        1143,
-        1150,
-        1154,
-        1158,
-        1162,
-        1168,
-        1173,
-        1177,
-        1182,
-        1186,
-        1190,
-        1191,
-        1195,
-        1208,
-        1216,
-        1226,
-        1231,
-        1251,
-        1256,
-        1261,
-        1266,
-        1296,
-        1315,
-        1339,
-        1348,
-        1374,
-        1419,
-        1431,
-        1510,
-        1521,
-        1527,
-        1533
+        225,
+        238,
+        248,
+        257,
+        269,
+        287,
+        291,
+        295,
+        299,
+        303,
+        311,
+        315,
+        319,
+        323,
+        327,
+        361,
+        365,
+        369,
+        373,
+        382,
+        389,
+        393,
+        397,
+        401,
+        405,
+        409,
+        413,
+        417,
+        421,
+        426,
+        440,
+        454,
+        458,
+        534,
+        567,
+        594,
+        745,
+        749,
+        762,
+        775,
+        798,
+        812,
+        841,
+        1021,
+        1030,
+        1038,
+        1079,
+        1104,
+        1135,
+        1146,
+        1153,
+        1157,
+        1161,
+        1165,
+        1171,
+        1176,
+        1180,
+        1185,
+        1189,
+        1193,
+        1194,
+        1198,
+        1211,
+        1219,
+        1229,
+        1234,
+        1254,
+        1259,
+        1264,
+        1269,
+        1301,
+        1320,
+        1344,
+        1353,
+        1379,
+        1424,
+        1436,
+        1515,
+        1526,
+        1532,
+        1538,
+        1542
       ]
     },
     "src/Formio.unit.js": {
@@ -193,7 +195,7 @@
       ]
     },
     "src/PDFBuilder.js": {
-      "expectCount": 30,
+      "expectCount": 31,
       "actualCount": 0,
       "undocumentLines": [
         11,
@@ -208,24 +210,25 @@
         106,
         133,
         186,
-        213,
-        250,
-        258,
-        272,
-        285,
-        302,
-        362,
-        377,
-        382,
-        401,
+        200,
+        207,
+        244,
+        252,
+        266,
+        279,
+        296,
+        356,
+        371,
+        379,
+        398,
+        408,
         411,
-        414,
-        415,
-        422,
-        423,
-        428,
-        481,
-        492
+        412,
+        419,
+        420,
+        425,
+        478,
+        489
       ]
     },
     "src/WizardBuilder.js": {
@@ -252,6 +255,30 @@
         244
       ]
     },
+    "src/addons/FormioAddon.js": {
+      "expectCount": 11,
+      "actualCount": 0,
+      "undocumentLines": [
+        5,
+        6,
+        16,
+        20,
+        24,
+        26,
+        27,
+        28,
+        31,
+        32,
+        36
+      ]
+    },
+    "src/addons/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
+      ]
+    },
     "src/builders/Builders.js": {
       "expectCount": 6,
       "actualCount": 0,
@@ -265,23 +292,28 @@
       ]
     },
     "src/components/Components.js": {
-      "expectCount": 7,
+      "expectCount": 12,
       "actualCount": 0,
       "undocumentLines": [
-        4,
         5,
-        9,
-        16,
-        28,
-        32,
-        36
+        6,
+        8,
+        10,
+        14,
+        18,
+        22,
+        26,
+        33,
+        45,
+        49,
+        53
       ]
     },
     "src/components/_classes/component/Component.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        12
+        13
       ]
     },
     "src/components/_classes/component/editForm/utils.js": {
@@ -349,81 +381,6 @@
         3
       ]
     },
-    "src/components/_classes/nested/NestedComponent.js": {
-      "expectCount": 82,
-      "actualCount": 13,
-      "undocumentLines": [
-        8,
-        9,
-        15,
-        17,
-        18,
-        21,
-        25,
-        32,
-        36,
-        44,
-        49,
-        76,
-        80,
-        85,
-        89,
-        93,
-        98,
-        105,
-        109,
-        113,
-        117,
-        124,
-        128,
-        129,
-        135,
-        139,
-        143,
-        144,
-        150,
-        175,
-        188,
-        349,
-        353,
-        357,
-        361,
-        365,
-        366,
-        409,
-        415,
-        424,
-        433,
-        459,
-        536,
-        542,
-        552,
-        568,
-        574,
-        586,
-        591,
-        595,
-        604,
-        626,
-        637,
-        641,
-        648,
-        662,
-        670,
-        675,
-        679,
-        683,
-        690,
-        697,
-        702,
-        708,
-        715,
-        719,
-        725,
-        729,
-        747
-      ]
-    },
     "src/components/_classes/nested/NestedComponent.unit.js": {
       "expectCount": 1,
       "actualCount": 0,
@@ -449,21 +406,21 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        7
+        6
       ]
     },
     "src/components/button/Button.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        5
+        4
       ]
     },
     "src/components/checkbox/Checkbox.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        7
+        6
       ]
     },
     "src/components/checkbox/Checkbox.js": {
@@ -475,24 +432,24 @@
         17,
         28,
         32,
-        38,
-        49,
-        53,
-        68,
-        74,
-        82,
-        84,
-        94,
-        101,
-        105,
-        109,
-        113,
-        120,
-        130,
-        137,
-        170,
-        180,
-        184
+        39,
+        50,
+        54,
+        69,
+        75,
+        83,
+        85,
+        95,
+        102,
+        106,
+        110,
+        114,
+        121,
+        131,
+        138,
+        172,
+        187,
+        191
       ]
     },
     "src/components/columns/Columns.form.js": {
@@ -502,63 +459,38 @@
         5
       ]
     },
-    "src/components/columns/Columns.js": {
-      "expectCount": 21,
-      "actualCount": 1,
-      "undocumentLines": [
-        4,
-        5,
-        22,
-        33,
-        35,
-        38,
-        52,
-        56,
-        60,
-        64,
-        66,
-        89,
-        93,
-        100,
-        111,
-        115,
-        126,
-        153,
-        161,
-        165
-      ]
-    },
     "src/components/container/Container.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        6
+        5
       ]
     },
     "src/components/container/Container.js": {
-      "expectCount": 13,
+      "expectCount": 14,
       "actualCount": 0,
       "undocumentLines": [
-        6,
         7,
-        20,
-        31,
-        33,
-        36,
-        40,
-        44,
-        48,
-        52,
-        56,
-        64,
-        71
+        8,
+        21,
+        32,
+        34,
+        37,
+        41,
+        45,
+        49,
+        53,
+        57,
+        65,
+        72,
+        83
       ]
     },
     "src/components/content/Content.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        6
+        5
       ]
     },
     "src/components/content/Content.js": {
@@ -594,21 +526,21 @@
         49,
         61,
         65,
-        83,
-        87,
-        91,
-        95,
-        129,
-        140,
-        148,
-        174
+        93,
+        97,
+        101,
+        105,
+        139,
+        150,
+        158,
+        184
       ]
     },
     "src/components/datagrid/DataGrid.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        7
+        6
       ]
     },
     "src/components/datamap/DataMap.form.js": {
@@ -618,53 +550,11 @@
         5
       ]
     },
-    "src/components/datamap/DataMap.js": {
-      "expectCount": 36,
-      "actualCount": 0,
-      "undocumentLines": [
-        7,
-        8,
-        31,
-        42,
-        50,
-        52,
-        55,
-        56,
-        57,
-        59,
-        66,
-        70,
-        74,
-        87,
-        91,
-        99,
-        110,
-        114,
-        126,
-        134,
-        143,
-        147,
-        151,
-        158,
-        168,
-        176,
-        180,
-        193,
-        225,
-        229,
-        233,
-        240,
-        245,
-        252,
-        262,
-        270
-      ]
-    },
     "src/components/datetime/DateTime.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        8
+        7
       ]
     },
     "src/components/datetime/DateTime.js": {
@@ -692,14 +582,14 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        10
+        9
       ]
     },
     "src/components/editgrid/EditGrid.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        8
+        7
       ]
     },
     "src/components/email/Email.form.js": {
@@ -710,7 +600,7 @@
       ]
     },
     "src/components/email/Email.js": {
-      "expectCount": 6,
+      "expectCount": 7,
       "actualCount": 0,
       "undocumentLines": [
         3,
@@ -718,7 +608,8 @@
         16,
         27,
         32,
-        36
+        36,
+        42
       ]
     },
     "src/components/fieldset/Fieldset.form.js": {
@@ -746,7 +637,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        8
+        7
       ]
     },
     "src/components/form/Form.form.js": {
@@ -760,7 +651,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        6
+        5
       ]
     },
     "src/components/hidden/Hidden.js": {
@@ -783,7 +674,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        6
+        5
       ]
     },
     "src/components/html/HTML.js": {
@@ -810,7 +701,7 @@
       ]
     },
     "src/components/number/Number.js": {
-      "expectCount": 24,
+      "expectCount": 25,
       "actualCount": 1,
       "undocumentLines": [
         7,
@@ -824,18 +715,19 @@
         62,
         83,
         87,
-        95,
         99,
-        111,
-        124,
-        137,
-        146,
-        150,
-        166,
-        177,
+        103,
+        107,
+        119,
+        132,
+        145,
+        154,
+        158,
+        174,
         185,
-        195,
-        206
+        193,
+        203,
+        214
       ]
     },
     "src/components/panel/Panel.form.js": {
@@ -849,12 +741,12 @@
       "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
-        3,
-        4,
-        5,
-        6,
-        12,
-        16
+        7,
+        8,
+        9,
+        10,
+        16,
+        20
       ]
     },
     "src/components/password/Password.form.js": {
@@ -888,15 +780,15 @@
       "undocumentLines": [
         3,
         4,
-        15,
-        26
+        16,
+        27
       ]
     },
     "src/components/radio/Radio.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        7
+        6
       ]
     },
     "src/components/radio/Radio.js": {
@@ -905,27 +797,27 @@
       "undocumentLines": [
         5,
         6,
-        17,
-        28,
-        30,
+        20,
+        31,
         33,
-        37,
-        45,
-        54,
-        58,
-        62,
-        66,
-        68,
+        36,
+        40,
+        48,
+        57,
+        61,
+        65,
+        69,
         71,
-        81,
-        112,
-        121,
-        134,
-        147,
-        160,
-        167,
-        187,
-        198
+        74,
+        84,
+        117,
+        126,
+        139,
+        152,
+        165,
+        172,
+        193,
+        204
       ]
     },
     "src/components/recaptcha/ReCaptcha.form.js": {
@@ -936,31 +828,30 @@
       ]
     },
     "src/components/recaptcha/ReCaptcha.js": {
-      "expectCount": 15,
+      "expectCount": 14,
       "actualCount": 0,
       "undocumentLines": [
         7,
         8,
         16,
         27,
-        36,
-        45,
-        53,
-        57,
-        68,
+        28,
+        37,
+        46,
+        54,
+        58,
+        69,
         96,
         104,
         109,
-        133,
-        135,
-        139
+        133
       ]
     },
     "src/components/resource/Resource.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        5
+        4
       ]
     },
     "src/components/resource/Resource.js": {
@@ -978,7 +869,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        7
+        6
       ]
     },
     "src/components/select/fixtures/comp3.js": {
@@ -1000,37 +891,38 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        7
+        6
       ]
     },
     "src/components/signature/Signature.js": {
-      "expectCount": 24,
+      "expectCount": 25,
       "actualCount": 0,
       "undocumentLines": [
-        5,
         6,
-        21,
-        32,
-        34,
+        7,
+        22,
+        33,
         35,
-        45,
-        49,
-        53,
-        60,
-        64,
-        68,
-        90,
-        109,
-        130,
-        149,
-        156,
-        160,
-        168,
-        178,
-        218,
-        227,
-        231,
-        235
+        36,
+        46,
+        50,
+        54,
+        61,
+        65,
+        69,
+        91,
+        110,
+        131,
+        152,
+        159,
+        163,
+        171,
+        181,
+        200,
+        229,
+        243,
+        247,
+        251
       ]
     },
     "src/components/survey/Survey.form.js": {
@@ -1065,9 +957,9 @@
         104,
         107,
         120,
-        144,
-        157,
-        172
+        154,
+        167,
+        182
       ]
     },
     "src/components/tabs/Tabs.form.js": {
@@ -1083,25 +975,25 @@
       "undocumentLines": [
         4,
         5,
-        23,
-        34,
-        38,
-        50,
-        54,
-        58,
-        62,
-        64,
+        24,
+        35,
+        39,
+        51,
+        55,
+        59,
+        63,
         65,
-        68,
+        66,
         69,
         70,
-        83,
-        93,
-        109,
-        154,
-        166,
-        185,
-        200
+        71,
+        84,
+        94,
+        110,
+        155,
+        167,
+        186,
+        201
       ]
     },
     "src/components/tags/Tags.form.js": {
@@ -1186,12 +1078,11 @@
       ]
     },
     "src/components/tree/Node.js": {
-      "expectCount": 35,
-      "actualCount": 0,
+      "expectCount": 39,
+      "actualCount": 1,
       "undocumentLines": [
         3,
         4,
-        17,
         18,
         19,
         20,
@@ -1203,34 +1094,38 @@
         26,
         27,
         28,
-        39,
-        48,
-        52,
-        56,
-        60,
-        64,
-        68,
-        74,
+        29,
+        30,
+        42,
+        51,
+        55,
+        59,
+        63,
+        67,
+        71,
+        75,
         81,
-        96,
-        104,
+        88,
+        97,
         113,
-        128,
-        140,
-        147,
-        152,
-        156,
-        163,
-        169,
-        180,
-        185
+        121,
+        130,
+        146,
+        158,
+        165,
+        170,
+        174,
+        181,
+        187,
+        198,
+        209
       ]
     },
     "src/components/tree/Tree.form.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2
+        3
       ]
     },
     "src/components/unknown/Unknown.form.js": {
@@ -1254,7 +1149,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        6
+        7
       ]
     },
     "src/components/url/Url.js": {
@@ -1432,7 +1327,7 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        15
+        48
       ]
     },
     "src/providers/Providers.js": {
@@ -1692,24 +1587,40 @@
         18
       ]
     },
-    "src/validator/Validator.js": {
-      "expectCount": 15,
-      "actualCount": 1,
+    "src/validator/conjunctions/index.js": {
+      "expectCount": 6,
+      "actualCount": 0,
       "undocumentLines": [
-        14,
-        1116,
-        23,
-        24,
-        25,
-        26,
-        853,
-        884,
-        927,
-        1061,
-        1092,
-        1096,
-        1100,
-        1104
+        1,
+        2,
+        4,
+        8,
+        12,
+        16
+      ]
+    },
+    "src/validator/operators/index.js": {
+      "expectCount": 6,
+      "actualCount": 0,
+      "undocumentLines": [
+        1,
+        2,
+        4,
+        8,
+        12,
+        16
+      ]
+    },
+    "src/validator/quickRules/index.js": {
+      "expectCount": 6,
+      "actualCount": 0,
+      "undocumentLines": [
+        1,
+        2,
+        4,
+        8,
+        12,
+        16
       ]
     },
     "src/validator/rules/Custom.js": {
@@ -1973,8 +1884,32 @@
         22
       ]
     },
+    "src/validator/transformers/index.js": {
+      "expectCount": 6,
+      "actualCount": 0,
+      "undocumentLines": [
+        1,
+        2,
+        4,
+        8,
+        12,
+        16
+      ]
+    },
+    "src/validator/valueSources/index.js": {
+      "expectCount": 6,
+      "actualCount": 0,
+      "undocumentLines": [
+        1,
+        2,
+        4,
+        8,
+        12,
+        16
+      ]
+    },
     "src/widgets/InputWidget.js": {
-      "expectCount": 17,
+      "expectCount": 19,
       "actualCount": 0,
       "undocumentLines": [
         4,
@@ -1983,17 +1918,19 @@
         13,
         14,
         15,
-        18,
-        19,
-        23,
-        27,
-        36,
-        40,
-        44,
-        48,
-        52,
-        56,
-        60
+        16,
+        17,
+        20,
+        21,
+        25,
+        29,
+        38,
+        42,
+        46,
+        50,
+        54,
+        58,
+        62
       ]
     }
   }

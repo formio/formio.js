@@ -13,11 +13,13 @@ import columns from './columns';
 import component from './component';
 import componentModal from './componentModal';
 import components from './components';
+import tableComponents from './tableComponents';
 import container from './container';
 import datagrid from './datagrid';
 import day from './day';
 import dialog from './dialog';
 import editgrid from './editgrid';
+import editgridTable from './editgridTable';
 import field from './field';
 import fieldset from './fieldset';
 import file from './file';
@@ -54,6 +56,8 @@ import webform from './webform';
 import well from './well';
 import wizard from './wizard';
 import wizardHeader from './wizardHeader';
+import wizardHeaderClassic from './wizardHeaderClassic';
+import wizardHeaderVertical from './wizardHeaderVertical';
 import wizardNav from './wizardNav';
 import cssClasses from './cssClasses';
 import errorsList from './errorsList';
@@ -88,11 +92,13 @@ export default {
   component,
   componentModal,
   components,
+  tableComponents,
   container,
   datagrid,
   day,
   dialog,
   editgrid,
+  editgridTable,
   field,
   fieldset,
   file,
@@ -128,6 +134,8 @@ export default {
   well,
   wizard,
   wizardHeader,
+  wizardHeaderClassic,
+  wizardHeaderVertical,
   wizardNav,
   errorsList,
   alert

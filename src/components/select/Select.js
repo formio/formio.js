@@ -18,7 +18,7 @@ export default class SelectComponent extends Field {
       key: 'select',
       idPath: 'id',
       data: {
-        values: [],
+        values: [{ label: '', value: '' }],
         json: '',
         url: '',
         resource: '',
@@ -44,6 +44,12 @@ export default class SelectComponent extends Field {
       fuseOptions: {
         include: 'score',
         threshold: 0.3,
+      },
+      validate: {
+        onlyAvailableItems: false
+      },
+      indexeddb: {
+        filter: {}
       },
       customOptions: {},
       useExactSearch: false,
@@ -411,7 +417,7 @@ export default class SelectComponent extends Field {
           noUpdateEvent: true
         });
       }
-      else {
+      else if (this.shouldAddDefaultValue) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
@@ -456,7 +462,7 @@ export default class SelectComponent extends Field {
 
     const limit = this.component.limit || 100;
     const skip = this.isScrollLoading ? this.selectOptions.length : 0;
-    const query = (this.component.dataSrc === 'url') ? {} : {
+    const query = this.component.disableLimit ? {} : {
       limit,
       skip,
     };
@@ -1323,6 +1329,11 @@ export default class SelectComponent extends Field {
       }
     }
 
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
+      this.redraw();
+      return changed;
+    }
+
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
       return changed;
@@ -1402,6 +1413,10 @@ export default class SelectComponent extends Field {
   }
 
   set itemsLoaded(promise) {
+    // Make sure we always resolve the previous promise before reassign it
+    if (typeof this.itemsLoadedResolve === 'function') {
+      this.itemsLoadedResolve();
+    }
     this._itemsLoaded = promise;
   }
 
@@ -1526,7 +1541,7 @@ export default class SelectComponent extends Field {
   }
 
   asString(value) {
-    value = value || this.getValue();
+    value = value ?? this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
       if (valueProperty) {
@@ -1570,10 +1585,15 @@ export default class SelectComponent extends Field {
             valueProperty: this.valueProperty,
           };
 
+      const getFromValues = () => {
+        const initialValue = _.find(items, [valueProperty, value]);
+        const values = this.defaultSchema.data.values || [];
+        return _.isEqual(initialValue, values[0]) ? '-' : initialValue;
+      };
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
         : valueProperty
-          ? _.find(items, [valueProperty, value])
+          ? getFromValues() ?? { value, label: value }
           : value;
     }
 

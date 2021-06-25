@@ -1,3 +1,5 @@
+import Evaluator from '../../../utils/Evaluator';
+
 export default [
   {
     key: 'placeholder',
@@ -23,6 +25,17 @@ export default [
     input: true,
     clearOnHide: false,
     calculateValue: 'value = data.disableAddingRemovingRows;',
+  },
+  {
+    type: 'checkbox',
+    label: 'Display EditGrid as Table',
+    key: 'displayAsTable',
+    tooltip: 'use Table Template',
+    weight: 1002,
+    input: false,
+    customConditional() {
+      return !Evaluator.noeval;
+    },
   },
   {
     weight: 1010,

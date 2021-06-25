@@ -9,6 +9,7 @@ export default class PhoneNumberComponent extends TextFieldComponent {
       inputType: 'tel',
       inputMask: '(999) 999-9999',
       inputMode: 'decimal',
+      displayMask: '',
     }, ...extend);
   }
 

@@ -41,6 +41,7 @@ function cloneResponse(response) {
  *   let formio = new Formio('https://examples.form.io/example');
  */
 class Formio {
+  static currentUserResolved = true;
   /* eslint-disable max-statements */
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
@@ -1070,7 +1071,9 @@ class Formio {
       }
     }
     // Return or updates the current user
-    return Formio.currentUser(opts.formio, opts);
+    return this.currentUserResolved
+      ? Formio.currentUser(opts.formio, opts)
+      : NativePromise.resolve(null);
   }
 
   static getToken(options) {
@@ -1286,8 +1289,10 @@ class Formio {
         options
       });
     }
+    this.currentUserResolved = false;
     return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)
       .then((response) => {
+        this.currentUserResolved = true;
         Formio.setUser(response, options);
         return response;
       });
@@ -1532,6 +1537,17 @@ class Formio {
 
   static getPathType() {
     return Formio.pathType;
+  }
+
+  static get rulesEntities() {
+    return {
+      ValueSources: Formio.ValueSources,
+      Conjunctions: Formio.Conjunctions,
+      Operators: Formio.Operators,
+      Transformers: Formio.Transformers,
+      QuickRules: Formio.QuickRules,
+      Rules: Formio.Rules,
+    };
   }
 }
 

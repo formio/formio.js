@@ -22,6 +22,7 @@ import {
   comp11,
   comp12,
   comp13,
+  comp14,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -160,6 +161,18 @@ describe('Select Component', () => {
       }], false);
 
       assert.equal(component.selectOptions.length, 3);
+      done();
+    });
+  });
+
+  it('should format unlisted values', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      const formattedValue1 = component.getView('Unlisted value');
+      const formattedValue2 = component.getView(0);
+
+      assert.equal(formattedValue1, '<span>Unlisted value</span>');
+      assert.equal(formattedValue2, '<span>0</span>');
       done();
     });
   });
@@ -775,6 +788,26 @@ describe('Select Component', () => {
       assert.notEqual(emptyOption.value, '[object Object]');
       assert.equal(emptyOption.value, '');
     });
+  });
+
+  it('Should not have default values in schema', (done) => {
+    const form = _.cloneDeep(comp14);
+    const element = document.createElement('div');
+
+    const requiredSchema = {
+      label: 'Select',
+      tableView: true,
+      selectThreshold: 0.3,
+      key: 'select',
+      type: 'select',
+      input: true
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      assert.deepEqual(requiredSchema, select.schema);
+      done();
+    }).catch(done);
   });
 
   // it('should reset input value when called with empty value', () => {

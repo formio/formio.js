@@ -24,6 +24,15 @@ import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEd
 import customWizard from '../test/forms/customWizard';
 import wizardChildForm from '../test/forms/wizardChildForm';
 import wizardParentForm from '../test/forms/wizardParentForm';
+import wizardWithComponentsWithSameApi from '../test/forms/wizardWithComponentsWithSameApi';
+import wizardWithConditionallyVisiblePage from '../test/forms/conditionallyVisiblePage';
+import wizardWithPanel from '../test/forms/wizardWithPanel';
+import wizardWithWizard from '../test/forms/wizardWithWizard';
+import simpleTwoPagesWizard from '../test/forms/simpleTwoPagesWizard';
+import wizardWithNestedWizardInEditGrid from '../test/forms/wizardWithNestedWizardInEditGrid';
+import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnter';
+import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
+import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 
 describe('Wizard tests', () => {
   it('Should correctly reset values', function(done) {
@@ -54,7 +63,7 @@ describe('Wizard tests', () => {
         elem.dispatchEvent(event);
       };
 
-      checkComponents(0, 1, [], [{}]);
+      checkComponents(0, 1, [], [{ number: '' }]);
 
       const submission = {
           data: {
@@ -70,7 +79,7 @@ describe('Wizard tests', () => {
         wizard.cancel(true);
 
         setTimeout(() => {
-          checkComponents(0, 1, [], [{}]);
+          checkComponents(0, 1, [], [{ number: '' }]);
           event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
 
           setTimeout(() => {
@@ -395,6 +404,48 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
+  it('Should redirect to the correct page from the Error list', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement, {
+      renderMode: 'html'
+    });
+
+    wizard.setForm(wizardWithComponentsWithSameApi, ).then(() => {
+      const clickWizardBtn = (pathPart) => {
+        const [btnKey] = Object.keys(wizard.refs).filter((key) => key.indexOf(pathPart) !== -1);
+        const btn = _.get(wizard.refs, btnKey);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      setTimeout(() => {
+        checkPage(0);
+        wizard.setPage(1);
+
+        setTimeout(() => {
+          checkPage(1);
+          clickWizardBtn('submit');
+
+          setTimeout(() => {
+            assert.equal(wizard.refs.errorRef.length, 1, 'Should have an error');
+            const clickEvent = new Event('click');
+            wizard.refs.errorRef[0].dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              checkPage(0);
+              done();
+            }, 200);
+          }, 200);
+        }, 300);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should execute advanced logic for wizard pages', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
@@ -693,7 +744,7 @@ describe('Wizard tests', () => {
         urlEnd: 'submission',
         state: 'draft',
         data: {
-          number: undefined,
+          number: '',
           textArea1: '',
           textField: 'test'
         },
@@ -1452,12 +1503,8 @@ describe('Wizard tests', () => {
     wizardForm = new Wizard(formElement);
     wizardForm.setForm(wizardWithNestedWizard)
       .then(() => {
-        wizardForm.setForm(wizardWithNestedWizard);
-
-        setTimeout(() => {
-          assert.equal(wizardForm.element.querySelector('.wizard-page'), wizardForm.allPages[0].components[0].element.parentNode);
-          done();
-        }, 350);
+        assert.equal(wizardForm.element.querySelector('.wizard-page'), wizardForm.allPages[0].components[0].element.parentNode);
+        done();
       })
       .catch(done);
   });
@@ -1518,5 +1565,203 @@ describe('Wizard tests', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  describe('Conditional pages', () => {
+    it('Should remove page from header when it is hidden', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Wizard(formElement);
+      form.setForm(wizardWithConditionallyVisiblePage)
+        .then(() => {
+          const textField = form.getComponent(['textField']);
+          Harness.dispatchEvent(
+            'input',
+            textField.element,
+            '[name="data[textField]"]',
+            (input) => input.value = 'hide',
+          );
+          assert.equal(form.refs[`wizard-${form.id}-link`].length, 3, 'Should show all the pages in header');
+
+          setTimeout(() => {
+            assert.equal(textField.dataValue, 'hide', 'Should set value');
+            const page2 = form.getComponent(['page2']);
+            assert.equal(page2.visible, false, 'Should be hidden by logic');
+            assert.equal(form.refs[`wizard-${form.id}-link`].length, 2, 'Should remove invisible pages from header');
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
+  });
+
+  it('Should have proper values for localRoot', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardWithPanel);
+    const nestedMiddleForm = _.cloneDeep(wizardWithWizard);
+    const childForm = _.cloneDeep(simpleTwoPagesWizard);
+
+    wizard.setForm(form).then(() => {
+      const nestedMiddleFormComp = wizard.getComponent('middleForm');
+      nestedMiddleFormComp.loadSubForm = () => {
+        nestedMiddleFormComp.formObj = nestedMiddleForm;
+        nestedMiddleFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedMiddleForm));
+      };
+      nestedMiddleFormComp.createSubForm();
+
+      setTimeout(() => {
+        const middleWizard = nestedMiddleFormComp.subForm;
+
+        const nestedChildFormComp = middleWizard.getComponent('childForm');
+        nestedChildFormComp.loadSubForm = () => {
+          nestedChildFormComp.formObj = childForm;
+          nestedChildFormComp.subFormLoading = false;
+          return new Promise((resolve) => resolve(childForm));
+        };
+        nestedChildFormComp.createSubForm();
+
+        setTimeout(() => {
+          const childWizard = nestedChildFormComp.subForm;
+
+          assert.equal(wizard.id, wizard.root.id);
+          assert.equal(wizard.id, wizard.localRoot.id);
+          assert.equal(wizard.root.id, wizard.localRoot.id);
+          assert.notEqual(middleWizard.id, middleWizard.root.id);
+          assert.equal(middleWizard.id, middleWizard.localRoot.id);
+          assert.notEqual(middleWizard.root.id, middleWizard.localRoot.id);
+          assert.notEqual(childWizard.id, childWizard.root.id);
+          assert.notEqual(childWizard.id, childWizard.localRoot.id);
+          assert.equal(childWizard.root.id, childWizard.localRoot.id);
+          done();
+        }, 200);
+      }, 200);
+    });
+  });
+
+  it('Should keep wizard pages separate from edit grid inner wizard pages', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardWithNestedWizardInEditGrid);
+    const childForm = _.cloneDeep(simpleTwoPagesWizard);
+
+    wizard.setForm(form).then(() => {
+      assert.equal(wizard.components.length, 1);
+      assert.equal(wizard.allPages.length, 1);
+
+      const editGrid = wizard.getComponent('editGrid');
+      editGrid.addRow();
+
+      setTimeout(() => {
+        const nestedFormComp = wizard.getComponent('formNested');
+
+        nestedFormComp.loadSubForm = () => {
+          nestedFormComp.formObj = childForm;
+          nestedFormComp.subFormLoading = false;
+
+          return new Promise((resolve) => resolve(childForm));
+        };
+        nestedFormComp.createSubForm();
+
+        setTimeout(() => {
+          assert.equal(nestedFormComp.subForm.components.length, 2);
+          assert.equal(nestedFormComp.subForm.allPages.length, 2);
+          assert.equal(wizard.components.length, 1);
+          assert.equal(wizard.allPages.length, 1);
+          done();
+        }, 200);
+      }, 200);
+    });
+  });
+
+  it('Should navigate wizard pages and submit form using \'Save on Enter\' option', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardNavigateOrSaveOnEnter.form).then(() => {
+      const pressEnter = () => {
+        const event = new KeyboardEvent('keyup', {
+          bubbles : true,
+          cancelable : true,
+          key : 'Enter',
+          keyCode : 13
+        });
+        document.dispatchEvent(event);
+      };
+
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+      checkPage(0);
+      pressEnter();
+
+      setTimeout(() => {
+        checkPage(1);
+
+        pressEnter();
+
+        setTimeout(() => {
+          checkPage(2);
+
+          pressEnter();
+
+          setTimeout(() => {
+            assert.equal(wizard.submission.state, 'submitted', 'Should submit the form');
+
+            done();
+          }, 50);
+        }, 50);
+      }, 50);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should proper validate nested wizard fields', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const childForm = _.cloneDeep(wizardWithFieldsValidationChild);
+    const parentForm = _.cloneDeep(wizardWithFieldsValidationParent);
+    const clickEvent = new Event('click');
+
+    wizard.setForm(parentForm).then(() => {
+      const nestedFormComp = wizard.getComponent('formNested');
+      nestedFormComp.loadSubForm = () => {
+        nestedFormComp.formObj = childForm;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(childForm));
+      };
+      nestedFormComp.createSubForm();
+
+      setTimeout(() => {
+        const textField = wizard.getComponent('textField');
+        const testValidation = wizard.getComponent('testValidation');
+        textField.setValue('one');
+        testValidation.setValue('two');
+        wizard.render();
+
+        const checkPage = (pageNumber) => {
+          assert.equal(wizard.page, pageNumber);
+        };
+        const nextPageBtn = wizard.refs[`${wizard.wizardKey}-next`];
+
+        setTimeout(() => {
+          nextPageBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            checkPage(0);
+            assert.equal(wizard.errors.length, 1);
+            assert.equal(wizard.refs.errorRef.length, wizard.errors.length);
+            testValidation.setValue('one');
+            nextPageBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              checkPage(1);
+              assert.equal(wizard.errors.length, 0);
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    });
   });
 });
