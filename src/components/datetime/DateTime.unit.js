@@ -4,7 +4,7 @@ import DateTimeComponent from './DateTime';
 
 import {
   comp1,
-  comp2,
+  comp2
 } from './fixtures';
 
 describe('DateTime Component', () => {
