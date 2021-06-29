@@ -42,7 +42,7 @@
         </td>
       {% } %}
       {% ctx.columns.forEach(function(col) { %}
-        <td ref="{{ctx.datagridKey}}">
+        <td ref="{{ctx.datagridKey}}" {% if (col.key && col.overlay?.width) { %} style="width: {{col.overlay.width + 'px'}}"{% } %} >
           {{row[col.key]}}
         </td>
       {% }) %}
