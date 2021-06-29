@@ -38,7 +38,7 @@ export default class SelectComponent extends Field {
       ignoreCache: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
-      searchThreshold: 0.3,
+      selectThreshold: 0.3,
       uniqueOptions: false,
       tableView: true,
       fuseOptions: {
@@ -855,13 +855,16 @@ export default class SelectComponent extends Field {
       searchFields: _.get(this, 'component.searchFields', ['label']),
       shadowRoot: this.root ? this.root.shadowRoot : null,
       fuseOptions: this.component.useExactSearch
-        ? {}
+        ? {
+          tokenize: true,
+          matchAllTokens: true,
+        }
         : Object.assign(
         {},
         _.get(this, 'component.fuseOptions', {}),
         {
           include: 'score',
-          threshold: _.get(this, 'component.searchThreshold', 0.3),
+          threshold: _.get(this, 'component.selectThreshold', 0.3),
         }
       ),
       valueComparer: _.isEqual,
