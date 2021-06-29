@@ -1871,7 +1871,7 @@ export default class Component extends Element {
             'value',
           );
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && this.visible) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -2644,7 +2644,7 @@ export default class Component extends Element {
     return value;
   }
 
-  doValueCalculation(dataValue, data, row) {
+  doValueCalculation(dataValue, data, row, flags) {
       return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
