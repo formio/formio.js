@@ -2644,7 +2644,7 @@ export default class Component extends Element {
     return value;
   }
 
-  doValueCalculation(dataValue, data, row, flags) {
+  doValueCalculation(dataValue, data, row) {
       return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
