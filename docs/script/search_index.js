@@ -4434,6 +4434,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datetime/fixtures/comp4.js",
+    "file/src/components/datetime/fixtures/comp4.js.html",
+    "src/components/datetime/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/datetime/fixtures/index.js",
     "file/src/components/datetime/fixtures/index.js.html",
     "src/components/datetime/fixtures/index.js",

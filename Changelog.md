@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.3-rc.8
+#### Fixed
+ - FIO-3213: Select closes upon clicking on up and down buttons in IE11
+ - FIO-3187: Date/Time: At times values don't display in submission and/or PDF download
+ - FIO-2104: Initially Collapsed Panel component isn't focusable with Tab key
+
 ### 4.13.3-rc.7
 #### Changed
  - Upgrade @formio/bootstrap3 to resolve builder issue with resize polyfill.
