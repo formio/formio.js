@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.3-rc.9
+#### Fixed
+ - FIO-3342: Fixing the Date/Time component to work with multiple values.
+
 ### 4.13.3-rc.8
 #### Fixed
  - FIO-3213: Select closes upon clicking on up and down buttons in IE11
