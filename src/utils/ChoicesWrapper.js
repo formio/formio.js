@@ -90,7 +90,9 @@ class ChoicesWrapper extends Choices {
 
     this.onSelectValue(...args);
 
-    this.isDirectionUsing = false;
+    requestAnimationFrame(() => {
+      this.isDirectionUsing = false;
+    });
   }
 
   _onTabKey({ activeItems, hasActiveDropdown }) {
