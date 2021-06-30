@@ -2,24 +2,24 @@
   <div class="formio-form formio-read-only" ref="webform" novalidate>
     <div id="page1" class="formio-component formio-component-panel formio-component-page1 " ref="component">
       <div class="mb-2 card border">
-        <div class="card-header bg-default" ref="header">
+        <div class="card-header bg-default" tabindex="0" role="button" aria-expanded="true" aria-controls="page1-page1" ref="header">
           <span class="mb-0 card-title ">
       Layouts
     </span>
         </div>
-        <div class="card-body" ref="nested-page1">
+        <div class="card-body" ref="nested-page1" id="page1-page1">
           <div id="html" class="formio-component formio-component-htmlelement formio-component-html " ref="component">
             <p class="" ref="html">Required validation should trigger inside all layout sets</p>
             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
           </div>
           <div id="panel1" class="formio-component formio-component-panel formio-component-panel1 " ref="component">
             <div class="mb-2 card border">
-              <div class="card-header bg-default" ref="header">
+              <div class="card-header bg-default" tabindex="0" role="button" aria-expanded="true" aria-controls="panel1-panel1" ref="header">
                 <span class="mb-0 card-title ">
       Panel
     </span>
               </div>
-              <div class="card-body" ref="nested-panel1">
+              <div class="card-body" ref="nested-panel1" id="panel1-panel1">
                 <div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField  required" ref="component">
                   <label class="col-form-label  field-required" for="textField-textField">
                     Text Field - Panel
