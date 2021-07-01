@@ -56,10 +56,54 @@ import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
 import calculateValueWithManualOverrideLableValueDataGrid
   from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
+import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should allow to input value and add rows in deeply nested conditional dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(deeplyNestedDataGridAndContainer).then(() => {
+      const parentDataGrid = form.getComponent('dataGrid6');
+
+      assert.equal(parentDataGrid.rows.length, 1);
+      assert.equal(parentDataGrid.rows[0].dataGrid5.visible, false);
+
+      const checkbox = form.getComponent('checkbox');
+      checkbox.setValue(true);
+
+      setTimeout(() => {
+        assert.equal(parentDataGrid.rows.length, 1);
+        assert.equal(parentDataGrid.rows[0].dataGrid5.visible, true);
+
+        const numberInput = parentDataGrid.rows[0].dataGrid5.rows[0].number.refs.input[0];
+        numberInput.value = 555;
+
+        const inputEvent = new Event('input');
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const conditionalDataGrid = form.getComponent('dataGrid6').rows[0].dataGrid5;
+          const numberComp = conditionalDataGrid.rows[0].number;
+
+          assert.equal(numberComp.dataValue, 555);
+          assert.equal(numberComp.refs.input[0].value, 555);
+
+          const addRowBtn = conditionalDataGrid.refs[`${'datagrid-dataGrid5-addRow'}`][0];
+          const clickEvent = new Event('click');
+          addRowBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(conditionalDataGrid.rows.length, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
 
   it('Should not translate en value if _userInput option is provided and value presents in reserved translation names', done => {
     const formElement = document.createElement('div');
