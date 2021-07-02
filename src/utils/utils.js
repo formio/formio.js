@@ -1125,6 +1125,21 @@ export function getContextComponents(context) {
   return values;
 }
 
+export function getContextButtons(context) {
+  const values = [];
+
+  context.utils.eachComponent(context.instance.options.editForm.components, (component) => {
+    if (component.type === 'button') {
+      values.push({
+        label: `${component.key} (${component.label})`,
+        value: component.key,
+      });
+    }
+  });
+
+  return values;
+}
+
 // Tags that could be in text, that should be ommited or handled in a special way
 const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP', 'INS', 'DEL', 'MARK', 'CODE'];
 
