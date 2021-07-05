@@ -110,9 +110,9 @@ export default class EditGridComponent extends NestedArrayComponent {
         {% if (!instance.options.readOnly && !instance.disabled) { %}
           <td class="editgrid-table-column">
             <div class="btn-group">
-              <button class="btn btn-default btn-light btn-sm editRow" aria-label="${this.t('Edit row')}"><i class="{{ iconClass('edit') }}"></i></button>
+              <button class="btn btn-default btn-light btn-sm editRow" aria-label="{{ t('Edit row') }}"><i class="{{ iconClass('edit') }}"></i></button>
               {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
-              <button class="btn btn-danger btn-sm removeRow" aria-label="${this.t('Remove row')}"><i class="{{ iconClass('trash') }}"></i></button>
+              <button class="btn btn-danger btn-sm removeRow" aria-label="{{ t('Remove row') }}"><i class="{{ iconClass('trash') }}"></i></button>
               {% } %}
             </div>
           </td>

@@ -88,7 +88,7 @@
     <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
       <div class="form-check checkbox">
         <label class=" form-check-label">
-          <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0">
+          <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
           <span>Checkbox</span>
           </input>
         </label>
@@ -125,8 +125,8 @@
       <label class="control-label " for="select-select">
         Select
       </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" disabled="disabled" id="select-select"></select>
-      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" disabled="disabled" id="select-select" aria-required="false"></select>
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">

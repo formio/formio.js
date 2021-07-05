@@ -1,11 +1,11 @@
 <div id="day" class="form-group has-feedback formio-component formio-component-day formio-component-day  required" ref="component">
-  <label class="col-form-label  field-required" for="day-day">
+  <label ref="label" class="col-form-label  field-required" for="day-day" id="l-day-day">
     Day
   </label>
-  <div class="row">
+  <div class="row" role="group" aria-labelledby="l-day-day">
     <div class="col col-xs-4">
       <label for="day-month" class="">Month</label>
-      <div><select ref="month" id="day-month" class="form-control" name="month" lang="en">
+      <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-required="false">
           <option value="">
           </option>
           <option value="1">
@@ -45,19 +45,19 @@
             December
           </option>
         </select>
-        <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+        <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       </div>
     </div>
     <div class="col col-xs-3">
       <label for="day-day" class="">Day</label>
       <div>
-        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="day-day"></input>
+        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="day-day" aria-labelledby="l-day-day " aria-required="false"></input>
       </div>
     </div>
     <div class="col col-xs-5">
       <label for="day-year" class="">Year</label>
       <div>
-        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="day-day"></input>
+        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="day-day" aria-labelledby="l-day-day " aria-required="false"></input>
       </div>
     </div>
   </div>

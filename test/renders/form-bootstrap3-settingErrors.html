@@ -51,8 +51,8 @@
                       <label class="control-label  field-required" for="selectColumn-selectColumn">
                         Select - Column
                       </label>
-                      <select ref="selectContainer" name="data[selectColumn]" type="text" class="form-control" lang="en" id="selectColumn-selectColumn"></select>
-                      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+                      <select ref="selectContainer" name="data[selectColumn]" type="text" class="form-control" lang="en" id="selectColumn-selectColumn" aria-required="true"></select>
+                      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
                       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                     </div>
                   </div>
@@ -65,7 +65,7 @@
                     <div id="checkboxColumn" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxColumn  required" ref="component">
                       <div class="form-check checkbox">
                         <label class=" field-required form-check-label">
-                          <input ref="input" name="data[checkboxColumn]" type="checkbox" class="form-check-input" lang="en" value="0">
+                          <input ref="input" name="data[checkboxColumn]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="true">
                           <span>Checkbox - Column</span>
                           </input>
                         </label>
@@ -151,7 +151,7 @@
                             <div class="row">
                               <div class="form-group col col-xs-4">
                                 <label for="dayTable-month" class="field-required">Month</label>
-                                <div><select ref="month" id="dayTable-month" class="form-control" name="month" lang="en">
+                                <div><select ref="month" id="dayTable-month" class="form-control" name="month" lang="en" aria-required="true">
                                     <option value="">
                                     </option>
                                     <option value="1">
@@ -191,7 +191,7 @@
                                       December
                                     </option>
                                   </select>
-                                  <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+                                  <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
                                 </div>
                               </div>
                               <div class="form-group col col-xs-3">
@@ -256,7 +256,7 @@
                     Address - Well
                   </label>
                   <div class="address-autocomplete-container">
-                    <input ref="searchInput" name="data[addressWell]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off">
+                    <input ref="searchInput" name="data[addressWell]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off" aria-label="autocomplete">
                     <i class="address-autocomplete-remove-value-icon fa fa-times" tabindex="0" ref="removeValueIcon"></i>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>

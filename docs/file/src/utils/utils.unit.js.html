@@ -996,6 +996,50 @@ describe(&apos;Util Tests&apos;, () =&gt; {
       expect(unescapedString).to.equal(&apos;&lt;p&gt;ampersand &amp; &quot;quotes&quot; test&lt;/p&gt;&apos;);
     });
   });
+
+  describe(&apos;getCurrencyAffixes&apos;, () =&gt; {
+    it(&apos;USD en&apos;, (done) =&gt; {
+      try {
+        const affixes = utils.getCurrencyAffixes({
+          currency: &apos;USD&apos;,
+          decimalLimit: 2,
+          decimalSeparator: &apos;.&apos;,
+          lang: &apos;en&apos;,
+        });
+        const expectedResult = {
+          prefix: &apos;$&apos;,
+          suffix: &apos;&apos;,
+        };
+        expect(affixes.prefix).to.equal(expectedResult.prefix);
+        expect(affixes.suffix).to.equal(expectedResult.suffix);
+        done();
+      }
+      catch (err) {
+        done(err);
+      }
+    });
+
+    it(&apos;USD ar-SA&apos;, (done) =&gt; {
+      try {
+        const affixes2 = utils.getCurrencyAffixes({
+          currency: &apos;USD&apos;,
+          decimalLimit: 2,
+          decimalSeparator: &apos;&#x66B;&apos;,
+          lang: &apos;ar-SA&apos;,
+        });
+        const expectedResult = {
+          prefix: &apos;&apos;,
+          suffix: &apos;&#xA0;US$&apos;,
+        };
+        expect(affixes2.prefix).to.equal(expectedResult.prefix);
+        expect(affixes2.suffix).to.equal(expectedResult.suffix);
+        done();
+      }
+      catch (err) {
+        done(err);
+      }
+    });
+  });
 });
 </code></pre>
 

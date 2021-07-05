@@ -240,7 +240,8 @@ export default [
     input: true,
     key: &apos;data.json&apos;,
     label: &apos;Data Source Raw JSON&apos;,
-    tooltip: &apos;A raw JSON array to use as a data source.&apos;,
+    tooltip: &apos;A valid JSON array to use as a data source.&apos;,
+    description: &apos;&lt;div&gt;Example: &lt;pre&gt;[&quot;apple&quot;, &quot;banana&quot;, &quot;orange&quot;].&lt;/pre&gt;&lt;/div&gt; &lt;div&gt;Example 2: &lt;pre&gt;[{&quot;name&quot;: &quot;John&quot;, &quot;email&quot;: &quot;john.doe@test.com&quot;}, {&quot;name&quot;: &quot;Jane&quot;, &quot;email&quot;: &quot;jane.doe@test.com&quot;}].&lt;/pre&gt;&lt;/div&gt;&apos;,
     conditional: {
       json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;json&apos;] },
     },

@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.13
+#### Fixed
+ - FIO-3418: fixed an issue where focus and cursor jumps when inputting in component inside columns with 'auto adjust columns' option enabled
+ - FIO-3415: added select for reCaptcha 'Button Key' option in builder #4180
+ - FIO-3414 and FIO-3413: fixed issues where data clear up after inputting into conditional field and new row is not added to dataGrid when deep level of nested dataGrids and containers is used #4179
+ - FIO-3362: Reconfigure PR so that it does not cause spacing issues in Data Grids #4176
+ - FIO-1310: fixed an issue where select search not always shows all available options #4174
+ - Fixes an issue where the change event for the first character in Textarea with wysiwyg is triggered without modified flag #4158
+ - FIO-258: Fixes an issue where "Submission Complete" message is not translated in the Examples page
+ - FIO-2085: Improves tooltip for Select Raw JSON values and provides few examples #4147
+ - Add aria labels to edit/remove row buttons. #4146
+ - FIO-2905, FIO-2906: Added hidden labels to some components #4145
+ - Override instead of overwrite modules setting for Quill. #4144
+ - Cherry-picked commits for ACC 0.5.0 release #4138
+ - Add aria-invalid attribute, improve test ergonomics #4131
+ - FIO-2759 Added the ability to change wizard nav buttons order via custom properties #4125
+ - FIO-1224: Fixes an issue where cannot properly parse currency prefix/suffix using ar-SA language #4122
+ - FIO-2925: add tests #4119
+
 ### 4.14.0-rc.12
 #### Fixed
  - FIO-2888: Fixing the recaptcha so that it will not be reset if it is set.

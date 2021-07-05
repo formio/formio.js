@@ -1,7 +1,7 @@
 <div id="" class="formio-component formio-component-form  formio-component-label-hidden" ref="component">
   <div class="formio-form" ref="webform" novalidate>
     <div id="dataGrid" class="form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid " ref="component">
-      <label class="col-form-label " for="dataGrid-dataGrid">
+      <label ref="label" class="col-form-label " for="dataGrid-dataGrid" id="l-dataGrid-dataGrid">
         Data Grid
       </label>
       <table class="table datagrid-table table-bordered
@@ -18,6 +18,7 @@
               Text Field
             </th>
             <th>
+              <span class="sr-only">Add/Remove</span>
             </th>
           </tr>
         </thead>
@@ -27,7 +28,8 @@
               <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  formio-component-label-hidden" ref="component">
                 <div ref="element">
                   <div class="input-group">
-                    <input ref="input" name="data[dataGrid][0][dateTime]" type="text" class="form-control" lang="en" value="" id="dateTime-dateTime"></input>
+                    <input ref="input" name="data[dataGrid][0][dateTime]" type="text" class="form-control" lang="en" value="" id="dateTime-dateTime" aria-labelledby="l-dateTime-dateTime " aria-required="false"></input>
+                    <span aria-live="assertive" id="dateTime-liveRegion" class="sr-only" ref="liveRegion"></span>
                     <div class="input-group-append" ref="suffix">
                       <span class="input-group-text">
         <i ref="icon" class="fa fa-calendar" style=""></i>
@@ -42,7 +44,7 @@
               <div id="textField2" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField2  formio-component-label-hidden" ref="component">
                 <div ref="element">
                   <div class="input-group">
-                    <input ref="input" name="data[dataGrid][0][textField2]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="textField2-textField2"></input>
+                    <input ref="input" name="data[dataGrid][0][textField2]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="textField2-textField2" aria-labelledby="l-textField2-textField2 " aria-required="false"></input>
                     <div class="input-group-append" ref="suffix">
                       <span class="input-group-text">
         <i ref="icon" class="fa fa-calendar" style=""></i>
@@ -57,7 +59,7 @@
               <div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField  formio-component-label-hidden" ref="component">
                 <div ref="element">
                   <div class="input-group">
-                    <input ref="input" name="data[dataGrid][0][textField]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="textField-textField"></input>
+                    <input ref="input" name="data[dataGrid][0][textField]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="textField-textField" aria-labelledby="l-textField-textField " aria-required="false"></input>
                     <div class="input-group-append" ref="suffix">
                       <span class="input-group-text">
         <i ref="icon" class="fa fa-calendar" style=""></i>
@@ -69,7 +71,7 @@
               </div>
             </td>
             <td>
-              <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0">
+              <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0" aria-label="remove">
                 <i class="fa fa-times-circle-o"></i>
               </button>
             </td>

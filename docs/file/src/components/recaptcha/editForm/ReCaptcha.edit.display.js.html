@@ -173,7 +173,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/recaptcha/editForm/ReCaptcha.edit.display.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { getContextButtons } from &apos;../../../utils/utils&apos;;
+export default [
   {
     key: &apos;eventType&apos;,
     label: &apos;Type of event&apos;,
@@ -192,14 +193,22 @@
     weight: 650
   },
   {
-    key: &apos;buttonKey&apos;,
+    type: &apos;select&apos;,
+    input: true,
     label: &apos;Button Key&apos;,
+    key: &apos;buttonKey&apos;,
+    dataSrc: &apos;custom&apos;,
+    valueProperty: &apos;value&apos;,
     tooltip: &apos;Specify key of button on this form that this reCAPTCHA should react to&apos;,
-    type: &apos;textfield&apos;,
+    weight: 660,
     customConditional(context) {
       return context.data.eventType === &apos;buttonClick&apos;;
     },
-    weight: 660
+    data: {
+      custom(context) {
+        return getContextButtons(context);
+      }
+    }
   },
   {
     key: &apos;label&apos;,

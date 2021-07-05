@@ -44,7 +44,7 @@
     <div id="checkboxFalse" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxFalse " ref="component">
       <div class="form-check checkbox">
         <label class=" form-check-label">
-          <input ref="input" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0">
+          <input ref="input" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
           <span>Checkbox False</span>
           </input>
         </label>
@@ -54,7 +54,7 @@
     <div id="checkboxTrue" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxTrue " ref="component">
       <div class="form-check checkbox">
         <label class=" form-check-label">
-          <input ref="input" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true>
+          <input ref="input" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true aria-required="false">
           <span>Checkbox True</span>
           </input>
         </label>
@@ -117,8 +117,8 @@
       <label class="control-label " for="select-select">
         Select
       </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select"></select>
-      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-required="false"></select>
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime " ref="component">
@@ -153,7 +153,7 @@
       <div class="row">
         <div class="form-group col col-xs-4">
           <label for="day-month" class="">Month</label>
-          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en">
+          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-required="false">
               <option value="">
               </option>
               <option value="1">
@@ -193,7 +193,7 @@
                 December
               </option>
             </select>
-            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
           </div>
         </div>
         <div class="form-group col col-xs-3">

@@ -2465,7 +2465,7 @@ dialog.fixed {
   margin-top: 4px; }
 
 .formio-errors .error {
-  color: #dc3545; }
+  color: #BF2231; }
 
 .formio-errors .warning {
   color: #856404; }
@@ -2510,9 +2510,12 @@ dialog.fixed {
 .formio-component-tags tags {
   background-color: #fff; }
 
+.formio-error-wrapper .field-required:after {
+  color: #C20000; }
+
 .field-required:after, .tab-error::after {
   content: " *";
-  color: red; }
+  color: #EB0000; }
 
 .field-required:after {
   position: relative;
@@ -2590,6 +2593,14 @@ dialog.fixed {
 
 .form-control.flatpickr-input {
   background-color: #fff; }
+
+.input-group .flatpickr-wrapper {
+  flex-grow: 1; }
+
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months:focus,
+.flatpickr-calendar .flatpickr-current-month input.cur-year:focus,
+.flatpickr-calendar .flatpickr-days:focus {
+  outline: auto; }
 
 td > .form-group {
   margin-bottom: 0; }
@@ -2688,6 +2699,8 @@ td > .form-group {
       width: 45px;
       margin-top: -23px;
       margin-left: -23px; }
+  .formio-component-file .fileSelector a {
+    text-decoration: underline; }
 
 .formio-component-file .fileSelector.fileDragOver {
   border-color: #127abe; }
@@ -2855,6 +2868,8 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default {
   padding-bottom: 160px;
   padding-top: 160px; }
+  .formio-dialog.formio-dialog-theme-default .component-edit-container {
+    padding: 0.5em; }
 
 .formio-dialog.formio-dialog-theme-default.formio-dialog-closing .formio-dialog-content {
   -webkit-animation: formio-dialog-flyout .5s;
@@ -2879,8 +2894,8 @@ body.formio-dialog-open {
   background: transparent;
   cursor: pointer;
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 1px;
+  top: 1px;
   z-index: 100; }
 
 .formio-clickable {
@@ -2893,7 +2908,7 @@ body.formio-dialog-open {
   display: block;
   padding: 3px;
   background: transparent;
-  color: #bbb;
+  color: #8a8a8a;
   content: '×';
   font-size: 26px;
   font-weight: 400;
@@ -2933,6 +2948,10 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="url"]:focus {
   box-shadow: inset 0 0 0 2px #8dbdf1;
   outline: none; }
+
+.formio-dialog-buttons {
+  display: flex;
+  justify-content: flex-end; }
 
 .formio-dialog.formio-dialog-theme-default .formio-dialog-buttons {
   *zoom: 1; }
@@ -2975,6 +2994,9 @@ body.formio-dialog-open {
 
 .formio-dialog-content .panel {
   margin: 0; }
+
+.formio-dialog-content [ref="dialogHeader"] {
+  padding-right: 15px; }
 
 .formio-placeholder {
   position: absolute;
@@ -3211,7 +3233,7 @@ body.formio-dialog-open {
 .formio-select-autocomplete-input {
   /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
   opacity: 0;
-  position: absolute;
+  position: relative;
   z-index: -1; }
 
 .has-error > .help-block {
@@ -3484,7 +3506,12 @@ div[data-oembed-url] {
 .formio-form > div > nav > ul.pagination {
   flex-flow: wrap row; }
   .formio-form > div > nav > ul.pagination .page-link {
-    cursor: pointer; }
+    cursor: pointer;
+    color: #1C74D9; }
+  .formio-form > div > nav > ul.pagination .page-item.active .page-link {
+    color: #fff;
+    background-color: #1C74D9;
+    border-color: #1C74D9; }
 
 .classic-pagination {
   border-bottom: solid 1px #e0e0e0;
@@ -3595,6 +3622,62 @@ div[data-oembed-url] {
 .formio-component [ref="valueMaskInput"] {
   display: none; }
 
+.formio-wizard-nav-container {
+  display: flex; }
+  .formio-wizard-nav-container li {
+    margin-right: 0.25rem; }
+  @media not all and (min-width: 30em) {
+    .formio-wizard-nav-container {
+      flex-direction: column; }
+      .formio-wizard-nav-container li {
+        margin-right: 0; }
+      .formio-wizard-nav-container li .btn {
+        width: 100%;
+        margin-bottom: 0.25rem; } }
+
+.formio-tooltip__trigger {
+  cursor: pointer; }
+
+.formio-tooltip__body {
+  background-color: #1b1b1b;
+  border-radius: 0.25rem;
+  bottom: 0;
+  color: #f0f0f0;
+  display: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+  position: absolute;
+  left: 0;
+  transform: translateX(-50%);
+  width: auto;
+  white-space: pre;
+  z-index: 1000; }
+  .formio-tooltip__body.formio-tooltip--is-set {
+    display: block; }
+  .formio-tooltip__body--whitespace {
+    white-space: normal;
+    width: 250px; }
+  .formio-tooltip__body--right {
+    top: auto;
+    transform: translateX(0); }
+  .formio-tooltip__body--left {
+    top: auto;
+    left: 0;
+    right: auto;
+    transform: translateX(0); }
+  .formio-tooltip__body--bottom {
+    bottom: auto;
+    top: 0; }
+
+.formio-tooltip__wrapper {
+  position: relative; }
+  .formio-tooltip__wrapper > span {
+    font-weight: normal; }
+
+span[role="link"] {
+  text-decoration: underline;
+  cursor: pointer; }
+
 .formbuilder {
   position: relative; }
 
@@ -3616,6 +3699,8 @@ div[data-oembed-url] {
   border: none; }
 
 .component-btn-group {
+  display: flex;
+  flex-direction: row-reverse;
   position: absolute;
   right: 0;
   z-index: 1000;
