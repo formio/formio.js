@@ -1,7 +1,9 @@
 'use strict';
 import assert from 'power-assert';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import Component from './Component';
+import Webform from '../../../Webform';
 import Harness from '../../../../test/harness';
 import { comp1 } from './fixtures';
 import _merge from 'lodash/merge';
@@ -208,4 +210,32 @@ it('Should return value for HTML mode', () => {
     assert.equal(component.itemValueForHTMLMode(['2020-03-18T15:00:00.000Z', '2020-03-31T09:05:00.000Z']), '2020-03-18T15:00:00.000Z, 2020-03-31T09:05:00.000Z');
     assert.equal(component.itemValueForHTMLMode('test'), 'test');
   });
+});
+
+it('Should protect against change loops', function(done) {
+  const formElement = document.createElement('div');
+  const form = new Webform(formElement);
+  const formJson = {
+    components: [
+      {
+        key: 'textField',
+        label: 'Text Field',
+        type: 'textfield',
+        calculateValue: "value = value + '_calculated'",
+      },
+    ],
+  };
+
+  form.setForm(formJson).then(() => {
+    const textField = form.getComponent('textField');
+    const spy = sinon.spy(textField, 'calculateComponentValue');
+    form.onChange({ textField: 'test' });
+
+    setTimeout(() => {
+      expect(spy.calledOnce).to.be.true;
+
+      done();
+    }, 500);
+  })
+  .catch((err) => done(err));
 });
