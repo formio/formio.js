@@ -164,6 +164,16 @@ export default class Wizard extends Webform {
     return buttons;
   }
 
+  get buttonOrder() {
+    const defaultButtonOrder = [
+      'cancel',
+      'previous',
+      'next',
+      'submit'
+    ];
+    return this.options.properties?.wizardButtonOrder?.toLowerCase().split(', ') ?? defaultButtonOrder;
+  }
+
   get renderContext() {
     return {
       wizardKey: this.wizardKey,
@@ -172,6 +182,7 @@ export default class Wizard extends Webform {
       panels: this.allPages.length ? this.allPages.map(page => page.component) : this.pages.map(page => page.component),
       buttons: this.buttons,
       currentPage: this.page,
+      buttonOrder: this.buttonOrder,
     };
   }
 
