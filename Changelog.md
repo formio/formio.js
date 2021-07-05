@@ -135,6 +135,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Addded
  - FIO-1112: Add vertical layout for tabs component
 
+### 4.13.3
+#### Changed
+ - No changes. Released 4.13.3-rc.9 as official release.
+
+### 4.13.3-rc.9
+#### Fixed
+ - FIO-3342: Fixing the Date/Time component to work with multiple values.
+
+### 4.13.3-rc.8
+#### Fixed
+ - FIO-3213: Select closes upon clicking on up and down buttons in IE11
+ - FIO-3187: Date/Time: At times values don't display in submission and/or PDF download
+ - FIO-2104: Initially Collapsed Panel component isn't focusable with Tab key
+
 ### 4.13.3-rc.7
 #### Changed
  - Upgrade @formio/bootstrap3 to resolve builder issue with resize polyfill.

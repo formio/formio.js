@@ -2,13 +2,13 @@
   <div class="formio-form formio-read-only" ref="webform" novalidate>
     <div id="panel" class="formio-component formio-component-panel formio-component-panel " ref="component">
       <div class="mb-2 card border">
-        <div class="card-header bg-default" ref="header">
+        <div class="card-header bg-default" tabindex="0" role="button" aria-expanded="true" aria-controls="panel-panel" ref="header">
           <span class="mb-0 card-title ">
         <i class="formio-collapse-icon fa fa-minus-square-o text-muted" data-title="Collapse Panel"></i>
       Panel
     </span>
         </div>
-        <div class="card-body" ref="nested-panel">
+        <div class="card-body" ref="nested-panel" id="panel-panel">
           <div id="dateTime1" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime1 " ref="component">
             <label class="col-form-label " for="dateTime1-dateTime1">
               Date / Time
