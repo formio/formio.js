@@ -1730,7 +1730,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should render Nested Modal Wizard Form correclty', (done) => {
+  it('Should render Nested Modal Wizard Form correctly', (done) => {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
     form.setForm(nestedModalWizard).then(() => {
@@ -2484,7 +2484,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should add and clear input error classes correclty', (done) => {
+  it('Should add and clear input error classes correctly', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
 
@@ -2502,8 +2502,8 @@ describe('Webform tests', function() {
           const dateVisibleInput = dateComponentElement.querySelector('.input');
           const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
 
-          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
-          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should has invalid class as well');
+          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should have invalid class');
+          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should have invalid class as well');
 
           dateTimeComponent.setValue('2020-12-09T00:00:00');
 
