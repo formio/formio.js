@@ -39,7 +39,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .formio-errors {
   .error {
-    color: #dc3545;
+    color: #BF2231;
   }
   .warning {
     color: #856404;
@@ -93,9 +93,13 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   background-color: #fff;
 }
 
+.formio-error-wrapper .field-required:after {
+  color:#C20000;
+}
+
 .field-required:after, .tab-error::after {
   content:" *";
-  color:red;
+  color:#EB0000;
 }
 
 .field-required:after {
@@ -198,6 +202,18 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .form-control.flatpickr-input {
   background-color: #fff;
+}
+
+.input-group .flatpickr-wrapper {
+  flex-grow: 1;
+}
+
+.flatpickr-calendar {
+  .flatpickr-current-month .flatpickr-monthDropdown-months:focus,
+  .flatpickr-current-month input.cur-year:focus,
+  .flatpickr-days:focus {
+    outline: auto;
+  }
 }
 
 td > .form-group {
@@ -319,6 +335,10 @@ td > .form-group {
       margin-top: -23px;
       margin-left: -23px;
     }
+  }
+
+  a {
+    text-decoration: underline;
   }
 }
 
@@ -542,6 +562,10 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default {
   padding-bottom: 160px;
   padding-top: 160px;
+
+  .component-edit-container {
+    padding: 0.5em;
+  }
 }
 
 .formio-dialog.formio-dialog-theme-default.formio-dialog-closing .formio-dialog-content {
@@ -569,8 +593,8 @@ body.formio-dialog-open {
   background: transparent;
   cursor: pointer;
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 1px;
+  top: 1px;
   z-index: 100;
 }
 
@@ -586,7 +610,7 @@ body.formio-dialog-open {
   display: block;
   padding: 3px;
   background: transparent;
-  color: #bbb;
+  color: #8a8a8a;
   content: '×';
   font-size: 26px;
   font-weight: 400;
@@ -631,6 +655,11 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="url"]:focus {
   box-shadow: inset 0 0 0 2px #8dbdf1;
   outline: none;
+}
+
+.formio-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .formio-dialog.formio-dialog-theme-default .formio-dialog-buttons {
@@ -682,6 +711,10 @@ body.formio-dialog-open {
 
 .formio-dialog-content .panel {
   margin: 0;
+}
+
+.formio-dialog-content [ref="dialogHeader"] {
+  padding-right: 15px;
 }
 
 .formio-placeholder {
@@ -1006,7 +1039,7 @@ body.formio-dialog-open {
 .formio-select-autocomplete-input {
   /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
   opacity: 0;
-  position: absolute;
+  position: relative;
   z-index: -1;
 }
 
@@ -1360,6 +1393,13 @@ div[data-oembed-url] {
 
   .page-link {
     cursor: pointer;
+    color: #1C74D9;
+  }
+
+  .page-item.active .page-link {
+    color: #fff;
+    background-color: #1C74D9;
+    border-color: #1C74D9;
   }
 }
 
@@ -1530,4 +1570,84 @@ div[data-oembed-url] {
 
 .formio-component [ref="valueMaskInput"] {
   display: none;
+}
+
+.formio-wizard-nav-container {
+  display: flex;
+
+  li {
+    margin-right: 0.25rem;
+  }
+
+  @media not all and (min-width: 30em) {
+    flex-direction: column;
+
+    li {
+      margin-right: 0;
+    }
+
+    li .btn {
+      width: 100%;
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+//styles for accessible tooltip
+.formio-tooltip__trigger {
+  cursor: pointer;
+}
+
+.formio-tooltip__body {
+  background-color: #1b1b1b;
+  border-radius: 0.25rem;
+  bottom: 0;
+  color: #f0f0f0;
+  display: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+  position: absolute;
+  left: 0;
+  transform: translateX(-50%);
+  width: auto;
+  white-space: pre;
+  z-index: 1000;
+
+  &.formio-tooltip--is-set {
+    display: block;
+  }
+
+  &--whitespace {
+    white-space: normal;
+    width: 250px;
+  }
+
+  &--right {
+    top: auto;
+    transform: translateX(0);
+  }
+
+  &--left {
+    top: auto;
+    left: 0;
+    right: auto;
+    transform: translateX(0);
+  }
+
+  &--bottom {
+    bottom: auto;
+    top: 0;
+  }
+}
+
+.formio-tooltip__wrapper {
+  position: relative;
+  & > span {
+    font-weight: normal;
+  }
+}
+
+span[role="link"] {
+  text-decoration: underline;
+  cursor: pointer;
 }

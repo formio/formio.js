@@ -232,7 +232,7 @@ describe('DateTime Component', () => {
         }, 300);
       }, 300);
     }).catch(done);
-  }).timeout(3000);
+  }).timeout(4000);
 
   it('Should disable weekends', (done) => {
     const form = _.cloneDeep(comp3);

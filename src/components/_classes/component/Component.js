@@ -1115,11 +1115,15 @@ export default class Component extends Element {
     });
   }
 
+  createComponentModal(element, modalShouldBeOpened, currentValue) {
+    return new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+  }
+
   attach(element) {
     if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
       const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
-      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+      this.componentModal = this.createComponentModal(element, modalShouldBeOpened, currentValue);
       this.setOpenModalElement();
     }
 
@@ -1979,12 +1983,16 @@ export default class Component extends Element {
 
   setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
-    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    elements.forEach((element) => {
+      this.setElementInvalid(this.performInputMapping(element), false);
+    });
     this.setInputWidgetErrorClasses(elements, hasErrors);
 
     if (hasErrors) {
       // Add error classes
-      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+      elements.forEach((input) => {
+        this.setElementInvalid(this.performInputMapping(input), true);
+      });
 
       if (dirty && this.options.highlightErrors) {
         this.addClass(element, this.options.componentErrorClass);
@@ -1996,6 +2004,18 @@ export default class Component extends Element {
     if (hasMessages) {
       this.addClass(element, 'has-message');
     }
+  }
+
+  setElementInvalid(element, invalid) {
+    if (!element) return;
+
+    if (invalid) {
+      this.addClass(element, 'is-invalid');
+    }
+    else {
+      this.removeClass(element, 'is-invalid');
+    }
+    element.setAttribute('aria-invalid', invalid ? 'true' : 'false');
   }
 
   clearOnHide() {
@@ -2162,7 +2182,8 @@ export default class Component extends Element {
     settings = {
       ...settings,
       modules: {
-        table: true
+        table: true,
+        ...settings.modules
       }
     };
     // Lazy load the quill css.

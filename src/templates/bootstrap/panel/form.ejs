@@ -1,7 +1,10 @@
 <div class="mb-2 card border">
   {% if (!ctx.component.hideLabel || ctx.builder || ctx.component.collapsible || ctx.component.tooltip) { %}
   <div class="card-header {{ctx.transform('class', 'bg-' + ctx.component.theme)}}"
-    tabindex="0" role="button"
+    {% if (ctx.component.collapsible) { %}
+    tabindex="0"
+    {% } %}
+    role="button"
     aria-expanded="{{ctx.component.collapsible ? !ctx.collapsed : true}}"
     aria-controls="{{ctx.instance.id}}-{{ctx.component.key}}"
     ref="header"
@@ -14,7 +17,7 @@
       {{ctx.t(ctx.component.title, { _userInput: true })}}
       {% } %}
       {% if (ctx.component.tooltip) { %}
-        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
+        <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
       {% } %}
     </span>
   </div>

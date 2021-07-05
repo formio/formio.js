@@ -225,9 +225,9 @@ describe('Select Component', () => {
 
   it('Should allow to override threshold option of fuzzy search', () => {
     try {
-      const c1 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.2 });
-      const c2 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.4 });
-      const c3 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.8 });
+      const c1 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.2 });
+      const c2 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.4 });
+      const c3 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.8 });
       const comps = [
         Harness.testCreate(SelectComponent, c1),
         Harness.testCreate(SelectComponent, c2),
@@ -797,7 +797,6 @@ describe('Select Component', () => {
     const requiredSchema = {
       label: 'Select',
       tableView: true,
-      selectThreshold: 0.3,
       key: 'select',
       type: 'select',
       input: true
