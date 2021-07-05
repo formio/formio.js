@@ -95,7 +95,8 @@ Formio.createForm(document.getElementById('formio'), {
       Good: 'Bueno',
       Average: 'Promedio',
       Poor: 'Pobre',
-      'Submit': 'Enviar'
+      'Submit': 'Enviar',
+      complete: 'Presentación Completa',
     },
     ch: {
       'First Name': '名字',
@@ -111,7 +112,8 @@ Formio.createForm(document.getElementById('formio'), {
       Good: '好',
       Average: '平均',
       Poor: '错',
-      'Submit': '提交'
+      'Submit': '提交',
+      complete: '提交完成',
     }
   }
 }).then(function(form) {
@@ -208,7 +210,8 @@ Formio.createForm(document.getElementById('formio'), {
       Good: 'Bueno',
       Average: 'Promedio',
       Poor: 'Pobre',
-      'Submit': 'Enviar'
+      'Submit': 'Enviar',
+      complete: 'Presentación Completa',
     },
     ch: {
       'First Name': '名字',
@@ -224,7 +227,8 @@ Formio.createForm(document.getElementById('formio'), {
       Good: '好',
       Average: '平均',
       Poor: '错',
-      'Submit': '提交'
+      'Submit': '提交',
+      complete: '提交完成',
     }
   }
 }).then(function(form) {

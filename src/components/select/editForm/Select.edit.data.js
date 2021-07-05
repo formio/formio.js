@@ -65,7 +65,8 @@ export default [
     input: true,
     key: 'data.json',
     label: 'Data Source Raw JSON',
-    tooltip: 'A raw JSON array to use as a data source.',
+    tooltip: 'A valid JSON array to use as a data source.',
+    description: '<div>Example: <pre>["apple", "banana", "orange"].</pre></div> <div>Example 2: <pre>[{"name": "John", "email": "john.doe@test.com"}, {"name": "Jane", "email": "jane.doe@test.com"}].</pre></div>',
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'json'] },
     },

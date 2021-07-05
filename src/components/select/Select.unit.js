@@ -165,6 +165,18 @@ describe('Select Component', () => {
     });
   });
 
+  it('should format unlisted values', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      const formattedValue1 = component.getView('Unlisted value');
+      const formattedValue2 = component.getView(0);
+
+      assert.equal(formattedValue1, '<span>Unlisted value</span>');
+      assert.equal(formattedValue2, '<span>0</span>');
+      done();
+    });
+  });
+
   it('should set multiple selected values not repeating them', function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);
@@ -213,9 +225,9 @@ describe('Select Component', () => {
 
   it('Should allow to override threshold option of fuzzy search', () => {
     try {
-      const c1 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.2 });
-      const c2 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.4 });
-      const c3 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.8 });
+      const c1 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.2 });
+      const c2 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.4 });
+      const c3 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.8 });
       const comps = [
         Harness.testCreate(SelectComponent, c1),
         Harness.testCreate(SelectComponent, c2),
@@ -785,7 +797,6 @@ describe('Select Component', () => {
     const requiredSchema = {
       label: 'Select',
       tableView: true,
-      selectThreshold: 0.3,
       key: 'select',
       type: 'select',
       input: true

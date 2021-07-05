@@ -38,7 +38,7 @@ export default class SelectComponent extends Field {
       ignoreCache: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
-      searchThreshold: 0.3,
+      selectThreshold: 0.3,
       uniqueOptions: false,
       tableView: true,
       fuseOptions: {
@@ -855,13 +855,16 @@ export default class SelectComponent extends Field {
       searchFields: _.get(this, 'component.searchFields', ['label']),
       shadowRoot: this.root ? this.root.shadowRoot : null,
       fuseOptions: this.component.useExactSearch
-        ? {}
+        ? {
+          tokenize: true,
+          matchAllTokens: true,
+        }
         : Object.assign(
         {},
         _.get(this, 'component.fuseOptions', {}),
         {
           include: 'score',
-          threshold: _.get(this, 'component.searchThreshold', 0.3),
+          threshold: _.get(this, 'component.selectThreshold', 0.3),
         }
       ),
       valueComparer: _.isEqual,
@@ -1004,7 +1007,7 @@ export default class SelectComponent extends Field {
         const formioForm = this.ce('div');
         const dialog = this.createModal(formioForm);
 
-        const projectUrl = _.get(this.root, 'formio.projectUrl', Formio.getBaseUrl());
+        const projectUrl = _.get(this.root, 'formio.projectUrl', Formio.getProjectUrl());
         const formUrl = `${projectUrl}/form/${this.component.data.resource}`;
         new Form(formioForm, formUrl, {}).ready
           .then((form) => {
@@ -1541,7 +1544,7 @@ export default class SelectComponent extends Field {
   }
 
   asString(value) {
-    value = value || this.getValue();
+    value = value ?? this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
       if (valueProperty) {
@@ -1593,7 +1596,7 @@ export default class SelectComponent extends Field {
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
         : valueProperty
-          ? getFromValues()
+          ? getFromValues() ?? { value, label: value }
           : value;
     }
 

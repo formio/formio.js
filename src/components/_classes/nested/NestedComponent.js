@@ -34,12 +34,17 @@ export default class NestedComponent extends Field {
     return this._collapsed;
   }
 
-  set collapsed(value) {
-    this._collapsed = value;
-    this.redraw();
+  collapse(value) {
+    const promise = this.redraw();
     if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
+    return promise;
+  }
+
+  set collapsed(value) {
+    this._collapsed = value;
+    this.collapse(value);
   }
 
   set visible(value) {
@@ -449,6 +454,12 @@ export default class NestedComponent extends Field {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
       });
+      this.addEventListener(this.refs.header, 'keydown', (e) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+          e.preventDefault();
+          this.collapsed = !this.collapsed;
+        }
+      });
     }
 
     return NativePromise.all([
@@ -585,7 +596,8 @@ export default class NestedComponent extends Field {
   }
 
   checkConditions(data, flags, row) {
-    this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));
+    //row data of parent component not always corresponds to row of nested components, use comp.data as row data for children instead
+    this.getComponents().forEach(comp => comp.checkConditions(data, flags, comp.data));
     return super.checkConditions(data, flags, row);
   }
 

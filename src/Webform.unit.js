@@ -54,10 +54,120 @@ import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
+import calculateValueWithManualOverrideLableValueDataGrid
+  from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
+import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
+import columnWithConditionalComponents from '../test/forms/columnWithConditionalComponents';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should allow to input value and add rows in deeply nested conditional dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(deeplyNestedDataGridAndContainer).then(() => {
+      const parentDataGrid = form.getComponent('dataGrid6');
+
+      assert.equal(parentDataGrid.rows.length, 1);
+      assert.equal(parentDataGrid.rows[0].dataGrid5.visible, false);
+
+      const checkbox = form.getComponent('checkbox');
+      checkbox.setValue(true);
+
+      setTimeout(() => {
+        assert.equal(parentDataGrid.rows.length, 1);
+        assert.equal(parentDataGrid.rows[0].dataGrid5.visible, true);
+
+        const numberInput = parentDataGrid.rows[0].dataGrid5.rows[0].number.refs.input[0];
+        numberInput.value = 555;
+
+        const inputEvent = new Event('input');
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const conditionalDataGrid = form.getComponent('dataGrid6').rows[0].dataGrid5;
+          const numberComp = conditionalDataGrid.rows[0].number;
+
+          assert.equal(numberComp.dataValue, 555);
+          assert.equal(numberComp.refs.input[0].value, 555);
+
+          const addRowBtn = conditionalDataGrid.refs[`${'datagrid-dataGrid5-addRow'}`][0];
+          const clickEvent = new Event('click');
+          addRowBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(conditionalDataGrid.rows.length, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should adjust columns when conditional fields appear/disappear', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(columnWithConditionalComponents).then(() => {
+      const selectBoxes = form.getComponent('selectBoxes');
+      const columns = form.getComponent('columns');
+
+      columns.columns.forEach((column, index) => {
+        assert.equal(column[0].visible, false,  `Column ${index + 1} component should be hidden`);
+        assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+      });
+
+      selectBoxes.setValue({ '1': false, '2': false, '3': true, '4': false, '5': false, '6': true });
+
+      setTimeout(() => {
+        columns.columns.forEach((column, index) => {
+          if ([3,6].includes(index+1)) {
+            assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+            assert.equal(columns.component.columns[index].currentWidth, 2, `Column ${index + 1}  width should be 2`);
+          }
+          else {
+            assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+            assert.equal( columns.component.columns[index].currentWidth, 0, `Column ${index + 1}  width should be 0`);
+          }
+        });
+
+        const visibleTextField1 = columns.columns[2][0].refs.input[0];
+        const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+        visibleTextField1.value = 'test   ';
+        visibleTextField2.value = ' some ';
+
+        const inputEvent = new Event('input');
+        visibleTextField1.dispatchEvent(inputEvent);
+        visibleTextField2.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const visibleTextField1 = columns.columns[2][0].refs.input[0];
+          const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+          assert.equal(visibleTextField1.value,'test   ', 'Should not cut whitespaces while inputting into the conditional component inside column');
+          assert.equal(visibleTextField2.value,' some ', 'Should not cut whitespaces while inputting into the conditional component inside column');
+          selectBoxes.setValue({ '1': false, '2': false, '3': false, '4': false, '5': false, '6': true });
+
+          setTimeout(() => {
+            columns.columns.forEach((column, index) => {
+              if ([6].includes(index+1)) {
+                assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+                assert.equal( columns.component.columns[index].currentWidth, 2,  `Column ${index + 1}  width should be 2`);
+              }
+              else {
+                assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+                assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+              }
+            });
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
 
   it('Should not translate en value if _userInput option is provided and value presents in reserved translation names', done => {
     const formElement = document.createElement('div');
@@ -785,7 +895,7 @@ describe('Webform tests', function() {
       assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
-      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent, 'Text Field is required');
+      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent.trim(), 'Text Field is required');
       done();
     }, 500);
     })
@@ -996,7 +1106,7 @@ describe('Webform tests', function() {
       })
       .then(() => {
         const ref = formElement.querySelector('[ref="errorRef"]');
-        assert.equal(ref.textContent, 'Field Label es obligatorio');
+        assert.equal(ref.textContent.trim(), 'Field Label es obligatorio');
       });
   });
 
@@ -1620,7 +1730,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should render Nested Modal Wizard Form correclty', (done) => {
+  it('Should render Nested Modal Wizard Form correctly', (done) => {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
     form.setForm(nestedModalWizard).then(() => {
@@ -2202,6 +2312,32 @@ describe('Webform tests', function() {
         }, 1000);
       }).catch(done);
     });
+    it('Should not override value which was set from submission', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3', pdf: true });
+      form.setForm(calculateValueWithManualOverrideLableValueDataGrid).then(() => {
+        form.editing = true;
+        form.setSubmission({
+          state: 'submitted',
+          data: {
+            dataGrid: [
+              { label: '1', value: '1a' },
+              { label: '2', value: '2a' },
+              { label: '3', value: '3a' },
+            ]
+          },
+        });
+        setTimeout(() => {
+          const value1 = form.getComponent(['dataGrid', 0, 'value']);
+          assert.equal(value1.dataValue, '1a', 'Should have a value set from submission');
+          const value2 = form.getComponent(['dataGrid', 1, 'value']);
+          assert.equal(value2.dataValue, '2a', 'Should have a value set from submission');
+          const value3 = form.getComponent(['dataGrid', 2, 'value']);
+          assert.equal(value3.dataValue, '3a', 'Should have a value set from submission');
+          done();
+        }, 1000);
+      }).catch(done);
+    });
   });
 
   it('Should set different ids for components inside different Table rows', (done) => {
@@ -2348,7 +2484,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should add and clear input error classes correclty', (done) => {
+  it('Should add and clear input error classes correctly', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
 
@@ -2366,8 +2502,8 @@ describe('Webform tests', function() {
           const dateVisibleInput = dateComponentElement.querySelector('.input');
           const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
 
-          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
-          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should has invalid class as well');
+          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should have invalid class');
+          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should have invalid class as well');
 
           dateTimeComponent.setValue('2020-12-09T00:00:00');
 
@@ -2551,9 +2687,12 @@ describe('Webform tests', function() {
         const customerSelectValueEl = customerSelectEl.querySelector('[ref="value"]');
         const htmlSelectEl = form.element.querySelector('.formio-component-panelHtml5Select');
         const htmlSelectValueEl = htmlSelectEl.querySelector('[ref="value"]');
+        const checkboxEl = form.element.querySelector('.formio-component-page3Iagreetothefollowtherules');
+        const checkboxValueEl = checkboxEl.querySelector('[ref="value"]');
 
         assert.equal(customerSelectValueEl.textContent.trim(), 'bob@example.com', 'Should render Select value properly');
         assert.equal(htmlSelectValueEl.textContent.trim(), 'banana', 'Should render HTML5 Select value properly');
+        assert.equal(checkboxValueEl.textContent.trim(), 'True', 'Should render Checkbox value properly');
 
         done();
       }, 300);
