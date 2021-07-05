@@ -1,22 +1,22 @@
-<ul class="list-inline" id="{{ ctx.wizardKey }}-nav">
+<ul class="formio-wizard-nav-container list-inline" id="{{ ctx.wizardKey }}-nav">
   {% if (ctx.buttons.cancel) { %}
-  <li class="list-inline-item">
-    <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel">{{ctx.t('cancel')}}</button>
+  <li>
+    <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel" aria-label="{{ctx.t('cancel')}} button. Click to reset the form">{{ctx.t('cancel')}}</button>
   </li>
   {% } %}
   {% if (ctx.buttons.previous) { %}
-  <li class="list-inline-item">
-    <button class="btn btn-primary btn-wizard-nav-previous" ref="{{ctx.wizardKey}}-previous">{{ctx.t('previous')}}</button>
+  <li>
+    <button class="btn btn-primary btn-wizard-nav-previous" ref="{{ctx.wizardKey}}-previous" aria-label="{{ctx.t('previous')}} button. Click to go back to the previous tab">{{ctx.t('previous')}}</button>
   </li>
   {% } %}
   {% if (ctx.buttons.next) { %}
-  <li class="list-inline-item">
-    <button class="btn btn-primary btn-wizard-nav-next" ref="{{ctx.wizardKey}}-next">{{ctx.t('next')}}</button>
+  <li>
+    <button class="btn btn-primary btn-wizard-nav-next" ref="{{ctx.wizardKey}}-next" aria-label="{{ctx.t('next')}} button. Click to go to the next tab">{{ctx.t('next')}}</button>
   </li>
   {% } %}
   {% if (ctx.buttons.submit) { %}
-  <li class="list-inline-item">
-    <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit">{{ctx.t('submit')}}</button>
+  <li>
+    <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
   </li>
   {% } %}
 </ul>

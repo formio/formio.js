@@ -895,7 +895,7 @@ describe('Webform tests', function() {
       assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
-      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent, 'Text Field is required');
+      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent.trim(), 'Text Field is required');
       done();
     }, 500);
     })
@@ -1106,7 +1106,7 @@ describe('Webform tests', function() {
       })
       .then(() => {
         const ref = formElement.querySelector('[ref="errorRef"]');
-        assert.equal(ref.textContent, 'Field Label es obligatorio');
+        assert.equal(ref.textContent.trim(), 'Field Label es obligatorio');
       });
   });
 

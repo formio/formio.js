@@ -1115,11 +1115,15 @@ export default class Component extends Element {
     });
   }
 
+  createComponentModal(element, modalShouldBeOpened, currentValue) {
+    return new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+  }
+
   attach(element) {
     if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
       const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
-      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+      this.componentModal = this.createComponentModal(element, modalShouldBeOpened, currentValue);
       this.setOpenModalElement();
     }
 
