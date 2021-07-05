@@ -110,9 +110,9 @@ export default class EditGridComponent extends NestedArrayComponent {
         {% if (!instance.options.readOnly && !instance.disabled) { %}
           <td class="editgrid-table-column">
             <div class="btn-group">
-              <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
+              <button class="btn btn-default btn-light btn-sm editRow" aria-label="${this.t('Edit row')}"><i class="{{ iconClass('edit') }}"></i></button>
               {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
-              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
+              <button class="btn btn-danger btn-sm removeRow" aria-label="${this.t('Remove row')}"><i class="{{ iconClass('trash') }}"></i></button>
               {% } %}
             </div>
           </td>
@@ -124,8 +124,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     return `
     <h3 ref="dialogHeader">${this.t('Do you want to clear data?')}</h3>
     <div style="display:flex; justify-content: flex-end;">
-      <button ref="dialogCancelButton" class="btn btn-secondary">${this.t('Cancel')}</button>
-      <button ref="dialogYesButton" class="btn btn-danger">${this.t('Yes, delete it')}</button>
+      <button ref="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('Cancel')}">${this.t('Cancel')}</button>
+      <button ref="dialogYesButton" class="btn btn-danger" aria-label="${this.t('Yes, delete it')}">${this.t('Yes, delete it')}</button>
     </div>
   `;
   }
