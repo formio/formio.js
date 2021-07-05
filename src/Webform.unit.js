@@ -54,6 +54,7 @@ import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataG
 import calculateValueWithManualOverrideLableValueDataGrid
   from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
 import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
+import columnWithConditionalComponents from '../test/forms/columnWithConditionalComponents';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -95,6 +96,70 @@ describe('Webform tests', function() {
 
           setTimeout(() => {
             assert.equal(conditionalDataGrid.rows.length, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should adjust columns when conditional fields appear/disappear', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(columnWithConditionalComponents).then(() => {
+      const selectBoxes = form.getComponent('selectBoxes');
+      const columns = form.getComponent('columns');
+
+      columns.columns.forEach((column, index) => {
+        assert.equal(column[0].visible, false,  `Column ${index + 1} component should be hidden`);
+        assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+      });
+
+      selectBoxes.setValue({ '1': false, '2': false, '3': true, '4': false, '5': false, '6': true });
+
+      setTimeout(() => {
+        columns.columns.forEach((column, index) => {
+          if ([3,6].includes(index+1)) {
+            assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+            assert.equal(columns.component.columns[index].currentWidth, 2, `Column ${index + 1}  width should be 2`);
+          }
+          else {
+            assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+            assert.equal( columns.component.columns[index].currentWidth, 0, `Column ${index + 1}  width should be 0`);
+          }
+        });
+
+        const visibleTextField1 = columns.columns[2][0].refs.input[0];
+        const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+        visibleTextField1.value = 'test   ';
+        visibleTextField2.value = ' some ';
+
+        const inputEvent = new Event('input');
+        visibleTextField1.dispatchEvent(inputEvent);
+        visibleTextField2.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const visibleTextField1 = columns.columns[2][0].refs.input[0];
+          const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+          assert.equal(visibleTextField1.value,'test   ', 'Should not cut whitespaces while inputting into the conditional component inside column');
+          assert.equal(visibleTextField2.value,' some ', 'Should not cut whitespaces while inputting into the conditional component inside column');
+          selectBoxes.setValue({ '1': false, '2': false, '3': false, '4': false, '5': false, '6': true });
+
+          setTimeout(() => {
+            columns.columns.forEach((column, index) => {
+              if ([6].includes(index+1)) {
+                assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+                assert.equal( columns.component.columns[index].currentWidth, 2,  `Column ${index + 1}  width should be 2`);
+              }
+              else {
+                assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+                assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+              }
+            });
+
             done();
           }, 300);
         }, 300);
