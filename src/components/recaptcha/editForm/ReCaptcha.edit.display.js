@@ -1,3 +1,4 @@
+import { getContextButtons } from '../../../utils/utils';
 export default [
   {
     key: 'eventType',
@@ -17,14 +18,22 @@ export default [
     weight: 650
   },
   {
-    key: 'buttonKey',
+    type: 'select',
+    input: true,
     label: 'Button Key',
+    key: 'buttonKey',
+    dataSrc: 'custom',
+    valueProperty: 'value',
     tooltip: 'Specify key of button on this form that this reCAPTCHA should react to',
-    type: 'textfield',
+    weight: 660,
     customConditional(context) {
       return context.data.eventType === 'buttonClick';
     },
-    weight: 660
+    data: {
+      custom(context) {
+        return getContextButtons(context);
+      }
+    }
   },
   {
     key: 'label',
