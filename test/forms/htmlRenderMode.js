@@ -686,6 +686,30 @@ export default {
       tableView: false,
       label: 'Submit',
       input: true
-    }
+    },
+    {
+      label: 'Select Boxes',
+      optionsLabelPosition: 'right',
+      tableView: false,
+      values: [
+          {
+              label: 'foo',
+              value: 'foo',
+              shortcut: ''
+          },
+          {
+              label: 'bar',
+              value: 'bar',
+              shortcut: ''
+          }
+      ],
+      validate: {
+          onlyAvailableItems: false
+      },
+      key: 'selectBoxes',
+      type: 'selectboxes',
+      input: true,
+      inputType: 'checkbox'
+    },
   ],
 };

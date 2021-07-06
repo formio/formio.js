@@ -141,6 +141,12 @@ export default class SelectBoxesComponent extends RadioComponent {
       }
       input.checked = !!value[input.value];
     });
+
+    if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
+      this.redraw();
+      return changed;
+    }
+
     return changed;
   }
 

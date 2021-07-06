@@ -2678,7 +2678,11 @@ describe('Webform tests', function() {
           ],
           panelHtml5Select: 'banana',
           page3Iagreetothefollowtherules: true,
-          panelText: 'hello'
+          panelText: 'hello',
+          selectBoxes: {
+            foo: false,
+            bar: true
+          },
         },
       };
 
@@ -2689,10 +2693,13 @@ describe('Webform tests', function() {
         const htmlSelectValueEl = htmlSelectEl.querySelector('[ref="value"]');
         const checkboxEl = form.element.querySelector('.formio-component-page3Iagreetothefollowtherules');
         const checkboxValueEl = checkboxEl.querySelector('[ref="value"]');
+        const selectBoxesEl = form.element.querySelector('.formio-component-selectBoxes');
+        const selectBoxesValueEl = selectBoxesEl.querySelector('[ref="value"]');
 
         assert.equal(customerSelectValueEl.textContent.trim(), 'bob@example.com', 'Should render Select value properly');
         assert.equal(htmlSelectValueEl.textContent.trim(), 'banana', 'Should render HTML5 Select value properly');
         assert.equal(checkboxValueEl.textContent.trim(), 'True', 'Should render Checkbox value properly');
+        assert.equal(selectBoxesValueEl.textContent.trim(), 'bar', 'Should render SelectBoxes value properly');
 
         done();
       }, 300);
