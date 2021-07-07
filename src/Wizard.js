@@ -538,7 +538,10 @@ export default class Wizard extends Webform {
     this.suffixComps = [];
     const visible = [];
     const currentPages = {};
-    const pageOptions = _.clone(this.options);
+    const pageOptions = {
+      ...(_.clone(this.options)),
+      ...(this.parent ? { root: this } : {}),
+    };
     if (this.components && this.components.length) {
       this.components.forEach(page => {
         if (page.component.type === 'panel') {

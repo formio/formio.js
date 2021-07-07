@@ -315,7 +315,7 @@ export default class NestedComponent extends Field {
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
-    options.root = this.root || this;
+    options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
