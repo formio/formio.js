@@ -58,10 +58,28 @@ import calculateValueWithManualOverrideLableValueDataGrid
   from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
 import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
 import columnWithConditionalComponents from '../test/forms/columnWithConditionalComponents';
+import formWithSurvey from '../test/forms/formWithSurvey';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should show survey values in html render mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true });
+
+    form.setForm(formWithSurvey).then(() => {
+      form.setSubmission({ data: { survey: { question1: 'a3', question2: 'a1' } } }).then(() => {
+        const survey = form.getComponent('survey');
+        const values = survey.element.querySelectorAll('td');
+
+        assert.equal(values.length, 2);
+        assert.equal(values[0].innerHTML.trim(), 'a3');
+        assert.equal(values[1].innerHTML.trim(), 'a1');
+        done();
+      });
+   }).catch((err) => done(err));
+  });
 
   it('Should allow to input value and add rows in deeply nested conditional dataGrid', function(done) {
     const formElement = document.createElement('div');
