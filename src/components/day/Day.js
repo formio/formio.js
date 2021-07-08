@@ -226,6 +226,7 @@ export default class DayComponent extends Field {
       showDay: this.showDay,
       showMonth: this.showMonth,
       showYear: this.showYear,
+      parts: this.parts,
       day: this.renderField('day'),
       month: this.renderField('month'),
       year: this.renderField('year'),
