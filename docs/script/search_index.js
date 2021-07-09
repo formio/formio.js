@@ -9150,6 +9150,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/utils/choiceswrapper.js~choiceswrapper#timeout",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-member-timeout",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#timeout",
+    "member"
+  ],
+  [
     "src/utils/evaluator.js",
     "file/src/utils/Evaluator.js.html",
     "src/utils/Evaluator.js",

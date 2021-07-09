@@ -261,9 +261,10 @@ class ChoicesWrapper extends Choices {
 
     this.onSelectValue(...args);
 
-    requestAnimationFrame(() =&gt; {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() =&gt; {
       this.isDirectionUsing = false;
-    });
+    }, 250);
   }
 
   _onTabKey({ activeItems, hasActiveDropdown }) {
