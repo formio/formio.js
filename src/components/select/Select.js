@@ -525,16 +525,19 @@ export default class SelectComponent extends Field {
         }
 
         this.isScrollLoading = false;
-        this.loading = false;
-        this.itemsLoadedResolve();
-        this.emit('componentError', {
-          component: this.component,
-          message: err.toString(),
-        });
-        console.warn(`Unable to load resources for ${this.key}`);
+        this.handleLoadingError(err);
       });
   }
 
+  handleLoadingError(err) {
+    this.loading = false;
+    this.itemsLoadedResolve();
+    this.emit('componentError', {
+      component: this.component,
+      message: err.toString(),
+    });
+    console.warn(`Unable to load resources for ${this.key}`);
+  }
   /**
    * Get the request headers for this select dropdown.
    */
@@ -565,8 +568,30 @@ export default class SelectComponent extends Field {
     }, 'values');
   }
 
-  updateCustomItems() {
-    this.setItems(this.getCustomItems() || []);
+  asyncCustomValues() {
+    return _.get(this.component, 'data.async');
+  }
+
+  updateCustomItems(forceUpdate) {
+    if (this.asyncCustomValues()) {
+      if (!forceUpdate && !this.active) {
+        this.itemsLoadedResolve();
+        return;
+      }
+
+      this.loading = true;
+      this.getCustomItems()
+        .then(items => {
+          this.loading = false;
+          this.setItems(items || []);
+        })
+        .catch(err => {
+          this.handleLoadingError(err);
+        });
+    }
+    else {
+      this.setItems(this.getCustomItems() || []);
+    }
   }
 
   isEmpty(value = this.dataValue) {
@@ -641,7 +666,7 @@ export default class SelectComponent extends Field {
         this.setItems(this.component.data.json);
         break;
       case 'custom':
-        this.updateCustomItems();
+        this.updateCustomItems(forceUpdate);
         break;
       case 'resource': {
         // If there is no resource, or we are lazyLoading, wait until active.
@@ -1417,7 +1442,7 @@ export default class SelectComponent extends Field {
 
   set itemsLoaded(promise) {
     // Make sure we always resolve the previous promise before reassign it
-    if (typeof this.itemsLoadedResolve === 'function') {
+    if (typeof this.itemsLoadedResolve === 'function' && this.isHtmlRenderMode()) {
       this.itemsLoadedResolve();
     }
     this._itemsLoaded = promise;
@@ -1574,7 +1599,7 @@ export default class SelectComponent extends Field {
 
     value = convertToString(value);
 
-    if (['values', 'custom'].includes(this.component.dataSrc)) {
+    if (['values', 'custom'].includes(this.component.dataSrc) && !this.asyncCustomValues()) {
       const {
         items,
         valueProperty,
