@@ -19,14 +19,19 @@ export default [
     input: true,
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'values',
-            'json',
-            'custom'
-          ],
-        ],
+        and: [
+          {
+            in: [
+              { var: 'data.dataSrc' },
+              [
+                'values',
+                'json',
+                'custom'
+              ],
+            ],
+          },
+          { '!==': [{ var: 'data.data.async' }, true] },
+        ]
       },
     },
   }
