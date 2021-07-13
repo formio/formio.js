@@ -78,6 +78,10 @@ export default class SelectComponent extends Field {
       return this.updateItems.apply(this, args);
     }, 100);
     this.triggerUpdate = (...args) => {
+      // Make sure we always resolve the previous promise before reassign it
+      if (typeof this.itemsLoadedResolve === 'function') {
+        this.itemsLoadedResolve();
+      }
       this.itemsLoaded = new NativePromise((resolve) => {
         this.itemsLoadedResolve = resolve;
       });
@@ -107,6 +111,10 @@ export default class SelectComponent extends Field {
     this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
+
+    if (this.isHtmlRenderMode()) {
+      this.triggerUpdate();
+    }
   }
 
   get dataReady() {
@@ -428,6 +436,31 @@ export default class SelectComponent extends Field {
 
     // Say we are done loading the items.
     this.itemsLoadedResolve();
+  }
+
+  getSingleItemValueForHTMLMode(data) {
+    const option = this.selectOptions?.find(({ value }) => _.isEqual(value, data));
+    if (option) {
+      return option.label || data;
+    }
+
+    return data;
+  }
+
+  itemValueForHTMLMode(value) {
+    if (!this.isHtmlRenderMode()) {
+      return super.itemValueForHTMLMode(value);
+    }
+
+    if (Array.isArray(value)) {
+      const values = value.map(item => Array.isArray(item)
+        ? this.itemValueForHTMLMode(item)
+        : this.getSingleItemValueForHTMLMode(item));
+
+      return values.join(', ');
+    }
+
+    return this.getSingleItemValueForHTMLMode(value);
   }
 
   /* eslint-enable max-statements */
@@ -1333,7 +1366,10 @@ export default class SelectComponent extends Field {
     }
 
     if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
-      this.redraw();
+      this.itemsLoaded.then(() => {
+        this.redraw();
+      });
+
       return changed;
     }
 
@@ -1416,10 +1452,6 @@ export default class SelectComponent extends Field {
   }
 
   set itemsLoaded(promise) {
-    // Make sure we always resolve the previous promise before reassign it
-    if (typeof this.itemsLoadedResolve === 'function') {
-      this.itemsLoadedResolve();
-    }
     this._itemsLoaded = promise;
   }
 
