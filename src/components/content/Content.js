@@ -1,5 +1,6 @@
 import Component from '../_classes/component/Component';
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 
 export default class ContentComponent extends Component {
   static schema(...extend) {
@@ -50,12 +51,12 @@ export default class ContentComponent extends Component {
   }
 
   get dataReady() {
-    return this.root.submissionReady;
+    return this.root?.submissionReady || NativePromise.resolve();
   }
 
   attach(element) {
     this.loadRefs(element, { html: 'single' });
-    this.root.submissionReady.then(() => {
+    this.dataReady.then(() => {
       if (this.refs.html) {
         this.setContent(this.refs.html, this.content);
       }
