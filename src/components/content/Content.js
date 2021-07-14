@@ -49,8 +49,17 @@ export default class ContentComponent extends Component {
     }));
   }
 
+  get dataReady() {
+    return this.root.submissionReady;
+  }
+
   attach(element) {
     this.loadRefs(element, { html: 'single' });
+    this.root.submissionReady.then(() => {
+      if (this.refs.html) {
+        this.setContent(this.refs.html, this.content);
+      }
+    });
     if (this.component.refreshOnChange) {
       this.on('change', () => {
         if (this.refs.html) {
