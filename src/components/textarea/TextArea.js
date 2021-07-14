@@ -203,6 +203,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                   editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
                 }
                 editor.isReadOnly = isReadOnly;
+                this.autoModified = true;
                 editor.data.set(value);
               }
 
