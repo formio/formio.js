@@ -23,7 +23,7 @@
         Address
       </label>
       <div class="address-autocomplete-container">
-        <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off">
+        <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off" aria-label="autocomplete">
         <i class="address-autocomplete-remove-value-icon fa fa-times" tabindex="0" ref="removeValueIcon"></i>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
@@ -91,7 +91,7 @@
                 December
               </option>
             </select>
-            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
           </div>
         </div>
         <div class="col col-xs-3">
@@ -133,7 +133,7 @@
         Resource
       </label>
       <select ref="selectContainer" name="data[resource]" type="text" class="form-control" lang="en" id="resource-resource"></select>
-      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="resourceAdd" class="form-group has-feedback formio-component formio-component-resource formio-component-resourceAdd formio-component-multiple " ref="component">
@@ -145,7 +145,7 @@
           <tr>
             <td>
               <select ref="selectContainer" multiple name="data[resourceAdd]" type="text" class="form-control" lang="en" id="resourceAdd-resourceAdd"></select>
-              <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+              <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
             </td>
           </tr>
           <tr>

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.5-rc.1
+#### Changed
+ - FIO-2905, FIO-2906 Added hidden labels to some components
+ - FIO-2759: Added the ability to change wizard nav buttons order via custom properties
+ - FIO-3109 Implemented feature to set focus on new row when adding one in Data Grid
+
 ### 4.13.4
 #### Changed
  - FIO-3213: Select closes upon clicking on up and down buttons in IE11
