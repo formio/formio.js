@@ -34,6 +34,7 @@ import ResourceComponent from './resource/Resource';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
 import SelectComponent from './select/Select';
 import SignatureComponent from './signature/Signature';
+import SignRequestSignatureComponent from './signrequestsignature/SignRequestSignature';
 import SurveyComponent from './survey/Survey';
 import TableComponent from './table/Table';
 import TabsComponent from './tabs/Tabs';
@@ -84,6 +85,7 @@ export default {
   select: SelectComponent,
   selectboxes: SelectBoxesComponent,
   signature: SignatureComponent,
+  signrequestsignature: SignRequestSignatureComponent,
   survey: SurveyComponent,
   table: TableComponent,
   tabs: TabsComponent,
