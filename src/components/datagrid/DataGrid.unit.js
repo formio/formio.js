@@ -146,8 +146,7 @@ describe('DataGrid Component', () => {
         },
         {
           make: '',
-          model: '',
-          year: ''
+          model: ''
         }
       ]);
     });
@@ -179,8 +178,8 @@ describe('DataGrid Component', () => {
             { name: 'Alex', age: 1 },
             { name: 'Bob',  age: 2 },
             { name: 'Conny', age: 3 },
-            { name: '', age: '' },
-            { name: '', age: '' }
+            { name: '' },
+            { name: '' }
           ]);
           done();
         }, done)
