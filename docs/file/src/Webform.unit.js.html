@@ -2610,49 +2610,6 @@ describe(&apos;Webform tests&apos;, function() {
     }).catch(done);
   }).timeout(3000);
 
-  it(&apos;Should have number and currency fields in empty form submission&apos;, function(done) {
-    const formElement = document.createElement(&apos;div&apos;);
-    const form= new Webform(formElement);
-    const formJson = {
-      components: [
-        {
-          label: &apos;Number&apos;,
-          key: &apos;number&apos;,
-          type: &apos;number&apos;
-        },
-        {
-          label: &apos;Currency&apos;,
-          key: &apos;currency&apos;,
-          type: &apos;currency&apos;
-        },
-        {
-          type: &apos;button&apos;,
-          label: &apos;Submit&apos;,
-          key: &apos;submit&apos;
-        },
-      ],
-    };
-
-    const emptySubmissionData = {
-      number: &apos;&apos;,
-      currency: &apos;&apos;,
-      submit: true
-    };
-
-    form.setForm(formJson).then(() =&gt; {
-      const clickEvent = new Event(&apos;click&apos;);
-      const submitBtn = form.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
-
-      submitBtn.dispatchEvent(clickEvent);
-
-      setTimeout(() =&gt; {
-        assert.deepEqual(form.data, emptySubmissionData);
-        done();
-      }, 200);
-    })
-    .catch((err) =&gt; done(err));
-  });
-
   it(&apos;Test Truncate Multiple Spaces&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const form= new Webform(formElement);

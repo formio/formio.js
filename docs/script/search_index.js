@@ -4710,12 +4710,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/number/number.js~numbercomponent#emptyvalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-get-emptyValue",
-    "src/components/number/Number.js~NumberComponent#emptyValue",
-    "member"
-  ],
-  [
     "src/components/number/number.js~numbercomponent#focus",
     "class/src/components/number/Number.js~NumberComponent.html#instance-method-focus",
     "src/components/number/Number.js~NumberComponent#focus",

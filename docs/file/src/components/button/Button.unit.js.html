@@ -550,7 +550,7 @@ describe(&apos;Button Component&apos;, () =&gt; {
       assert.equal(method, &apos;POST&apos;);
       assert.deepEqual(data.data, {
         event: false,
-        number: &apos;&apos;,
+        number: null,
         post: true,
         reset: false,
         saveInState: false
@@ -600,8 +600,8 @@ describe(&apos;Button Component&apos;, () =&gt; {
 
           setTimeout(() =&gt; {
             const numberComp = form.getComponent(&apos;number&apos;);
-            assert.equal(numberComp.dataValue, &apos;&apos;);
-            assert.equal(numberComp.getValue(), &apos;&apos;);
+            assert.equal(numberComp.dataValue, null);
+            assert.equal(numberComp.getValue(), null);
 
             const postBtn = form.getComponent(&apos;post&apos;);
             click(postBtn);
@@ -610,7 +610,7 @@ describe(&apos;Button Component&apos;, () =&gt; {
               Formio.makeStaticRequest = originalMakeRequest;
               done();
             }, 300);
-          }, 300);
+          }, 200);
         }, 300);
       }, 300);
     }).catch(done);
