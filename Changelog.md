@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.7-patch.9
+#### Fixed
+ - Fixes an issue where modified flag is set to true when data is automatically set from the submission
+
 ### 4.12.7-patch.8
 #### Fixed
  - Fixes an issue where the change event for the first character in Textarea with wysiwyg is triggered without modified flag
