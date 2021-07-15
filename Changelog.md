@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.5-rc.2
+#### Fixed
+ - Style issues with wizard navigations.
+
 ### 4.13.5-rc.1
 #### Changed
  - FIO-2905, FIO-2906 Added hidden labels to some components
