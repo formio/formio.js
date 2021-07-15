@@ -1,0 +1,19 @@
+{% if (ctx.isPDF) { %}
+  <p style="
+    {{ ctx.styles }}
+    color: #fff;
+    margin: 0;
+  ">
+    [[ s | {{ctx.component.order}} ]]
+  </p>
+{% } %}
+{% if (ctx.isBuilder) { %}
+  <p style="
+    {{ ctx.styles }}
+    text-align: center;
+    background-color: #e0e0e0;
+    border: 1px solid #ddd;
+  ">
+    Signature
+  </p>
+{% } %}
