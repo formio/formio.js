@@ -505,6 +505,8 @@ export default class FileComponent extends Field {
 
   /* eslint-disable max-depth */
   globStringToRegex(str) {
+    str = str.replace(/\s/g, '');
+
     let regexp = '', excludes = [];
     if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
       regexp = str.substring(1, str.length - 1);
