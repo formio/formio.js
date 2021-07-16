@@ -58,11 +58,27 @@ import calculateValueWithManualOverrideLableValueDataGrid
   from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
 import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
 import columnWithConditionalComponents from '../test/forms/columnWithConditionalComponents';
+import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
 import formWithDayComp from '../test/forms/formWithDayComp';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should show select boxes values in html render mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true });
+
+    form.setForm(formWithSelectBoxes).then(() => {
+      form.setSubmission({ data: { selectBoxes: { a: true, b: true, c: false } } }).then(() => {
+        const selectBoxes = form.getComponent('selectBoxes');
+        const values = selectBoxes.element.querySelector('[ref="value"]').textContent.trim();
+
+        assert.equal(values, 'a, b');
+        done();
+      });
+   }).catch((err) => done(err));
+  });
 
   it('Should show day value in html render mode', function(done) {
     const formElement = document.createElement('div');
