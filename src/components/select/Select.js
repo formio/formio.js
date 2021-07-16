@@ -3,7 +3,7 @@ import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
-import { getRandomComponentId, boolValue } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
 
 let Choices;
 if (typeof window !== 'undefined') {
@@ -558,16 +558,19 @@ export default class SelectComponent extends Field {
         }
 
         this.isScrollLoading = false;
-        this.loading = false;
-        this.itemsLoadedResolve();
-        this.emit('componentError', {
-          component: this.component,
-          message: err.toString(),
-        });
-        console.warn(`Unable to load resources for ${this.key}`);
+        this.handleLoadingError(err);
       });
   }
 
+  handleLoadingError(err) {
+    this.loading = false;
+    this.itemsLoadedResolve();
+    this.emit('componentError', {
+      component: this.component,
+      message: err.toString(),
+    });
+    console.warn(`Unable to load resources for ${this.key}`);
+  }
   /**
    * Get the request headers for this select dropdown.
    */
@@ -593,13 +596,43 @@ export default class SelectComponent extends Field {
   }
 
   getCustomItems() {
-    return this.evaluate(this.component.data.custom, {
+    const customItems = this.evaluate(this.component.data.custom, {
       values: []
     }, 'values');
+
+    this.asyncValues = isPromise(customItems);
+
+    return customItems;
   }
 
-  updateCustomItems() {
-    this.setItems(this.getCustomItems() || []);
+  asyncCustomValues() {
+    if (!_.isBoolean(this.asyncValues)) {
+      this.getCustomItems();
+    }
+
+    return this.asyncValues;
+  }
+
+  updateCustomItems(forceUpdate) {
+    if (this.asyncCustomValues()) {
+      if (!forceUpdate && !this.active) {
+        this.itemsLoadedResolve();
+        return;
+      }
+
+      this.loading = true;
+      this.getCustomItems()
+        .then(items => {
+          this.loading = false;
+          this.setItems(items || []);
+        })
+        .catch(err => {
+          this.handleLoadingError(err);
+        });
+    }
+    else {
+      this.setItems(this.getCustomItems() || []);
+    }
   }
 
   isEmpty(value = this.dataValue) {
@@ -674,7 +707,7 @@ export default class SelectComponent extends Field {
         this.setItems(this.component.data.json);
         break;
       case 'custom':
-        this.updateCustomItems();
+        this.updateCustomItems(forceUpdate);
         break;
       case 'resource': {
         // If there is no resource, or we are lazyLoading, wait until active.
@@ -1101,12 +1134,10 @@ export default class SelectComponent extends Field {
   }
 
   /* eslint-enable max-statements */
-
   update() {
     if (this.component.dataSrc === 'custom') {
       this.updateCustomItems();
     }
-
     // Activate the control.
     this.activate();
   }
@@ -1606,7 +1637,7 @@ export default class SelectComponent extends Field {
 
     value = convertToString(value);
 
-    if (['values', 'custom'].includes(this.component.dataSrc)) {
+    if (['values', 'custom'].includes(this.component.dataSrc) && !this.asyncCustomValues()) {
       const {
         items,
         valueProperty,

@@ -23,6 +23,7 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -809,6 +810,30 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('Should show async custom values and be able to set submission', (done) => {
+    const formObj = _.cloneDeep(comp15);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formObj).then(form => {
+      const select = form.getComponent('select');
+     select.choices.showDropdown();
+
+      setTimeout(() => {
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 3);
+        const value = 'bb';
+        form.submission = { data: { select: value } };
+
+        setTimeout(() => {
+          assert.deepEqual(select.getValue(), value);
+          assert.deepEqual(select.dataValue, value);
+          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'B');
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
