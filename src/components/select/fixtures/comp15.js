@@ -10,7 +10,6 @@ export default {
       valueProperty:'value',
 			data: {
 				custom:"values = Promise.resolve([\n  {label: 'A', value: 'aa'}, \n  {label: 'B', value: 'bb'}, \n  {label: 'C', value: 'cc'}\n]);",
-				async: true
 			},
 			key: 'select',
 			type: 'select',

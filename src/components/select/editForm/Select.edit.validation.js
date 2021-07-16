@@ -14,24 +14,19 @@ export default [
     weight: 52,
     type: 'checkbox',
     label: 'Allow only available values',
-    tooltip: 'Check this if you would like to perform a validation check to ensure the selected value is an available option.',
+    tooltip: 'Check this if you would like to perform a validation check to ensure the selected value is an available option (only for synchronous values).',
     key: 'validate.onlyAvailableItems',
     input: true,
     conditional: {
       json: {
-        and: [
-          {
-            in: [
-              { var: 'data.dataSrc' },
-              [
-                'values',
-                'json',
-                'custom'
-              ],
-            ],
-          },
-          { '!==': [{ var: 'data.data.async' }, true] },
-        ]
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'values',
+            'json',
+            'custom'
+          ],
+        ],
       },
     },
   }
