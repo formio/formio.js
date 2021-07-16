@@ -59,6 +59,7 @@ import calculateValueWithManualOverrideLableValueDataGrid
 import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
 import columnWithConditionalComponents from '../test/forms/columnWithConditionalComponents';
 import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
+import formWithDayComp from '../test/forms/formWithDayComp';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -74,6 +75,21 @@ describe('Webform tests', function() {
         const values = selectBoxes.element.querySelector('[ref="value"]').textContent.trim();
 
         assert.equal(values, 'a, b');
+        done();
+      });
+   }).catch((err) => done(err));
+  });
+
+  it('Should show day value in html render mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true });
+
+    form.setForm(formWithDayComp).then(() => {
+      form.setSubmission({ data: { day: '05/07/2020' } }).then(() => {
+        const day = form.getComponent('day');
+        const value = day.element.querySelector('[ref="value"]').textContent.trim();
+
+        assert.equal(value, '05/07/2020');
         done();
       });
    }).catch((err) => done(err));
