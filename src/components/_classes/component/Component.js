@@ -1875,7 +1875,7 @@ export default class Component extends Element {
             'value',
           );
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && this.visible) {
             this.setValue(newValue);
 
             if (this.viewOnly) {

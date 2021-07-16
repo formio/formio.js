@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
 import Formio from '../../Formio';
+import sinon from 'sinon';
 
 import {
   comp1,
@@ -14,7 +15,8 @@ import {
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
-  withConditionalFieldsAndValidations
+  withConditionalFieldsAndValidations,
+  withLogic
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -189,6 +191,22 @@ describe('DataGrid Component', () => {
     catch (err) {
       done(err);
     }
+  });
+
+  it('Should not cause setValue loops when logic within hidden component is set', function(done) {
+    Formio.createForm(document.createElement('div'), withLogic)
+      .then((form) => {
+        const datagrid = form.getComponent('dataGrid');
+        const spyFunc = sinon.spy(datagrid, 'checkComponentConditions');
+        const select = form.getComponent('teamName');
+
+        select.setValue('preRiskAnalysis', { modified: true });
+
+        setTimeout(() => {
+          expect(spyFunc.callCount).to.be.equal(1);
+          done();
+        }, 1000);
+      });
   });
 
   describe('get minLength', () => {
