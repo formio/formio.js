@@ -1451,6 +1451,7 @@ export function getDataParentComponent(componentInstance) {
   }
 }
 
+
 /**
  * Returns whether the value is a promise
  * @param value
@@ -1462,6 +1463,14 @@ export function getDataParentComponent(componentInstance) {
      && typeof value.then === 'function'
      && value?.constructor?.name === 'Promise';
  }
+
+export function getFocusableElements(element) {
+  const focusableSelector =
+    `button:not([disabled]), input:not([disabled]), select:not([disabled]),
+    textarea:not([disabled]), button:not([disabled]), [href]`;
+  return element.querySelectorAll(focusableSelector);
+}
+
 
 // Export lodash to save space with other libraries.
 export { _ };
