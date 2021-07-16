@@ -28,6 +28,7 @@ export default class SignRequestSignatureComponent extends Field {
 
   init() {
     super.init();
+
     if (!this.options.building && this.component.email) {
       const { email, name, order } = this.component;
       this.dataValue = {
@@ -35,6 +36,16 @@ export default class SignRequestSignatureComponent extends Field {
         'first_name': name || '',
         order: +order
       };
+
+      if (+order === 0 && !this.hasEventHandler('submitDone')) {
+        this.once('submitDone', (submission) => {
+          const { signrequest } = submission.data;
+
+          if (signrequest && signrequest.embedUrl) {
+            window.open(signrequest.embedUrl);
+          }
+        });
+      }
     }
   }
 
