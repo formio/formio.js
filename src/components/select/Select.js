@@ -3,7 +3,7 @@ import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
-import { getRandomComponentId, boolValue } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
 
 let Choices;
 if (typeof window !== 'undefined') {
@@ -563,13 +563,21 @@ export default class SelectComponent extends Field {
   }
 
   getCustomItems() {
-    return this.evaluate(this.component.data.custom, {
+    const customItems = this.evaluate(this.component.data.custom, {
       values: []
     }, 'values');
+
+    this.asyncValues = isPromise(customItems);
+
+    return customItems;
   }
 
   asyncCustomValues() {
-    return _.get(this.component, 'data.async');
+    if (!_.isBoolean(this.asyncValues)) {
+      this.getCustomItems();
+    }
+
+    return this.asyncValues;
   }
 
   updateCustomItems(forceUpdate) {
@@ -1093,12 +1101,10 @@ export default class SelectComponent extends Field {
   }
 
   /* eslint-enable max-statements */
-
   update() {
     if (this.component.dataSrc === 'custom') {
       this.updateCustomItems();
     }
-
     // Activate the control.
     this.activate();
   }

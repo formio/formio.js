@@ -94,33 +94,13 @@ export default [
       json: {
         and: [
           {
-            or: [
-              {
-                in: [
-                  { var: 'data.dataSrc' },
-                  [
-                    'resource',
-                    'url',
-                  ],
-                ],
-              },
-              {
-                and: [
-                  {
-                    '==': [
-                      { var: 'data.dataSrc' },
-                      'custom'
-                    ]
-                  },
-                  {
-                    '==': [
-                      { var: 'data.data.async' },
-                      true
-                    ]
-                  }
-                ]
-              }
-            ]
+            in: [
+              { var: 'data.dataSrc' },
+              [
+                'resource',
+                'url',
+              ],
+            ],
           },
           {
             '!==': [
@@ -455,18 +435,6 @@ export default [
     },
   },
   {
-    key: 'data.async',
-    label: 'Asynchronous Custom Values',
-    type: 'checkbox',
-    input: true,
-    weight: 13,
-    defaultValue: false,
-    tooltip: 'Allow to handle asynchronous code in Custom Values.',
-    conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'custom'] },
-    },
-  },
-  {
     type: 'textarea',
     input: true,
     key: 'data.custom',
@@ -474,7 +442,7 @@ export default [
     editor: 'ace',
     rows: 10,
     weight: 14,
-    placeholder: "values = data['mykey'] or values = Promise.resolve(['myValue']) (if 'Asynchronous Custom Values' is checked)",
+    placeholder: "values = data['mykey'] or values = Promise.resolve(['myValue'])",
     tooltip: 'Write custom code to return the value options or a promise with value options. The form data object is available.',
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'custom'] },

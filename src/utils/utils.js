@@ -1451,5 +1451,17 @@ export function getDataParentComponent(componentInstance) {
   }
 }
 
+/**
+ * Returns whether the value is a promise
+ * @param value
+ * @return {boolean}
+ */
+ export function isPromise(value) {
+   return value
+     && value.then
+     && typeof value.then === 'function'
+     && value?.constructor?.name === 'Promise';
+ }
+
 // Export lodash to save space with other libraries.
 export { _ };
