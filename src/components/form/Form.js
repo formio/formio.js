@@ -688,17 +688,18 @@ export default class FormComponent extends Component {
 
     if (this._visible !== value) {
       this._visible = value;
-      this.clearOnHide();
       // Form doesn't load if hidden. If it becomes visible, create the form.
       if (!this.subForm && value) {
         this.createSubForm();
         this.subFormReady.then(() => {
           this.updateSubFormVisibility();
+          this.clearOnHide();
         });
         this.redraw();
         return;
       }
       this.updateSubFormVisibility();
+      this.clearOnHide();
       isNestedWizard ? this.rebuild() : this.redraw();
     }
     if (!value && isNestedWizard) {
