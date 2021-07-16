@@ -331,6 +331,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     return super.setValue(value, flags);
   }
 
+  setContent(element, content) {
+    super.setContent(element, content, {
+      addAttr: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'],
+      addTags: ['iframe'],
+    });
+  }
+
   setReadOnlyValue(value, index) {
     index = index || 0;
     if (this.options.readOnly || this.disabled) {
