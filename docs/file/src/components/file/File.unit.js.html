@@ -52,8 +52,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
@@ -247,6 +246,53 @@ describe(&apos;File Component&apos;, () =&gt; {
       Harness.testElements(component, &apos;ul.list-group-striped li.list-group-item&apos;, 3);
       Harness.testElements(component, &apos;a.browse&apos;, 1);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
+    });
+  });
+
+  it(&apos;Should validate uploaded file according to the pattern&apos;, (done) =&gt; {
+    Harness.testCreate(FileComponent, comp1).then((component) =&gt; {
+      const validFiles =[
+        {
+          name: &apos;test.jpg&apos;,
+          size: 27401,
+          type: &apos;image/jpeg&apos;
+        },
+        {
+          name: &apos;TypeScript.pdf&apos;,
+          size: 203123,
+          type: &apos;application/pdf&apos;
+        },
+        {
+          name: &apos;build with dist.png&apos;,
+          size: 137321,
+          type: &apos;image/png&apos;
+        }
+      ];
+
+      const invalidFiles = [
+        {
+          name: &apos;eventsList.xlsx&apos;,
+          size: 16022,
+          type: &apos;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&apos;
+        },
+        {
+          name: &apos;lazy load.mp4&apos;,
+          size: 9083622,
+          type: &apos;video/mp4&apos;
+        },
+      ];
+
+      const pattern = &apos;  .jpg,     .png,    .exe,     .pdf &apos;;
+
+      const checkValidatePattern = (files, valid) =&gt; {
+        files.forEach(file =&gt; {
+          assert.equal(component.validatePattern(file, pattern), valid, `File ${file.name} should ${valid ? &apos;&apos; : &apos;not&apos;} correspond to the pattern`);
+        });
+      };
+
+      checkValidatePattern(validFiles, true);
+      checkValidatePattern(invalidFiles, false);
+      done();
     });
   });
 });
