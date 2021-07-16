@@ -2249,7 +2249,7 @@ export default class Component extends Element {
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
-        editor.setOptions(settings);
+        editor.setOptions(_.omit(settings, 'isUseWorkerDisabled'));
         editor.getSession().setMode(settings.mode);
         editor.on('change', () => onChange(editor.getValue()));
         if (settings.isUseWorkerDisabled) {
