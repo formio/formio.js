@@ -52,8 +52,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
@@ -183,7 +182,8 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DateTime Component&apos;, () =&gt; {
@@ -670,6 +670,41 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should not set value if it does not meet minDate validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      dateTime.setValue(&apos;2021-05-01T09:00:00&apos;);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should set value in readOnly mode even if it does not meet current minDate validation conditions&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form, { readOnly: true }).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      dateTime.setValue(&apos;2021-05-01T09:00:00&apos;);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;05/01/21&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
   // it(&apos;Test Shortcut Buttons&apos;, (done) =&gt; {
   //   // eslint-disable-next-line no-debugger
   //   debugger;

@@ -221,6 +221,10 @@ export default class DayComponent extends Field {
   }
 
   render() {
+    if (this.isHtmlRenderMode()) {
+      return super.render(this.renderTemplate('input'));
+    }
+
     return super.render(this.renderTemplate('day', {
       dayFirst: this.dayFirst,
       showDay: this.showDay,

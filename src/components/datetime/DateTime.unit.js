@@ -8,7 +8,8 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -495,6 +496,41 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
+  it('Should not set value if it does not meet minDate validation', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2021-05-01T09:00:00');
+
+      setTimeout(() => {
+        const input = dateTime.element.querySelector('.input');
+        assert.equal(input.value, '');
+
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should set value in readOnly mode even if it does not meet current minDate validation conditions', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, { readOnly: true }).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2021-05-01T09:00:00');
+
+      setTimeout(() => {
+        const input = dateTime.element.querySelector('.input');
+        assert.equal(input.value, '05/01/21');
+
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
+  });
   // it('Test Shortcut Buttons', (done) => {
   //   // eslint-disable-next-line no-debugger
   //   debugger;

@@ -7,13 +7,23 @@ import _ from 'lodash';
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4
 } from './fixtures';
 import Formio from '../../Formio';
 
 describe('Tags Component', function() {
   it('Should build a tags component', function() {
     return Harness.testCreate(TagsComponent, comp1);
+  });
+
+  it('Should set placeholder', function(done) {
+    Harness.testCreate(TagsComponent, comp4).then((component) => {
+      assert.equal(component.choices.config.placeholder, true);
+      assert.equal(component.choices.config.placeholderValue, component.component.placeholder);
+      assert.equal(component.choices.input.element.attributes.placeholder.value, component.component.placeholder);
+      done();
+    }).catch(done);
   });
 
   it('Should not allow to add non-unique tags on blur', function(done) {

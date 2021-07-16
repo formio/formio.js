@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.14
+#### Fixed
+ - Add option for authorization header in s3 requests
+ - FIO-3321: fixed an issue where day value displays three times in PDF download when viewing as a plain text
+ - FIO-2991: PDF submission 'created' time not showing
+ - FIO-3320: fixed textArea display in PDF download when viewed as a plain text
+ - FIO-3319: fixed an issue where select boxes values do not display in PDF download when viewed as a plain text
+ - FIO-1405: fixed an issue where change event is not emitted when subform is loaded and assigned to the form component
+ - FIO-2570: Fixes an issues where values instead of labels are rendered for the Select component in the HTML mode
+ - FIO-3344: Add min height property to hidden components in builder 
+ - FIO-3305: fixed an issue where pattern validation does not allow to add a file that complies with the pattern
+ - FIO-3083: Fix conditionally shown nested wizard form and conditional pages inside of it
+ - FIO-3322: fixed an issue where survey does not display values in PDF download when 'View as a Plain Text' option is enabled
+ - FIO-3092: fixed an issue where dateTime value is not always set in readOnly mode when min/max date validation is enabled
+ - FIO-390: fixed an issue where placeholder does not show up for tags component
+
+#### Changed
+ - Upgrade i18next@20.3.3, mocha@9.0.2, dompurify@2.3.0, eslint@7.30.0, webpack@5.44.0, written-number@0.11.1
+
 ### 4.14.0-rc.13
 #### Fixed
  - FIO-3418: fixed an issue where focus and cursor jumps when inputting in component inside columns with 'auto adjust columns' option enabled
