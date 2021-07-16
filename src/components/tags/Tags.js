@@ -132,7 +132,8 @@ export default class TagsComponent extends Input {
         if (typeof dataValue === 'string') {
           dataValue = dataValue.split(this.delimiter).filter(result => result);
         }
-        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
+        const value = Array.isArray(dataValue) ? dataValue : [dataValue];
+        this.choices.setValue(value.map((val) => this.sanitize(val, this.shouldSanitizeValue)));
       }
     }
     return changed;
@@ -171,6 +172,6 @@ export default class TagsComponent extends Input {
     }
 
     const stringValue = value.toString();
-    return this.sanitize(stringValue);
+    return this.sanitize(stringValue, this.shouldSanitizeValue);
   }
 }
