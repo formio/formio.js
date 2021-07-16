@@ -1451,5 +1451,12 @@ export function getDataParentComponent(componentInstance) {
   }
 }
 
+export function getFocusableElements(element) {
+  const focusableSelector =
+    `button:not([disabled]), input:not([disabled]), select:not([disabled]),
+    textarea:not([disabled]), button:not([disabled]), [href]`;
+  return element.querySelectorAll(focusableSelector);
+}
+
 // Export lodash to save space with other libraries.
 export { _ };

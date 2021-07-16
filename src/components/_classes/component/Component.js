@@ -2022,7 +2022,7 @@ export default class Component extends Element {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
       // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || getDataParentComponent(this)?.hasScopedChildren) &&
+      (!this.rootPristine || this.options.server || getDataParentComponent(this)?.hasScopedChildren) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
