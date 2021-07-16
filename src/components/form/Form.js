@@ -398,6 +398,7 @@ export default class FormComponent extends Component {
         this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
+        this.onChange();
         return this.subForm;
       });
     }).then((subForm) => {
