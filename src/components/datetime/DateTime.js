@@ -90,7 +90,7 @@ export default class DateTimeComponent extends Input {
       timezone,
       displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),
       submissionTimezone: this.submissionTimezone,
-      locale: this.options.language,
+      locale: this.options.language.substr(0, 2), // convert possible IETF language tag
       useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),
       allowInput: _.get(this.component, 'allowInput', true),
       mode: 'single',
