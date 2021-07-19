@@ -2117,7 +2117,56 @@ export default class Component extends Element {
         minLines: 12,
         tabSize: 2,
         mode: 'ace/mode/javascript',
-        placeholder: this.t(this.component.placeholder, { _userInput: true })
+        placeholder: this.t(this.component.placeholder, { _userInput: true }),
+        fontFamily: 'Consolas, Menlo, Monaco, "Courier New", monospace',
+        // default editor options
+        selectionStyle: 'line',
+        highlightActiveLine: true,
+        highlightSelectedWord: true,
+        readOnly: false,
+        cursorStyle: 'ace',
+        mergeUndoDeltas: true,
+        behavioursEnabled: true,
+        wrapBehavioursEnabled: true,
+        autoScrollEditorIntoView: false,
+        copyWithEmptySelection: false,
+        enableMultiselect: true,
+        enableAutoIndent: true,
+        showLineNumbers: true,
+        // default virtual renderer options
+        animatedScroll: false,
+        showInvisibles: false,
+        showPrintMargin: true,
+        printMarginColumn: 80,
+        printMargin: 80,
+        showGutter: true,
+        fadeFoldWidgets: false,
+        showFoldWidgets: true,
+        displayIndentGuides: true,
+        highlightGutterLine: true,
+        hScrollBarAlwaysVisible: false,
+        vScrollBarAlwaysVisible: false,
+        fontSize: 12,
+        maxPixelHeight: 0,
+        scrollPastEnd: 0,
+        fixedWidthGutter: false,
+        // default mouseHandler options
+        scrollSpeed: 2,
+        dragDelay: 0,
+        dragEnabled: true,
+        focusTimeout: 0,
+        tooltipFollowsMouse: true,
+        // default edit session options
+        wrap: false,
+        wrapMethod: 'auto',
+        indentedSoftWrap: true,
+        firstLineNumber: 1,
+        useWorker: true,
+        useSoftTabs: true,
+        navigateWithinSoftTabs: false,
+        foldStyle: 'markbegin',
+        overwrite: false,
+        newLineMode: 'auto',
       },
       ckeditor: {
         image: {
@@ -2249,7 +2298,7 @@ export default class Component extends Element {
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
-        editor.setOptions(_.omit(settings, 'isUseWorkerDisabled'));
+        editor.setOptions(_.pick(settings, Object.keys(this.wysiwygDefault.ace)));
         editor.getSession().setMode(settings.mode);
         editor.on('change', () => onChange(editor.getValue()));
         if (settings.isUseWorkerDisabled) {
