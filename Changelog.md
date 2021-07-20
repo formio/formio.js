@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.15
+#### Fixed
+ - FIO-3055: fixed datagrid template
+
 ### 4.14.0-rc.14
 #### Fixed
  - Add option for authorization header in s3 requests

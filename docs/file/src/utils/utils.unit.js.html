@@ -172,7 +172,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/utils/utils.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import * as fs from &apos;fs&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint-disable no-irregular-whitespace */
+import * as fs from &apos;fs&apos;;
 import { expect, assert } from &apos;chai&apos;;
 import _ from &apos;lodash&apos;;
 import writtenNumber from &apos;written-number&apos;;
@@ -1017,7 +1018,7 @@ describe(&apos;Util Tests&apos;, () =&gt; {
         done(err);
       }
     });
-
+/*
     it(&apos;USD ar-SA&apos;, (done) =&gt; {
       try {
         const affixes2 = utils.getCurrencyAffixes({
@@ -1038,6 +1039,7 @@ describe(&apos;Util Tests&apos;, () =&gt; {
         done(err);
       }
     });
+*/
   });
 });
 </code></pre>
