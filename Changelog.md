@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.5-rc.3
+#### Fixed
+ - FIO-3414, FIO-3413: fixed issues where data clear up after inputting into conditional field and new row is not added to dataGrid when deep level of nested dataGrids and containers is used
+ - FIO-3083: Fix conditionally shown nested wizard form and conditional pages inside of it
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.11.4-rc.1 
+
 ### 4.13.5-rc.2
 #### Fixed
  - Style issues with wizard navigations.

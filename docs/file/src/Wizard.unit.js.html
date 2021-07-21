@@ -42,8 +42,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -195,6 +194,7 @@ import wizardWithDataGridAndEditGrid from &apos;../test/forms/wizardWithDataGrid
 import customWizard from &apos;../test/forms/customWizard&apos;;
 import wizardChildForm from &apos;../test/forms/wizardChildForm&apos;;
 import wizardParentForm from &apos;../test/forms/wizardParentForm&apos;;
+import nestedConditionalWizard from &apos;../test/forms/nestedConditionalWizard&apos;;
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
   it(&apos;Should correctly reset values&apos;, function(done) {
@@ -1689,6 +1689,66 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  describe(&apos;Conditional pages&apos;, () =&gt; {
+    it(&apos;&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      Formio.createForm(formElement, nestedConditionalWizard).then((form) =&gt; {
+        const nestedFormRadio = form.getComponent([&apos;nestedForm&apos;]);
+
+        nestedFormRadio.setValue(&apos;yes&apos;);
+        setTimeout(() =&gt; {
+          const secondQuestionToOpenNestedFormRadio = form.getComponent([&apos;secondQuestionToOpenNestedForm&apos;]);
+          assert(secondQuestionToOpenNestedFormRadio.visible, &apos;Should become visible&apos;);
+          secondQuestionToOpenNestedFormRadio.setValue(&apos;openChildForm&apos;);
+
+          setTimeout(() =&gt; {
+            const nestedForm = form.getComponent([&apos;form&apos;]);
+            assert(nestedForm.visible, &apos;Should become visible&apos;);
+            nestedForm.subForm.components.forEach((comp) =&gt; {
+              assert.equal(comp.root, nestedForm.subForm, &apos;The root of the nested components should be set to the&apos; +
+                &apos; Wizard itself&apos;);
+            });
+            const nestedRadio1 = nestedForm.subForm.getComponent([&apos;radio1&apos;]);
+
+            nestedRadio1.setValue(&apos;unhidePage3&apos;);
+
+            setTimeout(() =&gt; {
+              const pages = form.element.querySelectorAll(&apos;.formio-form nav .pagination .page-item&apos;);
+              assert.equal(pages.length, 3, &apos;Should show the hidden initially page&apos;);
+
+              secondQuestionToOpenNestedFormRadio.setValue(2);
+
+              setTimeout(() =&gt; {
+                assert(!nestedForm.visible, &apos;Should become hidden&apos;);
+                secondQuestionToOpenNestedFormRadio.setValue(&apos;openChildForm&apos;);
+
+                setTimeout(() =&gt; {
+                  assert(nestedForm.visible, &apos;Should become visible again&apos;);
+                  secondQuestionToOpenNestedFormRadio.setValue(&apos;openChildForm&apos;);
+
+                  nestedForm.subForm.components.forEach((comp) =&gt; {
+                    assert.equal(comp.root, nestedForm.subForm, &apos;The root of the nested components should be set to the&apos; +
+                      &apos; Wizard itself&apos;);
+                  });
+                  const nestedRadio1 = nestedForm.subForm.getComponent([&apos;radio1&apos;]);
+
+                  nestedRadio1.setValue(&apos;unhidePage3&apos;);
+
+                  setTimeout(() =&gt; {
+                    const pages = form.element.querySelectorAll(&apos;.formio-form nav .pagination .page-item&apos;);
+                    assert.equal(pages.length, 3, &apos;Should show the hidden initially page&apos;);
+
+                    done();
+                  });
+                }, 400);
+              }, 500);
+            }, 400);
+          }, 500);
+        }, 400);
+      }).catch(done);
+    });
   });
 });
 </code></pre>

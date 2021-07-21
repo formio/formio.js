@@ -42,8 +42,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -224,10 +223,54 @@ import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
 import conditionalDataGridWithTableAndRadio from &apos;../test/forms/conditionalDataGridWithTableAndRadio&apos;;
 import calculateValueWithManualOverrideLableValueDataGrid
   from &apos;../test/forms/calculateValueWithManualOverrideLableValueDataGrid&apos;;
+import deeplyNestedDataGridAndContainer from &apos;../test/forms/nestedDataGridsAndContainers&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should allow to input value and add rows in deeply nested conditional dataGrid&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    form.setForm(deeplyNestedDataGridAndContainer).then(() =&gt; {
+      const parentDataGrid = form.getComponent(&apos;dataGrid6&apos;);
+
+      assert.equal(parentDataGrid.rows.length, 1);
+      assert.equal(parentDataGrid.rows[0].dataGrid5.visible, false);
+
+      const checkbox = form.getComponent(&apos;checkbox&apos;);
+      checkbox.setValue(true);
+
+      setTimeout(() =&gt; {
+        assert.equal(parentDataGrid.rows.length, 1);
+        assert.equal(parentDataGrid.rows[0].dataGrid5.visible, true);
+
+        const numberInput = parentDataGrid.rows[0].dataGrid5.rows[0].number.refs.input[0];
+        numberInput.value = 555;
+
+        const inputEvent = new Event(&apos;input&apos;);
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          const conditionalDataGrid = form.getComponent(&apos;dataGrid6&apos;).rows[0].dataGrid5;
+          const numberComp = conditionalDataGrid.rows[0].number;
+
+          assert.equal(numberComp.dataValue, 555);
+          assert.equal(numberComp.refs.input[0].value, 555);
+
+          const addRowBtn = conditionalDataGrid.refs[`${&apos;datagrid-dataGrid5-addRow&apos;}`][0];
+          const clickEvent = new Event(&apos;click&apos;);
+          addRowBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(conditionalDataGrid.rows.length, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should not translate en value if _userInput option is provided and value presents in reserved translation names&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
