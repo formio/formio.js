@@ -619,6 +619,12 @@ export default class NestedComponent extends Field {
       this.addEventListener(this.refs.header, &apos;click&apos;, () =&gt; {
         this.collapsed = !this.collapsed;
       });
+      this.addEventListener(this.refs.header, &apos;keydown&apos;, (e) =&gt; {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+          e.preventDefault();
+          this.collapsed = !this.collapsed;
+        }
+      });
     }
 
     return NativePromise.all([
