@@ -74,4 +74,51 @@ describe('File Component', () => {
       assert(component.checkValidity(component.getValue()), 'Item should be valid');
     });
   });
+
+  it('Should validate uploaded file according to the pattern', (done) => {
+    Harness.testCreate(FileComponent, comp1).then((component) => {
+      const validFiles =[
+        {
+          name: 'test.jpg',
+          size: 27401,
+          type: 'image/jpeg'
+        },
+        {
+          name: 'TypeScript.pdf',
+          size: 203123,
+          type: 'application/pdf'
+        },
+        {
+          name: 'build with dist.png',
+          size: 137321,
+          type: 'image/png'
+        }
+      ];
+
+      const invalidFiles = [
+        {
+          name: 'eventsList.xlsx',
+          size: 16022,
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        },
+        {
+          name: 'lazy load.mp4',
+          size: 9083622,
+          type: 'video/mp4'
+        },
+      ];
+
+      const pattern = '  .jpg,     .png,    .exe,     .pdf ';
+
+      const checkValidatePattern = (files, valid) => {
+        files.forEach(file => {
+          assert.equal(component.validatePattern(file, pattern), valid, `File ${file.name} should ${valid ? '' : 'not'} correspond to the pattern`);
+        });
+      };
+
+      checkValidatePattern(validFiles, true);
+      checkValidatePattern(invalidFiles, false);
+      done();
+    });
+  });
 });

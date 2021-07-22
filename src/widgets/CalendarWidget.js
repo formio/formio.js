@@ -99,14 +99,16 @@ export default class CalendarWidget extends InputWidget {
 
     this.closedOn = 0;
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
-
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
-    this.settings.minDate = getDateSetting(this.settings.minDate);
+
+    const isReadOnly = this.settings.readOnly;
+
+    this.settings.minDate = isReadOnly ? null : getDateSetting(this.settings.minDate);
+    this.settings.maxDate = isReadOnly ? null : getDateSetting(this.settings.maxDate);
     this.settings.disable = this.disabledDates;
     this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
     this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
     this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
-    this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.wasDefaultValueChanged = false;
     this.settings.defaultValue = '';
     this.settings.manualInputValue = '';

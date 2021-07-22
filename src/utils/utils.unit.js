@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import * as fs from 'fs';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
@@ -843,7 +844,7 @@ describe('Util Tests', () => {
         done(err);
       }
     });
-
+/*
     it('USD ar-SA', (done) => {
       try {
         const affixes2 = utils.getCurrencyAffixes({
@@ -864,5 +865,6 @@ describe('Util Tests', () => {
         done(err);
       }
     });
+*/
   });
 });
