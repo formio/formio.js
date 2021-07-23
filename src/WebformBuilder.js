@@ -229,18 +229,20 @@ export default class WebformBuilder extends Component {
     const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
     formio.loadProject().then((project) => {
-      if (project && (_.get(project, 'settings.addConfigToForms', false) ||  _.get(project, 'addConfigToForms', false))) {
-        const config = project.config || {};
-        this.options.formConfig = config;
+        if (project && (_.get(project, 'settings.addConfigToForms', false) ||  _.get(project, 'addConfigToForms', false))) {
+          const config = project.config || {};
+          this.options.formConfig = config;
 
-        const pathToFormConfig = 'webform._form.config';
-        const webformConfig = _.get(this, pathToFormConfig);
+          const pathToFormConfig = 'webform._form.config';
+          const webformConfig = _.get(this, pathToFormConfig);
 
-        if (this.webform  && !webformConfig) {
-          _.set(this, pathToFormConfig, config);
+          if (this.webform  && !webformConfig) {
+            _.set(this, pathToFormConfig, config);
+          }
         }
-      }
-    });
+      }).catch((err) => {
+        console.warn(`Could not load project settings: ${err.message || err}`);
+      });
 
     if (!formio.noProject && !isResourcesDisabled) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
