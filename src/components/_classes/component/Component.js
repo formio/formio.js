@@ -1603,7 +1603,15 @@ export default class Component extends Element {
 
   setContent(element, content) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content);
+      if (this.shouldDisabled && this.component.inputFormat === 'plain') {
+        element.textContent = content;
+      }
+      else if (this.component.inputFormat === 'raw') {
+        element.innerHTML = content;
+      }
+      else {
+        element.innerHTML = this.sanitize(content);
+      }
       return true;
     }
     return false;
