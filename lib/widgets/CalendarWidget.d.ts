@@ -23,19 +23,13 @@ export default class CalendarWidget extends InputWidget {
         maxDate: string;
     };
     constructor(settings: any, component: any);
-    /**
-     * Load the timezones.
-     *
-     * @return {boolean} TRUE if the zones are loading, FALSE otherwise.
-     */
-    loadZones(): boolean;
     defaultFormat: {
         date: string;
         time: string;
     };
     closedOn: number;
     valueFormat: any;
-    valueMomentFormat: string;
+    valueDayjsFormat: string;
     calendar: any;
     get disableWeekends(): (date: any) => boolean;
     get disableWeekdays(): (date: any) => boolean;

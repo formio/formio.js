@@ -227,7 +227,7 @@ declare class Component extends Base {
      * @param string
      * @returns {*}
      */
-    sanitize(dirty: any): any;
+    sanitize(dirty: any, forceSanitize: any): any;
     /**
      * Render a template string into html.
      *
@@ -235,9 +235,9 @@ declare class Component extends Base {
      * @param data
      * @param actions
      *
-     * @return {HTMLElement} - The created element.
+     * @return {HTMLElement|String} - The created element or an empty string if template is not specified.
      */
-    renderString(template: any, data: any): HTMLElement;
+    renderString(template: any, data: any): HTMLElement | string;
     performInputMapping(input: any): any;
     getBrowserLanguage(): any;
     /**
@@ -363,7 +363,7 @@ declare class Component extends Base {
      * @return {*}
      */
     errorMessage(type: any): any;
-    setContent(element: any, content: any): boolean;
+    setContent(element: any, content: any, forceSanitize: any): boolean;
     redraw(): any;
     rebuild(): any;
     /**
@@ -483,6 +483,7 @@ declare class Component extends Base {
     addCKE(element: any, settings: any, onChange: any): any;
     addQuill(element: any, settings: any, onChange: any): any;
     quill: any;
+    get shouldSanitizeValue(): boolean;
     addAce(element: any, settings: any, onChange: any): any;
     get tree(): any;
     /**

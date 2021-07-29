@@ -74,8 +74,8 @@ export class Form extends Base {
      * @param string
      * @returns {*}
      */
-    sanitize(dirty: any): any;
-    setContent(element: any, content: any): boolean;
+    sanitize(dirty: any, forceSanitize: any): any;
+    setContent(element: any, content: any, forceSanitize: any): boolean;
     /**
      * Build a new form.
      *

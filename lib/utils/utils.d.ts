@@ -142,33 +142,14 @@ export function currentTimezone(): string;
  */
 export function offsetDate(date: any, timezone: any): Date;
 /**
- * Returns if the zones are loaded.
- *
- * @return {boolean}
- */
-export function zonesLoaded(): boolean;
-/**
- * Returns if we should load the zones.
- *
- * @param timezone
- * @return {boolean}
- */
-export function shouldLoadZones(timezone: any): boolean;
-/**
- * Externally load the timezone data.
- *
- * @return {Promise<any> | *}
- */
-export function loadZones(timezone: any): Promise<any> | any;
-/**
- * Get the moment date object for translating dates with timezones.
+ * Get the dayjs date object for translating dates with timezones.
  *
  * @param value
  * @param format
  * @param timezone
  * @return {*}
  */
-export function momentDate(value: any, format: any, timezone: any): any;
+export function dayjsDate(value: any, format: any, timezone: any): any;
 /**
  * Format a date provided a value, format, and timezone object.
  *
@@ -198,11 +179,11 @@ export function getLocaleDateFormatInfo(locale: any): {
  */
 export function convertFormatToFlatpickr(format: any): string;
 /**
- * Convert the format from the angular-datepicker module to moment format.
+ * Convert the format from the angular-datepicker module to dayjs format.
  * @param format
  * @return {string}
  */
-export function convertFormatToMoment(format: any): string;
+export function convertFormatToDayjs(format: any): string;
 export function convertFormatToMask(format: any): any;
 /**
  * Returns an input mask that is compatible with the input mask library.
@@ -308,6 +289,7 @@ export * from "./formUtils";
  */
 export const firstNonNil: any;
 import jsonLogic from "json-logic-js";
+import * as dayjs from "dayjs";
 import Evaluator from "./Evaluator";
 export const interpolate: (rawTemplate: any, data: any) => any;
-export { jsonLogic, moment, Evaluator };
+export { jsonLogic, dayjs, Evaluator };

@@ -146,8 +146,6 @@ export default class TagsComponent extends Input {
       this.refs.input[0].parentNode.lastChild.focus();
     }
   }
-<<<<<<< HEAD
-=======
 
   getValueAsString(value) {
     if (!value) {
@@ -161,5 +159,4 @@ export default class TagsComponent extends Input {
     const stringValue = value.toString();
     return this.sanitize(stringValue, this.shouldSanitizeValue);
   }
->>>>>>> 5a89e2759... Made Sanitize an optional feature
 }
