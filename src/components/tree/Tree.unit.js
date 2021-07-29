@@ -7,6 +7,7 @@ import {
   comp3
 } from './fixtures';
 import _ from 'lodash';
+import Formio from '../../Formio';
 
 describe('Tree Component', () => {
   it('Should set and render values in readOnly mode', function(done) {
@@ -161,5 +162,22 @@ describe('Tree Component', () => {
         });
       });
     });
+  });
+
+  it('Should work with empty data and no defaults', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, {
+      type: 'form',
+      components: [comp1],
+      display: 'form',
+    }, { noDefaults: true })
+      .then((form) => {
+        setTimeout(() => {
+          const tree = form.getComponent(['tree']);
+          assert.equal(tree.treeRoot.new, true);
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 });

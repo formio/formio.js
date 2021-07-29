@@ -419,7 +419,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   setRoot() {
-    const value = this.dataValue;
+    const value = this.getValue();
     this.treeRoot = new Node(null, value, {
       isNew: !value.data,
       createComponents: this.createComponents.bind(this),
@@ -434,7 +434,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   getValue() {
-    return this.dataValue;
+    return this.dataValue || {};
   }
 
   updateTree() {
