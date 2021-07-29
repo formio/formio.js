@@ -145,7 +145,7 @@ For an example of how this looks and works, check out the following [Form.io For
 ## Form Embedding Documentation
 For a more complete documentation of how to embed forms, go to the [Form Embedding Documentation](https://help.form.io/developers/rendering).
 
-# JavaScript SDK
+## JavaScript SDK
 In addition to having a Form Renderer within this application, you can also use this library as a JavaScript SDK in your application. For example, to load a Form, and then submit that form you could do the following within your JavaScript.
 
 ```html
