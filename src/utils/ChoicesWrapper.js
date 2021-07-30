@@ -211,6 +211,13 @@ class ChoicesWrapper extends Choices {
 
     super.hideDropdown(...args);
   }
+
+  _onBlur(...args) {
+    if (this._isScrollingOnIe) {
+      return;
+    }
+    super._onBlur(...args);
+  }
 }
 
 export default ChoicesWrapper;
