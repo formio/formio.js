@@ -2,6 +2,7 @@ import assert from 'power-assert';
 
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
+import Builders from '../lib/builders';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
@@ -103,6 +104,31 @@ describe('WebformBuilder tests', function() {
           }, 200);
         }, 200);
       }, 200);
+    }).catch(done);
+  });
+
+  it('Should override the way a key for new component is set', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(columnsForm).then(() => {
+      Builders.builders.webform.prototype.updateComponentKey = function() {
+        return 'rewrittenNumberKey';
+      };
+
+      const column = builder.webform.element.querySelector('[ref="columns-container"]');
+
+      Harness.buildComponent('number', column);
+
+      setTimeout(() => {
+        const numberLabel = builder.editForm.getComponent('label');
+        numberLabel.setValue('Test Number');
+
+        setTimeout(() => {
+          const numberKey = builder.editForm.getComponent('key');
+          assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
+
+          done();
+        }, 150);
+      }, 150);
     }).catch(done);
   });
 });
