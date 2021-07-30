@@ -1412,13 +1412,7 @@ export default class WebformBuilder extends Component {
             if (!event.data.keyModified) {
               this.editForm.everyComponent(component => {
                 if (component.key === 'key' && component.parent.component.key === 'tabs') {
-                  component.setValue(_.camelCase(
-                    event.data.title ||
-                    event.data.label ||
-                    event.data.placeholder ||
-                    event.data.type
-                  ).replace(/^[0-9]*/, ''));
-
+                  component.setValue(this.updateComponentKey(event.data));
                   return false;
                 }
               });
@@ -1493,6 +1487,15 @@ export default class WebformBuilder extends Component {
 
     // Called when we edit a component.
     this.emit('editComponent', component);
+  }
+
+  updateComponentKey(data) {
+    return _.camelCase(
+      data.title ||
+      data.label ||
+      data.placeholder ||
+      data.type
+    ).replace(/^[0-9]*/, '');
   }
 
   /**
