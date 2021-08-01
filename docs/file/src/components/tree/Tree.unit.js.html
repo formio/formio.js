@@ -177,6 +177,7 @@ import {
   comp3
 } from &apos;./fixtures&apos;;
 import _ from &apos;lodash&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 describe(&apos;Tree Component&apos;, () =&gt; {
   it(&apos;Should set and render values in readOnly mode&apos;, function(done) {
@@ -331,6 +332,23 @@ describe(&apos;Tree Component&apos;, () =&gt; {
         });
       });
     });
+  });
+
+  it(&apos;Should work with empty data and no defaults&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, {
+      type: &apos;form&apos;,
+      components: [comp1],
+      display: &apos;form&apos;,
+    }, { noDefaults: true })
+      .then((form) =&gt; {
+        setTimeout(() =&gt; {
+          const tree = form.getComponent([&apos;tree&apos;]);
+          assert.equal(tree.treeRoot.new, true);
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 });
 </code></pre>
