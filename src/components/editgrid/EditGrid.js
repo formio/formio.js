@@ -245,6 +245,14 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this._data;
   }
 
+  get dataValue() {
+    return super.dataValue || [];
+  }
+
+  set dataValue(value) {
+    super.dataValue = value;
+  }
+
   get displayAsTable() {
     return this.component.displayAsTable;
   }
@@ -296,7 +304,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return super.init();
     }
     this.components = this.components || [];
-    const dataValue = this.dataValue || [];
+    const dataValue = this.dataValue;
     const openWhenEmpty = !dataValue.length && this.component.openWhenEmpty;
     if (openWhenEmpty) {
       const dataObj = {};
@@ -385,7 +393,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return super.render();
     }
 
-    const dataValue = this.dataValue || [];
+    const dataValue = this.dataValue;
     const headerTemplate = this.headerTemplate;
     const t = this.t.bind(this);
     const templateName = this.displayAsTable ? 'editgridTable' : 'editgrid';
@@ -551,7 +559,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   renderRow(row, rowIndex) {
-    const dataValue = this.dataValue || [];
+    const dataValue = this.dataValue;
     if (this.isOpen(row)) {
       return this.renderComponents(row.components);
     }
@@ -879,7 +887,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     if (this.saveEditMode) {
-      const dataValue = this.dataValue || [];
+      const dataValue = this.dataValue;
       switch (editRow.state) {
         case EditRowState.New: {
           const newIndex = dataValue.length;
