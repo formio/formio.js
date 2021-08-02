@@ -1348,6 +1348,21 @@ describe(&apos;EditGrid Open when Empty&apos;, () =&gt; {
       .catch(done);
   });
 
+  it(&apos;Should create new row with empty data and no defaults&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, compOpenWhenEmpty, { noDefaults: true })
+      .then((form) =&gt; {
+        form.data = {};
+        setTimeout(() =&gt; {
+          const editGrid = form.getComponent([&apos;editGrid&apos;]);
+          assert.equal(editGrid.editRows.length, 1);
+          assert.equal(editGrid.editRows[0].state, &apos;new&apos;);
+          done();
+        }, 300);
+      })
+      .catch(done);
+  });
+
   it(&apos;Should always add a first row&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     Formio.createForm(formElement, compOpenWhenEmpty)
