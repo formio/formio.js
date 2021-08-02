@@ -208,7 +208,7 @@ export default class CalendarWidget extends InputWidget {
     });
   }
 
-  get timezone() {
+  defineTimezone() {
     if (this.settings.timezone) {
       return this.settings.timezone;
     }
@@ -221,6 +221,10 @@ export default class CalendarWidget extends InputWidget {
 
     // Return current timezone if none are provided.
     return currentTimezone();
+  }
+
+  get timezone() {
+    return this.defineTimezone();
   }
 
   get defaultSettings() {
