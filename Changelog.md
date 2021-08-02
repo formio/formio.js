@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.4-rc.6
+#### Fixed
+ - FIO-3562: Separated timezone logic to be able to redefine it in typescript
+
 ### 4.13.5-rc.5
 #### Fixed
  - FIO-3570: Form cannot be submitted if Edit Grid has Open First Row when Empty checked
