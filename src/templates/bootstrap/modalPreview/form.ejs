@@ -2,7 +2,12 @@
   {{ ctx.t(ctx.component.label, { _userInput: true }) }}<span ref="modalLabelValue" class="sr-only">. {{ ctx.previewText }}</span>
 </label><br>
 <span class="sr-only" ref="modalPreviewLiveRegion" aria-live="assertive"></span>
-<button lang='en' class='btn btn-light btn-md open-modal-button form-control' ref='openModal' aria-labelledby='l-{{ctx.component.key}}'>
+<button
+  lang="en"
+  class="btn btn-light btn-md open-modal-button form-control {{ctx.openModalBtnClasses || ''}}"
+  ref="openModal"
+  aria-labelledby="l-{{ctx.component.key}}"
+>
   {{ ctx.previewText }}
 </button>
 <div class="formio-errors invalid-feedback">
