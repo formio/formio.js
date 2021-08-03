@@ -61,10 +61,35 @@ import columnWithConditionalComponents from '../test/forms/columnWithConditional
 import formWithSurvey from '../test/forms/formWithSurvey';
 import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
 import formWithDayComp from '../test/forms/formWithDayComp';
+import formWithCalcValue from '../test/forms/formWithCalcValue';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should recalculate value when submission is being set in edit mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithCalcValue).then(() => {
+      const numberComp = form.getComponent('number');
+      const checkbox = form.getComponent('checkbox');
+
+      form.setSubmission({}).then(() => {
+        setTimeout(() => {
+          assert.equal(numberComp.dataValue, 0);
+          assert.equal(checkbox.dataValue, true);
+          form.setSubmission({ data: { number: 7, checkbox: true } }).then(() => {
+            setTimeout(() => {
+              assert.equal(numberComp.dataValue, 7);
+              assert.equal(checkbox.dataValue, false);
+              done();
+            }, 500);
+          });
+        }, 500);
+      });
+    }).catch((err) => done(err));
+  });
 
   it('Should show survey values in html render mode', function(done) {
     const formElement = document.createElement('div');
