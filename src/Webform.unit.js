@@ -2326,12 +2326,17 @@ describe('Webform tests', function() {
               dataSourceDisplay: 'some value'
             },
           state: 'submitted'
-        });
-        setTimeout(() => {
-          const dataSourceDisplay = form.getComponent('dataSourceDisplay');
-          assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set and keep the value');
-          done();
-        }, 1000);
+        })
+        .then(() => {
+          const dataSource = form.getComponent('datasource');
+          dataSource.dataValue = { value: 'some value' };
+          form.checkData(null, { dataSourceInitialLoading: true });
+          setTimeout(() => {
+            const dataSourceDisplay = form.getComponent('dataSourceDisplay');
+            assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set and keep the value');
+            done();
+          }, 1000);
+       });
       }).catch(done);
     });
     it('Should calculate value properly in editing mode', (done) => {
