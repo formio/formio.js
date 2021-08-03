@@ -1433,7 +1433,7 @@ class Formio {
     }
   }
 
-  static requireLibrary(name, property, src, polling) {
+  static requireLibrary(name, property, src, polling, onload) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
       Formio.libraries[name].ready = new NativePromise((resolve, reject) => {
@@ -1491,6 +1491,10 @@ class Formio {
             }
           }
 
+          if (onload) {
+            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+          }
+
           const { head } = document;
           if (head) {
             head.appendChild(element);
@@ -1509,7 +1513,10 @@ class Formio {
         }
       }
     }
-    return Formio.libraries[name].ready;
+
+    const lib = Formio.libraries[name].ready;
+
+    return onload ? onload(lib) : lib;
   }
 
   static libraryReady(name) {
