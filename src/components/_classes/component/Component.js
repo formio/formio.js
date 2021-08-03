@@ -2584,6 +2584,7 @@ export default class Component extends Element {
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     const { hidden, clearOnHide } = this.component;
     const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
+    const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
     // Handle all cases when calculated values should not fire.
     if (
@@ -2591,7 +2592,7 @@ export default class Component extends Element {
       !this.component.calculateValue ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
-      flags.dataSourceInitialLoading
+      (flags.dataSourceInitialLoading && allowOverride)
     ) {
       return false;
     }
@@ -2609,14 +2610,8 @@ export default class Component extends Element {
 
     const changed = !_.isEqual(dataValue, calculatedValue);
 
-    if (flags.fromSubmission && this.component.persistent === true) {
-      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
-
     // Do not override calculations on server if they have calculateServer set.
-    if (this.component.allowCalculateOverride) {
+    if (allowOverride) {
       const firstPass = (this.calculatedValue === undefined);
       if (firstPass) {
         this.calculatedValue = null;
@@ -2633,6 +2628,12 @@ export default class Component extends Element {
       if (flags.isReordered || !calculationChanged) {
         return false;
       }
+
+    if (flags.fromSubmission && this.component.persistent === true) {
+      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
 
       // If this is the firstPass, and the dataValue is different than to the calculatedValue.
       if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
