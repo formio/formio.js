@@ -480,7 +480,7 @@ export default class FormComponent extends Component {
 
   calculateValue(data, flags, row) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.dataValue.data, flags);
+      return this.subForm.calculateValue(this.dataValue?.data || {}, flags);
     }
 
     return super.calculateValue(data, flags, row);
