@@ -499,7 +499,7 @@ export default class WebformBuilder extends Component {
 
     // Get the namespace component so we have the original object.
     const namespaceComponent = getComponent(this.form.components, namespaceKey, true);
-    return namespaceComponent.components;
+    return namespaceComponent ? namespaceComponent.components : comp.components;
   }
 
   recurseNamespace(component) {
