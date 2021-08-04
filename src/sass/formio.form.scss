@@ -249,6 +249,14 @@ td > .form-group {
   width: 100%;
 }
 
+.formio-component-multiple .is-invalid {
+  border-color: #F04124;
+}
+
+.formio-component-multiple :not(.is-invalid) {
+  border-color: #ccc;
+}
+
 .choices__list--dropdown .choices__item--selectable{
   padding-right: 0px;
 }

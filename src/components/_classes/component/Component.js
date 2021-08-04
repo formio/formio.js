@@ -3002,6 +3002,18 @@ export default class Component extends Element {
 
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
 
+    let invalidInputRefs = inputRefs;
+    if (this.component.multiple) {
+      const inputRefsArray = Array.from(inputRefs);
+      inputRefsArray.forEach((input) => {
+        this.setElementInvalid(this.performInputMapping(input), false);
+      });
+      invalidInputRefs = inputRefsArray.filter((ref) => {
+        return messages.some?.((msg) => {
+          return msg.context.input === ref;
+        });
+      });
+    }
     if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
@@ -3013,9 +3025,9 @@ export default class Component extends Element {
         external: !!external,
       };
       this.emit('componentError', this.error);
-      this.addMessages(messages, dirty, inputRefs);
-      if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+      this.addMessages(messages, dirty, invalidInputRefs);
+      if (invalidInputRefs) {
+        this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -3026,8 +3038,8 @@ export default class Component extends Element {
         this.empty(this.refs.modalMessageContainer);
       }
       this.error = null;
-      if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+      if (invalidInputRefs) {
+        this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
       this.clearErrorClasses();
     }

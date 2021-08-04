@@ -239,3 +239,45 @@ it('Should protect against change loops', function(done) {
   })
   .catch((err) => done(err));
 });
+
+it('Should mark as invalid only invalid fields in multiple components', function(done) {
+  const formElement = document.createElement('div');
+  const form = new Webform(formElement);
+  const formJson = {
+    components: [
+      {
+        label: 'Email',
+        tableView: true,
+        multiple: true,
+        validate: {
+          required: true
+        },
+        key: 'email',
+        type: 'email',
+        input: true
+      },
+    ],
+  };
+
+  form.setForm(formJson).then(() => {
+    return form.setSubmission({
+      data: {
+        email: [
+          'oleg@form.io',
+          'oleg@form',
+          '',
+        ]
+      }
+    });
+  })
+  .then(() => {
+    setTimeout(() => {
+      const email = form.getComponent('email');
+      expect(email.refs.input[0].classList.contains('is-invalid')).to.be.false;
+      expect(email.refs.input[1].classList.contains('is-invalid')).to.be.true;
+      expect(email.refs.input[2].classList.contains('is-invalid')).to.be.true;
+      done();
+    }, 300);
+  })
+  .catch(done);
+});

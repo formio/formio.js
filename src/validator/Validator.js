@@ -908,7 +908,9 @@ class ValidationChecker {
             setting,
             key: component.key,
             label: component.label,
-            value
+            value,
+            index,
+            input: component.refs.input?.[index]
           }
         };
         if (validatorName ==='unique' && component.conflictId) {
