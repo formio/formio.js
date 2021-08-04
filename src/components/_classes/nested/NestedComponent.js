@@ -590,9 +590,11 @@ export default class NestedComponent extends Field {
   }
 
   checkConditions(data, flags, row) {
+    // check conditions of parent component first, because it may influence on visibility of it's children
+    const check = super.checkConditions(data, flags, row);
     //row data of parent component not always corresponds to row of nested components, use comp.data as row data for children instead
     this.getComponents().forEach(comp => comp.checkConditions(data, flags, comp.data));
-    return super.checkConditions(data, flags, row);
+    return check;
   }
 
   clearOnHide(show) {
