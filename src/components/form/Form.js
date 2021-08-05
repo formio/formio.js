@@ -9,7 +9,7 @@ import {
   getStringFromComponentPath,
   getArrayFromComponentPath
 } from '../../utils/utils';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import Form from '../../Form';
 
 export default class FormComponent extends Component {
