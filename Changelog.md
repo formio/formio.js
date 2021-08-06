@@ -4,13 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### 4.13.4-rc.7
+### 4.13.5
+### Changed
+ - No changes. Released 4.13.5-rc.7 as official release.
+
+### 4.13.5-rc.7
 #### Fixed
  - FIO-3561: Required field is showing as invalid and form can't be submitted
  - FIO-3500: fixed an issue where forms with nested forms inside components with incorrect custom conditions cannot be submitted
  - FIO-3476: Builder comp not dropped
 
-### 4.13.4-rc.6
+### 4.13.5-rc.6
 #### Fixed
  - FIO-3562: Separated timezone logic to be able to redefine it in typescript
 
