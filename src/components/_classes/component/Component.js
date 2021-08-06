@@ -2374,7 +2374,7 @@ export default class Component extends Element {
 
   getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-      defaultValue = this.evaluate(
+     defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
         'value'
