@@ -1,4 +1,4 @@
-import Formio from '../Formio';
+import { GlobalFormio as Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,

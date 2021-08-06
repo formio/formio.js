@@ -1549,6 +1549,17 @@ class Formio {
       Rules: Formio.Rules,
     };
   }
+
+  static get GlobalFormio() {
+    if (typeof global !== 'undefined' && global.Formio) {
+      return global.Formio;
+    }
+    else if (typeof window !== 'undefined' && window.Formio) {
+      return window.Formio;
+    }
+
+    return Formio;
+  }
 }
 
 // Define all the static properties.
@@ -1573,5 +1584,7 @@ if (typeof global !== 'undefined') {
 if (typeof window !== 'undefined') {
   Formio.addToGlobal(window);
 }
+
+export const GlobalFormio = Formio.GlobalFormio;
 
 export default Formio;

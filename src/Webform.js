@@ -4,7 +4,7 @@ import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import i18nDefaults from './i18n';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
