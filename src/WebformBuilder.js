@@ -245,6 +245,8 @@ export default class WebformBuilder extends Component {
           _.set(this, pathToFormConfig, config);
         }
       }
+    }).catch((err) => {
+      console.warn(`Could not load project settings: ${err.message || err}`);
     });
 
     if (!formio.noProject && !isResourcesDisabled) {
