@@ -326,7 +326,7 @@ export default class NestedComponent extends Field {
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
     }
-    const comp = Components.create(component, options, data, true);
+    const comp = Components.create({ ...component }, options, data, true);
 
     const path = this.calculateComponentPath(comp);
     if (path) {
