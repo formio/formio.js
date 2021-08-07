@@ -113,7 +113,7 @@ export default class SelectComponent extends Field {
     });
 
     if (this.isHtmlRenderMode()) {
-      this.triggerUpdate();
+      this.activate();
     }
 
     // Get the template keys for this select component.
