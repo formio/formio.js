@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.18
+#### Fixed
+ - FIO-3344: Add margin bottom to all components in builder mode
+ - Fixed builder missing projectId promise rejection
+ - Fixed tooltip not escaping double quotes
+ - FIO-4236: ClearOnRefresh and RefreshOn for Custom Data Source Select Elements
+ - FIO-3599: Improve select dropdown performance during pdf generation.
+ - FIO-3500: fixed an issue where isomorphic validation fails when nested form is inside conditional components with incorrect custom condition
+ - Fixes global instance of formio
+
 ### 4.14.0-rc.17
 #### Fixed
  - FIO-3476: builder comp not dropped 
