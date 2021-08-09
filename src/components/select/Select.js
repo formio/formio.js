@@ -31,6 +31,7 @@ export default class SelectComponent extends Field {
       lazyLoad: true,
       filter: '',
       searchEnabled: true,
+      searchDebounce: 0.3,
       searchField: '',
       minSearch: 0,
       readOnlyValue: false,
@@ -1052,7 +1053,14 @@ export default class SelectComponent extends Field {
         }
         this.isFromSearch = false;
       });
-      this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
+      // avoid spamming the resource/url endpoint when we have server side filtering enabled.
+      const debounceTimeout = this.component.searchField && (this.isSelectResource || this.isSelectURL) ?
+      (this.component.searchDebounce || this.defaultSchema.searchDebounce) * 1000
+      : 0;
+      const updateComponent = (evt) => {
+        this.triggerUpdate(evt.detail.value);
+      };
+      this.addEventListener(input, 'search', _.debounce(updateComponent, debounceTimeout));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
       this.addEventListener(input, 'hideDropdown', () => {
         if (this.choices && this.choices.input && this.choices.input.element) {
