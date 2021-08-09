@@ -500,7 +500,8 @@ export default [
           [
             'url',
             'resource',
-            'values'
+            'values',
+            'custom'
           ],
         ],
       },
@@ -558,7 +559,8 @@ export default [
           [
             'url',
             'resource',
-            'values'
+            'values',
+            'custom'
           ],
         ],
       },

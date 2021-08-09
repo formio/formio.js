@@ -3,13 +3,18 @@ import Component from './components/_classes/component/Component';
 import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
-import Templates from './templates/Templates';
 require('./components/builder');
+
+let Templates = Formio.Templates;
+
+if (!Templates) {
+  Templates = require('./templates/Templates').default;
+}
 
 let dragula;
 if (typeof window !== 'undefined') {
@@ -240,6 +245,8 @@ export default class WebformBuilder extends Component {
           _.set(this, pathToFormConfig, config);
         }
       }
+    }).catch((err) => {
+      console.warn(`Could not load project settings: ${err.message || err}`);
     });
 
     if (!formio.noProject && !isResourcesDisabled) {

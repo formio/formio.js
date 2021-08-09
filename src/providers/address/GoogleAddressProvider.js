@@ -1,5 +1,5 @@
 /* globals google */
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import _ from 'lodash';
 import { AddressProvider } from './AddressProvider';
 import NativePromise from 'native-promise-only';

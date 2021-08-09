@@ -1,6 +1,6 @@
 /* global google */
 import TextFieldComponent from '../../components/textfield/TextField';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 
 export default class LocationComponent extends TextFieldComponent {
   static schema(...extend) {
