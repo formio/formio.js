@@ -2381,7 +2381,7 @@ export default class Component extends Element {
   }
 
   get shouldAddDefaultValue() {
-    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
+    return !this.options.noDefaults || (this.component.defaultValue && !this.isEmpty(this.component.defaultValue)) || this.component.customDefaultValue;
   }
 
   get defaultValue() {
