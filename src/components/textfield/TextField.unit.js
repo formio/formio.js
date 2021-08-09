@@ -1243,4 +1243,49 @@ describe('TextField Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should render HTML', (done) => {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputFormat = 'html';
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, {
+      readOnly: true
+    }).then(form => {
+      form.setSubmission({
+        data: {
+          textField: '<b>HTML!</b>'
+        }
+      });
+      setTimeout(() => {
+        const textField = form.getComponent('textField');
+        textField.loadRefs(element, {
+          value: 'multiple'
+        });
+        assert.equal(textField.refs.value[0].innerHTML, '<b>HTML!</b>');
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should render plain text', (done) => {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputFormat = 'plain';
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, {
+      readOnly: true
+    }).then(form => {
+      form.setSubmission({
+        data: {
+          textField: '<b>Plain!</b>'
+        }
+      });
+      setTimeout(() => {
+        const textField = form.getComponent('textField');
+        assert.equal(textField.refs.input[0].value, '<b>Plain!</b>');
+        done();
+      }, 300);
+    }).catch(done);
+  });
 });

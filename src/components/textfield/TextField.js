@@ -196,6 +196,13 @@ export default class TextFieldComponent extends Input {
     };
   }
 
+  isHtmlRenderMode() {
+    return super.isHtmlRenderMode() ||
+      ((this.options.readOnly || this.disabled) &&
+      this.component.inputFormat === 'html' &&
+      this.type === 'textfield');
+  }
+
   isEmpty(value = this.dataValue) {
     if (!this.isMultipleMasksField) {
       return super.isEmpty((value || '').toString().trim());
