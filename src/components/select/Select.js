@@ -1055,7 +1055,7 @@ export default class SelectComponent extends Field {
       });
       // avoid spamming the resource/url endpoint when we have server side filtering enabled.
       const debounceTimeout = this.component.searchField && (this.isSelectResource || this.isSelectURL) ?
-      (this.component.searchDebounce || this.defaultSchema.searchDebounce) * 1000
+      (this.component.searchDebounce === 0 ? 0 : this.component.searchDebounce || this.defaultSchema.searchDebounce) * 1000
       : 0;
       const updateComponent = (evt) => {
         this.triggerUpdate(evt.detail.value);
