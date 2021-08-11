@@ -1,3 +1,5 @@
+import ComponentEditConditional from '../../_classes/component/editForm/Component.edit.conditional';
+
 export default [
   {
     key: 'labelPosition',
@@ -52,6 +54,17 @@ export default [
         label: 'Key',
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
+      },
+      {
+        'collapsible': false,
+        'dataGridLabel': true,
+        'modalEdit': true,
+        'key': 'tab-conditional',
+        'type': 'panel',
+        'label': 'Conditional',
+        'input': false,
+        'tableView': false,
+        'components': ComponentEditConditional
       }
     ]
   },

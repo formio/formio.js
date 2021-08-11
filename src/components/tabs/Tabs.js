@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
+import * as FormioUtils from '../../utils/utils';
 
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
@@ -66,19 +67,60 @@ export default class TabsComponent extends NestedComponent {
     this.noField = true;
   }
 
+  checkComponentConditions(data, flags, row) {
+    if (!super.checkComponentConditions(data, flags, row)) {
+      return false;
+    }
+    const oldTabItemComponents = _.cloneDeep(this.tabItemComponents);
+    this.createTabs(false);
+    if (!_.isEqual(oldTabItemComponents, this.tabItemComponents)) {
+      this.redraw();
+    }
+    return true;
+  }
+
   init() {
     this.components = [];
-    this.tabs = [];
-    _.each(this.component.components, (tab, index) => {
-      this.tabs[index] = [];
-      // Initialize empty tabs.
-      tab.components = tab.components || [];
-      _.each(tab.components, (comp) => {
-        const component = this.createComponent(comp);
-        component.tab = index;
-        this.tabs[index].push(component);
-      });
-    });
+    this.createTabs();
+  }
+
+  createTabs(init=true) {
+    this.tabItemComponents = this.tabItemComponents || [];
+    this.tabs = this.tabs || [];
+    const currentTabItemComponent = this.tabItemComponents[this.currentTab];
+    let index = 0;
+    for (const tabItemComponent of this.component.components) {
+      if (this.builderMode || this.previewMode || FormioUtils.checkCondition(
+        tabItemComponent,
+        this.data,
+        this.rootValue,
+        this.root ? this.root._form : {},
+        this
+      )) {
+        if (init || this.tabItemComponents[index] !== tabItemComponent) {
+          this.tabItemComponents[index] = tabItemComponent;
+          if (!tabItemComponent.components) {
+            tabItemComponent.components = [];
+          }
+          this.tabs[index] = tabItemComponent.components.map(comp => {
+            const component = this.createComponent(comp);
+            component.tab = index;
+            return component;
+          });
+        }
+        index++;
+      }
+    }
+    if (this.tabItemComponents.length > index) {
+      this.tabItemComponents.splice(index);
+      this.tabs.splice(index);
+    }
+    if (currentTabItemComponent) {
+      this.currentTab = this.tabItemComponents.indexOf(currentTabItemComponent);
+      if (this.currentTab === -1) {
+        this.currentTab = 0;
+      }
+    }
   }
 
   render() {
@@ -87,6 +129,7 @@ export default class TabsComponent extends NestedComponent {
       tabLikey: this.tabLikey,
       tabLinkKey: this.tabLinkKey,
       currentTab: this.currentTab,
+      tabItemComponents: this.tabItemComponents,
       tabComponents: this.tabs.map(tab => this.renderComponents(tab))
     }, (this.options.flatten || this.options.pdf ? 'flat' : null)));
   }
