@@ -1174,6 +1174,21 @@ describe('EditGrid Open when Empty', () => {
       .catch(done);
   });
 
+  it('Should create new row with empty data and no defaults', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, compOpenWhenEmpty, { noDefaults: true })
+      .then((form) => {
+        form.data = {};
+        setTimeout(() => {
+          const editGrid = form.getComponent(['editGrid']);
+          assert.equal(editGrid.editRows.length, 1);
+          assert.equal(editGrid.editRows[0].state, 'new');
+          done();
+        }, 300);
+      })
+      .catch(done);
+  });
+
   it('Should always add a first row', (done) => {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, compOpenWhenEmpty)

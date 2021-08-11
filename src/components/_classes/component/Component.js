@@ -4,10 +4,9 @@ import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import Formio from '../../../Formio';
+import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
-import Templates from '../../../templates/Templates';
 import {
   fastCloneDeep,
   boolValue,
@@ -30,6 +29,12 @@ const QUILL_URL = isIEBrowser
   : 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
+
+let Templates = Formio.Templates;
+
+if (!Templates) {
+  Templates = require('../../../templates/Templates').default;
+}
 
 /**
  * This is the Component class
@@ -873,7 +878,7 @@ export default class Component extends Element {
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-    return tooltip ? this.t(tooltip, { _userInput: true }) : '';
+    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
   }
 
   isHtmlRenderMode() {
