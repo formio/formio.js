@@ -2524,7 +2524,7 @@ export default class Component extends Element {
 
     this.calculatedValue = calculatedValue;
 
-    return changed ? this.setValue(calculatedValue, flags) : false;
+    return (changed || !calculatedValue) ? this.setValue(calculatedValue, flags) : false;
   }
 
   /**
