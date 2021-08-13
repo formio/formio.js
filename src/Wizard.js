@@ -282,6 +282,7 @@ export default class Wizard extends Webform {
     this.element = element;
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
+      [`${this.wizardKey}-header`]: 'single',
       [`${this.wizardKey}-cancel`]: 'single',
       [`${this.wizardKey}-previous`]: 'single',
       [`${this.wizardKey}-next`]: 'single',
@@ -310,15 +311,17 @@ export default class Wizard extends Webform {
   }
 
   scrollPageToTop() {
-    if (!this.refs[this.wizardKey]) {
+    const pageTop = this.refs[`${this.wizardKey}-header`] ?? this.refs[this.wizardKey];
+
+    if (!pageTop) {
       return;
     }
 
-    if ('scrollIntoView' in this.refs[this.wizardKey]) {
-      this.refs[this.wizardKey].scrollIntoView(true);
+    if ('scrollIntoView' in pageTop) {
+      pageTop.scrollIntoView(true);
     }
     else {
-      this.scrollIntoView(this.refs[this.wizardKey]);
+      this.scrollIntoView(pageTop);
     }
   }
 
