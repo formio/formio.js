@@ -102,12 +102,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/components/content/content.js~contentcomponent",
-    "class/src/components/content/Content.js~ContentComponent.html",
-    "<span>ContentComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/content/Content.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/contrib/index.js~contrib",
     "variable/index.html#static-variable-Contrib",
     "<span>Contrib</span> <span class=\"search-result-import-path\">formiojs/src/contrib/index.js</span>",
@@ -268,6 +262,12 @@ window.esdocSearchIndex = [
     "class/src/addons/FormioAddon.js~FormioAddon.html",
     "<span>FormioAddon</span> <span class=\"search-result-import-path\">formiojs/src/addons/FormioAddon.js</span>",
     "class"
+  ],
+  [
+    "formiojs/src/formio.js~globalformio",
+    "variable/index.html#static-variable-GlobalFormio",
+    "<span>GlobalFormio</span> <span class=\"search-result-import-path\">formiojs/src/Formio.js</span>",
+    "variable"
   ],
   [
     "formiojs/src/components/html/html.form.js~html",
@@ -1755,6 +1755,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio#vsurl",
     "class/src/Formio.js~Formio.html#instance-member-vsUrl",
     "src/Formio.js~Formio#vsUrl",
+    "member"
+  ],
+  [
+    "src/formio.js~formio.globalformio",
+    "class/src/Formio.js~Formio.html#static-get-GlobalFormio",
+    "src/Formio.js~Formio.GlobalFormio",
     "member"
   ],
   [
@@ -3408,54 +3414,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/content/content.js",
-    "file/src/components/content/Content.js.html",
-    "src/components/content/Content.js",
-    "file"
-  ],
-  [
-    "src/components/content/content.js~contentcomponent#attach",
-    "class/src/components/content/Content.js~ContentComponent.html#instance-method-attach",
-    "src/components/content/Content.js~ContentComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/content/content.js~contentcomponent#content",
-    "class/src/components/content/Content.js~ContentComponent.html#instance-get-content",
-    "src/components/content/Content.js~ContentComponent#content",
-    "member"
-  ],
-  [
-    "src/components/content/content.js~contentcomponent#defaultschema",
-    "class/src/components/content/Content.js~ContentComponent.html#instance-get-defaultSchema",
-    "src/components/content/Content.js~ContentComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/content/content.js~contentcomponent#emptyvalue",
-    "class/src/components/content/Content.js~ContentComponent.html#instance-get-emptyValue",
-    "src/components/content/Content.js~ContentComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/content/content.js~contentcomponent#render",
-    "class/src/components/content/Content.js~ContentComponent.html#instance-method-render",
-    "src/components/content/Content.js~ContentComponent#render",
-    "method"
-  ],
-  [
-    "src/components/content/content.js~contentcomponent.builderinfo",
-    "class/src/components/content/Content.js~ContentComponent.html#static-get-builderInfo",
-    "src/components/content/Content.js~ContentComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/content/content.js~contentcomponent.schema",
-    "class/src/components/content/Content.js~ContentComponent.html#static-method-schema",
-    "src/components/content/Content.js~ContentComponent.schema",
-    "method"
-  ],
-  [
     "src/components/content/content.unit.js",
     "file/src/components/content/Content.unit.js.html",
     "src/components/content/Content.unit.js",
@@ -3921,6 +3879,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/fixtures/comp4.js",
     "file/src/components/datetime/fixtures/comp4.js.html",
     "src/components/datetime/fixtures/comp4.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp5.js",
+    "file/src/components/datetime/fixtures/comp5.js.html",
+    "src/components/datetime/fixtures/comp5.js",
     "file"
   ],
   [
@@ -6309,6 +6273,12 @@ window.esdocSearchIndex = [
     "src/components/tags/fixtures/comp3.js",
     "file/src/components/tags/fixtures/comp3.js.html",
     "src/components/tags/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/tags/fixtures/comp4.js",
+    "file/src/components/tags/fixtures/comp4.js.html",
+    "src/components/tags/fixtures/comp4.js",
     "file"
   ],
   [
@@ -8776,6 +8746,12 @@ window.esdocSearchIndex = [
     "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-showDropdown",
     "src/utils/ChoicesWrapper.js~ChoicesWrapper#showDropdown",
     "method"
+  ],
+  [
+    "src/utils/choiceswrapper.js~choiceswrapper#timeout",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-member-timeout",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#timeout",
+    "member"
   ],
   [
     "src/utils/evaluator.js",

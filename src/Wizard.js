@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import {
   fastCloneDeep,
   checkCondition,
@@ -79,8 +79,9 @@ export default class Wizard extends Webform {
   }
 
   checkConditions(data, flags, row) {
+    const visible = super.checkConditions(data, flags, row);
     this.establishPages(data);
-    return super.checkConditions(data, flags, row);
+    return visible;
   }
 
   set data(value) {
@@ -124,7 +125,7 @@ export default class Wizard extends Webform {
     const onReady = super.init();
     this.setComponentSchema();
 
-    if (this.pages && this.pages.length) {
+    if (this.pages?.[this.page]) {
       this.component = this.pages[this.page].component;
     }
 
@@ -548,7 +549,10 @@ export default class Wizard extends Webform {
     this.suffixComps = [];
     const visible = [];
     const currentPages = {};
-    const pageOptions = _.clone(this.options);
+    const pageOptions = {
+      ...(_.clone(this.options)),
+      ...(this.parent ? { root: this } : {}),
+    };
     if (this.components && this.components.length) {
       this.components.forEach(page => {
         if (page.component.type === 'panel') {
@@ -641,9 +645,9 @@ export default class Wizard extends Webform {
       if (this.hasExtraPages) {
         const pageFromPages = this.pages[num];
         const pageFromComponents = this.components[num];
-        if (!pageFromComponents || pageFromPages.id !== pageFromComponents.id) {
+        if (!pageFromComponents || pageFromPages?.id !== pageFromComponents.id) {
           parentNum = this.components.findIndex(comp => {
-            return comp.id === this.pages[parentNum].rootPanelId;
+            return comp.id === this.pages?.[parentNum]?.rootPanelId;
           });
         }
       }
@@ -663,12 +667,14 @@ export default class Wizard extends Webform {
   }
 
   pageFieldLogic(page) {
-    // Handle field logic on pages.
-    this.component = this.pages[page].component;
-    this.originalComponent = fastCloneDeep(this.component);
-    this.fieldLogic(this.data);
-    // If disabled changed, be sure to distribute the setting.
-    this.disabled = this.shouldDisabled;
+    if (this.pages?.[page]) {
+      // Handle field logic on pages.
+      this.component = this.pages[page].component;
+      this.originalComponent = fastCloneDeep(this.component);
+      this.fieldLogic(this.data);
+      // If disabled changed, be sure to distribute the setting.
+      this.disabled = this.shouldDisabled;
+    }
   }
 
   get currentPage() {
@@ -676,38 +682,41 @@ export default class Wizard extends Webform {
   }
 
   getNextPage() {
-    const data = this.submission.data;
-    const form = this.pages[this.page].component;
-    // Check conditional nextPage
-    if (form) {
-      const page = this.pages.length > (this.page + 1) && !this.showAllErrors ? this.page + 1 : -1;
-      if (form.nextPage) {
-        const next = this.evaluate(form.nextPage, {
-          next: page,
-          data,
-          page,
-          form
-        }, 'next');
-        if (next === null) {
-          this.currentNextPage = null;
-          return null;
+    if (this.pages?.[this.page]) {
+      const data = this.submission.data;
+      const form = this.pages[this.page].component;
+      // Check conditional nextPage
+      if (form) {
+        const page = this.pages.length > (this.page + 1) && !this.showAllErrors ? this.page + 1 : -1;
+        if (form.nextPage) {
+          const next = this.evaluate(form.nextPage, {
+            next: page,
+            data,
+            page,
+            form
+          }, 'next');
+          if (next === null) {
+            this.currentNextPage = null;
+            return null;
+          }
+
+          const pageNum = parseInt(next, 10);
+          if (!isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
+            this.currentNextPage = pageNum;
+            return pageNum;
+          }
+
+          this.currentNextPage = this.getPageIndexByKey(next);
+          return this.currentNextPage;
         }
 
-        const pageNum = parseInt(next, 10);
-        if (!isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
-          this.currentNextPage = pageNum;
-          return pageNum;
-        }
-
-        this.currentNextPage = this.getPageIndexByKey(next);
-        return this.currentNextPage;
+        this.currentNextPage = page;
+        return page;
       }
 
-      this.currentNextPage = page;
-      return page;
+      this.currentNextPage = null;
     }
 
-    this.currentNextPage = null;
     return null;
   }
 
@@ -889,7 +898,9 @@ export default class Wizard extends Webform {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
 
-    this.pageFieldLogic(this.page);
+    if (changed) {
+      this.pageFieldLogic(this.page);
+    }
     this.setEditMode(submission);
 
     return changed;
@@ -961,7 +972,7 @@ export default class Wizard extends Webform {
       currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
       panels = this.establishPages().map(panel => panel.key);
       this.currentPanels = panels;
-      if (this.currentPanel && this.currentPanel.key) {
+      if (this.currentPanel?.key && this.currentPanels?.length) {
         this.setPage(this.currentPanels.findIndex(panel => panel === this.currentPanel.key));
       }
     }

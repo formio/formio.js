@@ -33,6 +33,7 @@ import wizardWithNestedWizardInEditGrid from '../test/forms/wizardWithNestedWiza
 import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnter';
 import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
 import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
+import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
 
 describe('Wizard tests', () => {
   it('Should correctly reset values', function(done) {
@@ -1591,6 +1592,64 @@ describe('Wizard tests', () => {
           }, 300);
         })
         .catch(done);
+    });
+
+    it('', (done) => {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, nestedConditionalWizard).then((form) => {
+        const nestedFormRadio = form.getComponent(['nestedForm']);
+
+        nestedFormRadio.setValue('yes');
+        setTimeout(() => {
+          const secondQuestionToOpenNestedFormRadio = form.getComponent(['secondQuestionToOpenNestedForm']);
+          assert(secondQuestionToOpenNestedFormRadio.visible, 'Should become visible');
+          secondQuestionToOpenNestedFormRadio.setValue('openChildForm');
+
+          setTimeout(() => {
+            const nestedForm = form.getComponent(['form']);
+            assert(nestedForm.visible, 'Should become visible');
+            nestedForm.subForm.components.forEach((comp) => {
+              assert.equal(comp.root, nestedForm.subForm, 'The root of the nested components should be set to the' +
+                ' Wizard itself');
+            });
+            const nestedRadio1 = nestedForm.subForm.getComponent(['radio1']);
+
+            nestedRadio1.setValue('unhidePage3');
+
+            setTimeout(() => {
+              const pages = form.element.querySelectorAll('.formio-form nav .pagination .page-item');
+              assert.equal(pages.length, 3, 'Should show the hidden initially page');
+
+              secondQuestionToOpenNestedFormRadio.setValue(2);
+
+              setTimeout(() => {
+                assert(!nestedForm.visible, 'Should become hidden');
+                secondQuestionToOpenNestedFormRadio.setValue('openChildForm');
+
+                setTimeout(() => {
+                  assert(nestedForm.visible, 'Should become visible again');
+                  secondQuestionToOpenNestedFormRadio.setValue('openChildForm');
+
+                  nestedForm.subForm.components.forEach((comp) => {
+                    assert.equal(comp.root, nestedForm.subForm, 'The root of the nested components should be set to the' +
+                      ' Wizard itself');
+                  });
+                  const nestedRadio1 = nestedForm.subForm.getComponent(['radio1']);
+
+                  nestedRadio1.setValue('unhidePage3');
+
+                  setTimeout(() => {
+                    const pages = form.element.querySelectorAll('.formio-form nav .pagination .page-item');
+                    assert.equal(pages.length, 3, 'Should show the hidden initially page');
+
+                    done();
+                  });
+                }, 400);
+              }, 500);
+            }, 400);
+          }, 500);
+        }, 400);
+      }).catch(done);
     });
   });
 

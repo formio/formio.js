@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 
 export class AddressProvider {
   static get name() {

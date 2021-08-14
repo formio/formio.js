@@ -36,6 +36,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
@@ -52,8 +53,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
@@ -177,6 +177,7 @@
 
 import Harness from &apos;../../../test/harness&apos;;
 import ContentComponent from &apos;./Content&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 import {
   comp1
@@ -188,6 +189,39 @@ describe(&apos;Content Component&apos;, () =&gt; {
       const html = component.element.querySelector(&apos;[ref=&quot;html&quot;]&apos;);
       assert.equal(html.innerHTML.trim(), comp1.html.trim());
     });
+  });
+
+  it(&apos;Should update after submission set&apos;, (done) =&gt; {
+    const formJson =  {
+      components: [{
+        html: &apos;&lt;p&gt;{{submission.data.textField}}&lt;/p&gt;&apos;,
+        label: &apos;Content&apos;,
+        refreshOnChange: false,
+        key: &apos;content&apos;,
+        type: &apos;content&apos;,
+      }, {
+        label: &apos;Text Field&apos;,
+        tableView: true,
+        key: &apos;textField&apos;,
+        type: &apos;textfield&apos;,
+        input: true
+      },]
+    };
+    const element = document.createElement(&apos;div&apos;);
+    Formio.createForm(element, formJson)
+      .then(form =&gt; {
+        form.submission = {
+          data: {
+            textField: &apos;textField&apos;
+          }
+        };
+        const content = form.getComponent(&apos;content&apos;);
+        form.dataReady.then(() =&gt; {
+          assert.equal(content.refs.html.innerHTML, &apos;&lt;p&gt;textField&lt;/p&gt;&apos;);
+          done();
+        });
+      })
+      .catch(done);
   });
 });
 </code></pre>

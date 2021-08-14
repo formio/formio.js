@@ -9,7 +9,7 @@ import {
   getStringFromComponentPath,
   getArrayFromComponentPath
 } from '../../utils/utils';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import Form from '../../Form';
 
 export default class FormComponent extends Component {
@@ -398,6 +398,7 @@ export default class FormComponent extends Component {
         this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
+        this.onChange();
         return this.subForm;
       });
     }).then((subForm) => {
@@ -443,12 +444,16 @@ export default class FormComponent extends Component {
     return NativePromise.resolve();
   }
 
+  get subFormData() {
+    return this.dataValue?.data || {};
+  }
+
   checkComponentValidity(data, dirty, row, options) {
     options = options || {};
     const silentCheck = options.silentCheck || false;
 
     if (this.subForm) {
-      return this.subForm.checkValidity(this.dataValue.data, dirty, null, silentCheck);
+      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck);
     }
 
     return super.checkComponentValidity(data, dirty, row, options);
@@ -463,14 +468,14 @@ export default class FormComponent extends Component {
     }
 
     if (this.subForm) {
-      return this.subForm.checkConditions(this.dataValue.data);
+      return this.subForm.checkConditions(this.subFormData);
     }
     // There are few cases when subForm is not loaded when a change is triggered,
     // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
     else if (this.subFormReady) {
       this.subFormReady.then(() => {
         if (this.subForm) {
-          return this.subForm.checkConditions(this.dataValue.data);
+          return this.subForm.checkConditions(this.subFormData);
         }
       });
     }
@@ -480,7 +485,7 @@ export default class FormComponent extends Component {
 
   calculateValue(data, flags, row) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.dataValue.data, flags);
+      return this.subForm.calculateValue(this.subFormData, flags);
     }
 
     return super.calculateValue(data, flags, row);
@@ -687,17 +692,18 @@ export default class FormComponent extends Component {
 
     if (this._visible !== value) {
       this._visible = value;
-      this.clearOnHide();
       // Form doesn't load if hidden. If it becomes visible, create the form.
       if (!this.subForm && value) {
         this.createSubForm();
         this.subFormReady.then(() => {
           this.updateSubFormVisibility();
+          this.clearOnHide();
         });
         this.redraw();
         return;
       }
       this.updateSubFormVisibility();
+      this.clearOnHide();
       isNestedWizard ? this.rebuild() : this.redraw();
     }
     if (!value && isNestedWizard) {
