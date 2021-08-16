@@ -8,8 +8,6 @@ import Harness from '../../../../test/harness';
 import { comp1 } from './fixtures';
 import _merge from 'lodash/merge';
 import comp3 from './fixtures/comp3';
-//import Formio from './../../../Formio';
-//import _ from 'lodash';
 import comp4 from './fixtures/comp4';
 
 describe('Component', () => {
