@@ -1245,6 +1245,19 @@ export default class SelectComponent extends Field {
   }
 
   getValueAsString(data) {
+    if (this.valueProperty && _.isString(data) && this.parent) {
+      if (this.loading === undefined) {
+        this.itemsLoaded.then(() => {
+          this.parent.redraw();
+        });
+        this.updateItems(null, true);
+        return '';
+      }
+      else if (this.loading) {
+        return '';
+      }
+    }
+
     return (this.component.multiple && Array.isArray(data))
       ? data.map(this.asString.bind(this)).join(', ')
       : this.asString(data);
@@ -1678,6 +1691,12 @@ export default class SelectComponent extends Field {
     }
 
     if (_.isString(value)) {
+      if (this.valueProperty && this.parent) {
+        const selectedOption = this.selectOptions.find((selectOption) => _.isObject(selectOption) && selectOption[this.valueProperty] === value);
+        if (selectedOption) {
+          value = selectedOption.label;
+        }
+      }
       return value;
     }
 
