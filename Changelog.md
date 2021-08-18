@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.6-rc.1
+#### Fixed
+ - FIO-3213: Select scrolling on IE11
+
+#### Changed
+ - Upgrade core-js@3.16.2, dompurify@2.3.1, i18next@20.4.0, @babel/core@7.15.0, @babel/preset-env@7.15.0, @babel/register@7.15.3, webpack@5.50.0, fast-json-patch@3.1.0, gulp-sass@5.0.0, jsdom@17.0.0, marked@3.0.0
+
 ### 4.13.5
 ### Changed
  - No changes. Released 4.13.5-rc.7 as official release.
@@ -33,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3083: Fix conditionally shown nested wizard form and conditional pages inside of it
 
 #### Changed
- - Upgrade @formio/bootstrap3@2.11.4-rc.1 
+ - Upgrade @formio/bootstrap3@2.11.4-rc.1
 
 ### 4.13.5-rc.2
 #### Fixed
@@ -88,12 +95,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3229: Fixes an issue where checkbox value in HTML more is always False
  - FIO-3187: Fixes an issue where after you click on the time input it closes and time is visible, but not actually persist within submission
  - FIO-2880: Fixes an issue where time is converted multiple times and the result is wrong
- - FIO-3230: Select getView don't format unlisted values 
+ - FIO-3230: Select getView don't format unlisted values
 
 ### 4.13.3-rc.2
 #### Fixed
  - FIO-3114: Fixed an issue with uniquifying API keys
- - FIO-3254: Fixed an issue where Select/Radio/SelectBoxes/etc values changed manually are recalculated again after reopening an edit window 
+ - FIO-3254: Fixed an issue where Select/Radio/SelectBoxes/etc values changed manually are recalculated again after reopening an edit window
  - Spacing issues with DataGrid.
 
 ### 4.13.3-rc.1
@@ -124,7 +131,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
  - FIO-2986: Inherit default (en) translations (validations, buttons) for custom languages
  - FIO-2786: fix problem with initial button click on Nested Wizard in Modal Edit
- - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source. 
+ - FIO-2687: Fixes an issue when was receiving [Object, object] in Select with Custom Data Source.
  - FIO-2677: Fix submission not set on pdf for components with calculated value
  - FIO-2622: Fixes an issue when you have a Nested Form component with clearOnHide set, the data becomes detached from the subForm component when the value is reset when cleared.
  - FIO-2618: Mechanism to indicate once the PDF has completely Loaded
@@ -171,7 +178,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### 4.13.1-rc.3
 #### Changed
- - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github. 
+ - FIO-2787: Fixing the choices.js and text-mask dependency so that it can be installed without Github.
 
 ### 4.13.1-rc.2
 #### Fixed

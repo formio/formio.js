@@ -8586,6 +8586,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/utils/choiceswrapper.js~choiceswrapper#_onblur",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onBlur",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onBlur",
+    "method"
+  ],
+  [
     "src/utils/choiceswrapper.js~choiceswrapper#_ondirectionkey",
     "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onDirectionKey",
     "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onDirectionKey",
