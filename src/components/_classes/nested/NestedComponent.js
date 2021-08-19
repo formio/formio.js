@@ -274,7 +274,7 @@ export default class NestedComponent extends Field {
   getComponentById(id, fn) {
     let comp = null;
     this.everyComponent((component, components) => {
-      if (component.id === id) {
+      if (component.id === id || component.id && component.id.startsWith(`${id}-`)) {
         comp = component;
         if (fn) {
           fn(component, components);
