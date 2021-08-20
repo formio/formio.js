@@ -61,6 +61,7 @@ import columnWithConditionalComponents from '../test/forms/columnWithConditional
 import formWithSurvey from '../test/forms/formWithSurvey';
 import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
 import formWithDayComp from '../test/forms/formWithDayComp';
+import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -3014,6 +3015,55 @@ describe('Webform tests', function() {
             assert.equal(radioConditional.visible, true, 'Should stay visible');
 
             done();
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+
+      form.setForm(testClearOnHideInsideEditGrid).then(() => {
+        form.submission = {
+          state: 'submitted',
+          data: {
+            subsidiaryEditGrid: [
+              {
+                subsidiaryEntityContainer: {
+                  entityFullName: 'test',
+                  divisionNum: '',
+                  entityType: 'otherEntity',
+                  ifOtherEntityPleaseExplain: 'test',
+                },
+              },
+            ],
+          },
+        };
+
+        setTimeout(() => {
+          const clearOnHideField = form.getComponent([
+            'subsidiaryEditGrid',
+            0,
+            'subsidiaryEntityContainer',
+            'ifOtherEntityPleaseExplain',
+          ]);
+          const radioTrigger = form.getComponent(['subsidiaryEditGrid', 0, 'subsidiaryEntityContainer', 'entityType']);
+          assert.equal(form.rootPristine, true, 'Should not change this prop  after setting a submission');
+          assert.equal(clearOnHideField.visible, true, 'Should become visible');
+          assert.equal(clearOnHideField.dataValue, 'test', 'Should set a value from  the submission');
+
+          radioTrigger.setValue('subsidiary', { modified: true });
+          setTimeout(() => {
+            assert.equal(clearOnHideField.visible, false, 'Should become invisible');
+
+            radioTrigger.setValue('otherEntity', { modified: true });
+            setTimeout(() => {
+              assert.equal(clearOnHideField.visible, true, 'Should become visible');
+              assert.equal(clearOnHideField.dataValue, '', 'Should clear a value due to the clearOnHide');
+
+              done();
+            }, 250);
           }, 250);
         }, 250);
       }).catch(done);
