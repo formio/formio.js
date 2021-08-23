@@ -47,6 +47,10 @@ export function isLayoutComponent(component) {
 export function eachComponent(components, fn, includeAll, path, parent) {
   if (!components) return;
   path = path || '';
+  if (components.noRecurse) {
+    return;
+  }
+  components.noRecurse = true;
   components.forEach((component) => {
     if (!component) {
       return;
