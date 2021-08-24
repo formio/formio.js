@@ -1,7 +1,8 @@
 import assert from 'power-assert';
-
+import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
+import Builders from '../lib/builders';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
@@ -76,33 +77,99 @@ describe('WebformBuilder tests', function() {
   it('Should uniquify API keys when add a component to the container which already has the same type component', (done) => {
     const builder = Harness.getBuilder();
     builder.webform.setForm(testApiKeysUniquifying).then(() => {
-      const columnInsideDataGrid = builder.webform.element.querySelector('[ref="columns-container"]');
-      Harness.buildComponent('textfield', columnInsideDataGrid);
+      const ERROR_MSG = 'Should add a number to the api key of the second component of the same type';
+      let containerTestsReady;
+      const containerTestsPromise = new NativePromise((resolve) => containerTestsReady = resolve);
+
+      const container = builder.webform.element.querySelector(['[ref="container-container"]']);
+      Harness.buildComponent('editgrid', container);
+
       setTimeout(() => {
-        const apiKeyComp = builder.editForm.getComponent('key');
-        assert.equal(
-          apiKeyComp.dataValue,
-          'textField1',
-          'Should add a number to the API key, because DataGrid already has a textField'
-        );
+        const newEditGridApiKey = builder.editForm.getComponent('key');
+        assert.equal(newEditGridApiKey.dataValue, 'editGrid1', ERROR_MSG);
         Harness.saveComponent();
 
         setTimeout(() => {
-          const panelInsideEditGrid = builder.webform.element.querySelector('[ref="editGrid-container"] [ref="panel-container"]');
-          Harness.buildComponent('textfield', panelInsideEditGrid);
+          const editGridInsideContainer = container.querySelector('[ref="editGrid-container"]');
+          Harness.buildComponent('columns', editGridInsideContainer);
 
           setTimeout(() => {
-            const apiKeyComp = builder.editForm.getComponent('key');
-            assert.equal(
-              apiKeyComp.dataValue,
-              'textField1',
-              'Should add a number to the API key, because DataGrid already has a textField'
-            );
+            const newColumnsApiKey = builder.editForm.getComponent('key');
+            assert.equal(newColumnsApiKey.dataValue, 'columns1', ERROR_MSG);
+            Harness.saveComponent();
 
-            done();
-          }, 200);
-        }, 200);
-      }, 200);
+            setTimeout(() => {
+              const columnInsideEditGridInsideContainer = editGridInsideContainer.querySelector('[ref="columns-container"]');
+              Harness.buildComponent('textfield', columnInsideEditGridInsideContainer);
+
+              setTimeout(() => {
+                const newTextFieldApiKey = builder.editForm.getComponent('key');
+                assert.equal(newTextFieldApiKey.dataValue, 'textField1', ERROR_MSG);
+                Harness.saveComponent();
+                containerTestsReady();
+              }, 150);
+            }, 150);
+          }, 150);
+        }, 150);
+      }, 150);
+
+      containerTestsPromise.then(() => {
+        const panel = builder.webform.element.querySelector(['[ref="panel-container"]']);
+        Harness.buildComponent('datagrid', panel);
+
+        setTimeout(() => {
+          const newDataGridApiKey = builder.editForm.getComponent('key');
+          assert.equal(newDataGridApiKey.dataValue, 'dataGrid1', ERROR_MSG);
+          Harness.saveComponent();
+
+          setTimeout(() => {
+            const dataGridInsidePanel = panel.querySelector('[ref="dataGrid-container"]');
+            Harness.buildComponent('number', dataGridInsidePanel);
+
+            setTimeout(() => {
+              const newNumberApiKey = builder.editForm.getComponent('key');
+              assert.equal(newNumberApiKey.dataValue, 'number1', ERROR_MSG);
+              Harness.saveComponent();
+
+              setTimeout(() => {
+                const columnInsidefieldSetInsideDataGridInsidePanel = dataGridInsidePanel.parentElement.querySelectorAll('[ref="columns-container"]')[1];
+                Harness.buildComponent('checkbox', columnInsidefieldSetInsideDataGridInsidePanel);
+
+                setTimeout(() => {
+                  const newTextFieldApiKey = builder.editForm.getComponent('key');
+                  assert.equal(newTextFieldApiKey.dataValue, 'checkbox1', ERROR_MSG);
+                  done();
+                }, 150);
+              }, 150);
+            }, 150);
+          }, 150);
+        }, 150);
+      });
+    }).catch(done);
+  });
+
+  it('Should override the way a key for new component is set', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(columnsForm).then(() => {
+      Builders.builders.webform.prototype.updateComponentKey = function() {
+        return 'rewrittenNumberKey';
+      };
+
+      const column = builder.webform.element.querySelector('[ref="columns-container"]');
+
+      Harness.buildComponent('number', column);
+
+      setTimeout(() => {
+        const numberLabel = builder.editForm.getComponent('label');
+        numberLabel.setValue('Test Number');
+
+        setTimeout(() => {
+          const numberKey = builder.editForm.getComponent('key');
+          assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
+
+          done();
+        }, 150);
+      }, 150);
     }).catch(done);
   });
 });

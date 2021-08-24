@@ -264,6 +264,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/formio.js~globalformio",
+    "variable/index.html#static-variable-GlobalFormio",
+    "<span>GlobalFormio</span> <span class=\"search-result-import-path\">formiojs/src/Formio.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/components/html/html.form.js~html",
     "function/index.html#static-function-HTML",
     "<span>HTML</span> <span class=\"search-result-import-path\">formiojs/src/components/html/HTML.form.js</span>",
@@ -1749,6 +1755,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio#vsurl",
     "class/src/Formio.js~Formio.html#instance-member-vsUrl",
     "src/Formio.js~Formio#vsUrl",
+    "member"
+  ],
+  [
+    "src/formio.js~formio.globalformio",
+    "class/src/Formio.js~Formio.html#static-get-GlobalFormio",
+    "src/Formio.js~Formio.GlobalFormio",
     "member"
   ],
   [

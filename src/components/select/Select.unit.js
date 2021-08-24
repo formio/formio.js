@@ -23,6 +23,7 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -664,6 +665,50 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('Server side search is debounced with the correct timeout', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].lazyLoad = false;
+    form.components[1].searchDebounce = 0.7;
+    form.components[1].disableLimit = false;
+    form.components[1].searchField = 'name';
+    const element = document.createElement('div');
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        resolve([]);
+      });
+    };
+
+    var searchHasBeenDebounced = false;
+    var originalDebounce = _.debounce;
+    _.debounce = (fn, timeout, opts) => {
+      searchHasBeenDebounced = timeout === 700;
+      return originalDebounce(fn, 0, opts);
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      const focusEvent = new Event('focus');
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        const keyupEvent = new Event('keyup');
+        searchField.value = 'the_name';
+        searchField.dispatchEvent(keyupEvent);
+
+        setTimeout(() => {
+          _.debounce = originalDebounce;
+          Formio.makeRequest = originalMakeRequest;
+
+          assert.equal(searchHasBeenDebounced, true);
+          done();
+        }, 50);
+      }, 200);
+    }).catch(done);
+  });
+
   it('Should provide "Allow only available values" validation', (done) => {
     const form = _.cloneDeep(comp10);
     form.components[0].validate.onlyAvailableItems = true;
@@ -806,6 +851,31 @@ describe('Select Component', () => {
       const select = form.getComponent('select');
       assert.deepEqual(requiredSchema, select.schema);
       done();
+    }).catch(done);
+  });
+
+  it('Should provide correct value', (done) => {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const value = '{"textField":"rgd","submit":true,"number":11}';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.getValue(), value);
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 

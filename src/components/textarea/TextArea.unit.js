@@ -263,6 +263,48 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
+  it('Should render HTML', (done) => {
+    const form = _.cloneDeep(comp3);
+    form.components[0].inputFormat = 'html';
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, {
+      readOnly: true
+    }).then(form => {
+      form.setSubmission({
+        data: {
+          textArea: '<b>HTML!</b>'
+        }
+      });
+      setTimeout(() => {
+        const textArea = form.getComponent('textArea');
+        assert.equal(textArea.refs.input[0].innerHTML, '<b>HTML!</b>');
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should render plain text', (done) => {
+    const form = _.cloneDeep(comp3);
+    form.components[0].inputFormat = 'plain';
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, {
+      readOnly: true
+    }).then(form => {
+      form.setSubmission({
+        data: {
+          textArea: '<b>Plain text!</b>'
+        }
+      });
+      setTimeout(() => {
+        const textArea = form.getComponent('textArea');
+        assert.equal(textArea.refs.input[0].innerText, '<b>Plain text!</b>');
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
   it('Should correctly count characters if character counter is enabled', (done) => {
     const form = _.cloneDeep(comp3);
     form.components[0].showCharCount = true;

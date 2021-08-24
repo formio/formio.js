@@ -773,7 +773,6 @@ body.formio-dialog-open {
   position: absolute;
   top: 6px;
   right: 5px;
-  font-size: 1.5em;
 }
 
 .formio-component-datetime .control-label--hidden.field-required {
@@ -790,6 +789,23 @@ body.formio-dialog-open {
 .formio-component-select .control-label--hidden.field-required {
   right: 40px;
   z-index: 2;
+}
+
+.formio-component-radio .control-label--hidden.field-required:after,
+.formio-component-selectboxes .control-label--hidden.field-required:after {
+  display: none;
+}
+
+.formio-component-radio.formio-component-label-hidden.required .form-check-label:before,
+.formio-component-selectboxes.formio-component-label-hidden.required .form-check-label:before {
+  position: relative;
+  content: "* ";
+  color:#EB0000;
+}
+
+.formio-component-radio.formio-component-label-hidden.required .label-position-right.form-check-label:before,
+.formio-component-selectboxes.formio-component-label-hidden.required .label-position-right.form-check-label:before {
+  right: 20px;
 }
 
 /* Fix for Hidden checkbox in component editform. */

@@ -1451,6 +1451,27 @@ export function getDataParentComponent(componentInstance) {
   }
 }
 
+/**
+ * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
+ * changes by itself, e.g. EditGrid)
+ * @param componentInstance
+ * @param firstPass
+ * @returns {boolean|boolean|*}
+ */
+export function isInsideScopingComponent(componentInstance, firstPass = true) {
+  if (!firstPass && componentInstance?.hasScopedChildren) {
+    return true;
+  }
+  const dataParent = getDataParentComponent(componentInstance);
+  if (dataParent?.hasScopedChildren) {
+    return true;
+  }
+  else if (dataParent?.parent) {
+    return isInsideScopingComponent(dataParent.parent, false);
+  }
+  return false;
+}
+
 export function getFocusableElements(element) {
   const focusableSelector =
     `button:not([disabled]), input:not([disabled]), select:not([disabled]),
