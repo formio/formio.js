@@ -1,7 +1,9 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import FileComponent from './File';
-import { comp1 } from './fixtures';
+import { comp1, comp2 } from './fixtures';
+import Formio from './../../Formio';
+import _ from 'lodash';
 
 describe('File Component', () => {
   it('Should create a File Component', () => {
@@ -120,5 +122,57 @@ describe('File Component', () => {
       checkValidatePattern(invalidFiles, false);
       done();
     });
+  });
+
+  it('Should display uploaded file in file component only after saving', (done) => {
+    const form = _.cloneDeep(comp2);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const value = [
+        {
+          storage: 'base64',
+          name: '33-0ae897b9-c808-4832-a5e1-4e5d0c725f1b.jpg',
+          url: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD…CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//2Q==',
+          size: 102691,
+          type: 'image/jpeg',
+          originalName: '33.jpg',
+        },
+      ];
+      const file = form.getComponent('file');
+      const openModalButton = file.componentModal.refs.openModal;
+      const clickEvent = new Event('click');
+      openModalButton.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(file.componentModal.isOpened, true);
+        file.dataValue = value;
+        file.redraw();
+
+        setTimeout(() => {
+          assert.equal(file.refs.fileLink.length, 1);
+          const modalOverlayButton = file.componentModal.refs.modalOverlay;
+          modalOverlayButton.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(!!file.componentModal.dialogElement, true);
+            const dialogYesButton = file.componentModal.dialogElement.refs.dialogYesButton;
+            dialogYesButton.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              assert.equal(!!file.componentModal.dialogElement, false);
+              file.componentModal.closeModal();
+
+              setTimeout(() => {
+                assert.equal(file.componentModal.isOpened, false);
+                assert.equal(file.refs.fileLink.length, 0);
+                assert.equal(file.componentModal.refs.openModal.textContent.trim(), 'Click to set value');
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });

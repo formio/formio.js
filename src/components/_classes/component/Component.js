@@ -1041,8 +1041,8 @@ export default class Component extends Element {
     }
   }
 
-  setOpenModalElement() {
-    this.componentModal.setOpenModalElement(this.getModalPreviewTemplate());
+  setOpenModalElement(template) {
+    this.componentModal.setOpenModalElement(template || this.getModalPreviewTemplate());
   }
 
   getModalPreviewTemplate() {
@@ -1125,8 +1125,11 @@ export default class Component extends Element {
     if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
       const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
+      const openModalTemplate = this.componentModal && modalShouldBeOpened
+        ? this.componentModal.openModalTemplate
+        : null;
       this.componentModal = this.createComponentModal(element, modalShouldBeOpened, currentValue);
-      this.setOpenModalElement();
+      this.setOpenModalElement(openModalTemplate);
     }
 
     this.attached = true;
@@ -2473,12 +2476,13 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
+    const valueInput = this.refs.fileLink || this.refs.input;
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
       this.refs.hasOwnProperty('input') &&
-      this.refs.input &&
-      (this.refs.input.length !== value.length) &&
+      valueInput &&
+      (valueInput.length !== value.length) &&
       this.visible
     ) {
       this.redraw();
