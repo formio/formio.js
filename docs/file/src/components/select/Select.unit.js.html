@@ -198,6 +198,7 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -839,6 +840,50 @@ describe(&apos;Select Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Server side search is debounced with the correct timeout&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp9);
+    form.components[1].lazyLoad = false;
+    form.components[1].searchDebounce = 0.7;
+    form.components[1].disableLimit = false;
+    form.components[1].searchField = &apos;name&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise(resolve =&gt; {
+        resolve([]);
+      });
+    };
+
+    var searchHasBeenDebounced = false;
+    var originalDebounce = _.debounce;
+    _.debounce = (fn, timeout, opts) =&gt; {
+      searchHasBeenDebounced = timeout === 700;
+      return originalDebounce(fn, 0, opts);
+    };
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      const searchField = select.element.querySelector(&apos;.choices__input.choices__input--cloned&apos;);
+      const focusEvent = new Event(&apos;focus&apos;);
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() =&gt; {
+        const keyupEvent = new Event(&apos;keyup&apos;);
+        searchField.value = &apos;the_name&apos;;
+        searchField.dispatchEvent(keyupEvent);
+
+        setTimeout(() =&gt; {
+          _.debounce = originalDebounce;
+          Formio.makeRequest = originalMakeRequest;
+
+          assert.equal(searchHasBeenDebounced, true);
+          done();
+        }, 50);
+      }, 200);
+    }).catch(done);
+  });
+
   it(&apos;Should provide &quot;Allow only available values&quot; validation&apos;, (done) =&gt; {
     const form = _.cloneDeep(comp10);
     form.components[0].validate.onlyAvailableItems = true;
@@ -981,6 +1026,31 @@ describe(&apos;Select Component&apos;, () =&gt; {
       const select = form.getComponent(&apos;select&apos;);
       assert.deepEqual(requiredSchema, select.schema);
       done();
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      const value = &apos;{&quot;textField&quot;:&quot;rgd&quot;,&quot;submit&quot;:true,&quot;number&quot;:11}&apos;;
+      select.setValue(value);
+
+      setTimeout(() =&gt; {
+        assert.equal(select.getValue(), value);
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 

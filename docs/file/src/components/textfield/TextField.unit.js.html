@@ -1418,6 +1418,51 @@ describe(&apos;TextField Component&apos;, () =&gt; {
       }, 200);
     }).catch(done);
   });
+
+  it(&apos;Should render HTML&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputFormat = &apos;html&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form, {
+      readOnly: true
+    }).then(form =&gt; {
+      form.setSubmission({
+        data: {
+          textField: &apos;&lt;b&gt;HTML!&lt;/b&gt;&apos;
+        }
+      });
+      setTimeout(() =&gt; {
+        const textField = form.getComponent(&apos;textField&apos;);
+        textField.loadRefs(element, {
+          value: &apos;multiple&apos;
+        });
+        assert.equal(textField.refs.value[0].innerHTML, &apos;&lt;b&gt;HTML!&lt;/b&gt;&apos;);
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should render plain text&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputFormat = &apos;plain&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form, {
+      readOnly: true
+    }).then(form =&gt; {
+      form.setSubmission({
+        data: {
+          textField: &apos;&lt;b&gt;Plain!&lt;/b&gt;&apos;
+        }
+      });
+      setTimeout(() =&gt; {
+        const textField = form.getComponent(&apos;textField&apos;);
+        assert.equal(textField.refs.input[0].value, &apos;&lt;b&gt;Plain!&lt;/b&gt;&apos;);
+        done();
+      }, 300);
+    }).catch(done);
+  });
 });
 </code></pre>
 

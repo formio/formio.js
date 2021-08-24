@@ -179,7 +179,8 @@ import SelectBoxesComponent from &apos;./SelectBoxes&apos;;
 import Formio from &apos;./../../Formio&apos;;
 
 import {
-  comp1
+  comp1,
+  comp3
 } from &apos;./fixtures&apos;;
 import wizardWithSelectBoxes from &apos;../../../test/forms/wizardWithSelectBoxes&apos;;
 
@@ -376,6 +377,17 @@ describe(&apos;SelectBoxes Component&apos;, () =&gt; {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+});
+
+describe(&apos;SelectBoxes Component&apos;, () =&gt; {
+  it(&apos;should have red asterisk left hand side to the options labels if component is required and label is hidden&apos;, () =&gt; {
+    return Harness.testCreate(SelectBoxesComponent, comp3).then(component =&gt; {
+      const options = component.element.querySelectorAll(&apos;.form-check-label&apos;);
+      options.forEach(i =&gt; {
+        assert.deepEqual(!!getComputedStyle(i, &apos;:before&apos;), true);
+      });
+    });
   });
 });
 </code></pre>

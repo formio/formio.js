@@ -9,7 +9,6 @@ import {
   formatOffset,
   getDateSetting,
   getLocaleDateFormatInfo,
-  getBrowserInfo,
   momentDate,
   zonesLoaded,
   shouldLoadZones,
@@ -25,7 +24,6 @@ const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
 const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
 const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
-const isIEBrowser = getBrowserInfo().ie;
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */

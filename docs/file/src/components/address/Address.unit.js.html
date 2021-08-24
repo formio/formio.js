@@ -181,7 +181,8 @@ import _ from &apos;lodash&apos;;
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Address Component&apos;, () =&gt; {
@@ -274,6 +275,80 @@ describe(&apos;Address Component&apos;, () =&gt; {
           done();
         }, 300);
       }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should close modal window without showing dialog if value not changed&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const value = {
+        &apos;address_components&apos;: [
+          {
+            &apos;long_name&apos;: &apos;Los Angeles&apos;,
+            &apos;short_name&apos;: &apos;Los Angeles&apos;,
+            types: [&apos;locality&apos;, &apos;political&apos;],
+          },
+          {
+            &apos;long_name&apos;: &apos;Los Angeles County&apos;,
+            &apos;short_name&apos;: &apos;Los Angeles County&apos;,
+            types: [&apos;administrative_area_level_2&apos;, &apos;political&apos;],
+          },
+          {
+            &apos;long_name&apos;: &apos;California&apos;,
+            &apos;short_name&apos;: &apos;CA&apos;,
+            types: [&apos;administrative_area_level_1&apos;, &apos;political&apos;],
+          },
+          {
+            &apos;long_name&apos;: &apos;United States&apos;,
+            &apos;short_name&apos;: &apos;US&apos;,
+            types: [&apos;country&apos;, &apos;political&apos;],
+          },
+        ],
+        &apos;formatted_address&apos;: &apos;Los Angeles, CA, USA&apos;,
+        geometry: {
+          location: { lat: 34.0522342, lng: -118.2436849 },
+          viewport: {
+            south: 33.70365193147634,
+            west: -118.6681759484859,
+            north: 34.33730608759191,
+            east: -118.155289077463,
+          },
+        },
+        &apos;place_id&apos;: &apos;ChIJE9on3F3HwoAR9AhGJW_fL-I&apos;,
+        types: [&apos;locality&apos;, &apos;political&apos;],
+        formattedPlace: &apos;Los Angeles, CA, USA&apos;,
+      };
+      const address = form.getComponent(&apos;address&apos;);
+      const openModalButton = address.componentModal.refs.openModal;
+      const clickEvent = new Event(&apos;click&apos;);
+      openModalButton.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(address.componentModal.isOpened, true);
+        address.dataValue = value;
+        address.componentModal.closeModal();
+        address.redraw();
+
+        setTimeout(() =&gt; {
+          address.componentModal.isOpened = true;
+          openModalButton.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(address.componentModal.isOpened, true);
+            assert.equal(!!address.dataValue, true);
+            const modalOverlayButton = address.componentModal.refs.modalOverlay;
+            modalOverlayButton.dispatchEvent(clickEvent);
+
+            setTimeout(() =&gt; {
+              assert.equal(!!address.componentModal.isValueChanged(), false);
+              assert.equal(!!address.componentModal.dialogElement, false);
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 });

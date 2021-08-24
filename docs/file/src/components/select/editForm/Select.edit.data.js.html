@@ -531,6 +531,36 @@ export default [
   {
     type: &apos;number&apos;,
     input: true,
+    key: &apos;searchDebounce&apos;,
+    label: &apos;Search request delay&apos;,
+    weight: 16,
+    description: &apos;The delay (in seconds) before the search request is sent.&apos;,
+    tooltip: &apos;The delay in seconds before the search request is sent, measured from the last character input in the search field.&apos;,
+    validate: {
+      min: 0,
+      customMessage: &apos;&apos;,
+      json: &apos;&apos;,
+      max: 1,
+    },
+    delimiter: false,
+    requireDecimal: false,
+    encrypted: false,
+    defaultValue: 0.3,
+    conditional: {
+      json: {
+        in: [
+          { var: &apos;data.dataSrc&apos; },
+          [
+            &apos;url&apos;,
+            &apos;resource&apos;,
+          ],
+        ],
+      },
+    },
+  },
+  {
+    type: &apos;number&apos;,
+    input: true,
     key: &apos;minSearch&apos;,
     weight: 17,
     label: &apos;Minimum Search Length&apos;,

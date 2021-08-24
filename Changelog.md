@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.19
+#### Fixed
+ - Select component - debounce option for server side filtering
+ - FIO-2764: Fixes an issue when some of the fields were stilling set a default value with the noDefaults option.
+ - FIO-3583: Fixed an issue with each component recursion. 
+ - FIO-3011 fixed an issue where only '{' character send and returned to/from the server
+ - FIO-3346: Remove unwanted check for IE11 that breaks manual mode
+ - FIO-3326: fixes an issue where clearOnHide inside EditGrid is not executed at the first visibility change in Edit mode
+ - FIO-2959: fixed red asterisk bigger than original when label hidden
+ - FIO-3631: fixed an issue where red asterisk not display when modal view is enabled
+ - FIO-3571: HTML and plain text not working for textarea and textfield
+ - FIO-3280: fixed an issue where confirmation dialog shows one extra time after a new value has been added
+ - UIP-295: Make clearOnHide false and hide it when hidden is checked
+ - UIP-301: Expose component key config
+ - UIP-297: Enable Flatpickr localization.
+
 ### 4.14.0-rc.18
 #### Fixed
  - FIO-3344: Add margin bottom to all components in builder mode

@@ -114,55 +114,136 @@
     ]
   },
   {
+    "name": "eachComponent",
+    "filePath": "src/utils/formUtils.js",
+    "lines": [
+      {
+        "lineNumber": 32,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 33,
+        "line": " * Iterate through each component within a form."
+      },
+      {
+        "lineNumber": 34,
+        "line": " *"
+      },
+      {
+        "lineNumber": 35,
+        "line": " * @param {Object} components"
+      },
+      {
+        "lineNumber": 36,
+        "line": " *   The components to iterate."
+      },
+      {
+        "lineNumber": 37,
+        "line": " * @param {Function} fn"
+      },
+      {
+        "lineNumber": 38,
+        "line": " *   The iteration function to invoke for each component."
+      },
+      {
+        "lineNumber": 39,
+        "line": " * @param {Boolean} includeAll"
+      },
+      {
+        "lineNumber": 40,
+        "line": " *   Whether or not to include layout components."
+      },
+      {
+        "lineNumber": 41,
+        "line": " * @param {String} path"
+      },
+      {
+        "lineNumber": 42,
+        "line": " *   The current data path of the element. Example: data.user.firstName"
+      },
+      {
+        "lineNumber": 43,
+        "line": " * @param {Object} parent"
+      },
+      {
+        "lineNumber": 44,
+        "line": " *   The parent object."
+      },
+      {
+        "lineNumber": 45,
+        "line": " */"
+      },
+      {
+        "lineNumber": 46,
+        "line": "export function eachComponent(components, fn, includeAll, path, parent, inRecursion) {"
+      }
+    ],
+    "codeParams": [
+      "components",
+      "fn",
+      "includeAll",
+      "path",
+      "parent",
+      "inRecursion"
+    ],
+    "docParams": [
+      "components",
+      "fn",
+      "includeAll",
+      "path",
+      "parent"
+    ]
+  },
+  {
     "name": "getComponent",
     "filePath": "src/utils/formUtils.js",
     "lines": [
       {
-        "lineNumber": 141,
+        "lineNumber": 151,
         "line": "/**"
       },
       {
-        "lineNumber": 142,
+        "lineNumber": 152,
         "line": " * Get a component by its key"
       },
       {
-        "lineNumber": 143,
+        "lineNumber": 153,
         "line": " *"
       },
       {
-        "lineNumber": 144,
+        "lineNumber": 154,
         "line": " * @param {Object} components"
       },
       {
-        "lineNumber": 145,
+        "lineNumber": 155,
         "line": " *   The components to iterate."
       },
       {
-        "lineNumber": 146,
+        "lineNumber": 156,
         "line": " * @param {String|Object} key"
       },
       {
-        "lineNumber": 147,
+        "lineNumber": 157,
         "line": " *   The key of the component to get, or a query of the component to search."
       },
       {
-        "lineNumber": 148,
+        "lineNumber": 158,
         "line": " *"
       },
       {
-        "lineNumber": 149,
+        "lineNumber": 159,
         "line": " * @returns {Object}"
       },
       {
-        "lineNumber": 150,
+        "lineNumber": 160,
         "line": " *   The component that matches the given key, or undefined if not found."
       },
       {
-        "lineNumber": 151,
+        "lineNumber": 161,
         "line": " */"
       },
       {
-        "lineNumber": 152,
+        "lineNumber": 162,
         "line": "export function getComponent(components, key, includeAll) {"
       }
     ],
@@ -181,55 +262,55 @@
     "filePath": "src/utils/formUtils.js",
     "lines": [
       {
-        "lineNumber": 192,
+        "lineNumber": 202,
         "line": "/**"
       },
       {
-        "lineNumber": 193,
+        "lineNumber": 203,
         "line": " * This function will find a component in a form and return the component AND THE PATH to the component in the form."
       },
       {
-        "lineNumber": 194,
+        "lineNumber": 204,
         "line": " * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively"
       },
       {
-        "lineNumber": 195,
+        "lineNumber": 205,
         "line": " * when you iterating through the nested structure."
       },
       {
-        "lineNumber": 196,
+        "lineNumber": 206,
         "line": " * If the component is not found the callback won't be called and function won't return anything."
       },
       {
-        "lineNumber": 197,
+        "lineNumber": 207,
         "line": " *"
       },
       {
-        "lineNumber": 198,
+        "lineNumber": 208,
         "line": " * @param components"
       },
       {
-        "lineNumber": 199,
+        "lineNumber": 209,
         "line": " * @param key"
       },
       {
-        "lineNumber": 200,
+        "lineNumber": 210,
         "line": " * @param fn"
       },
       {
-        "lineNumber": 201,
+        "lineNumber": 211,
         "line": " * @param path"
       },
       {
-        "lineNumber": 202,
+        "lineNumber": 212,
         "line": " * @returns {*}"
       },
       {
-        "lineNumber": 203,
+        "lineNumber": 213,
         "line": " */"
       },
       {
-        "lineNumber": 204,
+        "lineNumber": 214,
         "line": "export function findComponent(components, key, path, fn) {"
       }
     ],
