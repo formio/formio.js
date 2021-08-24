@@ -1452,6 +1452,18 @@ export function getDataParentComponent(componentInstance) {
 }
 
 /**
+ * Returns whether the value is a promise
+ * @param value
+ * @return {boolean}
+ */
+ export function isPromise(value) {
+   return value
+     && value.then
+     && typeof value.then === 'function'
+     && value?.constructor?.name === 'Promise';
+ }
+
+/**
  * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
  * changes by itself, e.g. EditGrid)
  * @param componentInstance
