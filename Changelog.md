@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - UIP-295: Make clearOnHide false and hide it when hidden is checked
  - UIP-301: Expose component key config
  - UIP-297: Enable Flatpickr localization.
+ - FIO-3488: fixed an issue where values are not recalculated when submission is being set in edit mode
+ - FIO-3279: fixed an issue where file is not removed when confirming removing in modal view
+ - FIO-1500: Validation messages triggering across all items
 
 ### 4.14.0-rc.18
 #### Fixed
