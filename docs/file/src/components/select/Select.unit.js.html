@@ -199,6 +199,7 @@ import {
   comp13,
   comp14,
   comp15,
+  comp16,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -1054,6 +1055,30 @@ describe(&apos;Select Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should show async custom values and be able to set submission&apos;, (done) =&gt; {
+    const formObj = _.cloneDeep(comp16);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, formObj).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+     select.choices.showDropdown();
+
+      setTimeout(() =&gt; {
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 3);
+        const value = &apos;bb&apos;;
+        form.submission = { data: { select: value } };
+
+        setTimeout(() =&gt; {
+          assert.deepEqual(select.getValue(), value);
+          assert.deepEqual(select.dataValue, value);
+          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, &apos;B&apos;);
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
   // it(&apos;should reset input value when called with empty value&apos;, () =&gt; {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;

@@ -176,6 +176,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import assert from &apos;power-assert&apos;;
 import { expect } from &apos;chai&apos;;
+import sinon from &apos;sinon&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import DataGridComponent from &apos;./DataGrid&apos;;
 import Formio from &apos;../../Formio&apos;;
@@ -189,7 +190,8 @@ import {
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
-  withConditionalFieldsAndValidations
+  withConditionalFieldsAndValidations,
+  withLogic
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DataGrid Component&apos;, () =&gt; {
@@ -364,6 +366,24 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
     catch (err) {
       done(err);
     }
+  });
+
+  it(&apos;Should not cause setValue loops when logic within hidden component is set&apos;, function(done) {
+    Formio.createForm(document.createElement(&apos;div&apos;), withLogic)
+      .then((form) =&gt; {
+        const datagrid = form.getComponent(&apos;dataGrid&apos;);
+        const spyFunc = sinon.spy(datagrid, &apos;checkComponentConditions&apos;);
+        const textField = form.getComponent(&apos;escalationId&apos;);
+        const select = form.getComponent(&apos;teamName&apos;);
+
+        textField.component.hidden = true;
+        select.setValue(&apos;preRiskAnalysis&apos;, { modified: true });
+
+        setTimeout(() =&gt; {
+          expect(spyFunc.callCount).to.be.lessThan(4);
+          done();
+        }, 1500);
+      });
   });
 
   describe(&apos;get minLength&apos;, () =&gt; {

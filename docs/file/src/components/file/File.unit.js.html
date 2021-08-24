@@ -176,7 +176,9 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import FileComponent from &apos;./File&apos;;
-import { comp1 } from &apos;./fixtures&apos;;
+import { comp1, comp2 } from &apos;./fixtures&apos;;
+import Formio from &apos;./../../Formio&apos;;
+import _ from &apos;lodash&apos;;
 
 describe(&apos;File Component&apos;, () =&gt; {
   it(&apos;Should create a File Component&apos;, () =&gt; {
@@ -295,6 +297,58 @@ describe(&apos;File Component&apos;, () =&gt; {
       checkValidatePattern(invalidFiles, false);
       done();
     });
+  });
+
+  it(&apos;Should display uploaded file in file component only after saving&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const value = [
+        {
+          storage: &apos;base64&apos;,
+          name: &apos;33-0ae897b9-c808-4832-a5e1-4e5d0c725f1b.jpg&apos;,
+          url: &apos;data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD&#x2026;CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//2Q==&apos;,
+          size: 102691,
+          type: &apos;image/jpeg&apos;,
+          originalName: &apos;33.jpg&apos;,
+        },
+      ];
+      const file = form.getComponent(&apos;file&apos;);
+      const openModalButton = file.componentModal.refs.openModal;
+      const clickEvent = new Event(&apos;click&apos;);
+      openModalButton.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(file.componentModal.isOpened, true);
+        file.dataValue = value;
+        file.redraw();
+
+        setTimeout(() =&gt; {
+          assert.equal(file.refs.fileLink.length, 1);
+          const modalOverlayButton = file.componentModal.refs.modalOverlay;
+          modalOverlayButton.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!file.componentModal.dialogElement, true);
+            const dialogYesButton = file.componentModal.dialogElement.refs.dialogYesButton;
+            dialogYesButton.dispatchEvent(clickEvent);
+
+            setTimeout(() =&gt; {
+              assert.equal(!!file.componentModal.dialogElement, false);
+              file.componentModal.closeModal();
+
+              setTimeout(() =&gt; {
+                assert.equal(file.componentModal.isOpened, false);
+                assert.equal(file.refs.fileLink.length, 0);
+                assert.equal(file.componentModal.refs.openModal.textContent.trim(), &apos;Click to set value&apos;);
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });
 </code></pre>

@@ -416,6 +416,48 @@ it(&apos;Should protect against change loops&apos;, function(done) {
   .catch((err) =&gt; done(err));
 });
 
+it(&apos;Should mark as invalid only invalid fields in multiple components&apos;, function(done) {
+  const formElement = document.createElement(&apos;div&apos;);
+  const form = new Webform(formElement);
+  const formJson = {
+    components: [
+      {
+        label: &apos;Email&apos;,
+        tableView: true,
+        multiple: true,
+        validate: {
+          required: true
+        },
+        key: &apos;email&apos;,
+        type: &apos;email&apos;,
+        input: true
+      },
+    ],
+  };
+
+  form.setForm(formJson).then(() =&gt; {
+    return form.setSubmission({
+      data: {
+        email: [
+          &apos;oleg@form.io&apos;,
+          &apos;oleg@form&apos;,
+          &apos;&apos;,
+        ]
+      }
+    });
+  })
+  .then(() =&gt; {
+    setTimeout(() =&gt; {
+      const email = form.getComponent(&apos;email&apos;);
+      expect(email.refs.input[0].classList.contains(&apos;is-invalid&apos;)).to.be.false;
+      expect(email.refs.input[1].classList.contains(&apos;is-invalid&apos;)).to.be.true;
+      expect(email.refs.input[2].classList.contains(&apos;is-invalid&apos;)).to.be.true;
+      done();
+    }, 300);
+  })
+  .catch(done);
+});
+
 describe(&apos;shouldDisplayRedAsterisk&apos;, () =&gt; {
   it(&apos;modalPreview template should have className &quot;field-required&quot; if component is required&apos;, done =&gt; {
     Harness.testCreate(Component, _merge({}, comp4, {

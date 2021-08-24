@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3488: fixed an issue where values are not recalculated when submission is being set in edit mode
  - FIO-3279: fixed an issue where file is not removed when confirming removing in modal view
  - FIO-1500: Validation messages triggering across all items
+ - disableOnInvalid does not work when have multiple nested forms and make one of them valid
+
+#### Added
+ - FIO-3227: added possibility to handle asynchronous code in select custom values
+
+#### Changed
+ - Upgrade core-js@3.16.2, dompurify@2.3.1, i18next@20.4.0, @babel/register@7.15.3, mocha@9.1.0, sass@1.38.1, webpack@5.51.1, fast-json-patch@3.1.0, jsdom@17.0.0, marked@3.0.1
 
 ### 4.14.0-rc.18
 #### Fixed

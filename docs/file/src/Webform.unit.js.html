@@ -236,11 +236,36 @@ import columnWithConditionalComponents from &apos;../test/forms/columnWithCondit
 import formWithSurvey from &apos;../test/forms/formWithSurvey&apos;;
 import formWithSelectBoxes from &apos;../test/forms/formWithSelectBoxes&apos;;
 import formWithDayComp from &apos;../test/forms/formWithDayComp&apos;;
+import formWithCalcValue from &apos;../test/forms/formWithCalcValue&apos;;
 import testClearOnHideInsideEditGrid from &apos;../test/forms/clearOnHideInsideEditGrid&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should recalculate value when submission is being set in edit mode&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    form.setForm(formWithCalcValue).then(() =&gt; {
+      const numberComp = form.getComponent(&apos;number&apos;);
+      const checkbox = form.getComponent(&apos;checkbox&apos;);
+
+      form.setSubmission({}).then(() =&gt; {
+        setTimeout(() =&gt; {
+          assert.equal(numberComp.dataValue, 0);
+          assert.equal(checkbox.dataValue, true);
+          form.setSubmission({ data: { number: 7, checkbox: true } }).then(() =&gt; {
+            setTimeout(() =&gt; {
+              assert.equal(numberComp.dataValue, 7);
+              assert.equal(checkbox.dataValue, false);
+              done();
+            }, 500);
+          });
+        }, 500);
+      });
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should show survey values in html render mode&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
@@ -2502,12 +2527,17 @@ describe(&apos;Webform tests&apos;, function() {
               dataSourceDisplay: &apos;some value&apos;
             },
           state: &apos;submitted&apos;
-        });
-        setTimeout(() =&gt; {
-          const dataSourceDisplay = form.getComponent(&apos;dataSourceDisplay&apos;);
-          assert.equal(dataSourceDisplay.dataValue, &apos;some value&apos;, &apos;Should set and keep the value&apos;);
-          done();
-        }, 1000);
+        })
+        .then(() =&gt; {
+          const dataSource = form.getComponent(&apos;datasource&apos;);
+          dataSource.dataValue = { value: &apos;some value&apos; };
+          form.checkData(null, { dataSourceInitialLoading: true });
+          setTimeout(() =&gt; {
+            const dataSourceDisplay = form.getComponent(&apos;dataSourceDisplay&apos;);
+            assert.equal(dataSourceDisplay.dataValue, &apos;some value&apos;, &apos;Should set and keep the value&apos;);
+            done();
+          }, 1000);
+       });
       }).catch(done);
     });
     it(&apos;Should calculate value properly in editing mode&apos;, (done) =&gt; {

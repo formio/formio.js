@@ -177,6 +177,7 @@
 import NativePromise from &apos;native-promise-only&apos;;
 import Harness from &apos;../test/harness&apos;;
 import WebformBuilder from &apos;./WebformBuilder&apos;;
+import Builders from &apos;../lib/builders&apos;;
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from &apos;../test/formtest&apos;;
 import sameApiKeysLayoutComps from &apos;../test/forms/sameApiKeysLayoutComps&apos;;
 import testApiKeysUniquifying from &apos;../test/forms/testApiKeysUniquifying&apos;;
@@ -319,6 +320,31 @@ describe(&apos;WebformBuilder tests&apos;, function() {
           }, 150);
         }, 150);
       });
+    }).catch(done);
+  });
+
+  it(&apos;Should override the way a key for new component is set&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.setForm(columnsForm).then(() =&gt; {
+      Builders.builders.webform.prototype.updateComponentKey = function() {
+        return &apos;rewrittenNumberKey&apos;;
+      };
+
+      const column = builder.webform.element.querySelector(&apos;[ref=&quot;columns-container&quot;]&apos;);
+
+      Harness.buildComponent(&apos;number&apos;, column);
+
+      setTimeout(() =&gt; {
+        const numberLabel = builder.editForm.getComponent(&apos;label&apos;);
+        numberLabel.setValue(&apos;Test Number&apos;);
+
+        setTimeout(() =&gt; {
+          const numberKey = builder.editForm.getComponent(&apos;key&apos;);
+          assert.equal(numberKey.dataValue, &apos;rewrittenNumberKey&apos;);
+
+          done();
+        }, 150);
+      }, 150);
     }).catch(done);
   });
 });

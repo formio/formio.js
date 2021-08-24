@@ -3672,6 +3672,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp-with-logic.js",
+    "file/src/components/datagrid/fixtures/comp-with-logic.js.html",
+    "src/components/datagrid/fixtures/comp-with-logic.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/comp1.js",
     "file/src/components/datagrid/fixtures/comp1.js.html",
     "src/components/datagrid/fixtures/comp1.js",
@@ -4329,6 +4335,12 @@ window.esdocSearchIndex = [
     "src/components/file/fixtures/comp1.js",
     "file/src/components/file/fixtures/comp1.js.html",
     "src/components/file/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/file/fixtures/comp2.js",
+    "file/src/components/file/fixtures/comp2.js.html",
+    "src/components/file/fixtures/comp2.js",
     "file"
   ],
   [
@@ -5511,6 +5523,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp15.js",
     "file/src/components/select/fixtures/comp15.js.html",
     "src/components/select/fixtures/comp15.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp16.js",
+    "file/src/components/select/fixtures/comp16.js.html",
+    "src/components/select/fixtures/comp16.js",
     "file"
   ],
   [
