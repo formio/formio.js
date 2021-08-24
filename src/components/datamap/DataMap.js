@@ -78,7 +78,7 @@ export default class DataMapComponent extends DataGridComponent {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       this.dataValue = this.emptyValue;
     }
     return _.get(this.data, this.key);
