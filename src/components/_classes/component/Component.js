@@ -8,10 +8,7 @@ import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
-  fastCloneDeep,
-  boolValue,
-  getDataParentComponent,
-  getComponentPath
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -2027,7 +2024,7 @@ export default class Component extends Element {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
       // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || this.options.server || getDataParentComponent(this)?.hasScopedChildren) &&
+      (!this.rootPristine || this.options.server || isInsideScopingComponent(this)) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
