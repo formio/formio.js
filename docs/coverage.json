@@ -1,6 +1,6 @@
 {
-  "coverage": "6.09%",
-  "expectCount": 1083,
+  "coverage": "6.07%",
+  "expectCount": 1086,
   "actualCount": 66,
   "files": {
     "src/Embed.js": {
@@ -55,7 +55,7 @@
       ]
     },
     "src/Formio.js": {
-      "expectCount": 125,
+      "expectCount": 127,
       "actualCount": 7,
       "undocumentLines": [
         18,
@@ -63,6 +63,7 @@
         23,
         24,
         26,
+        1588,
         44,
         46,
         53,
@@ -175,7 +176,8 @@
         1526,
         1532,
         1538,
-        1542
+        1542,
+        1553
       ]
     },
     "src/Formio.unit.js": {
@@ -1501,7 +1503,7 @@
       ]
     },
     "src/utils/ChoicesWrapper.js": {
-      "expectCount": 16,
+      "expectCount": 17,
       "actualCount": 1,
       "undocumentLines": [
         35,
@@ -1518,7 +1520,8 @@
         117,
         188,
         198,
-        207
+        207,
+        215
       ]
     },
     "src/utils/Evaluator.js": {
@@ -1539,8 +1542,8 @@
       "expectCount": 17,
       "actualCount": 15,
       "undocumentLines": [
-        270,
-        306
+        280,
+        316
       ]
     },
     "src/utils/jsonlogic/operators.js": {
@@ -1554,12 +1557,12 @@
       "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
-        6,
         7,
         8,
         9,
         10,
-        11
+        11,
+        12
       ]
     },
     "src/validator/Rules.js": {

@@ -31,6 +31,7 @@ export default {
           label: 'Value',
           tableView: true,
           calculateValue: "value = (row.label || '').toLowerCase();",
+          allowCalculateOverride: true,
           key: 'value',
           type: 'textfield',
           input: true

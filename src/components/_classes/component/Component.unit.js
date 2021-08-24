@@ -8,6 +8,7 @@ import Harness from '../../../../test/harness';
 import { comp1 } from './fixtures';
 import _merge from 'lodash/merge';
 import comp3 from './fixtures/comp3';
+import comp4 from './fixtures/comp4';
 
 describe('Component', () => {
   it('Should create a Component', (done) => {
@@ -238,4 +239,58 @@ it('Should protect against change loops', function(done) {
     }, 500);
   })
   .catch((err) => done(err));
+});
+
+it('Should mark as invalid only invalid fields in multiple components', function(done) {
+  const formElement = document.createElement('div');
+  const form = new Webform(formElement);
+  const formJson = {
+    components: [
+      {
+        label: 'Email',
+        tableView: true,
+        multiple: true,
+        validate: {
+          required: true
+        },
+        key: 'email',
+        type: 'email',
+        input: true
+      },
+    ],
+  };
+
+  form.setForm(formJson).then(() => {
+    return form.setSubmission({
+      data: {
+        email: [
+          'oleg@form.io',
+          'oleg@form',
+          '',
+        ]
+      }
+    });
+  })
+  .then(() => {
+    setTimeout(() => {
+      const email = form.getComponent('email');
+      expect(email.refs.input[0].classList.contains('is-invalid')).to.be.false;
+      expect(email.refs.input[1].classList.contains('is-invalid')).to.be.true;
+      expect(email.refs.input[2].classList.contains('is-invalid')).to.be.true;
+      done();
+    }, 300);
+  })
+  .catch(done);
+});
+
+describe('shouldDisplayRedAsterisk', () => {
+  it('modalPreview template should have className "field-required" if component is required', done => {
+    Harness.testCreate(Component, _merge({}, comp4, {
+      validate: { required: true }
+    })).then(cmp => {
+      assert.equal(!!cmp.element.querySelector('.field-required'), true);
+      done();
+    }, done)
+    .catch(done);
+  });
 });

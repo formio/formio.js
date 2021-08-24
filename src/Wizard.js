@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import {
   fastCloneDeep,
   checkCondition,

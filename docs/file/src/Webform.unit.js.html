@@ -36,6 +36,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
@@ -235,6 +236,7 @@ import columnWithConditionalComponents from &apos;../test/forms/columnWithCondit
 import formWithSurvey from &apos;../test/forms/formWithSurvey&apos;;
 import formWithSelectBoxes from &apos;../test/forms/formWithSelectBoxes&apos;;
 import formWithDayComp from &apos;../test/forms/formWithDayComp&apos;;
+import testClearOnHideInsideEditGrid from &apos;../test/forms/clearOnHideInsideEditGrid&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -3188,6 +3190,55 @@ describe(&apos;Webform tests&apos;, function() {
             assert.equal(radioConditional.visible, true, &apos;Should stay visible&apos;);
 
             done();
+          }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it(&apos;Should execute clearOnHide if visibility of the component inside an EditGrid has changed&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+
+      form.setForm(testClearOnHideInsideEditGrid).then(() =&gt; {
+        form.submission = {
+          state: &apos;submitted&apos;,
+          data: {
+            subsidiaryEditGrid: [
+              {
+                subsidiaryEntityContainer: {
+                  entityFullName: &apos;test&apos;,
+                  divisionNum: &apos;&apos;,
+                  entityType: &apos;otherEntity&apos;,
+                  ifOtherEntityPleaseExplain: &apos;test&apos;,
+                },
+              },
+            ],
+          },
+        };
+
+        setTimeout(() =&gt; {
+          const clearOnHideField = form.getComponent([
+            &apos;subsidiaryEditGrid&apos;,
+            0,
+            &apos;subsidiaryEntityContainer&apos;,
+            &apos;ifOtherEntityPleaseExplain&apos;,
+          ]);
+          const radioTrigger = form.getComponent([&apos;subsidiaryEditGrid&apos;, 0, &apos;subsidiaryEntityContainer&apos;, &apos;entityType&apos;]);
+          assert.equal(form.rootPristine, true, &apos;Should not change this prop  after setting a submission&apos;);
+          assert.equal(clearOnHideField.visible, true, &apos;Should become visible&apos;);
+          assert.equal(clearOnHideField.dataValue, &apos;test&apos;, &apos;Should set a value from  the submission&apos;);
+
+          radioTrigger.setValue(&apos;subsidiary&apos;, { modified: true });
+          setTimeout(() =&gt; {
+            assert.equal(clearOnHideField.visible, false, &apos;Should become invisible&apos;);
+
+            radioTrigger.setValue(&apos;otherEntity&apos;, { modified: true });
+            setTimeout(() =&gt; {
+              assert.equal(clearOnHideField.visible, true, &apos;Should become visible&apos;);
+              assert.equal(clearOnHideField.dataValue, &apos;&apos;, &apos;Should clear a value due to the clearOnHide&apos;);
+
+              done();
+            }, 250);
           }, 250);
         }, 250);
       }).catch(done);

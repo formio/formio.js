@@ -335,7 +335,12 @@ export default class TextAreaComponent extends TextFieldComponent {
     index = index || 0;
     if (this.options.readOnly || this.disabled) {
       if (this.refs.input && this.refs.input[index]) {
-        this.setContent(this.refs.input[index], this.interpolate(value));
+        if (this.component.inputFormat === 'plain') {
+          this.refs.input[index].innerText = this.interpolate(value);
+        }
+        else {
+          this.setContent(this.refs.input[index], this.interpolate(value));
+        }
       }
     }
   }

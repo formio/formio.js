@@ -4,7 +4,8 @@ import SelectBoxesComponent from './SelectBoxes';
 import Formio from './../../Formio';
 
 import {
-  comp1
+  comp1,
+  comp3
 } from './fixtures';
 import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
 
@@ -201,5 +202,16 @@ describe('SelectBoxes Component', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+});
+
+describe('SelectBoxes Component', () => {
+  it('should have red asterisk left hand side to the options labels if component is required and label is hidden', () => {
+    return Harness.testCreate(SelectBoxesComponent, comp3).then(component => {
+      const options = component.element.querySelectorAll('.form-check-label');
+      options.forEach(i => {
+        assert.deepEqual(!!getComputedStyle(i, ':before'), true);
+      });
+    });
   });
 });

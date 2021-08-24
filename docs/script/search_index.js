@@ -264,6 +264,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/formio.js~globalformio",
+    "variable/index.html#static-variable-GlobalFormio",
+    "<span>GlobalFormio</span> <span class=\"search-result-import-path\">formiojs/src/Formio.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/components/html/html.form.js~html",
     "function/index.html#static-function-HTML",
     "<span>HTML</span> <span class=\"search-result-import-path\">formiojs/src/components/html/HTML.form.js</span>",
@@ -1752,6 +1758,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.js~formio.globalformio",
+    "class/src/Formio.js~Formio.html#static-get-GlobalFormio",
+    "src/Formio.js~Formio.GlobalFormio",
+    "member"
+  ],
+  [
     "src/formio.js~formio.accessinfo",
     "class/src/Formio.js~Formio.html#static-method-accessInfo",
     "src/Formio.js~Formio.accessInfo",
@@ -2640,6 +2652,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/_classes/component/fixtures/comp4.js",
+    "file/src/components/_classes/component/fixtures/comp4.js.html",
+    "src/components/_classes/component/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/_classes/component/fixtures/index.js",
     "file/src/components/_classes/component/fixtures/index.js.html",
     "src/components/_classes/component/fixtures/index.js",
@@ -2967,6 +2985,12 @@ window.esdocSearchIndex = [
     "src/components/address/fixtures/comp2.js",
     "file/src/components/address/fixtures/comp2.js.html",
     "src/components/address/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/address/fixtures/comp3.js",
+    "file/src/components/address/fixtures/comp3.js.html",
+    "src/components/address/fixtures/comp3.js",
     "file"
   ],
   [
@@ -5226,6 +5250,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp7.js",
+    "file/src/components/radio/fixtures/comp7.js.html",
+    "src/components/radio/fixtures/comp7.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",
@@ -5478,6 +5508,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/select/fixtures/comp15.js",
+    "file/src/components/select/fixtures/comp15.js.html",
+    "src/components/select/fixtures/comp15.js",
+    "file"
+  ],
+  [
     "src/components/select/fixtures/comp2.js",
     "file/src/components/select/fixtures/comp2.js.html",
     "src/components/select/fixtures/comp2.js",
@@ -5565,6 +5601,12 @@ window.esdocSearchIndex = [
     "src/components/selectboxes/fixtures/comp2.js",
     "file/src/components/selectboxes/fixtures/comp2.js.html",
     "src/components/selectboxes/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/selectboxes/fixtures/comp3.js",
+    "file/src/components/selectboxes/fixtures/comp3.js.html",
+    "src/components/selectboxes/fixtures/comp3.js",
     "file"
   ],
   [
@@ -8667,6 +8709,12 @@ window.esdocSearchIndex = [
     "src/utils/choiceswrapper.js~choiceswrapper#_handlebuttonaction",
     "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_handleButtonAction",
     "src/utils/ChoicesWrapper.js~ChoicesWrapper#_handleButtonAction",
+    "method"
+  ],
+  [
+    "src/utils/choiceswrapper.js~choiceswrapper#_onblur",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onBlur",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onBlur",
     "method"
   ],
   [
