@@ -129,6 +129,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-googledrive">googledrive</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
@@ -287,14 +288,37 @@ export default [
     label: &apos;Directory&apos;,
     placeholder: &apos;(optional) Enter a directory for the files&apos;,
     tooltip: &apos;This will place all the files uploaded in this field in the directory&apos;,
-    weight: 20
+    weight: 20,
+    conditional: {
+      json: {
+        &apos;!==&apos;: [{
+          var: &apos;data.storage&apos;
+        }, &apos;googledrive&apos;]
+      }
+    }
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;dir&apos;,
+    label: &apos;Folder ID&apos;,
+    placeholder: &apos;(optional) Enter an ID of the folder for the files&apos;,
+    tooltip: &apos;This will place all the files uploaded in this field in the folder&apos;,
+    weight: 20,
+    conditional: {
+      json: {
+        &apos;===&apos;: [{
+          var: &apos;data.storage&apos;
+        }, &apos;googledrive&apos;]
+      }
+    }
   },
   {
     type: &apos;textfield&apos;,
     input: true,
     key: &apos;fileNameTemplate&apos;,
     label: &apos;File Name Template&apos;,
-    placeholder: &apos;(optional) {{{name}}-{{guid}}}}}&apos;,
+    placeholder: &apos;(optional) { {name} }-{ {guid} }&quot;&apos;,
     tooltip: &apos;Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `moment` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.&apos;,
     weight: 25
   },

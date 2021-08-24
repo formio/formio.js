@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.20
+#### Added
+ - FIO-3131: Implements a Google Drive storage
+
 ### 4.14.0-rc.19
 #### Fixed
  - Select component - debounce option for server side filtering

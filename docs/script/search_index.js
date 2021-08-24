@@ -744,6 +744,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/providers/storage/googledrive.js~googledrive",
+    "function/index.html#static-function-googledrive",
+    "<span>googledrive</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/googleDrive.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/formutils.js~hascondition",
     "function/index.html#static-function-hasCondition",
     "<span>hasCondition</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -8211,6 +8217,12 @@ window.esdocSearchIndex = [
     "src/providers/storage/dropbox.js",
     "file/src/providers/storage/dropbox.js.html",
     "src/providers/storage/dropbox.js",
+    "file"
+  ],
+  [
+    "src/providers/storage/googledrive.js",
+    "file/src/providers/storage/googleDrive.js.html",
+    "src/providers/storage/googleDrive.js",
     "file"
   ],
   [
