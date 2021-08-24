@@ -505,7 +505,6 @@ export default {
       });
     },
     'Should save component values and close the modal after clicking "save"' (form, done) {
-
       const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
       testComponents.forEach((comp, index) => {
@@ -516,7 +515,7 @@ export default {
         const clickEvent = new Event('click');
         const isModalWindowOpened = () => {
           return !comp.refs.modalWrapper.classList.contains('component-rendering-hidden');
-        }
+        };
 
         const openModalBtn = comp.refs.openModal;
         openModalBtn.dispatchEvent(clickEvent);
@@ -546,7 +545,7 @@ export default {
                     childType === 'datetime' ? true : childExpectedValue,
                     `${compKey} (component ${compType}): should save value in modalEdit mode`
                   );
-                })
+                });
               }
               else {
                 assert.deepEqual(
@@ -566,7 +565,7 @@ export default {
     },
     'Should highlight modal button if component is invalid' (form, done, test) {
       test.timeout(10000);
-      let testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
+      const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
       form.everyComponent((comp)=> {
         comp.component.validate = comp.component.validate || {};
@@ -584,7 +583,7 @@ export default {
           const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
           assert.deepEqual(comp.subForm ? !!comp.subForm.errors.length : !!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
           //BUG in nested forms, remove the check once it is fixed
-          if(compType !== 'form') {
+          if (compType !== 'form') {
             assert.deepEqual(isErrorHighlightClass, true, `${compKey} (component ${compType}): should highlight invalid modal button`);
           }
         });
