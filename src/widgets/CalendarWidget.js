@@ -21,6 +21,7 @@ const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 const CDN_URL = 'https://cdn.form.io/';
 const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
+const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
 const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
 const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
@@ -181,7 +182,20 @@ export default class CalendarWidget extends InputWidget {
             this.settings.formatDate = this.getFlatpickrFormatDate(Flatpickr);
 
             if (this._input) {
-              this.initFlatpickr(Flatpickr);
+              const { locale } = this.settings;
+
+              if (locale && locale.length >= 2 && locale !== 'en') {
+                return Formio.requireLibrary(
+                  `flatpickr-${locale}`,
+                  `flatpickr-${locale}`,
+                  `${CDN_FLATPICKR_LOCALE_URL}/${locale}.min.js`,
+                  false,
+                  () => this.initFlatpickr(Flatpickr)
+                );
+              }
+              else {
+                this.initFlatpickr(Flatpickr);
+              }
             }
           });
       })
