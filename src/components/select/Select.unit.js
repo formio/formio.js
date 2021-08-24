@@ -23,6 +23,7 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -806,6 +807,31 @@ describe('Select Component', () => {
       const select = form.getComponent('select');
       assert.deepEqual(requiredSchema, select.schema);
       done();
+    }).catch(done);
+  });
+
+  it('Should provide correct value', (done) => {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const value = '{"textField":"rgd","submit":true,"number":11}';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.getValue(), value);
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 
