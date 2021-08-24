@@ -4,15 +4,11 @@ import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import Formio from '../../../Formio';
+import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
-import Templates from '../../../templates/Templates';
 import {
-  fastCloneDeep,
-  boolValue,
-  getDataParentComponent,
-  getComponentPath
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -30,6 +26,12 @@ const QUILL_URL = isIEBrowser
   : 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
+
+let Templates = Formio.Templates;
+
+if (!Templates) {
+  Templates = require('../../../templates/Templates').default;
+}
 
 /**
  * This is the Component class
@@ -873,7 +875,7 @@ export default class Component extends Element {
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-    return tooltip ? this.t(tooltip, { _userInput: true }) : '';
+    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
   }
 
   isHtmlRenderMode() {
@@ -2022,7 +2024,7 @@ export default class Component extends Element {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
       // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || this.options.server || getDataParentComponent(this)?.hasScopedChildren) &&
+      (!this.rootPristine || this.options.server || isInsideScopingComponent(this)) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -2381,7 +2383,7 @@ export default class Component extends Element {
   }
 
   get shouldAddDefaultValue() {
-    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
+    return !this.options.noDefaults || (this.component.defaultValue && !this.isEmpty(this.component.defaultValue)) || this.component.customDefaultValue;
   }
 
   get defaultValue() {

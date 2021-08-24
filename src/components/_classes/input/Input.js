@@ -145,7 +145,7 @@ export default class Input extends Multivalue {
         value,
         index,
         selectOptions: this.getMaskOptions() || [],
-      })
+      }, this.isHtmlRenderMode() ? 'html' : null)
       : this.renderTemplate('input', {
         prefix: this.prefix,
         suffix: this.suffix,
@@ -153,7 +153,7 @@ export default class Input extends Multivalue {
         value: this.formatValue(this.parseValue(value)),
         hasValueMaskInput: hasDifferentDisplayAndSaveFormats,
         index
-      });
+      }, this.isHtmlRenderMode() ? 'html' : null);
   }
 
   setCounter(type, element, count, max) {

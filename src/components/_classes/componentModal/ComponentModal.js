@@ -104,7 +104,7 @@ export default class ComponentModal {
       currentValue = this.currentValue.data;
     }
 
-    return !_.isEqual(componentValue, currentValue);
+    return !_.isEqual(fastCloneDeep(componentValue), currentValue);
   }
 
   setOpenEventListener() {

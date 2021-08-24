@@ -8,6 +8,7 @@ import Harness from '../../../../test/harness';
 import { comp1 } from './fixtures';
 import _merge from 'lodash/merge';
 import comp3 from './fixtures/comp3';
+import comp4 from './fixtures/comp4';
 
 describe('Component', () => {
   it('Should create a Component', (done) => {
@@ -238,4 +239,16 @@ it('Should protect against change loops', function(done) {
     }, 500);
   })
   .catch((err) => done(err));
+});
+
+describe('shouldDisplayRedAsterisk', () => {
+  it('modalPreview template should have className "field-required" if component is required', done => {
+    Harness.testCreate(Component, _merge({}, comp4, {
+      validate: { required: true }
+    })).then(cmp => {
+      assert.equal(!!cmp.element.querySelector('.field-required'), true);
+      done();
+    }, done)
+    .catch(done);
+  });
 });

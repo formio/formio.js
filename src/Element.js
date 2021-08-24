@@ -1,5 +1,5 @@
 import EventEmitter from './EventEmitter';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';

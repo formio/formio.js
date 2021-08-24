@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
@@ -31,6 +31,7 @@ export default class SelectComponent extends Field {
       lazyLoad: true,
       filter: '',
       searchEnabled: true,
+      searchDebounce: 0.3,
       searchField: '',
       minSearch: 0,
       readOnlyValue: false,
@@ -113,8 +114,11 @@ export default class SelectComponent extends Field {
     });
 
     if (this.isHtmlRenderMode()) {
-      this.triggerUpdate();
+      this.activate();
     }
+
+    // Get the template keys for this select component.
+    this.getTemplateKeys();
   }
 
   get dataReady() {
@@ -473,8 +477,49 @@ export default class SelectComponent extends Field {
     return defaultValue;
   }
 
+  getTemplateKeys() {
+    this.templateKeys = [];
+    if (this.options.readOnly && this.component.template) {
+      const keys = this.component.template.match(/({{\s*(.*?)\s*}})/g);
+      if (keys) {
+        keys.forEach((key) => {
+          const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
+          if (propKey && propKey.length > 1) {
+            this.templateKeys.push(propKey[1]);
+          }
+        });
+      }
+    }
+  }
+
+  get shouldLoad() {
+    // Live forms should always load.
+    if (!this.options.readOnly) {
+      return true;
+    }
+
+    // If there are template keys, then we need to see if we have the data.
+    if (this.templateKeys && this.templateKeys.length) {
+      // See if we already have the data we need.
+      return this.templateKeys.reduce((shouldLoad, key) => {
+        return shouldLoad || !_.has(this.dataValue, key);
+      }, false);
+    }
+
+    // Return that we should load.
+    return true;
+  }
+
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
+
+    // See if we should load items or not.
+    if (!this.shouldLoad) {
+      this.isScrollLoading = false;
+      this.loading = false;
+      this.itemsLoadedResolve();
+      return;
+    }
 
     // See if they have not met the minimum search requirements.
     const minSearch = parseInt(this.component.minSearch, 10);
@@ -830,7 +875,7 @@ export default class SelectComponent extends Field {
   }
 
   get active() {
-    return !this.component.lazyLoad || this.activated || this.options.readOnly;
+    return !this.component.lazyLoad || this.activated;
   }
 
   render() {
@@ -1008,7 +1053,14 @@ export default class SelectComponent extends Field {
         }
         this.isFromSearch = false;
       });
-      this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
+      // avoid spamming the resource/url endpoint when we have server side filtering enabled.
+      const debounceTimeout = this.component.searchField && (this.isSelectResource || this.isSelectURL) ?
+      (this.component.searchDebounce === 0 ? 0 : this.component.searchDebounce || this.defaultSchema.searchDebounce) * 1000
+      : 0;
+      const updateComponent = (evt) => {
+        this.triggerUpdate(evt.detail.value);
+      };
+      this.addEventListener(input, 'search', _.debounce(updateComponent, debounceTimeout));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
       this.addEventListener(input, 'hideDropdown', () => {
         if (this.choices && this.choices.input && this.choices.input.element) {
@@ -1402,6 +1454,7 @@ export default class SelectComponent extends Field {
       !this.active &&
       !this.selectOptions.length &&
       hasValue &&
+      this.shouldLoad &&
       this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
