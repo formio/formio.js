@@ -1153,6 +1153,10 @@ const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP
  *   Translated element template.
  */
 function translateElemValue(elem, translate) {
+  if (!elem.innerText) {
+    return elem.innerHTML;
+  }
+
   const elemValue = elem.innerText.replace(Evaluator.templateSettings.interpolate, '').replace(/\s\s+/g, ' ').trim();
   const translatedValue = translate(elemValue);
 
