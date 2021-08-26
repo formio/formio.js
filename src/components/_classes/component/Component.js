@@ -247,7 +247,7 @@ export default class Component extends Element {
 
     // Restore the component id.
     if (component && component.id) {
-      this.id = `${component.id}-${this.id}`;
+      this.id = component.id;
     }
 
     /**

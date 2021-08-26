@@ -1020,7 +1020,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
       };
 
-      const comp = this.createComponent(_.assign({}, column, {
+      const comp = this.createChildComponent(_.assign({}, column, {
         row: options.row,
       }), options, row);
       comp.rowIndex = rowIndex;

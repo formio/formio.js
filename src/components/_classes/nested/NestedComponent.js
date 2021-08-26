@@ -274,7 +274,7 @@ export default class NestedComponent extends Field {
   getComponentById(id, fn) {
     let comp = null;
     this.everyComponent((component, components) => {
-      if (component.id === id || component.id && component.id.startsWith(`${id}-`)) {
+      if (component.id === id) {
         comp = component;
         if (fn) {
           fn(component, components);
@@ -350,6 +350,26 @@ export default class NestedComponent extends Field {
       this.components.push(comp);
     }
     return comp;
+  }
+
+  createChildComponent(component, options, data, before) {
+    if (!component) {
+      return;
+    }
+    component = _.cloneDeep(component);
+    this.removeComponentId(component);
+    return this.createComponent(component, options, data, before);
+  }
+
+  removeComponentId(component) {
+    if (component.id) {
+      delete component.id;
+    }
+    if (component.components) {
+      for (const eachComponent of component.components) {
+        this.removeComponentId(eachComponent);
+      }
+    }
   }
 
   getContainer() {

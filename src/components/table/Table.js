@@ -142,7 +142,7 @@ export default class TableComponent extends NestedComponent {
             columnComponent = { ...comp, id: (comp.id + rowIndex) };
           }
 
-          const component = this.createComponent(columnComponent);
+          const component = this.createChildComponent(columnComponent);
           component.tableRow = rowIndex;
           component.tableColumn = colIndex;
           this.table[rowIndex][colIndex].push(component);
