@@ -1143,6 +1143,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           const errorContainer = rowContainer.querySelector('.editgrid-row-error');
 
           if (!rowValid && errorContainer && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
+            this.addClass(errorContainer,  'help-block' );
             errorContainer.textContent = this.t('invalidRowError');
           }
         }
