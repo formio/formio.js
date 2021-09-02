@@ -44,7 +44,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     // Add new values based on minLength.
     this.rows = [];
 
-    if (this.initRows) {
+    if (this.initRows || !_.isEqual(this.dataValue, this.emptyValue)) {
       this.createRows(true);
     }
 
@@ -441,7 +441,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     let row;
     const dataValue = this.dataValue;
-    const defaultValue =  this.defaultValue;
+    const defaultValue = this.defaultValue;
 
     if (this.initEmpty && defaultValue[index]) {
       row = defaultValue[index];
