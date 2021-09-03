@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
  - FIO-2721: Fixed an issue where data in the nested datagrid isn't visible until 'Add Another' button is clicked
  - FIO-3713: fix(Utils): an error occurs if HTML comp has an SVG tag with PATH tag inside it
+ - Editgrid showing error div
+ - FIO-3537: Cannot save the form with several Data Tables
 
 #### Changed
  - FIO-3002: Removed extra-small size option for button
