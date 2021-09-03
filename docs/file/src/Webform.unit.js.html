@@ -239,6 +239,7 @@ import formWithSelectBoxes from &apos;../test/forms/formWithSelectBoxes&apos;;
 import formWithDayComp from &apos;../test/forms/formWithDayComp&apos;;
 import formWithCalcValue from &apos;../test/forms/formWithCalcValue&apos;;
 import testClearOnHideInsideEditGrid from &apos;../test/forms/clearOnHideInsideEditGrid&apos;;
+import formWithNestedDataGridInitEmpty from &apos;../test/forms/nestedDataGridWithInitEmpty&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -3274,6 +3275,25 @@ describe(&apos;Webform tests&apos;, function() {
         }, 250);
       }).catch(done);
     });
+  });
+
+  it(&apos;Should show values in editGrid rows with nested dataGrid when viewing submission with initEmpty option&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const formWithNestedDataGridInitEmptyOption = new Webform(formElement);
+
+    formWithNestedDataGridInitEmptyOption.setForm(formWithNestedDataGridInitEmpty.form).then(() =&gt; {
+      formWithNestedDataGridInitEmptyOption.setSubmission(formWithNestedDataGridInitEmpty.submission);
+
+      setTimeout(() =&gt; {
+        const nestedDataGridFirstRowComponentValue = formWithNestedDataGridInitEmptyOption.element.querySelector(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;).querySelectorAll(&apos;.col-sm-2&apos;);
+
+        assert.equal(nestedDataGridFirstRowComponentValue[1].textContent.trim(), &apos;email&apos;);
+        assert.equal(nestedDataGridFirstRowComponentValue[2].textContent.trim(), &apos;hhh@gmail.com&apos;);
+
+        done();
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
   });
 
   each(FormTests, (formTest) =&gt; {

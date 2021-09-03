@@ -4,15 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.14.0-rc.21
 #### Fixed
  - FIO-2721: Fixed an issue where data in the nested datagrid isn't visible until 'Add Another' button is clicked
  - FIO-3713: fix(Utils): an error occurs if HTML comp has an SVG tag with PATH tag inside it
  - Editgrid showing error div
  - FIO-3537: Cannot save the form with several Data Tables
+ - Fix form embedding in async DOM (replace document.write() by DOM insert)
 
 #### Changed
  - FIO-3002: Removed extra-small size option for button
+ - Upgrade idb@6.1.3, @babel/core@7.15.4, @babel/preset-env@7.15.4, chance@1.1.8, marked@3.0.2, mocha@9.1.1, webpack@5.51.2, core-js@3.17.2, i18next@20.6.0, @babel/cli@7.15.4, sass@1.39.0, webpack-stream@7.0.0
 
 ### 4.14.0-rc.20
 #### Added

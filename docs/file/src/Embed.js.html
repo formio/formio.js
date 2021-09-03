@@ -269,15 +269,19 @@ export function embed(config = {}) {
       return element;
     };
 
-    debug(&apos;Embeding Configuration&apos;, config);
+    debug(&apos;Embedding Configuration&apos;, config);
 
     // The id for this embedded form.
     const id = `formio-${Math.random().toString(36).substring(7)}`;
     config.id = id;
 
     debug(&apos;Creating form wrapper&apos;);
-    document.write(`&lt;div id=&quot;${id}-wrapper&quot;&gt;&lt;/div&gt;`);
-    let wrapper = document.getElementById(`${id}-wrapper`);
+    let wrapper = createElement(&apos;div&apos;, {
+         &apos;id&apos;: `&quot;${id}-wrapper&quot;`
+    });
+
+    // insertAfter doesn&apos;t exist, but effect is identical.
+    thisScript.parentNode.insertBefore(wrapper, thisScript.parentNode.firstElementChild.nextSibling);
 
     // If we include the libraries, then we will attempt to run this in shadow dom.
     if (config.includeLibs &amp;&amp; (typeof wrapper.attachShadow === &apos;function&apos;)) {
