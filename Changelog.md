@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - FIO-2721: Fixed an issue where data in the nested datagrid isn't visible until 'Add Another' button is clicked
+ - FIO-3713: fix(Utils): an error occurs if HTML comp has an SVG tag with PATH tag inside it
+
+#### Changed
+ - FIO-3002: Removed extra-small size option for button
+
 ### 4.14.0-rc.20
 #### Added
  - FIO-3131: Implements a Google Drive storage
