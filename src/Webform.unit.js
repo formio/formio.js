@@ -63,6 +63,7 @@ import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
 import formWithDayComp from '../test/forms/formWithDayComp';
 import formWithCalcValue from '../test/forms/formWithCalcValue';
 import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
+import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -3098,6 +3099,25 @@ describe('Webform tests', function() {
         }, 250);
       }).catch(done);
     });
+  });
+
+  it('Should show values in editGrid rows with nested dataGrid when viewing submission with initEmpty option', function(done) {
+    const formElement = document.createElement('div');
+    const formWithNestedDataGridInitEmptyOption = new Webform(formElement);
+
+    formWithNestedDataGridInitEmptyOption.setForm(formWithNestedDataGridInitEmpty.form).then(() => {
+      formWithNestedDataGridInitEmptyOption.setSubmission(formWithNestedDataGridInitEmpty.submission);
+
+      setTimeout(() => {
+        const nestedDataGridFirstRowComponentValue = formWithNestedDataGridInitEmptyOption.element.querySelector('[ref="editgrid-editGrid-row"]').querySelectorAll('.col-sm-2');
+
+        assert.equal(nestedDataGridFirstRowComponentValue[1].textContent.trim(), 'email');
+        assert.equal(nestedDataGridFirstRowComponentValue[2].textContent.trim(), 'hhh@gmail.com');
+
+        done();
+      }, 200);
+    })
+    .catch((err) => done(err));
   });
 
   each(FormTests, (formTest) => {
