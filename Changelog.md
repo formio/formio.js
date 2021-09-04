@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.22
+#### Fixed
+ - FIO-3753: Conditionally shown edit grid with "Open First Row when Empty" enabled doesn't save value
+
 ### 4.14.0-rc.21
 #### Fixed
  - FIO-2721: Fixed an issue where data in the nested datagrid isn't visible until 'Add Another' button is clicked
