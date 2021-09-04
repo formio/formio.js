@@ -263,7 +263,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     const data = this.dataValue;
 
     (this.editRows || []).forEach((row, index) => {
-      const rowData = data[index];
+      if (!data[index] && row.state !== EditRowState.New) {
+        data[index] = {};
+      }
+      const rowData = data[index] || {};
 
       row.data = rowData;
       row.components.forEach((component) => {
