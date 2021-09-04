@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.23
+#### Changed
+ - Upgrade @formio/bootstrap3@2.12.0-rc.4
+ - Upgrade @formio/semantic@2.6.0-rc.4
+
 ### 4.14.0-rc.22
 #### Fixed
  - FIO-3753: Conditionally shown edit grid with "Open First Row when Empty" enabled doesn't save value

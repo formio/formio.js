@@ -2,13 +2,13 @@
   <div class="formio-form formio-read-only" ref="webform" novalidate>
     <div id="panel" class="formio-component formio-component-panel formio-component-panel " ref="component">
       <div class="panel panel-default">
-        <div class="panel-heading" ref="header">
+        <div class="panel-heading" tabindex="0" role="button" aria-expanded="true" aria-controls="panel-panel" ref="header">
           <h4 class="mb-0 panel-title">
             <i class="formio-collapse-icon fa fa-minus text-muted" data-title="Collapse Panel"></i>
             Panel
           </h4>
         </div>
-        <div class="panel-body" ref="nested-panel">
+        <div class="panel-body" ref="nested-panel" id="panel-panel">
           <div id="dateTime1" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime1 " ref="component">
             <label class="control-label " for="dateTime1-dateTime1">
               Date / Time

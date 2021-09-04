@@ -91,7 +91,7 @@
     </div>
     <div id="panel" class="formio-component formio-component-panel formio-component-panel  formio-component-label-hidden" ref="component">
       <div class="panel panel-default">
-        <div class="panel-body" ref="nested-panel">
+        <div class="panel-body" ref="nested-panel" id="panel-panel">
           <div id="panelText" class="form-group has-feedback formio-component formio-component-textfield formio-component-panelText " ref="component">
             <label class="control-label " for="panelText-panelText">
               Text
@@ -108,7 +108,7 @@
     </div>
     <div id="panel2" class="formio-component formio-component-panel formio-component-panel2  formio-component-label-hidden" ref="component">
       <div class="panel panel-default">
-        <div class="panel-heading" ref="header">
+        <div class="panel-heading" tabindex="0" role="button" aria-expanded="false" aria-controls="panel2-panel2" ref="header">
           <h4 class="mb-0 panel-title">
             <i class="formio-collapse-icon fa fa-plus text-muted" data-title="Collapse Panel"></i>
           </h4>
@@ -118,12 +118,12 @@
     </div>
     <div id="panel3" class="formio-component formio-component-panel formio-component-panel3  formio-component-label-hidden" ref="component">
       <div class="panel panel-default">
-        <div class="panel-heading" ref="header">
+        <div class="panel-heading" tabindex="0" role="button" aria-expanded="true" aria-controls="panel3-panel3" ref="header">
           <h4 class="mb-0 panel-title">
             <i class="formio-collapse-icon fa fa-minus text-muted" data-title="Collapse Panel"></i>
           </h4>
         </div>
-        <div class="panel-body" ref="nested-panel3">
+        <div class="panel-body" ref="nested-panel3" id="panel3-panel3">
           <div id="panel3Text" class="form-group has-feedback formio-component formio-component-textfield formio-component-panel3Text " ref="component">
             <label class="control-label " for="panel3Text-panel3Text">
               Text
