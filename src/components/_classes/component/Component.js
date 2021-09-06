@@ -2682,8 +2682,8 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    const { hidden, clearOnHide } = this.component;
-    const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
+    const { clearOnHide } = this.component;
+    const shouldBeCleared = !this.visible && clearOnHide;
     const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
     // Handle all cases when calculated values should not fire.
@@ -2903,10 +2903,12 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
+
+    this.checkComponentConditions(data, flags, row);
+
     if (this.id !== flags.triggeredComponentId) {
       this.calculateComponentValue(data, flags, row);
     }
-    this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
