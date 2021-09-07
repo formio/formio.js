@@ -193,7 +193,43 @@ describe('Validator Tests', () => {
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = null;
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
+
+    done();
+  });
+
+  it('Fulfills custom validation (multiple)', (done) => {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: 'test',
+          label: 'Test',
+          validator: 'custom',
+        },
+        level: 'error',
+        message: 'DEF',
+      }
+    ];
+    const pass = [];
+    const component = new Component({
+      key: 'test',
+      label: 'Test',
+      multiple: true,
+      validations: [
+        {
+          rule: 'custom',
+          level: 'error',
+          message: 'DEF',
+          settings: {
+            custom: 'valid = input === "foo";',
+          }
+        }
+      ]
+    });
+
     component.dataValue = [];
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = ['test'];
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
 
     done();
@@ -383,7 +419,46 @@ describe('Validator Tests', () => {
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = null;
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
+
+    done();
+  });
+
+  it('Fulfills json validation (multiple)', (done) => {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: 'test',
+          label: 'Test',
+          validator: 'json',
+        },
+        level: 'error',
+        message: 'DEF',
+      }
+    ];
+
+    const pass = [];
+
+    const component = new Component({
+      key: 'test',
+      label: 'Test',
+      multiple: true,
+      validations: [
+        {
+          rule: 'json',
+          level: 'error',
+          message: 'DEF',
+          settings: {
+            json: { '==' : [{ var: 'input' }, 'foo'] },
+          }
+        }
+      ]
+    });
+
     component.dataValue = [];
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
+
+    component.dataValue = ['test'];
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
 
     done();
@@ -993,10 +1068,48 @@ describe('Validator Tests', () => {
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = null;
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
+
+    done();
+  });
+
+  it('Fulfills pattern validation (multiple)', (done) => {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: 'test',
+          label: 'Test',
+          validator: 'pattern',
+        },
+        level: 'error',
+        message: 'DEF',
+      }
+    ];
+
+    const pass = [];
+
+    const component = new Component({
+      key: 'test',
+      label: 'Test',
+      multiple: true,
+      validations: [
+        {
+          rule: 'pattern',
+          level: 'error',
+          message: 'DEF',
+          settings: {
+            pattern: 'a.c',
+          }
+        }
+      ]
+    });
+
     component.dataValue = [];
-    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
     component.dataValue = ['abc'];
     assert.deepEqual(Validator.checkComponent(component, {}), pass);
+    component.dataValue = ['abv'];
+    assert.deepEqual(Validator.checkComponent(component, {}), fail);
 
     done();
   });
@@ -1043,7 +1156,41 @@ describe('Validator Tests', () => {
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = null;
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
-    component.dataValue = [];
+
+    done();
+  });
+
+  it('Fulfills required validation (multiple)', (done) => {
+    const fail = [
+      {
+        context: {
+          index: 0,
+          key: 'test',
+          label: 'Test',
+          validator: 'required',
+        },
+        level: 'error',
+        message: 'DEF',
+      }
+    ];
+
+    const pass = [];
+
+    const component = new Component({
+      key: 'test',
+      label: 'Test',
+      type: 'textfield',
+      multiple: true,
+      validations: [
+        {
+          rule: 'required',
+          level: 'error',
+          message: 'DEF',
+        }
+      ]
+    });
+
+    component.dataValue = [''];
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = ['test'];
     assert.deepEqual(Validator.checkComponent(component, {}), pass);

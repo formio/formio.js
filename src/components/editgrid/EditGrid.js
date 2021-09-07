@@ -861,6 +861,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
+    this.emit('editGridCancelRow', {
+      instance: this,
+      component: this.component,
+      editRow,
+    });
+
     this.checkValidity(null, true);
     this.redraw();
 
@@ -915,6 +921,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.emit('editGridSaveRow', {
       component: this.component,
       row: editRow.data,
+      instance: this
     });
     this.triggerChange({ modified, noPristineChangeOnModified: modified && this.component.rowDrafts, isolateRow: true });
     if (this.component.rowDrafts) {
