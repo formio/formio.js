@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.24
+#### Changed
+ - FIO-3616: next generation rules updates
+
+#### Fixed
+ - FIO-3798: fix(Component): calculated value is set to the component on load even if it is hidden and set to clear on hide
+ - FIO-3743 Fixed an issue with Date/Time component where the hours value doesn't save on the first change
+
 ### 4.14.0-rc.23
 #### Changed
  - Upgrade @formio/bootstrap3@2.12.0-rc.4
