@@ -463,10 +463,6 @@ export default class CalendarWidget extends InputWidget {
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
       }
-      else if (!this.calendar.input.value) {
-        const value = moment({ hour: this.calendar?.config?.defaultHour, minute: this.calendar?.config?.defaultMinute }).toDate();
-        this.calendar.setDate(value, true, this.settings.format);
-      }
     });
 
     // FJS-1103: When hit the enter button, the field not saving the year correctly
