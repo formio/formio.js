@@ -1233,6 +1233,8 @@ export default class WebformBuilder extends Component {
         });
       }
 
+      this.hook('beforeSaveComponentSettings', submissionData);
+
       let comp = null;
       parentComponent.getComponents().forEach((component) => {
         if (component.component.key === original.key) {
@@ -1376,7 +1378,7 @@ export default class WebformBuilder extends Component {
         'calculateValue'
       ]));
 
-      this.hook('previewFormSettitngs', schema);
+      this.hook('previewFormSettitngs', schema, isJsonEdit);
     }
 
     this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
@@ -1452,14 +1454,17 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    this.addEventListener(this.componentEdit.querySelector('[ref="removeButton"]'), 'click', (event) => {
-      event.preventDefault();
-      // Since we are already removing the component, don't trigger another remove.
-      saved = true;
-      this.editForm.detach();
-      this.removeComponent(component, parent, original);
-      this.dialog.close();
-      this.highlightInvalidComponents();
+    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
+    removeButtons.forEach((removeButton) => {
+      this.addEventListener(removeButton, 'click', (event) => {
+        event.preventDefault();
+        // Since we are already removing the component, don't trigger another remove.
+        saved = true;
+        this.editForm.detach();
+        this.removeComponent(component, parent, original);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
     });
 
     const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');

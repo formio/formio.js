@@ -1850,6 +1850,14 @@ export default class Component extends Element {
     return false;
   }
 
+  defineActionValue(action, argsObject) {
+    return this.evaluate(
+      action.value,
+      argsObject,
+      'value',
+    );
+  }
+
   applyActions(newComponent, actions, result, row, data) {
     data = data || this.rootValue;
     row = row || this.data;
@@ -1868,16 +1876,15 @@ export default class Component extends Element {
         }
         case 'value': {
           const oldValue = this.getValue();
-          const newValue = this.evaluate(
-            action.value,
+          const newValue = this.defineActionValue(
+            action,
             {
               value: _.clone(oldValue),
               data,
               row,
               component: newComponent,
               result,
-            },
-            'value',
+            }
           );
 
           if (!_.isEqual(oldValue, newValue)) {
@@ -3017,7 +3024,7 @@ export default class Component extends Element {
       });
       invalidInputRefs = inputRefsArray.filter((ref) => {
         return messages.some?.((msg) => {
-          return msg.context.input === ref;
+          return msg?.context?.input === ref;
         });
       });
     }

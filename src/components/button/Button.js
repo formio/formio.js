@@ -2,7 +2,7 @@ import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { flattenComponents } from '../../utils/utils';
+import { eachComponent } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -326,16 +326,14 @@ export default class ButtonComponent extends Field {
       case 'custom': {
         // Get the FormioForm at the root of this component's tree
         const form = this.getRoot();
-        // Get the form's flattened schema components
-        const flattened = flattenComponents(form.component.components, true);
-        // Create object containing the corresponding HTML element components
+
+        const flattened = {};
         const components = {};
-        _.each(flattened, (component, key) => {
-          const element = form.getComponent(key);
-          if (element) {
-            components[key] = element;
-          }
-        });
+
+        eachComponent(form.components, (component, path) => {
+          flattened[path] = component.component;
+          components[component.component.key] = component;
+        }, true);
 
         this.evaluate(this.component.custom, {
           form,
