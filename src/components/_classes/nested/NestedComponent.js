@@ -743,7 +743,7 @@ export default class NestedComponent extends Field {
 
   setNestedValue(component, value, flags = {}) {
     component._data = this.componentContext(component);
-    if (component.type === 'button') {
+    if (component.type === 'button' || !component.allowData) {  // Do not call "setValue" method if the component doesn't allow data
       return false;
     }
     if (component.type === 'components') {
