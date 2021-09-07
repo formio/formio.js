@@ -29,6 +29,11 @@ export default class HTMLComponent extends Component {
     return HTMLComponent.schema();
   }
 
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.options.noDefaults = true;
+  }
+
   get content() {
     if (this.builderMode) {
       return this.component.content;
@@ -59,6 +64,7 @@ export default class HTMLComponent extends Component {
     return this.renderTemplate('html', {
       component: this.component,
       tag: this.component.tag,
+      noDefaults: true,
       attrs: (this.component.attrs || []).map((attr) => {
         return {
           attr: attr.attr,

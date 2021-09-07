@@ -29,6 +29,11 @@ export default class ContentComponent extends Component {
     return ContentComponent.schema();
   }
 
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.options.noDefaults = true;
+  }
+
   get content() {
     if (this.builderMode) {
       return this.component.html;
