@@ -50,7 +50,7 @@ export default class RadioComponent extends Field {
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.class = 'form-check-input';
-    info.attr.name = info.attr.name += `[${this.parent.id}-${this.id}]`;
+    info.attr.name = info.attr.name += `[${this.root?.id}-${this.id}]`;
     return info;
   }
 
