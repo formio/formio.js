@@ -9,7 +9,8 @@ import {
   comp2,
   comp3,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -529,6 +530,33 @@ describe('DateTime Component', () => {
         document.innerHTML = '';
         done();
       }, 300);
+    }).catch(done);
+  });
+
+  it('Should save hours and minutes values on first change', (done) => {
+    const form = _.cloneDeep(comp6);
+    const element = document.createElement('div');
+    form.components[0].enableDate = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const blurEvent = new Event('blur');
+      const input = dateTime.element.querySelector('.input');
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() => {
+        const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
+        calendar._input.value = '7:00 PM';
+        const expectedValue = 'T19:00:00';
+        calendar._input.dispatchEvent(blurEvent);
+
+        setTimeout(() => {
+          assert.equal(dateTime.dataValue.includes(expectedValue), true);
+
+          document.innerHTML = '';
+          done();
+        }, 200);
+      }, 200);
     }).catch(done);
   });
   // it('Test Shortcut Buttons', (done) => {
