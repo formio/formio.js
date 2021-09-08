@@ -547,11 +547,11 @@ describe('DateTime Component', () => {
       setTimeout(() => {
         const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
         calendar._input.value = '7:00 PM';
-        const expectedValue = '2021-09-06T19:00:00';
+        const expectedValue = 'T19:00:00';
         calendar._input.dispatchEvent(blurEvent);
 
         setTimeout(() => {
-          assert.equal(dateTime.dataValue.startsWith(expectedValue), true);
+          assert.equal(dateTime.dataValue.includes(expectedValue), true);
 
           document.innerHTML = '';
           done();
