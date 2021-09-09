@@ -149,6 +149,63 @@ describe('Component', () => {
     }, done));
   });
 
+  it('Should mark as invalid calculated fields that are invalid', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'A',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          key: 'a',
+          type: 'number',
+          input: true
+        },
+        {
+          label: 'B',
+          mask: false,
+          disabled: true,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          calculateValue: 'value = data.a + 1;',
+          validate: {
+            custom: 'valid = input <= 10 ? true : \'B should be less or equal to 10\';'
+          },
+          key: 'b',
+          type: 'number',
+          input: true
+        }
+      ],
+    };
+
+    form.setForm(formJson).then(() => {
+      return form.setSubmission({
+        data: {
+          a: 1
+        }
+      });
+    })
+    .then(() => {
+      setTimeout(() => {
+        const a = form.getComponent('a');
+        a.updateComponentValue(10);
+        setTimeout(()=> {
+          const b = form.getComponent('b');
+          expect(b.refs.messageContainer?.innerHTML.indexOf('B should be less or equal to 10') > -1).to.be.true;
+          expect(b.refs.input[0].classList.contains('is-invalid')).to.be.true;
+          done();
+        }, 300);
+      }, 300);
+    })
+    .catch(done);
+  });
+
   describe('shouldSkipValidation', () => {
     it('should return true if component is hidden', done => {
       Harness.testCreate(Component, comp1)
