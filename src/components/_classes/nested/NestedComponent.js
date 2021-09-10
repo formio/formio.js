@@ -577,24 +577,6 @@ export default class NestedComponent extends Field {
     return isValid;
   }
 
-  checkModal(isValid, dirty) {
-    if (!this.component.modalEdit || !this.componentModal) {
-      return;
-    }
-    const messages = this.errors;
-    this.clearErrorClasses(this.refs.openModalWrapper);
-    this.error = '';
-    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {
-      this.error = {
-        component: this.component,
-        level: 'hidden',
-        message: this.t('Fix the errors'),
-        messages,
-      };
-      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
-    }
-  }
-
   checkConditions(data, flags, row) {
     // check conditions of parent component first, because it may influence on visibility of it's children
     const check = super.checkConditions(data, flags, row);

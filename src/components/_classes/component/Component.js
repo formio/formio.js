@@ -2946,9 +2946,15 @@ export default class Component extends Element {
     return isValid;
   }
 
-  checkModal() {
+  checkModal(isValid = true, dirty = false) {
     if (!this.component.modalEdit || !this.componentModal) {
       return;
+    }
+    if (dirty && !isValid) {
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, this.refs.openModalWrapper);
+    }
+    else {
+      this.clearErrorClasses(this.refs.openModalWrapper);
     }
   }
 

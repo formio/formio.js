@@ -571,25 +571,26 @@ export default {
         comp.component.validate = comp.component.validate || {};
         comp.component.validate.required = true;
       });
-
-      const clickEvent = new Event('click');
-      form.getComponent('submit').refs.button.dispatchEvent(clickEvent)
-
       setTimeout(() => {
-        testComponents.forEach((comp, index) => {
-          const compKey = comp.component.key;
-          const compType = comp.component.type;
+        const clickEvent = new Event('click');
+        form.getComponent('submit').refs.button.dispatchEvent(clickEvent);
+        setTimeout(() => {
+          testComponents
+          .filter(comp => !comp.component.tree && comp.hasInput)
+          .forEach((comp) => {
+            const compKey = comp.component.key;
+            const compType = comp.component.type;
 
-          const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
-          assert.deepEqual(comp.subForm ? !!comp.subForm.errors.length : !!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
-          //BUG in nested forms, remove the check once it is fixed
-          if (compType !== 'form') {
-            assert.deepEqual(isErrorHighlightClass, true, `${compKey} (component ${compType}): should highlight invalid modal button`);
-          }
-        });
-
-        done();
-      });
+            const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
+            assert.deepEqual(comp.subForm ? !!comp.subForm.errors.length : !!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
+            //BUG in nested forms, remove the check once it is fixed
+            if (compType !== 'form') {
+              assert.deepEqual(isErrorHighlightClass, true, `${compKey} (component ${compType}): should highlight invalid modal button`);
+            }
+          });
+          done();
+        }, 200);
+      }, 200);
     },
   },
   calculateValue: {
