@@ -2343,13 +2343,13 @@ export default class Component extends Element {
    *
    * @param index
    */
-  splice(index) {
+  splice(index, flags = {}) {
     if (this.hasValue()) {
       const dataValue = this.dataValue || [];
       if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
         this.dataValue = dataValue;
-        this.triggerChange();
+        this.triggerChange(flags);
       }
     }
   }
