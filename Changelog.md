@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.12.7-patch.10.1
+#### Fixed
+ - Do not validate if the component is not an input.
+
 ### 4.12.7-patch.10
 #### Fixed
  - disableOnInvalid does not work when have multiple nested forms and make one of them valid forms and make one of them valid
