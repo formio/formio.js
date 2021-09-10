@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.25
+#### Fixed
+ - FIO-3752: Check parent component conditions
+ - FIO-3715: Receiving Validation Errors when rendering a form with a submission in draft-state
+ - FIO-2561: Address that has Modal Edit checked is not shown in error list. Error message doesn't disappear in modal window
+ - FIO-3743: Fixed an issue with Date/Time component where the hours value doesn't save on the first change
+ - FIO-3875: Calculated fields that are invalid are not marked as such
+ - FIO-2946: Validation not triggered when change "required" option in Logic tab
+ - FIO-1310: Improved select search in large strings
+ - FIO-3838: Fixed issue when calculated values are set to default after reordering and removing a row in DataGrids inside of Tab component options
+ - FIO-3836: Fix checkConditions order for Container Companent
+
+#### Changed
+ - Upgrade core-js@3.17.3, i18next@20.6.1, @babel/preset-env@7.15.6, marked@3.0.3, sass@1.39.2, webpack@5.52.1
+
 ### 4.14.0-rc.24
 #### Changed
  - FIO-3616: next generation rules updates

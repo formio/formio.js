@@ -2580,12 +2580,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/_classes/component/component.unit.js",
-    "file/src/components/_classes/component/Component.unit.js.html",
-    "src/components/_classes/component/Component.unit.js",
-    "file"
-  ],
-  [
     "src/components/_classes/component/editform/component.edit.addons.js",
     "file/src/components/_classes/component/editForm/Component.edit.addons.js.html",
     "src/components/_classes/component/editForm/Component.edit.addons.js",
@@ -3909,6 +3903,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/fixtures/comp5.js",
     "file/src/components/datetime/fixtures/comp5.js.html",
     "src/components/datetime/fixtures/comp5.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp6.js",
+    "file/src/components/datetime/fixtures/comp6.js.html",
+    "src/components/datetime/fixtures/comp6.js",
     "file"
   ],
   [

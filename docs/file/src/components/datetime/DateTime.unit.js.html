@@ -185,7 +185,8 @@ import {
   comp2,
   comp3,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DateTime Component&apos;, () =&gt; {
@@ -705,6 +706,33 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
         document.innerHTML = &apos;&apos;;
         done();
       }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should save hours and minutes values on first change&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableDate = false;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+        calendar._input.value = &apos;7:00 PM&apos;;
+        const expectedValue = &apos;T19:00:00&apos;;
+        calendar._input.dispatchEvent(blurEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(dateTime.dataValue.includes(expectedValue), true);
+
+          document.innerHTML = &apos;&apos;;
+          done();
+        }, 200);
+      }, 200);
     }).catch(done);
   });
   // it(&apos;Test Shortcut Buttons&apos;, (done) =&gt; {
