@@ -2749,6 +2749,10 @@ export default class Component extends Element {
     this.calculatedValue = calculatedValue;
 
     if (changed) {
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
+
       flags.triggeredComponentId = this.id;
       return this.setValue(calculatedValue, flags);
     }
