@@ -946,6 +946,11 @@ export default class SelectComponent extends Field {
       }
     }
 
+    const commonFuseOptions = {
+      maxPatternLength: 1000,
+      distance: 1000,
+    };
+
     return {
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
@@ -969,6 +974,7 @@ export default class SelectComponent extends Field {
         ? {
           tokenize: true,
           matchAllTokens: true,
+          ...commonFuseOptions
         }
         : Object.assign(
         {},
@@ -976,6 +982,7 @@ export default class SelectComponent extends Field {
         {
           include: 'score',
           threshold: _.get(this, 'component.selectThreshold', 0.3),
+          ...commonFuseOptions
         }
       ),
       valueComparer: _.isEqual,
