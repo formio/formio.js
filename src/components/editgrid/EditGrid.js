@@ -1188,13 +1188,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
   }
 
-  checkComponentConditions() {
-    if (this.parent) {
-      return super.checkComponentConditions() && this.parent.checkComponentConditions();
-    }
-    return super.checkComponentConditions();
-  }
-
   setValue(value, flags = {}) {
     if (!value) {
       value = this.defaultValue;
@@ -1210,7 +1203,9 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    this.checkComponentConditions();
+    if (this.parent) {
+      this.parent.checkComponentConditions();
+    }
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
