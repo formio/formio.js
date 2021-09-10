@@ -1452,7 +1452,7 @@ export default class Webform extends NestedDataComponent {
           return reject('Invalid Submission');
         }
 
-        if (!isDraft && !this.checkValidity(submission.data, true, submission.data)) {
+        if (!isDraft && !this.checkValidity(submission.data, true)) {
           return reject();
         }
 
