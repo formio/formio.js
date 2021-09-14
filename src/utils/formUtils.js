@@ -104,7 +104,7 @@ export function eachComponent(components, fn, includeAll, path, parent, inRecurs
     if (!noRecurse) {
       if (hasColumns) {
         component.columns.forEach((column) =>
-          eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null), true);
+          eachComponent(column, fn, includeAll, subPath(), parent ? component : null), true);
       }
 
       else if (hasRows) {
