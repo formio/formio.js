@@ -540,7 +540,7 @@ export default class DayComponent extends Field {
    * @returns {*}
    */
   getValueAt(index) {
-    const date = this.date;
+    const date = this.date || this.emptyValue;
     if (date) {
       this.refs.input[index].value = date;
       return this.refs.input[index].value;
