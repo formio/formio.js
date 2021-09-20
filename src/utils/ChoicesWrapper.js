@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from '@formio/choices.js';
 
 /**
  * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.
@@ -90,7 +90,10 @@ class ChoicesWrapper extends Choices {
 
     this.onSelectValue(...args);
 
-    this.isDirectionUsing = false;
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.isDirectionUsing = false;
+    }, 250);
   }
 
   _onTabKey({ activeItems, hasActiveDropdown }) {
@@ -207,6 +210,13 @@ class ChoicesWrapper extends Choices {
     }
 
     super.hideDropdown(...args);
+  }
+
+  _onBlur(...args) {
+    if (this._isScrollingOnIe) {
+      return;
+    }
+    super._onBlur(...args);
   }
 }
 

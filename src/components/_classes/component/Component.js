@@ -1,22 +1,19 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
-import { conformToMask } from 'text-mask-all/vanilla';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import Formio from '../../../Formio';
+import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
-import Templates from '../../../templates/Templates';
 import {
-  fastCloneDeep,
-  boolValue,
-  getDataParentComponent,
-  getComponentPath
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
+import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import enTranslation from '../../../translations/en';
 
@@ -29,6 +26,12 @@ const QUILL_URL = isIEBrowser
   : 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
+
+let Templates = Formio.Templates;
+
+if (!Templates) {
+  Templates = require('../../../templates/Templates').default;
+}
 
 /**
  * This is the Component class
@@ -73,7 +76,7 @@ export default class Component extends Element {
       multiple: false,
 
       /**
-       * The default value of this compoennt.
+       * The default value of this component.
        */
       defaultValue: null,
 
@@ -198,7 +201,8 @@ export default class Component extends Element {
       showCharCount: false,
       showWordCount: false,
       properties: {},
-      allowMultipleMasks: false
+      allowMultipleMasks: false,
+      addons: [],
     }, ...sources);
   }
 
@@ -234,7 +238,8 @@ export default class Component extends Element {
   constructor(component, options, data) {
     super(Object.assign({
       renderMode: 'form',
-      attachMode: 'full'
+      attachMode: 'full',
+      noDefaults: false
     }, options || {}));
 
     // Restore the component id.
@@ -334,6 +339,7 @@ export default class Component extends Element {
      * @type {Component}
      */
     this.root = this.options.root;
+    this.localRoot = this.options.localRoot;
 
     /**
      * If this input has been input and provided value.
@@ -360,6 +366,9 @@ export default class Component extends Element {
     this._path = '';
     // Nested forms don't have parents so we need to pass their path in.
     this._parentPath = this.options.parentPath || '';
+
+    // Needs for Nextgen Rules Engine
+    this.resetCaches();
 
     /**
      * Determines if this component is visible, or not.
@@ -423,6 +432,12 @@ export default class Component extends Element {
      */
     this.tooltips = [];
 
+    /**
+     * List of attached addons
+     * @type {Array}
+     */
+    this.addons = [];
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -433,7 +448,9 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.defaultValue;
+            if (this.shouldAddDefaultValue) {
+              this.dataValue = this.defaultValue;
+            }
           }
           else {
             // Ensure the dataValue is set.
@@ -505,11 +522,42 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
+    if (this.component.addons?.length) {
+      this.component.addons.forEach((addon) => this.createAddon(addon));
+    }
+  }
+
+  createAddon(addonConfiguration) {
+    const name = addonConfiguration.name;
+    if (!name) {
+      return;
+    }
+
+    const settings = addonConfiguration.settings?.data || {};
+    const Addon = Addons[name];
+
+    let addon = null;
+
+    if (Addon) {
+      const supportedComponents = Addon.info.supportedComponents;
+      const supportsThisComponentType = !supportedComponents?.length ||
+        supportedComponents.indexOf(this.component.type) !== -1;
+      if (supportsThisComponentType) {
+        addon = new Addon(settings, this);
+        this.addons.push(addon);
+      }
+      else {
+        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+      }
+    }
+
+    return addon;
   }
 
   destroy() {
     super.destroy();
     this.detach();
+    this.addons.forEach((addon) => addon.destroy());
   }
 
   get shouldDisabled() {
@@ -570,7 +618,7 @@ export default class Component extends Element {
    */
   get visible() {
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (this.builderMode || this.options.showHiddenFields) {
+    if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
     if (
@@ -694,7 +742,7 @@ export default class Component extends Element {
         }
       }
       else if (_.isArray(val)) {
-        if (val.length !== 0) {
+        if (val.length !== 0 && !_.isEqual(val, defaultSchema[key])) {
           modified[key] = val;
         }
       }
@@ -705,7 +753,8 @@ export default class Component extends Element {
         (!recursion && (key === 'input')) ||
         (!recursion && (key === 'tableView')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
-        (val !== '' && val !== defaultSchema[key])
+        (val !== '' && val !== defaultSchema[key]) ||
+        (defaultSchema[key] && val !== defaultSchema[key])
       ) {
         modified[key] = val;
       }
@@ -826,7 +875,7 @@ export default class Component extends Element {
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-    return tooltip ? this.t(tooltip, { _userInput: true }) : '';
+    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
   }
 
   isHtmlRenderMode() {
@@ -917,7 +966,7 @@ export default class Component extends Element {
       settings.shadowRoot = this.root.shadowRoot;
     }
 
-    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component): null;
+    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component, this): null;
     return widget;
   }
 
@@ -992,8 +1041,8 @@ export default class Component extends Element {
     }
   }
 
-  setOpenModalElement() {
-    this.componentModal.setOpenModalElement(this.getModalPreviewTemplate());
+  setOpenModalElement(template) {
+    this.componentModal.setOpenModalElement(template || this.getModalPreviewTemplate());
   }
 
   getModalPreviewTemplate() {
@@ -1024,7 +1073,7 @@ export default class Component extends Element {
     const isVisible = this.visible;
     this.rendered = true;
 
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       return ComponentModal.render(this, {
         visible: isVisible,
         showSaveButton: this.hasModalSaveButton,
@@ -1046,30 +1095,41 @@ export default class Component extends Element {
   }
 
   attachTooltips(toolTipsRefs) {
-    toolTipsRefs.forEach((tooltip, index) => {
-      const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-      const tooltipText = this.interpolate(tooltip.getAttribute('data-title') || tooltipAttribute).replace(/(?:\r\n|\r|\n)/g, '<br />');
+    toolTipsRefs?.forEach((tooltip, index) => {
+      if (tooltip) {
+        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
+        const tooltipDataTitle = tooltip.getAttribute('data-title');
+        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-      this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click focus',
-        placement: 'right',
-        html: true,
-        title: this.t(tooltipText, { _userInput: true }),
-        template: `
-          <div class="tooltip" style="opacity: 1;" role="tooltip">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-inner"></div>
-          </div>`,
-      });
+        this.tooltips[index] = new Tooltip(tooltip, {
+          trigger: 'hover click focus',
+          placement: 'right',
+          html: true,
+          title: this.t(tooltipText, { _userInput: true }),
+          template: `
+            <div class="tooltip" style="opacity: 1;" role="tooltip">
+              <div class="tooltip-arrow"></div>
+              <div class="tooltip-inner"></div>
+            </div>`,
+        });
+      }
     });
   }
 
+  createComponentModal(element, modalShouldBeOpened, currentValue) {
+    return new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+  }
+
   attach(element) {
-    if (!this.builderMode && this.component.modalEdit) {
+    if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
       const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
-      this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
-      this.setOpenModalElement();
+      const openModalTemplate = this.componentModal && modalShouldBeOpened
+        ? this.componentModal.openModalTemplate
+        : null;
+      this.componentModal = this.createComponentModal(element, modalShouldBeOpened, currentValue);
+      this.setOpenModalElement(openModalTemplate);
     }
 
     this.attached = true;
@@ -1102,6 +1162,8 @@ export default class Component extends Element {
     }
 
     this.restoreFocus();
+
+    this.addons.forEach((addon) => addon.attach(element));
 
     return NativePromise.resolve();
   }
@@ -1459,10 +1521,15 @@ export default class Component extends Element {
       rowIndex: this.rowIndex,
       data: this.rootValue,
       iconClass: this.iconClass.bind(this),
+      // Bind the translate function to the data context of any interpolated string.
+      // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
+      // and desirable to be publicly available rather than calling the internal {instance.t} function in the template string.
+      t: this.t.bind(this),
       submission: (this.root ? this.root._submission : {
         data: this.rootValue
       }),
       form: this.root ? this.root._form : {},
+      options: this.options,
     }, additional));
   }
 
@@ -1552,13 +1619,18 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
+        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
         if (input) {
-          input.setSelectionRange(...selection);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(...selection);
+          }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          input.setSelectionRange(lastCharacter, lastCharacter);
+          if (isInputRangeSelectable) {
+            input.setSelectionRange(lastCharacter, lastCharacter);
+          }
         }
       }
     }
@@ -1640,7 +1712,7 @@ export default class Component extends Element {
   conditionallyVisible(data, row) {
     data = data || this.rootValue;
     row = row || this.data;
-    if (this.builderMode || !this.hasCondition()) {
+    if (this.builderMode || this.previewMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
@@ -1674,7 +1746,7 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    if (!this.builderMode && this.fieldLogic(data, row)) {
+    if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
 
@@ -1778,6 +1850,14 @@ export default class Component extends Element {
     return false;
   }
 
+  defineActionValue(action, argsObject) {
+    return this.evaluate(
+      action.value,
+      argsObject,
+      'value',
+    );
+  }
+
   applyActions(newComponent, actions, result, row, data) {
     data = data || this.rootValue;
     row = row || this.data;
@@ -1796,16 +1876,15 @@ export default class Component extends Element {
         }
         case 'value': {
           const oldValue = this.getValue();
-          const newValue = this.evaluate(
-            action.value,
+          const newValue = this.defineActionValue(
+            action,
             {
               value: _.clone(oldValue),
               data,
               row,
               component: newComponent,
               result,
-            },
-            'value',
+            }
           );
 
           if (!_.isEqual(oldValue, newValue)) {
@@ -1916,12 +1995,16 @@ export default class Component extends Element {
 
   setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
-    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    elements.forEach((element) => {
+      this.setElementInvalid(this.performInputMapping(element), false);
+    });
     this.setInputWidgetErrorClasses(elements, hasErrors);
 
     if (hasErrors) {
       // Add error classes
-      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+      elements.forEach((input) => {
+        this.setElementInvalid(this.performInputMapping(input), true);
+      });
 
       if (dirty && this.options.highlightErrors) {
         this.addClass(element, this.options.componentErrorClass);
@@ -1935,11 +2018,23 @@ export default class Component extends Element {
     }
   }
 
+  setElementInvalid(element, invalid) {
+    if (!element) return;
+
+    if (invalid) {
+      this.addClass(element, 'is-invalid');
+    }
+    else {
+      this.removeClass(element, 'is-invalid');
+    }
+    element.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+  }
+
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
       // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || getDataParentComponent(this)?.hasScopedChildren) &&
+      (!this.rootPristine || this.options.server || isInsideScopingComponent(this)) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -1947,7 +2042,7 @@ export default class Component extends Element {
       if (!this.visible) {
         this.deleteValue();
       }
-      else if (!this.hasValue()) {
+      else if (!this.hasValue() && this.shouldAddDefaultValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2099,7 +2194,8 @@ export default class Component extends Element {
     settings = {
       ...settings,
       modules: {
-        table: true
+        table: true,
+        ...settings.modules
       }
     };
     // Lazy load the quill css.
@@ -2220,7 +2316,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       const empty = this.component.multiple ? [] : this.emptyValue;
       if (!this.rootPristine) {
         this.dataValue = empty;
@@ -2259,13 +2355,13 @@ export default class Component extends Element {
    *
    * @param index
    */
-  splice(index) {
+  splice(index, flags = {}) {
     if (this.hasValue()) {
       const dataValue = this.dataValue || [];
       if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
         this.dataValue = dataValue;
-        this.triggerChange();
+        this.triggerChange(flags);
       }
     }
   }
@@ -2285,18 +2381,28 @@ export default class Component extends Element {
     this.unset();
   }
 
-  get defaultValue() {
-    let defaultValue = this.emptyValue;
-    if (this.component.defaultValue) {
-      defaultValue = this.component.defaultValue;
-    }
+  getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-      defaultValue = this.evaluate(
+     defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
         'value'
       );
     }
+    return defaultValue;
+  }
+
+  get shouldAddDefaultValue() {
+    return !this.options.noDefaults || (this.component.defaultValue && !this.isEmpty(this.component.defaultValue)) || this.component.customDefaultValue;
+  }
+
+  get defaultValue() {
+    let defaultValue = this.emptyValue;
+    if (this.component.defaultValue) {
+      defaultValue = this.component.defaultValue;
+    }
+
+    defaultValue = this.getCustomDefaultValue(defaultValue);
 
     const checkMask = (value) => {
       if (typeof value === 'string') {
@@ -2377,12 +2483,13 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
+    const valueInput = this.refs.fileLink || this.refs.input;
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
       this.refs.hasOwnProperty('input') &&
-      this.refs.input &&
-      (this.refs.input.length !== value.length) &&
+      valueInput &&
+      (valueInput.length !== value.length) &&
       this.visible
     ) {
       this.redraw();
@@ -2410,6 +2517,12 @@ export default class Component extends Element {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
+    const valueMaskInput = this.refs.valueMaskInput;
+
+    if (valueMaskInput?.mask) {
+      valueMaskInput.mask.textMaskInputElement.update(value);
+    }
+
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }
@@ -2426,7 +2539,7 @@ export default class Component extends Element {
   }
 
   setDefaultValue() {
-    if (this.defaultValue) {
+    if (this.defaultValue && this.shouldAddDefaultValue) {
       const defaultValue = (this.component.multiple && !this.dataValue.length) ? [] : this.defaultValue;
       this.setValue(defaultValue, {
         noUpdateEvent: true
@@ -2565,31 +2678,35 @@ export default class Component extends Element {
     return value;
   }
 
+  doValueCalculation(dataValue, data, row) {
+      return this.evaluate(this.component.calculateValue, {
+        value: dataValue,
+        data,
+        row: row || this.data
+      }, 'value');
+  }
+
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    const { hidden, clearOnHide } = this.component;
-    const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
+    const { clearOnHide } = this.component;
+    const shouldBeCleared = !this.visible && clearOnHide;
+    const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
     // Handle all cases when calculated values should not fire.
     if (
-      this.options.readOnly ||
-      !this.component.calculateValue ||
+      (this.options.readOnly && !this.options.pdf) ||
+      !(this.component.calculateValue || this.component.calculateValueVariable) ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
-      flags.dataSourceInitialLoading
+      (flags.dataSourceInitialLoading && allowOverride)
     ) {
       return false;
     }
 
     const dataValue = this.dataValue;
-
     // Calculate the new value.
-    let calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: dataValue,
-      data,
-      row: row || this.data
-    }, 'value');
+    let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
 
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
@@ -2598,7 +2715,7 @@ export default class Component extends Element {
     const changed = !_.isEqual(dataValue, calculatedValue);
 
     // Do not override calculations on server if they have calculateServer set.
-    if (this.component.allowCalculateOverride) {
+    if (allowOverride) {
       const firstPass = (this.calculatedValue === undefined);
       if (firstPass) {
         this.calculatedValue = null;
@@ -2616,11 +2733,11 @@ export default class Component extends Element {
         return false;
       }
 
-      if (flags.fromSubmission && this.component.persistent === true) {
-        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-        this.calculatedValue = calculatedValue;
-        return false;
-      }
+    if (flags.fromSubmission && this.component.persistent === true) {
+      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
 
       // If this is the firstPass, and the dataValue is different than to the calculatedValue.
       if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
@@ -2631,7 +2748,15 @@ export default class Component extends Element {
 
     this.calculatedValue = calculatedValue;
 
-    return changed ? this.setValue(calculatedValue, flags) : false;
+    if (changed) {
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
+
+      flags.triggeredComponentId = this.id;
+      return this.setValue(calculatedValue, flags);
+    }
+    return false;
   }
 
   /**
@@ -2777,6 +2902,10 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+
+    // Needs for Nextgen Rules Engine
+    this.resetCaches();
+
     // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
     if (!flags.fromBlur) {
       this.checkRefreshOn(flags.changes, flags);
@@ -2785,8 +2914,12 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data, flags, row);
+
     this.checkComponentConditions(data, flags, row);
+
+    if (this.id !== flags.triggeredComponentId) {
+      this.calculateComponentValue(data, flags, row);
+    }
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
@@ -2817,9 +2950,15 @@ export default class Component extends Element {
     return isValid;
   }
 
-  checkModal() {
+  checkModal(isValid = true, dirty = false) {
     if (!this.component.modalEdit || !this.componentModal) {
       return;
+    }
+    if (dirty && !isValid) {
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, this.refs.openModalWrapper);
+    }
+    else {
+      this.clearErrorClasses(this.refs.openModalWrapper);
     }
   }
 
@@ -2889,6 +3028,18 @@ export default class Component extends Element {
 
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
 
+    let invalidInputRefs = inputRefs;
+    if (this.component.multiple) {
+      const inputRefsArray = Array.from(inputRefs);
+      inputRefsArray.forEach((input) => {
+        this.setElementInvalid(this.performInputMapping(input), false);
+      });
+      invalidInputRefs = inputRefsArray.filter((ref) => {
+        return messages.some?.((msg) => {
+          return msg?.context?.input === ref;
+        });
+      });
+    }
     if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
@@ -2900,9 +3051,9 @@ export default class Component extends Element {
         external: !!external,
       };
       this.emit('componentError', this.error);
-      this.addMessages(messages, dirty, inputRefs);
-      if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+      this.addMessages(messages, dirty, invalidInputRefs);
+      if (invalidInputRefs) {
+        this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2913,8 +3064,8 @@ export default class Component extends Element {
         this.empty(this.refs.modalMessageContainer);
       }
       this.error = null;
-      if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+      if (invalidInputRefs) {
+        this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
       this.clearErrorClasses();
     }
@@ -2950,6 +3101,8 @@ export default class Component extends Element {
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
+      // Do not check validations if component is not an input component.
+      () => !this.hasInput,
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
@@ -3226,6 +3379,12 @@ export default class Component extends Element {
       formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
     }
     return formio;
+  }
+
+  resetCaches() {}
+
+  get previewMode() {
+    return false;
   }
 }
 

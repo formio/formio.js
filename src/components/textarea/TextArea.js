@@ -64,9 +64,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.content = value;
-    if (this.options.readOnly || this.disabled) {
+    if ((this.options.readOnly || this.disabled) && !this.isHtmlRenderMode()) {
       const elementStyle = this.info.attr.style || '';
-      const children = `<div ref="input" class="formio-editor-read-only-content" ${elementStyle ? `style='${elementStyle}'` : ''}'></div>`;
+      const children = `<div ref="input" class="formio-editor-read-only-content" ${elementStyle ? `style='${elementStyle}'` : ''}></div>`;
 
       return this.renderTemplate('well', {
         children,
@@ -289,8 +289,8 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.editorsReady[index]) {
       const setEditorsValue = (flags) => (editor) => {
-        this.autoModified = true;
         if (!flags.skipWysiwyg) {
+          this.autoModified = true;
           switch (this.component.editor) {
             case 'ace':
               editor.setValue(this.setConvertedValue(value, index));
@@ -335,7 +335,12 @@ export default class TextAreaComponent extends TextFieldComponent {
     index = index || 0;
     if (this.options.readOnly || this.disabled) {
       if (this.refs.input && this.refs.input[index]) {
-        this.setContent(this.refs.input[index], this.interpolate(value));
+        if (this.component.inputFormat === 'plain') {
+          this.refs.input[index].innerText = this.interpolate(value);
+        }
+        else {
+          this.setContent(this.refs.input[index], this.interpolate(value));
+        }
       }
     }
   }

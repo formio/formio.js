@@ -8,7 +8,8 @@ import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../
 export default class NestedComponent extends Field {
   static schema(...extend) {
     return Field.schema({
-      tree: false
+      tree: false,
+      lazyLoad: false,
     }, ...extend);
   }
 
@@ -33,12 +34,17 @@ export default class NestedComponent extends Field {
     return this._collapsed;
   }
 
-  set collapsed(value) {
-    this._collapsed = value;
-    this.redraw();
+  collapse(value) {
+    const promise = this.redraw();
     if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
+    return promise;
+  }
+
+  set collapsed(value) {
+    this._collapsed = value;
+    this.collapse(value);
   }
 
   set visible(value) {
@@ -314,7 +320,8 @@ export default class NestedComponent extends Field {
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
-    options.root = this.root || this;
+    options.root = options?.root || this.root || this;
+    options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
@@ -447,6 +454,12 @@ export default class NestedComponent extends Field {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
       });
+      this.addEventListener(this.refs.header, 'keydown', (e) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+          e.preventDefault();
+          this.collapsed = !this.collapsed;
+        }
+      });
     }
 
     return NativePromise.all([
@@ -564,27 +577,12 @@ export default class NestedComponent extends Field {
     return isValid;
   }
 
-  checkModal(isValid, dirty) {
-    if (!this.component.modalEdit || !this.componentModal) {
-      return;
-    }
-    const messages = this.errors;
-    this.clearErrorClasses(this.refs.openModalWrapper);
-    this.error = '';
-    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {
-      this.error = {
-        component: this.component,
-        level: 'hidden',
-        message: this.t('Fix the errors'),
-        messages,
-      };
-      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
-    }
-  }
-
   checkConditions(data, flags, row) {
-    this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));
-    return super.checkConditions(data, flags, row);
+    // check conditions of parent component first, because it may influence on visibility of it's children
+    const check = super.checkConditions(data, flags, row);
+    //row data of parent component not always corresponds to row of nested components, use comp.data as row data for children instead
+    this.getComponents().forEach(comp => comp.checkConditions(data, flags, comp.data));
+    return check;
   }
 
   clearOnHide(show) {
@@ -727,7 +725,9 @@ export default class NestedComponent extends Field {
 
   setNestedValue(component, value, flags = {}) {
     component._data = this.componentContext(component);
-    if (component.type === 'button') {
+    const shouldSkipTypes = ['button', 'htmlelement', 'content'];
+
+    if (shouldSkipTypes.includes(component.type)) {
       return false;
     }
     if (component.type === 'components') {
@@ -736,7 +736,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);
     }
-    else if (!this.rootPristine || component.visible) {
+    else if ((!this.rootPristine || component.visible) && component.shouldAddDefaultValue) {
       flags.noValidate = !flags.dirty;
       flags.resetValue = true;
       return component.setValue(component.defaultValue, flags);
@@ -750,5 +750,9 @@ export default class NestedComponent extends Field {
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);
+  }
+
+  get lazyLoad() {
+    return this.component.lazyLoad ?? false;
   }
 }

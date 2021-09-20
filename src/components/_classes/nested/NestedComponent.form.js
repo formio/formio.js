@@ -1,7 +1,7 @@
-import baseEditForm from '../component/Component.form';
+import Components from '../../Components';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'data',
       ignore: true

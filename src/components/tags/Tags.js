@@ -2,7 +2,7 @@ import Input from '../_classes/input/Input';
 
 let Choices;
 if (typeof window !== 'undefined') {
-  Choices = require('choices.js');
+  Choices = require('@formio/choices.js');
 }
 
 export default class TagsComponent extends Input {
@@ -66,6 +66,8 @@ export default class TagsComponent extends Input {
       return;
     }
 
+    const hasPlaceholder = !!this.component.placeholder;
+
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
@@ -73,6 +75,8 @@ export default class TagsComponent extends Input {
       removeItemButton: true,
       duplicateItemsAllowed: false,
       shadowRoot: this.root ? this.root.shadowRoot : null,
+      placeholder: hasPlaceholder,
+      placeholderValue: hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {

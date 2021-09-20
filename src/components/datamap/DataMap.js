@@ -78,7 +78,7 @@ export default class DataMapComponent extends DataGridComponent {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && this.shouldAddDefaultValue) {
       this.dataValue = this.emptyValue;
     }
     return _.get(this.data, this.key);
@@ -188,6 +188,66 @@ export default class DataMapComponent extends DataGridComponent {
         component.data = rowData;
       }
     });
+  }
+
+  getValueAsString(value, options) {
+    if (options?.email && this.visible && !this.skipInEmail && _.isObject(value)) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <tbody>
+      `);
+
+      result = Object.keys(value).reduce((result, key) => {
+        result += (`
+          <tr>
+            <th style="padding: 5px 10px;">${key}</th>
+            <td style="width:100%;padding:5px 10px;">${this.getView(value[key], options)}</td>
+          </tr>
+        `);
+        return result;
+      }, result);
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    }
+    if (_.isEmpty(value)) {
+      return '';
+    }
+    if (options?.modalPreview) {
+      delete options.modalPreview;
+      return this.getDataValueAsTable(value, options);
+    }
+
+    return typeof value === 'object' ? '[Complex Data]' : value;
+  }
+
+  getDataValueAsTable(value, options) {
+    let result = (`
+      <table border="1" style="width:100%">
+        <tbody>
+    `);
+
+    if (this.visible && _.isObject(value)) {
+      Object.keys(value).forEach((key) => {
+        result += (`
+          <tr>
+            <th style="padding: 5px 10px;">${key}</th>
+            <td style="width:100%;padding:5px 10px;">${this.getView(value[key], options)}</td>
+          </tr>
+        `);
+      });
+    }
+
+    result += (`
+        </tbody>
+      </table>
+    `);
+
+    return result;
   }
 
   createRowComponents(row, rowIndex) {

@@ -3,7 +3,7 @@
   <legend ref="header" class="{{ctx.component.collapsible ? 'formio-clickable' : ''}}">
     {{ctx.t(ctx.component.legend, { _userInput: true })}}
     {% if (ctx.component.tooltip) { %}
-      <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
+      <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
     {% } %}
   </legend>
   {% } %}

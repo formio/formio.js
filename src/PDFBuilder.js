@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
 import { fastCloneDeep, getElementRect } from './utils/utils';
@@ -174,7 +174,8 @@ export default class PDFBuilder extends WebformBuilder {
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
         iframeDropzone: 'single',
-        'sidebar-container': 'multiple'
+        'sidebar-container': 'multiple',
+        'sidebar': 'single',
       });
 
       this.afterAttach();
@@ -191,8 +192,16 @@ export default class PDFBuilder extends WebformBuilder {
     });
     this.initIframeEvents();
     this.updateDropzoneDimensions();
-    this.initDropzoneEvents();
-    this.prepSidebarComponentsForDrag();
+
+    const sidebar = this.refs.sidebar;
+    if (sidebar) {
+      this.addClass(sidebar, 'disabled');
+      this.webform.on('iframe-ready', () => {
+        this.pdfLoaded = true;
+        this.updateDragAndDrop();
+        this.removeClass(sidebar, 'disabled');
+      }, true);
+    }
   }
 
   upload(file) {
@@ -360,6 +369,9 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   updateDragAndDrop() {
+    if (!this.pdfLoaded) {
+      return;
+    }
     this.initDropzoneEvents();
     this.prepSidebarComponentsForDrag();
   }

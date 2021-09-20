@@ -1,0 +1,49 @@
+<div class="editgrid-table-container">
+  <div class="table-responsive">
+    <table class="table
+      {{ ctx.component.striped ? 'table-striped' : ''}}
+      {{ ctx.component.bordered ? 'table-bordered' : ''}}
+      {{ ctx.component.hover ? 'table-hover' : ''}}
+      {{ ctx.component.condensed ? 'table-sm' : ''}}
+    ">
+      {% if (ctx.header) { %}
+      <thead class="editgrid-table-head">
+        {{ctx.header}}
+      </thead>
+      {% } %}
+      <tbody class="editgrid-table-body">
+        {% ctx.rows.forEach(function(row, rowIndex) { %}
+        <tr ref="{{ctx.ref.row}}">
+          {{row}}
+          {% if (ctx.openRows[rowIndex] && !ctx.readOnly) { %}
+          <td class="editgrid-table-column">
+            <div class="editgrid-actions">
+              <button class="btn btn-primary" ref="{{ctx.ref.saveRow}}">{{ctx.t(ctx.component.saveRow || 'Save', { _userInput: true })}}</button>
+              {% if (ctx.component.removeRow) { %}
+              <button class="btn btn-danger" ref="{{ctx.ref.cancelRow}}">{{ctx.t(ctx.component.removeRow || 'Cancel', { _userInput: true })}}</button>
+              {% } %}
+            </div>
+          </td>
+          {% } %}
+          {% if (ctx.errors[rowIndex]) { %}
+          <td class="editgrid-table-column">
+            <div class="has-error">
+              <div class="editgrid-row-error help-block">
+                {{ctx.errors[rowIndex]}}
+              </div>
+            </div>
+          </td>
+          {% } %}
+        </tr>
+        {% }) %}
+      </tbody>
+      {% if (ctx.footer) { %}
+      <tfoot>
+        <tr>
+          {{ctx.footer}}
+         </tr>
+      <tfoot>
+      {% } %}
+    </table>
+  </div>
+</div>

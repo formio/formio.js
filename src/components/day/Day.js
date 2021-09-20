@@ -221,6 +221,10 @@ export default class DayComponent extends Field {
   }
 
   render() {
+    if (this.isHtmlRenderMode()) {
+      return super.render(this.renderTemplate('input'));
+    }
+
     return super.render(this.renderTemplate('day', {
       dayFirst: this.dayFirst,
       showDay: this.showDay,
@@ -563,13 +567,13 @@ export default class DayComponent extends Field {
 
   focus() {
     if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
-      this.refs.day.focus();
+      this.refs.day?.focus();
     }
     else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {
-      this.refs.month.focus();
+      this.refs.month?.focus();
     }
     else if (!this.showDay && !this.showDay && this.showYear) {
-      this.refs.year.focus();
+      this.refs.year?.focus();
     }
   }
 

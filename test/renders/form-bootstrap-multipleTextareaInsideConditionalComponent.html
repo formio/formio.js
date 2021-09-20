@@ -8,27 +8,27 @@
     col-md-pull-0
   " ref="column-columns3">
         <div id="issues" class="" ref="component">
-          <div class="card card-body bg-light">
+          <div class="card card-body bg-light mb-3">
             <div ref="nested-issues">
               <div id="didAnyBehavioralIssuesOccurOnYourShift" class="form-group has-feedback formio-component formio-component-radio formio-component-didAnyBehavioralIssuesOccurOnYourShift  required" ref="component">
-                <label class="col-form-label  field-required" for="didAnyBehavioralIssuesOccurOnYourShift-didAnyBehavioralIssuesOccurOnYourShift">
+                <label ref="label" class="col-form-label  field-required" for="didAnyBehavioralIssuesOccurOnYourShift-didAnyBehavioralIssuesOccurOnYourShift" id="l-didAnyBehavioralIssuesOccurOnYourShift-didAnyBehavioralIssuesOccurOnYourShift">
                   Behavioral issues
                 </label>
-                <div class="form-radio radio">
+                <div class="form-radio radio" ref="radioGroup" role="radiogroup" aria-required="true" aria-labelledby="l-didAnyBehavioralIssuesOccurOnYourShift-didAnyBehavioralIssuesOccurOnYourShift" aria-describedby="d-didAnyBehavioralIssuesOccurOnYourShift-didAnyBehavioralIssuesOccurOnYourShift">
                   <div class="form-check-inline" ref="wrapper">
                     <label class="form-check-label label-position-right" for="didAnyBehavioralIssuesOccurOnYourShift-yes">
-                      <input ref="input" name="data[didAnyBehavioralIssuesOccurOnYourShift][didAnyBehavioralIssuesOccurOnYourShift]" type="radio" class="form-check-input" lang="en" value="yes" id="didAnyBehavioralIssuesOccurOnYourShift-yes">
+                      <input ref="input" name="data[didAnyBehavioralIssuesOccurOnYourShift][didAnyBehavioralIssuesOccurOnYourShift]" type="radio" class="form-check-input" lang="en" value="yes" id="didAnyBehavioralIssuesOccurOnYourShift-yes" role="radio">
                       <span>Yes</span>
                     </label>
                   </div>
                   <div class="form-check-inline" ref="wrapper">
                     <label class="form-check-label label-position-right" for="didAnyBehavioralIssuesOccurOnYourShift-no">
-                      <input ref="input" name="data[didAnyBehavioralIssuesOccurOnYourShift][didAnyBehavioralIssuesOccurOnYourShift]" type="radio" class="form-check-input" lang="en" value="no" id="didAnyBehavioralIssuesOccurOnYourShift-no">
+                      <input ref="input" name="data[didAnyBehavioralIssuesOccurOnYourShift][didAnyBehavioralIssuesOccurOnYourShift]" type="radio" class="form-check-input" lang="en" value="no" id="didAnyBehavioralIssuesOccurOnYourShift-no" role="radio">
                       <span>No</span>
                     </label>
                   </div>
                 </div>
-                <div class="form-text text-muted">Did any behavioral issues occur on your shift?</div>
+                <div id="d-didAnyBehavioralIssuesOccurOnYourShift-didAnyBehavioralIssuesOccurOnYourShift" class="form-text text-muted">Did any behavioral issues occur on your shift?</div>
                 <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
               </div>
             </div>

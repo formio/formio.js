@@ -20,37 +20,6 @@ if (process) {
 // Make sure that the Option is available from the window.
 global.Option = global.window.Option;
 
-// Stub out the toLocaleString method so it works in mocha.
-// eslint-disable-next-line no-extend-native
-Number.prototype.toLocaleString = function(local, options) {
-  if (options && options.style === 'currency') {
-    switch (local) {
-      case 'en':
-      case 'en-US':
-        return '$100.00';
-      case 'en-GB':
-        return 'US$100.00';
-      case 'fr':
-        return '100,00 $US';
-      case 'de':
-        return '100,00 $';
-    }
-  }
-  else {
-    switch (local) {
-      case 'en':
-      case 'en-US':
-        return '12,345.679';
-      case 'en-GB':
-        return '12,345.679';
-      case 'fr':
-        return '12 345,679';
-      case 'de':
-        return '12.345,679';
-    }
-  }
-};
-
 let formBuilderElement = null;
 let formBuilder = null;
 
@@ -236,8 +205,8 @@ const Harness = {
     return element ? element.dispatchEvent(clickEvent) : null;
   },
   dispatchEvent(eventType, element, query, beforeDispatch) {
-    const event = new Event(eventType);
-    const el = element.querySelector(query);
+    const event = new Event(eventType, { bubbles: true, cancelable: true });
+    const el = query instanceof HTMLElement ? query : element.querySelector(query);
     assert(el, 'Element is not found');
     beforeDispatch && beforeDispatch(el);
     el.dispatchEvent(event);

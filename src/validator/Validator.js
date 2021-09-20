@@ -51,6 +51,7 @@ class ValidationChecker {
       onlyAvailableItems: {
         key: 'validate.onlyAvailableItems',
         method: 'validateValueAvailability',
+        hasLabel: true,
         message(component) {
           return component.t(component.errorMessage('valueIsNotAvailable'), {
             field: component.errorLabel,
@@ -122,10 +123,15 @@ class ValidationChecker {
             const query = { form: form._id };
 
             if (_.isString(value)) {
-              addPathQueryParams({
-                $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
-                $options: 'i'
-              }, query, path);
+              if (component.component.dbIndex) {
+                addPathQueryParams(value, query, path);
+              }
+              else {
+                addPathQueryParams({
+                  $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
+                  $options: 'i'
+                }, query, path);
+              }
             }
             // FOR-213 - Pluck the unique location id
             else if (
@@ -155,7 +161,13 @@ class ValidationChecker {
               }
               else if (result) {
                // Only OK if it matches the current submission
-                return resolve(submission._id && (result._id.toString() === submission._id));
+                if (submission._id && (result._id.toString() === submission._id)) {
+                  resolve(true);
+                }
+                else {
+                  component.conflictId = result._id.toString();
+                  return resolve(false);
+                }
               }
               else {
                 return resolve(true);
@@ -651,6 +663,8 @@ class ValidationChecker {
           inputMask = inputMask ? getInputMask(inputMask) : null;
 
           if (value && inputMask && !component.skipMaskValidation) {
+            // If char which is used inside mask placeholder was used in the mask, replace it with space to prevent errors
+            inputMask = inputMask.map((char) => char === component.placeholderChar ? ' ' : char);
             return matchInputMask(value, inputMask);
           }
 
@@ -872,30 +886,41 @@ class ValidationChecker {
     }
   }
 
-  validate(component, validatorName, value, data, index, row, async, conditionallyVisible) {
+  validate(component, validatorName, value, data, index, row, async, conditionallyVisible, validationObj) {
     // Skip validation for conditionally hidden components
     if (!conditionallyVisible) {
       return false;
     }
 
     const validator       = this.validators[validatorName];
-    const setting         = _.get(component.component, validator.key, null);
+    const setting         = _.get(validationObj || component.component, validator.key, null);
     const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row, async);
 
     const processResult = result => {
-      return result ? {
-        message: unescapeHTML(_.get(result, 'message', result)),
-        level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: getArrayFromComponentPath(component.path || ''),
-        context: {
-          validator: validatorName,
-          hasLabel: validator.hasLabel,
-          setting,
-          key: component.key,
-          label: component.label,
-          value
+      if (result) {
+        const resultData = {
+          message: unescapeHTML(_.get(result, 'message', result)),
+          level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
+          path: getArrayFromComponentPath(component.path || ''),
+          context: {
+            validator: validatorName,
+            hasLabel: validator.hasLabel,
+            setting,
+            key: component.key,
+            label: component.label,
+            value,
+            index,
+            input: component.refs.input?.[index]
+          }
+        };
+        if (validatorName ==='unique' && component.conflictId) {
+          resultData.conflictId = component.conflictId;
         }
-      } : false;
+        return resultData;
+      }
+      else {
+        return false;
+      }
     };
 
     if (async) {
@@ -922,28 +947,81 @@ class ValidationChecker {
     const values = (component.component.multiple && Array.isArray(component.validationValue))
       ? component.validationValue
       : [component.validationValue];
+    const conditionallyVisible = component.conditionallyVisible();
+    const addonsValidations = [];
+
+    if (component?.addons?.length) {
+      values.forEach((value) => {
+        component.addons.forEach((addon) => {
+          if (!addon.checkValidity(value)) {
+            addonsValidations.push(...(addon.errors || []));
+          }
+        });
+      });
+    }
 
     // If this component has the new validation system enabled, use it instead.
     const validations = _.get(component, 'component.validations');
-    if (validations && Array.isArray(validations)) {
-      const resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
+    let nextGenResultsOrPromises = [];
 
-      // Define how results should be formatted
-      const formatResults = results => {
-        return includeWarnings ? results : results.filter(result => result.level === 'error');
-      };
+    if (validations && Array.isArray(validations) && validations.length) {
+      const validationsGroupedByMode = _.chain(validations)
+        .groupBy((validation) => validation.mode)
+        .value();
 
-      if (async) {
-        return NativePromise.all(resultsOrPromises).then(formatResults);
+      if (component.calculateCondition) {
+        includeWarnings = true;
+
+        const uiGroupedValidation = _.chain(validationsGroupedByMode.ui)
+          .filter('active')
+          .groupBy((validation) => validation.group || null)
+          .value();
+
+        const commonValidations = uiGroupedValidation.null || [];
+        delete uiGroupedValidation.null;
+
+        commonValidations.forEach(({ condition, message, severity }) => {
+          if (!component.calculateCondition(condition)) {
+            nextGenResultsOrPromises.push({
+              level: severity || 'error',
+              message: component.t(message),
+              componentInstance: component,
+            });
+          }
+        });
+
+        _.forEach(uiGroupedValidation, (validationGroup) => {
+          _.forEach(validationGroup, ({ condition, message, severity }) => {
+            if (!component.calculateCondition(condition)) {
+              nextGenResultsOrPromises.push({
+                level: severity || 'error',
+                message: component.t(message),
+                componentInstance: component,
+              });
+
+              return false;
+            }
+          });
+        });
       }
       else {
-        return formatResults(resultsOrPromises);
+        nextGenResultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
+      }
+      if (component.validators.includes('custom') && validationsGroupedByMode.js) {
+        _.each(validationsGroupedByMode.js, (validation) => {
+          nextGenResultsOrPromises.push(_.map(values, (value, index) => this.validate(component, 'custom', value, data, index, row, async, conditionallyVisible, validation)));
+        });
+      }
+      if (component.validators.includes('json') && validationsGroupedByMode.json) {
+        _.each(validationsGroupedByMode.json, (validation) => {
+          nextGenResultsOrPromises.push(_.map(values, (value, index) => this.validate(component, 'json', value, data, index, row, async, conditionallyVisible, validation)));
+        });
       }
     }
 
     const validateCustom     = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
-    const conditionallyVisible = component.conditionallyVisible();
+
     // Run primary validators
     const resultsOrPromises = _(component.validators).chain()
       .map(validatorName => {
@@ -978,6 +1056,9 @@ class ValidationChecker {
     component.component.validate.multiple = component.component.multiple;
     resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async, conditionallyVisible));
 
+    resultsOrPromises.push(...addonsValidations);
+    resultsOrPromises.push(...nextGenResultsOrPromises);
+
     // Define how results should be formatted
     const formatResults = results => {
       // Condense to a single flat array
@@ -997,7 +1078,6 @@ class ValidationChecker {
 
       return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
     };
-
     // Wait for results if using async mode, otherwise process and return immediately
     if (async) {
       return NativePromise.all(resultsOrPromises).then(formatResults);

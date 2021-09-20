@@ -4,6 +4,8 @@ import Harness from '../../../test/harness';
 import SelectComponent from './Select';
 import { expect } from 'chai';
 import NativePromise from 'native-promise-only';
+import Formio from './../../Formio';
+import _ from 'lodash';
 
 import {
   comp1,
@@ -12,7 +14,17 @@ import {
   multiSelectOptions,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
+  comp8,
+  comp9,
+  comp10,
+  comp11,
+  comp12,
+  comp13,
+  comp14,
+  comp15,
+  comp16,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -155,6 +167,18 @@ describe('Select Component', () => {
     });
   });
 
+  it('should format unlisted values', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      const formattedValue1 = component.getView('Unlisted value');
+      const formattedValue2 = component.getView(0);
+
+      assert.equal(formattedValue1, '<span>Unlisted value</span>');
+      assert.equal(formattedValue2, '<span>0</span>');
+      done();
+    });
+  });
+
   it('should set multiple selected values not repeating them', function(done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);
@@ -203,9 +227,9 @@ describe('Select Component', () => {
 
   it('Should allow to override threshold option of fuzzy search', () => {
     try {
-      const c1 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.2 });
-      const c2 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.4 });
-      const c3 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.8 });
+      const c1 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.2 });
+      const c2 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.4 });
+      const c3 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.8 });
       const comps = [
         Harness.testCreate(SelectComponent, c1),
         Harness.testCreate(SelectComponent, c2),
@@ -284,6 +308,602 @@ describe('Select Component', () => {
     });
   });
 
+  it('Should render and set values in selects with different widget types', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const selectHTML = form.getComponent('selectHtml');
+      const selectChoices = form.getComponent('selectChoices');
+      assert.equal(!!selectHTML.choices, false);
+      assert.equal(!!selectChoices.choices, true);
+
+      setTimeout(() => {
+        assert.equal(selectChoices.element.querySelectorAll('.choices__item--choice').length, 3);
+        const value = 'b';
+        selectHTML.setValue(value);
+        selectChoices.setValue(value);
+
+        setTimeout(() => {
+          assert.equal(selectHTML.dataValue, value);
+          assert.equal(selectChoices.dataValue, value);
+          assert.equal(selectHTML.getValue(), value);
+          assert.equal(selectChoices.getValue(), value);
+
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should clear select value when "clear value on refresh options" and "refresh options on" is enable and number component is changed   ', (done) => {
+    const form = _.cloneDeep(comp8);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const numberComp = form.getComponent('number');
+      const value = 'b';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, value);
+        assert.equal(select.getValue(), value);
+        const numberInput = numberComp.refs.input[0];
+        const numberValue = 5;
+        const inputEvent = new Event('input');
+        numberInput.value = numberValue;
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(numberComp.dataValue, numberValue);
+          assert.equal(numberComp.getValue(), numberValue);
+          assert.equal(select.dataValue, '');
+          assert.equal(select.getValue(), '');
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should update select items when "refresh options on" is enable and number component is changed', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function(formio, type, url) {
+      return new Promise(resolve => {
+        let values =[{ name: 'Ivan' }, { name: 'Mike' }];
+
+        if (url.endsWith('5')) {
+          values = [{ name: 'Kate' }, { name: 'Ann' }, { name: 'Lana' }];
+        }
+         resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const numberComp = form.getComponent('number');
+      setTimeout(() => {
+        assert.equal(select.selectOptions.length, 2);
+        assert.deepEqual(select.selectOptions[0].value, { name: 'Ivan' });
+
+        const numberValue = 5;
+        const inputEvent = new Event('input');
+        const numberInput = numberComp.refs.input[0];
+
+        numberInput.value = numberValue;
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(numberComp.dataValue, numberValue);
+          assert.equal(numberComp.getValue(), numberValue);
+          assert.equal(select.selectOptions.length, 3);
+          assert.deepEqual(select.selectOptions[0].value, { name: 'Kate' });
+
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 500);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should update select items when "refresh options on blur" is enable and number component is changed', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].refreshOn = null;
+    form.components[1].refreshOnBlur = 'number';
+
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function(formio, type, url) {
+      return new Promise(resolve => {
+        let values =[{ name: 'Ivan' }, { name: 'Mike' }];
+
+        if (url.endsWith('5')) {
+          values = [{ name: 'Kate' }, { name: 'Ann' }, { name: 'Lana' }];
+        }
+         resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const numberComp = form.getComponent('number');
+      setTimeout(() => {
+        assert.equal(select.selectOptions.length, 2);
+        assert.deepEqual(select.selectOptions[0].value, { name: 'Ivan' });
+
+        const numberValue = 5;
+        const inputEvent = new Event('input');
+        const focusEvent = new Event('focus');
+        const blurEvent = new Event('blur');
+        const numberInput = numberComp.refs.input[0];
+        numberInput.dispatchEvent(focusEvent);
+        numberInput.value = numberValue;
+        numberInput.dispatchEvent(inputEvent);
+        numberInput.dispatchEvent(blurEvent);
+
+        setTimeout(() => {
+          assert.equal(numberComp.dataValue, numberValue);
+          assert.equal(numberComp.getValue(), numberValue);
+          assert.equal(select.selectOptions.length, 3);
+          assert.deepEqual(select.selectOptions[0].value, { name: 'Kate' });
+
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 500);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should be able to search if static search is enable', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      const focusEvent = new Event('focus');
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        assert.equal(select.choices.dropdown.isActive, true);
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 5);
+
+        const keyupEvent = new Event('keyup');
+        const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+        searchField.value = 'par';
+        searchField.dispatchEvent(keyupEvent);
+
+        setTimeout(() => {
+          const items = select.choices.choiceList.element.children;
+          assert.equal(items.length, 1);
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should not be able to search if static search is disable', (done) => {
+    const form = _.cloneDeep(comp10);
+    form.components[0].searchEnabled = false;
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      assert.equal(searchField, null);
+
+      done();
+    }).catch(done);
+  });
+
+  it('Should save correct value if value property and item template property are different', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].refreshOn = null;
+    form.components[1].valueProperty = 'age';
+    form.components[1].lazyLoad = true;
+
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values =[{ name: 'Ivan', age: 35 }, { name: 'Mike', age: 41 }];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      assert.equal(select.selectOptions.length, 0);
+      select.choices.showDropdown();
+
+      setTimeout(() => {
+        assert.equal(select.selectOptions.length, 2);
+        assert.deepEqual(select.selectOptions[0].value, 35);
+        assert.deepEqual(select.selectOptions[0].label, '<span>Ivan</span>');
+
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 2);
+        assert.equal(items[0].textContent.trim(), 'Ivan');
+
+        select.setValue(41);
+
+        setTimeout(() => {
+          assert.equal(select.getValue(), 41);
+          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Mike');
+
+          Formio.makeRequest = originalMakeRequest;
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should set custom header when sending request in select url', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].refreshOn = null;
+    form.components[1].lazyLoad = true;
+    form.components[1].data.headers = [{ key:'testHeader', value:'test' }];
+
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function(formio, type, url, method, data, opts) {
+      assert.equal(opts.header.get('testHeader'), 'test');
+      return new Promise(resolve => {
+        const values = [{ name: 'Ivan', age: 35 }, { name: 'Mike', age: 41 }];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      assert.equal(select.selectOptions.length, 0);
+      select.choices.showDropdown();
+
+      setTimeout(() => {
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should set value in select url with lazy load option', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].refreshOn = null;
+    form.components[1].lazyLoad = true;
+
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [{ name: 'Ivan' }, { name: 'Mike' }];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setValue({ name: 'Ivan' });
+      setTimeout(() => {
+        assert.deepEqual(select.getValue(), { name: 'Ivan' });
+        assert.deepEqual(select.dataValue, { name: 'Ivan' });
+        assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Ivan');
+
+        Formio.makeRequest = originalMakeRequest;
+
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should set value in select url with lazy load option when value property is defined', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].refreshOn = null;
+    form.components[1].lazyLoad = true;
+    form.components[1].valueProperty = 'name';
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [{ name: 'Ivan' }, { name: 'Mike' }];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setValue('Ivan');
+      setTimeout(() => {
+        assert.equal(select.getValue(), 'Ivan');
+        assert.equal(select.dataValue, 'Ivan');
+        assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Ivan');
+
+        Formio.makeRequest = originalMakeRequest;
+
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should be able to search if static search is enable', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      const focusEvent = new Event('focus');
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        assert.equal(select.choices.dropdown.isActive, true);
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 5);
+
+        const keyupEvent = new Event('keyup');
+        const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+        searchField.value = 'par';
+        searchField.dispatchEvent(keyupEvent);
+
+        setTimeout(() => {
+          const items = select.choices.choiceList.element.children;
+          assert.equal(items.length, 1);
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Server side search is debounced with the correct timeout', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].lazyLoad = false;
+    form.components[1].searchDebounce = 0.7;
+    form.components[1].disableLimit = false;
+    form.components[1].searchField = 'name';
+    const element = document.createElement('div');
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        resolve([]);
+      });
+    };
+
+    var searchHasBeenDebounced = false;
+    var originalDebounce = _.debounce;
+    _.debounce = (fn, timeout, opts) => {
+      searchHasBeenDebounced = timeout === 700;
+      return originalDebounce(fn, 0, opts);
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      const focusEvent = new Event('focus');
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        const keyupEvent = new Event('keyup');
+        searchField.value = 'the_name';
+        searchField.dispatchEvent(keyupEvent);
+
+        setTimeout(() => {
+          _.debounce = originalDebounce;
+          Formio.makeRequest = originalMakeRequest;
+
+          assert.equal(searchHasBeenDebounced, true);
+          done();
+        }, 50);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide "Allow only available values" validation', (done) => {
+    const form = _.cloneDeep(comp10);
+    form.components[0].validate.onlyAvailableItems = true;
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const value = 'Dallas';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.getValue(), value);
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(form.errors.length, 1);
+          assert.equal(select.error.message, 'Select is an invalid value.');
+          document.innerHTML = '';
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should render and set value in select json', (done) => {
+    const formObj = _.cloneDeep(comp11);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formObj).then(form => {
+      const select = form.getComponent('select');
+      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, formObj.components[0].placeholder);
+      select.choices.showDropdown();
+
+      setTimeout(() => {
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 4);
+
+        const value = { value: 'a', label:'A' };
+        select.setValue(value);
+
+        setTimeout(() => {
+          assert.deepEqual(select.getValue(), value);
+          assert.deepEqual(select.dataValue, value);
+          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'A');
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should load and set items in select resource and set value', (done) => {
+    const form = _.cloneDeep(comp12);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function(formio, type, url) {
+      return new Promise(resolve => {
+        let values = [{ data: { name: 'Ivan' } }, { data: { name: 'Mike' } }];
+
+        if (url.endsWith('Ivan')) {
+          assert.equal(url.endsWith('/form/60114dd32cab36ad94ac4f94/submission?limit=100&skip=0&data.name__regex=Ivan'), true);
+          values = [{ data: { name: 'Ivan' } }];
+        }
+        else {
+          assert.equal(url.endsWith('/form/60114dd32cab36ad94ac4f94/submission?limit=100&skip=0'), true);
+        }
+
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const items = select.choices.choiceList.element.children;
+      assert.equal(items.length, 1);
+      select.setValue('Ivan');
+
+      setTimeout(() => {
+        assert.equal(select.getValue(), 'Ivan');
+        assert.equal(select.dataValue, 'Ivan');
+        assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Ivan');
+        select.choices.showDropdown();
+
+        setTimeout(() => {
+          const items = select.choices.choiceList.element.children;
+
+          assert.equal(items.length, 2);
+          assert.equal(items[0].textContent, 'Ivan');
+
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should not have "limit" and "skip" query params when "Disable limit" option checked', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = (_, __, url) => {
+      assert.equal(url, 'https://test.com/');
+      return Promise.resolve({});
+    };
+
+    Formio.createForm(element, form).then(() => {
+      setTimeout(() => {
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('The empty option in html5 shouldn\'t have the [Object Object] value', () => {
+    return Harness.testCreate(SelectComponent, comp13).then((component) => {
+     const emptyOption = component.element.querySelectorAll('option')[0];
+      assert.notEqual(emptyOption.value, '[object Object]');
+      assert.equal(emptyOption.value, '');
+    });
+  });
+
+  it('Should not have default values in schema', (done) => {
+    const form = _.cloneDeep(comp14);
+    const element = document.createElement('div');
+
+    const requiredSchema = {
+      label: 'Select',
+      tableView: true,
+      key: 'select',
+      type: 'select',
+      input: true
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      assert.deepEqual(requiredSchema, select.schema);
+      done();
+    }).catch(done);
+  });
+
+  it('Should provide correct value', (done) => {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const value = '{"textField":"rgd","submit":true,"number":11}';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.getValue(), value);
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should show async custom values and be able to set submission', (done) => {
+    const formObj = _.cloneDeep(comp16);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formObj).then(form => {
+      const select = form.getComponent('select');
+     select.choices.showDropdown();
+
+      setTimeout(() => {
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 3);
+        const value = 'bb';
+        form.submission = { data: { select: value } };
+
+        setTimeout(() => {
+          assert.deepEqual(select.getValue(), value);
+          assert.deepEqual(select.dataValue, value);
+          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'B');
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;

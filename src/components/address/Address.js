@@ -1,7 +1,7 @@
 import autocompleter from 'autocompleter';
 import _ from 'lodash';
 
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import { GoogleAddressProvider } from '../../providers/address/GoogleAddressProvider';
 
 import Field from '../_classes/field/Field';
@@ -147,8 +147,9 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   initializeProvider(provider, options = {}) {
+    const url = this.interpolate(options.url);
     const Provider = Formio.Providers.getProvider('address', provider);
-    return new Provider(options);
+    return new Provider({ ...options, url });
   }
 
   get emptyValue() {

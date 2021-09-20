@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep } from '../../utils/utils';
+import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 
 let dragula;
 if (typeof window !== 'undefined') {
@@ -44,11 +44,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     // Add new values based on minLength.
     this.rows = [];
 
-    if (this.initRows) {
+    if (this.initRows || !_.isEqual(this.dataValue, this.emptyValue)) {
       this.createRows(true);
     }
 
     this.visibleColumns = {};
+    this.prevHasAddButton = this.hasAddButton();
     this.checkColumns();
   }
 
@@ -215,7 +216,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasRemoveButtons() {
-    return !this.component.disableAddingRemovingRows &&
+    return !this.builderMode && !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
@@ -236,7 +237,18 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   render() {
     const columns = this.getColumns();
-    const layoutFixed = columns.some(col => col.type === 'select') || this.component.layoutFixed;
+    let columnExtra = 0;
+    const hasRemoveButtons = this.hasRemoveButtons();
+    if (this.component.reorder) {
+      columnExtra++;
+    }
+    if (hasRemoveButtons) {
+      columnExtra++;
+    }
+    if (this.canAddColumn) {
+      columnExtra++;
+    }
+    const colWidth = Math.floor(12 / (columns.length + columnExtra));
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
       columns: columns,
@@ -246,7 +258,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       hasHeader: this.hasHeader(),
       hasExtraColumn: this.hasExtraColumn(),
       hasAddButton: this.hasAddButton(),
-      hasRemoveButtons: this.hasRemoveButtons(),
+      hasRemoveButtons,
       hasTopSubmit: this.hasTopSubmit(),
       hasBottomSubmit: this.hasBottomSubmit(),
       hasGroups: this.hasRowGroups(),
@@ -259,7 +271,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
-      layoutFixed
+      colWidth: colWidth.toString()
     }));
   }
 
@@ -286,6 +298,15 @@ export default class DataGridComponent extends NestedArrayComponent {
     }, false);
   }
 
+  loadRefs(element, refs) {
+    super.loadRefs(element, refs);
+
+    if (refs['messageContainer'] === 'single') {
+      const container = _.last(element.querySelectorAll('[ref=messageContainer]'));
+      this.refs['messageContainer'] = container || this.refs['messageContainer'];
+    }
+  }
+
   attach(element) {
     this.loadRefs(element, {
       [`${this.datagridKey}-row`]: 'multiple',
@@ -294,6 +315,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       [`${this.datagridKey}-removeRow`]: 'multiple',
       [`${this.datagridKey}-group-header`]: 'multiple',
       [this.datagridKey]: 'multiple',
+      'messageContainer': 'single'
     });
 
     if (this.allowReorder) {
@@ -313,6 +335,30 @@ export default class DataGridComponent extends NestedArrayComponent {
             }
           }
         }).on('drop', this.onReorder.bind(this));
+
+        this.dragula.on('cloned', (el, original) => {
+          if (el && el.children && original && original.children) {
+            original.children.forEach((child, index) => {
+              const styles = getComputedStyle(child, null);
+
+              if (styles.cssText !== '') {
+                el.children[index].style.cssText = styles.cssText;
+              }
+              else {
+                const cssText = Object.values(styles).reduce(
+                  (css, propertyName) => {
+                    return `${css}${propertyName}:${styles.getPropertyValue(
+                      propertyName
+                    )};`;
+                  },
+                  ''
+                );
+
+                el.children[index].style.cssText = cssText;
+              }
+            });
+          }
+        });
       }
     }
 
@@ -374,6 +420,17 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.rebuild();
   }
 
+  focusOnNewRowElement(row) {
+    Object.keys(row).find((key) => {
+      const focusableElements = getFocusableElements(row[key].element);
+      if (focusableElements && focusableElements[0]) {
+        focusableElements[0].focus();
+        return true;
+      }
+      return false;
+    });
+  }
+
   addRow() {
     const index = this.rows.length;
 
@@ -384,7 +441,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     let row;
     const dataValue = this.dataValue;
-    const defaultValue =  this.defaultValue;
+    const defaultValue = this.defaultValue;
 
     if (this.initEmpty && defaultValue[index]) {
       row = defaultValue[index];
@@ -397,7 +454,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.rows[index] = this.createRowComponents(row, index);
     this.checkConditions();
     this.triggerChange();
-    this.redraw();
+    this.redraw().then(() => {
+      this.focusOnNewRowElement(this.rows[index]);
+    });
   }
 
   updateComponentsRowIndex(components, rowIndex) {
@@ -419,7 +478,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   removeRow(index) {
-    this.splice(index);
+    this.splice(index, { isReordered: true });
     const [row] = this.rows.splice(index, 1);
     this.removeRowComponents(row);
     this.updateRowsComponents(index);

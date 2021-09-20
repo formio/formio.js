@@ -5,7 +5,8 @@
         Text
       </label>
       <div ref="element">
-        <input ref="input" name="data[text]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="text-text"></input>
+        <input ref="input" name="data[text]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="text-text">
+        </input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -17,7 +18,8 @@
         <tbody>
           <tr ref="row">
             <td>
-              <input ref="input" name="data[multiple]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="multiple-multiple"></input>
+              <input ref="input" name="data[multiple]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="multiple-multiple">
+              </input>
             </td>
           </tr>
         </tbody>
@@ -37,7 +39,8 @@
                 <div class="input-group-addon" ref="prefix">
                   Prefix
                 </div>
-                <input ref="input" name="data[everything]" type="text" class="form-control" lang="en" placeholder="Placeholder" tabindex="1" disabled="disabled" spellcheck="true" value="" id="everything-everything"></input>
+                <input ref="input" name="data[everything]" type="text" class="form-control" lang="en" placeholder="Placeholder" tabindex="1" disabled="disabled" spellcheck="true" value="" id="everything-everything">
+                </input>
                 <div class="input-group-addon" ref="suffix">
                   Suffix
                 </div>
@@ -54,7 +57,8 @@
         Number
       </label>
       <div ref="element">
-        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number"></input>
+        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number">
+        </input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -63,7 +67,8 @@
         Password
       </label>
       <div ref="element">
-        <input ref="input" name="data[password]" type="password" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="password-password"></input>
+        <input ref="input" name="data[password]" type="password" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="password-password">
+        </input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -83,7 +88,7 @@
     <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
       <div class="form-check checkbox">
         <label class=" form-check-label">
-          <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0">
+          <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
           <span>Checkbox</span>
           </input>
         </label>
@@ -120,8 +125,8 @@
       <label class="control-label " for="select-select">
         Select
       </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" disabled="disabled" id="select-select"></select>
-      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" disabled="disabled" id="select-select" aria-required="false"></select>
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">

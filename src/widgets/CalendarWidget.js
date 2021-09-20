@@ -1,4 +1,4 @@
-import Formio from '../Formio';
+import { GlobalFormio as Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
@@ -9,7 +9,6 @@ import {
   formatOffset,
   getDateSetting,
   getLocaleDateFormatInfo,
-  getBrowserInfo,
   momentDate,
   zonesLoaded,
   shouldLoadZones,
@@ -22,10 +21,10 @@ const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 const CDN_URL = 'https://cdn.form.io/';
 const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
+const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
 const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
 const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
-const isIEBrowser = getBrowserInfo().ie;
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */
@@ -56,8 +55,8 @@ export default class CalendarWidget extends InputWidget {
   }
   /* eslint-enable camelcase */
 
-  constructor(settings, component) {
-    super(settings, component);
+  constructor(settings, component, instance, index) {
+    super(settings, component, instance, index);
     // Change the format to map to the settings.
     if (this.settings.noCalendar) {
       this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');
@@ -99,14 +98,16 @@ export default class CalendarWidget extends InputWidget {
 
     this.closedOn = 0;
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
-
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
-    this.settings.minDate = getDateSetting(this.settings.minDate);
+
+    const isReadOnly = this.settings.readOnly;
+
+    this.settings.minDate = isReadOnly ? null : getDateSetting(this.settings.minDate);
+    this.settings.maxDate = isReadOnly ? null : getDateSetting(this.settings.maxDate);
     this.settings.disable = this.disabledDates;
     this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
     this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
     this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
-    this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.wasDefaultValueChanged = false;
     this.settings.defaultValue = '';
     this.settings.manualInputValue = '';
@@ -137,6 +138,7 @@ export default class CalendarWidget extends InputWidget {
       if (this.settings.allowInput && this.settings.enableTime) {
         this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;
         this.settings.isManuallyOverriddenValue = false;
+        this.emit('update');
       }
 
       if (this.settings.wasDefaultValueChanged) {
@@ -180,7 +182,20 @@ export default class CalendarWidget extends InputWidget {
             this.settings.formatDate = this.getFlatpickrFormatDate(Flatpickr);
 
             if (this._input) {
-              this.initFlatpickr(Flatpickr);
+              const { locale } = this.settings;
+
+              if (locale && locale.length >= 2 && locale !== 'en') {
+                return Formio.requireLibrary(
+                  `flatpickr-${locale}`,
+                  `flatpickr-${locale}`,
+                  `${CDN_FLATPICKR_LOCALE_URL}/${locale}.min.js`,
+                  false,
+                  () => this.initFlatpickr(Flatpickr)
+                );
+              }
+              else {
+                this.initFlatpickr(Flatpickr);
+              }
             }
           });
       })
@@ -205,7 +220,7 @@ export default class CalendarWidget extends InputWidget {
     });
   }
 
-  get timezone() {
+  defineTimezone() {
     if (this.settings.timezone) {
       return this.settings.timezone;
     }
@@ -218,6 +233,10 @@ export default class CalendarWidget extends InputWidget {
 
     // Return current timezone if none are provided.
     return currentTimezone();
+  }
+
+  get timezone() {
+    return this.defineTimezone();
   }
 
   get defaultSettings() {
@@ -374,10 +393,12 @@ export default class CalendarWidget extends InputWidget {
     }
 
     if (hasErrors) {
-      this.input.className = `${this.input.className} is-invalid`;
+      this.addClass(this.input, 'is-invalid');
+      this.input.setAttribute('aria-invalid', 'true');
     }
     else {
-      this.input.className = this.input.className.replace('is-invalid', '');
+      this.removeClass(this.input, 'is-invalid');
+      this.input.setAttribute('aria-invalid', 'false');
     }
   }
 
@@ -389,11 +410,11 @@ export default class CalendarWidget extends InputWidget {
   }
 
   isCalendarElement(element) {
-    if (isIEBrowser && !element) {
+    if (!element) {
       return true;
     }
 
-    if (this.calendar?.config?.appendTo.contains(element)) {
+    if (this.calendar?.config?.appendTo?.contains(element)) {
       return true;
     }
 
@@ -431,39 +452,20 @@ export default class CalendarWidget extends InputWidget {
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
     }
 
-    // Fixes an issue with IE11 where value is set only after the second click
-    // TODO: Remove when the issue is solved in the flatpick library
-    if (isIEBrowser) {
-      // Remove the original blur listener, because value willbe set to empty since relatedTarget is null in IE11
-      const originalBlurListener = this.calendar._handlers.find(({ event, element }) => event === 'blur' && element === this.calendar._input);
-      this.calendar._input.removeEventListener('blur', originalBlurListener.handler);
-      // Add the same event listener as in the original library, but with workaround for IE11 issue
-      this.addEventListener(this.calendar._input, 'blur', (event) => {
-        const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
-        const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
-        const isInput = event.target === this.calendar._input;
-
-        if (isInput && !this.isCalendarElement(relatedTarget)) {
-          this.calendar.setDate(
-            this.calendar._input.value,
-            true,
-            event.target === this.calendar.altInput
-              ? this.calendar.config.altFormat
-              : this.calendar.config.dateFormat
-          );
-        }
-      });
-    }
     // Make sure we commit the value after a blur event occurs.
     this.addEventListener(this.calendar._input, 'blur', (event) => {
       const activeElement = this.settings.shadowRoot ? this.settings.shadowRoot.activeElement : document.activeElement;
       const relatedTarget = event.relatedTarget ? event.relatedTarget : activeElement;
 
-      if (!(isIEBrowser && !relatedTarget) && !relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+      if (!this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
         const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
+      }
+      else if (!this.calendar.input.value) {
+        const value = moment({ hour: this.calendar?.config?.defaultHour, minute: this.calendar?.config?.defaultMinute }).toDate();
+        this.calendar.setDate(value, true, this.settings.format);
       }
     });
 
@@ -500,6 +502,14 @@ export default class CalendarWidget extends InputWidget {
           return Flatpickr.formatDate(date, format);
         }
 
+        const currentValue = new Date(this.getValue());
+        if (currentValue.toString() === date.toString()) {
+          let compValue = this.componentInstance.dataValue;
+          if (Array.isArray(compValue)) {
+            compValue = compValue[this.valueIndex];
+          }
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), new Date(compValue), format, this.timezone);
+        }
         return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 

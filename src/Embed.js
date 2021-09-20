@@ -93,15 +93,19 @@ export function embed(config = {}) {
       return element;
     };
 
-    debug('Embeding Configuration', config);
+    debug('Embedding Configuration', config);
 
     // The id for this embedded form.
     const id = `formio-${Math.random().toString(36).substring(7)}`;
     config.id = id;
 
     debug('Creating form wrapper');
-    document.write(`<div id="${id}-wrapper"></div>`);
-    let wrapper = document.getElementById(`${id}-wrapper`);
+    let wrapper = createElement('div', {
+         'id': `"${id}-wrapper"`
+    });
+
+    // insertAfter doesn't exist, but effect is identical.
+    thisScript.parentNode.insertBefore(wrapper, thisScript.parentNode.firstElementChild.nextSibling);
 
     // If we include the libraries, then we will attempt to run this in shadow dom.
     if (config.includeLibs && (typeof wrapper.attachShadow === 'function')) {
@@ -202,6 +206,7 @@ export function embed(config = {}) {
         const form = (config.form || config.src);
         debug('Creating form', form, config.config);
         isReady.then(() => {
+          Formio.license = true;
           Formio.createForm(formElement, form, config.config).then((instance) => {
             const submitDone = (submission) => {
               debug('Submision Complete', submission);

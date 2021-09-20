@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const babel = require('gulp-babel');
 const filter = require('gulp-filter');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const concat = require('gulp-concat');
 const replace = require('gulp-replace');
 const rename = require('gulp-rename');
@@ -94,14 +94,14 @@ gulp.task('styles-embed', function embedStyles() {
 });
 gulp.task('styles-form', function formStyles() {
   return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/@formio/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './src/sass/formio.form.scss'
   ], 'formio.form');
 });
 gulp.task('styles-builder', function builderStyles() {
   return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/@formio/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',
     './src/sass/formio.form.scss',
@@ -110,7 +110,7 @@ gulp.task('styles-builder', function builderStyles() {
 });
 gulp.task('styles-full', gulp.series('builder-fonts', function fullStyles() {
   return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/@formio/choices.js/public/assets/styles/choices.min.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',
     './node_modules/font-awesome/css/font-awesome.css',

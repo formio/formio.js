@@ -26,6 +26,10 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
+    if (this.component.inputMode) {
+      attr.inputmode = this.component.inputMode;
+    }
+
     if (this.component.placeholder) {
       attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
@@ -74,7 +78,8 @@ export default class Input extends Multivalue {
   }
 
   setInputMask(input, inputMask) {
-    return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
+    const mask = inputMask || this.component.displayMask || this.component.inputMask;
+    return super.setInputMask(input, mask, !this.component.placeholder);
   }
 
   getMaskOptions() {
@@ -123,7 +128,13 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value))).replace(/"/g, '&quot;');
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)))
+      .replace(/"/g, '&quot;');
+
+    const valueMask = this.component.inputMask;
+    const displayMask = this.component.displayMask;
+    const hasDifferentDisplayAndSaveFormats = valueMask && displayMask && valueMask !== displayMask;
+
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
     }
@@ -134,14 +145,15 @@ export default class Input extends Multivalue {
         value,
         index,
         selectOptions: this.getMaskOptions() || [],
-      })
+      }, this.isHtmlRenderMode() ? 'html' : null)
       : this.renderTemplate('input', {
         prefix: this.prefix,
         suffix: this.suffix,
         input: info,
         value: this.formatValue(this.parseValue(value)),
+        hasValueMaskInput: hasDifferentDisplayAndSaveFormats,
         index
-      });
+      }, this.isHtmlRenderMode() ? 'html' : null);
   }
 
   setCounter(type, element, count, max) {
@@ -281,8 +293,8 @@ export default class Input extends Multivalue {
     }
 
     // Create the widget.
-    const widget = new Widgets[settings.type](settings, this.component);
-    widget.on('update', () => this.updateValue(widget.getValue(), {
+    const widget = new Widgets[settings.type](settings, this.component, this, index);
+    widget.on('update', () => this.updateValue(this.getValue(), {
       modified: true
     }, index), true);
     widget.on('redraw', () => this.redraw(), true);

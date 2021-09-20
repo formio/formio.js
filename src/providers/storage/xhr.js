@@ -5,6 +5,7 @@ export const setXhrHeaders = (formio, xhr) => {
   if (headers) {
     const ValidHeaders = {
       'Content-Disposition': true,
+      'Authorization': true,
     };
 
     for (const header in headers) {

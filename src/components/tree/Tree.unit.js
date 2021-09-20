@@ -4,9 +4,12 @@ import TreeComponent from './Tree';
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4
 } from './fixtures';
+import Webform from '../../Webform';
 import _ from 'lodash';
+import Formio from '../../Formio';
 
 describe('Tree Component', () => {
   it('Should set and render values in readOnly mode', function(done) {
@@ -161,5 +164,44 @@ describe('Tree Component', () => {
         });
       });
     });
+  });
+
+  it('Should stop the submission if component didn\'t saved and has required fields', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(comp4).then(() => {
+      const submitButton = form.getComponent(['submit']);
+      assert.equal(submitButton.disabled, true, 'Submit button should being disabled');
+      const tree = form.getComponent(['tree']);
+      const textField = tree.getComponents()[0].getComponent(['textField']);
+      textField.setValue('123');
+
+      setTimeout(() => {
+        assert.equal(submitButton.disabled, true, 'Submit button should being disabled');
+        tree.saveNode(tree.treeRoot);
+
+        setTimeout(() => {
+          assert.equal(submitButton.disabled, false, 'Submit button should being disabled');
+          done();
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should work with empty data and no defaults', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, {
+      type: 'form',
+      components: [comp1],
+      display: 'form',
+    }, { noDefaults: true })
+      .then((form) => {
+        setTimeout(() => {
+          const tree = form.getComponent(['tree']);
+          assert.equal(tree.treeRoot.new, true);
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 });

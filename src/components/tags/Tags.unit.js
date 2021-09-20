@@ -2,16 +2,28 @@ import Harness from '../../../test/harness';
 import TagsComponent from './Tags';
 import assert from 'power-assert';
 import modalTagsComponent from '../../../test/formtest/modalTagsComponent';
+import _ from 'lodash';
 
 import {
   comp1,
   comp2,
+  comp3,
+  comp4
 } from './fixtures';
 import Formio from '../../Formio';
 
 describe('Tags Component', function() {
   it('Should build a tags component', function() {
     return Harness.testCreate(TagsComponent, comp1);
+  });
+
+  it('Should set placeholder', function(done) {
+    Harness.testCreate(TagsComponent, comp4).then((component) => {
+      assert.equal(component.choices.config.placeholder, true);
+      assert.equal(component.choices.config.placeholderValue, component.component.placeholder);
+      assert.equal(component.choices.input.element.attributes.placeholder.value, component.component.placeholder);
+      done();
+    }).catch(done);
   });
 
   it('Should not allow to add non-unique tags on blur', function(done) {
@@ -51,5 +63,49 @@ describe('Tags Component', function() {
         }, 150);
       })
       .catch(done);
+  });
+
+  it('Should use correct delimiter for value', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+    form.components[0].delimeter = '-';
+
+    Formio.createForm(element, form).then(form => {
+      const tags = form.getComponent('tags');
+      const value =  ['tag1','tag2', 'tag3'];
+
+      tags.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(tags.getValue(), value.join('-'));
+        assert.equal(tags.dataValue, value.join('-'));
+        assert.equal(form.submission.data.tags, value.join('-'));
+
+        document.innerHTML = '';
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should use store value as array', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+    form.components[0].storeas = 'array';
+
+    Formio.createForm(element, form).then(form => {
+      const tags = form.getComponent('tags');
+      const value =  ['tag1','tag2', 'tag3'];
+
+      tags.setValue(value);
+
+      setTimeout(() => {
+        assert.deepEqual(tags.getValue(), value.join(','));
+        assert.deepEqual(form.submission.data.tags, value);
+        assert.equal(tags.dataValue, value);
+
+        document.innerHTML = '';
+        done();
+      }, 200);
+    }).catch(done);
   });
 });
