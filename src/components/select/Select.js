@@ -174,6 +174,16 @@ export default class SelectComponent extends Field {
       return 'value';
     }
 
+    if (this.component.dataSrc === 'resource') {
+        // checking additional fields in the template
+        const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
+        if (hasNestedFields) {
+          const data = this.component.template.replace(/<\/?[^>]+(>|$)/g, '').split('item.')[1].slice(0, -3);
+          return data;
+        }
+      return 'data';
+    }
+
     return '';
   }
 
