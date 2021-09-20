@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased]
+#### Fixed
+ - FIO-3944: fixed big spaces after select component
+
 ### 4.14.0-rc.26
 #### Fixed
  - FIO-3756 Fixed an issue where resource component get unauthorized error when unfolding dropdown and no resources displayed
