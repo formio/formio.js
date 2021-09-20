@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.7-rc.1
+#### Fixed
+ - FIO-3935: Fix setting empty value for day component
+
+#### Changed
+ - Upgrade dompurify@2.3.3, idb@6.1.4, @babel/core@7.15.5, @babel/preset-env@7.15.6, chance@1.1.8, marked@3.0.4, core-js@3.18.0, @babel/cli@7.15.7, mocha@9.1.1, sass@1.41.1, webpack@5.53.0, i18next@21.0.0, webpack-stream@7.0.0
+
 ### 4.13.6
 #### Changed
  - No changes. Official release.
