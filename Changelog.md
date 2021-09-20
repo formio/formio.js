@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased]
 #### Fixed
  - FIO-3944: fixed big spaces after select component
+ - FIO-3935: Fix setting empty value for day component
 
 ### 4.14.0-rc.26
 #### Fixed
