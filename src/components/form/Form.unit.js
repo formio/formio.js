@@ -8,6 +8,7 @@ import {
   comp3,
   comp4,
   comp5,
+  comp6
 } from './fixtures';
 import Webform from '../../Webform';
 import formModalEdit from './fixtures/formModalEdit';
@@ -196,6 +197,47 @@ describe('Form Component', () => {
           }, 250);
         });
       }).catch(done);
+    });
+  });
+
+  describe('Advanced Logic', () => {
+    it('Should disable all components of the form', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6)
+        .then(() => {
+            const textField = form.getComponent(['textField']);
+            const nestedForm = form.getComponent(['form']);
+            textField.setValue('test', { modified: true });
+            setTimeout(() => {
+              assert.equal(textField.dataValue, 'test', 'Should set value');
+              assert.equal(nestedForm.disabled, true, 'Nested Form should be disabled');
+              done();
+            }, 300);
+        })
+        .catch(done);
+    });
+    it('Should set required to all components of the form', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp6)
+        .then(() => {
+            const textField = form.getComponent(['textField']);
+            const nestedForm = form.getComponent(['form']);
+            textField.setValue('required', { modified: true });
+            setTimeout(() => {
+              assert.equal(textField.dataValue, 'required', 'Should set value');
+              nestedForm.everyComponent((comp) => {
+                assert.equal(
+                  comp.component.validate.required,
+                  true,
+                  `Should set required as true to component: ${comp.label}, key: ${comp.key}`
+                );
+              });
+              done();
+            }, 300);
+        })
+        .catch(done);
     });
   });
 
