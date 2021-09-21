@@ -364,20 +364,24 @@ export default class WebformBuilder extends Component {
       moveComponent: 'single',
       copyComponent: 'single',
       pasteComponent: 'single',
-      editJson: 'single'
+      editJson: 'single',
+      component: 'single'
     });
 
     if (component.refs.copyComponent) {
       this.attachTooltip(component.refs.copyComponent, this.t('Copy'));
 
-      component.addEventListener(component.refs.copyComponent, 'click', () =>
-        this.copyComponent(component));
+      component.addEventListener(component.refs.copyComponent, 'click', (event) =>{
+        event.stopPropagation();
+        this.copyComponent(component);
+      });
     }
 
     if (component.refs.pasteComponent) {
       const pasteToolTip = this.attachTooltip(component.refs.pasteComponent, this.t('Paste below'));
 
-      component.addEventListener(component.refs.pasteComponent, 'click', () => {
+       component.addEventListener(component.refs.pasteComponent, 'click', (event) => {
+          event.stopPropagation();
         pasteToolTip.hide();
         this.pasteComponent(component);
       });
@@ -392,22 +396,35 @@ export default class WebformBuilder extends Component {
     if (component.refs.editComponent) {
       this.attachTooltip(component.refs.editComponent, this.t('Edit'));
 
-      component.addEventListener(component.refs.editComponent, 'click', () =>
-        this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
+      component.addEventListener(component.refs.editComponent, 'click', (event)=>{
+        event.stopPropagation();
+        return this.editComponent(component.schema, parent, false, false, component.component);
+      });
+
+      component.addEventListener(component.refs.component, 'click', (event) =>{
+        event.stopPropagation();
+        return this.editComponent(component.schema, parent, false, false, component.component);
+      });
     }
 
     if (component.refs.editJson) {
       this.attachTooltip(component.refs.editJson, this.t('Edit JSON'));
 
-      component.addEventListener(component.refs.editJson, 'click', () =>
-        this.editComponent(component.schema, parent, false, true, component.component));
+      component.addEventListener(component.refs.editJson, 'click', (event) =>{
+        event.stopPropagation();
+        this.editComponent(component.schema, parent, false, true, component.component)
+      ;
+      });
     }
 
     if (component.refs.removeComponent) {
       this.attachTooltip(component.refs.removeComponent, this.t('Remove'));
 
-      component.addEventListener(component.refs.removeComponent, 'click', () =>
-        this.removeComponent(component.schema, parent, component.component));
+      component.addEventListener(component.refs.removeComponent, 'click', (event) =>{
+        event.stopPropagation();
+        this.removeComponent(component.schema, parent, component.component);
+      }
+        );
     }
 
     return element;
@@ -454,10 +471,10 @@ export default class WebformBuilder extends Component {
         title: 'Data',
         weight: 30
       },
-      premium: {
-        title: 'Premium',
-        weight: 40
-      },
+      // premium: {
+      //   title: 'Premium',
+      //   weight: 40
+      // },
     };
   }
 
@@ -525,12 +542,21 @@ export default class WebformBuilder extends Component {
   }
 
   render() {
+    this.basicGroups = [this.groupOrder[4], this.groupOrder[3], this.groupOrder[5]];
+    this.customGroups = [this.groupOrder[0], this.groupOrder[1], this.groupOrder[2]];
+    this.otherGroups = [this.groupOrder[6]];
+    this.groups[this.customGroups[0]].default = true;
+    this.groups[this.otherGroups[0]].default = true;
+
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
         groupId: `builder-sidebar-${this.id}`,
-        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+        groupTabs: this.renderTemplate('builderSidebarTab', {
+          tab:1
+        }),
+        groups: this.basicGroups.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
           group: this.groups[groupKey],
           groupKey,
           groupId: `builder-sidebar-${this.id}`,
@@ -560,6 +586,10 @@ export default class WebformBuilder extends Component {
         'sidebar-anchor': 'multiple',
         'sidebar-group': 'multiple',
         'sidebar-container': 'multiple',
+        'basicTab': 'single',
+        'customTab': 'single',
+        'othersTab': 'single',
+        'builder-sidebar-tabs': 'single'
       });
 
       if (this.sideBarScroll && Templates.current.handleBuilderSidebarScroll) {

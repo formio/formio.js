@@ -1,5 +1,7 @@
 import assert from 'power-assert';
 
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+
 export default {
   title: 'Actions Form Tests',
   form: {
@@ -76,7 +78,7 @@ export default {
                         valueProperty: 'value',
                         template: '<span>{{ item.label }}</span>',
                         persistent: true,
-                        type: 'select',
+                        type: 'selectF',
                         description: 'If set to Match it will use the same Request Type as sent to the Form.io server.'
                       }
                     ],
@@ -295,7 +297,7 @@ export default {
         legend: 'Action Execution',
         components: [
           {
-            type: 'select',
+            type: 'selectF',
             input: true,
             key: 'handler',
             label: 'Handler',
@@ -309,7 +311,7 @@ export default {
             multiple: true
           },
           {
-            type: 'select',
+            type: 'selectF',
             input: true,
             label: 'Methods',
             key: 'method',
@@ -345,7 +347,7 @@ export default {
                   {
                     components: [
                       {
-                        type: 'select',
+                        type: 'selectF',
                         input: true,
                         label: 'Trigger this action only if field',
                         key: 'field',
@@ -359,7 +361,7 @@ export default {
                         multiple: false
                       },
                       {
-                        type: 'select',
+                        type: 'selectF',
                         input: true,
                         label: '',
                         key: 'eq',

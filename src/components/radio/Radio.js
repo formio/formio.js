@@ -13,16 +13,19 @@ export default class RadioComponent extends Field {
       validate: {
         onlyAvailableItems: false
       },
-      fieldSet: false
+      fieldSet: false,
+      validate: {
+        customMessage: ' '   //validation message
+      }
     }, ...extend);
   }
 
   static get builderInfo() {
     return {
       title: 'Radio',
-      group: 'basic',
+      group: 'customFuctions',          //reordering
       icon: 'dot-circle-o',
-      weight: 80,
+      weight: 50,
       documentation: '/userguide/#radio',
       schema: RadioComponent.schema()
     };

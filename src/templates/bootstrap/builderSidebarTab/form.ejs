@@ -1,0 +1,27 @@
+
+  <!-- components ,data, layout tab with icons -->
+<div id="myTab" ref="builder-sidebar-tabs" role="tablist">
+    <div class="container" style="display: flex;">
+      <div class="col-sm border-bottom{{ctx.tab == 1 ? ' border-info text-center' : 'border-info text-center'}}" style="border-width: 2px !important; cursor: pointer; padding: 0px;" ref="basicTab">  
+        <i class="fa fa-align-center" data-toggle="tooltip" title="Components" ></i>
+      </div>
+      <div class="col-sm border-bottom{{ctx.tab == 2 ? ' border-info text-center' : 'border-info text-center'}}" style="border-width: 2px !important; cursor: pointer; padding: 0px;" ref="customTab">
+        <i class="fa fa-server" data-toggle="tooltip" title="Data"></i>
+      </div>
+      <div class="col-sm border-bottom{{ctx.tab == 3 ? ' border-info text-center' : 'border-info text-center'}}" style="border-width: 2px !important; cursor: pointer; padding: 0px;" ref="othersTab">
+        <i class="fa fa-th" data-toggle="tooltip" title="Layout"></i>
+      </div>
+    </div>
+
+  
+  <!-- 
+    <li class="nav-item" role="presentation" ref="basicTab">
+      <a class="nav-link {{ctx.tab == 1 ? 'border-bottom' : ''}}"  id="home-tab" data-toggle="tab"  role="tab" aria-controls="basic" >Basic</a >
+    </li>
+    <li class="nav-item" ref="customTab" role="presentation">
+      <a  class="nav-link {{ctx.tab == 2 ? 'active' : ''}}" id="profile-tab" data-toggle="tab" role="tab" aria-controls="custom">Custom</a>
+      </li>
+    <li class="nav-item" ref="othersTab" role="presentation">
+      <a  class="nav-link {{ctx.tab == 3 ? 'active' : ''}}" id="contact-tab" data-toggle="tab" role="tab" aria-controls="others" >Others</a>
+      </li> -->
+    </div>

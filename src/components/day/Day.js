@@ -2,6 +2,8 @@ import _ from 'lodash';
 import Field from '../_classes/field/Field';
 import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+
 export default class DayComponent extends Field {
   static schema(...extend) {
     return Field.schema({
@@ -15,7 +17,7 @@ export default class DayComponent extends Field {
           required: false
         },
         month: {
-          type: 'select',
+          type: 'selectF',
           placeholder: '',
           required: false
         },

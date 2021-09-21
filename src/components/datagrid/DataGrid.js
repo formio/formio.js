@@ -25,7 +25,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     return {
       title: 'Data Grid',
       icon: 'th',
-      group: 'data',
+      group: 'layout',  //changed group  to reorder components
       documentation: '/userguide/#datagrid',
       weight: 30,
       schema: DataGridComponent.schema()
@@ -95,12 +95,12 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
-    const isBuilderMode = this.builderMode;
-    const isEmptyInit = this.initEmpty;
+    // const isBuilderMode = this.builderMode;
+    // const isEmptyInit = this.initEmpty;
     // Ensure we have one and only one row in builder mode.
-    if (isBuilderMode || (isEmptyInit && !this.dataValue.length)) {
-      return isEmptyInit && !isBuilderMode ? [] : [{}];
-    }
+    // if (isBuilderMode || (isEmptyInit && !this.dataValue.length)) {
+    //   return isEmptyInit && !isBuilderMode ? [] : [{}];
+    // }
 
     const value = super.defaultValue;
     let defaultValue;

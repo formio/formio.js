@@ -1,3 +1,4 @@
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
 export default [
   {
     key: 'labelPosition',
@@ -12,7 +13,7 @@ export default [
     input: true
   },
   {
-    type: 'select',
+    type: 'selectF',
     input: true,
     key: 'inputsLabelPosition',
     label: 'Inputs Label Position',

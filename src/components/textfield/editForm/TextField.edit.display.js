@@ -1,29 +1,31 @@
 import Widgets from '../../../widgets';
 import _ from 'lodash';
 export default [
-  {
-    weight: 400,
-    type: 'select',
-    input: true,
-    key: 'widget.type',
-    label: 'Widget',
-    placeholder: 'Select a widget',
-    tooltip: 'The widget is the display UI used to input the value of the field.',
-    defaultValue: 'input',
-    onChange: (context) => {
-      context.data.widget = _.pick(context.data.widget, 'type');
-    },
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Input Field', value: 'input' },
-        { label: 'Calendar Picker', value: 'calendar' },
-      ]
-    },
-    conditional: {
-      json: { '===': [{ var: 'data.type' }, 'textfield'] }
-    }
-  },
+  //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+// tabs and functinalities are removed
+  // {
+  //   weight: 400,
+  //   type: 'select',
+  //   input: true,
+  //   key: 'widget.type',
+  //   label: 'Widget',
+  //   placeholder: 'Select a widget',
+  //   tooltip: 'The widget is the display UI used to input the value of the field.',
+  //   defaultValue: 'input',
+  //   onChange: (context) => {
+  //     context.data.widget = _.pick(context.data.widget, 'type');
+  //   },
+  //   dataSrc: 'values',
+  //   data: {
+  //     values: [
+  //       { label: 'Input Field', value: 'input' },
+  //       { label: 'Calendar Picker', value: 'calendar' },
+  //     ]
+  //   },
+  //   conditional: {
+  //     json: { '===': [{ var: 'data.type' }, 'textfield'] }
+  //   }
+  // },
   {
     weight: 405,
     type: 'textarea',
@@ -98,21 +100,21 @@ export default [
       return context.data.inputMask || context.data.displayMask;
     }
   },
-  {
-    weight: 413,
-    type: 'checkbox',
-    input: true,
-    key: 'allowMultipleMasks',
-    label: 'Allow Multiple Masks'
-  },
-  {
-    weight: 1350,
-    type: 'checkbox',
-    input: true,
-    key: 'spellcheck',
-    defaultValue: true,
-    label: 'Allow Spellcheck'
-  },
+  // {
+  //   weight: 413,
+  //   type: 'checkbox',
+  //   input: true,
+  //   key: 'allowMultipleMasks',
+  //   label: 'Allow Multiple Masks'
+  // },
+  // {
+  //   weight: 1350,
+  //   type: 'checkbox',
+  //   input: true,
+  //   key: 'spellcheck',
+  //   defaultValue: true,
+  //   label: 'Allow Spellcheck'
+  // },
   {
     weight: 417,
     type: 'datagrid',
@@ -152,37 +154,37 @@ export default [
     key: 'suffix',
     label: 'Suffix'
   },
-  {
-    weight: 700,
-    type: 'textfield',
-    input: true,
-    key: 'autocomplete',
-    label: 'Autocomplete',
-    placeholder: 'on',
-    tooltip: 'Indicates whether input elements can by default have their values automatically completed by the browser. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\'>MDN documentation</a> on autocomplete for more information.'
-  },
-  {
-    weight: 1300,
-    type: 'checkbox',
-    label: 'Hide Input',
-    tooltip: 'Hide the input in the browser. This does not encrypt on the server. Do not use for passwords.',
-    key: 'mask',
-    input: true
-  },
-  {
-    weight: 1200,
-    type: 'checkbox',
-    label: 'Show Word Counter',
-    tooltip: 'Show a live count of the number of words.',
-    key: 'showWordCount',
-    input: true
-  },
-  {
-    weight: 1201,
-    type: 'checkbox',
-    label: 'Show Character Counter',
-    tooltip: 'Show a live count of the number of characters.',
-    key: 'showCharCount',
-    input: true
-  },
+  // {
+  //   weight: 700,
+  //   type: 'textfield',
+  //   input: true,
+  //   key: 'autocomplete',
+  //   label: 'Autocomplete',
+  //   placeholder: 'on',
+  //   tooltip: 'Indicates whether input elements can by default have their values automatically completed by the browser. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\'>MDN documentation</a> on autocomplete for more information.'
+  // },
+  // {
+  //   weight: 1300,
+  //   type: 'checkbox',
+  //   label: 'Hide Input',
+  //   tooltip: 'Hide the input in the browser. This does not encrypt on the server. Do not use for passwords.',
+  //   key: 'mask',
+  //   input: true
+  // },
+  // {
+  //   weight: 1200,
+  //   type: 'checkbox',
+  //   label: 'Show Word Counter',
+  //   tooltip: 'Show a live count of the number of words.',
+  //   key: 'showWordCount',
+  //   input: true
+  // },
+  // {
+  //   weight: 1201,
+  //   type: 'checkbox',
+  //   label: 'Show Character Counter',
+  //   tooltip: 'Show a live count of the number of characters.',
+  //   key: 'showCharCount',
+  //   input: true
+  // },
 ];

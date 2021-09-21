@@ -1,6 +1,8 @@
+
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
 export default [
   {
-    type: 'select',
+    type: 'selectF',
     input: true,
     key: 'displayInTimezone',
     label: 'Display in Timezone',
@@ -18,7 +20,7 @@ export default [
     }
   },
   {
-    type: 'select',
+    type: 'selectF',
     input: true,
     key: 'timezone',
     label: 'Select Timezone',

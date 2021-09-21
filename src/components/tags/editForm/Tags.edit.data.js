@@ -22,7 +22,7 @@ export default [
   },
   {
     weight: 24,
-    type: 'select',
+    type: 'selectF',   //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
     input: true,
     key: 'storeas',
     label: 'Store As',

@@ -1,8 +1,14 @@
 <div id="{{ctx.groupId}}" class="accordion builder-sidebar{{ctx.scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
   <input class="form-control builder-sidebar_search" type="search" ref="sidebar-search" placeholder="Search field(s)" />
-  <div ref="sidebar-groups">
-    {% ctx.groups.forEach(function(group) { %}
-      {{ group }}
-    {% }) %}
+  {{ ctx.groupTabs }}
+  <div class="container " ref="sidebar-groups">
+
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="basic"  role="tabpanel" aria-labelledby="basic-tab">  {% ctx.groups.forEach(function(group) { %}
+        {{ group }}
+      {% }) %}</div>
+
+    </div>
+    <!-- 3 different tabs -->
   </div>
 </div>

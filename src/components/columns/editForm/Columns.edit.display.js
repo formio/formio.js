@@ -1,3 +1,9 @@
+
+
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+//changed group and weight to reorder components
+//tabs & functionalities are removed
+
 export default [
   {
     key: 'labelPosition',
@@ -40,14 +46,18 @@ export default [
     addAnother: 'Add Column',
     tooltip: 'The width, offset, push, and pull settings for each column.',
     reorder: true,
+    multiple: true,
+    validate:{ multiple: true },
     components: [
       {
         type: 'hidden',
         key: 'components',
-        defaultValue: []
+        multiple: true,
+        validate:{ multiple: true },
+        defaultValue: ''
       },
       {
-        type: 'select',
+        type: 'selectF',
         key: 'size',
         defaultValue: 'md',
         label: 'Size',

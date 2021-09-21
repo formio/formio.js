@@ -1,5 +1,7 @@
 export const multiSelect = {
-  type: 'select',
+  //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+// tabs and functinalities are removed
+  type: 'selectF',
       label: 'Companies',
       key: 'companies',
       placeholder: 'Select a company',

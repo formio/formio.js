@@ -18,7 +18,7 @@
   <div
     role="tabpanel"
     class="card-body tab-pane{{ ctx.currentTab === index ? ' active' : ''}}"
-    style="display: {{ctx.currentTab === index ? 'block' : 'none'}}"
+    style="display: {{ctx.currentTab === index ? 'block' : 'none'}}; background-color: #e0f2f1;"
     ref="{{ctx.tabKey}}"
   >
     {{ctx.tabComponents[index]}}

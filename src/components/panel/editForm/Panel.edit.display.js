@@ -2,6 +2,10 @@ import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import _difference from 'lodash/difference';
 import _keys from 'lodash/keys';
+
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+
+
 export default [
   {
     key: 'labelPosition',
@@ -54,7 +58,7 @@ export default [
   },
   {
     weight: 30,
-    type: 'select',
+    type: 'selectF',
     input: true,
     label: 'Theme',
     key: 'theme',
@@ -76,7 +80,7 @@ export default [
     input: false,
     components: [
       {
-        type: 'select',
+        type: 'selectF',
         input: true,
         label: 'Breadcrumb Type',
         key: 'breadcrumb',

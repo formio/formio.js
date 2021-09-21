@@ -12,27 +12,29 @@ export default [
       required: true
     }
   },
-  {
-    weight: 100,
-    type: 'tags',
-    input: true,
-    label: 'Field Tags',
-    storeas: 'array',
-    tooltip: 'Tag the field for use in custom logic.',
-    key: 'tags'
-  },
-  {
-    weight: 200,
-    type: 'datamap',
-    label: 'Custom Properties',
-    tooltip: 'This allows you to configure any custom properties for this component.',
-    key: 'properties',
-    valueComponent: {
-      type: 'textfield',
-      key: 'value',
-      label: 'Value',
-      placeholder: 'Value',
-      input: true
-    }
-  },
+
+  //tabs & functionalities are removed 
+  // {
+  //   weight: 100,
+  //   type: 'tags',
+  //   input: true,
+  //   label: 'Field Tags',
+  //   storeas: 'array',
+  //   tooltip: 'Tag the field for use in custom logic.',
+  //   key: 'tags'
+  // },
+  // {
+  //   weight: 200,
+  //   type: 'datamap',
+  //   label: 'Custom Properties',
+  //   tooltip: 'This allows you to configure any custom properties for this component.',
+  //   key: 'properties',
+  //   valueComponent: {
+  //     type: 'textfield',
+  //     key: 'value',
+  //     label: 'Value',
+  //     placeholder: 'Value',
+  //     input: true
+  //   }
+  // },
 ];

@@ -45,7 +45,7 @@ export default class DateTimeComponent extends Input {
   static get builderInfo() {
     return {
       title: 'Date / Time',
-      group: 'advanced',
+      group: 'basic',             //changed group and weight to reorder components
       icon: 'calendar',
       documentation: '/userguide/#datetime',
       weight: 40,

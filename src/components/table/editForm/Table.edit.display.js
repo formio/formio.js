@@ -58,7 +58,7 @@ export default [
     tooltip: 'Check this if you would like to "clone" the first row of components to all additional empty rows of the table.'
   },
   {
-    type: 'select',
+    type: 'selectF',      //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
     label: 'Cell Alignment',
     key: 'cellAlignment',
     input: true,

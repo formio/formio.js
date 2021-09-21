@@ -1,7 +1,8 @@
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
 export default [
   {
     wieght: 200,
-    type: 'select',
+    type: 'selectF',
     datasrc: 'values',
     key: 'fields.year.type',
     label: 'Type of input',

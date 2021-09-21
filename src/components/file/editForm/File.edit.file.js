@@ -1,9 +1,10 @@
 import { GlobalFormio as Formio } from '../../../Formio';
 import _ from 'lodash';
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
 
 export default [
   {
-    type: 'select',
+    type: 'selectF',
     input: true,
     key: 'storage',
     label: 'Storage',

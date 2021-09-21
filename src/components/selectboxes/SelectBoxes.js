@@ -14,9 +14,9 @@ export default class SelectBoxesComponent extends RadioComponent {
   static get builderInfo() {
     return {
       title: 'Select Boxes',
-      group: 'basic',
+      group: 'customFuctions',                //reordering
       icon: 'plus-square',
-      weight: 60,
+      weight: 20,
       documentation: '/userguide/#selectboxes',
       schema: SelectBoxesComponent.schema()
     };

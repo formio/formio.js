@@ -16,7 +16,7 @@ export default class PasswordComponent extends TextFieldComponent {
     return {
       title: 'Password',
       icon: 'asterisk',
-      group: 'basic',
+      group: 'advanced',             // for reordering
       documentation: '/userguide/#password',
       weight: 40,
       schema: PasswordComponent.schema()

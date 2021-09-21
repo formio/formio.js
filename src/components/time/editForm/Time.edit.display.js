@@ -1,6 +1,6 @@
 export default [
   {
-    type: 'select',
+    type: 'selectF',    //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
     input: true,
     weight: 40,
     tooltip: 'Select the type of widget you\'d like to use.',

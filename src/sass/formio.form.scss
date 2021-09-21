@@ -55,7 +55,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 }
 
 .has-feedback .form-control {
-  padding-right: 10px;
+  min-width: 90px;
 }
 
 .has-feedback .form-control[type=hidden] {
@@ -272,6 +272,7 @@ td > .form-group {
 
 .choices__list--dropdown {
   z-index: 100;
+  width: max-content !important;
 }
 
 .choices__list--multiple .choices__item {
@@ -434,9 +435,10 @@ td > .form-group {
   bottom: 0;
   left: 0;
   /* fix for Scrollbars not clickable on overflow #552 */
-  background: rgba(0, 0, 0, 0.4);
+  //background: rgba(0, 0, 0, 0.4);
   animation: formio-dialog-fadein 0.5s;
   /* end fix for Scrollbars not clickable on overflow #552 */
+  width: 425px;
 }
 
 .formio-dialog.formio-dialog-disabled-animation,
@@ -570,6 +572,16 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default {
   padding-bottom: 160px;
   padding-top: 160px;
+  padding-top: 160px;
+  left: 50px;
+  position: absolute;
+  width: 25%;
+  overflow: hidden;
+  max-width: 100%;
+  min-width: 25%;
+  height: calc(100% - 40px);
+  display: flex;
+  justify-content: flex-end;
 
   .component-edit-container {
     padding: 0.5em;
@@ -584,7 +596,7 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default .formio-dialog-content {
   -webkit-animation: formio-dialog-flyin .5s;
   animation: formio-dialog-flyin .5s;
-  background: #f0f0f0;
+  background: #e0f2f1;
   border-radius: 5px;
   font-family: 'Helvetica',sans-serif;
   font-size: 1.1em;
@@ -594,6 +606,10 @@ body.formio-dialog-open {
   padding: 1em;
   position: relative;
   width: 80%;
+  position: absolute;
+  top: 65px;
+  height: calc(100% - 90px);
+
 }
 
 .formio-dialog.formio-dialog-theme-default .formio-dialog-close {
@@ -601,7 +617,7 @@ body.formio-dialog-open {
   background: transparent;
   cursor: pointer;
   position: absolute;
-  right: 1px;
+  right: 15px;
   top: 1px;
   z-index: 100;
 }
@@ -811,6 +827,7 @@ body.formio-dialog-open {
 /* Fix for Hidden checkbox in component editform. */
 .formio-component-hidden:not(.formio-component-checkbox),
 .formio-component-datasource {
+  visibility: hidden;
   margin-bottom: 0;
 }
 

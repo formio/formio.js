@@ -1,5 +1,12 @@
 export default [
   {
+    // Or add your own. The syntax is form.io component definitions.
+    type: 'ACCEPTABLE_EDIT',
+    input: true,
+    key: 'acceptable',
+    weight: 0,
+  },
+  {
     type: 'checkbox',
     input: true,
     weight: 70,

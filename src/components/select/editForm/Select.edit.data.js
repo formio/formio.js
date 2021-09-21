@@ -1,26 +1,28 @@
 import { eachComponent } from '../../../utils/utils';
 
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+// tabs and functinalities are removed
 export default [
-  {
-    type: 'select',
-    input: true,
-    weight: 0,
-    tooltip: 'The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.',
-    key: 'dataSrc',
-    defaultValue: 'values',
-    label: 'Data Source Type',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Values', value: 'values' },
-        { label: 'URL', value: 'url' },
-        { label: 'Resource', value: 'resource' },
-        { label: 'Custom', value: 'custom' },
-        { label: 'Raw JSON', value: 'json' },
-        { label: 'IndexedDB', value: 'indexeddb' },
-      ],
-    },
-  },
+  // {
+  //   type: 'select',
+  //   input: true,
+  //   weight: 0,
+  //   tooltip: 'The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.',
+  //   key: 'dataSrc',
+  //   defaultValue: 'values',
+  //   label: 'Data Source Type',
+  //   dataSrc: 'values',
+  //   data: {
+  //     values: [
+  //       { label: 'Values', value: 'values' },
+  //       { label: 'URL', value: 'url' },
+  //       { label: 'Resource', value: 'resource' },
+  //       { label: 'Custom', value: 'custom' },
+  //       { label: 'Raw JSON', value: 'json' },
+  //       { label: 'IndexedDB', value: 'indexeddb' },
+  //     ],
+  //   },
+  // },
   {
     type: 'textfield',
     weight: 10,
@@ -160,6 +162,9 @@ export default [
         type: 'textfield',
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] },
+        validate: {
+          required: true
+        }
       },
     ],
     conditional: {
@@ -167,7 +172,7 @@ export default [
     },
   },
   {
-    type: 'select',
+    type: 'selectF',
     input: true,
     dataSrc: 'url',
     data: {
@@ -199,7 +204,7 @@ export default [
     },
   },
   {
-    type: 'select',
+    type: 'selectF',
     input: true,
     label: 'Value Property',
     key: 'valueProperty',
@@ -253,35 +258,35 @@ export default [
       },
     },
   },
-  {
-    type: 'select',
-    input: true,
-    label: 'Storage Type',
-    key: 'dataType',
-    clearOnHide: true,
-    tooltip: 'The type to store the data. If you select something other than autotype, it will force it to that type.',
-    weight: 12,
-    template: '<span>{{ item.label }}</span>',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Autotype', value: 'auto' },
-        { label: 'String', value: 'string' },
-        { label: 'Number', value: 'number' },
-        { label: 'Boolean', value: 'boolean' },
-        { label: 'Object', value: 'object' },
-      ],
-    },
-  },
-  {
-    type: 'textfield',
-    input: true,
-    key: 'idPath',
-    weight: 12,
-    label: 'ID Path',
-    placeholder: 'id',
-    tooltip: 'Path to the select option id.'
-  },
+  // {
+  //   type: 'select',
+  //   input: true,
+  //   label: 'Storage Type',
+  //   key: 'dataType',
+  //   clearOnHide: true,
+  //   tooltip: 'The type to store the data. If you select something other than autotype, it will force it to that type.',
+  //   weight: 12,
+  //   template: '<span>{{ item.label }}</span>',
+  //   dataSrc: 'values',
+  //   data: {
+  //     values: [
+  //       { label: 'Autotype', value: 'auto' },
+  //       { label: 'String', value: 'string' },
+  //       { label: 'Number', value: 'number' },
+  //       { label: 'Boolean', value: 'boolean' },
+  //       { label: 'Object', value: 'object' },
+  //     ],
+  //   },
+  // },
+  // {
+  //   type: 'textfield',
+  //   input: true,
+  //   key: 'idPath',
+  //   weight: 12,
+  //   label: 'ID Path',
+  //   placeholder: 'id',
+  //   tooltip: 'Path to the select option id.'
+  // },
   {
     type: 'textfield',
     input: true,
@@ -478,124 +483,124 @@ export default [
       json: { '===': [{ var: 'data.dataSrc' }, 'custom'] },
     },
   },
-  {
-    type: 'textarea',
-    input: true,
-    key: 'template',
-    label: 'Item Template',
-    editor: 'ace',
-    as: 'html',
-    rows: 3,
-    weight: 18,
-    tooltip: 'The HTML template for the result data items.',
-    allowCalculateOverride: true,
-    calculateValue:(context) => {
-      if (!context.data.template) {
-        if (context.instance && context.instance._currentForm.options.editComponent) {
-          return context.instance._currentForm.options.editComponent.template;
-        }
-      }
+  // {
+  //   type: 'textarea',
+  //   input: true,
+  //   key: 'template',
+  //   label: 'Item Template',
+  //   editor: 'ace',
+  //   as: 'html',
+  //   rows: 3,
+  //   weight: 18,
+  //   tooltip: 'The HTML template for the result data items.',
+  //   allowCalculateOverride: true,
+  //   calculateValue:(context) => {
+  //     if (!context.data.template) {
+  //       if (context.instance && context.instance._currentForm.options.editComponent) {
+  //         return context.instance._currentForm.options.editComponent.template;
+  //       }
+  //     }
 
-      return context.data.template;
-    }
-  },
-  {
-    type: 'select',
-    input: true,
-    key: 'refreshOn',
-    label: 'Refresh Options On',
-    weight: 19,
-    tooltip: 'Refresh data when another field changes.',
-    dataSrc: 'custom',
-    valueProperty: 'value',
-    data: {
-      custom(context) {
-        var values = [];
-        values.push({ label: 'Any Change', value: 'data' });
-        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
-          if (component.key !== context.data.key) {
-            values.push({
-              label: component.label || component.key,
-              value: path
-            });
-          }
-        });
-        return values;
-      }
-    },
-    conditional: {
-      json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-            'values',
-            'custom'
-          ],
-        ],
-      },
-    },
-  },
-  {
-    type: 'select',
-    input: true,
-    key: 'refreshOnBlur',
-    label: 'Refresh Options On Blur',
-    weight: 19,
-    tooltip: 'Refresh data when another field is blured.',
-    dataSrc: 'custom',
-    valueProperty: 'value',
-    data: {
-      custom(context) {
-        var values = [];
-        values.push({ label: 'Any Change', value: 'data' });
-        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
-          if (component.key !== context.data.key) {
-            values.push({
-              label: component.label || component.key,
-              value: path
-            });
-          }
-        });
-        return values;
-      }
-    },
-    conditional: {
-      json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-            'values'
-          ],
-        ],
-      },
-    },
-  },
-  {
-    type: 'checkbox',
-    input: true,
-    weight: 20,
-    key: 'clearOnRefresh',
-    label: 'Clear Value On Refresh Options',
-    defaultValue: false,
-    tooltip: 'When the Refresh On field is changed, clear this components value.',
-    conditional: {
-      json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-            'values',
-            'custom'
-          ],
-        ],
-      },
-    },
-  },
+  //     return context.data.template;
+  //   }
+  // },
+  // {
+  //   type: 'select',
+  //   input: true,
+  //   key: 'refreshOn',
+  //   label: 'Refresh Options On',
+  //   weight: 19,
+  //   tooltip: 'Refresh data when another field changes.',
+  //   dataSrc: 'custom',
+  //   valueProperty: 'value',
+  //   data: {
+  //     custom(context) {
+  //       var values = [];
+  //       values.push({ label: 'Any Change', value: 'data' });
+  //       context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
+  //         if (component.key !== context.data.key) {
+  //           values.push({
+  //             label: component.label || component.key,
+  //             value: path
+  //           });
+  //         }
+  //       });
+  //       return values;
+  //     }
+  //   },
+  //   conditional: {
+  //     json: {
+  //       in: [
+  //         { var: 'data.dataSrc' },
+  //         [
+  //           'url',
+  //           'resource',
+  //           'values',
+  //           'custom'
+  //         ],
+  //       ],
+  //     },
+  //   },
+  // },
+  // {
+  //   type: 'select',
+  //   input: true,
+  //   key: 'refreshOnBlur',
+  //   label: 'Refresh Options On Blur',
+  //   weight: 19,
+  //   tooltip: 'Refresh data when another field is blured.',
+  //   dataSrc: 'custom',
+  //   valueProperty: 'value',
+  //   data: {
+  //     custom(context) {
+  //       var values = [];
+  //       values.push({ label: 'Any Change', value: 'data' });
+  //       context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
+  //         if (component.key !== context.data.key) {
+  //           values.push({
+  //             label: component.label || component.key,
+  //             value: path
+  //           });
+  //         }
+  //       });
+  //       return values;
+  //     }
+  //   },
+  //   conditional: {
+  //     json: {
+  //       in: [
+  //         { var: 'data.dataSrc' },
+  //         [
+  //           'url',
+  //           'resource',
+  //           'values'
+  //         ],
+  //       ],
+  //     },
+  //   },
+  // },
+  // {
+  //   type: 'checkbox',
+  //   input: true,
+  //   weight: 20,
+  //   key: 'clearOnRefresh',
+  //   label: 'Clear Value On Refresh Options',
+  //   defaultValue: false,
+  //   tooltip: 'When the Refresh On field is changed, clear this components value.',
+  //   conditional: {
+  //     json: {
+  //       in: [
+  //         { var: 'data.dataSrc' },
+  //         [
+  //           'url',
+  //           'resource',
+  //           'values',
+  //           'custom'
+  //         ],
+  //       ],
+  //     },
+  //   },
+  // },
   {
     type: 'checkbox',
     input: true,
@@ -605,27 +610,27 @@ export default [
     defaultValue: true,
     tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.',
   },
-  {
-    label: 'Search Threshold',
-    mask: false,
-    tableView: true,
-    alwaysEnabled: false,
-    type: 'number',
-    input: true,
-    key: 'selectThreshold',
-    validate: {
-      min: 0,
-      customMessage: '',
-      json: '',
-      max: 1,
-    },
-    delimiter: false,
-    requireDecimal: false,
-    encrypted: false,
-    defaultValue: 0.3,
-    weight: 22,
-    tooltip: 'At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.',
-  },
+  // {
+  //   label: 'Search Threshold',
+  //   mask: false,
+  //   tableView: true,
+  //   alwaysEnabled: false,
+  //   type: 'number',
+  //   input: true,
+  //   key: 'selectThreshold',
+  //   validate: {
+  //     min: 0,
+  //     customMessage: '',
+  //     json: '',
+  //     max: 1,
+  //   },
+  //   delimiter: false,
+  //   requireDecimal: false,
+  //   encrypted: false,
+  //   defaultValue: 0.3,
+  //   weight: 22,
+  //   tooltip: 'At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.',
+  // },
   {
     type: 'checkbox',
     input: true,
@@ -676,25 +681,25 @@ export default [
       json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
     },
   },
-  {
-    type: 'checkbox',
-    input: true,
-    weight: 27,
-    key: 'readOnlyValue',
-    label: 'Read Only Value',
-    tooltip: 'Check this if you would like to show just the value when in Read Only mode.',
-  },
-  {
-    type: 'textarea',
-    as: 'json',
-    editor: 'ace',
-    weight: 28,
-    input: true,
-    key: 'customOptions',
-    label: 'Choices.js options',
-    tooltip: 'A raw JSON object to use as options for the Select component (Choices JS).',
-    defaultValue: {},
-  },
+  // {
+  //   type: 'checkbox',
+  //   input: true,
+  //   weight: 27,
+  //   key: 'readOnlyValue',
+  //   label: 'Read Only Value',
+  //   tooltip: 'Check this if you would like to show just the value when in Read Only mode.',
+  // },
+  // {
+  //   type: 'textarea',
+  //   as: 'json',
+  //   editor: 'ace',
+  //   weight: 28,
+  //   input: true,
+  //   key: 'customOptions',
+  //   label: 'Choices.js options',
+  //   tooltip: 'A raw JSON object to use as options for the Select component (Choices JS).',
+  //   defaultValue: {},
+  // },
   {
     type: 'checkbox',
     input: true,

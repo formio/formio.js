@@ -44,7 +44,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     return {
       title: 'Edit Grid',
       icon: 'tasks',
-      group: 'data',
+      group: 'layout',         //changed group and weight to reorder components
       documentation: '/userguide/#editgrid',
       weight: 30,
       schema: EditGridComponent.schema(),

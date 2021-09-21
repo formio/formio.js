@@ -34,7 +34,7 @@ export default [
         }
       },
       {
-        type: 'select',
+        type: 'selectF',      //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
         input: true,
         weight: 180,
         label: 'Shortcut',
@@ -55,24 +55,26 @@ export default [
       },
     ],
   },
-  {
-    type: 'select',
-    input: true,
-    label: 'Storage Type',
-    key: 'dataType',
-    clearOnHide: true,
-    tooltip: 'The type to store the data. If you select something other than autotype, it will force it to that type.',
-    weight: 12,
-    template: '<span>{{ item.label }}</span>',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Autotype', value: 'auto' },
-        { label: 'String', value: 'string' },
-        { label: 'Number', value: 'number' },
-        { label: 'Boolean', value: 'boolean' },
-        { label: 'Object', value: 'object' },
-      ],
-    },
-  },
+
+  //tabs & functionalities are removed
+  // {
+  //   type: 'select',
+  //   input: true,
+  //   label: 'Storage Type',
+  //   key: 'dataType',
+  //   clearOnHide: true,
+  //   tooltip: 'The type to store the data. If you select something other than autotype, it will force it to that type.',
+  //   weight: 12,
+  //   template: '<span>{{ item.label }}</span>',
+  //   dataSrc: 'values',
+  //   data: {
+  //     values: [
+  //       { label: 'Autotype', value: 'auto' },
+  //       { label: 'String', value: 'string' },
+  //       { label: 'Number', value: 'number' },
+  //       { label: 'Boolean', value: 'boolean' },
+  //       { label: 'Object', value: 'object' },
+  //     ],
+  //   },
+  // },
 ];

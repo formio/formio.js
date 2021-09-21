@@ -1,4 +1,7 @@
 /* eslint-disable max-len */
+//select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+//tabs & functionalities are removed 
+
 export default [
   {
     weight: 0,
@@ -13,7 +16,7 @@ export default [
     }
   },
   {
-    type: 'select',
+    type: 'selectF',
     input: true,
     key: 'labelPosition',
     label: 'Label Position',
@@ -117,32 +120,34 @@ export default [
       isUseWorkerDisabled: true,
     },
   },
-  {
-    weight: 500,
-    type: 'textfield',
-    input: true,
-    key: 'customClass',
-    label: 'Custom CSS Class',
-    placeholder: 'Custom CSS Class',
-    tooltip: 'Custom CSS class to add to this component.'
-  },
-  {
-    weight: 600,
-    type: 'textfield',
-    input: true,
-    key: 'tabindex',
-    label: 'Tab Index',
-    placeholder: '0',
-    tooltip: 'Sets the tabindex attribute of this component to override the tab order of the form. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex\'>MDN documentation</a> on tabindex for more information.'
-  },
-  {
-    weight: 1100,
-    type: 'checkbox',
-    label: 'Hidden',
-    tooltip: 'A hidden field is still a part of the form, but is hidden from view.',
-    key: 'hidden',
-    input: true
-  },
+    //tabs & functionalities are removed 
+
+  // {
+  //   weight: 500,
+  //   type: 'textfield',
+  //   input: true,
+  //   key: 'customClass',
+  //   label: 'Custom CSS Class',
+  //   placeholder: 'Custom CSS Class',
+  //   tooltip: 'Custom CSS class to add to this component.'
+  // },
+  // {
+  //   weight: 600,
+  //   type: 'textfield',
+  //   input: true,
+  //   key: 'tabindex',
+  //   label: 'Tab Index',
+  //   placeholder: '0',
+  //   tooltip: 'Sets the tabindex attribute of this component to override the tab order of the form. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex\'>MDN documentation</a> on tabindex for more information.'
+  // },
+  // {
+  //   weight: 1100,
+  //   type: 'checkbox',
+  //   label: 'Hidden',
+  //   tooltip: 'A hidden field is still a part of the form, but is hidden from view.',
+  //   key: 'hidden',
+  //   input: true
+  // },
   {
     weight: 1200,
     type: 'checkbox',
@@ -151,14 +156,14 @@ export default [
     key: 'hideLabel',
     input: true
   },
-  {
-    weight: 1350,
-    type: 'checkbox',
-    label: 'Initial Focus',
-    tooltip: 'Make this field the initially focused element on this form.',
-    key: 'autofocus',
-    input: true
-  },
+  // {
+  //   weight: 1350,
+  //   type: 'checkbox',
+  //   label: 'Initial Focus',
+  //   tooltip: 'Make this field the initially focused element on this form.',
+  //   key: 'autofocus',
+  //   input: true
+  // },
   {
     weight: 1370,
     type: 'checkbox',
@@ -186,13 +191,13 @@ export default [
     key: 'tableView',
     input: true
   },
-  {
-    weight: 1600,
-    type: 'checkbox',
-    label: 'Modal Edit',
-    tooltip: 'Opens up a modal to edit the value of this component.',
-    key: 'modalEdit',
-    input: true
-  },
+  // {
+  //   weight: 1600,
+  //   type: 'checkbox',
+  //   label: 'Modal Edit',
+  //   tooltip: 'Opens up a modal to edit the value of this component.',
+  //   key: 'modalEdit',
+  //   input: true
+  // },
 ];
 /* eslint-enable max-len */

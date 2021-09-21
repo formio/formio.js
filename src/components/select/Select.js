@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
 export default class SelectComponent extends Field {
   static schema(...extend) {
     return Field.schema({
-      type: 'select',
+      type: 'selectF',  //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
       label: 'Select',
       key: 'select',
       idPath: 'id',
@@ -60,7 +60,7 @@ export default class SelectComponent extends Field {
   static get builderInfo() {
     return {
       title: 'Select',
-      group: 'basic',
+      group: 'noGroup',
       icon: 'th-list',
       weight: 70,
       documentation: '/userguide/#select',

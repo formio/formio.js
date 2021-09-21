@@ -14,7 +14,8 @@ export default class NumberComponent extends Input {
         min: '',
         max: '',
         step: 'any',
-        integer: ''
+        integer: '',
+        customMessage: ' ',    //added custom message
       }
     }, ...extend);
   }
@@ -25,7 +26,7 @@ export default class NumberComponent extends Input {
       icon: 'hashtag',
       group: 'basic',
       documentation: '/userguide/#number',
-      weight: 30,
+      weight: 20,             //for reordering
       schema: NumberComponent.schema()
     };
   }
@@ -117,11 +118,11 @@ export default class NumberComponent extends Input {
   }
 
   setInputMask(input) {
-    let numberPattern = '[0-9';
-    numberPattern += this.decimalSeparator || '';
-    numberPattern += this.delimiter || '';
-    numberPattern += ']*';
-    input.setAttribute('pattern', numberPattern);
+     //let numberPattern = '[0-9';
+    //numberPattern += this.decimalSeparator || '';
+    //numberPattern += this.delimiter || '';
+    //numberPattern += ']*';
+    input.setAttribute('pattern', '\\d*');
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask,
@@ -137,6 +138,7 @@ export default class NumberComponent extends Input {
     else {
       info.attr.type = 'text';
     }
+    info.attr.pattern='\\d*',
     info.attr.inputmode = this.isDecimalAllowed() ? 'decimal' : 'numeric';
     info.changeEvent = 'input';
     return info;
@@ -145,6 +147,11 @@ export default class NumberComponent extends Input {
   getValueAt(index) {
     if (!this.refs.input.length || !this.refs.input[index]) {
       return null;
+    }
+    const inputTest = this.refs.input[index];
+    if (inputTest.nodeName === 'INPUT') {
+      const value = (inputTest.value.length  + 1) * 9.1 + 20;
+      inputTest.style.minWidth = `${value}px`;
     }
 
     const val = this.refs.input[index].value;

@@ -10,14 +10,16 @@ export default class TextAreaComponent extends TextFieldComponent {
       type: 'textarea',
       label: 'Text Area',
       key: 'textArea',
-      rows: 3,
+      rows: 1,
       wysiwyg: false,
       editor: '',
       fixedSize: true,
+      autoExpand: true,      // expand feature for textfield
       inputFormat: 'html',
       validate: {
         minWords: '',
-        maxWords: ''
+        maxWords: '',
+        customMessage: ' ',  
       }
     }, ...extend);
   }
@@ -28,7 +30,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       group: 'basic',
       icon: 'font',
       documentation: '/userguide/#textarea',
-      weight: 20,
+      weight: 50,   //reordering
       schema: TextAreaComponent.schema()
     };
   }

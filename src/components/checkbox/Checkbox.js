@@ -10,17 +10,20 @@ export default class CheckBoxComponent extends Field {
       dataGridLabel: true,
       labelPosition: 'right',
       value: '',
-      name: ''
+      name: '',
+      validate: {
+        customMessage: ' '     //given validation for message
+      }
     }, ...extend);
   }
 
   static get builderInfo() {
     return {
       title: 'Checkbox',
-      group: 'basic',
+      group: 'customFuctions',  //changed group and weight to reorder components
       icon: 'check-square',
       documentation: '/userguide/#checkbox',
-      weight: 50,
+      weight: 30,
       schema: CheckBoxComponent.schema()
     };
   }

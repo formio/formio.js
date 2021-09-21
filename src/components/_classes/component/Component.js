@@ -2006,7 +2006,7 @@ export default class Component extends Element {
         this.setElementInvalid(this.performInputMapping(input), true);
       });
 
-      if (dirty && this.options.highlightErrors) {
+      if (this.options.highlightErrors) {
         this.addClass(element, this.options.componentErrorClass);
       }
       else {
@@ -2832,14 +2832,14 @@ export default class Component extends Element {
    * @param dirty
    * @return {boolean}
    */
-  isValid(data, dirty) {
-    return !this.invalidMessage(data, dirty);
+  isValid(data) {
+    return !this.invalidMessage(data, true);
   }
 
   setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error' && !message.fromServer).length;
-    if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
-      this.setCustomValidity(messages, dirty);
+    if (messages.length && (!silentCheck || this.error) ) {
+      this.setCustomValidity(messages, true);
     }
     else if (!silentCheck) {
       this.setCustomValidity('');
@@ -2880,7 +2880,7 @@ export default class Component extends Element {
   checkValidity(data, dirty, row, silentCheck) {
     data = data || this.rootValue;
     row = row || this.data;
-    const isValid = this.checkComponentValidity(data, dirty, row, { silentCheck });
+    const isValid = this.checkComponentValidity(data, true, row, { silentCheck });
     this.checkModal();
     return isValid;
   }
