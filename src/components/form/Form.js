@@ -333,6 +333,7 @@ export default class FormComponent extends Component {
   redraw() {
     if (this.subForm) {
       this.subForm.form = this.formObj;
+      this.updateSubFormProperties(this.subForm);
     }
     return super.redraw();
   }
@@ -346,6 +347,14 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       this.subForm.everyComponent(...args);
     }
+  }
+
+  updateSubFormProperties(subForm) {
+    subForm.disabled = this.disabled;
+    // Iterate through every component and set the form's validation
+    this.everyComponent(comp => {
+      comp.component.validate = this.component.validate;
+    });
   }
 
   updateSubWizards(subForm) {
