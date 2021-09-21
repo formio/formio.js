@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3944: fixed big spaces after select component
  - FIO-3935: Fix setting empty value for day component
 
+#### Changed
+ - Upgrade @formio/bootstrap3@2.12.0-rc.6
+ - Upgrade @formio/semantic@2.6.0-rc.5
+
 ### 4.14.0-rc.26
 #### Fixed
  - FIO-3756 Fixed an issue where resource component get unauthorized error when unfolding dropdown and no resources displayed
