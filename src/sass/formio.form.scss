@@ -168,6 +168,10 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   margin-top: 5px;
 }
 
+.card-vertical .card-body {
+  flex-grow: 2;
+}
+
 .nav-tabs-vertical {
   display: flex;
   flex-direction: column;
