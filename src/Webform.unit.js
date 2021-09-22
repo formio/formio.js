@@ -2388,7 +2388,7 @@ describe('Webform tests', function() {
               Harness.dispatchEvent(
                 'click',
                 form.element,
-                form.element.querySelector(`#${radioRepair1.id}${radioRepair1.row}-accept`),
+                form.element.querySelector(`#${radioRepair1.root.id}-${radioRepair1.id}-${radioRepair1.row}-accept`),
                 i => i.checked = true
               );
 
