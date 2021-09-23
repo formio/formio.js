@@ -463,7 +463,7 @@ export default class CalendarWidget extends InputWidget {
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
       }
-      else if (!this.calendar.input.value) {
+      else if (!this.calendar.input.value && this.calendar.config.noCalendar) {
         const value = moment({ hour: this.calendar?.config?.defaultHour, minute: this.calendar?.config?.defaultMinute }).toDate();
         this.calendar.setDate(value, true, this.settings.format);
       }
