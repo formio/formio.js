@@ -224,6 +224,7 @@ import conditionalDataGridWithTableAndRadio from &apos;../test/forms/conditional
 import calculateValueWithManualOverrideLableValueDataGrid
   from &apos;../test/forms/calculateValueWithManualOverrideLableValueDataGrid&apos;;
 import deeplyNestedDataGridAndContainer from &apos;../test/forms/nestedDataGridsAndContainers&apos;;
+import columnWithConditionalComponents from &apos;../test/forms/columnWithConditionalComponents&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -265,6 +266,70 @@ describe(&apos;Webform tests&apos;, function() {
 
           setTimeout(() =&gt; {
             assert.equal(conditionalDataGrid.rows.length, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should adjust columns when conditional fields appear/disappear&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    form.setForm(columnWithConditionalComponents).then(() =&gt; {
+      const selectBoxes = form.getComponent(&apos;selectBoxes&apos;);
+      const columns = form.getComponent(&apos;columns&apos;);
+
+      columns.columns.forEach((column, index) =&gt; {
+        assert.equal(column[0].visible, false,  `Column ${index + 1} component should be hidden`);
+        assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+      });
+
+      selectBoxes.setValue({ &apos;1&apos;: false, &apos;2&apos;: false, &apos;3&apos;: true, &apos;4&apos;: false, &apos;5&apos;: false, &apos;6&apos;: true });
+
+      setTimeout(() =&gt; {
+        columns.columns.forEach((column, index) =&gt; {
+          if ([3,6].includes(index+1)) {
+            assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+            assert.equal(columns.component.columns[index].currentWidth, 2, `Column ${index + 1}  width should be 2`);
+          }
+          else {
+            assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+            assert.equal( columns.component.columns[index].currentWidth, 0, `Column ${index + 1}  width should be 0`);
+          }
+        });
+
+        const visibleTextField1 = columns.columns[2][0].refs.input[0];
+        const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+        visibleTextField1.value = &apos;test   &apos;;
+        visibleTextField2.value = &apos; some &apos;;
+
+        const inputEvent = new Event(&apos;input&apos;);
+        visibleTextField1.dispatchEvent(inputEvent);
+        visibleTextField2.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          const visibleTextField1 = columns.columns[2][0].refs.input[0];
+          const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+          assert.equal(visibleTextField1.value,&apos;test   &apos;, &apos;Should not cut whitespaces while inputting into the conditional component inside column&apos;);
+          assert.equal(visibleTextField2.value,&apos; some &apos;, &apos;Should not cut whitespaces while inputting into the conditional component inside column&apos;);
+          selectBoxes.setValue({ &apos;1&apos;: false, &apos;2&apos;: false, &apos;3&apos;: false, &apos;4&apos;: false, &apos;5&apos;: false, &apos;6&apos;: true });
+
+          setTimeout(() =&gt; {
+            columns.columns.forEach((column, index) =&gt; {
+              if ([6].includes(index+1)) {
+                assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+                assert.equal( columns.component.columns[index].currentWidth, 2,  `Column ${index + 1}  width should be 2`);
+              }
+              else {
+                assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+                assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+              }
+            });
+
             done();
           }, 300);
         }, 300);

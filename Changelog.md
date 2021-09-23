@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.7-rc.2
+#### Fixed
+ - FIO-3418: fixed an issue where focus and cursor jumps when inputting in component inside columns with 'auto adjust columns' option enabled
+ - FIO-2989: Fixes an issue when for the oAuth redirect URI as host that trigger conflicts with OpenID
+ - FIO-3645 Fixed calendarwidget losing focus when logic is present and previous component has onBlur validation
+
 ### 4.13.7-rc.1
 #### Fixed
  - FIO-3935: Fix setting empty value for day component
