@@ -154,9 +154,9 @@ export default class CalendarWidget extends InputWidget {
       { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
     ], true);
 
-    this.component.shortcutButtons = this.component.shortcutButtons
-      ? this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick)
-      : [];
+    if (this.component.shortcutButtons) {
+      this.component.shortcutButtons = this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick);
+    }
 
     if (this.component.shortcutButtons?.length) {
       Formio.requireLibrary('shortcut-buttons-flatpickr-css', 'ShortcutButtonsPlugin', [
