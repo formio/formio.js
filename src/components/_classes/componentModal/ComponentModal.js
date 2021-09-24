@@ -109,7 +109,7 @@ export default class ComponentModal {
 
   setOpenEventListener() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.loadRefs(this.refs.openModalWrapper, {
+    this.component.loadRefs(this.refs.openModalWrapper ?? this.element, {
       'openModal': 'single',
     });
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
