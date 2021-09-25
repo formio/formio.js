@@ -1,7 +1,7 @@
 //import EditFormUtils from './utils';
 /* eslint-disable max-len */
-  //tabs & functionalities are removed 
-  
+  //tabs & functionalities are removed
+
 export default [
   // {
   //   weight: 1,

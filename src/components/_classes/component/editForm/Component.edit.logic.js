@@ -3,7 +3,7 @@ import { getContextComponents } from '../../../../utils/utils';
 
 /* eslint-disable quotes, max-len */
 //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
-//tabs & functionalities are removed 
+//tabs & functionalities are removed
 
 export default [
   {

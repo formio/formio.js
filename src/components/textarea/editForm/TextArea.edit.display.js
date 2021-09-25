@@ -33,7 +33,7 @@ export default [
     label: 'Allow Spellcheck'
   },
   {
-    type: 'selectF',     
+    type: 'selectF',
     input: true,
     key: 'editor',
     label: 'Editor',

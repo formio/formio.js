@@ -1,6 +1,5 @@
 //commented lines-> some of the components are removed and some of the components are built as custom components
 
-
 //import AddressComponent from './address/Address';
 //import ButtonComponent from './button/Button';
 import CheckBoxComponent from './checkbox/Checkbox';

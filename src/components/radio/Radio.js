@@ -11,12 +11,11 @@ export default class RadioComponent extends Field {
       key: 'radio',
       values: [{ label: '', value: '' }],
       validate: {
-        onlyAvailableItems: false
+        onlyAvailableItems: false,
+        customMessage: ' '   //validation message
       },
       fieldSet: false,
-      validate: {
-        customMessage: ' '   //validation message
-      }
+
     }, ...extend);
   }
 

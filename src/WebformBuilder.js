@@ -639,6 +639,15 @@ export default class WebformBuilder extends Component {
           this.searchFields(searchString);
         }, 300)
       );
+      this.addEventListener(this.refs['basicTab'], 'click',()=> {
+        this.searchFields(null, 'basicGroups', 1);
+      });
+      this.addEventListener(this.refs['customTab'], 'click',()=> {
+        this.searchFields(null, 'customGroups', 2);
+      });
+      this.addEventListener(this.refs['othersTab'], 'click',()=> {
+        this.searchFields(null, 'otherGroups', 3);
+      });
 
       if (this.dragDropEnabled) {
         this.initDragula();
@@ -650,8 +659,8 @@ export default class WebformBuilder extends Component {
     });
   }
 
-  searchFields(searchString = '') {
-    const searchValue = searchString.toLowerCase();
+  searchFields(searchString = '', groupName='basicGroups', tab=1) {
+    const searchValue = searchString?.toLowerCase();
     const sidebar = this.refs['sidebar'];
     const sidebarGroups = this.refs['sidebar-groups'];
 
@@ -709,19 +718,120 @@ export default class WebformBuilder extends Component {
                   })),
       };
     };
-
-    sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
-                              .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
-                              .join('');
+    if (searchString && searchString.length > 0) {
+      sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
+      .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
+      .join('');
+    }
+ else {
+      this.refs['sidebar-groups'].innerHTML = this[groupName].map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+        group: this.groups[groupKey],
+        groupKey,
+        groupId: `builder-sidebar-${this.id}`,
+        subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+          group,
+          groupKey: group.key,
+          groupId: `group-container-${groupKey}`,
+          subgroups: []
+        })),
+      })).join('');
+      this.refs['builder-sidebar-tabs'].innerHTML = this.renderTemplate('builderSidebarTab', {
+        tab:tab
+      });
+    }
 
     this.loadRefs(this.element, {
       'sidebar-groups': 'single',
       'sidebar-anchor': 'multiple',
       'sidebar-group': 'multiple',
       'sidebar-container': 'multiple',
+      'basicTab': 'single',
+      'customTab': 'single',
+      'othersTab': 'single',
+      'builder-sidebar-tabs': 'single'
+    });
+    this.addEventListener(this.refs['basicTab'], 'click',()=> {
+      this.searchFields(null, 'basicGroups', 1);
+    });
+    this.addEventListener(this.refs['customTab'], 'click',()=> {
+      this.searchFields(null, 'customGroups', 2);
+    });
+    this.addEventListener(this.refs['othersTab'], 'click',()=> {
+      this.searchFields(null, 'otherGroups', 3);
+    });
+    this.updateDragAndDrop();
+    this.refs['sidebar-anchor'].forEach((anchor, index) => {
+      this.addEventListener(anchor, 'click', () => {
+        const clickedParentId = anchor.getAttribute('data-parent').slice('#builder-sidebar-'.length);
+        const clickedId = anchor.getAttribute('data-target').slice('#group-'.length);
+
+        this.refs['sidebar-group'].forEach((group, groupIndex) => {
+          const openByDefault = group.getAttribute('data-default') === 'true';
+          const groupId = group.getAttribute('id').slice('group-'.length);
+          const groupParent = group.getAttribute('data-parent').slice('#builder-sidebar-'.length);
+
+          group.style.display =
+            (
+              (openByDefault && groupParent === clickedId) ||
+              groupId === clickedParentId ||
+              groupIndex === index
+            )
+              ? 'inherit' : 'none';
+        });
+      }, true);
+    });
+  }
+  get defaultDialogTemplate() {
+    return `
+    <div style="display:flex; justify-content: flex-end; height: 100%; margin-top: 25vh; background-color: white; padding-bottom: 20px; margin-left: 12px;">
+      <div>
+        <div style="padding: 8px 12px 1px 16px; background-color: #FF9B08; letter-spacing: 1.2px; color: white;">
+          <h4> Warning! </h4>
+        </div>
+        <div style="padding: 20px;">
+          You have unsaved changes on this page. Do you want to discard your changes?
+        </div>
+        <div style="display:flex; justify-content: flex-end; padding-right: 16px;">
+          <button ref="dialogCancelButton" class="btn btn-secondary" style="margin-right: 10px; color: #FF9B08; border-color: #FF9B08; background-color: white;">${this.t('Cancel')}</button>
+          <button ref="dialogYesButton" class="btn btn-primary" style="background-color: #FF9B08; color: white; border-color: #FF9B08; padding-right: 16px;">${this.t('Discard')}</button>
+        </div>
+      </div>
+    </div>
+  `;
+  }
+
+  showDialog() {
+    const wrapper = this.ce('div', { ref: 'confirmationDialog' });
+    const dialogContent = this.defaultDialogTemplate;
+
+    wrapper.innerHTML = dialogContent;
+    wrapper.refs = {};
+    this.loadRefs.call(wrapper, wrapper, {
+      dialogHeader: 'single',
+      dialogCancelButton: 'single',
+      dialogYesButton: 'single',
     });
 
-    this.updateDragAndDrop();
+    const dialog = this.createModal(wrapper);
+    const close = (event) => {
+      event.preventDefault();
+      dialog.close();
+    };
+    let dialogResult;
+
+    const promise = new NativePromise((resolve, reject) => {
+      dialogResult = { resolve, reject };
+    });
+
+    this.addEventListener(wrapper.refs.dialogYesButton, 'click', (event) => {
+      close(event);
+      dialogResult.resolve();
+    });
+    this.addEventListener(wrapper.refs.dialogCancelButton, 'click', (event) => {
+      close(event);
+      dialogResult.reject();
+    });
+    return promise;
   }
 
   orderComponents(groupInfo, foundComponents) {
@@ -1419,7 +1529,7 @@ export default class WebformBuilder extends Component {
       helplinks: this.helplinks,
     }));
 
-    this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
+    this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}), () => this.showDialog());
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));

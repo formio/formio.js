@@ -19,7 +19,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       validate: {
         minWords: '',
         maxWords: '',
-        customMessage: ' ',  
+        customMessage: ' ',
       }
     }, ...extend);
   }

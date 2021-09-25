@@ -13,7 +13,7 @@ export default [
     }
   },
 
-  //tabs & functionalities are removed 
+  //tabs & functionalities are removed
   // {
   //   weight: 100,
   //   type: 'tags',

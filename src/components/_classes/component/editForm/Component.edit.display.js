@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
-//tabs & functionalities are removed 
+//tabs & functionalities are removed
 
 export default [
   {
@@ -120,7 +120,7 @@ export default [
       isUseWorkerDisabled: true,
     },
   },
-    //tabs & functionalities are removed 
+    //tabs & functionalities are removed
 
   // {
   //   weight: 500,

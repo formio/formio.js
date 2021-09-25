@@ -1,5 +1,4 @@
 
-
 //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
 //changed group and weight to reorder components
 //tabs & functionalities are removed
