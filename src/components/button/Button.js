@@ -413,7 +413,8 @@ export default class ButtonComponent extends Field {
       return `${key}=${encodeURIComponent(params[key])}`;
     }).join('&');
 
-    const url = `${settings.authURI}?${params}`;
+    const separator = settings.authURI.indexOf('?') !== -1 ? '?' : '&';
+    const url = `${settings.authURI}${separator}${params}`;
     const popup = window.open(url, settings.provider, 'width=1020,height=618');
 
     const interval = setInterval(() => {
