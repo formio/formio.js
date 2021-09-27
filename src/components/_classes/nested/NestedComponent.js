@@ -17,6 +17,7 @@ export default class NestedComponent extends Field {
     super(component, options, data);
     this.type = 'components';
     this._collapsed = !!this.component.collapsed;
+    this.row = this.data;
   }
 
   get defaultSchema() {
