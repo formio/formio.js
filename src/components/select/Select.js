@@ -1596,11 +1596,13 @@ export default class SelectComponent extends Field {
   getOptionValue(value) {
     return _.isObject(value) && this.isEntireObjectDisplay()
     ? this.normalizeSingleValue(value)
-    : _.isObject(value)
+    : _.isObject(value) && (this.valueProperty || this.component.key !== 'resource')
       ? value
-      : _.isNull(value)
-        ? this.emptyValue
-        : String(this.normalizeSingleValue(value));
+      : _.isObject(value) && !this.valueProperty
+        ? this.interpolate(this.component.template, { item: value }).replace(/<\/?[^>]+(>|$)/g, '')
+        : _.isNull(value)
+          ? this.emptyValue
+          : String(this.normalizeSingleValue(value));
   }
 
   /**
