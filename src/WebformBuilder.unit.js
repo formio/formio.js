@@ -95,7 +95,7 @@ describe('WebformBuilder tests', function() {
 
           setTimeout(() => {
             const newColumnsApiKey = builder.editForm.getComponent('key');
-            assert.equal(newColumnsApiKey.dataValue, 'columns1', ERROR_MSG);
+            assert.equal(newColumnsApiKey.dataValue, 'columns', ERROR_MSG);
             Harness.saveComponent();
 
             setTimeout(() => {
