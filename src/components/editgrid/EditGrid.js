@@ -903,6 +903,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         case EditRowState.New: {
           const newIndex = dataValue.length;
           dataValue.push(editRow.data);
+          editRow.components.forEach(component=>component.rowIndex = newIndex);
           if (rowIndex !== newIndex) {
             this.editRows.splice(rowIndex, 1);
             this.editRows.splice(newIndex, 0, editRow);
