@@ -12,6 +12,7 @@ import {
   comp8,
   comp9,
   comp10,
+  comp11,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
 } from './fixtures';
@@ -1124,6 +1125,22 @@ describe('EditGrid Component', () => {
           document.innerHTML = '';
           done();
       }, 400);
+    }).catch(done);
+  });
+
+  it('Should render headers when openWhenEmpry is enabled', (done) => {
+    const form = _.cloneDeep(comp11);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+      const rowComponents = editGrid.component.components;
+      const headerEls = editGrid.element.querySelector('.list-group-header').firstElementChild.children;
+      assert.equal(headerEls.length, rowComponents.length);
+      headerEls.forEach((el, index) => {
+        assert.equal(el.textContent.trim(), rowComponents[index].label, `Should render ${rowComponents[index].key} component label in header`);
+      });
+      done();
     }).catch(done);
   });
 });
