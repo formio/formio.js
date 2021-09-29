@@ -329,19 +329,30 @@ export default class ButtonComponent extends Field {
 
         const flattened = {};
         const components = {};
+        const initialData = _.cloneDeep(this.data);
 
         eachComponent(form.components, (component, path) => {
           flattened[path] = component.component;
           components[component.component.key] = component;
         }, true);
-
         this.evaluate(this.component.custom, {
           form,
           flattened,
           components
         });
 
-        this.triggerChange();
+        const currentData = _.cloneDeep(this.data);
+
+        // If data has been changed by custom logic, find the component that has been changed and redraw.
+        if (!_.isEqual(initialData, currentData)) {
+          eachComponent(this.root.components, (comp) => {
+            const previousValue = _.get(initialData, comp.path);
+            const currentValue = _.get(currentData, comp.path);
+            if (!_.isEqual(previousValue, currentValue)) {
+              comp.redraw();
+            }
+          });
+        }
         break;
       }
       case 'url':
