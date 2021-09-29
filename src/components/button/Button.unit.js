@@ -305,19 +305,11 @@ describe('Button Component', () => {
     form.setForm(testForm)
       .then(() => {
         const button = form.getComponent('custom');
-        const changeEventTriggered = sinon.spy(button, 'triggerChange');
+        const number = form.getComponent('number');
         button.refs.button.click();
-        assert(changeEventTriggered.calledOnce, 'Click on custom button should trigger change event');
-        form.on('change', () => {
-          const {
-            data
-          } = form.submission;
-          assert.deepEqual(data, {
-            number: 5555,
-            custom: true
-          });
-          done();
-        });
+        assert.equal(number.refs.input[0].value, 5555, 'The number field should diplay actual value');
+        assert.equal(form.data.number, 5555, 'The value of number field should be changed to 5555');
+        done();
       })
       .catch((err) => done(err));
   });
