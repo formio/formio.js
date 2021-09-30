@@ -2443,12 +2443,17 @@ describe(&apos;Webform tests&apos;, function() {
               dataSourceDisplay: &apos;some value&apos;
             },
           state: &apos;submitted&apos;
-        });
-        setTimeout(() =&gt; {
-          const dataSourceDisplay = form.getComponent(&apos;dataSourceDisplay&apos;);
-          assert.equal(dataSourceDisplay.dataValue, &apos;some value&apos;, &apos;Should set and keep the value&apos;);
-          done();
-        }, 1000);
+        })
+        .then(() =&gt; {
+          const dataSource = form.getComponent(&apos;datasource&apos;);
+          dataSource.dataValue = { value: &apos;some value&apos; };
+          form.checkData(null, { dataSourceInitialLoading: true });
+          setTimeout(() =&gt; {
+            const dataSourceDisplay = form.getComponent(&apos;dataSourceDisplay&apos;);
+            assert.equal(dataSourceDisplay.dataValue, &apos;some value&apos;, &apos;Should set and keep the value&apos;);
+            done();
+          }, 1000);
+       });
       }).catch(done);
     });
     it(&apos;Should calculate value properly in editing mode&apos;, (done) =&gt; {

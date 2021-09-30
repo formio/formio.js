@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.8-rc.2
+#### Fixed
+ - FIO-2925: add protection against change loops
+ - FIO-3488: fixed an issue where values are not recalculated when submission is being set in edit mode
+ - FIO-4034: Calculated values are triggering before conditionally displayed fields preventing data calculation
+
 ### 4.13.8-rc.1
 #### Fixed
  - FIO-3772: Enabled auto adjust columns setting hides components on PDF
