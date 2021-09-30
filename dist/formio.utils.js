@@ -638,7 +638,7 @@ eval("var classof = __webpack_require__(/*! ../internals/classof-raw */ \"./node
   \*******************************************************/
 /***/ (function(module) {
 
-eval("// `isCallable` abstract operation\n// https://tc39.es/ecma262/#sec-iscallable\nmodule.exports = function (argument) {\n  return typeof argument === 'function';\n};\n\n\n//# sourceURL=webpack://Formio/./node_modules/core-js/internals/is-callable.js?");
+eval("// `IsCallable` abstract operation\n// https://tc39.es/ecma262/#sec-iscallable\nmodule.exports = function (argument) {\n  return typeof argument === 'function';\n};\n\n\n//# sourceURL=webpack://Formio/./node_modules/core-js/internals/is-callable.js?");
 
 /***/ }),
 
@@ -1075,7 +1075,7 @@ eval("var global = __webpack_require__(/*! ../internals/global */ \"./node_modul
   \**************************************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-eval("var IS_PURE = __webpack_require__(/*! ../internals/is-pure */ \"./node_modules/core-js/internals/is-pure.js\");\nvar store = __webpack_require__(/*! ../internals/shared-store */ \"./node_modules/core-js/internals/shared-store.js\");\n\n(module.exports = function (key, value) {\n  return store[key] || (store[key] = value !== undefined ? value : {});\n})('versions', []).push({\n  version: '3.18.0',\n  mode: IS_PURE ? 'pure' : 'global',\n  copyright: '© 2021 Denis Pushkarev (zloirock.ru)'\n});\n\n\n//# sourceURL=webpack://Formio/./node_modules/core-js/internals/shared.js?");
+eval("var IS_PURE = __webpack_require__(/*! ../internals/is-pure */ \"./node_modules/core-js/internals/is-pure.js\");\nvar store = __webpack_require__(/*! ../internals/shared-store */ \"./node_modules/core-js/internals/shared-store.js\");\n\n(module.exports = function (key, value) {\n  return store[key] || (store[key] = value !== undefined ? value : {});\n})('versions', []).push({\n  version: '3.18.1',\n  mode: IS_PURE ? 'pure' : 'global',\n  copyright: '© 2021 Denis Pushkarev (zloirock.ru)'\n});\n\n\n//# sourceURL=webpack://Formio/./node_modules/core-js/internals/shared.js?");
 
 /***/ }),
 
@@ -1607,7 +1607,7 @@ eval("\nvar $ = __webpack_require__(/*! ../internals/export */ \"./node_modules/
   \**********************************************************************/
 /***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
 
-eval("var global = __webpack_require__(/*! ../internals/global */ \"./node_modules/core-js/internals/global.js\");\nvar DOMIterables = __webpack_require__(/*! ../internals/dom-iterables */ \"./node_modules/core-js/internals/dom-iterables.js\");\nvar DOMTokenListPrototype = __webpack_require__(/*! ../internals/dom-token-list-prototype */ \"./node_modules/core-js/internals/dom-token-list-prototype.js\");\nvar forEach = __webpack_require__(/*! ../internals/array-for-each */ \"./node_modules/core-js/internals/array-for-each.js\");\nvar createNonEnumerableProperty = __webpack_require__(/*! ../internals/create-non-enumerable-property */ \"./node_modules/core-js/internals/create-non-enumerable-property.js\");\n\nvar handlePrototype = function (CollectionPrototype) {\n  // some Chrome versions have non-configurable methods on DOMTokenList\n  if (CollectionPrototype && CollectionPrototype.forEach !== forEach) try {\n    createNonEnumerableProperty(CollectionPrototype, 'forEach', forEach);\n  } catch (error) {\n    CollectionPrototype.forEach = forEach;\n  }\n};\n\nfor (var COLLECTION_NAME in DOMIterables) {\n  handlePrototype(global[COLLECTION_NAME] && global[COLLECTION_NAME].prototype);\n}\n\nhandlePrototype(DOMTokenListPrototype);\n\n\n//# sourceURL=webpack://Formio/./node_modules/core-js/modules/web.dom-collections.for-each.js?");
+eval("var global = __webpack_require__(/*! ../internals/global */ \"./node_modules/core-js/internals/global.js\");\nvar DOMIterables = __webpack_require__(/*! ../internals/dom-iterables */ \"./node_modules/core-js/internals/dom-iterables.js\");\nvar DOMTokenListPrototype = __webpack_require__(/*! ../internals/dom-token-list-prototype */ \"./node_modules/core-js/internals/dom-token-list-prototype.js\");\nvar forEach = __webpack_require__(/*! ../internals/array-for-each */ \"./node_modules/core-js/internals/array-for-each.js\");\nvar createNonEnumerableProperty = __webpack_require__(/*! ../internals/create-non-enumerable-property */ \"./node_modules/core-js/internals/create-non-enumerable-property.js\");\n\nvar handlePrototype = function (CollectionPrototype) {\n  // some Chrome versions have non-configurable methods on DOMTokenList\n  if (CollectionPrototype && CollectionPrototype.forEach !== forEach) try {\n    createNonEnumerableProperty(CollectionPrototype, 'forEach', forEach);\n  } catch (error) {\n    CollectionPrototype.forEach = forEach;\n  }\n};\n\nfor (var COLLECTION_NAME in DOMIterables) {\n  if (DOMIterables[COLLECTION_NAME]) {\n    handlePrototype(global[COLLECTION_NAME] && global[COLLECTION_NAME].prototype);\n  }\n}\n\nhandlePrototype(DOMTokenListPrototype);\n\n\n//# sourceURL=webpack://Formio/./node_modules/core-js/modules/web.dom-collections.for-each.js?");
 
 /***/ }),
 

@@ -66,20 +66,20 @@
       </label>
       <div class="input-group">
         <div class="checkbox" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="selectBoxes-one">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="one" checked=true id="selectBoxes-one">
+          <label class="control-label form-check-label label-position-right" for="-selectBoxes--one">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="one" checked=true id="-selectBoxes--one">
             <span>One</span>
           </label>
         </div>
         <div class="checkbox" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="selectBoxes-two">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="two" id="selectBoxes-two">
+          <label class="control-label form-check-label label-position-right" for="-selectBoxes--two">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="two" id="-selectBoxes--two">
             <span>Two</span>
           </label>
         </div>
         <div class="checkbox" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="selectBoxes-three">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="three" checked=true id="selectBoxes-three">
+          <label class="control-label form-check-label label-position-right" for="-selectBoxes--three">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="three" checked=true id="-selectBoxes--three">
             <span>Three</span>
           </label>
         </div>
@@ -92,20 +92,20 @@
       </label>
       <div class="input-group">
         <div class="radio" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="radio-one">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="one" id="radio-one">
+          <label class="control-label form-check-label label-position-right" for="-radio--one">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="one" id="-radio--one">
             <span>One</span>
           </label>
         </div>
         <div class="radio" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="radio-two">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="two" checked=true id="radio-two">
+          <label class="control-label form-check-label label-position-right" for="-radio--two">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="two" checked=true id="-radio--two">
             <span>Two</span>
           </label>
         </div>
         <div class="radio" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="radio-three">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="three" id="radio-three">
+          <label class="control-label form-check-label label-position-right" for="-radio--three">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="three" id="-radio--three">
             <span>Three</span>
           </label>
         </div>
@@ -254,13 +254,19 @@
         <thead>
           <tr>
             <th></th>
-            <th style="text-align: center;">A</th>
-            <th style="text-align: center;">B</th>
+            <th style="text-align: center;">
+              A
+            </th>
+            <th style="text-align: center;">
+              B
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>One</td>
+            <td>
+              One
+            </td>
             <td style="text-align: center;">
               <input type="radio" name="data[survey][one]" value="a" id="survey-one-a" ref="input">
             </td>
@@ -269,7 +275,9 @@
             </td>
           </tr>
           <tr>
-            <td>Two</td>
+            <td>
+              Two
+            </td>
             <td style="text-align: center;">
               <input type="radio" name="data[survey][two]" value="a" id="survey-two-a" ref="input">
             </td>

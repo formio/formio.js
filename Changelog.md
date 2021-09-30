@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.8-rc.1
+#### Fixed
+ - FIO-3772: Enabled auto adjust columns setting hides components on PDF
+ - FIO-3758: Duplication of radio ids inside nested forms
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.12.0-rc.6
+ - Upgrade @formio/semantic@2.6.0-rc.6
+ - Upgrade core-js@3.18.1, mocha@9.1.2, webpack@5.55.1, i18next@21.2.0
+
 ### 4.13.7
 #### Changed
  - No changes. Official release
