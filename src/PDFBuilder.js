@@ -448,11 +448,7 @@ export default class PDFBuilder extends WebformBuilder {
       _.merge(schema, info);
     }
 
-    schema.key = _.camelCase(
-      schema.label ||
-      schema.placeholder ||
-      schema.type
-    );
+    schema.key = this.generateKey(schema);
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform._form], schema);
