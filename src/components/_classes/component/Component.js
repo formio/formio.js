@@ -1389,17 +1389,17 @@ export default class Component extends Element {
    * @return {*}
    */
   itemValue(data, forceUseValue = false) {
-    let value = data;
     if (_.isObject(data)) {
       if (this.valueProperty) {
-        value = _.get(data, this.valueProperty);
+        return _.get(data, this.valueProperty);
       }
-      else if (forceUseValue) {
-        value = data.value;
+
+      if (forceUseValue) {
+        return data.value;
       }
     }
 
-    return this.sanitize(value, this.shouldSanitizeValue);
+    return data;
   }
 
   itemValueForHTMLMode(value) {
