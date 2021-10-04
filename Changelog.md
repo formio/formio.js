@@ -4,15 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
+### 4.14.0-rc.27
 #### Fixed
  - FIO-3944: fixed big spaces after select component
  - FIO-3935: Fix setting empty value for day component
  - FIO-3645 Fixed calendarwidget losing focus when logic is present and previous component has onBlur validation
+ - FIO-3758: Duplication of radio ids inside nested forms
+ - FIO-3772: Enabled auto adjust columns setting hides components on PDF
+ - FIO-3346: Brought back fixes for datetime in IE
+ - FIO-3865: fixed an issue where vertical tabs change width when switching between tabs
+ - Contrib: OAuth auth URI pre-defined query params support
+ - FIO-3976 Fixed issue when sketchpad crashed in formbuilder when logic was applied
+ - FIO-3996: Examples pages doesnt load in IE11
+ - FIO-3970: fixed an issue where no table headers display when 'Open First Row when Empty' setting is enabled for Edit Grid
+ - FIO-3974 Fixed higher contrast error appearing without error wrapper
+ - FIO-3948: fixed saving edit grid rows in random order issue
 
 #### Changed
- - Upgrade @formio/bootstrap3@2.12.0-rc.6
- - Upgrade @formio/semantic@2.6.0-rc.5
+ - Upgrade @formio/bootstrap3@2.12.0-rc.7
+ - Upgrade @formio/semantic@2.6.0-rc.6
 
 ### 4.14.0-rc.26
 #### Fixed

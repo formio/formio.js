@@ -16,6 +16,14 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   color: #721c24;
   background-color: #f8d7da;
   border-color: #f5c6cb;
+
+  .formio-errors .error {
+    color: #C20000;
+  }
+
+  .field-required:after {
+    color:#C20000;
+  }
 }
 
 .formio-warning-wrapper {
@@ -39,7 +47,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .formio-errors {
   .error {
-    color: #BF2231;
+    color: #dc3545;
   }
   .warning {
     color: #856404;
@@ -91,10 +99,6 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .formio-component-tags tags {
   background-color: #fff;
-}
-
-.formio-error-wrapper .field-required:after {
-  color:#C20000;
 }
 
 .field-required:after, .tab-error::after {
@@ -175,6 +179,12 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   padding-left: 5px;
   margin-right: 10px;
   border-bottom: 0;
+}
+
+.card-vertical > .card-body,
+.card-vertical > .tab-content,
+.card-vertical > .tab {
+  flex-basis: 85%;
 }
 
 .card-vertical ul>li>.nav-link-vertical  {

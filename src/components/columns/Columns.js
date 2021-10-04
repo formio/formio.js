@@ -80,7 +80,7 @@ export default class ColumnsComponent extends NestedComponent {
         this.columns[index].push(component);
       });
     });
-    if (this.component.autoAdjust) {
+    if (this.component.autoAdjust && this.root?.schema.display !== 'pdf') {
       this.justify();
     }
     this.rows = this.groupByRow();
@@ -153,7 +153,7 @@ export default class ColumnsComponent extends NestedComponent {
   checkData(data, flags, row, components) {
     const isValid = super.checkData(data, flags, row, components);
 
-    if (this.component.autoAdjust) {
+    if (this.component.autoAdjust && this.root?.schema.display !== 'pdf') {
       const redraw = this.justify();
 
       if (redraw) {

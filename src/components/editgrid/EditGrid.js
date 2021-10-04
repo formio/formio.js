@@ -368,11 +368,13 @@ export default class EditGridComponent extends NestedArrayComponent {
       return isVisible;
     }
 
-    if (!_.isEmpty(rows) && _.isEmpty(savedRows)) {
+    const isOpenRowWhenEmpty = _.get(this.component, 'openWhenEmpty') && rows.length === 1 && rows[0].state === EditRowState.New;
+
+    if (!_.isEmpty(rows) && _.isEmpty(savedRows) && !isOpenRowWhenEmpty) {
       return _.includes(this.visibleInHeader, component.key);
     }
 
-    return _.some(savedRows, (row, index) => {
+    return _.some(isOpenRowWhenEmpty ? rows : savedRows, (row, index) => {
       const editingRow = row.state === EditRowState.Editing;
       let isVisible;
 
@@ -901,6 +903,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         case EditRowState.New: {
           const newIndex = dataValue.length;
           dataValue.push(editRow.data);
+          editRow.components.forEach(component=>component.rowIndex = newIndex);
           if (rowIndex !== newIndex) {
             this.editRows.splice(rowIndex, 1);
             this.editRows.splice(newIndex, 0, editRow);
