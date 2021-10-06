@@ -94,6 +94,12 @@ dialog.fixed {
   background-color: #f8d7da;
   border-color: #f5c6cb;
 }
+.formio-error-wrapper .formio-errors .error {
+  color: #C20000;
+}
+.formio-error-wrapper .field-required:after {
+  color: #C20000;
+}
 
 .formio-warning-wrapper {
   color: #856404;
@@ -115,7 +121,7 @@ dialog.fixed {
 }
 
 .formio-errors .error {
-  color: #BF2231;
+  color: #dc3545;
 }
 .formio-errors .warning {
   color: #856404;
@@ -166,10 +172,6 @@ dialog.fixed {
 
 .formio-component-tags tags {
   background-color: #fff;
-}
-
-.formio-error-wrapper .field-required:after {
-  color: #C20000;
 }
 
 .field-required:after, .tab-error::after {
@@ -246,6 +248,12 @@ dialog.fixed {
   padding-left: 5px;
   margin-right: 10px;
   border-bottom: 0;
+}
+
+.card-vertical > .card-body,
+.card-vertical > .tab-content,
+.card-vertical > .tab {
+  flex-basis: 85%;
 }
 
 .card-vertical ul > li > .nav-link-vertical {
@@ -1070,6 +1078,9 @@ td .formio-component-modaledit .formio-modaledit-view-container {
   opacity: 0;
   position: relative;
   z-index: -1;
+  display: block;
+  height: 0;
+  border: none;
 }
 
 .has-error > .help-block {

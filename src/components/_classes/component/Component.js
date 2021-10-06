@@ -2363,13 +2363,13 @@ export default class Component extends Element {
    *
    * @param index
    */
-  splice(index) {
+  splice(index, flags = {}) {
     if (this.hasValue()) {
       const dataValue = this.dataValue || [];
       if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
         this.dataValue = dataValue;
-        this.triggerChange();
+        this.triggerChange(flags);
       }
     }
   }
@@ -2757,6 +2757,10 @@ export default class Component extends Element {
     this.calculatedValue = calculatedValue;
 
     if (changed) {
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
+
       flags.triggeredComponentId = this.id;
       return this.setValue(calculatedValue, flags);
     }
@@ -2954,9 +2958,15 @@ export default class Component extends Element {
     return isValid;
   }
 
-  checkModal() {
+  checkModal(isValid = true, dirty = false) {
     if (!this.component.modalEdit || !this.componentModal) {
       return;
+    }
+    if (dirty && !isValid) {
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, this.refs.openModalWrapper);
+    }
+    else {
+      this.clearErrorClasses(this.refs.openModalWrapper);
     }
   }
 
@@ -3099,6 +3109,8 @@ export default class Component extends Element {
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
+      // Do not check validations if component is not an input component.
+      () => !this.hasInput,
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.

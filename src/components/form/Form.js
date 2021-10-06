@@ -70,7 +70,12 @@ export default class FormComponent extends Component {
         this.options.project = this.formSrc;
       }
       if (this.component.form) {
-        this.formSrc += `/form/${this.component.form}`;
+        if (isMongoId(this.component.form)) {
+          this.formSrc += `/form/${this.component.form}`;
+        }
+        else {
+          this.formSrc += `/${this.component.form}`;
+        }
       }
       else if (this.component.path) {
         this.formSrc += `/${this.component.path}`;
@@ -80,13 +85,12 @@ export default class FormComponent extends Component {
     // Build the source based on the root src path.
     if (!this.formSrc && this.options.formio) {
       const rootSrc = this.options.formio.formsUrl;
-      if (this.component.path) {
-        const parts = rootSrc.split('/');
-        parts.pop();
-        this.formSrc = `${parts.join('/')}/${this.component.path}`;
-      }
-      if (this.component.form) {
+      if (this.component.form && isMongoId(this.component.form)) {
         this.formSrc = `${rootSrc}/${this.component.form}`;
+      }
+      else {
+        const formPath = this.component.path || this.component.form;
+        this.formSrc = `${rootSrc.replace(/\/form$/, '')}/${formPath}`;
       }
     }
 
@@ -439,6 +443,10 @@ export default class FormComponent extends Component {
           this.formObj = formObj;
           this.subFormLoading = false;
           return formObj;
+        })
+        .catch((err) => {
+          console.log(err);
+          return null;
         });
     }
     return NativePromise.resolve();

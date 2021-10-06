@@ -4,6 +4,49 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.27
+#### Fixed
+ - FIO-3944: fixed big spaces after select component
+ - FIO-3935: Fix setting empty value for day component
+ - FIO-3645 Fixed calendarwidget losing focus when logic is present and previous component has onBlur validation
+ - FIO-3758: Duplication of radio ids inside nested forms
+ - FIO-3772: Enabled auto adjust columns setting hides components on PDF
+ - FIO-3346: Brought back fixes for datetime in IE
+ - FIO-3865: fixed an issue where vertical tabs change width when switching between tabs
+ - Contrib: OAuth auth URI pre-defined query params support
+ - FIO-3976 Fixed issue when sketchpad crashed in formbuilder when logic was applied
+ - FIO-3996: Examples pages doesnt load in IE11
+ - FIO-3970: fixed an issue where no table headers display when 'Open First Row when Empty' setting is enabled for Edit Grid
+ - FIO-3974 Fixed higher contrast error appearing without error wrapper
+ - FIO-3948: fixed saving edit grid rows in random order issue
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.12.0-rc.7
+ - Upgrade @formio/semantic@2.6.0-rc.6
+
+### 4.14.0-rc.26
+#### Fixed
+ - FIO-3756 Fixed an issue where resource component get unauthorized error when unfolding dropdown and no resources displayed
+ - Do not validate non-input components.
+
+#### Changed
+ - Upgrade @formio/bootstrap3@2.12.0-rc.5
+
+### 4.14.0-rc.25
+#### Fixed
+ - FIO-3752: Check parent component conditions
+ - FIO-3715: Receiving Validation Errors when rendering a form with a submission in draft-state
+ - FIO-2561: Address that has Modal Edit checked is not shown in error list. Error message doesn't disappear in modal window
+ - FIO-3743: Fixed an issue with Date/Time component where the hours value doesn't save on the first change
+ - FIO-3875: Calculated fields that are invalid are not marked as such
+ - FIO-2946: Validation not triggered when change "required" option in Logic tab
+ - FIO-1310: Improved select search in large strings
+ - FIO-3838: Fixed issue when calculated values are set to default after reordering and removing a row in DataGrids inside of Tab component options
+ - FIO-3836: Fix checkConditions order for Container Companent
+
+#### Changed
+ - Upgrade core-js@3.17.3, i18next@20.6.1, @babel/preset-env@7.15.6, marked@3.0.3, sass@1.39.2, webpack@5.52.1
+
 ### 4.14.0-rc.24
 #### Changed
  - FIO-3616: next generation rules updates
