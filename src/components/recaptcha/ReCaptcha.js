@@ -3,6 +3,7 @@ import Component from '../_classes/component/Component';
 import { GlobalFormio as Formio } from '../../Formio';
 import _get from 'lodash/get';
 import NativePromise from 'native-promise-only';
+import { post } from 'request';
 
 export default class ReCaptchaComponent extends Component {
   static schema(...extend) {
@@ -29,7 +30,7 @@ export default class ReCaptchaComponent extends Component {
     if (this.builderMode) {
       return super.render('reCAPTCHA');
     }
-    else {
+ else {
       return super.render('', true);
     }
   }
@@ -39,13 +40,13 @@ export default class ReCaptchaComponent extends Component {
       // We need to see it in builder mode.
       this.append(this.text(this.name));
     }
-    else {
+ else {
       const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');
       if (siteKey) {
         const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
         this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
       }
-      else {
+ else {
         console.warn('There is no Site Key specified in settings in form JSON');
       }
     }
@@ -122,16 +123,51 @@ export default class ReCaptchaComponent extends Component {
       return NativePromise.resolve(false);
     }
 
-    return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))
-      .then((success) => success)
-      .catch((err) => {
-        this.setCustomValidity(err.message || err);
-        return false;
-      });
+    this.validateRecaptchaResponse(componentData).then(recaptchaVerifyResponse => {
+      if (!recaptchaVerifyResponse.success) {
+        this.setCustomValidity('ReCaptcha: Could not verify token');
+        return NativePromise.resolve(false);
+      }
+
+      return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))
+        .then((success) => success)
+        .catch((err) => {
+          this.setCustomValidity(err.message || err);
+          return false;
+        });
+    }).catch(() => {
+      this.setCustomValidity('ReCaptcha: Could not verify token');
+      return NativePromise.resolve(false);
+    });
   }
 
   normalizeValue(newValue) {
     // If a recaptcha result has already been established, then do not allow it to be reset.
     return this.recaptchaResult ? this.recaptchaResult : newValue;
+  }
+
+  validateRecaptchaResponse(data) {
+    return new Promise((resolve, reject) => {
+      const secret = _get(this.root.form, 'settings.recaptcha.secretKey');
+      if (!secret) {
+        console.warn('There is no Secret Key specified in settings in form JSON');
+        return reject(false);
+      }
+
+      post(
+        {
+          url: 'https://www.google.com/recaptcha/api/siteverify',
+          form: {
+            secret,
+            response: data.token
+            // remoteip: req.ip OPTIONAL
+          }
+        },
+        (err, httpResponse, body) => {
+          if (err) reject(err);
+          else resolve(JSON.parse(body));
+        }
+      );
+    });
   }
 }
