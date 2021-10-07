@@ -158,8 +158,6 @@ export default [
         key: 'value',
         input: true,
         type: 'textfield',
-        allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] },
       },
     ],
     conditional: {
