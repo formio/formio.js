@@ -174,6 +174,16 @@ export default class SelectComponent extends Field {
       return 'value';
     }
 
+    if (this.component.dataSrc === 'resource') {
+        // checking additional fields in the template
+        const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
+        if (hasNestedFields) {
+          const data = this.component.template.replace(/<\/?[^>]+(>|$)/g, '').split('item.')[1].slice(0, -3);
+          return data;
+        }
+      return 'data';
+    }
+
     return '';
   }
 
@@ -1586,11 +1596,13 @@ export default class SelectComponent extends Field {
   getOptionValue(value) {
     return _.isObject(value) && this.isEntireObjectDisplay()
     ? this.normalizeSingleValue(value)
-    : _.isObject(value)
+    : _.isObject(value) && (this.valueProperty || this.component.key !== 'resource')
       ? value
-      : _.isNull(value)
-        ? this.emptyValue
-        : String(this.normalizeSingleValue(value));
+      : _.isObject(value) && !this.valueProperty
+        ? this.interpolate(this.component.template, { item: value }).replace(/<\/?[^>]+(>|$)/g, '')
+        : _.isNull(value)
+          ? this.emptyValue
+          : String(this.normalizeSingleValue(value));
   }
 
   /**
