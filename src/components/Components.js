@@ -48,7 +48,7 @@ export default class Components {
     }
     else if (Array.isArray(component.components)) {
       // eslint-disable-next-line new-cap
-      comp = new Components.components['nested'](component, options, data);
+      comp = new Components.components['hidden'](component, options, data);
     }
     else {
       comp = new Component(component, options, data);
