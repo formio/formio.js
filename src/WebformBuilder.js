@@ -800,13 +800,7 @@ export default class WebformBuilder extends Component {
 
     if (info) {
       if (!info.key) {
-        info.key = _.camelCase(
-          info.key ||
-          info.title ||
-          info.label ||
-          info.placeholder ||
-          info.type
-        );
+        info.key = this.generateKey(info);
       }
     }
 
@@ -1623,5 +1617,15 @@ export default class WebformBuilder extends Component {
       this.groups[name] = group;
       this.triggerRedraw();
     }
+  }
+
+  generateKey(info) {
+    return _.camelCase(
+      info.key ||
+      info.title ||
+      info.label ||
+      info.placeholder ||
+      info.type
+    );
   }
 }
