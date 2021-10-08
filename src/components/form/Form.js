@@ -333,6 +333,7 @@ export default class FormComponent extends Component {
   redraw() {
     if (this.subForm) {
       this.subForm.form = this.formObj;
+      this.setSubFormDisabled(this.subForm);
     }
     return super.redraw();
   }
@@ -346,6 +347,10 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       this.subForm.everyComponent(...args);
     }
+  }
+
+  setSubFormDisabled(subForm) {
+    subForm.disabled = this.disabled; // When the Nested Form is disabled make the subForm disabled
   }
 
   updateSubWizards(subForm) {
