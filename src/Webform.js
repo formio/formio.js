@@ -1257,6 +1257,10 @@ export default class Webform extends NestedDataComponent {
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
     this.root.setAlert('danger', errorsList);
 
+    if (this.root && this.root.alert) {
+      this.scrollIntoView(this.root.alert);
+    }
+
     if (triggerEvent) {
       this.emit('error', errors);
     }
