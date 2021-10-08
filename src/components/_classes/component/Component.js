@@ -804,7 +804,9 @@ export default class Component extends Element {
   }
 
   get transform() {
-    return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
+    return Templates.current.hasOwnProperty('transform')
+      ? Templates.current.transform.bind(Templates.current)
+      : (type, value) => value;
   }
 
   getTemplate(names, modes) {
@@ -930,9 +932,9 @@ export default class Component extends Element {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty) {
+  sanitize(dirty, forceSanitize) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
-    if (this.options.pdf) {
+    if ((this.options.pdf || this.options.sanitize === false) && !forceSanitize) {
       return dirty;
     }
     return FormioUtils.sanitize(dirty, this.options);
@@ -945,7 +947,7 @@ export default class Component extends Element {
    * @param data
    * @param actions
    *
-   * @return {HTMLElement} - The created element.
+   * @return {HTMLElement|String} - The created element or an empty string if template is not specified.
    */
   renderString(template, data) {
     if (!template) {
@@ -1366,7 +1368,7 @@ export default class Component extends Element {
       return '';
     }
     const stringValue = value.toString();
-    return this.sanitize(stringValue);
+    return this.sanitize(stringValue, this.shouldSanitizeValue);
   }
 
   getView(value, options) {
@@ -1606,9 +1608,9 @@ export default class Component extends Element {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
-  setContent(element, content) {
+  setContent(element, content, forceSanitize) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content);
+      element.innerHTML = this.sanitize(content, forceSanitize);
       return true;
     }
     return false;
@@ -2242,10 +2244,14 @@ export default class Component extends Element {
               txtArea.value = this.quill.root.innerHTML;
               onChange(txtArea);
             });
-
             return this.quill;
           });
       });
+  }
+
+  get shouldSanitizeValue() {
+    // Sanitize value if sanitizing for thw whole content is turned off
+    return (this.options?.sanitize === false ? true : false);
   }
 
   addAce(element, settings, onChange) {
@@ -2516,6 +2522,7 @@ export default class Component extends Element {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
+
     const input = this.performInputMapping(this.refs.input[index]);
     const valueMaskInput = this.refs.valueMaskInput;
 

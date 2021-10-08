@@ -339,7 +339,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.refs.input[index].innerText = this.interpolate(value);
         }
         else {
-          this.setContent(this.refs.input[index], this.interpolate(value));
+          this.setContent(this.refs.input[index], this.interpolate(value), this.shouldSanitizeValue);
         }
       }
     }
