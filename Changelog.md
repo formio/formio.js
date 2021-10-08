@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased - 4.14.0-rc.28]
+#### Fixed
+ - FIO-4002: Data Grid: Signature column is changing the size when the form is rendered or new row is added
+ - FIO-3984: First click on a date does not select it
+ - FIO-3944: fixed big spaces after select component
+ - FIO-3860: Existing Resource Field showing Different Property Name from PDF and webforms
+ - FIO-3744: fixed an issue where unique validation is not honored for resource component on submit
+ - FIO-3677: Nested Form: Logic that makes a Nested Form disabled does not work, and the components inside the Nested Form stay active
+ - FIO-3533: Fixed an issue where signature modal doesn't open when user tries to edit signature
+ - FIO-3519: Made 'scroll on top' option in wizard go to breadcrumbs if they are visible
+ - FIO-3448, FIO-3447: feat(Signature): add an option to make Signature field have the same aspect ratio as its PDF overlay
+ - FIO-3247: Fixed redirecting to error list after failing submission
+ - FIO-3243: Fixed selectboxes with options position left
+ - FIO-2780: Makes Sanitize a configurable option
+ - FIO-1112: width off tab card
+
+#### Added
+ - UIP-317: add DataGrid events for adding/deleting rows
+
 ### 4.14.0-rc.27
 #### Fixed
  - FIO-3944: fixed big spaces after select component
