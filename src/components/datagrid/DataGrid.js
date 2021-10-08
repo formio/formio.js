@@ -452,6 +452,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     this.rows[index] = this.createRowComponents(row, index);
+    this.emit('dataGridAddRow', {
+      component: this.component,
+      row
+    });
     this.checkConditions();
     this.triggerChange();
     this.redraw().then(() => {
@@ -479,6 +483,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   removeRow(index) {
     this.splice(index, { isReordered: true });
+    this.emit('dataGridDeleteRow', { index });
     const [row] = this.rows.splice(index, 1);
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
