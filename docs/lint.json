@@ -29,11 +29,12 @@
       },
       {
         "lineNumber": 229,
-        "line": "  sanitize(dirty) {"
+        "line": "  sanitize(dirty, forceSanitize) {"
       }
     ],
     "codeParams": [
-      "dirty"
+      "dirty",
+      "forceSanitize"
     ],
     "docParams": [
       "string"

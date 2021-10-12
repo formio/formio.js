@@ -87,8 +87,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
@@ -182,6 +181,7 @@ import {
   comp3,
   comp4,
   comp5,
+  comp6
 } from &apos;./fixtures&apos;;
 import Webform from &apos;../../Webform&apos;;
 import formModalEdit from &apos;./fixtures/formModalEdit&apos;;
@@ -370,6 +370,25 @@ describe(&apos;Form Component&apos;, () =&gt; {
           }, 250);
         });
       }).catch(done);
+    });
+  });
+
+  describe(&apos;Advanced Logic&apos;, () =&gt; {
+    it(&apos;Should disable all components of the form&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(comp6)
+        .then(() =&gt; {
+            const textField = form.getComponent([&apos;textField&apos;]);
+            const nestedForm = form.getComponent([&apos;form&apos;]);
+            textField.setValue(&apos;test&apos;, { modified: true });
+            setTimeout(() =&gt; {
+              assert.equal(textField.dataValue, &apos;test&apos;, &apos;Should set value&apos;);
+              assert.equal(nestedForm.disabled, true, &apos;Nested Form should be disabled&apos;);
+              done();
+            }, 300);
+        })
+        .catch(done);
     });
   });
 

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased - 4.14.0-rc.28]
+### 4.14.0-rc.28
 #### Fixed
  - FIO-4002: Data Grid: Signature column is changing the size when the form is rendered or new row is added
  - FIO-3984: First click on a date does not select it

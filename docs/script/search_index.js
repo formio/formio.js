@@ -462,12 +462,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/components/signature/signature.js~signaturecomponent",
-    "class/src/components/signature/Signature.js~SignatureComponent.html",
-    "<span>SignatureComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/signature/Signature.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent",
     "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html",
     "<span>StripeCheckoutComponent</span> <span class=\"search-result-import-path\">formiojs/src/contrib/stripe/checkout/StripeCheckout.js</span>",
@@ -4188,6 +4182,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/form/fixtures/comp6.js",
+    "file/src/components/form/fixtures/comp6.js.html",
+    "src/components/form/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/form/fixtures/formmodaledit.js",
     "file/src/components/form/fixtures/formModalEdit.js.html",
     "src/components/form/fixtures/formModalEdit.js",
@@ -5082,6 +5082,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/resource/fixtures/comp2.js",
+    "file/src/components/resource/fixtures/comp2.js.html",
+    "src/components/resource/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/resource/fixtures/index.js",
     "file/src/components/resource/fixtures/index.js.html",
     "src/components/resource/fixtures/index.js",
@@ -5280,156 +5286,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/signature/signature.js",
-    "file/src/components/signature/Signature.js.html",
-    "src/components/signature/Signature.js",
-    "file"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#attach",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-attach",
-    "src/components/signature/Signature.js~SignatureComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#checksize",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-checkSize",
-    "src/components/signature/Signature.js~SignatureComponent#checkSize",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#classname",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-get-className",
-    "src/components/signature/Signature.js~SignatureComponent#className",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#currentwidth",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-currentWidth",
-    "src/components/signature/Signature.js~SignatureComponent#currentWidth",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#defaultschema",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-get-defaultSchema",
-    "src/components/signature/Signature.js~SignatureComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#detach",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-detach",
-    "src/components/signature/Signature.js~SignatureComponent#detach",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#emptyvalue",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-get-emptyValue",
-    "src/components/signature/Signature.js~SignatureComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#focus",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-focus",
-    "src/components/signature/Signature.js~SignatureComponent#focus",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#getmodalpreviewtemplate",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-getModalPreviewTemplate",
-    "src/components/signature/Signature.js~SignatureComponent#getModalPreviewTemplate",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#getvalueasstring",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-getValueAsString",
-    "src/components/signature/Signature.js~SignatureComponent#getValueAsString",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#hasmodalsavebutton",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-get-hasModalSaveButton",
-    "src/components/signature/Signature.js~SignatureComponent#hasModalSaveButton",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#init",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-init",
-    "src/components/signature/Signature.js~SignatureComponent#init",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#inputinfo",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-get-inputInfo",
-    "src/components/signature/Signature.js~SignatureComponent#inputInfo",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#labelishidden",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-labelIsHidden",
-    "src/components/signature/Signature.js~SignatureComponent#labelIsHidden",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#observer",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-observer",
-    "src/components/signature/Signature.js~SignatureComponent#observer",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#ondisabled",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-onDisabled",
-    "src/components/signature/Signature.js~SignatureComponent#onDisabled",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#renderelement",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-renderElement",
-    "src/components/signature/Signature.js~SignatureComponent#renderElement",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#scale",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-scale",
-    "src/components/signature/Signature.js~SignatureComponent#scale",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#setdatatosigaturepad",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-setDataToSigaturePad",
-    "src/components/signature/Signature.js~SignatureComponent#setDataToSigaturePad",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#setvalue",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-setValue",
-    "src/components/signature/Signature.js~SignatureComponent#setValue",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#showcanvas",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-showCanvas",
-    "src/components/signature/Signature.js~SignatureComponent#showCanvas",
-    "method"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#signaturepad",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-signaturePad",
-    "src/components/signature/Signature.js~SignatureComponent#signaturePad",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent.builderinfo",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#static-get-builderInfo",
-    "src/components/signature/Signature.js~SignatureComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent.schema",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#static-method-schema",
-    "src/components/signature/Signature.js~SignatureComponent.schema",
-    "method"
-  ],
-  [
     "src/components/signature/signature.unit.js",
     "file/src/components/signature/Signature.unit.js.html",
     "src/components/signature/Signature.unit.js",
@@ -5439,12 +5295,6 @@ window.esdocSearchIndex = [
     "src/components/signature/editform/signature.edit.data.js",
     "file/src/components/signature/editForm/Signature.edit.data.js.html",
     "src/components/signature/editForm/Signature.edit.data.js",
-    "file"
-  ],
-  [
-    "src/components/signature/editform/signature.edit.display.js",
-    "file/src/components/signature/editForm/Signature.edit.display.js.html",
-    "src/components/signature/editForm/Signature.edit.display.js",
     "file"
   ],
   [
