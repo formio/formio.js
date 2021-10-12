@@ -1454,7 +1454,7 @@ export default class Component extends Element {
   }
 
   get optimizeRedraw() {
-    if (this.options.optimizeRedraw && this.element && (!this.visible || this.component.hidden)) {
+    if (this.options.optimizeRedraw && this.element && !this.visible) {
       this.addClass(this.element, 'formio-removed');
       return true;
     }
