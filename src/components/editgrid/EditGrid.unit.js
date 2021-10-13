@@ -1137,9 +1137,10 @@ describe('EditGrid Component', () => {
       const rowComponents = editGrid.component.components;
       const headerEls = editGrid.element.querySelector('.list-group-header').firstElementChild.children;
       assert.equal(headerEls.length, rowComponents.length);
-      headerEls.forEach((el, index) => {
+      for (let index = 0; index < headerEls.length; index++) {
+        const el = headerEls[index];
         assert.equal(el.textContent.trim(), rowComponents[index].label, `Should render ${rowComponents[index].key} component label in header`);
-      });
+      }
       done();
     }).catch(done);
   });
