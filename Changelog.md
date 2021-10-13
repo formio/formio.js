@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.13.8-rc.3
+#### Fixed
+ - FIO-4045: 504 error is not handled properly and does not trigger offline plugin to process failed requests
+
 ### 4.13.8-rc.2
 #### Fixed
  - FIO-2925: add protection against change loops
