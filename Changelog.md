@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased - 4.14.0-rc.29]
+#### Fixed
+ - FIO-4045: 504 error is not handled properly and does not trigger offline plugin to process failed requests
+
 ### 4.14.0-rc.28
 #### Fixed
  - FIO-4002: Data Grid: Signature column is changing the size when the form is rendered or new row is added
