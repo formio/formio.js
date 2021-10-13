@@ -174,6 +174,16 @@ export default class SelectComponent extends Field {
       return 'value';
     }
 
+    if (this.component.dataSrc === 'resource') {
+        // checking additional fields in the template
+        const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
+        if (hasNestedFields) {
+          const data = this.component.template.replace(/<\/?[^>]+(>|$)/g, '').split('item.')[1].slice(0, -3);
+          return data;
+        }
+      return 'data';
+    }
+
     return '';
   }
 
@@ -213,14 +223,15 @@ export default class SelectComponent extends Field {
     if (this.options.readOnly && this.component.readOnlyValue) {
       return this.itemValue(data);
     }
-
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.component.template) {
       const itemLabel = data.label || data;
-      return (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
+      const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
+      return this.sanitize(value, this.shouldSanitizeValue);
     }
     if (typeof data === 'string') {
-      return this.t(data, { _userInput: true });
+      const value = this.t(data, { _userInput: true });
+      return this.sanitize(value, this.shouldSanitizeValue);
     }
 
     if (data.data) {
@@ -230,7 +241,12 @@ export default class SelectComponent extends Field {
         ? JSON.stringify(data.data)
         : data.data;
     }
-    const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
+    const template = this.sanitize(
+      this.component.template
+        ? this.interpolate(this.component.template, { item: data })
+        : data.label,
+      this.shouldSanitizeValue,
+    );
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       const hasTranslator = this.i18next?.translator;
@@ -238,7 +254,7 @@ export default class SelectComponent extends Field {
       return hasTranslator ? template.replace(label, this.t(label, { _userInput: true })) : label;
     }
     else {
-      return JSON.stringify(data);
+      return this.sanitize(JSON.stringify(data), this.shouldSanitizeValue);
     }
   }
 
@@ -284,7 +300,7 @@ export default class SelectComponent extends Field {
         attrs,
         id,
         useId: (this.valueProperty === '') && _.isObject(value) && id,
-      })).trim();
+      }), this.shouldSanitizeValue).trim();
 
       option.element = div.firstChild;
       this.refs.selectContainer.appendChild(option.element);
@@ -1586,11 +1602,13 @@ export default class SelectComponent extends Field {
   getOptionValue(value) {
     return _.isObject(value) && this.isEntireObjectDisplay()
     ? this.normalizeSingleValue(value)
-    : _.isObject(value)
+    : _.isObject(value) && (this.valueProperty || this.component.key !== 'resource')
       ? value
-      : _.isNull(value)
-        ? this.emptyValue
-        : String(this.normalizeSingleValue(value));
+      : _.isObject(value) && !this.valueProperty
+        ? this.interpolate(this.component.template, { item: value }).replace(/<\/?[^>]+(>|$)/g, '')
+        : _.isNull(value)
+          ? this.emptyValue
+          : String(this.normalizeSingleValue(value));
   }
 
   /**

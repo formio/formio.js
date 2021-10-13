@@ -87,8 +87,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
@@ -204,11 +203,10 @@ import {
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
-  propertyActions,
   formWithEditGridAndNestedDraftModalRow,
   formWithDateTimeComponents,
   formWithCollapsedPanel,
-  formWithCustomFormatDate
+  formWithCustomFormatDate,
 } from &apos;../test/formtest&apos;;
 import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 import UpdateErrorClassesWidgets from &apos;../test/forms/updateErrorClasses-widgets&apos;;
@@ -220,12 +218,11 @@ import nestedFormInsideDataGrid from &apos;../test/forms/dataGrid-nestedForm&apo
 import formWithDataGrid from &apos;../test/forms/formWithDataGrid&apos;;
 import translationTestForm from &apos;../test/forms/translationTestForm&apos;;
 import formWithDataGridWithCondColumn from &apos;../test/forms/dataGridWithConditionalColumn&apos;;
-import formWithDataGridWithContainerAndConditionals from &apos;../test/forms/dataGridContainerConditionals&apos;;
 import { nestedFormInWizard } from &apos;../test/fixtures&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { fastCloneDeep } from &apos;../lib/utils/utils&apos;;
+
 import truncateMultipleSpaces from &apos;../test/forms/truncateMultipleSpaces&apos;;
-import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
 import conditionalDataGridWithTableAndRadio from &apos;../test/forms/conditionalDataGridWithTableAndRadio&apos;;
 import calculateValueWithManualOverrideLableValueDataGrid
@@ -238,6 +235,9 @@ import formWithDayComp from &apos;../test/forms/formWithDayComp&apos;;
 import formWithCalcValue from &apos;../test/forms/formWithCalcValue&apos;;
 import testClearOnHideInsideEditGrid from &apos;../test/forms/clearOnHideInsideEditGrid&apos;;
 import formWithNestedDataGridInitEmpty from &apos;../test/forms/nestedDataGridWithInitEmpty&apos;;
+import * as FormioUtils from &apos;./utils/utils&apos;;
+import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
+import optionalSanitize from &apos;../test/forms/optionalSanitize&apos;;
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -969,13 +969,13 @@ describe(&apos;Webform tests&apos;, function() {
   it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
-    const formWithDraftModals = new Webform(formElement);
+    const formWithDraftModals = new Webform(formElement, { sanitize: true });
 
     formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() =&gt; {
       const clickEvent = new Event(&apos;click&apos;);
       const inputEvent = new Event(&apos;input&apos;);
 
-      const addRowBtn =  formWithDraftModals.element.querySelector( &apos;[ref=&quot;editgrid-editGrid-addRow&quot;]&apos;);
+      const addRowBtn = formWithDraftModals.element.querySelector( &apos;[ref=&quot;editgrid-editGrid-addRow&quot;]&apos;);
       //click to open row in modal view
       addRowBtn.dispatchEvent(clickEvent);
 
@@ -1006,7 +1006,7 @@ describe(&apos;Webform tests&apos;, function() {
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
 
-            const submitBtn = formWithDraftModals.element.querySelector(&apos;[name=&quot;data[submit]&quot;&apos;);
+            const submitBtn = formWithDraftModals.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
             //pushing submit button to trigger validation
             submitBtn.dispatchEvent(clickEvent);
 
@@ -2778,7 +2778,7 @@ describe(&apos;Webform tests&apos;, function() {
               setTimeout(() =&gt; {
                 const dateComponentElement = dateTimeComponent.element;
                 assert.equal(!dateComponentElement.className.includes(&apos;formio-hidden&apos;), true, &apos;Should be visible&apos;);
-                const dateVisibleInput = dateComponentElement.querySelector(&apos;.input:not([type=&quot;hidden&quot;]&apos;);
+                const dateVisibleInput = dateComponentElement.querySelector(&apos;.input:not([type=&quot;hidden&quot;])&apos;);
                 const flatpickerInput = dateComponentElement.querySelector(&apos;.flatpickr-input&apos;);
 
                 assert(dateVisibleInput.className.includes(&apos;is-invalid&apos;), &apos;Visible field should has invalid class&apos;);
@@ -3173,52 +3173,25 @@ describe(&apos;Webform tests&apos;, function() {
     }).catch(done);
   });
 
-  describe(&apos;Custom Logic&apos;, () =&gt; {
-    it(&apos;Should rerender components using updated properties&apos;, (done) =&gt; {
-      const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
-      form.setForm(propertyActions).then(() =&gt; {
-        form.emit(&apos;disabled&apos;);
-        form.emit(&apos;hide&apos;);
-        form.emit(&apos;require&apos;);
-        setTimeout(() =&gt; {
-          const textFieldDisabled = form.getComponent([&apos;textField&apos;]);
-          const textFieldHidden = form.getComponent([&apos;textField1&apos;]);
-          const textFieldRequired = form.getComponent([&apos;textField2&apos;]);
-          assert.equal(textFieldDisabled.component.disabled, true, &apos;Should be disabled&apos;);
-          assert.equal(textFieldHidden.component.hidden, true, &apos;Should be hidden&apos;);
-          assert.equal(textFieldRequired.component.validate.required, true, &apos;Should be required&apos;);
-          const disabledInput = textFieldDisabled.element.querySelector(&apos;[ref=&quot;input&quot;]&apos;);
-          assert.equal(disabledInput.disabled, true, &apos;Should found a disabled input&apos;);
-          const hiddenInput = textFieldHidden.element.querySelector(&apos;[ref=&quot;input&quot;]&apos;);
-          assert(!hiddenInput, &apos;Should not found a hidden input&apos;);
-          const requiredFieldLabel = textFieldRequired.element.querySelector(&apos;label&apos;);
-          assert(requiredFieldLabel.classList.contains(&apos;field-required&apos;), &apos;Should mark a field as required&apos;);
-          done();
-        }, 550);
-      }).catch(done);
-    });
-  });
+  it(&apos;Test optional sanitize&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
 
-  describe(&apos;Conditionals&apos;, () =&gt; {
-    it(&apos;Should always checkConditions with correct context&apos;, (done) =&gt; {
-      const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    Formio.createForm(element, optionalSanitize, {
+      sanitize: false,
+    }).then(form =&gt; {
+      const sanitize = sinon.spy(FormioUtils, &apos;sanitize&apos;);
+      form.redraw();
+      setTimeout(() =&gt; {
+        assert.equal(sanitize.callCount, 0, &apos;Should not sanitize templates when sanitize in not turned on&apos;);
+        element.innerHTML = &apos;&apos;;
 
-      form.setForm(formWithDataGridWithContainerAndConditionals).then(() =&gt; {
-        const radioTrigger = form.getComponent([&apos;dataGrid&apos;, 0, &apos;radio1&apos;]);
-        const radioConditional = form.getComponent([&apos;dataGrid&apos;, 0, &apos;radio2&apos;]);
-        radioTrigger.setValue(&apos;yes&apos;, { modified: true });
-
-        setTimeout(() =&gt; {
-          assert.equal(radioTrigger.dataValue, &apos;yes&apos;, &apos;Should set value&apos;);
-          assert.equal(radioConditional.visible, true, &apos;Should become visible&apos;);
-
-          radioConditional.setValue(&apos;one&apos;, { modified: true });
+        Formio.createForm(element, optionalSanitize, {
+          sanitize: true,
+        }).then(form =&gt; {
+          sanitize.resetHistory();
+          form.redraw();
           setTimeout(() =&gt; {
-            assert.equal(radioConditional.dataValue, &apos;one&apos;, &apos;Should set value and clearOnHide should not be triggered&apos;);
-            assert.equal(radioConditional.visible, true, &apos;Should stay visible&apos;);
-
+            assert.equal(sanitize.callCount, 1, &apos;Should sanitize templates when sanitize in turned on&apos;);
             done();
           }, 250);
         }, 250);
@@ -3283,7 +3256,8 @@ describe(&apos;Webform tests&apos;, function() {
       formWithNestedDataGridInitEmptyOption.setSubmission(formWithNestedDataGridInitEmpty.submission);
 
       setTimeout(() =&gt; {
-        const nestedDataGridFirstRowComponentValue = formWithNestedDataGridInitEmptyOption.element.querySelector(&apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;).querySelectorAll(&apos;.col-sm-2&apos;);
+        const nestedDataGridFirstRowComponentValue = formWithNestedDataGridInitEmptyOption.element.querySelector(
+          &apos;[ref=&quot;editgrid-editGrid-row&quot;]&apos;).querySelectorAll(&apos;.col-sm-2&apos;);
 
         assert.equal(nestedDataGridFirstRowComponentValue[1].textContent.trim(), &apos;email&apos;);
         assert.equal(nestedDataGridFirstRowComponentValue[2].textContent.trim(), &apos;hhh@gmail.com&apos;);
@@ -3291,7 +3265,7 @@ describe(&apos;Webform tests&apos;, function() {
         done();
       }, 200);
     })
-    .catch((err) =&gt; done(err));
+      .catch((err) =&gt; done(err));
   });
 
   each(FormTests, (formTest) =&gt; {

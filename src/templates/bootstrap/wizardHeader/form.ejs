@@ -1,4 +1,4 @@
-<nav aria-label="Wizard navigation" id="{{ ctx.wizardKey }}-header">
+<nav aria-label="Wizard navigation" id="{{ ctx.wizardKey }}-header" ref="{{ctx.wizardKey}}-header">
   <ul class="pagination" role="tablist">
     {% ctx.panels.forEach(function(panel, index) { %}
     <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="cursor: pointer;">

@@ -87,8 +87,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
@@ -174,9 +173,13 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/resource/Resource.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import ResourceComponent from &apos;./Resource&apos;;
+import assert from &apos;power-assert&apos;;
+import Formio from &apos;./../../Formio&apos;;
+import _ from &apos;lodash&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Resource Component&apos;, () =&gt; {
@@ -185,6 +188,32 @@ describe(&apos;Resource Component&apos;, () =&gt; {
       Harness.testElements(component, &apos;select&apos;, 1);
       done();
     });
+  });
+
+  it(&apos;Should provide correct value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp2);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const resource = form.getComponent(&apos;resource&apos;);
+      const value = &apos;API key: textField&apos;;
+      resource.setValue(value);
+
+      setTimeout(() =&gt; {
+        assert.equal(resource.getValue(), value);
+        assert.equal(resource.dataValue, value);
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(resource.dataValue, value);
+
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });
 </code></pre>

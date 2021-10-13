@@ -30,11 +30,10 @@ import {
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
-  propertyActions,
   formWithEditGridAndNestedDraftModalRow,
   formWithDateTimeComponents,
   formWithCollapsedPanel,
-  formWithCustomFormatDate
+  formWithCustomFormatDate,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
@@ -46,12 +45,11 @@ import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
-import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGridContainerConditionals';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
+
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
-import htmlRenderMode from '../test/forms/htmlRenderMode';
 import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
 import calculateValueWithManualOverrideLableValueDataGrid
@@ -64,6 +62,9 @@ import formWithDayComp from '../test/forms/formWithDayComp';
 import formWithCalcValue from '../test/forms/formWithCalcValue';
 import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
 import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
+import * as FormioUtils from './utils/utils';
+import htmlRenderMode from '../test/forms/htmlRenderMode';
+import optionalSanitize from '../test/forms/optionalSanitize';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -795,13 +796,13 @@ describe('Webform tests', function() {
   it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
-    const formWithDraftModals = new Webform(formElement);
+    const formWithDraftModals = new Webform(formElement, { sanitize: true });
 
     formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() => {
       const clickEvent = new Event('click');
       const inputEvent = new Event('input');
 
-      const addRowBtn =  formWithDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
+      const addRowBtn = formWithDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
       //click to open row in modal view
       addRowBtn.dispatchEvent(clickEvent);
 
@@ -832,7 +833,7 @@ describe('Webform tests', function() {
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
 
-            const submitBtn = formWithDraftModals.element.querySelector('[name="data[submit]"');
+            const submitBtn = formWithDraftModals.element.querySelector('[name="data[submit]"]');
             //pushing submit button to trigger validation
             submitBtn.dispatchEvent(clickEvent);
 
@@ -2604,7 +2605,7 @@ describe('Webform tests', function() {
               setTimeout(() => {
                 const dateComponentElement = dateTimeComponent.element;
                 assert.equal(!dateComponentElement.className.includes('formio-hidden'), true, 'Should be visible');
-                const dateVisibleInput = dateComponentElement.querySelector('.input:not([type="hidden"]');
+                const dateVisibleInput = dateComponentElement.querySelector('.input:not([type="hidden"])');
                 const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
 
                 assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
@@ -2999,52 +3000,25 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  describe('Custom Logic', () => {
-    it('Should rerender components using updated properties', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-      form.setForm(propertyActions).then(() => {
-        form.emit('disabled');
-        form.emit('hide');
-        form.emit('require');
-        setTimeout(() => {
-          const textFieldDisabled = form.getComponent(['textField']);
-          const textFieldHidden = form.getComponent(['textField1']);
-          const textFieldRequired = form.getComponent(['textField2']);
-          assert.equal(textFieldDisabled.component.disabled, true, 'Should be disabled');
-          assert.equal(textFieldHidden.component.hidden, true, 'Should be hidden');
-          assert.equal(textFieldRequired.component.validate.required, true, 'Should be required');
-          const disabledInput = textFieldDisabled.element.querySelector('[ref="input"]');
-          assert.equal(disabledInput.disabled, true, 'Should found a disabled input');
-          const hiddenInput = textFieldHidden.element.querySelector('[ref="input"]');
-          assert(!hiddenInput, 'Should not found a hidden input');
-          const requiredFieldLabel = textFieldRequired.element.querySelector('label');
-          assert(requiredFieldLabel.classList.contains('field-required'), 'Should mark a field as required');
-          done();
-        }, 550);
-      }).catch(done);
-    });
-  });
+  it('Test optional sanitize', (done) => {
+    const element = document.createElement('div');
 
-  describe('Conditionals', () => {
-    it('Should always checkConditions with correct context', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+    Formio.createForm(element, optionalSanitize, {
+      sanitize: false,
+    }).then(form => {
+      const sanitize = sinon.spy(FormioUtils, 'sanitize');
+      form.redraw();
+      setTimeout(() => {
+        assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
+        element.innerHTML = '';
 
-      form.setForm(formWithDataGridWithContainerAndConditionals).then(() => {
-        const radioTrigger = form.getComponent(['dataGrid', 0, 'radio1']);
-        const radioConditional = form.getComponent(['dataGrid', 0, 'radio2']);
-        radioTrigger.setValue('yes', { modified: true });
-
-        setTimeout(() => {
-          assert.equal(radioTrigger.dataValue, 'yes', 'Should set value');
-          assert.equal(radioConditional.visible, true, 'Should become visible');
-
-          radioConditional.setValue('one', { modified: true });
+        Formio.createForm(element, optionalSanitize, {
+          sanitize: true,
+        }).then(form => {
+          sanitize.resetHistory();
+          form.redraw();
           setTimeout(() => {
-            assert.equal(radioConditional.dataValue, 'one', 'Should set value and clearOnHide should not be triggered');
-            assert.equal(radioConditional.visible, true, 'Should stay visible');
-
+            assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
             done();
           }, 250);
         }, 250);
@@ -3109,7 +3083,8 @@ describe('Webform tests', function() {
       formWithNestedDataGridInitEmptyOption.setSubmission(formWithNestedDataGridInitEmpty.submission);
 
       setTimeout(() => {
-        const nestedDataGridFirstRowComponentValue = formWithNestedDataGridInitEmptyOption.element.querySelector('[ref="editgrid-editGrid-row"]').querySelectorAll('.col-sm-2');
+        const nestedDataGridFirstRowComponentValue = formWithNestedDataGridInitEmptyOption.element.querySelector(
+          '[ref="editgrid-editGrid-row"]').querySelectorAll('.col-sm-2');
 
         assert.equal(nestedDataGridFirstRowComponentValue[1].textContent.trim(), 'email');
         assert.equal(nestedDataGridFirstRowComponentValue[2].textContent.trim(), 'hhh@gmail.com');
@@ -3117,7 +3092,7 @@ describe('Webform tests', function() {
         done();
       }, 200);
     })
-    .catch((err) => done(err));
+      .catch((err) => done(err));
   });
 
   each(FormTests, (formTest) => {
