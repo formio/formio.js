@@ -1365,7 +1365,7 @@ export default class SelectComponent extends Field {
     return done;
   }
 
-  normalizeSingleValue(value) {
+  normalizeSingleValue(value, retainObject) {
     if (_.isNil(value)) {
       return;
     }
@@ -1407,7 +1407,7 @@ export default class SelectComponent extends Field {
       },
 
       object() {
-        if (_.isObject(this.value) && displayEntireObject) {
+        if (_.isObject(this.value) && displayEntireObject && !retainObject) {
           this.value = JSON.stringify(this.value);
         }
 
@@ -1443,10 +1443,10 @@ export default class SelectComponent extends Field {
    */
   normalizeValue(value) {
     if (this.component.multiple && Array.isArray(value)) {
-      return value.map((singleValue) => this.normalizeSingleValue(singleValue));
+      return value.map((singleValue) => this.normalizeSingleValue(singleValue, true));
     }
 
-    return super.normalizeValue(this.normalizeSingleValue(value));
+    return super.normalizeValue(this.normalizeSingleValue(value, true));
   }
 
   setValue(value, flags = {}) {
@@ -1572,7 +1572,7 @@ export default class SelectComponent extends Field {
     if (values) {
       if (_.isObject(value)) {
         const compareComplexValues = (optionValue) => {
-          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue, true);
 
           if (!_.isObject(normalizedOptionValue)) {
             return false;
