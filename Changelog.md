@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased - 4.14.0-rc.29]
+### 4.14.0-rc.29
 #### Fixed
+ - Fixing issues with Select stringifying data object values.
  - FIO-4045: 504 error is not handled properly and does not trigger offline plugin to process failed requests
+
+#### Changed
+ - Update dompurify@2.3.3, idb@6.1.4, @babel/cli@7.15.7, @babel/core@7.15.8, @babel/preset-e
+nv@7.15.8, marked@3.0.7, mocha@9.1.2, core-js@3.18.3, sass@1.42.1, webpack@5.58.2
 
 ### 4.14.0-rc.28
 #### Fixed
