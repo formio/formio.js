@@ -23,11 +23,19 @@ export default class Form extends Element {
    * form.build();
    */
   constructor(...args) {
-    let options = args[0] instanceof HTMLElement ? args[2] : args[1];
-    if (Formio.options && Formio.options.form) {
-      options = Object.assign(options, Formio.options.form);
+    const options = { ...((args[0] instanceof HTMLElement ? args[2] : args[1]) || {}) };
+    let initSubmission = null;
+    if (options.submission) {
+      initSubmission = options.submission;
+      delete options.submission;
     }
-    super(options);
+    let superOptions = { ...options };
+    if (Formio.options && Formio.options.form) {
+      superOptions = Object.assign(superOptions, Formio.options.form);
+    }
+    super(superOptions);
+    this.options = options;
+    this.options.events = this.events;
     this.ready = new NativePromise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
@@ -36,24 +44,18 @@ export default class Form extends Element {
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
       this.element = args[0];
-      this.options = args[2] || {};
-      this.options.events = this.events;
-      this.setForm(args[1])
+      this.setForm(args[1], initSubmission)
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else if (args[0]) {
       this.element = null;
-      this.options = args[1] || {};
-      this.options.events = this.events;
-      this.setForm(args[0])
+      this.setForm(args[0], initSubmission)
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else {
       this.element = null;
-      this.options = {};
-      this.options.events = this.events;
     }
     this.display = '';
   }
@@ -110,7 +112,7 @@ export default class Form extends Element {
     };
   }
 
-  setForm(formParam) {
+  setForm(formParam, initSubmission) {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
@@ -134,6 +136,9 @@ export default class Form extends Element {
               this.instance = this.instance || this.create(form.display);
               this.instance.url = formParam;
               this.instance.nosubmit = false;
+              if (initSubmission) {
+                this.instance.submission = initSubmission;
+              }
               this._form = this.instance.form = form;
               if (submission) {
                 this.instance.submission = submission;
@@ -147,6 +152,9 @@ export default class Form extends Element {
     }
     else {
       this.instance = this.instance || this.create(formParam.display);
+      if (initSubmission) {
+        this.instance.submission = initSubmission;
+      }
       this._form = this.instance.form = formParam;
       result = this.instance.ready;
     }
