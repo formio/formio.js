@@ -284,9 +284,12 @@ export default class FileComponent extends Field {
     if (this.component.multiple) {
       options.multiple = true;
     }
+    if (this.component.capture) {
+      options.capture = this.component.capture;
+    }
     //use "accept" attribute only for desktop devices because of its limited support by mobile browsers
+    const filePattern = this.component.filePattern.trim() || '';
     if (!this.isMobile.any) {
-      const filePattern = this.component.filePattern.trim() || '';
       const imagesPattern = 'image/*';
 
       if (this.imageUpload && (!filePattern || filePattern === '*')) {
@@ -297,6 +300,18 @@ export default class FileComponent extends Field {
       }
       else {
         options.accept = filePattern;
+      }
+    }
+    // if input capture is set, we need the "accept" attribute to determine which device to launch
+    else if (this.component.capture) {
+      if (filePattern.includes('video')) {
+        options.accept = 'video/*';
+      }
+      else if (filePattern.includes('audio')) {
+        options.accept = 'audio/*';
+      }
+      else {
+        options.accept = 'image/*';
       }
     }
 

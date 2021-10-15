@@ -72,13 +72,25 @@
     </div>
   {% } else if (!ctx.self.cameraMode) { %}
     <div class="fileSelector" ref="fileDrop" {{ctx.fileDropHidden ?'hidden' : ''}}>
-      <i class="{{ctx.iconClass('cloud-upload')}}"></i> {{ctx.t('Drop files to attach,')}}
+      {% if (!ctx.self.isMobile.any) { %}
+        <i class="{{ctx.iconClass('cloud-upload')}}"></i> {{ctx.t('Drop files to attach,')}}
+      {% } %}
         {% if (ctx.self.imageUpload && ctx.component.webcam) { %}
-          <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('use camera')}}</a>
-        {% } %}
+          <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i>{{ctx.t('Use Camera')}}</a>
         {{ctx.t('or')}}
+        {% } %}
         <a href="#" ref="fileBrowse" class="browse">
-          {{ctx.t('browse')}}
+          {% if (ctx.self.isMobile.any && ctx.component.capture) { %}
+            {% if (ctx.component.filePattern && ctx.component.filePattern.includes("video")) { %}
+              <i class="fa fa-video"></i>{{ctx.t('Capture Video')}}
+            {% } else if (ctx.component.filePattern && ctx.component.filePattern.includes("audio")) { %}
+              <i class="fa fa-microphone"></i>{{ctx.t('Capture Audio')}}
+            {% } else { %}
+              <i class="fa fa-camera"></i>{{ctx.t('Capture Image')}}
+            {% } %}    
+          {% } else { %}
+            <i class="fa fa-folder-open"></i>{{ctx.t('Browse Files')}}
+          {% } %}
           <span class="sr-only">
             {{ctx.t('Browse to attach file for ' + ctx.component.label + '. ' + 
             (ctx.component.description ? ctx.component.description + '. ' : '') + 
