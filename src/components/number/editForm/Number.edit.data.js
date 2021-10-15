@@ -8,18 +8,6 @@ export default [
     tooltip: 'Separate thousands by local delimiter.'
   },
   {
-    weight: 71,
-    type: 'textfield',
-    input: true,
-    key: 'delimiterChar',
-    label: 'Thousands Separator',
-    defaultValue: ',',
-    tooltip: '',
-    customConditional(context) {
-      return context.data.delimiter;
-    },
-  },
-  {
     type: 'number',
     input: true,
     weight: 80,
@@ -34,18 +22,6 @@ export default [
     key: 'requireDecimal',
     label: 'Require Decimal',
     tooltip: 'Always show decimals, even if trailing zeros.'
-  },
-  {
-    weight: 91,
-    type: 'textfield',
-    input: true,
-    key: 'decimalChar',
-    label: 'Decimal Separator',
-    defaultValue: '.',
-    tooltip: '',
-    customConditional(context) {
-      return context.data.requireDecimal;
-    },
   },
   {
     key: 'case',

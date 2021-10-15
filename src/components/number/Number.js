@@ -34,7 +34,7 @@ export default class NumberComponent extends Input {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);
 
-    const separators = getNumberSeparators(this.options.language);
+    const separators = getNumberSeparators(this.options.language || navigator.language);
 
     this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
       || this.options.properties.thousandsSeparator
