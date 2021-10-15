@@ -37,6 +37,7 @@ export default class NumberComponent extends Input {
     const separators = getNumberSeparators(this.options.language);
 
     this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
+      || this.options.properties.thousandsSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
@@ -44,7 +45,7 @@ export default class NumberComponent extends Input {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = this.options.thousandsSeparator || separators.delimiter;
+      this.delimiter = this.options.properties.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';
