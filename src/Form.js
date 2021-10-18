@@ -232,7 +232,7 @@ export class Form extends Base {
    */
   sanitize(dirty, forceSanitize) {
     // If Sanitize is turned off
-    if (!this.options.sanitize && !forceSanitize) {
+    if (this.options.sanitize === false && !forceSanitize) {
       return dirty;
     }
     return FormioUtils.sanitize(dirty, this.options);
