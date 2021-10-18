@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased - 4.14.0-rc.30]
+#### Changed
+ - FIO-3967: added background option for checkbox and radio components in PDF forms
+
 ### 4.14.0-rc.29
 #### Fixed
  - Fixing issues with Select stringifying data object values.
