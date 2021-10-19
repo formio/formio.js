@@ -137,7 +137,10 @@ export default class Form extends Element {
               this.instance.url = formParam;
               this.instance.nosubmit = false;
               if (initSubmission) {
-                this.instance.submission = initSubmission;
+                this.instance._submission = initSubmission;
+                if (this.instance._submission.data) {
+                  this.instance._data = this.instance._submission.data;
+                }
               }
               this._form = this.instance.form = form;
               if (submission) {
@@ -153,7 +156,10 @@ export default class Form extends Element {
     else {
       this.instance = this.instance || this.create(formParam.display);
       if (initSubmission) {
-        this.instance.submission = initSubmission;
+        this.instance._submission = initSubmission;
+        if (this.instance._submission.data) {
+          this.instance._data = this.instance._submission.data;
+        }
       }
       this._form = this.instance.form = formParam;
       result = this.instance.ready;
