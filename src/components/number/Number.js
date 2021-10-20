@@ -45,7 +45,7 @@ export default class NumberComponent extends Input {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = this.options.properties.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
+      this.delimiter = this.options.properties?.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';
