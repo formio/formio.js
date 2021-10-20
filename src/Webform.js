@@ -1233,6 +1233,8 @@ export default class Webform extends NestedDataComponent {
           };
         };
 
+        err.messages = _.uniqBy(err.messages, message => message.message);
+
         if (err.messages && err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message, context, fromServer }, index) => {
