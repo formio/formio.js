@@ -13,6 +13,7 @@ import {
   comp9,
   comp10,
   comp11,
+  comp12,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
 } from './fixtures';
@@ -1142,6 +1143,45 @@ describe('EditGrid Component', () => {
         assert.equal(el.textContent.trim(), rowComponents[index].label, `Should render ${rowComponents[index].key} component label in header`);
       }
       done();
+    }).catch(done);
+  });
+
+  it('Should show validation when saving a row with required conditional filed inside container', (done) => {
+    const form = _.cloneDeep(comp12);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+      const clickEvent = new Event('click');
+      editGrid.refs['editgrid-editGrid-addRow'][0].dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const firstRowContainer = editGrid.components[0];
+        const firstRowNumber = firstRowContainer.components[0];
+        const firstRowTextField = firstRowContainer.components[1];
+
+        assert.equal(firstRowTextField.visible, false);
+
+        const inputEvent = new Event('input');
+        const numberInput = firstRowNumber.refs.input[0];
+
+        numberInput.value = 5;
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(firstRowTextField.visible, true);
+          editGrid.refs['editgrid-editGrid-saveRow'][0].dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(!!firstRowTextField.error, true);
+            assert.equal(editGrid.editRows[0].errors.length, 1);
+            assert.equal(editGrid.editRows[0].state, 'new');
+
+            document.innerHTML = '';
+            done();
+          }, 200);
+        }, 250);
+      }, 300);
     }).catch(done);
   });
 });

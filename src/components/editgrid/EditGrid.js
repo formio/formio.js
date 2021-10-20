@@ -1070,7 +1070,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.components.forEach(comp => {
         const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
 
-        valid &= comp.checkValidity(null, dirty, editRow.data, silentCheck);
+        valid &= comp.checkValidity(null, dirty, null, silentCheck);
       });
     }
 
