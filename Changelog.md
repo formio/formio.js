@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
  - FIO-3967: added background option for checkbox and radio components in PDF forms
 
+#### Fixed
+ - FIO-4120: fixed an issue where edit grid row variable is changing when viewing and editing row that allows saving invalid rows
+ - FIO-4087: Fixed an issue where custom error show up twice when validating form if multiple values checked
+ - FIO-3880: Optimize redraw option
+ - FIO-3568: Fix file drop area sometimes not hidden on single file upload
+ - FIO-3334: Ability to use the Number field with EU separators
+
 ### 4.14.0-rc.29
 #### Fixed
  - Fixing issues with Select stringifying data object values.
