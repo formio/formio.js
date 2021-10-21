@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3880: Optimize redraw option
  - FIO-3568: Fix file drop area sometimes not hidden on single file upload
  - FIO-3334: Ability to use the Number field with EU separators
+ - FIO-4085: Fixed an issue where data doesn't clear after clicking outside modal window and confirming to clear data
+ - FIO-4052: Investigate Custom component errors that derive from the "grid" components. The current way that this is handled is through our server side module system
 
 ### 4.14.0-rc.29
 #### Fixed
