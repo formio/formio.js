@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.31
+#### Fixed
+ - FIO-2760: Fixed wizard nav buttons in mobile view
+
 ### 4.14.0-rc.30
 #### Changed
  - Update @formio/bootstrap3@2.12.0
