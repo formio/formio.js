@@ -16,7 +16,7 @@ export default class ComponentModal {
     this.isOpened = isOpened;
     this.component = component;
     this.element = element;
-    this.currentValue = fastCloneDeep(currentValue);
+    this.currentValue = fastCloneDeep(currentValue ?? this.component.getValue());
     this.dataLoaded = false;
     this.init();
   }
@@ -198,7 +198,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = fastCloneDeep(this.component.dataValue);
+    this.currentValue = fastCloneDeep(this.component.dataValue ?? this.component.getValue());
     this.closeModal();
   }
 }
