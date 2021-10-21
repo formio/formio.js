@@ -55,6 +55,10 @@ export default class Components {
     if (component.type && Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
     }
+    else if (options.server) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components['hidden'](component, options, data);
+    }
     else if (component.arrayTree) {
       // eslint-disable-next-line new-cap
       comp = new Components.components['datagrid'](component, options, data);
