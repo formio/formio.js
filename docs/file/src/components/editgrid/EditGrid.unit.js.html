@@ -71,8 +71,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
@@ -186,6 +185,7 @@ import {
   comp9,
   comp10,
   comp11,
+  comp12,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
 } from &apos;./fixtures&apos;;
@@ -1310,10 +1310,50 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       const rowComponents = editGrid.component.components;
       const headerEls = editGrid.element.querySelector(&apos;.list-group-header&apos;).firstElementChild.children;
       assert.equal(headerEls.length, rowComponents.length);
-      headerEls.forEach((el, index) =&gt; {
+      for (let index = 0; index &lt; headerEls.length; index++) {
+        const el = headerEls[index];
         assert.equal(el.textContent.trim(), rowComponents[index].label, `Should render ${rowComponents[index].key} component label in header`);
-      });
+      }
       done();
+    }).catch(done);
+  });
+
+  it(&apos;Should show validation when saving a row with required conditional filed inside container&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp12);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const editGrid = form.getComponent(&apos;editGrid&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      editGrid.refs[&apos;editgrid-editGrid-addRow&apos;][0].dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        const firstRowContainer = editGrid.components[0];
+        const firstRowNumber = firstRowContainer.components[0];
+        const firstRowTextField = firstRowContainer.components[1];
+
+        assert.equal(firstRowTextField.visible, false);
+
+        const inputEvent = new Event(&apos;input&apos;);
+        const numberInput = firstRowNumber.refs.input[0];
+
+        numberInput.value = 5;
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(firstRowTextField.visible, true);
+          editGrid.refs[&apos;editgrid-editGrid-saveRow&apos;][0].dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!firstRowTextField.error, true);
+            assert.equal(editGrid.editRows[0].errors.length, 1);
+            assert.equal(editGrid.editRows[0].state, &apos;new&apos;);
+
+            document.innerHTML = &apos;&apos;;
+            done();
+          }, 200);
+        }, 250);
+      }, 300);
     }).catch(done);
   });
 });

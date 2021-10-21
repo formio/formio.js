@@ -4,8 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased - 4.14.0-rc.30]
+### 4.14.0-rc.30
 #### Changed
+ - Update @formio/bootstrap3@2.12.0
+ - Update@formio/semantic@2.6.0
  - FIO-3967: added background option for checkbox and radio components in PDF forms
 
 #### Fixed
