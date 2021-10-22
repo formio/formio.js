@@ -38,7 +38,7 @@
             <div class="col-md-2">
               <select class="file-type" ref="fileType">
                 {% ctx.component.fileTypes.map(function(type) { %}
-                  <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ type.label }}</option>
+                  <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ctx.t(type.label)}}</option>
                 {% }); %}
               </select>
             </div>
