@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.32
+#### Fixed
+ - FIO-2753: Fixed action buttons not being focusable
+ - Revert FIO-3715: Receiving Validation Errors when rendering a form with a submission in draft-state
+ - FIO-2681: Allowed type labels inside File component to be localized
+
 ### 4.14.0-rc.31
 #### Fixed
  - FIO-2760: Fixed wizard nav buttons in mobile view
