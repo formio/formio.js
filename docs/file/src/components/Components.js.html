@@ -227,10 +227,6 @@ export default class Components {
     if (component.type &amp;&amp; Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
     }
-    else if (options.server) {
-      // eslint-disable-next-line new-cap
-      comp = new Components.components[&apos;hidden&apos;](component, options, data);
-    }
     else if (component.arrayTree) {
       // eslint-disable-next-line new-cap
       comp = new Components.components[&apos;datagrid&apos;](component, options, data);
@@ -242,6 +238,10 @@ export default class Components {
     else if (Array.isArray(component.components)) {
       // eslint-disable-next-line new-cap
       comp = new Components.components[&apos;nested&apos;](component, options, data);
+    }
+    else if (options.server) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components[&apos;hidden&apos;](component, options, data);
     }
     else {
       comp = new Component(component, options, data);

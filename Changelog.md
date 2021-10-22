@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.14.0-rc.33
+#### Fixed
+ - Problem where the server validation would fail if the custom component is a nested component.
+
 ### 4.14.0-rc.32
 #### Fixed
  - FIO-2753: Fixed action buttons not being focusable
