@@ -48,11 +48,11 @@ export default [
       }
     ]
   },
-  {
-    weight: 205,
-    type: 'checkbox',
-    input: true,
-    key: 'truncateMultipleSpaces',
-    label: 'Truncate Multiple Spaces',
-  },
+  // {
+  //   weight: 205,
+  //   type: 'checkbox',
+  //   input: true,
+  //   key: 'truncateMultipleSpaces',
+  //   label: 'Truncate Multiple Spaces',
+  // },
 ];
