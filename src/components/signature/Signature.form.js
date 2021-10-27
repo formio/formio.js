@@ -17,5 +17,9 @@ export default function(...extend) {
       key: 'validation',
       components: SignatureEditValidation
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

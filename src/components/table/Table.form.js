@@ -7,6 +7,10 @@ export default function(...extend) {
     {
       key: 'display',
       components: TableEditDisplay
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }
