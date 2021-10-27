@@ -149,7 +149,8 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : this.emptyValue;
+    // Check if just '-' was entered
+    return val && val !== '-_' ? this.parseNumber(val) : this.emptyValue;
   }
 
   setValueAt(index, value, flags = {}) {
