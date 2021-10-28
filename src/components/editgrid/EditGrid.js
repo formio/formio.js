@@ -841,7 +841,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
           changed.instance.root.triggerChange({ ...flags, noValidate: true }, changed, modified);
         }
-        else {
+        else if (!this.component.modal) {
           this.triggerRootChange({ ...flags, noValidate: true }, changed, modified);
         }
 
