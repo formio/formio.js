@@ -92,6 +92,11 @@ const registerPlugin = (plugin) => {
       case 'evaluator':
         Formio.Evaluator.registerEvaluator(plugin.evaluator);
         break;
+      case 'default':
+        if (plugin.default.evaluator) {
+          Formio.Evaluator.registerEvaluator(plugin.default.evaluator);
+        }
+        break;
       case 'conjunctions':
         Formio.Conjunctions.addConjunctions(plugin.conjunctions);
         break;
