@@ -12,10 +12,18 @@ jobs:
       - run:
           name: Install npm
           command: npm install
+      - run
+          name: Run Build
+          command: npm run build
+      - run
+          name: Update Renderings
+          command: npm run test:updateRenders
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - node_modules
+            - dist
+            - test
       - run:
           name: Test
           command: npm test
