@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased: 4.14.0-rc.34]
+#### Fixed
+ - FIO-4119: fixed an issue where the row in the editgrid component cannot be saved when Display as Modal checked
+
 ### 4.14.0-rc.33
 #### Fixed
  - Problem where the server validation would fail if the custom component is a nested component.
