@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased: 4.14.0-rc.34]
+### 4.14.0-rc.34
 #### Fixed
+ - FIO-3737: fixed reCAPTCHA submission protection issue
  - FIO-4119: fixed an issue where the row in the editgrid component cannot be saved when Display as Modal checked
 
 ### 4.14.0-rc.33
