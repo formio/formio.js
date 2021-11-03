@@ -182,6 +182,10 @@ export default class PDF extends Webform {
     let iframeSrc = `${this._form.settings.pdf.src}.html`;
     const params = [`id=${this.id}`];
 
+    if (this.options.showCheckboxBackground || this._form.settings.showCheckboxBackground) {
+      params.push('checkboxbackground=1');
+    }
+
     if (this.options.readOnly) {
       params.push('readonly=1');
     }

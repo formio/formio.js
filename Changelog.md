@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased: 4.14.0-rc.34]
+#### Fixed
+ - FIO-4119: fixed an issue where the row in the editgrid component cannot be saved when Display as Modal checked
+
+### 4.14.0-rc.33
+#### Fixed
+ - Problem where the server validation would fail if the custom component is a nested component.
+
+### 4.14.0-rc.32
+#### Fixed
+ - FIO-2753: Fixed action buttons not being focusable
+ - Revert FIO-3715: Receiving Validation Errors when rendering a form with a submission in draft-state
+ - FIO-2681: Allowed type labels inside File component to be localized
+
+### 4.14.0-rc.31
+#### Fixed
+ - FIO-2760: Fixed wizard nav buttons in mobile view
+
+### 4.14.0-rc.30
+#### Changed
+ - Update @formio/bootstrap3@2.12.0
+ - Update@formio/semantic@2.6.0
+ - FIO-3967: added background option for checkbox and radio components in PDF forms
+
+#### Fixed
+ - FIO-4120: fixed an issue where edit grid row variable is changing when viewing and editing row that allows saving invalid rows
+ - FIO-4087: Fixed an issue where custom error show up twice when validating form if multiple values checked
+ - FIO-3880: Optimize redraw option
+ - FIO-3568: Fix file drop area sometimes not hidden on single file upload
+ - FIO-3334: Ability to use the Number field with EU separators
+ - FIO-4085: Fixed an issue where data doesn't clear after clicking outside modal window and confirming to clear data
+ - FIO-4052: Investigate Custom component errors that derive from the "grid" components. The current way that this is handled is through our server side module system
+
 ### 4.14.0-rc.29
 #### Fixed
  - Fixing issues with Select stringifying data object values.

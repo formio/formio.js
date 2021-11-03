@@ -3159,6 +3159,48 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
+  it('Should show only one custom error when submitting empty required field with multiple validation', function(done) {
+    const formJson =  {
+      components: [
+        {
+          label: 'This line',
+          tableView: false,
+          storage: 'base64',
+          webcam: false,
+          fileTypes: [{ label: '', value: '' }],
+          multiple: true,
+          validate: { required: true, customMessage: 'will be showed once' },
+          key: 'file',
+          type: 'file',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+    const element = document.createElement('div');
+    const form = new Webform(element);
+
+    form.setForm(formJson).then(() => {
+    Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
+
+    setTimeout(() => {
+      assert.equal(form.errors[0].messages.length, 1);
+      assert.equal(form.errors[0].messages[0].message, 'will be showed once');
+      assert.equal(form.element.querySelector('[ref="errorRef"]').textContent.trim().includes('will be showed once'), true);
+      done();
+    }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   each(FormTests, (formTest) => {
     const useDoneInsteadOfPromise = formTest.useDone;
 

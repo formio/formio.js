@@ -725,9 +725,7 @@ export default class NestedComponent extends Field {
 
   setNestedValue(component, value, flags = {}) {
     component._data = this.componentContext(component);
-    const shouldSkipTypes = ['button', 'htmlelement', 'content'];
-
-    if (shouldSkipTypes.includes(component.type)) {
+    if (component.type === 'button') {
       return false;
     }
     if (component.type === 'components') {

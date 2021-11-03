@@ -71,8 +71,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
@@ -176,7 +175,8 @@ import ColumnsComponent from &apos;./Columns&apos;;
 import assert from &apos;power-assert&apos;;
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Columns Component&apos;, () =&gt; {
@@ -210,6 +210,58 @@ describe(&apos;Columns Component&apos;, () =&gt; {
     })
     .then(done)
     .catch(done);
+  });
+
+  it(&apos;Should clear fields in modal window after confirming to clear data in dialog window&apos;, (done) =&gt; {
+    Harness.testCreate(ColumnsComponent, comp3).then((component) =&gt; {
+      const hiddenModalWindow = component.element.querySelector(&apos;.component-rendering-hidden&apos;);
+      assert.equal(!!hiddenModalWindow, true);
+
+      const clickEvent = new Event(&apos;click&apos;);
+      const openModalElement = component.refs.openModal;
+      //open modal edit window
+      openModalElement.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(!!component.element.querySelector(&apos;.component-rendering-hidden&apos;), false);
+
+        const inputEvent = new Event(&apos;input&apos;);
+        const columnsInputField = component.element.querySelector(&apos;[name=&quot;data[textField]&quot;]&apos;);
+
+        columnsInputField.value = &apos;alexy@form.io&apos;;
+        columnsInputField.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(component.element.querySelector(&apos;[name=&quot;data[textField]&quot;]&apos;).value, &apos;alexy@form.io&apos;);
+
+          const clickEvent = new Event(&apos;click&apos;);
+          const modalOverlay = component.refs.modalOverlay;
+          //click outside modal edit window
+          modalOverlay.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(!!component.componentModal.dialog, true);
+
+            const clickEvent = new Event(&apos;click&apos;);
+            const btnForCleaningValues = document.querySelector(&apos;[ref=&quot;dialogYesButton&quot;]&apos;);
+            //click on &apos;yes, delete it&apos; button inside alert window
+            btnForCleaningValues.dispatchEvent(clickEvent);
+
+            setTimeout(() =&gt; {
+              const clickEvent = new Event(&apos;click&apos;);
+              const openModalElement = component.refs.openModal;
+              //open edit modal window again
+              openModalElement.dispatchEvent(clickEvent);
+
+              setTimeout(() =&gt; {
+                assert.equal(component.element.querySelector(&apos;[name=&quot;data[textField]&quot;]&apos;).value, &apos;&apos;);
+                done();
+              }, 100);
+            }, 100);
+          }, 100);
+        }, 100);
+      }, 100);
+    }).catch(done);
   });
 });
 </code></pre>

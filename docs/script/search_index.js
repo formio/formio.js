@@ -348,12 +348,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/components/number/number.js~numbercomponent",
-    "class/src/components/number/Number.js~NumberComponent.html",
-    "<span>NumberComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/number/Number.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/validator/operators/index.js~operators",
     "class/src/validator/operators/index.js~Operators.html",
     "<span>Operators</span> <span class=\"search-result-import-path\">formiojs/src/validator/operators/index.js</span>",
@@ -3048,6 +3042,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/columns/fixtures/comp3.js",
+    "file/src/components/columns/fixtures/comp3.js.html",
+    "src/components/columns/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/columns/fixtures/index.js",
     "file/src/components/columns/fixtures/index.js.html",
     "src/components/columns/fixtures/index.js",
@@ -3840,6 +3840,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/editgrid/fixtures/comp12.js",
+    "file/src/components/editgrid/fixtures/comp12.js.html",
+    "src/components/editgrid/fixtures/comp12.js",
+    "file"
+  ],
+  [
     "src/components/editgrid/fixtures/comp2.js",
     "file/src/components/editgrid/fixtures/comp2.js.html",
     "src/components/editgrid/fixtures/comp2.js",
@@ -4426,156 +4432,6 @@ window.esdocSearchIndex = [
     "file/src/components/number/Number.form.js.html",
     "src/components/number/Number.form.js",
     "file"
-  ],
-  [
-    "src/components/number/number.js",
-    "file/src/components/number/Number.js.html",
-    "src/components/number/Number.js",
-    "file"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#addfocusblurevents",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-addFocusBlurEvents",
-    "src/components/number/Number.js~NumberComponent#addFocusBlurEvents",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#constructor",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-constructor-constructor",
-    "src/components/number/Number.js~NumberComponent#constructor",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#createnumbermask",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-createNumberMask",
-    "src/components/number/Number.js~NumberComponent#createNumberMask",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#decimallimit",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-member-decimalLimit",
-    "src/components/number/Number.js~NumberComponent#decimalLimit",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#decimalseparator",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-member-decimalSeparator",
-    "src/components/number/Number.js~NumberComponent#decimalSeparator",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#defaultschema",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-get-defaultSchema",
-    "src/components/number/Number.js~NumberComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#defaultvalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-get-defaultValue",
-    "src/components/number/Number.js~NumberComponent#defaultValue",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#delimiter",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-member-delimiter",
-    "src/components/number/Number.js~NumberComponent#delimiter",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#emptyvalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-get-emptyValue",
-    "src/components/number/Number.js~NumberComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#focus",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-focus",
-    "src/components/number/Number.js~NumberComponent#focus",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#formatvalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-formatValue",
-    "src/components/number/Number.js~NumberComponent#formatValue",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#getmaskedvalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-getMaskedValue",
-    "src/components/number/Number.js~NumberComponent#getMaskedValue",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#getvalueasstring",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-getValueAsString",
-    "src/components/number/Number.js~NumberComponent#getValueAsString",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#getvalueat",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-getValueAt",
-    "src/components/number/Number.js~NumberComponent#getValueAt",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#inputinfo",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-get-inputInfo",
-    "src/components/number/Number.js~NumberComponent#inputInfo",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#isdecimalallowed",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-isDecimalAllowed",
-    "src/components/number/Number.js~NumberComponent#isDecimalAllowed",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#numbermask",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-member-numberMask",
-    "src/components/number/Number.js~NumberComponent#numberMask",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#parsenumber",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-parseNumber",
-    "src/components/number/Number.js~NumberComponent#parseNumber",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#parsevalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-parseValue",
-    "src/components/number/Number.js~NumberComponent#parseValue",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#setinputmask",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-setInputMask",
-    "src/components/number/Number.js~NumberComponent#setInputMask",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#setvalueat",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-setValueAt",
-    "src/components/number/Number.js~NumberComponent#setValueAt",
-    "method"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent#validators",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-member-validators",
-    "src/components/number/Number.js~NumberComponent#validators",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent.builderinfo",
-    "class/src/components/number/Number.js~NumberComponent.html#static-get-builderInfo",
-    "src/components/number/Number.js~NumberComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/number/number.js~numbercomponent.schema",
-    "class/src/components/number/Number.js~NumberComponent.html#static-method-schema",
-    "src/components/number/Number.js~NumberComponent.schema",
-    "method"
   ],
   [
     "src/components/number/number.unit.js",

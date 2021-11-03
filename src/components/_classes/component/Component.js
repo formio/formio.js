@@ -1455,6 +1455,14 @@ export default class Component extends Element {
     return dialog;
   }
 
+  get optimizeRedraw() {
+    if (this.options.optimizeRedraw && this.element && !this.visible) {
+      this.addClass(this.element, 'formio-removed');
+      return true;
+    }
+    return false;
+  }
+
   /**
    * Retrieves the CSS class name of this component.
    * @returns {string} - The class name of this component.
@@ -1640,7 +1648,7 @@ export default class Component extends Element {
 
   redraw() {
     // Don't bother if we have not built yet.
-    if (!this.element || !this.element.parentNode) {
+    if (!this.element || !this.element.parentNode || this.optimizeRedraw) {
       // Return a non-resolving promise.
       return NativePromise.resolve();
     }

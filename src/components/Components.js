@@ -67,6 +67,10 @@ export default class Components {
       // eslint-disable-next-line new-cap
       comp = new Components.components['nested'](component, options, data);
     }
+    else if (options.server) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components['hidden'](component, options, data);
+    }
     else {
       comp = new Component(component, options, data);
     }

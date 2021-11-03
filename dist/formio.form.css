@@ -825,6 +825,10 @@ body.formio-dialog-open {
   margin: 0;
 }
 
+.formio-removed {
+  display: none;
+}
+
 .control-label--hidden {
   position: absolute;
   top: 6px;
@@ -1555,7 +1559,7 @@ div[data-oembed-url] {
   display: flex;
 }
 .formio-wizard-nav-container li {
-  margin-right: 0.25rem;
+  margin-right: 0.5rem;
 }
 @media not all and (min-width: 30em) {
   .formio-wizard-nav-container {
