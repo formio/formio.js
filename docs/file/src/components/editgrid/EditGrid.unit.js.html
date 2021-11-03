@@ -71,8 +71,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
@@ -180,7 +179,8 @@ import {
   comp7,
   comp8,
   comp9,
-  withOpenWhenEmptyAndConditions
+  withOpenWhenEmptyAndConditions,
+  comp14
 } from &apos;./fixtures&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
@@ -658,6 +658,26 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
           assert.equal(component.editRows[0].data.textField, &apos;v1&apos;, &apos;Data shouldn\&apos;t be changed&apos;);
           done();
         }, 150);
+      }).catch(done);
+    });
+
+    it(&apos;Should close row when Display as Modal checked&apos;, (done) =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      const form = new Webform(formElement);
+      form.setForm(comp14).then(() =&gt; {
+        const editGrid = form.components[0];
+        editGrid.addRow();
+        setTimeout(() =&gt; {
+          const dialog = document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;);
+          Harness.dispatchEvent(&apos;input&apos;, dialog, &apos;[name=&quot;data[editGrid][0][firstName]&quot;]&apos;, (el) =&gt; el.value = &apos;Michael&apos;);
+          Harness.dispatchEvent(&apos;click&apos;, dialog, &apos;[ref=&quot;dialogClose&quot;]&apos;);
+          const confirmationDialog = document.querySelector(&apos;[ref=&quot;confirmationDialog&quot;]&apos;);
+          Harness.dispatchEvent(&apos;click&apos;, confirmationDialog, &apos;[ref=&quot;dialogYesButton&quot;]&apos;);
+          setTimeout(() =&gt; {
+            assert.equal(!!document.querySelector(&apos;[ref=&quot;dialogContents&quot;]&apos;), false);
+            done();
+          }, 100);
+        }, 100);
       }).catch(done);
     });
   });

@@ -71,8 +71,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
@@ -2740,6 +2739,48 @@ describe(&apos;Webform tests&apos;, function() {
         }, 550);
       }).catch(done);
     });
+  });
+
+  it(&apos;Should show only one custom error when submitting empty required field with multiple validation&apos;, function(done) {
+    const formJson =  {
+      components: [
+        {
+          label: &apos;This line&apos;,
+          tableView: false,
+          storage: &apos;base64&apos;,
+          webcam: false,
+          fileTypes: [{ label: &apos;&apos;, value: &apos;&apos; }],
+          multiple: true,
+          validate: { required: true, customMessage: &apos;will be showed once&apos; },
+          key: &apos;file&apos;,
+          type: &apos;file&apos;,
+          input: true,
+        },
+        {
+          label: &apos;Submit&apos;,
+          showValidations: false,
+          tableView: false,
+          key: &apos;submit&apos;,
+          type: &apos;button&apos;,
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+    const element = document.createElement(&apos;div&apos;);
+    const form = new Webform(element);
+
+    form.setForm(formJson).then(() =&gt; {
+    Harness.clickElement(form, form.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;));
+
+    setTimeout(() =&gt; {
+      assert.equal(form.errors[0].messages.length, 1);
+      assert.equal(form.errors[0].messages[0].message, &apos;will be showed once&apos;);
+      assert.equal(form.element.querySelector(&apos;[ref=&quot;errorRef&quot;]&apos;).textContent.trim().includes(&apos;will be showed once&apos;), true);
+      done();
+    }, 200);
+    })
+    .catch((err) =&gt; done(err));
   });
 
   each(FormTests, (formTest) =&gt; {
