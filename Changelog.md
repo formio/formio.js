@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3860: Existing Resource Field showing Different Property Name from PDF and webforms
  - FIO-3568: File: fix file drop area sometimes not hidden on single file upload
  - FIO-3334: Ability to use the Number field with EU separators
+ - FIO-3967: added background option for checkbox and radio components in PDF forms
 
 ### 4.13.8
 #### Changed
