@@ -3095,6 +3095,70 @@ describe('Webform tests', function() {
       .catch((err) => done(err));
   });
 
+  it('Should not refetch options for Select if there was an error', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Select',
+          widget: 'html5',
+          tableView: true,
+          dataSrc: 'url',
+          data: {
+            url: 'http://example.com',
+            headers: [
+              {
+                key: '',
+                value: '',
+              },
+            ],
+          },
+          key: 'select',
+          hidden: true,
+          type: 'select',
+          input: true,
+          disableLimit: false,
+        },
+      ],
+    };
+
+    let counter = 0;
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise((_, reject) => {
+        setTimeout(() => {
+          counter++;
+          reject(new Error('Failed to fetch'));
+        }, 50);
+      });
+    };
+
+    form.setForm(formJson).then(() => {
+      const select = form.getComponent('select');
+
+      select.visible = true;
+
+      setTimeout(() => {
+        setTimeout(() => {
+          select.visible = false;
+
+          setTimeout(() => {
+            select.visible = true;
+
+            setTimeout(() => {
+              expect(select.loadingError).to.exist;
+              expect(counter).to.equal(1);
+              Formio.makeRequest = originalMakeRequest;
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   each(FormTests, (formTest) => {
     const useDoneInsteadOfPromise = formTest.useDone;
 
