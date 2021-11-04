@@ -21,6 +21,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Force superclass to skip the automatic init; we'll trigger it manually
     options.skipInit = true;
+    options.display = 'pdf';
 
     if (element) {
       super(element, options);

@@ -28,6 +28,9 @@ export default class Wizard extends Webform {
     else {
       options = arguments[0];
     }
+
+    options.display = 'wizard';
+
     super(element, options);
     this.pages = [];
     this.prefixComps = [];

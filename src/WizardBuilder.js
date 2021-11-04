@@ -16,6 +16,7 @@ export default class WizardBuilder extends WebformBuilder {
     }
     // Reset skipInit in case PDFBuilder has set it.
     options.skipInit = false;
+    options.display = 'wizard';
 
     super(element, options);
 
