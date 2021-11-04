@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased: 4.13.9-rc.1]
+### 4.13.9-rc.1
 #### Fixed
  - FIO-4119: fixed an issue where the row in the editgrid component cannot be saved when Display as Modal checked
  - FIO-4087: Fixed an issue where custom error show up twice when validating form if multiple values checked
