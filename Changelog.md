@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased: 4.14.0-rc.35]
 #### Fixed
  - FIO-4174: fixed an issue where radio buttons appear too far left when label position is not specified in json scheme
+ - UIP-322: Fix issues where builder would get stuck.
+ - Added an ability to disable rendering child components when they are inside a hidden parent to improve form load performance
 
 ### 4.14.0-rc.34
 #### Fixed
