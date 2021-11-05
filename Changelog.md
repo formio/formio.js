@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
  - FIO-4174: fixed an issue where radio buttons appear too far left when label position is not specified in json scheme
  - UIP-322: Fix issues where builder would get stuck.
- - Added an ability to disable rendering child components when they are inside a hidden parent to improve form load performance
+ - FIO-4239: Added an ability to disable rendering child components when they are inside a hidden parent to improve form load performance
 
 ### 4.14.0-rc.34
 #### Fixed
@@ -151,7 +151,7 @@ nv@7.15.8, marked@3.0.7, mocha@9.1.2, core-js@3.18.3, sass@1.42.1, webpack@5.58.
 #### Fixed
  - Select component - debounce option for server side filtering
  - FIO-2764: Fixes an issue when some of the fields were stilling set a default value with the noDefaults option.
- - FIO-3583: Fixed an issue with each component recursion. 
+ - FIO-3583: Fixed an issue with each component recursion.
  - FIO-3011 fixed an issue where only '{' character send and returned to/from the server
  - FIO-3346: Remove unwanted check for IE11 that breaks manual mode
  - FIO-3326: fixes an issue where clearOnHide inside EditGrid is not executed at the first visibility change in Edit mode
@@ -184,14 +184,14 @@ nv@7.15.8, marked@3.0.7, mocha@9.1.2, core-js@3.18.3, sass@1.42.1, webpack@5.58.
 
 ### 4.14.0-rc.17
 #### Fixed
- - FIO-3476: builder comp not dropped 
+ - FIO-3476: builder comp not dropped
  - FIO-3561: Required field is showing as invalid and form can't be submitted
  - FIO-3500: fixed an issue where forms with nested forms inside components with incorrect custom conditions cannot be submitted
  - FIO-3562: separated timezone logic to be able to redefine it in typescript
 
 ### 4.14.0-rc.16
 #### Fixed
- - FIO-3570: Form cannot be submitted if Edit Grid has Open First Row when Empty checked 
+ - FIO-3570: Form cannot be submitted if Edit Grid has Open First Row when Empty checked
  - FIO-3565: Tree component cannot be submitted
 
 ### 4.14.0-rc.15
@@ -207,7 +207,7 @@ nv@7.15.8, marked@3.0.7, mocha@9.1.2, core-js@3.18.3, sass@1.42.1, webpack@5.58.
  - FIO-3319: fixed an issue where select boxes values do not display in PDF download when viewed as a plain text
  - FIO-1405: fixed an issue where change event is not emitted when subform is loaded and assigned to the form component
  - FIO-2570: Fixes an issues where values instead of labels are rendered for the Select component in the HTML mode
- - FIO-3344: Add min height property to hidden components in builder 
+ - FIO-3344: Add min height property to hidden components in builder
  - FIO-3305: fixed an issue where pattern validation does not allow to add a file that complies with the pattern
  - FIO-3083: Fix conditionally shown nested wizard form and conditional pages inside of it
  - FIO-3322: fixed an issue where survey does not display values in PDF download when 'View as a Plain Text' option is enabled
