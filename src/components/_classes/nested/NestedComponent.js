@@ -421,7 +421,7 @@ export default class NestedComponent extends Field {
   render(children) {
     // If already rendering, don't re-render.
     return super.render(children || this.renderTemplate(this.templateName, {
-      children: this.renderComponents(),
+      children: (!this.visible && this.options.preventChildrenRenderWhenParentInvisible) ? '' : this.renderComponents(),
       nestedKey: this.nestedKey,
       collapsed: this.options.pdf ? false : this.collapsed,
     }));
