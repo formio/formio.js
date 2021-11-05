@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased: 4.14.0-rc.35]
+### 4.14.0-rc.35
 #### Fixed
  - FIO-4174: fixed an issue where radio buttons appear too far left when label position is not specified in json scheme
  - UIP-322: Fix issues where builder would get stuck.

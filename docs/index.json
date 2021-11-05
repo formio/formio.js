@@ -5073,7 +5073,7 @@
     "__docId__": 260,
     "kind": "file",
     "name": "src/PDFBuilder.js",
-    "content": "import _ from 'lodash';\nimport NativePromise from 'native-promise-only';\nimport { GlobalFormio as Formio } from './Formio';\n\nimport WebformBuilder from './WebformBuilder';\nimport { fastCloneDeep, getElementRect } from './utils/utils';\nimport { eachComponent } from './utils/formUtils';\nimport BuilderUtils from './utils/builder';\nimport PDF from './PDF';\n\nexport default class PDFBuilder extends WebformBuilder {\n  constructor() {\n    let element, options;\n    if (arguments[0] instanceof HTMLElement || arguments[1]) {\n      element = arguments[0];\n      options = arguments[1];\n    }\n    else {\n      options = arguments[0];\n    }\n\n    // Force superclass to skip the automatic init; we'll trigger it manually\n    options.skipInit = true;\n\n    if (element) {\n      super(element, options);\n    }\n    else {\n      super(options);\n    }\n\n    this.dragDropEnabled = false;\n  }\n\n  get defaultGroups() {\n    return {\n      pdf: {\n        title: 'PDF Fields',\n        weight: 0,\n        default: true,\n        components: {\n          textfield: true,\n          number: true,\n          password: true,\n          email: true,\n          phoneNumber: true,\n          currency: true,\n          checkbox: true,\n          signature: true,\n          select: true,\n          textarea: true,\n          datetime: true,\n          file: true,\n          htmlelement: true,\n        }\n      },\n      basic: false,\n      advanced: false,\n      layout: false,\n      data: false,\n      premium: false,\n      resource: false\n    };\n  }\n\n  get hasPDF() {\n    return _.has(this.webform.form, 'settings.pdf');\n  }\n\n  get projectUrl() {\n    return this.options.projectUrl || Formio.getProjectUrl();\n  }\n\n  init() {\n    this.options.attachMode = 'builder';\n    this.webform = this.webform || this.createForm(this.options);\n    this.webform.init();\n  }\n\n  render() {\n    const result = this.renderTemplate('pdfBuilder', {\n      sidebar: this.renderTemplate('builderSidebar', {\n        scrollEnabled: this.sideBarScroll,\n        groupOrder: this.groupOrder,\n        groupId: `builder-sidebar-${this.id}`,\n        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {\n          group: this.groups[groupKey],\n          groupKey,\n          groupId: `builder-sidebar-${this.id}`,\n          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {\n            group,\n            groupKey: group.key,\n            groupId: `group-container-${groupKey}`,\n            subgroups: []\n          })),\n        })),\n      }),\n      form: this.hasPDF ?\n        this.webform.render() :\n        this.renderTemplate('pdfBuilderUpload', {})\n    });\n\n    return result;\n  }\n\n  attach(element) {\n    // PDF Upload\n    if (!this.hasPDF) {\n      this.loadRefs(element, {\n        'fileDrop': 'single',\n        'fileBrowse': 'single',\n        'hiddenFileInputElement': 'single',\n        'uploadError': 'single',\n        'uploadProgress': 'single',\n        'uploadProgressWrapper': 'single',\n        'dragDropText': 'single'\n      });\n      this.addEventListener(this.refs['pdf-upload-button'], 'click', (event) => {\n        event.preventDefault();\n      });\n\n      // Init the upload error.\n      if (!this.projectUrl) {\n        this.setUploadError('Form options.projectUrl not set. Please set the \"projectUrl\" property of the options for this form or use Formio.setProjectUrl(). This setting is necessary to upload a pdf background.');\n      }\n      else {\n        this.setUploadError();\n      }\n\n      if (this.refs.fileDrop) {\n        const element = this;\n        this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {\n          this.className = 'fileSelector fileDragOver';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'drop', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n          element.upload(event.dataTransfer.files[0]);\n          return false;\n        });\n      }\n\n      if (this.refs.fileBrowse && this.refs.hiddenFileInputElement) {\n        this.addEventListener(this.refs.fileBrowse, 'click', (event) => {\n          event.preventDefault();\n          // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger\n          // a click event on it.\n          if (typeof this.refs.hiddenFileInputElement.trigger === 'function') {\n            this.refs.hiddenFileInputElement.trigger('click');\n          }\n          else {\n            this.refs.hiddenFileInputElement.click();\n          }\n        });\n        this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {\n          if (!this.refs.hiddenFileInputElement.value) {\n            return;\n          }\n\n          this.upload(this.refs.hiddenFileInputElement.files[0]);\n          this.refs.hiddenFileInputElement.value = '';\n        });\n      }\n\n      return NativePromise.resolve();\n    }\n\n    // Normal PDF Builder\n    return super.attach(element).then(() => {\n      this.loadRefs(this.element, {\n        iframeDropzone: 'single',\n        'sidebar-container': 'multiple',\n        'sidebar': 'single',\n      });\n\n      this.afterAttach();\n      return this.element;\n    });\n  }\n\n  afterAttach() {\n    this.on('saveComponent', (component) => {\n      this.webform.postMessage({ name: 'updateElement', data: component });\n    });\n    this.on('removeComponent', (component) => {\n      this.webform.postMessage({ name: 'removeElement', data: component });\n    });\n    this.initIframeEvents();\n    this.updateDropzoneDimensions();\n\n    const sidebar = this.refs.sidebar;\n    if (sidebar) {\n      this.addClass(sidebar, 'disabled');\n      this.webform.on('iframe-ready', () => {\n        this.pdfLoaded = true;\n        this.updateDragAndDrop();\n        this.removeClass(sidebar, 'disabled');\n      }, true);\n    }\n  }\n\n  upload(file) {\n    const formio = new Formio(this.projectUrl);\n    if (this.refs.dragDropText) {\n      this.refs.dragDropText.style.display = 'none';\n    }\n    if (this.refs.uploadProgressWrapper) {\n      this.refs.uploadProgressWrapper.style.display = 'inherit';\n    }\n    formio.uploadFile('url', file, file, '', (event) => {\n      if (this.refs.uploadProgress) {\n        const progress = Math.floor((event.loaded / event.total) * 100);\n        this.refs.uploadProgress.style.width = `${progress}%`;\n        if (progress > 98) {\n          this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');\n        }\n        else {\n          this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;\n        }\n      }\n    }, `${this.projectUrl}/upload`, {}, 'file')\n      .then((result) => {\n        _.set(this.webform.form, 'settings.pdf', {\n          id: result.data.file,\n          src: `${result.data.filesServer}${result.data.path}`\n        });\n        if (this.refs.dragDropText) {\n          this.refs.dragDropText.style.display = 'inherit';\n        }\n        if (this.refs.uploadProgressWrapper) {\n          this.refs.uploadProgressWrapper.style.display = 'none';\n        }\n        this.emit('pdfUploaded', result.data);\n        this.redraw();\n      })\n      .catch((err) => this.setUploadError(err));\n  }\n\n  setUploadError(message) {\n    if (!this.refs.uploadError) {\n      return;\n    }\n    this.refs.uploadError.style.display = message ? '' : 'none';\n    this.refs.uploadError.innerHTML = message;\n  }\n\n  createForm(options) {\n    // Instantiate the webform from the PDF class instead of Webform\n    options.skipInit = false;\n    options.hideLoader = true;\n    this.webform = new PDF(this.element, options);\n    this.webform.on('attach', () => {\n      // If the dropzone exists but has been removed in a PDF rebuild, reinstate it\n      if (this.refs.iframeDropzone && ![...this.refs.form.children].includes(this.refs.iframeDropzone)) {\n        this.prependTo(this.refs.iframeDropzone, this.refs.form);\n      }\n    });\n    return this.webform;\n  }\n\n  destroy(deleteFromGlobal) {\n    super.destroy(deleteFromGlobal);\n    this.webform.destroy(deleteFromGlobal);\n  }\n\n  // d8b 8888888888                                                                              888\n  // Y8P 888                                                                                     888\n  //     888                                                                                     888\n  // 888 8888888 888d888 8888b.  88888b.d88b.   .d88b.        .d88b.  888  888  .d88b.  88888b.  888888 .d8888b\n  // 888 888     888P\"      \"88b 888 \"888 \"88b d8P  Y8b      d8P  Y8b 888  888 d8P  Y8b 888 \"88b 888    88K\n  // 888 888     888    .d888888 888  888  888 88888888      88888888 Y88  88P 88888888 888  888 888    \"Y8888b.\n  // 888 888     888    888  888 888  888  888 Y8b.          Y8b.      Y8bd8P  Y8b.     888  888 Y88b.       X88\n  // 888 888     888    \"Y888888 888  888  888  \"Y8888        \"Y8888    Y88P    \"Y8888  888  888  \"Y888  88888P'\n  getParentContainer(component) {\n    let container = [];\n    let originalComponent = null;\n    eachComponent(this.webform._form.components, (comp, path, components) => {\n      if (comp.id === component.component.id) {\n        container = components;\n        originalComponent = comp;\n        return true;\n      }\n    }, true);\n    return {\n      formioComponent: component.parent,\n      formioContainer: container,\n      originalComponent\n    };\n  }\n\n  initIframeEvents() {\n    this.webform.off('iframe-elementUpdate');\n    this.webform.off('iframe-componentUpdate');\n    this.webform.off('iframe-componentClick');\n    this.webform.on('iframe-elementUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        const isNew = true;\n        component.component.overlay = {\n          page: schema.page,\n          left: schema.left,\n          top: schema.top,\n          height: schema.height,\n          width: schema.width\n        };\n\n        if (!this.options.noNewEdit && !component.component.noNewEdit) {\n          this.editComponent(component.component, this.getParentContainer(component), isNew);\n        }\n        this.emit('updateComponent', component.component);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        component.component.overlay = {\n          page: schema.overlay.page,\n          left: schema.overlay.left,\n          top: schema.overlay.top,\n          height: schema.overlay.height,\n          width: schema.overlay.width\n        };\n        this.emit('updateComponent', component.component);\n        this.emit('change', this.form);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentClick', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component) {\n        this.editComponent(component.component, this.getParentContainer(component));\n      }\n    }, true);\n  }\n\n  // 8888888b.                                                                   888                   d8b\n  // 888  \"Y88b                                                                  888                   Y8P\n  // 888    888                                                                  888\n  // 888    888 888d888 .d88b.  88888b. 88888888  .d88b.  88888b.   .d88b.       888  .d88b.   .d88b.  888  .d8888b\n  // 888    888 888P\"  d88\"\"88b 888 \"88b   d88P  d88\"\"88b 888 \"88b d8P  Y8b      888 d88\"\"88b d88P\"88b 888 d88P\"\n  // 888    888 888    888  888 888  888  d88P   888  888 888  888 88888888      888 888  888 888  888 888 888\n  // 888  .d88P 888    Y88..88P 888 d88P d88P    Y88..88P 888  888 Y8b.          888 Y88..88P Y88b 888 888 Y88b.\n  // 8888888P\"  888     \"Y88P\"  88888P\" 88888888  \"Y88P\"  888  888  \"Y8888       888  \"Y88P\"   \"Y88888 888  \"Y8888P\n  //                            888                                                                888\n  //                            888                                                           Y8b d88P\n  //                            888                                                            \"Y88P\"\n\n  initDropzoneEvents() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n    // This is required per HTML spec in order for the drop event to fire\n    this.removeEventListener(this.refs.iframeDropzone, 'dragover');\n    this.removeEventListener(this.refs.iframeDropzone, 'drop');\n    this.addEventListener(this.refs.iframeDropzone, 'dragover', (e) => {\n      e.preventDefault();\n      return false;\n    });\n\n    this.addEventListener(this.refs.iframeDropzone, 'drop', this.onDropzoneDrop.bind(this));\n  }\n\n  updateDragAndDrop() {\n    if (!this.pdfLoaded) {\n      return;\n    }\n    this.initDropzoneEvents();\n    this.prepSidebarComponentsForDrag();\n  }\n\n  prepSidebarComponentsForDrag() {\n    if (!this.refs['sidebar-container']) {\n      return;\n    }\n    this.refs['sidebar-container'].forEach(container => {\n      [...container.children].forEach(el => {\n        el.draggable = true;\n        el.setAttribute('draggable', true);\n        this.removeEventListener(el, 'dragstart');\n        this.removeEventListener(el, 'dragend');\n        this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);\n        this.addEventListener(el, 'dragend', this.onDragEnd.bind(this), true);\n        this.addEventListener(el, 'drag', (e) => {\n          e.target.style.cursor = 'none';\n        });\n      });\n    });\n  }\n\n  updateDropzoneDimensions() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n\n    const iframeRect = getElementRect(this.webform.refs.iframeContainer);\n    this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';\n    this.refs.iframeDropzone.style.width = iframeRect && iframeRect.width ? `${iframeRect.width}px` : '100%';\n  }\n\n  onDragStart(e) {\n    // Taking the current offset of a dragged item relative to the cursor\n    const { offsetX = 0, offsetY = 0 } = e;\n    this.itemOffsetX = offsetX;\n    this.itemOffsetY = offsetY;\n\n    e.dataTransfer.setData('text', '');\n    this.updateDropzoneDimensions();\n    this.addClass(this.refs.iframeDropzone, 'enabled');\n  }\n\n  onDropzoneDrop(e) {\n    this.dropEvent = e;\n    e.preventDefault();\n    return false;\n  }\n\n  onDragEnd(e) {\n    // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will\n    // reflect absolute positioning if accessed after the target element is hidden\n    const layerX = this.dropEvent ? this.dropEvent.layerX : null;\n    const layerY = this.dropEvent ? this.dropEvent.layerY : null;\n    const WIDTH = 100;\n    const HEIGHT = 20;\n    // Always disable the dropzone on drag end\n    this.removeClass(this.refs.iframeDropzone, 'enabled');\n\n    // If there hasn't been a drop event on the dropzone, we're done\n    if (!this.dropEvent) {\n      return;\n    }\n\n    const element = e.target;\n    const type = element.getAttribute('data-type');\n    const key = element.getAttribute('data-key');\n    const group = element.getAttribute('data-group');\n    const schema = fastCloneDeep(this.schemas[type]);\n\n    if (key && group) {\n      const info = this.getComponentInfo(key, group);\n      _.merge(schema, info);\n    }\n\n    schema.key = this.generateKey(schema);\n\n    // Set a unique key for this component.\n    BuilderUtils.uniquify([this.webform._form], schema);\n    this.webform._form.components.push(schema);\n\n    schema.overlay = {\n      top: layerY - this.itemOffsetY + HEIGHT,\n      left: layerX - this.itemOffsetX,\n      width: WIDTH,\n      height: HEIGHT\n    };\n\n    this.webform.addComponent(schema, {}, null, true);\n    this.webform.postMessage({ name: 'addElement', data: schema });\n\n    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit && !schema.noNewEdit);\n\n    // Delete the stored drop event now that it's been handled\n    this.dropEvent = null;\n    e.target.style.cursor = 'default';\n  }\n\n  highlightInvalidComponents() {\n    const repeatablePaths = this.findRepeatablePaths();\n\n    // update elements which path was duplicated if any pathes have been changed\n    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {\n      eachComponent(this.webform.getComponents(), (comp, path) => {\n        if (this.repeatablePaths.includes(path)) {\n          this.webform.postMessage({ name: 'updateElement', data: comp.component });\n        }\n      });\n\n      this.repeatablePaths = repeatablePaths;\n    }\n\n    if (!repeatablePaths.length) {\n      return;\n    }\n\n    eachComponent(this.webform.getComponents(), (comp, path) => {\n      if (this.repeatablePaths.includes(path)) {\n        this.webform.postMessage({\n          name: 'showBuilderErrors',\n          data: {\n            compId: comp.component.id,\n            errorMessage: `API Key is not unique: ${comp.key}`,\n          }\n        });\n      }\n    });\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport NativePromise from 'native-promise-only';\nimport { GlobalFormio as Formio } from './Formio';\n\nimport WebformBuilder from './WebformBuilder';\nimport { fastCloneDeep, getElementRect } from './utils/utils';\nimport { eachComponent } from './utils/formUtils';\nimport BuilderUtils from './utils/builder';\nimport PDF from './PDF';\n\nexport default class PDFBuilder extends WebformBuilder {\n  constructor() {\n    let element, options;\n    if (arguments[0] instanceof HTMLElement || arguments[1]) {\n      element = arguments[0];\n      options = arguments[1];\n    }\n    else {\n      options = arguments[0];\n    }\n\n    // Force superclass to skip the automatic init; we'll trigger it manually\n    options.skipInit = true;\n    options.display = 'pdf';\n\n    if (element) {\n      super(element, options);\n    }\n    else {\n      super(options);\n    }\n\n    this.dragDropEnabled = false;\n  }\n\n  get defaultGroups() {\n    return {\n      pdf: {\n        title: 'PDF Fields',\n        weight: 0,\n        default: true,\n        components: {\n          textfield: true,\n          number: true,\n          password: true,\n          email: true,\n          phoneNumber: true,\n          currency: true,\n          checkbox: true,\n          signature: true,\n          select: true,\n          textarea: true,\n          datetime: true,\n          file: true,\n          htmlelement: true,\n        }\n      },\n      basic: false,\n      advanced: false,\n      layout: false,\n      data: false,\n      premium: false,\n      resource: false\n    };\n  }\n\n  get hasPDF() {\n    return _.has(this.webform.form, 'settings.pdf');\n  }\n\n  get projectUrl() {\n    return this.options.projectUrl || Formio.getProjectUrl();\n  }\n\n  init() {\n    this.options.attachMode = 'builder';\n    this.webform = this.webform || this.createForm(this.options);\n    this.webform.init();\n  }\n\n  render() {\n    const result = this.renderTemplate('pdfBuilder', {\n      sidebar: this.renderTemplate('builderSidebar', {\n        scrollEnabled: this.sideBarScroll,\n        groupOrder: this.groupOrder,\n        groupId: `builder-sidebar-${this.id}`,\n        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {\n          group: this.groups[groupKey],\n          groupKey,\n          groupId: `builder-sidebar-${this.id}`,\n          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {\n            group,\n            groupKey: group.key,\n            groupId: `group-container-${groupKey}`,\n            subgroups: []\n          })),\n        })),\n      }),\n      form: this.hasPDF ?\n        this.webform.render() :\n        this.renderTemplate('pdfBuilderUpload', {})\n    });\n\n    return result;\n  }\n\n  attach(element) {\n    // PDF Upload\n    if (!this.hasPDF) {\n      this.loadRefs(element, {\n        'fileDrop': 'single',\n        'fileBrowse': 'single',\n        'hiddenFileInputElement': 'single',\n        'uploadError': 'single',\n        'uploadProgress': 'single',\n        'uploadProgressWrapper': 'single',\n        'dragDropText': 'single'\n      });\n      this.addEventListener(this.refs['pdf-upload-button'], 'click', (event) => {\n        event.preventDefault();\n      });\n\n      // Init the upload error.\n      if (!this.projectUrl) {\n        this.setUploadError('Form options.projectUrl not set. Please set the \"projectUrl\" property of the options for this form or use Formio.setProjectUrl(). This setting is necessary to upload a pdf background.');\n      }\n      else {\n        this.setUploadError();\n      }\n\n      if (this.refs.fileDrop) {\n        const element = this;\n        this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {\n          this.className = 'fileSelector fileDragOver';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'drop', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n          element.upload(event.dataTransfer.files[0]);\n          return false;\n        });\n      }\n\n      if (this.refs.fileBrowse && this.refs.hiddenFileInputElement) {\n        this.addEventListener(this.refs.fileBrowse, 'click', (event) => {\n          event.preventDefault();\n          // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger\n          // a click event on it.\n          if (typeof this.refs.hiddenFileInputElement.trigger === 'function') {\n            this.refs.hiddenFileInputElement.trigger('click');\n          }\n          else {\n            this.refs.hiddenFileInputElement.click();\n          }\n        });\n        this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {\n          if (!this.refs.hiddenFileInputElement.value) {\n            return;\n          }\n\n          this.upload(this.refs.hiddenFileInputElement.files[0]);\n          this.refs.hiddenFileInputElement.value = '';\n        });\n      }\n\n      return NativePromise.resolve();\n    }\n\n    // Normal PDF Builder\n    return super.attach(element).then(() => {\n      this.loadRefs(this.element, {\n        iframeDropzone: 'single',\n        'sidebar-container': 'multiple',\n        'sidebar': 'single',\n      });\n\n      this.afterAttach();\n      return this.element;\n    });\n  }\n\n  afterAttach() {\n    this.on('saveComponent', (component) => {\n      this.webform.postMessage({ name: 'updateElement', data: component });\n    });\n    this.on('removeComponent', (component) => {\n      this.webform.postMessage({ name: 'removeElement', data: component });\n    });\n    this.initIframeEvents();\n    this.updateDropzoneDimensions();\n\n    const sidebar = this.refs.sidebar;\n    if (sidebar) {\n      this.addClass(sidebar, 'disabled');\n      this.webform.on('iframe-ready', () => {\n        this.pdfLoaded = true;\n        this.updateDragAndDrop();\n        this.removeClass(sidebar, 'disabled');\n      }, true);\n    }\n  }\n\n  upload(file) {\n    const formio = new Formio(this.projectUrl);\n    if (this.refs.dragDropText) {\n      this.refs.dragDropText.style.display = 'none';\n    }\n    if (this.refs.uploadProgressWrapper) {\n      this.refs.uploadProgressWrapper.style.display = 'inherit';\n    }\n    formio.uploadFile('url', file, file, '', (event) => {\n      if (this.refs.uploadProgress) {\n        const progress = Math.floor((event.loaded / event.total) * 100);\n        this.refs.uploadProgress.style.width = `${progress}%`;\n        if (progress > 98) {\n          this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');\n        }\n        else {\n          this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;\n        }\n      }\n    }, `${this.projectUrl}/upload`, {}, 'file')\n      .then((result) => {\n        _.set(this.webform.form, 'settings.pdf', {\n          id: result.data.file,\n          src: `${result.data.filesServer}${result.data.path}`\n        });\n        if (this.refs.dragDropText) {\n          this.refs.dragDropText.style.display = 'inherit';\n        }\n        if (this.refs.uploadProgressWrapper) {\n          this.refs.uploadProgressWrapper.style.display = 'none';\n        }\n        this.emit('pdfUploaded', result.data);\n        this.redraw();\n      })\n      .catch((err) => this.setUploadError(err));\n  }\n\n  setUploadError(message) {\n    if (!this.refs.uploadError) {\n      return;\n    }\n    this.refs.uploadError.style.display = message ? '' : 'none';\n    this.refs.uploadError.innerHTML = message;\n  }\n\n  createForm(options) {\n    // Instantiate the webform from the PDF class instead of Webform\n    options.skipInit = false;\n    options.hideLoader = true;\n    this.webform = new PDF(this.element, options);\n    this.webform.on('attach', () => {\n      // If the dropzone exists but has been removed in a PDF rebuild, reinstate it\n      if (this.refs.iframeDropzone && ![...this.refs.form.children].includes(this.refs.iframeDropzone)) {\n        this.prependTo(this.refs.iframeDropzone, this.refs.form);\n      }\n    });\n    return this.webform;\n  }\n\n  destroy(deleteFromGlobal) {\n    super.destroy(deleteFromGlobal);\n    this.webform.destroy(deleteFromGlobal);\n  }\n\n  // d8b 8888888888                                                                              888\n  // Y8P 888                                                                                     888\n  //     888                                                                                     888\n  // 888 8888888 888d888 8888b.  88888b.d88b.   .d88b.        .d88b.  888  888  .d88b.  88888b.  888888 .d8888b\n  // 888 888     888P\"      \"88b 888 \"888 \"88b d8P  Y8b      d8P  Y8b 888  888 d8P  Y8b 888 \"88b 888    88K\n  // 888 888     888    .d888888 888  888  888 88888888      88888888 Y88  88P 88888888 888  888 888    \"Y8888b.\n  // 888 888     888    888  888 888  888  888 Y8b.          Y8b.      Y8bd8P  Y8b.     888  888 Y88b.       X88\n  // 888 888     888    \"Y888888 888  888  888  \"Y8888        \"Y8888    Y88P    \"Y8888  888  888  \"Y888  88888P'\n  getParentContainer(component) {\n    let container = [];\n    let originalComponent = null;\n    eachComponent(this.webform._form.components, (comp, path, components) => {\n      if (comp.id === component.component.id) {\n        container = components;\n        originalComponent = comp;\n        return true;\n      }\n    }, true);\n    return {\n      formioComponent: component.parent,\n      formioContainer: container,\n      originalComponent\n    };\n  }\n\n  initIframeEvents() {\n    this.webform.off('iframe-elementUpdate');\n    this.webform.off('iframe-componentUpdate');\n    this.webform.off('iframe-componentClick');\n    this.webform.on('iframe-elementUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        const isNew = true;\n        component.component.overlay = {\n          page: schema.page,\n          left: schema.left,\n          top: schema.top,\n          height: schema.height,\n          width: schema.width\n        };\n\n        if (!this.options.noNewEdit && !component.component.noNewEdit) {\n          this.editComponent(component.component, this.getParentContainer(component), isNew);\n        }\n        this.emit('updateComponent', component.component);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        component.component.overlay = {\n          page: schema.overlay.page,\n          left: schema.overlay.left,\n          top: schema.overlay.top,\n          height: schema.overlay.height,\n          width: schema.overlay.width\n        };\n        this.emit('updateComponent', component.component);\n        this.emit('change', this.form);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentClick', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component) {\n        this.editComponent(component.component, this.getParentContainer(component));\n      }\n    }, true);\n  }\n\n  // 8888888b.                                                                   888                   d8b\n  // 888  \"Y88b                                                                  888                   Y8P\n  // 888    888                                                                  888\n  // 888    888 888d888 .d88b.  88888b. 88888888  .d88b.  88888b.   .d88b.       888  .d88b.   .d88b.  888  .d8888b\n  // 888    888 888P\"  d88\"\"88b 888 \"88b   d88P  d88\"\"88b 888 \"88b d8P  Y8b      888 d88\"\"88b d88P\"88b 888 d88P\"\n  // 888    888 888    888  888 888  888  d88P   888  888 888  888 88888888      888 888  888 888  888 888 888\n  // 888  .d88P 888    Y88..88P 888 d88P d88P    Y88..88P 888  888 Y8b.          888 Y88..88P Y88b 888 888 Y88b.\n  // 8888888P\"  888     \"Y88P\"  88888P\" 88888888  \"Y88P\"  888  888  \"Y8888       888  \"Y88P\"   \"Y88888 888  \"Y8888P\n  //                            888                                                                888\n  //                            888                                                           Y8b d88P\n  //                            888                                                            \"Y88P\"\n\n  initDropzoneEvents() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n    // This is required per HTML spec in order for the drop event to fire\n    this.removeEventListener(this.refs.iframeDropzone, 'dragover');\n    this.removeEventListener(this.refs.iframeDropzone, 'drop');\n    this.addEventListener(this.refs.iframeDropzone, 'dragover', (e) => {\n      e.preventDefault();\n      return false;\n    });\n\n    this.addEventListener(this.refs.iframeDropzone, 'drop', this.onDropzoneDrop.bind(this));\n  }\n\n  updateDragAndDrop() {\n    if (!this.pdfLoaded) {\n      return;\n    }\n    this.initDropzoneEvents();\n    this.prepSidebarComponentsForDrag();\n  }\n\n  prepSidebarComponentsForDrag() {\n    if (!this.refs['sidebar-container']) {\n      return;\n    }\n    this.refs['sidebar-container'].forEach(container => {\n      [...container.children].forEach(el => {\n        el.draggable = true;\n        el.setAttribute('draggable', true);\n        this.removeEventListener(el, 'dragstart');\n        this.removeEventListener(el, 'dragend');\n        this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);\n        this.addEventListener(el, 'dragend', this.onDragEnd.bind(this), true);\n        this.addEventListener(el, 'drag', (e) => {\n          e.target.style.cursor = 'none';\n        });\n      });\n    });\n  }\n\n  updateDropzoneDimensions() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n\n    const iframeRect = getElementRect(this.webform.refs.iframeContainer);\n    this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';\n    this.refs.iframeDropzone.style.width = iframeRect && iframeRect.width ? `${iframeRect.width}px` : '100%';\n  }\n\n  onDragStart(e) {\n    // Taking the current offset of a dragged item relative to the cursor\n    const { offsetX = 0, offsetY = 0 } = e;\n    this.itemOffsetX = offsetX;\n    this.itemOffsetY = offsetY;\n\n    e.dataTransfer.setData('text', '');\n    this.updateDropzoneDimensions();\n    this.addClass(this.refs.iframeDropzone, 'enabled');\n  }\n\n  onDropzoneDrop(e) {\n    this.dropEvent = e;\n    e.preventDefault();\n    return false;\n  }\n\n  onDragEnd(e) {\n    // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will\n    // reflect absolute positioning if accessed after the target element is hidden\n    const layerX = this.dropEvent ? this.dropEvent.layerX : null;\n    const layerY = this.dropEvent ? this.dropEvent.layerY : null;\n    const WIDTH = 100;\n    const HEIGHT = 20;\n    // Always disable the dropzone on drag end\n    this.removeClass(this.refs.iframeDropzone, 'enabled');\n\n    // If there hasn't been a drop event on the dropzone, we're done\n    if (!this.dropEvent) {\n      return;\n    }\n\n    const element = e.target;\n    const type = element.getAttribute('data-type');\n    const key = element.getAttribute('data-key');\n    const group = element.getAttribute('data-group');\n    const schema = fastCloneDeep(this.schemas[type]);\n\n    if (key && group) {\n      const info = this.getComponentInfo(key, group);\n      _.merge(schema, info);\n    }\n\n    schema.key = this.generateKey(schema);\n\n    // Set a unique key for this component.\n    BuilderUtils.uniquify([this.webform._form], schema);\n    this.webform._form.components.push(schema);\n\n    schema.overlay = {\n      top: layerY - this.itemOffsetY + HEIGHT,\n      left: layerX - this.itemOffsetX,\n      width: WIDTH,\n      height: HEIGHT\n    };\n\n    this.webform.addComponent(schema, {}, null, true);\n    this.webform.postMessage({ name: 'addElement', data: schema });\n\n    this.emit('addComponent', schema, this.webform, schema.key, this.webform.component.components.length, !this.options.noNewEdit && !schema.noNewEdit);\n\n    // Delete the stored drop event now that it's been handled\n    this.dropEvent = null;\n    e.target.style.cursor = 'default';\n  }\n\n  highlightInvalidComponents() {\n    const repeatablePaths = this.findRepeatablePaths();\n\n    // update elements which path was duplicated if any pathes have been changed\n    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {\n      eachComponent(this.webform.getComponents(), (comp, path) => {\n        if (this.repeatablePaths.includes(path)) {\n          this.webform.postMessage({ name: 'updateElement', data: comp.component });\n        }\n      });\n\n      this.repeatablePaths = repeatablePaths;\n    }\n\n    if (!repeatablePaths.length) {\n      return;\n    }\n\n    eachComponent(this.webform.getComponents(), (comp, path) => {\n      if (this.repeatablePaths.includes(path)) {\n        this.webform.postMessage({\n          name: 'showBuilderErrors',\n          data: {\n            compId: comp.component.id,\n            errorMessage: `API Key is not unique: ${comp.key}`,\n          }\n        });\n      }\n    });\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/PDFBuilder.js",
     "access": "public",
@@ -5122,7 +5122,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#dragDropEnabled",
     "access": "public",
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -5141,7 +5141,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#defaultGroups",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -5160,7 +5160,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#hasPDF",
     "access": "public",
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 67,
     "undocument": true,
     "type": {
       "types": [
@@ -5179,7 +5179,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#projectUrl",
     "access": "public",
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 71,
     "undocument": true,
     "type": {
       "types": [
@@ -5198,7 +5198,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#init",
     "access": "public",
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 75,
     "undocument": true,
     "params": [],
     "return": null
@@ -5212,7 +5212,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#webform",
     "access": "public",
     "description": null,
-    "lineNumber": 76,
+    "lineNumber": 77,
     "undocument": true,
     "type": {
       "types": [
@@ -5231,7 +5231,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#render",
     "access": "public",
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 81,
     "undocument": true,
     "params": [],
     "return": {
@@ -5251,7 +5251,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 106,
+    "lineNumber": 107,
     "undocument": true,
     "params": [
       {
@@ -5276,7 +5276,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#className",
     "access": "public",
     "description": null,
-    "lineNumber": 133,
+    "lineNumber": 134,
     "undocument": true,
     "type": {
       "types": [
@@ -5295,7 +5295,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#afterAttach",
     "access": "public",
     "description": null,
-    "lineNumber": 186,
+    "lineNumber": 187,
     "undocument": true,
     "params": [],
     "return": null
@@ -5309,7 +5309,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#pdfLoaded",
     "access": "public",
     "description": null,
-    "lineNumber": 200,
+    "lineNumber": 201,
     "undocument": true,
     "type": {
       "types": [
@@ -5328,7 +5328,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#upload",
     "access": "public",
     "description": null,
-    "lineNumber": 207,
+    "lineNumber": 208,
     "undocument": true,
     "params": [
       {
@@ -5351,7 +5351,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#setUploadError",
     "access": "public",
     "description": null,
-    "lineNumber": 244,
+    "lineNumber": 245,
     "undocument": true,
     "params": [
       {
@@ -5374,7 +5374,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#createForm",
     "access": "public",
     "description": null,
-    "lineNumber": 252,
+    "lineNumber": 253,
     "undocument": true,
     "params": [
       {
@@ -5401,7 +5401,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 266,
+    "lineNumber": 267,
     "undocument": true,
     "params": [
       {
@@ -5424,7 +5424,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#getParentContainer",
     "access": "public",
     "description": null,
-    "lineNumber": 279,
+    "lineNumber": 280,
     "undocument": true,
     "params": [
       {
@@ -5451,7 +5451,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#initIframeEvents",
     "access": "public",
     "description": null,
-    "lineNumber": 296,
+    "lineNumber": 297,
     "undocument": true,
     "params": [],
     "return": null
@@ -5467,7 +5467,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#initDropzoneEvents",
     "access": "public",
     "description": null,
-    "lineNumber": 356,
+    "lineNumber": 357,
     "undocument": true,
     "params": [],
     "return": null
@@ -5483,7 +5483,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#updateDragAndDrop",
     "access": "public",
     "description": null,
-    "lineNumber": 371,
+    "lineNumber": 372,
     "undocument": true,
     "params": [],
     "return": null
@@ -5499,7 +5499,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#prepSidebarComponentsForDrag",
     "access": "public",
     "description": null,
-    "lineNumber": 379,
+    "lineNumber": 380,
     "undocument": true,
     "params": [],
     "return": null
@@ -5515,7 +5515,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#updateDropzoneDimensions",
     "access": "public",
     "description": null,
-    "lineNumber": 398,
+    "lineNumber": 399,
     "undocument": true,
     "params": [],
     "return": null
@@ -5531,7 +5531,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#onDragStart",
     "access": "public",
     "description": null,
-    "lineNumber": 408,
+    "lineNumber": 409,
     "undocument": true,
     "params": [
       {
@@ -5552,7 +5552,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#itemOffsetX",
     "access": "public",
     "description": null,
-    "lineNumber": 411,
+    "lineNumber": 412,
     "undocument": true,
     "type": {
       "types": [
@@ -5569,7 +5569,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#itemOffsetY",
     "access": "public",
     "description": null,
-    "lineNumber": 412,
+    "lineNumber": 413,
     "undocument": true,
     "type": {
       "types": [
@@ -5588,7 +5588,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#onDropzoneDrop",
     "access": "public",
     "description": null,
-    "lineNumber": 419,
+    "lineNumber": 420,
     "undocument": true,
     "params": [
       {
@@ -5613,7 +5613,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#dropEvent",
     "access": "public",
     "description": null,
-    "lineNumber": 420,
+    "lineNumber": 421,
     "undocument": true,
     "type": {
       "types": [
@@ -5632,7 +5632,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#onDragEnd",
     "access": "public",
     "description": null,
-    "lineNumber": 425,
+    "lineNumber": 426,
     "undocument": true,
     "params": [
       {
@@ -5655,7 +5655,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#highlightInvalidComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 474,
+    "lineNumber": 475,
     "undocument": true,
     "params": [],
     "return": null
@@ -5669,7 +5669,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#repeatablePaths",
     "access": "public",
     "description": null,
-    "lineNumber": 485,
+    "lineNumber": 486,
     "undocument": true,
     "type": {
       "types": [
@@ -5736,7 +5736,7 @@
     "__docId__": 301,
     "kind": "file",
     "name": "src/WizardBuilder.js",
-    "content": "import WebformBuilder from './WebformBuilder';\nimport Webform from './Webform';\nimport BuilderUtils from './utils/builder';\nimport _ from 'lodash';\nimport { fastCloneDeep } from './utils/utils';\n\nexport default class WizardBuilder extends WebformBuilder {\n  constructor() {\n    let element, options;\n    if (arguments[0] instanceof HTMLElement || arguments[1]) {\n      element = arguments[0];\n      options = arguments[1];\n    }\n    else {\n      options = arguments[0];\n    }\n    // Reset skipInit in case PDFBuilder has set it.\n    options.skipInit = false;\n\n    super(element, options);\n\n    this._form = {\n      components: [\n        this.getPageConfig(1),\n      ],\n    };\n\n    this.page = 0;\n\n    // Need to create a component order for each group.\n    for (const group in this.groups) {\n      if (this.groups[group] && this.groups[group].components) {\n        this.groups[group].componentOrder = Object.keys(this.groups[group].components)\n          .map(key => this.groups[group].components[key])\n          .filter(component => component && !component.ignore)\n          .sort((a, b) => a.weight - b.weight)\n          .map(component => component.key);\n      }\n    }\n\n    this.options.hooks.attachPanel = (element, component) => {\n      if (component.refs.removeComponent) {\n        this.addEventListener(component.refs.removeComponent, 'click', () => {\n          const pageIndex = this.pages.findIndex((page) => page.key === component.key);\n          const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);\n          if (pageIndex !== -1) {\n            this.removePage(pageIndex, componentIndex);\n          }\n        });\n      }\n    };\n\n    const originalRenderComponentsHook = this.options.hooks.renderComponents;\n    this.options.hooks.renderComponents = (html, { components, self }) => {\n      if (self.type === 'form' && !self.root) {\n        return html;\n      }\n      else {\n        return originalRenderComponentsHook(html, { components, self });\n      }\n    };\n\n    const originalAttachComponentsHook = this.options.hooks.attachComponents;\n    this.options.hooks.attachComponents = (element, components, container, component) => {\n      if (component.type === 'form' && !component.root) {\n        return element;\n      }\n\n      return originalAttachComponentsHook(element, components, container, component);\n    };\n\n    // Wizard pages don't replace themselves in the right array. Do that here.\n    this.on('saveComponent', (component, originalComponent) => {\n      const webformComponents = this.webform.components.map(({ component }) => component);\n      if (this._form.components.includes(originalComponent)) {\n        this._form.components[this._form.components.indexOf(originalComponent)] = component;\n        this.rebuild();\n      }\n      else if (webformComponents.includes(originalComponent)) {\n        this._form.components.push(component);\n        this.rebuild();\n      }\n      else {\n        // Fallback to look for panel based on key.\n        const formComponentIndex = this._form.components.findIndex((comp) => originalComponent.key === comp.key);\n        if (formComponentIndex !== -1) {\n          this._form.components[formComponentIndex] = component;\n          this.rebuild();\n        }\n      }\n    }, true);\n  }\n\n  allowDrop(element) {\n    return (this.webform && this.webform.refs && this.webform.refs.webform === element) ? false : true;\n  }\n\n  get pages() {\n    return _.filter(this._form.components, { type: 'panel' });\n  }\n\n  get currentPage() {\n    const pages = this.pages;\n    return (pages && (pages.length >= this.page)) ? pages[this.page] : null;\n  }\n\n  set form(value) {\n    this._form = value;\n    if (!this._form.components || !Array.isArray(this._form.components)) {\n      this._form.components = [];\n    }\n\n    if (this.pages.length === 0) {\n      const components = this._form.components.filter((component) => component.type !== 'button');\n      this._form.components = [this.getPageConfig(1, components)];\n    }\n    this.rebuild();\n  }\n\n  get form() {\n    return this._form;\n  }\n\n  get schema() {\n    _.assign(this.currentPage, this.webform._form.components[0]);\n    const webform = new Webform(this.options);\n    webform.setForm(this._form, { noEmit: true });\n    return webform.schema;\n  }\n\n  render() {\n    return this.renderTemplate('builderWizard', {\n      sidebar: this.renderTemplate('builderSidebar', {\n        scrollEnabled: this.sideBarScroll,\n        groupOrder: this.groupOrder,\n        groupId: `builder-sidebar-${this.id}`,\n        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {\n          group: this.groups[groupKey],\n          groupKey,\n          groupId: `builder-sidebar-${this.id}`,\n          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {\n            group,\n            groupKey: group.key,\n            groupId: `group-container-${groupKey}`,\n            subgroups: []\n          })),\n        })),\n      }),\n      pages: this.pages,\n      form: this.webform.render(),\n    });\n  }\n\n  attach(element) {\n    this.loadRefs(element, {\n      addPage: 'multiple',\n      gotoPage: 'multiple',\n    });\n\n    this.refs.addPage.forEach(link => {\n      this.addEventListener(link, 'click', (event) => {\n        event.preventDefault();\n        this.addPage();\n      });\n    });\n\n    this.refs.gotoPage.forEach((link, index) => {\n      this.addEventListener(link, 'click', (event) => {\n        event.preventDefault();\n        this.setPage(index);\n      });\n    });\n\n    return super.attach(element);\n  }\n\n  rebuild() {\n    const page = this.currentPage;\n    this.webform.setForm({\n      display: 'form',\n      type: 'form',\n      components: page ? [page] : [],\n    }, { keepAsReference: true });\n    return this.redraw();\n  }\n\n  addPage(page) {\n    const newPage = page && page.schema ? fastCloneDeep(page.schema) : this.getPageConfig(this.pages.length + 1);\n\n    BuilderUtils.uniquify(this._form.components, newPage);\n    this._form.components.push(newPage);\n\n    this.emitSaveComponentEvent(\n      newPage,\n      newPage,\n      this._form,\n      'components',\n      (this._form.components.length - 1),\n      true,\n      newPage\n    );\n\n    this.emit('change', this._form);\n    return this.rebuild();\n  }\n\n  removePage(pageIndex, componentIndex) {\n    this._form.components.splice(componentIndex, 1);\n    this.emit('change', this._form);\n\n    if (pageIndex === this.pages.length) {\n      // If the last page is removed.\n      if (pageIndex === 0) {\n        this._form.components.push(this.getPageConfig(1));\n        return this.rebuild();\n      }\n      else {\n        return this.setPage(pageIndex - 1);\n      }\n    }\n    else {\n      return this.rebuild();\n    }\n  }\n\n  setPage(index) {\n    if (index === this.page) {\n      return;\n    }\n    this.page = index;\n    return this.rebuild();\n  }\n\n  getPageConfig(index, components = []) {\n    return {\n      title: `Page ${index}`,\n      label: `Page ${index}`,\n      type: 'panel',\n      key: `page${index}`,\n      components,\n    };\n  }\n\n  pasteComponent(component) {\n    if (component instanceof WizardBuilder) {\n      return;\n    }\n    if (this._form.components.find(comp => _.isEqual(component.component, comp))) {\n      this.addPage(component);\n    }\n    else {\n      return super.pasteComponent(component);\n    }\n  }\n}\n",
+    "content": "import WebformBuilder from './WebformBuilder';\nimport Webform from './Webform';\nimport BuilderUtils from './utils/builder';\nimport _ from 'lodash';\nimport { fastCloneDeep } from './utils/utils';\n\nexport default class WizardBuilder extends WebformBuilder {\n  constructor() {\n    let element, options;\n    if (arguments[0] instanceof HTMLElement || arguments[1]) {\n      element = arguments[0];\n      options = arguments[1];\n    }\n    else {\n      options = arguments[0];\n    }\n    // Reset skipInit in case PDFBuilder has set it.\n    options.skipInit = false;\n    options.display = 'wizard';\n\n    super(element, options);\n\n    this._form = {\n      components: [\n        this.getPageConfig(1),\n      ],\n    };\n\n    this.page = 0;\n\n    // Need to create a component order for each group.\n    for (const group in this.groups) {\n      if (this.groups[group] && this.groups[group].components) {\n        this.groups[group].componentOrder = Object.keys(this.groups[group].components)\n          .map(key => this.groups[group].components[key])\n          .filter(component => component && !component.ignore)\n          .sort((a, b) => a.weight - b.weight)\n          .map(component => component.key);\n      }\n    }\n\n    this.options.hooks.attachPanel = (element, component) => {\n      if (component.refs.removeComponent) {\n        this.addEventListener(component.refs.removeComponent, 'click', () => {\n          const pageIndex = this.pages.findIndex((page) => page.key === component.key);\n          const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);\n          if (pageIndex !== -1) {\n            this.removePage(pageIndex, componentIndex);\n          }\n        });\n      }\n    };\n\n    const originalRenderComponentsHook = this.options.hooks.renderComponents;\n    this.options.hooks.renderComponents = (html, { components, self }) => {\n      if (self.type === 'form' && !self.root) {\n        return html;\n      }\n      else {\n        return originalRenderComponentsHook(html, { components, self });\n      }\n    };\n\n    const originalAttachComponentsHook = this.options.hooks.attachComponents;\n    this.options.hooks.attachComponents = (element, components, container, component) => {\n      if (component.type === 'form' && !component.root) {\n        return element;\n      }\n\n      return originalAttachComponentsHook(element, components, container, component);\n    };\n\n    // Wizard pages don't replace themselves in the right array. Do that here.\n    this.on('saveComponent', (component, originalComponent) => {\n      const webformComponents = this.webform.components.map(({ component }) => component);\n      if (this._form.components.includes(originalComponent)) {\n        this._form.components[this._form.components.indexOf(originalComponent)] = component;\n        this.rebuild();\n      }\n      else if (webformComponents.includes(originalComponent)) {\n        this._form.components.push(component);\n        this.rebuild();\n      }\n      else {\n        // Fallback to look for panel based on key.\n        const formComponentIndex = this._form.components.findIndex((comp) => originalComponent.key === comp.key);\n        if (formComponentIndex !== -1) {\n          this._form.components[formComponentIndex] = component;\n          this.rebuild();\n        }\n      }\n    }, true);\n  }\n\n  allowDrop(element) {\n    return (this.webform && this.webform.refs && this.webform.refs.webform === element) ? false : true;\n  }\n\n  get pages() {\n    return _.filter(this._form.components, { type: 'panel' });\n  }\n\n  get currentPage() {\n    const pages = this.pages;\n    return (pages && (pages.length >= this.page)) ? pages[this.page] : null;\n  }\n\n  set form(value) {\n    this._form = value;\n    if (!this._form.components || !Array.isArray(this._form.components)) {\n      this._form.components = [];\n    }\n\n    if (this.pages.length === 0) {\n      const components = this._form.components.filter((component) => component.type !== 'button');\n      this._form.components = [this.getPageConfig(1, components)];\n    }\n    this.rebuild();\n  }\n\n  get form() {\n    return this._form;\n  }\n\n  get schema() {\n    _.assign(this.currentPage, this.webform._form.components[0]);\n    const webform = new Webform(this.options);\n    webform.setForm(this._form, { noEmit: true });\n    return webform.schema;\n  }\n\n  render() {\n    return this.renderTemplate('builderWizard', {\n      sidebar: this.renderTemplate('builderSidebar', {\n        scrollEnabled: this.sideBarScroll,\n        groupOrder: this.groupOrder,\n        groupId: `builder-sidebar-${this.id}`,\n        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {\n          group: this.groups[groupKey],\n          groupKey,\n          groupId: `builder-sidebar-${this.id}`,\n          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {\n            group,\n            groupKey: group.key,\n            groupId: `group-container-${groupKey}`,\n            subgroups: []\n          })),\n        })),\n      }),\n      pages: this.pages,\n      form: this.webform.render(),\n    });\n  }\n\n  attach(element) {\n    this.loadRefs(element, {\n      addPage: 'multiple',\n      gotoPage: 'multiple',\n    });\n\n    this.refs.addPage.forEach(link => {\n      this.addEventListener(link, 'click', (event) => {\n        event.preventDefault();\n        this.addPage();\n      });\n    });\n\n    this.refs.gotoPage.forEach((link, index) => {\n      this.addEventListener(link, 'click', (event) => {\n        event.preventDefault();\n        this.setPage(index);\n      });\n    });\n\n    return super.attach(element);\n  }\n\n  rebuild() {\n    const page = this.currentPage;\n    this.webform.setForm({\n      display: 'form',\n      type: 'form',\n      components: page ? [page] : [],\n    }, { keepAsReference: true });\n    return this.redraw();\n  }\n\n  addPage(page) {\n    const newPage = page && page.schema ? fastCloneDeep(page.schema) : this.getPageConfig(this.pages.length + 1);\n\n    BuilderUtils.uniquify(this._form.components, newPage);\n    this._form.components.push(newPage);\n\n    this.emitSaveComponentEvent(\n      newPage,\n      newPage,\n      this._form,\n      'components',\n      (this._form.components.length - 1),\n      true,\n      newPage\n    );\n\n    this.emit('change', this._form);\n    return this.rebuild();\n  }\n\n  removePage(pageIndex, componentIndex) {\n    this._form.components.splice(componentIndex, 1);\n    this.emit('change', this._form);\n\n    if (pageIndex === this.pages.length) {\n      // If the last page is removed.\n      if (pageIndex === 0) {\n        this._form.components.push(this.getPageConfig(1));\n        return this.rebuild();\n      }\n      else {\n        return this.setPage(pageIndex - 1);\n      }\n    }\n    else {\n      return this.rebuild();\n    }\n  }\n\n  setPage(index) {\n    if (index === this.page) {\n      return;\n    }\n    this.page = index;\n    return this.rebuild();\n  }\n\n  getPageConfig(index, components = []) {\n    return {\n      title: `Page ${index}`,\n      label: `Page ${index}`,\n      type: 'panel',\n      key: `page${index}`,\n      components,\n    };\n  }\n\n  pasteComponent(component) {\n    if (component instanceof WizardBuilder) {\n      return;\n    }\n    if (this._form.components.find(comp => _.isEqual(component.component, comp))) {\n      this.addPage(component);\n    }\n    else {\n      return super.pasteComponent(component);\n    }\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/WizardBuilder.js",
     "access": "public",
@@ -5785,7 +5785,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#_form",
     "access": "private",
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -5802,7 +5802,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#page",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 29,
     "undocument": true,
     "type": {
       "types": [
@@ -5821,7 +5821,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#allowDrop",
     "access": "public",
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 95,
     "undocument": true,
     "params": [
       {
@@ -5848,7 +5848,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#pages",
     "access": "public",
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 99,
     "undocument": true,
     "type": {
       "types": [
@@ -5867,7 +5867,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#currentPage",
     "access": "public",
     "description": null,
-    "lineNumber": 102,
+    "lineNumber": 103,
     "undocument": true,
     "type": {
       "types": [
@@ -5886,7 +5886,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#form",
     "access": "public",
     "description": null,
-    "lineNumber": 107,
+    "lineNumber": 108,
     "undocument": true
   },
   {
@@ -5900,7 +5900,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#form",
     "access": "public",
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 121,
     "undocument": true,
     "type": {
       "types": [
@@ -5919,7 +5919,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#schema",
     "access": "public",
     "description": null,
-    "lineNumber": 124,
+    "lineNumber": 125,
     "undocument": true,
     "type": {
       "types": [
@@ -5938,7 +5938,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#render",
     "access": "public",
     "description": null,
-    "lineNumber": 131,
+    "lineNumber": 132,
     "undocument": true,
     "params": [],
     "return": {
@@ -5958,7 +5958,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 154,
+    "lineNumber": 155,
     "undocument": true,
     "params": [
       {
@@ -5985,7 +5985,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#rebuild",
     "access": "public",
     "description": null,
-    "lineNumber": 177,
+    "lineNumber": 178,
     "undocument": true,
     "params": [],
     "return": {
@@ -6005,7 +6005,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#addPage",
     "access": "public",
     "description": null,
-    "lineNumber": 187,
+    "lineNumber": 188,
     "undocument": true,
     "params": [
       {
@@ -6032,7 +6032,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#removePage",
     "access": "public",
     "description": null,
-    "lineNumber": 207,
+    "lineNumber": 208,
     "undocument": true,
     "params": [
       {
@@ -6065,7 +6065,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#setPage",
     "access": "public",
     "description": null,
-    "lineNumber": 226,
+    "lineNumber": 227,
     "undocument": true,
     "params": [
       {
@@ -6092,7 +6092,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#getPageConfig",
     "access": "public",
     "description": null,
-    "lineNumber": 234,
+    "lineNumber": 235,
     "undocument": true,
     "params": [
       {
@@ -6128,7 +6128,7 @@
     "longname": "src/WizardBuilder.js~WizardBuilder#pasteComponent",
     "access": "public",
     "description": null,
-    "lineNumber": 244,
+    "lineNumber": 245,
     "undocument": true,
     "params": [
       {
@@ -29843,7 +29843,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.14.0-rc.34\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha 'lib/**/*.unit.js'\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.12.0\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.6.0\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.2\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.18.3\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.3.3\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^3.1.0\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^21.3.3\",\n    \"idb\": \"^6.1.5\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.15.7\",\n    \"@babel/core\": \"^7.15.8\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.14.5\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.14.5\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.14.5\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.15.8\",\n    \"@babel/register\": \"^7.15.3\",\n    \"async-limiter\": \"^2.0.0\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.3\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.8\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.32.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^5.0.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^18.0.0\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.5\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^3.0.7\",\n    \"mocha\": \"^9.1.3\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"sass\": \"^1.43.3\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^11.1.2\",\n    \"webpack\": \"^5.59.1\",\n    \"webpack-stream\": \"^7.0.0\",\n    \"written-number\": \"^0.11.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.14.0-rc.35\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha 'lib/**/*.unit.js'\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"^2.12.0\",\n    \"@formio/choices.js\": \"^9.0.1\",\n    \"@formio/semantic\": \"^2.6.0\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1\",\n    \"autocompleter\": \"^6.1.2\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"compare-versions\": \"^3.6.0\",\n    \"core-js\": \"^3.18.3\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dompurify\": \"^2.3.3\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^3.1.0\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"^21.3.3\",\n    \"idb\": \"^6.1.5\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.0\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.3\",\n    \"uuid\": \"^8.3.2\",\n    \"vanilla-picker\": \"^2.11.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.15.7\",\n    \"@babel/core\": \"^7.15.8\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.14.5\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.14.5\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.14.5\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.15.8\",\n    \"@babel/register\": \"^7.15.3\",\n    \"async-limiter\": \"^2.0.0\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"babel-loader\": \"^8.2.3\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.4\",\n    \"chance\": \"^1.1.8\",\n    \"del\": \"^6.0.0\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^7.32.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"4.6.6\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^5.0.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^18.0.0\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.3.5\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^3.0.7\",\n    \"mocha\": \"^9.1.3\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"sass\": \"^1.43.3\",\n    \"shortcut-buttons-flatpickr\": \"^0.3.1\",\n    \"sinon\": \"^11.1.2\",\n    \"webpack\": \"^5.59.1\",\n    \"webpack-stream\": \"^7.0.0\",\n    \"written-number\": \"^0.11.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,
