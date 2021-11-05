@@ -39,7 +39,8 @@ function getOptions(options) {
     i18next,
     saveDraft: false,
     alwaysDirty: false,
-    saveDraftThrottle: 5000
+    saveDraftThrottle: 5000,
+    display: 'form'
   });
   if (!options.events) {
     options.events = new EventEmitter();

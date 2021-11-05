@@ -23,11 +23,14 @@ export default class Wizard extends Webform {
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
       element = arguments[0];
-      options = arguments[1];
+      options = arguments[1] || {};
     }
     else {
-      options = arguments[0];
+      options = arguments[0] || {};
     }
+
+    options.display = 'wizard';
+
     super(element, options);
     this.pages = [];
     this.prefixComps = [];
