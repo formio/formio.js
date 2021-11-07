@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.13.9
+### Changed
+ - Official Release
+
 ### 4.13.9-rc.1
 #### Fixed
  - FIO-4119: fixed an issue where the row in the editgrid component cannot be saved when Display as Modal checked
