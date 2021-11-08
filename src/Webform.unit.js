@@ -953,7 +953,7 @@ describe('Webform tests', function() {
       const inputEvent = new Event('input');
       const labelInput = labelComp.refs.input[0];
       const valueInput = valueComp.refs.input[0];
-      labelInput.value = 'HeLLo';
+      labelInput.value = 'Hello';
       labelInput.dispatchEvent(inputEvent);
 
       setTimeout(() => {
