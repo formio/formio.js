@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased: 4.14.0-rc.36]
+## 4.14.0-rc.36
 #### Fixed
  - FIO-3334: Ability to use the Number field with EU separators
  - FIO-4185: Fix scrolled to errors alert when invalid field touched
