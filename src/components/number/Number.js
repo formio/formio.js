@@ -37,7 +37,7 @@ export default class NumberComponent extends Input {
     const separators = getNumberSeparators(this.options.language || navigator.language);
 
     this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
-      || this.options.properties?.thousandsSeparator
+      || this.options.properties?.decimalSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
