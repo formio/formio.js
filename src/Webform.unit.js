@@ -1092,7 +1092,7 @@ describe('Webform tests', function() {
             input1.dispatchEvent(inputEvent);
 
             setTimeout(() => {
-              assert.equal(input2.value, 6678);
+              assert.equal(input2.value, '66');
               assert.equal(input1.value, 667890);
               done();
             }, 250);
@@ -2197,7 +2197,7 @@ describe('Webform tests', function() {
     const submissionWithOverridenValues2 = {
       data: {
         dataGrid: [
-          { label: 'yes2', value: 'yes2' },
+          { label: 'yes2', value: 'y' },
           { label: 'no', value: 'n' },
         ],
         checkbox: false,
