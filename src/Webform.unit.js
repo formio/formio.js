@@ -3201,6 +3201,52 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
+  it('Should show validation error when submitting number with just "-" sign and required validation', function(done) {
+    const formJson =  {
+      components: [
+        {
+          label: 'Number',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          validate: {
+            required: true
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+    const element = document.createElement('div');
+    const form = new Webform(element);
+
+    form.setForm(formJson).then(() => {
+      Harness.setInputValue(form, 'data[number]', '-_');
+      Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
+
+      setTimeout(() => {
+        assert.equal(form.errors[0].messages.length, 1);
+        assert.equal(form.errors[0].messages[0].message, 'Number is required');
+        assert.equal(form.element.querySelector('[ref="errorRef"]').textContent.trim().includes('Number is required'), true);
+        done();
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   each(FormTests, (formTest) => {
     const useDoneInsteadOfPromise = formTest.useDone;
 
