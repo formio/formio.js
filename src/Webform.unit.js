@@ -997,6 +997,70 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
+  it('Should only scroll to alerts dialog when submitting an invalid form', function(done) {
+    const formJson =  {
+      components: [
+        {
+          'label': 'Number',
+          'inputFormat': 'plain',
+          'validate': {
+            'required': true,
+            'max': 10
+          },
+          'key': 'number',
+          'type': 'number',
+          'input': true
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const scrollIntoView = sinon.spy(form, 'scrollIntoView');
+
+    form.setForm(formJson).then(() => {
+      Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
+
+      setTimeout(() => {
+        assert.equal(form.errors[0].messages.length, 1);
+        assert(scrollIntoView.calledOnceWith(form.root.alert));
+
+        //changes do not trigger scrolling
+        const inputEvent = new Event('input');
+        const input1 = form.components[0].refs.input[0];
+
+        //invalid input value
+        input1.value =  55;
+        input1.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(form.errors[0].messages.length, 1);
+          assert.equal(scrollIntoView.callCount, 1);
+
+          //valid input value
+          input1.value =  5;
+          input1.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(form.errors.length, 0);
+            assert.equal(scrollIntoView.callCount, 1);
+            done();
+          }, 250);
+        }, 250);
+      }, 250);
+    })
+    .catch((err) => done(err));
+  });
+
   let formWithCalculatedValue;
 
   it('Should calculate the field value after validation errors appeared on submit', function(done) {

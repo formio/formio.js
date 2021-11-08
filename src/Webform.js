@@ -1328,7 +1328,11 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    return this.showErrors(error, true);
+    const errors = this.showErrors(error, true);
+    if (this.root && this.root.alert) {
+      this.scrollIntoView(this.root.alert);
+    }
+    return errors;
   }
 
   /**
