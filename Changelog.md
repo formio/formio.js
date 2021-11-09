@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.13.10-rc.1]
+### Fixed
+ - FIO-4052: Fixed Custom component errors that derive from the "grid" components. The current way that this is handled is through our server side module system 
+ - FIO-3590: fixed an issue where save-as-draft functionality not working in order to pass saveDraft key using options objet in react Form component
+ - FIO-3334: Ability to use the Number field with EU separators
+
 ## 4.13.9
 ### Changed
  - Official Release
