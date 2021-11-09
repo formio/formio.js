@@ -5,6 +5,7 @@ import { fastCloneDeep, eachComponent } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
+    options.display = 'pdf';
     super(element, options);
     this.components = [];
   }

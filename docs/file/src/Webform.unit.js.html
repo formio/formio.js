@@ -1169,6 +1169,70 @@ describe(&apos;Webform tests&apos;, function() {
     .catch((err) =&gt; done(err));
   });
 
+  it(&apos;Should only scroll to alerts dialog when submitting an invalid form&apos;, function(done) {
+    const formJson =  {
+      components: [
+        {
+          &apos;label&apos;: &apos;Number&apos;,
+          &apos;inputFormat&apos;: &apos;plain&apos;,
+          &apos;validate&apos;: {
+            &apos;required&apos;: true,
+            &apos;max&apos;: 10
+          },
+          &apos;key&apos;: &apos;number&apos;,
+          &apos;type&apos;: &apos;number&apos;,
+          &apos;input&apos;: true
+        },
+        {
+          label: &apos;Submit&apos;,
+          showValidations: false,
+          tableView: false,
+          key: &apos;submit&apos;,
+          type: &apos;button&apos;,
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    const scrollIntoView = sinon.spy(form, &apos;scrollIntoView&apos;);
+
+    form.setForm(formJson).then(() =&gt; {
+      Harness.clickElement(form, form.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;));
+
+      setTimeout(() =&gt; {
+        assert.equal(form.errors[0].messages.length, 1);
+        assert(scrollIntoView.calledOnceWith(form.root.alert));
+
+        //changes do not trigger scrolling
+        const inputEvent = new Event(&apos;input&apos;);
+        const input1 = form.components[0].refs.input[0];
+
+        //invalid input value
+        input1.value =  55;
+        input1.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(form.errors[0].messages.length, 1);
+          assert.equal(scrollIntoView.callCount, 1);
+
+          //valid input value
+          input1.value =  5;
+          input1.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(form.errors.length, 0);
+            assert.equal(scrollIntoView.callCount, 1);
+            done();
+          }, 250);
+        }, 250);
+      }, 250);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   let formWithCalculatedValue;
 
   it(&apos;Should calculate the field value after validation errors appeared on submit&apos;, function(done) {
@@ -3305,6 +3369,52 @@ describe(&apos;Webform tests&apos;, function() {
       assert.equal(form.element.querySelector(&apos;[ref=&quot;errorRef&quot;]&apos;).textContent.trim().includes(&apos;will be showed once&apos;), true);
       done();
     }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should show validation error when submitting number with just &quot;-&quot; sign and required validation&apos;, function(done) {
+    const formJson =  {
+      components: [
+        {
+          label: &apos;Number&apos;,
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: &apos;plain&apos;,
+          truncateMultipleSpaces: false,
+          validate: {
+            required: true
+          },
+          key: &apos;number&apos;,
+          type: &apos;number&apos;,
+          input: true
+        },
+        {
+          label: &apos;Submit&apos;,
+          showValidations: false,
+          tableView: false,
+          key: &apos;submit&apos;,
+          type: &apos;button&apos;,
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+    const element = document.createElement(&apos;div&apos;);
+    const form = new Webform(element);
+
+    form.setForm(formJson).then(() =&gt; {
+      Harness.setInputValue(form, &apos;data[number]&apos;, &apos;-_&apos;);
+      Harness.clickElement(form, form.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;));
+
+      setTimeout(() =&gt; {
+        assert.equal(form.errors[0].messages.length, 1);
+        assert.equal(form.errors[0].messages[0].message, &apos;Number is required&apos;);
+        assert.equal(form.element.querySelector(&apos;[ref=&quot;errorRef&quot;]&apos;).textContent.trim().includes(&apos;Number is required&apos;), true);
+        done();
+      }, 200);
     })
     .catch((err) =&gt; done(err));
   });

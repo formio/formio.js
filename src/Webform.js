@@ -39,7 +39,8 @@ function getOptions(options) {
     i18next,
     saveDraft: false,
     alwaysDirty: false,
-    saveDraftThrottle: 5000
+    saveDraftThrottle: 5000,
+    display: 'form'
   });
   if (!options.events) {
     options.events = new EventEmitter();
@@ -1259,10 +1260,6 @@ export default class Webform extends NestedDataComponent {
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
     this.root.setAlert('danger', errorsList);
 
-    if (this.root && this.root.alert) {
-      this.scrollIntoView(this.root.alert);
-    }
-
     if (triggerEvent) {
       this.emit('error', errors);
     }
@@ -1331,7 +1328,11 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    return this.showErrors(error, true);
+    const errors = this.showErrors(error, true);
+    if (this.root && this.root.alert) {
+      this.scrollIntoView(this.root.alert);
+    }
+    return errors;
   }
 
   /**
