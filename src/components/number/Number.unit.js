@@ -11,7 +11,8 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7
 } from './fixtures';
 
 describe('Number Component', () => {
@@ -412,6 +413,24 @@ describe('Number Component', () => {
         done();
       });
     });
+  });
+
+  it('Should provide custom validation for number component inside dataGrid component', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const number1 = form.getComponent('number1');
+      const value = 25;
+
+      number1.setValue(value);
+
+      setTimeout(() => {
+        const sum = form.getComponent('sum');
+        assert.equal(sum.refs.messageContainer.textContent.trim(), 'The sum exceeds the limit!');
+        done();
+      }, 250);
+    }).catch(done);
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
