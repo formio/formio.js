@@ -15,6 +15,7 @@ import {
   comp11,
   comp12,
   comp13,
+  comp14,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
 } from './fixtures';
@@ -494,6 +495,26 @@ describe('EditGrid Component', () => {
           assert.equal(component.editRows[0].data.textField, 'v1', 'Data shouldn\'t be changed');
           done();
         }, 150);
+      }).catch(done);
+    });
+
+    it('Should close row when Display as Modal checked', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp14).then(() => {
+        const editGrid = form.components[0];
+        editGrid.addRow();
+        setTimeout(() => {
+          const dialog = document.querySelector('[ref="dialogContents"]');
+          Harness.dispatchEvent('input', dialog, '[name="data[editGrid][0][firstName]"]', (el) => el.value = 'Michael');
+          Harness.dispatchEvent('click', dialog, '[ref="dialogClose"]');
+          const confirmationDialog = document.querySelector('[ref="confirmationDialog"]');
+          Harness.dispatchEvent('click', confirmationDialog, '[ref="dialogYesButton"]');
+          setTimeout(() => {
+            assert.equal(!!document.querySelector('[ref="dialogContents"]'), false);
+            done();
+          }, 100);
+        }, 100);
       }).catch(done);
     });
   });

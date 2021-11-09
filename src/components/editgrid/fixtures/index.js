@@ -11,5 +11,6 @@ export comp10 from './comp10';
 export comp11 from './comp11';
 export comp12 from './comp12';
 export comp13 from './comp13';
+export comp14 from './comp14';
 export withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenEmpty';
 export compOpenWhenEmpty from './comp-openWhenEmpty';
