@@ -457,7 +457,7 @@ export default class Wizard extends Webform {
       const currentComponents = nestedComp?.subForm ? this.getSortedComponents(nestedComp.subForm) : nestedComp?.components || [];
       const visibleComponents = currentComponents.filter(comp => comp._visible);
       const filteredComponents = visibleComponents.filter(comp => !dataArrayComponents.includes(comp.component.type) && (comp.type !== 'form' || comp.isNestedWizard));
-      const additionalComponents = visibleComponents.filter(comp => comp.subForm?._form.display !== 'wizard');
+      const additionalComponents = currentComponents.filter(comp => comp.subForm?._form.display !== 'wizard');
       let hasNested = false;
 
       eachComponent(filteredComponents, (comp) => {
