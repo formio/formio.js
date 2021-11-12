@@ -800,9 +800,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (info) {
-      if (!info.key) {
-        info.key = this.generateKey(info);
-      }
+      info.key = this.generateKey(info);
     }
 
     return info;
@@ -849,7 +847,7 @@ export default class WebformBuilder extends Component {
     const group = element.getAttribute('data-group');
     let info, isNew, path, index;
 
-    if (key) {
+    if (key && group) {
       // This is a new component.
       info = this.getComponentInfo(key, group);
       if (!info && type) {
