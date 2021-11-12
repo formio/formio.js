@@ -10,7 +10,8 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -557,6 +558,43 @@ describe('DateTime Component', () => {
           done();
         }, 200);
       }, 200);
+    }).catch(done);
+  });
+
+  it('Should not highlight the field when it is valid when multiple values and required validation are enabled', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const input1 = dateTime.element.querySelectorAll('.input')[0];
+
+      const blurEvent = new Event('blur');
+      input1.value = '2020-04-03';
+      input1.dispatchEvent(blurEvent);
+
+      const addAnotherBtn = dateTime.refs.addButton[0];
+      const clickEvent = new Event('click');
+      addAnotherBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(dateTime.refs.input.length, 2);
+
+        const inputs = dateTime.element.querySelectorAll('.input');
+        assert.equal(inputs[0].classList.contains('is-invalid'), false);
+        assert.equal(inputs[1].classList.contains('is-invalid'), true);
+
+        inputs[1].value = '2020-05-05';
+        inputs[1].dispatchEvent(blurEvent);
+
+        setTimeout(() => {
+          const input2 = dateTime.element.querySelectorAll('.input')[1];
+          assert.equal(input2.classList.contains('is-invalid'), false);
+
+          document.innerHTML = '';
+          done();
+        }, 300);
+      }, 300);
     }).catch(done);
   });
   // it('Test Shortcut Buttons', (done) => {
