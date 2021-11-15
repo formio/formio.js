@@ -109,6 +109,7 @@ export default class RadioComponent extends Field {
           }
         });
       }
+      this.addFocusBlurEvents(input);
     });
     this.setSelectedClasses();
     return super.attach(element);

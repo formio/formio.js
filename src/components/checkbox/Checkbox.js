@@ -88,6 +88,7 @@ export default class CheckBoxComponent extends Field {
         modified: true
       }));
       this.addShortcut(this.input);
+      this.addFocusBlurEvents(this.input);
     }
     return super.attach(element);
   }

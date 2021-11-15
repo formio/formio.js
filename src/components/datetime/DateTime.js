@@ -179,4 +179,30 @@ export default class DateTimeComponent extends Input {
     const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (value ? moment(value).format(format) : value) || '';
   }
+
+  addFocusBlurEventsOnUserInput(element) {
+    this.addEventListener(element, 'focus', () => {
+        this.emit('focus', this);
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.emit('blur', this);
+    });
+  }
+
+  // add focus blur events to the user input box (second input) of datetime component
+  attach(element) {
+    super.attach(element);
+    let detectCount = 0;
+    const detect = async() => {
+      detectCount += 1;
+      const input = element.querySelector('input.input');
+      if (!input && detectCount < 10) {
+        setTimeout(detect, 200);
+      }
+      else {
+        this.addFocusBlurEventsOnUserInput(input);
+      }
+    };
+    detect();
+  }
 }
