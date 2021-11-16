@@ -3,7 +3,8 @@ import ColumnsComponent from './Columns';
 import assert from 'power-assert';
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from './fixtures';
 
 describe('Columns Component', () => {
@@ -37,5 +38,57 @@ describe('Columns Component', () => {
     })
     .then(done)
     .catch(done);
+  });
+
+  it('Should clear fields in modal window after confirming to clear data in dialog window', (done) => {
+    Harness.testCreate(ColumnsComponent, comp3).then((component) => {
+      const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
+      assert.equal(!!hiddenModalWindow, true);
+
+      const clickEvent = new Event('click');
+      const openModalElement = component.refs.openModal;
+      //open modal edit window
+      openModalElement.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(!!component.element.querySelector('.component-rendering-hidden'), false);
+
+        const inputEvent = new Event('input');
+        const columnsInputField = component.element.querySelector('[name="data[textField]"]');
+
+        columnsInputField.value = 'alexy@form.io';
+        columnsInputField.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(component.element.querySelector('[name="data[textField]"]').value, 'alexy@form.io');
+
+          const clickEvent = new Event('click');
+          const modalOverlay = component.refs.modalOverlay;
+          //click outside modal edit window
+          modalOverlay.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(!!component.componentModal.dialog, true);
+
+            const clickEvent = new Event('click');
+            const btnForCleaningValues = document.querySelector('[ref="dialogYesButton"]');
+            //click on 'yes, delete it' button inside alert window
+            btnForCleaningValues.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              const clickEvent = new Event('click');
+              const openModalElement = component.refs.openModal;
+              //open edit modal window again
+              openModalElement.dispatchEvent(clickEvent);
+
+              setTimeout(() => {
+                assert.equal(component.element.querySelector('[name="data[textField]"]').value, '');
+                done();
+              }, 100);
+            }, 100);
+          }, 100);
+        }, 100);
+      }, 100);
+    }).catch(done);
   });
 });

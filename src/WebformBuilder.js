@@ -3,13 +3,18 @@ import Component from './components/_classes/component/Component';
 import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
-import Templates from './templates/Templates';
 require('./components/builder');
+
+let Templates = Formio.Templates;
+
+if (!Templates) {
+  Templates = require('./templates/Templates').default;
+}
 
 let dragula;
 if (typeof window !== 'undefined') {
@@ -30,6 +35,7 @@ export default class WebformBuilder extends Component {
     }
     // Reset skipInit in case PDFBuilder has set it.
     options.skipInit = false;
+    options.display = options.display || 'form';
 
     super(null, options);
 
@@ -240,6 +246,8 @@ export default class WebformBuilder extends Component {
           _.set(this, pathToFormConfig, config);
         }
       }
+    }).catch((err) => {
+      console.warn(`Could not load project settings: ${err.message || err}`);
     });
 
     if (!formio.noProject && !isResourcesDisabled) {
@@ -499,7 +507,7 @@ export default class WebformBuilder extends Component {
 
     // Get the namespace component so we have the original object.
     const namespaceComponent = getComponent(this.form.components, namespaceKey, true);
-    return namespaceComponent.components;
+    return namespaceComponent ? namespaceComponent.components : comp.components;
   }
 
   recurseNamespace(component) {
@@ -793,13 +801,7 @@ export default class WebformBuilder extends Component {
 
     if (info) {
       if (!info.key) {
-        info.key = _.camelCase(
-          info.key ||
-          info.title ||
-          info.label ||
-          info.placeholder ||
-          info.type
-        );
+        info.key = this.generateKey(info);
       }
     }
 
@@ -1226,6 +1228,8 @@ export default class WebformBuilder extends Component {
         });
       }
 
+      this.hook('beforeSaveComponentSettings', submissionData);
+
       let comp = null;
       parentComponent.getComponents().forEach((component) => {
         if (component.component.key === original.key) {
@@ -1369,7 +1373,7 @@ export default class WebformBuilder extends Component {
         'calculateValue'
       ]));
 
-      this.hook('previewFormSettitngs', schema);
+      this.hook('previewFormSettitngs', schema, isJsonEdit);
     }
 
     this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
@@ -1412,13 +1416,7 @@ export default class WebformBuilder extends Component {
             if (!event.data.keyModified) {
               this.editForm.everyComponent(component => {
                 if (component.key === 'key' && component.parent.component.key === 'tabs') {
-                  component.setValue(_.camelCase(
-                    event.data.title ||
-                    event.data.label ||
-                    event.data.placeholder ||
-                    event.data.type
-                  ).replace(/^[0-9]*/, ''));
-
+                  component.setValue(this.updateComponentKey(event.data));
                   return false;
                 }
               });
@@ -1451,14 +1449,17 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    this.addEventListener(this.componentEdit.querySelector('[ref="removeButton"]'), 'click', (event) => {
-      event.preventDefault();
-      // Since we are already removing the component, don't trigger another remove.
-      saved = true;
-      this.editForm.detach();
-      this.removeComponent(component, parent, original);
-      this.dialog.close();
-      this.highlightInvalidComponents();
+    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
+    removeButtons.forEach((removeButton) => {
+      this.addEventListener(removeButton, 'click', (event) => {
+        event.preventDefault();
+        // Since we are already removing the component, don't trigger another remove.
+        saved = true;
+        this.editForm.detach();
+        this.removeComponent(component, parent, original);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
     });
 
     const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
@@ -1493,6 +1494,15 @@ export default class WebformBuilder extends Component {
 
     // Called when we edit a component.
     this.emit('editComponent', component);
+  }
+
+  updateComponentKey(data) {
+    return _.camelCase(
+      data.title ||
+      data.label ||
+      data.placeholder ||
+      data.type
+    ).replace(/^[0-9]*/, '');
   }
 
   /**
@@ -1608,5 +1618,15 @@ export default class WebformBuilder extends Component {
       this.groups[name] = group;
       this.triggerRedraw();
     }
+  }
+
+  generateKey(info) {
+    return _.camelCase(
+      info.key ||
+      info.title ||
+      info.label ||
+      info.placeholder ||
+      info.type
+    );
   }
 }

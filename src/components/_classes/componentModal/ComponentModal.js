@@ -16,7 +16,7 @@ export default class ComponentModal {
     this.isOpened = isOpened;
     this.component = component;
     this.element = element;
-    this.currentValue = fastCloneDeep(currentValue);
+    this.currentValue = fastCloneDeep(currentValue ?? this.component.getValue());
     this.dataLoaded = false;
     this.init();
   }
@@ -104,12 +104,12 @@ export default class ComponentModal {
       currentValue = this.currentValue.data;
     }
 
-    return !_.isEqual(componentValue, currentValue);
+    return !_.isEqual(fastCloneDeep(componentValue), currentValue);
   }
 
   setOpenEventListener() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.loadRefs(this.refs.openModalWrapper, {
+    this.component.loadRefs(this.refs.openModalWrapper ?? this.element, {
       'openModal': 'single',
     });
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
@@ -198,7 +198,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = fastCloneDeep(this.component.dataValue);
+    this.currentValue = fastCloneDeep(this.component.dataValue ?? this.component.getValue());
     this.closeModal();
   }
 }

@@ -182,7 +182,6 @@ export default [
     weight: 150,
     data: {
       values: [
-        { label: 'Extra Small', value: 'xs' },
         { label: 'Small', value: 'sm' },
         { label: 'Medium', value: 'md' },
         { label: 'Large', value: 'lg' },

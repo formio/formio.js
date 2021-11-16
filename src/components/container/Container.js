@@ -81,7 +81,9 @@ export default class ContainerComponent extends NestedDataComponent {
   }
 
   checkConditions(data, flags, row) {
+    // check conditions of parent component first, because it may influence on visibility of it's children
+    const check = Field.prototype.checkConditions.call(this, data, flags, row);
     this.getComponents().forEach(comp => comp.checkConditions(data, flags, this.dataValue));
-    return Field.prototype.checkConditions.call(this, data, flags, row);
+    return check;
   }
 }

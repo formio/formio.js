@@ -4,7 +4,7 @@ import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import i18nDefaults from './i18n';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
@@ -39,7 +39,8 @@ function getOptions(options) {
     i18next,
     saveDraft: false,
     alwaysDirty: false,
-    saveDraftThrottle: 5000
+    saveDraftThrottle: 5000,
+    display: 'form'
   });
   if (!options.events) {
     options.events = new EventEmitter();
@@ -257,15 +258,12 @@ export default class Webform extends NestedDataComponent {
     });
 
     // See if we need to restore the draft from a user.
-    if (this.options.saveDraft && Formio.events) {
-      Formio.events.on('formio.user', (user) => {
-        this.formReady.then(() => {
-          // Only restore a draft if the submission isn't explicitly set.
-          if (!this.submissionSet) {
-            this.restoreDraft(user._id);
-          }
-        });
-      });
+    if (this.options.saveDraft && !this.options.skipDraftRestore) {
+      const user = Formio.getUser();
+      // Only restore a draft if the submission isn't explicitly set.
+      if (user && !this.submissionSet) {
+        this.restoreDraft(user._id);
+      }
     }
 
     this.component.clearOnHide = false;
@@ -1233,6 +1231,8 @@ export default class Webform extends NestedDataComponent {
           };
         };
 
+        err.messages = _.uniqBy(err.messages, message => message.message);
+
         if (err.messages && err.messages.length) {
           const { component } = err;
           err.messages.forEach(({ message, context, fromServer }, index) => {
@@ -1325,7 +1325,11 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    return this.showErrors(error, true);
+    const errors = this.showErrors(error, true);
+    if (this.root && this.root.alert) {
+      this.scrollIntoView(this.root.alert);
+    }
+    return errors;
   }
 
   /**
@@ -1452,7 +1456,7 @@ export default class Webform extends NestedDataComponent {
           return reject('Invalid Submission');
         }
 
-        if (!isDraft && !this.checkValidity(submission.data, true, submission.data)) {
+        if (!isDraft && !this.checkValidity(submission.data, true)) {
           return reject();
         }
 

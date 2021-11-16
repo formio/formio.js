@@ -919,6 +919,10 @@ class Formio {
         else if (response.status === 416) {
           _Formio.events.emit('formio.rangeIsNotSatisfiable', response.body);
         }
+        else if (response.status === 504) {
+          return NativePromise.reject(new Error('Network request failed'));
+        }
+
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get('content-type').includes('application/json')
           ? response.json()
@@ -1442,7 +1446,7 @@ class Formio {
     }
   }
 
-  static requireLibrary(name, property, src, polling) {
+  static requireLibrary(name, property, src, polling, onload) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
       Formio.libraries[name].ready = new NativePromise((resolve, reject) => {
@@ -1500,6 +1504,10 @@ class Formio {
             }
           }
 
+          if (onload) {
+            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+          }
+
           const { head } = document;
           if (head) {
             head.appendChild(element);
@@ -1518,7 +1526,10 @@ class Formio {
         }
       }
     }
-    return Formio.libraries[name].ready;
+
+    const lib = Formio.libraries[name].ready;
+
+    return onload ? onload(lib) : lib;
   }
 
   static libraryReady(name) {
@@ -1558,6 +1569,17 @@ class Formio {
       Rules: Formio.Rules,
     };
   }
+
+  static get GlobalFormio() {
+    if (typeof global !== 'undefined' && global.Formio) {
+      return global.Formio;
+    }
+    else if (typeof window !== 'undefined' && window.Formio) {
+      return window.Formio;
+    }
+
+    return Formio;
+  }
 }
 
 // Define all the static properties.
@@ -1582,5 +1604,7 @@ if (typeof global !== 'undefined') {
 if (typeof window !== 'undefined') {
   Formio.addToGlobal(window);
 }
+
+export const GlobalFormio = Formio.GlobalFormio;
 
 export default Formio;

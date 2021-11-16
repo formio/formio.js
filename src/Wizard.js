@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import {
   fastCloneDeep,
   checkCondition,
@@ -23,11 +23,14 @@ export default class Wizard extends Webform {
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
       element = arguments[0];
-      options = arguments[1];
+      options = arguments[1] || {};
     }
     else {
-      options = arguments[0];
+      options = arguments[0] || {};
     }
+
+    options.display = 'wizard';
+
     super(element, options);
     this.pages = [];
     this.prefixComps = [];
@@ -283,6 +286,7 @@ export default class Wizard extends Webform {
     this.element = element;
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
+      [`${this.wizardKey}-header`]: 'single',
       [`${this.wizardKey}-cancel`]: 'single',
       [`${this.wizardKey}-previous`]: 'single',
       [`${this.wizardKey}-next`]: 'single',
@@ -311,15 +315,17 @@ export default class Wizard extends Webform {
   }
 
   scrollPageToTop() {
-    if (!this.refs[this.wizardKey]) {
+    const pageTop = this.refs[`${this.wizardKey}-header`] ?? this.refs[this.wizardKey];
+
+    if (!pageTop) {
       return;
     }
 
-    if ('scrollIntoView' in this.refs[this.wizardKey]) {
-      this.refs[this.wizardKey].scrollIntoView(true);
+    if ('scrollIntoView' in pageTop) {
+      pageTop.scrollIntoView(true);
     }
     else {
-      this.scrollIntoView(this.refs[this.wizardKey]);
+      this.scrollIntoView(pageTop);
     }
   }
 

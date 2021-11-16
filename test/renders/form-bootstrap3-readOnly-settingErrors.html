@@ -2,31 +2,30 @@
   <div class="formio-form formio-read-only" ref="webform" novalidate>
     <div id="page1" class="formio-component formio-component-panel formio-component-page1 " ref="component">
       <div class="panel panel-default">
-        <div class="panel-heading" ref="header">
+        <div class="panel-heading" role="button" aria-expanded="true" aria-controls="page1-page1" ref="header">
           <h4 class="mb-0 panel-title">
             Layouts
           </h4>
         </div>
-        <div class="panel-body" ref="nested-page1">
+        <div class="panel-body" ref="nested-page1" id="page1-page1">
           <div id="html" class="formio-component formio-component-htmlelement formio-component-html " ref="component">
             <p class="" ref="html">Required validation should trigger inside all layout sets</p>
             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
           </div>
           <div id="panel1" class="formio-component formio-component-panel formio-component-panel1 " ref="component">
             <div class="panel panel-default">
-              <div class="panel-heading" ref="header">
+              <div class="panel-heading" role="button" aria-expanded="true" aria-controls="panel1-panel1" ref="header">
                 <h4 class="mb-0 panel-title">
                   Panel
                 </h4>
               </div>
-              <div class="panel-body" ref="nested-panel1">
+              <div class="panel-body" ref="nested-panel1" id="panel1-panel1">
                 <div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField  required" ref="component">
                   <label class="control-label  field-required" for="textField-textField">
                     Text Field - Panel
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField-textField">
-                    </input>
+                    <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField-textField"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
@@ -35,8 +34,7 @@
                     Number
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number">
-                    </input>
+                    <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
@@ -91,20 +89,20 @@
                   </label>
                   <div class="input-group">
                     <div class="radio" ref="wrapper">
-                      <label class="control-label form-check-label label-position-right" for="radioFieldSet-a">
-                        <input ref="input" name="data[radioFieldSet][radioFieldSet]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="a" id="radioFieldSet-a">
+                      <label class="control-label form-check-label label-position-right" for="-radioFieldSet--a">
+                        <input ref="input" name="data[radioFieldSet][-radioFieldSet]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="a" id="-radioFieldSet--a">
                         <span>a</span>
                       </label>
                     </div>
                     <div class="radio" ref="wrapper">
-                      <label class="control-label form-check-label label-position-right" for="radioFieldSet-b">
-                        <input ref="input" name="data[radioFieldSet][radioFieldSet]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="b" id="radioFieldSet-b">
+                      <label class="control-label form-check-label label-position-right" for="-radioFieldSet--b">
+                        <input ref="input" name="data[radioFieldSet][-radioFieldSet]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="b" id="-radioFieldSet--b">
                         <span>b</span>
                       </label>
                     </div>
                     <div class="radio" ref="wrapper">
-                      <label class="control-label form-check-label label-position-right" for="radioFieldSet-c">
-                        <input ref="input" name="data[radioFieldSet][radioFieldSet]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="c" id="radioFieldSet-c">
+                      <label class="control-label form-check-label label-position-right" for="-radioFieldSet--c">
+                        <input ref="input" name="data[radioFieldSet][-radioFieldSet]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="c" id="-radioFieldSet--c">
                         <span>c</span>
                       </label>
                     </div>
@@ -116,8 +114,7 @@
                     Phone Number - Fieldset
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[phoneNumberFieldset]" type="text" class="form-control" lang="en" inputmode="decimal" disabled="disabled" spellcheck="true" value="" id="phoneNumberFieldset-phoneNumberFieldset">
-                    </input>
+                    <input ref="input" name="data[phoneNumberFieldset]" type="text" class="form-control" lang="en" inputmode="decimal" disabled="disabled" spellcheck="true" value="" id="phoneNumberFieldset-phoneNumberFieldset"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>
@@ -133,8 +130,7 @@
                             </label>
                             <div ref="element">
                               <div class="input-group">
-                                <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" disabled="disabled" value="" id="dateTime-dateTime">
-                                </input>
+                                <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" disabled="disabled" value="" id="dateTime-dateTime"></input>
                                 <div class="input-group-addon" ref="suffix">
                                   <i ref="icon" class="fa fa-calendar" style=""></i>
                                 </div>
@@ -152,42 +148,42 @@
                               <div class="form-group col col-xs-4">
                                 <label for="dayTable-month" class="field-required">Month</label>
                                 <div><select ref="month" id="dayTable-month" class="form-control" name="month" lang="en" aria-required="true">
-                                    <option value="">
+                                    <option value=''>
                                     </option>
-                                    <option value="1">
+                                    <option value='1'>
                                       January
                                     </option>
-                                    <option value="2">
+                                    <option value='2'>
                                       February
                                     </option>
-                                    <option value="3">
+                                    <option value='3'>
                                       March
                                     </option>
-                                    <option value="4">
+                                    <option value='4'>
                                       April
                                     </option>
-                                    <option value="5">
+                                    <option value='5'>
                                       May
                                     </option>
-                                    <option value="6">
+                                    <option value='6'>
                                       June
                                     </option>
-                                    <option value="7">
+                                    <option value='7'>
                                       July
                                     </option>
-                                    <option value="8">
+                                    <option value='8'>
                                       August
                                     </option>
-                                    <option value="9">
+                                    <option value='9'>
                                       September
                                     </option>
-                                    <option value="10">
+                                    <option value='10'>
                                       October
                                     </option>
-                                    <option value="11">
+                                    <option value='11'>
                                       November
                                     </option>
-                                    <option value="12">
+                                    <option value='12'>
                                       December
                                     </option>
                                   </select>
@@ -197,15 +193,13 @@
                               <div class="form-group col col-xs-3">
                                 <label for="dayTable-day" class="field-required">Day</label>
                                 <div>
-                                  <input ref="day" id="dayTable-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="dayTable-dayTable">
-                                  </input>
+                                  <input ref="day" id="dayTable-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="dayTable-dayTable"></input>
                                 </div>
                               </div>
                               <div class="form-group col col-xs-5">
                                 <label for="dayTable-year" class="field-required">Year</label>
                                 <div>
-                                  <input ref="year" id="dayTable-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="dayTable-dayTable">
-                                  </input>
+                                  <input ref="year" id="dayTable-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="dayTable-dayTable"></input>
                                 </div>
                               </div>
                             </div>
@@ -221,8 +215,7 @@
                               Currency - Table
                             </label>
                             <div ref="element">
-                              <input ref="input" name="data[currencyTable]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="currencyTable-currencyTable">
-                              </input>
+                              <input ref="input" name="data[currencyTable]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="currencyTable-currencyTable"></input>
                             </div>
                             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                           </div>
@@ -246,8 +239,7 @@
                     Email - Well
                   </label>
                   <div ref="element">
-                    <input ref="input" name="data[emailWell]" type="email" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="emailWell-emailWell">
-                    </input>
+                    <input ref="input" name="data[emailWell]" type="email" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="emailWell-emailWell"></input>
                   </div>
                   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                 </div>

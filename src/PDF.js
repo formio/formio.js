@@ -1,10 +1,11 @@
 import NativePromise from 'native-promise-only';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
+    options.display = 'pdf';
     super(element, options);
     this.components = [];
   }
@@ -181,6 +182,10 @@ export default class PDF extends Webform {
 
     let iframeSrc = `${this._form.settings.pdf.src}.html`;
     const params = [`id=${this.id}`];
+
+    if (this.options.showCheckboxBackground || this._form.settings.showCheckboxBackground) {
+      params.push('checkboxbackground=1');
+    }
 
     if (this.options.readOnly) {
       params.push('readonly=1');

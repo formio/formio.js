@@ -36,6 +36,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
@@ -128,6 +129,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-googledrive">googledrive</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
@@ -182,6 +184,7 @@ import Harness from &apos;../../../../test/harness&apos;;
 import { comp1 } from &apos;./fixtures&apos;;
 import _merge from &apos;lodash/merge&apos;;
 import comp3 from &apos;./fixtures/comp3&apos;;
+import comp4 from &apos;./fixtures/comp4&apos;;
 
 describe(&apos;Component&apos;, () =&gt; {
   it(&apos;Should create a Component&apos;, (done) =&gt; {
@@ -412,6 +415,60 @@ it(&apos;Should protect against change loops&apos;, function(done) {
     }, 500);
   })
   .catch((err) =&gt; done(err));
+});
+
+it(&apos;Should mark as invalid only invalid fields in multiple components&apos;, function(done) {
+  const formElement = document.createElement(&apos;div&apos;);
+  const form = new Webform(formElement);
+  const formJson = {
+    components: [
+      {
+        label: &apos;Email&apos;,
+        tableView: true,
+        multiple: true,
+        validate: {
+          required: true
+        },
+        key: &apos;email&apos;,
+        type: &apos;email&apos;,
+        input: true
+      },
+    ],
+  };
+
+  form.setForm(formJson).then(() =&gt; {
+    return form.setSubmission({
+      data: {
+        email: [
+          &apos;oleg@form.io&apos;,
+          &apos;oleg@form&apos;,
+          &apos;&apos;,
+        ]
+      }
+    });
+  })
+  .then(() =&gt; {
+    setTimeout(() =&gt; {
+      const email = form.getComponent(&apos;email&apos;);
+      expect(email.refs.input[0].classList.contains(&apos;is-invalid&apos;)).to.be.false;
+      expect(email.refs.input[1].classList.contains(&apos;is-invalid&apos;)).to.be.true;
+      expect(email.refs.input[2].classList.contains(&apos;is-invalid&apos;)).to.be.true;
+      done();
+    }, 300);
+  })
+  .catch(done);
+});
+
+describe(&apos;shouldDisplayRedAsterisk&apos;, () =&gt; {
+  it(&apos;modalPreview template should have className &quot;field-required&quot; if component is required&apos;, done =&gt; {
+    Harness.testCreate(Component, _merge({}, comp4, {
+      validate: { required: true }
+    })).then(cmp =&gt; {
+      assert.equal(!!cmp.element.querySelector(&apos;.field-required&apos;), true);
+      done();
+    }, done)
+    .catch(done);
+  });
 });
 </code></pre>
 

@@ -17,7 +17,6 @@ export default [
         { label: 'Resource', value: 'resource' },
         { label: 'Custom', value: 'custom' },
         { label: 'Raw JSON', value: 'json' },
-        { label: 'IndexedDB', value: 'indexeddb' },
       ],
     },
   },
@@ -356,6 +355,36 @@ export default [
   {
     type: 'number',
     input: true,
+    key: 'searchDebounce',
+    label: 'Search request delay',
+    weight: 16,
+    description: 'The delay (in seconds) before the search request is sent.',
+    tooltip: 'The delay in seconds before the search request is sent, measured from the last character input in the search field.',
+    validate: {
+      min: 0,
+      customMessage: '',
+      json: '',
+      max: 1,
+    },
+    delimiter: false,
+    requireDecimal: false,
+    encrypted: false,
+    defaultValue: 0.3,
+    conditional: {
+      json: {
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+          ],
+        ],
+      },
+    },
+  },
+  {
+    type: 'number',
+    input: true,
     key: 'minSearch',
     weight: 17,
     label: 'Minimum Search Length',
@@ -442,8 +471,8 @@ export default [
     editor: 'ace',
     rows: 10,
     weight: 14,
-    placeholder: "values = data['mykey'];",
-    tooltip: 'Write custom code to return the value options. The form data object is available.',
+    placeholder: "values = data['mykey'] or values = Promise.resolve(['myValue'])",
+    tooltip: 'Write custom code to return the value options or a promise with value options. The form data object is available.',
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'custom'] },
     },
@@ -500,7 +529,8 @@ export default [
           [
             'url',
             'resource',
-            'values'
+            'values',
+            'custom'
           ],
         ],
       },
@@ -558,7 +588,8 @@ export default [
           [
             'url',
             'resource',
-            'values'
+            'values',
+            'custom'
           ],
         ],
       },

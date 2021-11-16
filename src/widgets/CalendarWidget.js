@@ -1,4 +1,4 @@
-import Formio from '../Formio';
+import { GlobalFormio as Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
@@ -7,9 +7,9 @@ import {
   currentTimezone,
   formatDate,
   formatOffset,
+  getBrowserInfo,
   getDateSetting,
   getLocaleDateFormatInfo,
-  getBrowserInfo,
   momentDate,
   zonesLoaded,
   shouldLoadZones,
@@ -22,9 +22,11 @@ const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 const CDN_URL = 'https://cdn.form.io/';
 const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
+const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
 const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
 const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
+
 const isIEBrowser = getBrowserInfo().ie;
 
 export default class CalendarWidget extends InputWidget {
@@ -155,9 +157,9 @@ export default class CalendarWidget extends InputWidget {
       { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
     ], true);
 
-    this.component.shortcutButtons = this.component.shortcutButtons
-      ? this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick)
-      : [];
+    if (this.component.shortcutButtons) {
+      this.component.shortcutButtons = this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick);
+    }
 
     if (this.component.shortcutButtons?.length) {
       Formio.requireLibrary('shortcut-buttons-flatpickr-css', 'ShortcutButtonsPlugin', [
@@ -183,7 +185,20 @@ export default class CalendarWidget extends InputWidget {
             this.settings.formatDate = this.getFlatpickrFormatDate(Flatpickr);
 
             if (this._input) {
-              this.initFlatpickr(Flatpickr);
+              const { locale } = this.settings;
+
+              if (locale && locale.length >= 2 && locale !== 'en') {
+                return Formio.requireLibrary(
+                  `flatpickr-${locale}`,
+                  `flatpickr-${locale}`,
+                  `${CDN_FLATPICKR_LOCALE_URL}/${locale}.min.js`,
+                  false,
+                  () => this.initFlatpickr(Flatpickr)
+                );
+              }
+              else {
+                this.initFlatpickr(Flatpickr);
+              }
             }
           });
       })
@@ -208,7 +223,7 @@ export default class CalendarWidget extends InputWidget {
     });
   }
 
-  get timezone() {
+  defineTimezone() {
     if (this.settings.timezone) {
       return this.settings.timezone;
     }
@@ -221,6 +236,10 @@ export default class CalendarWidget extends InputWidget {
 
     // Return current timezone if none are provided.
     return currentTimezone();
+  }
+
+  get timezone() {
+    return this.defineTimezone();
   }
 
   get defaultSettings() {
@@ -394,7 +413,7 @@ export default class CalendarWidget extends InputWidget {
   }
 
   isCalendarElement(element) {
-    if (isIEBrowser || !element) {
+    if (!element) {
       return true;
     }
 
@@ -437,9 +456,9 @@ export default class CalendarWidget extends InputWidget {
     }
 
     // Fixes an issue with IE11 where value is set only after the second click
-    // TODO: Remove when the issue is solved in the flatpick library
+    // TODO: Remove when the issue is solved in the flatpickr library
     if (isIEBrowser) {
-      // Remove the original blur listener, because value willbe set to empty since relatedTarget is null in IE11
+      // Remove the original blur listener, because value will be set to empty since relatedTarget is null in IE11
       const originalBlurListener = this.calendar._handlers.find(({ event, element }) => event === 'blur' && element === this.calendar._input);
       this.calendar._input.removeEventListener('blur', originalBlurListener.handler);
       // Add the same event listener as in the original library, but with workaround for IE11 issue
@@ -469,6 +488,10 @@ export default class CalendarWidget extends InputWidget {
         const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
+      }
+      else if (!this.calendar.input.value && this.calendar.config.noCalendar) {
+        const value = moment({ hour: this.calendar?.config?.defaultHour, minute: this.calendar?.config?.defaultMinute }).toDate();
+        this.calendar.setDate(value, true, this.settings.format);
       }
     });
 

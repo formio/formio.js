@@ -1,5 +1,5 @@
 import EventEmitter from './EventEmitter';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
@@ -80,6 +80,7 @@ export default class Element {
 
     // Store the component id in the handler so that we can determine which events are for this component.
     cb.id = this.id;
+    cb.key = this.key;
     cb.internal = internal;
 
     // Register for this event.
@@ -162,6 +163,28 @@ export default class Element {
     if (this.events) {
       this.events.emit(`${this.options.namespace}.${event}`, ...data);
     }
+  }
+
+  /**
+   * Check if the component has an event handler set up for the event.
+   *
+   * @param {string} event - The event name.
+   * @returns {boolean}
+   */
+  hasEventHandler(event) {
+    if (!this.events) {
+      return false;
+    }
+
+    const type = `${this.options.namespace}.${event}`;
+
+    return this.events.listeners(type).some((listener) => {
+      if (!listener) {
+        return false;
+      }
+
+      return listener.id === this.id || listener.key === this.key;
+    });
   }
 
   /**

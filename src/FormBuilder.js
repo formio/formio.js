@@ -1,4 +1,4 @@
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import Builders from './builders';
 import Form from './Form';
 

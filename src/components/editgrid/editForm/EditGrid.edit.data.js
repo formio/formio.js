@@ -5,7 +5,7 @@ export default [
     weight: 105,
     key: 'inlineEdit',
     label: 'Inline Editing',
-    tooltip: 'Check this if you would like your changes within "edit" mode to be committed directly to the submission object as that row is being changed',
+    tooltip: 'Check this if you would like your changes within \'edit\' mode to be committed directly to the submission object as that row is being changed',
   },
   {
     key: 'defaultValue',

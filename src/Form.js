@@ -1,5 +1,5 @@
 import Element from './Element';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
@@ -227,13 +227,17 @@ export default class Form extends Element {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty) {
+  sanitize(dirty, forceSanitize) {
+    // If Sanitize is turned off
+    if (this.options.sanitize === false && !forceSanitize) {
+      return dirty;
+    }
     return FormioUtils.sanitize(dirty, this.options);
   }
 
-  setContent(element, content) {
+  setContent(element, content, forceSanitize) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content);
+      element.innerHTML = this.sanitize(content, forceSanitize);
       return true;
     }
     return false;

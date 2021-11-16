@@ -8,6 +8,7 @@ import Harness from '../../../../test/harness';
 import { comp1 } from './fixtures';
 import _merge from 'lodash/merge';
 import comp3 from './fixtures/comp3';
+import comp4 from './fixtures/comp4';
 
 describe('Component', () => {
   it('Should create a Component', (done) => {
@@ -148,6 +149,63 @@ describe('Component', () => {
     }, done));
   });
 
+  it('Should mark as invalid calculated fields that are invalid', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'A',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          key: 'a',
+          type: 'number',
+          input: true
+        },
+        {
+          label: 'B',
+          mask: false,
+          disabled: true,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          calculateValue: 'value = data.a + 1;',
+          validate: {
+            custom: 'valid = input <= 10 ? true : \'B should be less or equal to 10\';'
+          },
+          key: 'b',
+          type: 'number',
+          input: true
+        }
+      ],
+    };
+
+    form.setForm(formJson).then(() => {
+      return form.setSubmission({
+        data: {
+          a: 1
+        }
+      });
+    })
+    .then(() => {
+      setTimeout(() => {
+        const a = form.getComponent('a');
+        a.updateComponentValue(10);
+        setTimeout(()=> {
+          const b = form.getComponent('b');
+          expect(b.refs.messageContainer?.innerHTML.indexOf('B should be less or equal to 10') > -1).to.be.true;
+          expect(b.refs.input[0].classList.contains('is-invalid')).to.be.true;
+          done();
+        }, 300);
+      }, 300);
+    })
+    .catch(done);
+  });
+
   describe('shouldSkipValidation', () => {
     it('should return true if component is hidden', done => {
       Harness.testCreate(Component, comp1)
@@ -238,4 +296,58 @@ it('Should protect against change loops', function(done) {
     }, 500);
   })
   .catch((err) => done(err));
+});
+
+it('Should mark as invalid only invalid fields in multiple components', function(done) {
+  const formElement = document.createElement('div');
+  const form = new Webform(formElement);
+  const formJson = {
+    components: [
+      {
+        label: 'Email',
+        tableView: true,
+        multiple: true,
+        validate: {
+          required: true
+        },
+        key: 'email',
+        type: 'email',
+        input: true
+      },
+    ],
+  };
+
+  form.setForm(formJson).then(() => {
+    return form.setSubmission({
+      data: {
+        email: [
+          'oleg@form.io',
+          'oleg@form',
+          '',
+        ]
+      }
+    });
+  })
+  .then(() => {
+    setTimeout(() => {
+      const email = form.getComponent('email');
+      expect(email.refs.input[0].classList.contains('is-invalid')).to.be.false;
+      expect(email.refs.input[1].classList.contains('is-invalid')).to.be.true;
+      expect(email.refs.input[2].classList.contains('is-invalid')).to.be.true;
+      done();
+    }, 300);
+  })
+  .catch(done);
+});
+
+describe('shouldDisplayRedAsterisk', () => {
+  it('modalPreview template should have className "field-required" if component is required', done => {
+    Harness.testCreate(Component, _merge({}, comp4, {
+      validate: { required: true }
+    })).then(cmp => {
+      assert.equal(!!cmp.element.querySelector('.field-required'), true);
+      done();
+    }, done)
+    .catch(done);
+  });
 });

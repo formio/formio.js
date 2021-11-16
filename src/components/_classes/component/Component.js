@@ -4,15 +4,11 @@ import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import Formio from '../../../Formio';
+import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
-import Templates from '../../../templates/Templates';
 import {
-  fastCloneDeep,
-  boolValue,
-  getDataParentComponent,
-  getComponentPath
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -30,6 +26,12 @@ const QUILL_URL = isIEBrowser
   : 'https://cdn.quilljs.com/2.0.0-dev.3';
 const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
+
+let Templates = Formio.Templates;
+
+if (!Templates) {
+  Templates = require('../../../templates/Templates').default;
+}
 
 /**
  * This is the Component class
@@ -802,7 +804,9 @@ export default class Component extends Element {
   }
 
   get transform() {
-    return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
+    return Templates.current.hasOwnProperty('transform')
+      ? Templates.current.transform.bind(Templates.current)
+      : (type, value) => value;
   }
 
   getTemplate(names, modes) {
@@ -873,7 +877,7 @@ export default class Component extends Element {
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-    return tooltip ? this.t(tooltip, { _userInput: true }) : '';
+    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
   }
 
   isHtmlRenderMode() {
@@ -928,9 +932,9 @@ export default class Component extends Element {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty) {
+  sanitize(dirty, forceSanitize) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
-    if (this.options.pdf) {
+    if ((this.options.pdf || this.options.sanitize === false) && !forceSanitize) {
       return dirty;
     }
     return FormioUtils.sanitize(dirty, this.options);
@@ -943,7 +947,7 @@ export default class Component extends Element {
    * @param data
    * @param actions
    *
-   * @return {HTMLElement} - The created element.
+   * @return {HTMLElement|String} - The created element or an empty string if template is not specified.
    */
   renderString(template, data) {
     if (!template) {
@@ -1039,8 +1043,8 @@ export default class Component extends Element {
     }
   }
 
-  setOpenModalElement() {
-    this.componentModal.setOpenModalElement(this.getModalPreviewTemplate());
+  setOpenModalElement(template) {
+    this.componentModal.setOpenModalElement(template || this.getModalPreviewTemplate());
   }
 
   getModalPreviewTemplate() {
@@ -1123,8 +1127,11 @@ export default class Component extends Element {
     if (!this.builderMode && !this.previewMode && this.component.modalEdit) {
       const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
       const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
+      const openModalTemplate = this.componentModal && modalShouldBeOpened
+        ? this.componentModal.openModalTemplate
+        : null;
       this.componentModal = this.createComponentModal(element, modalShouldBeOpened, currentValue);
-      this.setOpenModalElement();
+      this.setOpenModalElement(openModalTemplate);
     }
 
     this.attached = true;
@@ -1361,7 +1368,7 @@ export default class Component extends Element {
       return '';
     }
     const stringValue = value.toString();
-    return this.sanitize(stringValue);
+    return this.sanitize(stringValue, this.shouldSanitizeValue);
   }
 
   getView(value, options) {
@@ -1446,6 +1453,14 @@ export default class Component extends Element {
     this.addEventListener(dialog.refs.dialogClose, 'click', handleCloseClick);
 
     return dialog;
+  }
+
+  get optimizeRedraw() {
+    if (this.options.optimizeRedraw && this.element && !this.visible) {
+      this.addClass(this.element, 'formio-removed');
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -1601,9 +1616,9 @@ export default class Component extends Element {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
-  setContent(element, content) {
+  setContent(element, content, forceSanitize) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content);
+      element.innerHTML = this.sanitize(content, forceSanitize);
       return true;
     }
     return false;
@@ -1633,7 +1648,7 @@ export default class Component extends Element {
 
   redraw() {
     // Don't bother if we have not built yet.
-    if (!this.element || !this.element.parentNode) {
+    if (!this.element || !this.element.parentNode || this.optimizeRedraw) {
       // Return a non-resolving promise.
       return NativePromise.resolve();
     }
@@ -1845,6 +1860,14 @@ export default class Component extends Element {
     return false;
   }
 
+  defineActionValue(action, argsObject) {
+    return this.evaluate(
+      action.value,
+      argsObject,
+      'value',
+    );
+  }
+
   applyActions(newComponent, actions, result, row, data) {
     data = data || this.rootValue;
     row = row || this.data;
@@ -1863,16 +1886,15 @@ export default class Component extends Element {
         }
         case 'value': {
           const oldValue = this.getValue();
-          const newValue = this.evaluate(
-            action.value,
+          const newValue = this.defineActionValue(
+            action,
             {
               value: _.clone(oldValue),
               data,
               row,
               component: newComponent,
               result,
-            },
-            'value',
+            }
           );
 
           if (!_.isEqual(oldValue, newValue)) {
@@ -2022,7 +2044,7 @@ export default class Component extends Element {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
       // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || this.options.server || getDataParentComponent(this)?.hasScopedChildren) &&
+      (!this.rootPristine || this.options.server || isInsideScopingComponent(this)) &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -2230,10 +2252,14 @@ export default class Component extends Element {
               txtArea.value = this.quill.root.innerHTML;
               onChange(txtArea);
             });
-
             return this.quill;
           });
       });
+  }
+
+  get shouldSanitizeValue() {
+    // Sanitize value if sanitizing for thw whole content is turned off
+    return (this.options?.sanitize === false ? true : false);
   }
 
   addAce(element, settings, onChange) {
@@ -2343,13 +2369,13 @@ export default class Component extends Element {
    *
    * @param index
    */
-  splice(index) {
+  splice(index, flags = {}) {
     if (this.hasValue()) {
       const dataValue = this.dataValue || [];
       if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
         this.dataValue = dataValue;
-        this.triggerChange();
+        this.triggerChange(flags);
       }
     }
   }
@@ -2381,7 +2407,7 @@ export default class Component extends Element {
   }
 
   get shouldAddDefaultValue() {
-    return !this.options.noDefaults || this.component.defaultValue || this.component.customDefaultValue;
+    return !this.options.noDefaults || (this.component.defaultValue && !this.isEmpty(this.component.defaultValue)) || this.component.customDefaultValue;
   }
 
   get defaultValue() {
@@ -2471,12 +2497,13 @@ export default class Component extends Element {
       return changed;
     }
     const isArray = Array.isArray(value);
+    const valueInput = this.refs.fileLink || this.refs.input;
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
       this.refs.hasOwnProperty('input') &&
-      this.refs.input &&
-      (this.refs.input.length !== value.length) &&
+      valueInput &&
+      (valueInput.length !== value.length) &&
       this.visible
     ) {
       this.redraw();
@@ -2503,6 +2530,7 @@ export default class Component extends Element {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
+
     const input = this.performInputMapping(this.refs.input[index]);
     const valueMaskInput = this.refs.valueMaskInput;
 
@@ -2676,8 +2704,9 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    const { hidden, clearOnHide } = this.component;
-    const shouldBeCleared = (!this.visible || hidden) && clearOnHide && !this.rootPristine;
+    const { clearOnHide } = this.component;
+    const shouldBeCleared = !this.visible && clearOnHide;
+    const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
     // Handle all cases when calculated values should not fire.
     if (
@@ -2685,7 +2714,7 @@ export default class Component extends Element {
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
-      flags.dataSourceInitialLoading
+      (flags.dataSourceInitialLoading && allowOverride)
     ) {
       return false;
     }
@@ -2700,14 +2729,8 @@ export default class Component extends Element {
 
     const changed = !_.isEqual(dataValue, calculatedValue);
 
-    if (flags.fromSubmission && this.component.persistent === true) {
-      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
-
     // Do not override calculations on server if they have calculateServer set.
-    if (this.component.allowCalculateOverride) {
+    if (allowOverride) {
       const firstPass = (this.calculatedValue === undefined);
       if (firstPass) {
         this.calculatedValue = null;
@@ -2725,6 +2748,12 @@ export default class Component extends Element {
         return false;
       }
 
+    if (flags.fromSubmission && this.component.persistent === true) {
+      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+      this.calculatedValue = calculatedValue;
+      return false;
+    }
+
       // If this is the firstPass, and the dataValue is different than to the calculatedValue.
       if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
         // Return that we have a change so it will perform another pass.
@@ -2735,6 +2764,10 @@ export default class Component extends Element {
     this.calculatedValue = calculatedValue;
 
     if (changed) {
+      if (!flags.noPristineChangeOnModified) {
+        this.pristine = false;
+      }
+
       flags.triggeredComponentId = this.id;
       return this.setValue(calculatedValue, flags);
     }
@@ -2896,10 +2929,12 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
+
+    this.checkComponentConditions(data, flags, row);
+
     if (this.id !== flags.triggeredComponentId) {
       this.calculateComponentValue(data, flags, row);
     }
-    this.checkComponentConditions(data, flags, row);
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
@@ -2930,9 +2965,15 @@ export default class Component extends Element {
     return isValid;
   }
 
-  checkModal() {
+  checkModal(isValid = true, dirty = false) {
     if (!this.component.modalEdit || !this.componentModal) {
       return;
+    }
+    if (dirty && !isValid) {
+      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!this.errors.length, this.refs.openModalWrapper);
+    }
+    else {
+      this.clearErrorClasses(this.refs.openModalWrapper);
     }
   }
 
@@ -3002,6 +3043,18 @@ export default class Component extends Element {
 
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
 
+    let invalidInputRefs = inputRefs;
+    if (this.component.multiple) {
+      const inputRefsArray = Array.from(inputRefs);
+      inputRefsArray.forEach((input) => {
+        this.setElementInvalid(this.performInputMapping(input), false);
+      });
+      invalidInputRefs = inputRefsArray.filter((ref) => {
+        return messages.some?.((msg) => {
+          return msg?.context?.input === ref;
+        });
+      });
+    }
     if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
@@ -3013,9 +3066,9 @@ export default class Component extends Element {
         external: !!external,
       };
       this.emit('componentError', this.error);
-      this.addMessages(messages, dirty, inputRefs);
-      if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+      this.addMessages(messages, dirty, invalidInputRefs);
+      if (invalidInputRefs) {
+        this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -3026,8 +3079,8 @@ export default class Component extends Element {
         this.empty(this.refs.modalMessageContainer);
       }
       this.error = null;
-      if (inputRefs) {
-        this.setErrorClasses(inputRefs, dirty, hasErrors, !!messages.length);
+      if (invalidInputRefs) {
+        this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
       this.clearErrorClasses();
     }
@@ -3063,6 +3116,8 @@ export default class Component extends Element {
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
+      // Do not check validations if component is not an input component.
+      () => !this.hasInput,
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.

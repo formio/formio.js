@@ -9,7 +9,7 @@ import {
   getStringFromComponentPath,
   getArrayFromComponentPath
 } from '../../utils/utils';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import Form from '../../Form';
 
 export default class FormComponent extends Component {
@@ -70,7 +70,12 @@ export default class FormComponent extends Component {
         this.options.project = this.formSrc;
       }
       if (this.component.form) {
-        this.formSrc += `/form/${this.component.form}`;
+        if (isMongoId(this.component.form)) {
+          this.formSrc += `/form/${this.component.form}`;
+        }
+        else {
+          this.formSrc += `/${this.component.form}`;
+        }
       }
       else if (this.component.path) {
         this.formSrc += `/${this.component.path}`;
@@ -80,13 +85,12 @@ export default class FormComponent extends Component {
     // Build the source based on the root src path.
     if (!this.formSrc && this.options.formio) {
       const rootSrc = this.options.formio.formsUrl;
-      if (this.component.path) {
-        const parts = rootSrc.split('/');
-        parts.pop();
-        this.formSrc = `${parts.join('/')}/${this.component.path}`;
-      }
-      if (this.component.form) {
+      if (this.component.form && isMongoId(this.component.form)) {
         this.formSrc = `${rootSrc}/${this.component.form}`;
+      }
+      else {
+        const formPath = this.component.path || this.component.form;
+        this.formSrc = `${rootSrc.replace(/\/form$/, '')}/${formPath}`;
       }
     }
 
@@ -329,6 +333,7 @@ export default class FormComponent extends Component {
   redraw() {
     if (this.subForm) {
       this.subForm.form = this.formObj;
+      this.setSubFormDisabled(this.subForm);
     }
     return super.redraw();
   }
@@ -342,6 +347,10 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       this.subForm.everyComponent(...args);
     }
+  }
+
+  setSubFormDisabled(subForm) {
+    subForm.disabled = this.disabled; // When the Nested Form is disabled make the subForm disabled
   }
 
   updateSubWizards(subForm) {
@@ -439,9 +448,17 @@ export default class FormComponent extends Component {
           this.formObj = formObj;
           this.subFormLoading = false;
           return formObj;
+        })
+        .catch((err) => {
+          console.log(err);
+          return null;
         });
     }
     return NativePromise.resolve();
+  }
+
+  get subFormData() {
+    return this.dataValue?.data || {};
   }
 
   checkComponentValidity(data, dirty, row, options) {
@@ -449,7 +466,7 @@ export default class FormComponent extends Component {
     const silentCheck = options.silentCheck || false;
 
     if (this.subForm) {
-      return this.subForm.checkValidity(this.dataValue.data, dirty, null, silentCheck);
+      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck);
     }
 
     return super.checkComponentValidity(data, dirty, row, options);
@@ -464,14 +481,14 @@ export default class FormComponent extends Component {
     }
 
     if (this.subForm) {
-      return this.subForm.checkConditions(this.dataValue.data);
+      return this.subForm.checkConditions(this.subFormData);
     }
     // There are few cases when subForm is not loaded when a change is triggered,
     // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
     else if (this.subFormReady) {
       this.subFormReady.then(() => {
         if (this.subForm) {
-          return this.subForm.checkConditions(this.dataValue.data);
+          return this.subForm.checkConditions(this.subFormData);
         }
       });
     }
@@ -481,7 +498,7 @@ export default class FormComponent extends Component {
 
   calculateValue(data, flags, row) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.dataValue.data, flags);
+      return this.subForm.calculateValue(this.subFormData, flags);
     }
 
     return super.calculateValue(data, flags, row);

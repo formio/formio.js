@@ -1153,6 +1153,10 @@ const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP
  *   Translated element template.
  */
 function translateElemValue(elem, translate) {
+  if (!elem.innerText) {
+    return elem.innerHTML;
+  }
+
   const elemValue = elem.innerText.replace(Evaluator.templateSettings.interpolate, '').replace(/\s\s+/g, ' ').trim();
   const translatedValue = translate(elemValue);
 
@@ -1449,6 +1453,39 @@ export function getDataParentComponent(componentInstance) {
   else {
     return getDataParentComponent(parent);
   }
+}
+
+/**
+ * Returns whether the value is a promise
+ * @param value
+ * @return {boolean}
+ */
+ export function isPromise(value) {
+   return value
+     && value.then
+     && typeof value.then === 'function'
+     && value?.constructor?.name === 'Promise';
+ }
+
+/**
+ * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
+ * changes by itself, e.g. EditGrid)
+ * @param componentInstance
+ * @param firstPass
+ * @returns {boolean|boolean|*}
+ */
+export function isInsideScopingComponent(componentInstance, firstPass = true) {
+  if (!firstPass && componentInstance?.hasScopedChildren) {
+    return true;
+  }
+  const dataParent = getDataParentComponent(componentInstance);
+  if (dataParent?.hasScopedChildren) {
+    return true;
+  }
+  else if (dataParent?.parent) {
+    return isInsideScopingComponent(dataParent.parent, false);
+  }
+  return false;
 }
 
 export function getFocusableElements(element) {

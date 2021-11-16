@@ -1,6 +1,6 @@
 <div class="formio-form formio-read-only">
   <div style="position: relative;">
-    <nav aria-label="Wizard navigation" id="wizard-page1-header">
+    <nav aria-label="Wizard navigation" id="wizard-page1-header" ref="wizard-page1-header">
       <ul class="pagination" role="tablist">
         <li class="page-item active" style="cursor: pointer;">
           <button tabindex="0" data-index="0" role="tab" class="page-link" ref="wizard-page1-link">
@@ -26,8 +26,8 @@
         <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
       </div>
     </div>
-    <ul class="list-inline" id="wizard-page1-nav">
-      <li class="list-inline-item">
+    <ul class="formio-wizard-nav-container list-inline" id="wizard-page1-nav">
+      <li>
         <button class="btn btn-primary btn-wizard-nav-next" ref="wizard-page1-next" aria-label="Next button. Click to go to the next tab">Next</button>
       </li>
     </ul>

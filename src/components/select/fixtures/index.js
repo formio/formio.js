@@ -12,3 +12,5 @@ export comp11 from './comp11';
 export comp12 from './comp12';
 export comp13 from './comp13';
 export comp14 from './comp14';
+export comp15 from './comp15';
+export comp16 from './comp16';
