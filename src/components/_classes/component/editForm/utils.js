@@ -47,6 +47,7 @@ const EditFormUtils = {
       '<tr><th>form</th><td>The complete form JSON object</td></tr>' +
       '<tr><th>submission</th><td>The complete submission object.</td></tr>' +
       '<tr><th>data</th><td>The complete submission data object.</td></tr>' +
+      '<tr><th>rootData</th><td>The data object of the top-level form.</td></tr>' +
       '<tr><th>row</th><td>Contextual "row" data, used within DataGrid, EditGrid, and Container components</td></tr>' +
       '<tr><th>component</th><td>The current component JSON</td></tr>' +
       '<tr><th>instance</th><td>The current component instance.</td></tr>' +
