@@ -42,6 +42,7 @@ import disableSubmitButton from '../test/forms/disableSubmitButton';
 import formWithAddressComponent from '../test/forms/formWithAddressComponent';
 import formWithDataGridInitEmpty from '../test/forms/dataGridWithInitEmpty';
 import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
+import nestedFormWithConditional from '../test/forms/nestedFormWithConditional';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
@@ -3241,6 +3242,27 @@ describe('Webform tests', function() {
         assert.equal(form.errors[0].messages.length, 1);
         assert.equal(form.errors[0].messages[0].message, 'Number is required');
         assert.equal(form.element.querySelector('[ref="errorRef"]').textContent.trim().includes('Number is required'), true);
+        done();
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Conditional on the child form should work', function(done) {
+    const element = document.createElement('div');
+    const form = new Webform(element);
+
+    form.setForm(nestedFormWithConditional).then(() => {
+      const textField = form.getComponent('textField');
+      const checkbox = form.getComponent('hideChildFormField');
+
+      expect(textField.visible).to.be.true;
+
+      checkbox.setValue(true);
+
+      setTimeout(() => {
+        expect(textField.visible).to.be.false;
+
         done();
       }, 200);
     })
