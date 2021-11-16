@@ -1530,6 +1530,7 @@ export default class Component extends Element {
       row: this.data,
       rowIndex: this.rowIndex,
       data: this.rootValue,
+      rootData: this.rootData,
       iconClass: this.iconClass.bind(this),
       // Bind the translate function to the data context of any interpolated string.
       // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
@@ -2313,6 +2314,25 @@ export default class Component extends Element {
    */
   get rootValue() {
     return this.root ? this.root.data : this.data;
+  }
+
+  /**
+   * Get the data value from the top-level form (including nested forms).
+   *
+   * @return {*}
+   */
+  get rootData() {
+    const getRootData = (root, data) => {
+      if (root.root && root.root.data && root.root !== root) {
+        return getRootData(root.root, root.root.data);
+      }
+      else {
+        return data;
+      }
+    };
+    return this.root && this.root.root
+      ? getRootData(this.root, this.root.data)
+      : this.rootValue;
   }
 
   get rootPristine() {
