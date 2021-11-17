@@ -966,8 +966,10 @@ export default class Webform extends NestedDataComponent {
     }
 
     this.formReady.then(() => {
-      this.evaluate(this.form.controller, {
-        components: this.components,
+      setTimeout(() => {
+        this.evaluate(this.form.controller, {
+          components: this.components,
+        });
       });
     });
   }
