@@ -1159,6 +1159,9 @@ export default class EditGridComponent extends NestedArrayComponent {
             this.addClass(errorContainer,  'help-block' );
             errorContainer.textContent = this.t('invalidRowError');
           }
+          else if (errorContainer) {
+            errorContainer.textContent = '';
+          }
         }
       }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
