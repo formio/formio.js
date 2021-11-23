@@ -1,52 +1,50 @@
 import _ from 'lodash';
 import assert from 'power-assert';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
+import Formio from '../../Formio';
 
 import {
   comp1,
   comp2,
   comp3,
   comp4,
+  comp5,
   withDefValue,
   withRowGroupsAndDefValue,
+  modalWithRequiredFields,
+  withConditionalFieldsAndValidations,
+  withLogic
 } from './fixtures';
 
 describe('DataGrid Component', () => {
-  it('Should not show alert message in modal edit and close modal window when clicking on modal overlay and value was not changed', (done) => {
-    Harness.testCreate(DataGridComponent, comp4).then((component) => {
-      const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
-      assert.equal(!!hiddenModalWindow, true);
-
-      const clickEvent = new Event('click');
-      const openModalElement = component.refs.openModal;
-
-      openModalElement.dispatchEvent(clickEvent);
-
+  it('Test modal edit confirmation dialog', (done) => {
+    Harness.testCreate(DataGridComponent, comp5).then((component) => {
+      component.componentModal.openModal();
+      const fakeEvent = {
+        preventDefault: () => {}
+      };
+      component.componentModal.showDialogListener(fakeEvent);
+      assert.equal(component.componentModal.isOpened, false, 'Should be closed without confirmation dialog since value was not changed');
       setTimeout(() => {
-        assert.equal(!!component.element.querySelector('.component-rendering-hidden'), false);
-
-        const clickEvent = new Event('click');
-        const modalOverlay = component.refs.modalOverlay;
-
-        modalOverlay.dispatchEvent(clickEvent);
-
+        component.componentModal.openModal();
+        Harness.setInputValue(component, 'data[dataGrid][0][textField]', 'My Text');
         setTimeout(() => {
-          const dialogWindowHeader = document.querySelector('[ref="dialogHeader"]');
-          //checking if there is dialog window
-          assert.equal( !!dialogWindowHeader, false);
-
-          const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
-          //checking if the modal window was closed
-          assert.equal(!!hiddenModalWindow, true);
+          component.componentModal.showDialogListener(fakeEvent);
+          assert.equal(component.componentModal.isValueChanged(), true, 'Should return true since value was modified');
+          assert.equal(component.componentModal.isOpened, true, 'Should stay opened and wait until user confirm closing without changes saving');
+          assert(component.componentModal.dialog, 'Should open confirmation dialog');
+          component.componentModal.closeDialog(fakeEvent);
+          component.destroy();
           done();
-        }, 300);
-      }, 200);
-    });
+        }, 100);
+      }, 100);
+    }).catch(done);
   });
 
-  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed, 
+  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed,
     and clear values when pushing 'yes, delete it' in alert container`, (done) => {
     Harness.testCreate(DataGridComponent, comp4).then((component) => {
       const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
@@ -68,7 +66,7 @@ describe('DataGrid Component', () => {
         dataGridInputField.dispatchEvent(inputEvent);
 
         setTimeout(() => {
-          assert.equal( component.element.querySelector('[name="data[dataGrid][0][number]"]').value, '55555');
+          assert.equal(component.element.querySelector('[name="data[dataGrid][0][number]"]').value, '55555');
 
           const clickEvent = new Event('click');
           const modalOverlay = component.refs.modalOverlay;
@@ -76,8 +74,7 @@ describe('DataGrid Component', () => {
           modalOverlay.dispatchEvent(clickEvent);
 
           setTimeout(() => {
-            const dialogWindowHeader = document.querySelector('[ref="dialogHeader"]');
-            assert.equal( !!dialogWindowHeader, true);
+            assert.equal(!!component.componentModal.dialog, true);
 
             const clickEvent = new Event('click');
             const btnForCleaningValues = document.querySelector('[ref="dialogYesButton"]');
@@ -151,7 +148,8 @@ describe('DataGrid Component', () => {
         },
         {
           make: '',
-          model: ''
+          model: '',
+          year: ''
         }
       ]);
     });
@@ -183,8 +181,8 @@ describe('DataGrid Component', () => {
             { name: 'Alex', age: 1 },
             { name: 'Bob',  age: 2 },
             { name: 'Conny', age: 3 },
-            { name: '' },
-            { name: '' }
+            { name: '', age: '' },
+            { name: '', age: '' }
           ]);
           done();
         }, done)
@@ -193,6 +191,24 @@ describe('DataGrid Component', () => {
     catch (err) {
       done(err);
     }
+  });
+
+  it('Should not cause setValue loops when logic within hidden component is set', function(done) {
+    Formio.createForm(document.createElement('div'), withLogic)
+      .then((form) => {
+        const datagrid = form.getComponent('dataGrid');
+        const spyFunc = sinon.spy(datagrid, 'checkComponentConditions');
+        const textField = form.getComponent('escalationId');
+        const select = form.getComponent('teamName');
+
+        textField.component.hidden = true;
+        select.setValue('preRiskAnalysis', { modified: true });
+
+        setTimeout(() => {
+          expect(spyFunc.callCount).to.be.lessThan(4);
+          done();
+        }, 1500);
+      });
   });
 
   describe('get minLength', () => {
@@ -268,6 +284,83 @@ describe('DataGrid Component', () => {
       expect(getGroupSizes.call(self)).to.deep.equal([1, 3, 10]);
     });
   });
+
+  it('Test "components" property and their context', (done) => {
+    const testComponentsData = (components, expectedData) => {
+      components.forEach((comp) => assert.deepEqual(
+        comp.data,
+        expectedData,
+        'Data of components inside DataGrid should be equal to row\'s data'
+      ));
+    };
+
+    Formio.createForm(document.createElement('div'), withConditionalFieldsAndValidations)
+      .then((form) => {
+        const rootText = form.getComponent(['text']);
+        rootText.setValue('Match', { modified: true });
+
+        setTimeout(() => {
+          const emptyRowData = {
+            rootTest: '',
+            rowTest: ''
+          };
+          const dataGrid = form.getComponent(['dataGrid']);
+
+          assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+          testComponentsData(dataGrid.components, emptyRowData);
+
+          const showTextFieldInsideDataGridRadio = form.getComponent(['radio']);
+          showTextFieldInsideDataGridRadio.setValue('show', { modified: true });
+
+          setTimeout(() => {
+            const rowData1 = { ...emptyRowData, radio1: '' };
+            const dataGridRowRadio = form.getComponent(['dataGrid', 0, 'radio1']);
+
+            assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+            testComponentsData(dataGrid.components, rowData1);
+            assert.equal(dataGridRowRadio.visible, true, 'Radio inside DataGrid should become visible');
+
+            dataGridRowRadio.setValue('dgShow', { modified: true });
+
+            setTimeout(() => {
+              const rowData2 =  {
+                ...emptyRowData,
+                radio1: 'dgShow',
+                rowShowShowTextfieldWhenDataGridRadioHasShowValue: ''
+              };
+              const dataGridRowConditionalField = form.getComponent(['dataGrid', 0, 'rowShowShowTextfieldWhenDataGridRadioHasShowValue']);
+
+              assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+              testComponentsData(dataGrid.components, rowData2);
+              assert.equal(dataGridRowConditionalField.visible, true, 'Conditional field inside DataGrid should become visible');
+
+              const rootTest = form.getComponent(['dataGrid', 0, 'rootTest']);
+              const rowTest = form.getComponent(['dataGrid', 0, 'rowTest']);
+
+              rootTest.setValue('Match', { modified: true });
+              rowTest.setValue('Match', { modified: true });
+
+              setTimeout(() => {
+                const rowData3 = {
+                  ...rowData2,
+                  rowTest: 'Match',
+                  rootTest: 'Match'
+                };
+
+                assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+                testComponentsData(dataGrid.components, rowData3);
+
+                form.checkAsyncValidity(null, true).then((valid) => {
+                  assert(valid, 'Form should be valid');
+                  done();
+                }).catch(done);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
 });
 
 describe('DataGrid Panels', () => {
@@ -300,10 +393,53 @@ describe('DataGrid Panels', () => {
   });
 });
 
-describe('Datagrid disabling', () => {
+describe('DataGrid disabling', () => {
   it('Child components should be disabled', () => {
     return Harness.testCreate(DataGridComponent, comp3).then((component) => {
       assert.equal(component.components.reduce((acc, child) => acc && child.parentDisabled, true), true);
     });
+  });
+});
+
+describe('DataGrid modal', () => {
+  it('Should be highlighted in red when invalid', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, {
+      display: 'form',
+      components: [modalWithRequiredFields]
+    })
+    .then((form) => {
+      const data = {
+        dataGrid: [
+          {
+            textField: '',
+            textArea: ''
+          }
+        ]
+      };
+
+      form.checkValidity(data, true, data);
+
+      setTimeout(() => {
+        Harness.testModalWrapperErrorClasses(form);
+
+        const validData = {
+          dataGrid: [
+            {
+              textField: 'Some text',
+              textArea: 'Mre text'
+            }
+          ]
+        };
+
+        form.setSubmission({ data: validData });
+
+        setTimeout(() => {
+          Harness.testModalWrapperErrorClasses(form, false);
+          done();
+        }, 200);
+      }, 200);
+    })
+    .catch(done);
   });
 });

@@ -16,7 +16,7 @@ export default class ComponentModal {
     this.isOpened = isOpened;
     this.component = component;
     this.element = element;
-    this.currentValue = fastCloneDeep(currentValue);
+    this.currentValue = fastCloneDeep(currentValue ?? this.component.getValue());
     this.dataLoaded = false;
     this.init();
   }
@@ -82,7 +82,7 @@ export default class ComponentModal {
   removeEventListeners() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
     this.component.removeEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
-    this.component.removeEventListener(this.refs.modalClose, 'click', this.closeModalListener);
+    this.component.removeEventListener(this.refs.modalClose, 'click', this.showDialogListener);
     this.component.removeEventListener(this.refs.modalSave, 'click', this.saveModalListener);
   }
 
@@ -90,7 +90,7 @@ export default class ComponentModal {
     this.removeEventListeners();
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
     this.component.addEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
-    this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalListener);
+    this.component.addEventListener(this.refs.modalClose, 'click', this.showDialogListener);
     this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalListener);
   }
 
@@ -104,12 +104,12 @@ export default class ComponentModal {
       currentValue = this.currentValue.data;
     }
 
-    return !_.isEqual(componentValue, currentValue);
+    return !_.isEqual(fastCloneDeep(componentValue), currentValue);
   }
 
   setOpenEventListener() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.loadRefs(this.element, {
+    this.component.loadRefs(this.refs.openModalWrapper ?? this.element, {
       'openModal': 'single',
     });
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
@@ -155,11 +155,10 @@ export default class ComponentModal {
 
   closeModalHandler(event) {
     event.preventDefault();
-    this.closeModal();
     if (!this.component.disabled) {
-      this.component.setValue(this.currentValue, { resetValue: true });
-      this.component.redraw();
+      this.component.setValue(_.cloneDeep(this.currentValue), { resetValue: true });
     }
+    this.closeModal();
   }
 
   showDialog() {
@@ -168,7 +167,7 @@ export default class ComponentModal {
       <h3 ref="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
       <div style="display:flex; justify-content: flex-end;">
         <button ref="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
-        <button ref="dialogYesButton" class="btn btn-primary">${this.component.t('Yes, delete it')}</button>
+        <button ref="dialogYesButton" class="btn btn-danger">${this.component.t('Yes, delete it')}</button>
       </div>
     `;
 
@@ -199,7 +198,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = fastCloneDeep(this.component.dataValue);
+    this.currentValue = fastCloneDeep(this.component.dataValue ?? this.component.getValue());
     this.closeModal();
   }
 }

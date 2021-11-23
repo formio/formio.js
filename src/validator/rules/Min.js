@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 const Rule = require('./Rule');
 
 module.exports = class Min extends Rule {
@@ -7,9 +5,12 @@ module.exports = class Min extends Rule {
 
   check(value) {
     const min = parseFloat(this.settings.limit);
-    if (Number.isNaN(min) || (!_.isNumber(value))) {
+    const parsedValue = parseFloat(value);
+
+    if (Number.isNaN(min) || Number.isNaN(parsedValue)) {
       return true;
     }
-    return parseFloat(value) >= min;
+
+    return parsedValue >= min;
   }
 };

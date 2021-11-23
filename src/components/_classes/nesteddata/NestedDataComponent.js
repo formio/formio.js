@@ -48,8 +48,43 @@ export default class NestedDataComponent extends NestedComponent {
 
       return result;
     }
+    if (_.isEmpty(value)) {
+      return '';
+    }
+    if (options?.modalPreview) {
+      delete options.modalPreview;
+      return this.getDataValueAsTable(value, options);
+    }
 
     return '[Complex Data]';
+  }
+
+  getDataValueAsTable(value, options) {
+    let result = (`
+      <table border="1" style="width:100%">
+        <tbody>
+    `);
+
+    this.components.forEach((component) => {
+      if (component.isInputComponent && component.visible && !component.skipInEmail) {
+        result += (`
+          <tr>
+            <th style="padding: 5px 10px;">${component.label}</th>
+            <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
+          </tr>
+        `);
+      }
+    }, {
+      ...options,
+      fromRoot: true,
+    });
+
+    result += (`
+        </tbody>
+      </table>
+    `);
+
+    return result;
   }
 
   everyComponent(fn, options) {

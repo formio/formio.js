@@ -1,3 +1,5 @@
+import Evaluator from '../../../utils/Evaluator';
+
 export default [
   {
     key: 'placeholder',
@@ -25,6 +27,17 @@ export default [
     calculateValue: 'value = data.disableAddingRemovingRows;',
   },
   {
+    type: 'checkbox',
+    label: 'Display EditGrid as Table',
+    key: 'displayAsTable',
+    tooltip: 'use Table Template',
+    weight: 1002,
+    input: false,
+    customConditional() {
+      return !Evaluator.noeval;
+    },
+  },
+  {
     weight: 1010,
     type: 'textarea',
     input: true,
@@ -33,7 +46,7 @@ export default [
     placeholder: 'show = ...',
     tooltip: 'Specify condition when Add Button should be displayed.',
     editor: 'ace',
-    as: 'js',
+    as: 'javascript',
     wysiwyg: {
       minLines: 3,
     },

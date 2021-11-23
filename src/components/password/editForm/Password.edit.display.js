@@ -1,5 +1,9 @@
 export default [
   {
+    ignore: true,
+    key: 'mask',
+  },
+  {
     key: 'inputMask',
     ignore: true
   },

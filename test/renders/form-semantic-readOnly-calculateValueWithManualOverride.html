@@ -1,0 +1,79 @@
+<div id="" class="field formio-component formio-component-form  formio-component-label-hidden" ref="component">
+  <div class="formio-form formio-read-only ui form" ref="webform" novalidate>
+    <div id="tabs" class="field formio-component formio-component-tabs formio-component-tabs " ref="component">
+      <div class="tab-container">
+        <div class="ui top attached tabular menu">
+          <a class="item active" role="presentation" ref="tabLink-tabs">Tab 1</a>
+          <a class="item" role="presentation" ref="tabLink-tabs">Tab 2</a>
+        </div>
+        <div role="tabpanel" class="ui bottom attached tab segment active" ref="tab-tabs""><div id=" checkbox" class="field form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
+          <div class="ui checkbox">
+            <input ref="input" id="checkbox" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0">
+            </input>
+            <label class="" for="checkbox">
+              <span>hide</span>
+            </label>
+          </div>
+          <div ref="messageContainer"></div>
+        </div>
+      </div>
+      <div role="tabpanel" class="ui bottom attached tab segment" ref="tab-tabs""><div id=" dataGrid" class="field form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid " ref="component">
+        <label class="" for="dataGrid-dataGrid">
+          grid
+        </label>
+        <table class="ui table datagrid-table
+    padded
+    ">
+          <thead>
+            <tr>
+              <th class="">
+                Label
+              </th>
+              <th class="">
+                Value
+              </th>
+            </tr>
+          </thead>
+          <tbody ref="datagrid-dataGrid-tbody">
+            <tr ref="datagrid-dataGrid-row">
+              <td ref="datagrid-dataGrid">
+                <div id="label" class="field form-group has-feedback formio-component formio-component-textfield formio-component-label  formio-component-label-hidden" ref="component">
+                  <div ref="element">
+                    <div class="ui input fluid ">
+                      <input ref="input" name="data[dataGrid][0][label]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="label-label"></input>
+                    </div>
+                  </div>
+                  <div ref="messageContainer"></div>
+                </div>
+              </td>
+              <td ref="datagrid-dataGrid">
+                <div id="value" class="field form-group has-feedback formio-component formio-component-textfield formio-component-value  formio-component-label-hidden" ref="component">
+                  <div ref="element">
+                    <div class="ui input fluid ">
+                      <input ref="input" name="data[dataGrid][0][value]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="value-value"></input>
+                    </div>
+                  </div>
+                  <div ref="messageContainer"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div ref="messageContainer"></div>
+      </div>
+    </div>
+  </div>
+  <div ref="messageContainer"></div>
+</div>
+<div id="submit" class="field form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+  <button ref="button" class="ui button primary " name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en" disabled="disabled">
+    Submit
+  </button>
+  <div ref="buttonMessageContainer">
+    <span class="help-block" ref="buttonMessage"></span>
+  </div>
+  <div ref="messageContainer"></div>
+</div>
+</div>
+<div ref="messageContainer"></div>
+</div>

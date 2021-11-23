@@ -1,5 +1,9 @@
 import Input from '../_classes/input/Input';
-import Choices from 'choices.js';
+
+let Choices;
+if (typeof window !== 'undefined') {
+  Choices = require('@formio/choices.js');
+}
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -18,7 +22,7 @@ export default class TagsComponent extends Input {
       title: 'Tags',
       icon: 'tags',
       group: 'advanced',
-      documentation: 'http://help.form.io/userguide/#tags',
+      documentation: '/userguide/#tags',
       weight: 30,
       schema: TagsComponent.schema()
     };
@@ -57,22 +61,36 @@ export default class TagsComponent extends Input {
     if (this.choices) {
       this.choices.destroy();
     }
+
+    if (!Choices) {
+      return;
+    }
+
+    const hasPlaceholder = !!this.component.placeholder;
+
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
       duplicateItemsAllowed: false,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
+      placeholder: hasPlaceholder,
+      placeholderValue: hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {
       const value = this.choices.input.value;
       const maxTagsNumber = this.component.maxTags;
       const valuesCount = this.choices.getValue(true).length;
+      const isRepeatedValue = this.choices.getValue(true).some(existingValue => existingValue.trim() === value.trim());
 
       if (value) {
         if (maxTagsNumber && valuesCount === maxTagsNumber) {
           this.choices.addItems = false;
+          this.choices.clearInput();
+        }
+        else if (isRepeatedValue) {
           this.choices.clearInput();
         }
         else {
@@ -114,7 +132,8 @@ export default class TagsComponent extends Input {
         if (typeof dataValue === 'string') {
           dataValue = dataValue.split(this.delimiter).filter(result => result);
         }
-        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
+        const value = Array.isArray(dataValue) ? dataValue : [dataValue];
+        this.choices.setValue(value.map((val) => this.sanitize(val, this.shouldSanitizeValue)));
       }
     }
     return changed;
@@ -141,5 +160,18 @@ export default class TagsComponent extends Input {
     if (this.refs.input && this.refs.input.length) {
       this.refs.input[0].parentNode.lastChild.focus();
     }
+  }
+
+  getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    const stringValue = value.toString();
+    return this.sanitize(stringValue, this.shouldSanitizeValue);
   }
 }

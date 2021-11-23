@@ -23,7 +23,7 @@
         Number
       </label>
       <div ref="element">
-        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value="1" id="number-number"></input>
+        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="decimal" value="1" id="number-number"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -39,7 +39,7 @@
     <div id="checkboxFalse" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxFalse " ref="component">
       <div class="form-check checkbox">
         <label class=" form-check-label">
-          <input ref="input" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0">
+          <input ref="input" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
           <span>Checkbox False</span>
           </input>
         </label>
@@ -49,7 +49,7 @@
     <div id="checkboxTrue" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxTrue " ref="component">
       <div class="form-check checkbox">
         <label class=" form-check-label">
-          <input ref="input" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true>
+          <input ref="input" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true aria-required="false">
           <span>Checkbox True</span>
           </input>
         </label>
@@ -62,20 +62,20 @@
       </label>
       <div class="input-group">
         <div class="checkbox" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="selectBoxes-one">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="one" checked=true id="selectBoxes-one">
+          <label class="control-label form-check-label label-position-right" for="-selectBoxes--one">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="one" checked=true id="-selectBoxes--one">
             <span>One</span>
           </label>
         </div>
         <div class="checkbox" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="selectBoxes-two">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="two" id="selectBoxes-two">
+          <label class="control-label form-check-label label-position-right" for="-selectBoxes--two">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="two" id="-selectBoxes--two">
             <span>Two</span>
           </label>
         </div>
         <div class="checkbox" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="selectBoxes-three">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="three" checked=true id="selectBoxes-three">
+          <label class="control-label form-check-label label-position-right" for="-selectBoxes--three">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="three" checked=true id="-selectBoxes--three">
             <span>Three</span>
           </label>
         </div>
@@ -88,20 +88,20 @@
       </label>
       <div class="input-group">
         <div class="radio" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="radio-one">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="one" id="radio-one">
+          <label class="control-label form-check-label label-position-right" for="-radio--one">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" value="one" id="-radio--one">
             <span>One</span>
           </label>
         </div>
         <div class="radio" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="radio-two">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="two" checked=true id="radio-two">
+          <label class="control-label form-check-label label-position-right" for="-radio--two">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" value="two" checked=true id="-radio--two">
             <span>Two</span>
           </label>
         </div>
         <div class="radio" ref="wrapper">
-          <label class="control-label form-check-label label-position-right" for="radio-three">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="three" id="radio-three">
+          <label class="control-label form-check-label label-position-right" for="-radio--three">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" value="three" id="-radio--three">
             <span>Three</span>
           </label>
         </div>
@@ -112,8 +112,8 @@
       <label class="control-label " for="select-select">
         Select
       </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en"></select>
-      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-required="false"></select>
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime " ref="component">
@@ -122,7 +122,7 @@
       </label>
       <div ref="element">
         <div class="input-group">
-          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-03T17:53:52.000Z" id="dateTime-dateTime"></input>
+          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-03" id="dateTime-dateTime"></input>
           <div class="input-group-addon" ref="suffix">
             <i ref="icon" class="fa fa-calendar" style=""></i>
           </div>
@@ -146,47 +146,47 @@
       <div class="row">
         <div class="form-group col col-xs-4">
           <label for="day-month" class="">Month</label>
-          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en">
-              <option value="">
+          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-required="false">
+              <option value=''>
               </option>
-              <option value="1">
+              <option value='1'>
                 January
               </option>
-              <option value="2">
+              <option value='2'>
                 February
               </option>
-              <option value="3">
+              <option value='3'>
                 March
               </option>
-              <option value="4">
+              <option value='4'>
                 April
               </option>
-              <option value="5">
+              <option value='5'>
                 May
               </option>
-              <option value="6">
+              <option value='6'>
                 June
               </option>
-              <option value="7">
+              <option value='7'>
                 July
               </option>
-              <option value="8">
+              <option value='8'>
                 August
               </option>
-              <option value="9">
+              <option value='9'>
                 September
               </option>
-              <option value="10">
+              <option value='10'>
                 October
               </option>
-              <option value="11">
+              <option value='11'>
                 November
               </option>
-              <option value="12">
+              <option value='12'>
                 December
               </option>
             </select>
-            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
           </div>
         </div>
         <div class="form-group col col-xs-3">
@@ -210,7 +210,7 @@
         Currency
       </label>
       <div ref="element">
-        <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" inputmode="numeric" value="$100.01" id="currency-currency"></input>
+        <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" inputmode="decimal" value="$100.01" id="currency-currency"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -250,13 +250,19 @@
         <thead>
           <tr>
             <th></th>
-            <th style="text-align: center;">A</th>
-            <th style="text-align: center;">B</th>
+            <th style="text-align: center;">
+              A
+            </th>
+            <th style="text-align: center;">
+              B
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>One</td>
+            <td>
+              One
+            </td>
             <td style="text-align: center;">
               <input type="radio" name="data[survey][one]" value="a" id="survey-one-a" ref="input">
             </td>
@@ -265,7 +271,9 @@
             </td>
           </tr>
           <tr>
-            <td>Two</td>
+            <td>
+              Two
+            </td>
             <td style="text-align: center;">
               <input type="radio" name="data[survey][two]" value="a" id="survey-two-a" ref="input">
             </td>
@@ -321,11 +329,11 @@
     </div>
     <div id="panel" class="formio-component formio-component-panel formio-component-panel " ref="component">
       <div class="panel panel-default">
-        <div class="panel-heading" ref="header">
+        <div class="panel-heading" role="button" aria-expanded="true" aria-controls="panel-panel" ref="header">
           <h4 class="mb-0 panel-title">
           </h4>
         </div>
-        <div class="panel-body" ref="nested-panel">
+        <div class="panel-body" ref="nested-panel" id="panel-panel">
           <div id="textField3" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField3 " ref="component">
             <label class="control-label " for="textField3-textField3">
               Text Field
@@ -425,7 +433,7 @@
             </th>
           </tr>
         </thead>
-        <tbody ref="datagrid-dataGrid-tbody">
+        <tbody ref="datagrid-dataGrid-tbody" data-key="datagrid-dataGrid">
           <tr ref="datagrid-dataGrid-row">
             <td ref="datagrid-dataGrid">
               <div id="textField7" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField7  formio-component-label-hidden" ref="component">

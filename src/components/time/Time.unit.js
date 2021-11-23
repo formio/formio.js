@@ -4,6 +4,7 @@ import TimeComponent from './Time';
 import {
   comp1,
   comp2,
+  comp3,
   timeForm2,
   timeForm,
 } from './fixtures';
@@ -27,7 +28,8 @@ describe('Time Component', () => {
       timeInput.dispatchEvent(inputEvent);
 
       setTimeout(() => {
-        assert.equal(component.dataValue, '10:0_ __');
+        assert.equal(timeInput.value, '10:0_ __');
+        assert.equal(component.dataValue, '10:00:00');
         timeInput.dispatchEvent(blurEvent);
 
         setTimeout(() => {
@@ -67,13 +69,18 @@ describe('Time Component', () => {
     const form = new Webform(formElement);
     form.setForm(timeForm2).then(() => {
       const component = form.components[0];
-      // eslint-disable-next-line no-debugger
-      debugger;
       Harness.setInputValue(component, 'data[time]', '89:19');
       setTimeout(() => {
         assert.equal(component.error.message, 'Invalid time', 'Should have an error');
         done();
       }, 650);
+    }).catch(done);
+  });
+
+  it('Should build a time component', (done) => {
+    Harness.testCreate(TimeComponent, comp3).then((time) => {
+      assert.deepEqual(time.dataValue, ['10:00:00', '11:00:00'], 'Should be set to default value');
+      done();
     }).catch(done);
   });
 });

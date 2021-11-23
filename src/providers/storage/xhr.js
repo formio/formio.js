@@ -1,5 +1,20 @@
 import NativePromise from 'native-promise-only';
 import _trim from 'lodash/trim';
+export const setXhrHeaders = (formio, xhr) => {
+  const { headers } = formio.options;
+  if (headers) {
+    const ValidHeaders = {
+      'Content-Disposition': true,
+      'Authorization': true,
+    };
+
+    for (const header in headers) {
+      if (ValidHeaders[header]) {
+        xhr.setRequestHeader(header, headers[header]);
+      }
+    }
+  }
+};
 const XHR = {
   trim(text) {
     return _trim(text, '/');
@@ -7,7 +22,7 @@ const XHR = {
   path(items) {
     return items.filter(item => !!item).map(XHR.trim).join('/');
   },
-  upload(formio, type, xhrCb, file, fileName, dir, progressCallback) {
+  upload(formio, type, xhrCb, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback) {
     return new NativePromise(((resolve, reject) => {
       // Send the pre response to sign the upload.
       const pre = new XMLHttpRequest();
@@ -29,6 +44,15 @@ const XHR = {
           if (typeof progressCallback === 'function') {
             xhr.upload.onprogress = progressCallback;
           }
+
+          if (typeof abortCallback === 'function') {
+            abortCallback(() => xhr.abort());
+          }
+
+          xhr.openAndSetHeaders = (...params) => {
+            xhr.open(...params);
+            setXhrHeaders(formio, xhr);
+          };
 
           // Fire on network error.
           xhr.onerror = (err) => {
@@ -74,7 +98,9 @@ const XHR = {
       pre.send(JSON.stringify({
         name: XHR.path([dir, fileName]),
         size: file.size,
-        type: file.type
+        type: file.type,
+        groupPermissions,
+        groupId,
       }));
     }));
   }

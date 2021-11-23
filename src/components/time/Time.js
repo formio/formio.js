@@ -1,5 +1,6 @@
 import moment from 'moment';
 import TextFieldComponent from '../textfield/TextField';
+import { getBrowserInfo } from '../../utils/utils';
 
 const defaultDataFormat = 'HH:mm:ss';
 
@@ -17,9 +18,11 @@ export default class TimeComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-
+    const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();
     this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
-    this.component.inputType = this.component.inputType || 'time';
+    this.component.inputType = isEdgeBrowser && edgeVersion <= 18
+      ? 'text'
+      : (this.component.inputType || 'time');
     this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
 
@@ -35,7 +38,7 @@ export default class TimeComponent extends TextFieldComponent {
       title: 'Time',
       icon: 'clock-o',
       group: 'advanced',
-      documentation: 'http://help.form.io/userguide/#time',
+      documentation: '/userguide/#time',
       weight: 55,
       schema: TimeComponent.schema(),
     };
@@ -63,7 +66,10 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get validationValue() {
-    return this.rawData || this.dataValue;
+    if (Array.isArray(this.rawData) && !this.rawData.length || !this.rawData) {
+      return this.dataValue;
+    }
+    return this.rawData;
   }
 
   get inputInfo() {
@@ -129,14 +135,12 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   setValueAt(index, value) {
-    if (value) {
-      this.setRawValue(this.getValueAsString(value), index);
-    }
+    this.setRawValue(value ? this.getValueAsString(value) : value, index);
     this.refs.input[index].value = this.getRawValue(index);
   }
 
   getStringAsValue(view) {
-    return view && this.component.inputType !=='text' ? moment(view, this.component.format).format(this.component.dataFormat) : view;
+    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
   }
 
   getValueAsString(value) {

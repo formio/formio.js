@@ -24,6 +24,8 @@
 }
 
 .component-btn-group {
+  display: flex;
+  flex-direction: row-reverse;
   position: absolute;
   right: 0;
   z-index: 1000;
@@ -33,6 +35,7 @@
 .builder-component {
   position: relative;
   min-height: 15px;
+  margin-bottom: 15px;
   .formio-component-htmlelement {
     border: dotted 2px #e8e8e8;
     [ref=html]:empty:before {
@@ -68,13 +71,15 @@
 
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-content,
-.formbuilder .formio-component-form {
+.formbuilder .formio-component-form,
+.formbuilder .formio-component-datasource {
   border: 2px dashed #ddd;
 }
 
 .formbuilder .formio-component-form,
-.formbuilder .formio-component-hidden {
-  height: 3em;
+.formbuilder .formio-component-hidden,
+.formbuilder .formio-component-datasource {
+  min-height: 3em;
   text-align: center;
   color: #aaa;
   padding-top: 0.5em;
@@ -122,12 +127,16 @@
   display: inherit;
 }
 
-.component-settings-button-paste {
+.component-settings .formio-dialog-content {
+  max-height: 100%;
+}
+
+.component-btn-group .btn.component-settings-button-paste {
   display: none;
 }
 
 .builder-paste-mode .component-settings-button-paste {
-  display: inherit;
+  display: inherit !important;
 }
 
 .wizard-page-label {
@@ -144,6 +153,11 @@
     position: sticky;
     top: 15px;
   }
+}
+
+.builder-sidebar_search {
+  margin-bottom: 10px;
+  appearance: auto;
 }
 
 .formio-wizard-builder-component-title {
@@ -177,10 +191,6 @@
   padding-bottom: 20px !important;
 }
 
-.component-settings .formio-dialog-content {
-  max-height: 100%;
-}
-
 .component-edit-container {
   height: auto;
   overflow: hidden;
@@ -206,10 +216,18 @@
 }
 
 .progress.pdf-progress {
-  height: 1rem;
+  height: 2rem;
 }
 
 .progress.pdf-progress .progress-bar {
-  font-size: 0.7rem;
-  line-height: 1rem;
+  font-size: 1rem;
+  line-height: 2rem;
+}
+
+.builder-sidebar.disabled {
+  .formcomponent {
+    cursor: not-allowed;
+    opacity: 0.65;
+    box-shadow: none;
+  }
 }

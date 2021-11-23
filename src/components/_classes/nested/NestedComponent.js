@@ -8,7 +8,8 @@ import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../
 export default class NestedComponent extends Field {
   static schema(...extend) {
     return Field.schema({
-      tree: false
+      tree: false,
+      lazyLoad: false,
     }, ...extend);
   }
 
@@ -33,17 +34,33 @@ export default class NestedComponent extends Field {
     return this._collapsed;
   }
 
+  collapse(value) {
+    const promise = this.redraw();
+    if (!value && !this.pristine) {
+      this.checkValidity(this.data, true);
+    }
+    return promise;
+  }
+
   set collapsed(value) {
     this._collapsed = value;
-    this.redraw();
+    this.collapse(value);
   }
 
   set visible(value) {
-    super.visible = value;
+    // DO NOT CALL super here.  There is an issue where clearOnHide was getting triggered with
+    // subcomponents because the "parentVisible" flag was set to false when it should really be
+    // set to true.
+    const visibilityChanged = this._visible !== value;
+    this._visible = value;
     const isVisible = this.visible;
     const forceShow = this.options.show && this.options.show[this.component.key];
     const forceHide = this.options.hide && this.options.hide[this.component.key];
     this.components.forEach(component => {
+      // Set the parent visibility first since we may have nested components within nested components
+      // and they need to be able to determine their visibility based on the parent visibility.
+      component.parentVisible = isVisible;
+
       const conditionallyVisible = component.conditionallyVisible();
       if (forceShow || conditionallyVisible) {
         component.visible = true;
@@ -55,8 +72,11 @@ export default class NestedComponent extends Field {
       if (!component.visible) {
         component.error = '';
       }
-      component.parentVisible = isVisible;
     });
+    if (visibilityChanged) {
+      this.clearOnHide();
+      this.redraw();
+    }
   }
 
   get visible() {
@@ -65,9 +85,7 @@ export default class NestedComponent extends Field {
 
   set parentVisible(value) {
     super.parentVisible = value;
-    this.components.forEach(component => {
-      component.parentVisible = this.visible;
-    });
+    this.components.forEach(component => component.parentVisible = this.visible);
   }
 
   get parentVisible() {
@@ -208,9 +226,15 @@ export default class NestedComponent extends Field {
     originalPath = originalPath || getStringFromComponentPath(path);
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
-    const [key, ...remainingPath] = path;
+    const newPath = _.clone(path);
+    let key = newPath.shift();
+    const remainingPath = newPath;
     let comp = null;
     let possibleComp = null;
+
+    if (_.isNumber(key)) {
+      key = remainingPath.shift();
+    }
 
     if (!_.isString(key)) {
       return comp;
@@ -296,7 +320,8 @@ export default class NestedComponent extends Field {
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
-    options.root = this.root || this;
+    options.root = options?.root || this.root || this;
+    options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
@@ -387,10 +412,16 @@ export default class NestedComponent extends Field {
     return comp;
   }
 
+  beforeFocus() {
+    if (this.parent && 'beforeFocus' in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+  }
+
   render(children) {
     // If already rendering, don't re-render.
     return super.render(children || this.renderTemplate(this.templateName, {
-      children: this.renderComponents(),
+      children: !this.visible ? '' : this.renderComponents(),
       nestedKey: this.nestedKey,
       collapsed: this.options.pdf ? false : this.collapsed,
     }));
@@ -422,6 +453,12 @@ export default class NestedComponent extends Field {
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
+      });
+      this.addEventListener(this.refs.header, 'keydown', (e) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+          e.preventDefault();
+          this.collapsed = !this.collapsed;
+        }
       });
     }
 
@@ -531,15 +568,21 @@ export default class NestedComponent extends Field {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
-    components = components || this.getComponents();
-    return components.reduce((valid, comp) => {
+    components = components && _.isArray(components) ? components : this.getComponents();
+    const isValid = components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
+
+    this.checkModal(isValid, this.isDirty);
+    return isValid;
   }
 
   checkConditions(data, flags, row) {
-    this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));
-    return super.checkConditions(data, flags, row);
+    // check conditions of parent component first, because it may influence on visibility of it's children
+    const check = super.checkConditions(data, flags, row);
+    //row data of parent component not always corresponds to row of nested components, use comp.data as row data for children instead
+    this.getComponents().forEach(comp => comp.checkConditions(data, flags, comp.data));
+    return check;
   }
 
   clearOnHide(show) {
@@ -605,10 +648,12 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    return this.getComponents().reduce(
+    const isValid = this.getComponents().reduce(
       (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
       super.checkValidity(data, dirty, row, silentCheck)
     );
+    this.checkModal(isValid, dirty);
+    return isValid;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
@@ -624,11 +669,26 @@ export default class NestedComponent extends Field {
     this.getComponents().forEach((comp) => comp.setPristine(pristine));
   }
 
+  get isPristine() {
+    return this.pristine && this.getComponents().every((c) => c.isPristine);
+  }
+
+  get isDirty() {
+    return this.dirty && this.getComponents().every((c) => c.isDirty);
+  }
+
   detach() {
     this.components.forEach(component => {
       component.detach();
     });
     super.detach();
+  }
+
+  clear() {
+    this.components.forEach(component => {
+      component.clear();
+    });
+    super.clear();
   }
 
   destroy() {
@@ -644,7 +704,9 @@ export default class NestedComponent extends Field {
 
   get errors() {
     const thisErrors = this.error ? [this.error] : [];
-    return this.getComponents().reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors);
+    return this.getComponents()
+      .reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors)
+      .filter(err => err.level !== 'hidden');
   }
 
   getValue() {
@@ -652,8 +714,8 @@ export default class NestedComponent extends Field {
   }
 
   resetValue() {
+    super.resetValue();
     this.getComponents().forEach((comp) => comp.resetValue());
-    this.unset();
     this.setPristine(true);
   }
 
@@ -672,7 +734,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);
     }
-    else if (!this.rootPristine || component.visible) {
+    else if ((!this.rootPristine || component.visible) && component.shouldAddDefaultValue) {
       flags.noValidate = !flags.dirty;
       flags.resetValue = true;
       return component.setValue(component.defaultValue, flags);
@@ -686,5 +748,9 @@ export default class NestedComponent extends Field {
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);
+  }
+
+  get lazyLoad() {
+    return this.component.lazyLoad ?? false;
   }
 }

@@ -7,6 +7,7 @@
       {% } %}
       value="{{ ctx.displayValue }}"
       autocomplete="off"
+      aria-label="{{ctx.t('autocomplete')}}"
     >
     {% if (!ctx.component.disableClearIcon) { %}
       <i

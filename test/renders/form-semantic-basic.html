@@ -41,9 +41,7 @@
     <div id="everything" class="field form-group has-feedback formio-component formio-component-textfield formio-component-everything formio-component-multiple CustomCssClass required" ref="component">
       <label class=" field-required" for="everything-everything">
         Everything
-        <span data-tooltip="Tooltip" data-position="right center">
-        <i class="fa fa-question-circle"></i>
-      </span>
+        <i ref="tooltip" class="fa fa-question-circle text-muted" data-tooltip="Tooltip"></i>
       </label>
       <table class="ui celled table">
         <tbody>
@@ -81,7 +79,7 @@
       </label>
       <div ref="element">
         <div class="ui input fluid ">
-          <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value="" id="number-number"></input>
+          <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="decimal" value="" id="number-number"></input>
         </div>
       </div>
       <div ref="messageContainer"></div>
@@ -125,24 +123,24 @@
       <div class="fields grouped">
         <div class="field">
           <div class="ui  checkbox" ref="wrapper">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="one" id="selectBoxes-one">
-            <label class="" for="selectBoxes-one">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="one" id="-selectBoxes--one">
+            <label class="" for="-selectBoxes--one">
               <span>One</span>
             </label>
           </div>
         </div>
         <div class="field">
           <div class="ui  checkbox" ref="wrapper">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="two" id="selectBoxes-two">
-            <label class="" for="selectBoxes-two">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="two" id="-selectBoxes--two">
+            <label class="" for="-selectBoxes--two">
               <span>Two</span>
             </label>
           </div>
         </div>
         <div class="field">
           <div class="ui  checkbox" ref="wrapper">
-            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="three" id="selectBoxes-three">
-            <label class="" for="selectBoxes-three">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="three" id="-selectBoxes--three">
+            <label class="" for="-selectBoxes--three">
               <span>Three</span>
             </label>
           </div>
@@ -165,24 +163,24 @@
       <div class="fields grouped">
         <div class="field">
           <div class="ui radio checkbox" ref="wrapper">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="one" id="radio-one">
-            <label class="" for="radio-one">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" value="one" id="-radio--one">
+            <label class="" for="-radio--one">
               <span>One</span>
             </label>
           </div>
         </div>
         <div class="field">
           <div class="ui radio checkbox" ref="wrapper">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="two" id="radio-two">
-            <label class="" for="radio-two">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" value="two" id="-radio--two">
+            <label class="" for="-radio--two">
               <span>Two</span>
             </label>
           </div>
         </div>
         <div class="field">
           <div class="ui radio checkbox" ref="wrapper">
-            <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="three" id="radio-three">
-            <label class="" for="radio-three">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" value="three" id="-radio--three">
+            <label class="" for="-radio--three">
               <span>Three</span>
             </label>
           </div>
@@ -197,24 +195,24 @@
       <div class="fields inline">
         <div class="field">
           <div class="ui radio checkbox" ref="wrapper">
-            <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="one" id="radioInline-one">
-            <label class="" for="radioInline-one">
+            <input ref="input" name="data[radioInline][-radioInline]" type="radio" class="form-check-input" lang="en" value="one" id="-radioInline--one">
+            <label class="" for="-radioInline--one">
               <span>One</span>
             </label>
           </div>
         </div>
         <div class="field">
           <div class="ui radio checkbox" ref="wrapper">
-            <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="two" id="radioInline-two">
-            <label class="" for="radioInline-two">
+            <input ref="input" name="data[radioInline][-radioInline]" type="radio" class="form-check-input" lang="en" value="two" id="-radioInline--two">
+            <label class="" for="-radioInline--two">
               <span>Two</span>
             </label>
           </div>
         </div>
         <div class="field">
           <div class="ui radio checkbox" ref="wrapper">
-            <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="three" id="radioInline-three">
-            <label class="" for="radioInline-three">
+            <input ref="input" name="data[radioInline][-radioInline]" type="radio" class="form-check-input" lang="en" value="three" id="-radioInline--three">
+            <label class="" for="-radioInline--three">
               <span>Three</span>
             </label>
           </div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import * as fs from 'fs';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
@@ -820,5 +821,50 @@ describe('Util Tests', () => {
       const unescapedString = utils.unescapeHTML('&lt;p&gt;ampersand &amp; &#34;quotes&#34; test&lt;&#47;p&gt;');
       expect(unescapedString).to.equal('<p>ampersand & "quotes" test</p>');
     });
+  });
+
+  describe('getCurrencyAffixes', () => {
+    it('USD en', (done) => {
+      try {
+        const affixes = utils.getCurrencyAffixes({
+          currency: 'USD',
+          decimalLimit: 2,
+          decimalSeparator: '.',
+          lang: 'en',
+        });
+        const expectedResult = {
+          prefix: '$',
+          suffix: '',
+        };
+        expect(affixes.prefix).to.equal(expectedResult.prefix);
+        expect(affixes.suffix).to.equal(expectedResult.suffix);
+        done();
+      }
+      catch (err) {
+        done(err);
+      }
+    });
+/*
+    it('USD ar-SA', (done) => {
+      try {
+        const affixes2 = utils.getCurrencyAffixes({
+          currency: 'USD',
+          decimalLimit: 2,
+          decimalSeparator: '٫',
+          lang: 'ar-SA',
+        });
+        const expectedResult = {
+          prefix: '',
+          suffix: ' US$',
+        };
+        expect(affixes2.prefix).to.equal(expectedResult.prefix);
+        expect(affixes2.suffix).to.equal(expectedResult.suffix);
+        done();
+      }
+      catch (err) {
+        done(err);
+      }
+    });
+*/
   });
 });

@@ -25,15 +25,26 @@
   {% if page.template == nil %}
     <link href="https://bootswatch.com/4/cosmo/bootstrap.min.css" rel="stylesheet">
   {% endif %}
-  <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% if page.noFormio == nil %}
+    <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% endif %}
   <script src="https://cdn.form.io/ace/ace.js"></script>
   <script src="{{ site.baseurl }}/app/jquery/jquery.slim.min.js"></script>
   <script src="{{ site.baseurl }}/app/bootstrap/js/bootstrap.min.js"></script>
-  <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% if page.noFormio == nil %}
+    <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% endif %}
   {% if page.contrib %}
     <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}
-  <script type="text/javascript">Formio.icons = 'fontawesome';</script>
+  <script type="text/javascript">
+    window.onload = function() {
+      if (Formio) {
+        Formio.icons = 'fontawesome';
+        document.getElementById('renderer-version').innerHTML = Formio.version;
+      }
+    };
+  </script>
 </head>
 <body>
 <a href="https://github.com/formio/formio.js"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:3000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
@@ -67,12 +78,9 @@
 <hr />
 <div>
   <h4 class="text-center text-muted">powered by <img src="{{ site.baseurl }}/app/logo.png" class="mr-2" style="height: 1.2em;" /></h4>
-  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2019. All rights reserved</p>
+  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2021. All rights reserved</p>
 </div>
 <p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
-<script type="text/javascript">
-  document.getElementById('renderer-version').innerHTML = Formio.version;
-</script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>

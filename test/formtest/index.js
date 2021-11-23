@@ -23,6 +23,21 @@ const columnsForm = require('./columnsForm.json');
 const calculateZeroValue = require('./calculateZeroValue.json');
 const formWithEditGridModalDrafts = require('./editGridModalDraftsTest.json');
 const formWithBlurValidationInsidePanel = require('./blurValidationInsidePanel.json');
+const modalEditComponents = require('./modalEditComponents.json');
+const calculatedNotPersistentValue = require('./calculatedNotPersistentValue.json');
+const calculateValueInEditingMode = require('./calculateValueInEditingMode.json');
+const initiallyCollapsedPanel = require('./initiallyCollapsedPanel.json');
+const multipleTextareaInsideConditionalComponent = require('./multipleTextareaInsideConditionalComponent.json');
+const formComponentWithConditionalRenderingForm = require('./formComponentWithConditionalRenderingForm.json');
+const disabledNestedForm = require('./disabledNestedForm.json');
+const propertyActions = require('./propertyActions.json');
+const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedForm.json');
+const formWithDateTimeComponents = require('./formWithDateTimeComponents');
+const formWithCollapsedPanel = require('./formWithCollapsedPanel.json');
+const formWithCustomFormatDate = require('./formWithCustomFormatDate.json');
+const wizardWithHiddenPanel = require('./wizardWithHiddenPanel.json');
+const wizardWithSimpleConditionalPage = require('./wizardWithSimpleConditionalPage.json');
+const wizardWithTooltip = require('./wizardWithTooltip.json');
 
 module.exports = {
   advanced,
@@ -49,5 +64,20 @@ module.exports = {
   formWithCalculatedValueWithoutOverriding,
   formWithTimeComponent,
   formWithEditGridModalDrafts,
-  formWithBlurValidationInsidePanel
+  formWithBlurValidationInsidePanel,
+  modalEditComponents,
+  calculatedNotPersistentValue,
+  calculateValueInEditingMode,
+  initiallyCollapsedPanel,
+  multipleTextareaInsideConditionalComponent,
+  formComponentWithConditionalRenderingForm,
+  disabledNestedForm,
+  propertyActions,
+  formWithEditGridAndNestedDraftModalRow,
+  formWithDateTimeComponents,
+  formWithCollapsedPanel,
+  formWithCustomFormatDate,
+  wizardWithHiddenPanel,
+  wizardWithSimpleConditionalPage,
+  wizardWithTooltip,
 };

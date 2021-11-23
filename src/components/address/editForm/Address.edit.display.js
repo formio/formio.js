@@ -1,9 +1,5 @@
 export default [
   {
-    key: 'labelPosition',
-    ignore: true,
-  },
-  {
     weight: 20,
     type: 'checkbox',
     input: true,
@@ -17,8 +13,8 @@ export default [
     type: 'textfield',
     input: true,
     key: 'switchToManualModeLabel',
-    label: 'Switch To Matual Mode Label',
-    placeholder: 'Switch To Matual Mode Label',
+    label: 'Switch To Manual Mode Label',
+    placeholder: 'Switch To Manual Mode Label',
     tooltip: 'The label for the checkbox used to switch to manual mode.',
     validate: {
       required: true,

@@ -1,0 +1,46 @@
+<div class="formio-form">
+  <div style="position: relative;">
+    <nav aria-label="navigation" id="wizard-page1-header" ref="wizard-page1-header">
+      <div class="ui steps">
+        <a class=" active step" ref="wizard-page1-link">
+          <div class="content">
+            <div class="title">
+              Page 1 title
+              <span data-tooltip="tooltip for page 1" data-position="right center">
+        <i class="fa fa-question-circle"></i>
+        </span>
+            </div>
+          </div>
+        </a>
+        <a class=" step" ref="wizard-page1-link">
+          <div class="content">
+            <div class="title">
+              Page 2 title
+            </div>
+          </div>
+        </a>
+      </div>
+    </nav>
+    <div class="wizard-page" ref="wizard-page1">
+      <div id="number" class="field form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
+        <label class="" for="number-number">
+          Number
+        </label>
+        <div ref="element">
+          <div class="ui input fluid ">
+            <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="decimal" value="" id="number-number"></input>
+          </div>
+        </div>
+        <div ref="messageContainer"></div>
+      </div>
+    </div>
+    <div class="ui horizontal list" id="wizard-page1-nav">
+      <div class="item">
+        <button class="ui button secondary btn-wizard-nav-cancel" ref="wizard-page1-cancel">Cancel</button>
+      </div>
+      <div class="item">
+        <button class="ui button primary btn-wizard-nav-next" ref="wizard-page1-next">Next</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,8 @@
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { flattenComponents } from '../../utils/utils';
+import { eachComponent } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -26,10 +27,15 @@ export default class ButtonComponent extends Field {
       title: 'Button',
       group: 'basic',
       icon: 'stop',
-      documentation: 'http://help.form.io/userguide/#button',
+      documentation: '/userguide/#button',
       weight: 110,
       schema: ButtonComponent.schema()
     };
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.filesUploading = [];
   }
 
   get defaultSchema() {
@@ -51,7 +57,7 @@ export default class ButtonComponent extends Field {
     if (this.component.customClass) {
       info.attr.class += ` ${this.component.customClass}`;
     }
-    info.content = this.t(this.component.label);
+    info.content = this.t(this.component.label, { _userInput: true });
     return info;
   }
 
@@ -139,7 +145,7 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
       this.on('submitError', (message) => {
-        const resultMessage = _.isString(message) ? message : this.t(this.errorMessage('error'));
+        const resultMessage = _.isString(message) ? this.t(message) : this.t(this.errorMessage('submitError'));
         this.loading = false;
         this.disabled = false;
         this.hasError = true;
@@ -149,6 +155,22 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
+
+      this.on('fileUploadingStart', (filePromise) => {
+        this.filesUploading.push(filePromise);
+        this.disabled = true;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
+
+      this.on('fileUploadingEnd', (filePromise) => {
+        const index = this.filesUploading.indexOf(filePromise);
+        if (index !== -1) {
+          this.filesUploading.splice(index, 1);
+        }
+        this.disabled = this.shouldDisabled ? true : false;
+        this.setDisabled(this.refs.button, this.disabled);
+      }, true);
+
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         if (isValid) {
@@ -167,7 +189,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
-        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
+        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('submitError')));
       };
     }
 
@@ -183,13 +205,15 @@ export default class ButtonComponent extends Field {
 
     this.on('change', (value, flags) => {
       let isValid = value.isValid;
+      const isSilent = flags && flags.silent;
       //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
       if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
         isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
         flags.rootValidity = isValid;
       }
       this.loading = false;
-      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !isValid);
+      this.isDisabledOnInvalid = this.component.disableOnInvalid && (isSilent || !isValid);
+      this.disabled = this.shouldDisabled;
       this.setDisabled(this.refs.button, this.disabled);
 
       if (onChange) {
@@ -205,9 +229,24 @@ export default class ButtonComponent extends Field {
       }
     }, true);
 
+    if (this.component.saveOnEnter) {
+      this.root.addEventListener(this.root.element, 'keyup', (event) => {
+        if (event.keyCode === 13) {
+          this.onClick.call(this, event);
+        }
+      });
+    }
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
+    this.addEventListener(this.refs.buttonMessageContainer, 'click', () => {
+      if (this.refs.buttonMessageContainer.classList.contains('has-error')) {
+        if (this.root && this.root.alert) {
+          this.scrollIntoView(this.root.alert);
+        }
+      }
+    });
 
     this.disabled = this.shouldDisabled;
+    this.setDisabled(this.refs.button, this.disabled);
 
     function getUrlParameter(name) {
       name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
@@ -228,6 +267,10 @@ export default class ButtonComponent extends Field {
     }
   }
 
+  get shouldDisabled() {
+    return super.shouldDisabled || !!this.filesUploading?.length || this.isDisabledOnInvalid;
+  }
+
   attach(element) {
     this.loadRefs(element, {
       button: 'single',
@@ -245,6 +288,7 @@ export default class ButtonComponent extends Field {
     if (element && this.refs.button) {
       this.removeShortcut(this.refs.button);
     }
+    super.detach();
   }
 
   onClick(event) {
@@ -282,22 +326,22 @@ export default class ButtonComponent extends Field {
       case 'custom': {
         // Get the FormioForm at the root of this component's tree
         const form = this.getRoot();
-        // Get the form's flattened schema components
-        const flattened = flattenComponents(form.component.components, true);
-        // Create object containing the corresponding HTML element components
+
+        const flattened = {};
         const components = {};
-        _.each(flattened, (component, key) => {
-          const element = form.getComponent(key);
-          if (element) {
-            components[key] = element;
-          }
-        });
+
+        eachComponent(form.components, (component, path) => {
+          flattened[path] = component.component;
+          components[component.component.key] = component;
+        }, true);
 
         this.evaluate(this.component.custom, {
           form,
           flattened,
           components
         });
+
+        this.triggerChange();
         break;
       }
       case 'url':
@@ -351,11 +395,14 @@ export default class ButtonComponent extends Field {
     let params = {
       response_type: 'code',
       client_id: settings.clientId,
-      redirect_uri: window.location.origin || `${window.location.protocol}//${window.location.host}`,
+      redirect_uri: settings.redirectURI || window.location.origin || `${window.location.protocol}//${window.location.host}`,
       state: settings.state,
       scope: settings.scope
     };
     /*eslint-enable camelcase */
+
+    // Needs for the correct redirection URI for the OpenID
+    const originalRedirectUri = params.redirect_uri;
 
     // Make display optional.
     if (settings.display) {
@@ -366,7 +413,8 @@ export default class ButtonComponent extends Field {
       return `${key}=${encodeURIComponent(params[key])}`;
     }).join('&');
 
-    const url = `${settings.authURI}?${params}`;
+    const separator = settings.authURI.indexOf('?') !== -1 ? '&' : '?';
+    const url = `${settings.authURI}${separator}${params}`;
     const popup = window.open(url, settings.provider, 'width=1020,height=618');
 
     const interval = setInterval(() => {
@@ -391,17 +439,23 @@ export default class ButtonComponent extends Field {
             return;
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
-          let requestPromise = Promise.resolve();
+          let requestPromise = NativePromise.resolve();
+
           if (_.has(this, 'root.form.config.oauth') && this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;
-            params.redirectURI = window.location.origin;
+            params.redirectURI = originalRedirectUri;
+
+            // Needs for the exclude oAuth Actions that not related to this button
+            params.triggeredBy = this.key;
             requestPromise = this.root.formio.makeRequest('oauth', `${this.root.formio.projectUrl}/oauth2`, 'POST', params);
           }
           else {
             const submission = { data: {}, oauth: {} };
             submission.oauth[settings.provider] = params;
-            submission.oauth[settings.provider].redirectURI = window.location.origin
-              || `${window.location.protocol}//${window.location.host}`;
+            submission.oauth[settings.provider].redirectURI = originalRedirectUri;
+
+            // Needs for the exclude oAuth Actions that not related to this button
+            submission.oauth[settings.provider].triggeredBy = this.key;
             requestPromise = this.root.formio.saveSubmission(submission);
           }
           requestPromise.then((result) => {
@@ -433,11 +487,17 @@ export default class ButtonComponent extends Field {
     if (!this.root) {
       return;
     }
-    const recaptchaComponent = this.root.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
+
+    let recaptchaComponent;
+
+    this.root.everyComponent((component)=> {
+      if ( component.component.type === 'recaptcha' &&
         component.component.eventType === 'buttonClick' &&
-        component.component.buttonKey === this.component.key;
+        component.component.buttonKey === this.component.key) {
+          recaptchaComponent = component;
+        }
     });
+
     if (recaptchaComponent) {
       recaptchaComponent.verify(`${this.component.key}Click`);
     }

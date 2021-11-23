@@ -1,6 +1,6 @@
 /*globals grecaptcha*/
 import Component from '../_classes/component/Component';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import _get from 'lodash/get';
 import NativePromise from 'native-promise-only';
 
@@ -18,13 +18,14 @@ export default class ReCaptchaComponent extends Component {
       title: 'reCAPTCHA',
       group: 'premium',
       icon: 'refresh',
-      documentation: 'http://help.form.io/userguide/#recaptcha',
+      documentation: '/userguide/#recaptcha',
       weight: 40,
       schema: ReCaptchaComponent.schema()
     };
   }
 
   render() {
+    this.recaptchaResult = null;
     if (this.builderMode) {
       return super.render('reCAPTCHA');
     }
@@ -74,11 +75,14 @@ export default class ReCaptchaComponent extends Component {
                   action: actionName
                 })
                 .then((token) => {
-                  return this.sendVerificationRequest(token);
-                })
-                .then(verificationResult => {
-                  this.setValue(verificationResult);
-                  return resolve(verificationResult);
+                  return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {
+                    this.recaptchaResult = {
+                      ...verificationResult,
+                      token,
+                    };
+                    this.updateValue(this.recaptchaResult);
+                    return resolve(verificationResult);
+                  });
                 });
             });
           })
@@ -98,16 +102,41 @@ export default class ReCaptchaComponent extends Component {
   }
 
   sendVerificationRequest(token) {
-    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`);
+    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)
+      .then((verificationResult) => ({ verificationResult, token }));
   }
 
-  setValue(value) {
-    const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    return changed;
+  checkComponentValidity(data, dirty, row, options = {}) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    const { async = false } = options;
+
+    // Verification could be async only
+    if (!async) {
+      return super.checkComponentValidity(data, dirty, row, options);
+    }
+
+    const componentData = row[this.component.key];
+    if (!componentData || !componentData.token) {
+      this.setCustomValidity('ReCAPTCHA: Token is not specified in submission');
+      return NativePromise.resolve(false);
+    }
+
+    if (!componentData.success) {
+      this.setCustomValidity('ReCAPTCHA: Token validation error');
+      return NativePromise.resolve(false);
+    }
+
+    return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))
+      .then((success) => success)
+      .catch((err) => {
+        this.setCustomValidity(err.message || err);
+        return false;
+      });
   }
 
-  getValue() {
-    return this.dataValue;
+  normalizeValue(newValue) {
+    // If a recaptcha result has already been established, then do not allow it to be reset.
+    return this.recaptchaResult ? this.recaptchaResult : newValue;
   }
 }

@@ -1,6 +1,7 @@
 import Input from '../_classes/input/Input';
-import { conformToMask } from 'vanilla-text-mask';
+import { conformToMask } from '@formio/vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
+import NativePromise from 'native-promise-only';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -12,8 +13,10 @@ export default class TextFieldComponent extends Input {
       inputType: 'text',
       inputFormat: 'plain',
       inputMask: '',
+      displayMask: '',
       tableView: true,
       spellcheck: true,
+      truncateMultipleSpaces: false,
       validate: {
         minLength: '',
         maxLength: '',
@@ -27,7 +30,7 @@ export default class TextFieldComponent extends Input {
       title: 'Text Field',
       icon: 'terminal',
       group: 'basic',
-      documentation: 'http://help.form.io/userguide/#textfield',
+      documentation: '/userguide/#textfield',
       weight: 0,
       schema: TextFieldComponent.schema()
     };
@@ -57,6 +60,28 @@ export default class TextFieldComponent extends Input {
 
   get emptyValue() {
     return '';
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+
+    const timezone = (this.component.widget?.timezone || this.options.timezone);
+
+    if (this.component.widget?.type === 'calendar') {
+      this.component.widget = {
+        ...this.component.widget,
+        readOnly: this.options.readOnly,
+        timezone,
+        locale: this.options.language,
+      };
+    }
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      valueMaskInput: 'single',
+    });
+    return super.attach(element);
   }
 
   /**
@@ -118,12 +143,19 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
-      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask)).conformedValue;
+      const placeholderChar = this.placeholderChar;
+      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
       maskInput.value = value.maskName;
     }
     else {
       return super.setValueAt(index, textValue, flags);
     }
+  }
+
+  unmaskValue(value, format = this.component.displayMask) {
+    const mask = FormioUtils.getInputMask(format, this.placeholderChar);
+
+    return FormioUtils.unmaskValue(value, mask, this.placeholderChar);
   }
 
   /**
@@ -134,7 +166,27 @@ export default class TextFieldComponent extends Input {
    */
   getValueAt(index) {
     if (!this.isMultipleMasksField) {
-      return super.getValueAt(index);
+      const value = super.getValueAt(index);
+      const valueMask = this.component.inputMask;
+      const displayMask = this.component.displayMask;
+
+      // If the input has only the valueMask or the displayMask is the same as the valueMask,
+      // just return the value which is already formatted
+      if (valueMask && !displayMask || displayMask === valueMask) {
+        return value;
+      }
+
+      // If there is only the displayMask, return the raw (unmasked) value
+      if (displayMask && !valueMask) {
+        return this.unmaskValue(value, displayMask);
+      }
+
+      if (this.refs.valueMaskInput?.mask) {
+        this.refs.valueMaskInput.mask.textMaskInputElement.update(value);
+        return this.refs.valueMaskInput?.value;
+      }
+
+      return value;
     }
     const textInput = this.refs.mask ? this.refs.mask[index] : null;
     const maskInput = this.refs.select ? this.refs.select[index]: null;
@@ -144,10 +196,43 @@ export default class TextFieldComponent extends Input {
     };
   }
 
+  isHtmlRenderMode() {
+    return super.isHtmlRenderMode() ||
+      ((this.options.readOnly || this.disabled) &&
+      this.component.inputFormat === 'html' &&
+      this.type === 'textfield');
+  }
+
   isEmpty(value = this.dataValue) {
     if (!this.isMultipleMasksField) {
       return super.isEmpty((value || '').toString().trim());
     }
     return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
+  }
+
+  truncateMultipleSpaces(value) {
+    if (value) {
+      return value.trim().replace(/\s{2,}/g, ' ');
+    }
+    return value;
+  }
+
+  get validationValue() {
+    const value = super.validationValue;
+    if (value && this.component.truncateMultipleSpaces) {
+      return this.truncateMultipleSpaces(value);
+    }
+    return value;
+  }
+
+  beforeSubmit() {
+    let value = this.dataValue;
+
+    if (!this.component.truncateMultipleSpaces || !value) {
+      return NativePromise.resolve(value);
+    }
+    value = this.truncateMultipleSpaces(value);
+    this.dataValue = value;
+    return NativePromise.resolve(value).then(() => super.beforeSubmit());
   }
 }

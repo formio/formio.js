@@ -1,6 +1,7 @@
 import Multivalue from '../multivalue/Multivalue';
 import { delay, convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -25,8 +26,12 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
+    if (this.component.inputMode) {
+      attr.inputmode = this.component.inputMode;
+    }
+
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder);
+      attr.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
     if (this.component.tabindex) {
@@ -35,6 +40,10 @@ export default class Input extends Multivalue {
 
     if (this.disabled) {
       attr.disabled = 'disabled';
+    }
+
+    if (this.component.autocomplete) {
+      attr.autocomplete = this.component.autocomplete;
     }
 
     _.defaults(attr, this.component.attributes);
@@ -69,7 +78,8 @@ export default class Input extends Multivalue {
   }
 
   setInputMask(input, inputMask) {
-    return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
+    const mask = inputMask || this.component.displayMask || this.component.inputMask;
+    return super.setInputMask(input, mask, !this.component.placeholder);
   }
 
   getMaskOptions() {
@@ -81,7 +91,7 @@ export default class Input extends Multivalue {
   }
 
   getWordCount(value) {
-    return value.trim().split(/\s+/).length;
+    return !value ? 0 : value.trim().split(/\s+/).length;
   }
 
   get remainingWords() {
@@ -90,18 +100,11 @@ export default class Input extends Multivalue {
     return maxWords - wordCount;
   }
 
-  renderElement(value, index) {
-    // Double quotes cause the input value to close so replace them with html quote char.
-    if (value && typeof value === 'string') {
-      value = value.replace(/"/g, '&quot;');
-    }
-    const info = this.inputInfo;
-    info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)));
-    if (this.isMultipleMasksField) {
-      info.attr.class += ' formio-multiple-mask-input';
-    }
-    // This should be in the calendar widget but it doesn't have access to renderTemplate.
+  get prefix() {
+    return this.component.prefix;
+  }
+
+  get suffix() {
     if (this.component.widget && this.component.widget.type === 'calendar') {
       const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
@@ -112,8 +115,28 @@ export default class Input extends Multivalue {
       }).trim();
       if (this.component.prefix !== calendarIcon) {
         // converting string to HTML markup to render correctly DateTime component in portal.form.io
-        this.component.suffix = convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
+        return convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
       }
+    }
+    return this.component.suffix;
+  }
+
+  renderElement(value, index) {
+    // Double quotes cause the input value to close so replace them with html quote char.
+    if (value && typeof value === 'string') {
+      value = value.replace(/"/g, '&quot;');
+    }
+    const info = this.inputInfo;
+    info.attr = info.attr || {};
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)))
+      .replace(/"/g, '&quot;');
+
+    const valueMask = this.component.inputMask;
+    const displayMask = this.component.displayMask;
+    const hasDifferentDisplayAndSaveFormats = valueMask && displayMask && valueMask !== displayMask;
+
+    if (this.isMultipleMasksField) {
+      info.attr.class += ' formio-multiple-mask-input';
     }
 
     return this.isMultipleMasksField
@@ -122,12 +145,15 @@ export default class Input extends Multivalue {
         value,
         index,
         selectOptions: this.getMaskOptions() || [],
-      })
+      }, this.isHtmlRenderMode() ? 'html' : null)
       : this.renderTemplate('input', {
+        prefix: this.prefix,
+        suffix: this.suffix,
         input: info,
         value: this.formatValue(this.parseValue(value)),
+        hasValueMaskInput: hasDifferentDisplayAndSaveFormats,
         index
-      });
+      }, this.isHtmlRenderMode() ? 'html' : null);
   }
 
   setCounter(type, element, count, max) {
@@ -207,19 +233,16 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  getValueAsString(value, options) {
-    return super.getValueAsString(this.getWidgetValueAsString(value, options), options);
-  }
-
   attachElement(element, index) {
     super.attachElement(element, index);
     if (element.widget) {
       element.widget.destroy();
     }
     // Attach the widget.
+    let promise = NativePromise.resolve();
     element.widget = this.createWidget(index);
     if (element.widget) {
-      element.widget.attach(element);
+      promise = element.widget.attach(element);
       if (this.refs.prefix && this.refs.prefix[index]) {
         element.widget.addPrefix(this.refs.prefix[index]);
       }
@@ -241,6 +264,7 @@ export default class Input extends Multivalue {
         }
       });
     }
+    return promise;
   }
 
   /**
@@ -259,14 +283,18 @@ export default class Input extends Multivalue {
       type: this.component.widget
     } : this.component.widget;
 
+    if (this.root?.shadowRoot) {
+      settings.shadowRoot = this.root?.shadowRoot;
+    }
+
     // Make sure we have a widget.
     if (!Widgets.hasOwnProperty(settings.type)) {
       return null;
     }
 
     // Create the widget.
-    const widget = new Widgets[settings.type](settings, this.component);
-    widget.on('update', () => this.updateValue(widget.getValue(), {
+    const widget = new Widgets[settings.type](settings, this.component, this, index);
+    widget.on('update', () => this.updateValue(this.getValue(), {
       modified: true
     }, index), true);
     widget.on('redraw', () => this.redraw(), true);
@@ -283,6 +311,7 @@ export default class Input extends Multivalue {
         }
       }
     }
+    this.refs.input = [];
   }
 
   addFocusBlurEvents(element) {
@@ -305,11 +334,11 @@ export default class Input extends Multivalue {
       this.root.pendingBlur = delay(() => {
         this.emit('blur', this);
         if (this.component.validateOn === 'blur') {
-          this.root.triggerChange({}, {
+          this.root.triggerChange({ fromBlur: true }, {
             instance: this,
             component: this.component,
             value: this.dataValue,
-            flags: {}
+            flags: { fromBlur: true }
           });
         }
         this.root.focusedComponent = null;

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 
 export class AddressProvider {
   static get name() {
@@ -12,7 +12,12 @@ export class AddressProvider {
   }
 
   constructor(options = {}) {
+    this.beforeMergeOptions(options);
     this.options = _.merge({}, this.defaultOptions, options);
+  }
+
+  beforeMergeOptions() {
+    return;
   }
 
   get defaultOptions() {

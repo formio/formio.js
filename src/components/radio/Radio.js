@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
+import { boolValue } from '../../utils/utils';
 
 export default class RadioComponent extends Field {
   static schema(...extend) {
@@ -9,6 +10,9 @@ export default class RadioComponent extends Field {
       label: 'Radio',
       key: 'radio',
       values: [{ label: '', value: '' }],
+      validate: {
+        onlyAvailableItems: false
+      },
       fieldSet: false
     }, ...extend);
   }
@@ -19,7 +23,7 @@ export default class RadioComponent extends Field {
       group: 'basic',
       icon: 'dot-circle-o',
       weight: 80,
-      documentation: 'http://help.form.io/userguide/#radio',
+      documentation: '/userguide/#radio',
       schema: RadioComponent.schema()
     };
   }
@@ -33,12 +37,20 @@ export default class RadioComponent extends Field {
     return RadioComponent.schema();
   }
 
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultValue === false) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
+
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.class = 'form-check-input';
-    info.attr.name = info.attr.name += `[${this.id}]`;
+    info.attr.name = info.attr.name += `[${this.root?.id}-${this.id}]`;
     return info;
   }
 
@@ -48,6 +60,15 @@ export default class RadioComponent extends Field {
 
   get isRadio() {
     return this.component.inputType === 'radio';
+  }
+
+  get optionSelectedClass() {
+    return 'radio-selected';
+  }
+
+  init() {
+    super.init();
+    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
   }
 
   render() {
@@ -63,9 +84,11 @@ export default class RadioComponent extends Field {
   attach(element) {
     this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });
     this.refs.input.forEach((input, index) => {
-      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
-        modified: true,
-      }));
+      this.addEventListener(input, this.inputInfo.changeEvent, () => {
+        this.updateValue(null, {
+          modified: true,
+        });
+      });
       this.addShortcut(input, this.component.values[index].shortcut);
 
       if (this.isRadio) {
@@ -87,6 +110,7 @@ export default class RadioComponent extends Field {
         });
       }
     });
+    this.setSelectedClasses();
     return super.attach(element);
   }
 
@@ -96,6 +120,7 @@ export default class RadioComponent extends Field {
         this.removeShortcut(input, this.component.values[index].shortcut);
       });
     }
+    super.detach();
   }
 
   getValue() {
@@ -109,6 +134,19 @@ export default class RadioComponent extends Field {
       }
     });
     return value;
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.component.values;
+    if (values) {
+      return values.findIndex(({ value: optionValue }) => this.normalizeValue(optionValue) === value) !== -1;
+    }
+
+    return false;
   }
 
   getValueAsString(value) {
@@ -131,23 +169,31 @@ export default class RadioComponent extends Field {
     }
   }
 
-  updateValue(value, flags) {
-    const changed = super.updateValue(value, flags);
-    if (changed && this.refs.wrapper) {
+  setSelectedClasses() {
+    if (this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
-      const optionSelectedClass = 'radio-selected';
-
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        if (input && input.value.toString() === value.toString()) {
+        const checked  = (input.type === 'checkbox') ? value[input.value] : (input.value.toString() === value.toString());
+        if (checked) {
           //add class to container when selected
-          this.addClass(wrapper, optionSelectedClass);
+          this.addClass(wrapper, this.optionSelectedClass);
+          //change "checked" attribute
+          input.setAttribute('checked', 'true');
         }
         else {
-          this.removeClass(wrapper, optionSelectedClass);
+          this.removeClass(wrapper, this.optionSelectedClass);
+          input.removeAttribute('checked');
         }
       });
+    }
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+    if (changed) {
+      this.setSelectedClasses();
     }
 
     if (!flags || !flags.modified || !this.isRadio) {
@@ -160,7 +206,7 @@ export default class RadioComponent extends Field {
       && this.previousValue === this.currentValue;
     if (shouldResetValue) {
       this.resetValue();
-      this.triggerChange();
+      this.triggerChange(flags);
     }
     this.previousValue = this.dataValue;
     return changed;

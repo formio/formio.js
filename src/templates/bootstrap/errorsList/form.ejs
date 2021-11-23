@@ -1,0 +1,19 @@
+<p>{{ctx.t('error')}}
+  {% if (ctx.options.vpat) { %}
+  <span ref="errorTooltip" class="{{ctx.iconClass('question-sign')}}" tabindex="0"></span>
+  {% } %}
+</p>
+<ul>
+  {% ctx.errors.forEach(function(err) { %}
+  <li>
+    <span
+      data-component-key = "{{err.keyOrPath}}"
+      ref = "errorRef"
+      tabIndex = "0"
+      role="link"
+    >
+      {{err.message}}
+    </span>
+  </li>
+  {% }) %}
+</ul>

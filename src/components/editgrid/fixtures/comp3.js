@@ -14,7 +14,7 @@ export default {
           'label': 'Number',
           'mask': false,
           'spellcheck': true,
-          'tableView': false,
+          'tableView': true,
           'delimiter': false,
           'requireDecimal': false,
           'inputFormat': 'plain',

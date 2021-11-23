@@ -20,7 +20,7 @@ export default class HTMLComponent extends Component {
       group: 'layout',
       icon: 'code',
       weight: 0,
-      documentation: 'http://help.form.io/userguide/#html-element-component',
+      documentation: '/userguide/#html-element-component',
       schema: HTMLComponent.schema()
     };
   }
@@ -34,12 +34,13 @@ export default class HTMLComponent extends Component {
       return this.component.content;
     }
     const submission = _.get(this.root, 'submission', {});
-    return this.component.content ? this.interpolate(this.component.content, {
+    const content = this.component.content ? this.interpolate(this.component.content, {
       metadata: submission.metadata || {},
       submission: submission,
       data: this.rootValue,
       row: this.data
     }) : '';
+    return this.sanitize(content, this.shouldSanitizeValue);
   }
 
   get singleTags() {

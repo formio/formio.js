@@ -1,6 +1,28 @@
 import Component from './_classes/component/Component';
+import EditFormUtils from './_classes/component/editForm/utils';
+import BaseEditForm from './_classes/component/Component.form';
 import _ from 'lodash';
 export default class Components {
+  static _editFormUtils = EditFormUtils
+
+  static _baseEditForm = BaseEditForm;
+
+  static set EditFormUtils(value) {
+    Components._editFormUtils = value;
+  }
+
+  static get EditFormUtils() {
+    return Components._editFormUtils;
+  }
+
+  static set baseEditForm(value) {
+    Components._baseEditForm = value;
+  }
+
+  static get baseEditForm() {
+    return Components._baseEditForm;
+  }
+
   static get components() {
     if (!Components._components) {
       Components._components = {};
@@ -44,6 +66,10 @@ export default class Components {
     else if (Array.isArray(component.components)) {
       // eslint-disable-next-line new-cap
       comp = new Components.components['nested'](component, options, data);
+    }
+    else if (options.server) {
+      // eslint-disable-next-line new-cap
+      comp = new Components.components['hidden'](component, options, data);
     }
     else {
       comp = new Component(component, options, data);

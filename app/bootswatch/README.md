@@ -1,9 +1,21 @@
-# Bootswatch
+<p align="center">
+  <img width="200" height="200" src="https://bootswatch.com/_assets/img/logo-dark.svg">
+</p>
 
-[![Bootswatch Logo](https://bootswatch.com/_assets/img/logo-dark.png)](https://bootswatch.com)
+<h3 align="center">Bootswatch</h3>
 
-Bootswatch is a collection of open source themes for [Bootstrap](https://getbootstrap.com/). Check it out at [bootswatch.com](https://bootswatch.com).
-
+<p align="center">
+  A collection of open source themes for <a href="https://getbootstrap.com/">Bootstrap</a>
+  <br>
+  <a href="https://bootswatch.com"><strong>View Bootswatch themes »</strong></a>
+  <br>
+  <br>
+  <a href="https://github.com/thomaspark/bootswatch/issues/new">Report bug</a>
+  ·
+  <a href="https://github.com/thomaspark/bootswatch/issues/new">Request feature</a>
+  ·
+  <a href="https://blog.bootswatch.com/">Blog</a>
+</p>
 
 ## Usage
 
@@ -12,13 +24,12 @@ There are a few different ways you can integrate Bootswatch into your project.
 ### Via Pre-compiled Asset
 
 Download the `bootstrap.min.css` file associated with a theme and replace
-Bootstrap's default stylesheet.  You must still include Bootstrap's JavaScript
+Bootstrap's default stylesheet. You must still include Bootstrap's JavaScript
 file to have functional dropdowns, modals, etc.
 
 ### Via CDN
 
-Similar to above, but you can hotlink to the appropriate `bootstrap.min.css`
-hosted on [BootstrapCDN](https://www.bootstrapcdn.com/bootswatch/).
+You can use the themes via CDN at [jsDelivr](https://www.jsdelivr.com/package/npm/bootswatch).
 
 ### Via Sass Imports
 
@@ -51,7 +62,7 @@ Before continuing, ensure you've run `npm install bootswatch` in your local proj
 Add the following `import` to your top-level `index.js` (or `App.js`) file. Add it **before** any other `.css` imports.
 
 ```js
-import "bootswatch/dist/[theme]/bootstrap.min.css"; 
+import "bootswatch/dist/[theme]/bootstrap.min.css";
 // TODO: Note: Replace ^[theme]^ (examples: darkly, slate, cosmo, spacelab, and superhero. See https://bootswatch.com for current theme names.)
 ```
 
@@ -121,22 +132,22 @@ It's through your contributions that Bootswatch will continue to improve. You ca
 
 **Code:** Make a fix and submit it as a pull request. When making changes, it's important to keep the CSS and SASS versions in sync. To do this, be sure to edit the SASS source files for the particular theme first, then run the  tasks `grunt swatch` to build the CSS.
 
-**Donation:** Donations are gratefully accepted via [GitHub](https://github.com/sponsors/thomaspark/) and [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PU2DH4BMF9MWS&source=url).
+**Donation:** Donations are gratefully accepted via [GitHub](https://github.com/sponsors/thomaspark) and [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PU2DH4BMF9MWS&source=url).
 
 
 ## Author
 
 Thomas Park
 
-+ https://github.com/thomaspark
-+ https://thomaspark.co
+* <https://github.com/thomaspark>
+* <https://thomaspark.co/>
 
 
 ## Thanks
 
 [Mark Otto](https://github.com/mdo) and [Jacob Thornton](https://github.com/fat) for [Bootstrap](https://github.com/twbs/bootstrap).
 
-[Jenil Gogari](http://www.jgog.in/) for his contributions to the Flatly theme.
+[Jenil Gogari](https://jgog.in/) for his contributions to the Flatly theme.
 
 [James Taylor](https://github.com/jostylr) for [cors-lite](https://github.com/jostylr/cors-lite).
 
@@ -145,6 +156,6 @@ Thomas Park
 
 ## Copyright and License
 
-Copyright 2014-2019 Thomas Park
+Copyright 2014-2020 Thomas Park
 
 Code released under the MIT License.

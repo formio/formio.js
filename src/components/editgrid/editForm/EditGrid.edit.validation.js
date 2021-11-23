@@ -1,5 +1,9 @@
 export default [
   {
+    ignore: true,
+    key: 'unique',
+  },
+  {
     weight: 110,
     key: 'validate.minLength',
     label: 'Minimum Length',
