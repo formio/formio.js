@@ -29,12 +29,6 @@ export default class CheckBoxComponent extends Field {
     return CheckBoxComponent.schema();
   }
 
-  get defaultValue() {
-    const { name } = this.component;
-
-    return name ? (this.component[name] || this.emptyValue) : (this.component.defaultValue || false).toString() === 'true';
-  }
-
   get labelClass() {
     let className = '';
     if (this.isInputComponent
