@@ -341,7 +341,8 @@ class Formio {
       if (currentForm.revisions === 'current' && this.submissionId) {
         return currentForm;
       }
-      if (currentForm._vid === this.vId) {
+      // eslint-disable-next-line eqeqeq
+      if (currentForm._vid == this.vId || currentForm.revisionId === this.vId) {
         return currentForm;
       }
       // If they specified a revision form, load the revised form components.
@@ -359,6 +360,7 @@ class Formio {
           currentForm._vid = revisionForm._vid;
           currentForm.components = revisionForm.components;
           currentForm.settings = revisionForm.settings;
+          currentForm.revisionId = revisionForm.revisionId;
           // Using object.assign so we don't cross polinate multiple form loads.
           return Object.assign({}, currentForm);
         })
@@ -382,7 +384,7 @@ class Formio {
   loadSubmission(query, opts) {
     return this.load('submission', query, opts)
       .then((submission) => {
-        this.vId = submission._fvid;
+        this.vId = submission.revisionId || submission._fvid;
         this.vUrl = `${this.formUrl}/v/${this.vId}`;
         return submission;
       });
