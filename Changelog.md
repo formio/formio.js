@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.13.11-rc.3
+### Changed
+ - No changes.
+
 ## 4.13.11-rc.2
 ### Fixed
  - FIO-4313: Force the text field to save the calendar widgets as 'text'
