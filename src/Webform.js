@@ -981,6 +981,7 @@ export default class Webform extends NestedDataComponent {
     this.off('refreshData');
 
     if (deleteFromGlobal) {
+      this.emit('formDelete', this.id);
       delete Formio.forms[this.id];
     }
 
