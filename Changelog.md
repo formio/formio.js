@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.13.11-rc.2]
+### Fixed
+ - FIO-4313: Force the text field to save the calendar widgets as 'text'
+
 ## 4.13.11-rc.1
 ### Fixed
  - FIO-2681: Allowed type labels inside File component to be localized
