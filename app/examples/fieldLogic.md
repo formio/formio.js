@@ -13,7 +13,7 @@ This can also be configured on our beta portal (https://beta.form.io) under the 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
 <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
-<div id="formio"></formio>
+<div id="formio"></div>
 ```
 
 ```js
