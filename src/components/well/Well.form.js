@@ -7,6 +7,10 @@ export default function(...extend) {
     {
       key: 'display',
       components: WellEditDisplay
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }
