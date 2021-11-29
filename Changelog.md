@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.14.0-rc.38]
 ### Fixed
  - FIO-4313: Force the text field to save the calendar widgets as 'text'
+ - FIO-4603: Emit an event when form is deleted
 
 ## 4.14.0-rc.37
 ### Fixed
