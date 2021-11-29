@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FIO-4313: Force the text field to save the calendar widgets as 'text'
  - FIO-4603: Emit an event when form is deleted
+ - FIO-4007: removed Addons tab from components which do not have currently any addon
 
 ## 4.14.0-rc.37
 ### Fixed
