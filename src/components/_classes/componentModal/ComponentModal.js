@@ -53,13 +53,15 @@ export default class ComponentModal {
   }
 
   setOpenModalElement(template) {
-    this.openModalTemplate = template;
-    this.component.setContent(this.refs.openModalWrapper, template);
-    this.loadRefs();
-    this.setEventListeners();
-    if (this.isOpened) {
-      this.refs.modalWrapper.classList.add('formio-dialog-disabled-animation');
-      this.openModal();
+    if (this.component?.visible) {
+      this.openModalTemplate = template;
+      this.component.setContent(this.refs.openModalWrapper, template);
+      this.loadRefs();
+      this.setEventListeners();
+      if (this.isOpened) {
+        this.refs.modalWrapper.classList.add('formio-dialog-disabled-animation');
+        this.openModal();
+      }
     }
   }
 
