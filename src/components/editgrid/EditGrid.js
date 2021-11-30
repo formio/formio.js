@@ -403,6 +403,16 @@ export default class EditGridComponent extends NestedArrayComponent {
     const t = this.t.bind(this);
     const templateName = this.displayAsTable ? 'editgridTable' : 'editgrid';
 
+    const renderedRows = [];
+    const openRows = [];
+    const errors = [];
+    this.editRows.forEach((row, rowIndex) => {
+      const isOpen = this.isOpen(row);
+      openRows.push(isOpen);
+      errors.push(row.error);
+      renderedRows.push(this.renderRow(row, rowIndex));
+    });
+
     return super.render(children || this.renderTemplate(templateName, {
       ref: {
         row: this.rowRef,
@@ -421,9 +431,9 @@ export default class EditGridComponent extends NestedArrayComponent {
         value: dataValue,
         t
       }),
-      rows: this.editRows.map(this.renderRow.bind(this)),
-      openRows: this.editRows.map((row) => this.isOpen(row)),
-      errors: this.editRows.map((row) => row.error),
+      rows: renderedRows,
+      openRows: openRows,
+      errors: errors,
       hasAddButton: this.hasAddButton(),
       hasRemoveButtons: this.hasRemoveButtons(),
     }));
