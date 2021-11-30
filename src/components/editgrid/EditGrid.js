@@ -422,12 +422,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       },
       header: this.renderString(headerTemplate, {
         displayValue: (component) => this.displayComponentValue(component, true),
-        components: this.component.components,
+        components: this.getRowComponents(),
         value: dataValue,
         t
       }),
       footer: this.renderString(_.get(this.component, 'templates.footer'), {
-        components: this.component.components,
+        components: this.getRowComponents(),
         value: dataValue,
         t
       }),
@@ -588,7 +588,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           row: dataValue[rowIndex] || {},
           data: this.data,
           rowIndex,
-          components: this.component.components,
+          components: this.getRowComponents(),
           flattenedComponents,
           displayValue: (component) => this.displayComponentValue(component),
           isVisibleInRow: (component) => this.isComponentVisibleInRow(component, flattenedComponents),
@@ -1004,8 +1004,12 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.redraw();
   }
 
+  getRowComponents() {
+    return this.component.components;
+  }
+
   createRowComponents(row, rowIndex) {
-    return this.component.components.map((col, colIndex) => {
+    return this.getRowComponents().map((col, colIndex) => {
       const column = _.clone(col);
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
