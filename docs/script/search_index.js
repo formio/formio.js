@@ -2556,12 +2556,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/_classes/component/editform/component.edit.addons.js",
-    "file/src/components/_classes/component/editForm/Component.edit.addons.js.html",
-    "src/components/_classes/component/editForm/Component.edit.addons.js",
-    "file"
-  ],
-  [
     "src/components/_classes/component/editform/component.edit.api.js",
     "file/src/components/_classes/component/editForm/Component.edit.api.js.html",
     "src/components/_classes/component/editForm/Component.edit.api.js",
@@ -3843,6 +3837,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp12.js",
     "file/src/components/editgrid/fixtures/comp12.js.html",
     "src/components/editgrid/fixtures/comp12.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp14.js",
+    "file/src/components/editgrid/fixtures/comp14.js.html",
+    "src/components/editgrid/fixtures/comp14.js",
     "file"
   ],
   [

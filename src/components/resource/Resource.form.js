@@ -6,6 +6,10 @@ export default function(...extend) {
     {
       key: 'display',
       components: ResourceEditDisplay
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

@@ -290,7 +290,12 @@ export default class ReCaptchaComponent extends Component {
 
     const componentData = row[this.component.key];
     if (!componentData || !componentData.token) {
-      this.setCustomValidity(&apos;ReCaptcha: Token is not specified in submission&apos;);
+      this.setCustomValidity(&apos;ReCAPTCHA: Token is not specified in submission&apos;);
+      return NativePromise.resolve(false);
+    }
+
+    if (!componentData.success) {
+      this.setCustomValidity(&apos;ReCAPTCHA: Token validation error&apos;);
       return NativePromise.resolve(false);
     }
 

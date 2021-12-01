@@ -7,6 +7,10 @@ export default function(...extend) {
     {
       key: 'data',
       components: TagsEditData
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

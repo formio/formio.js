@@ -73,6 +73,7 @@ export default class TextFieldComponent extends Input {
         readOnly: this.options.readOnly,
         timezone,
         locale: this.options.language,
+        saveAs: 'text'
       };
     }
   }

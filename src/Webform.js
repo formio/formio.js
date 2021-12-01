@@ -39,7 +39,8 @@ function getOptions(options) {
     i18next,
     saveDraft: false,
     alwaysDirty: false,
-    saveDraftThrottle: 5000
+    saveDraftThrottle: 5000,
+    display: 'form'
   });
   if (!options.events) {
     options.events = new EventEmitter();
@@ -257,15 +258,12 @@ export default class Webform extends NestedDataComponent {
     });
 
     // See if we need to restore the draft from a user.
-    if (this.options.saveDraft && Formio.events) {
-      Formio.events.on('formio.user', (user) => {
-        this.formReady.then(() => {
-          // Only restore a draft if the submission isn't explicitly set.
-          if (!this.submissionSet) {
-            this.restoreDraft(user._id);
-          }
-        });
-      });
+    if (this.options.saveDraft && !this.options.skipDraftRestore) {
+      const user = Formio.getUser();
+      // Only restore a draft if the submission isn't explicitly set.
+      if (user && !this.submissionSet) {
+        this.restoreDraft(user._id);
+      }
     }
 
     this.component.clearOnHide = false;
@@ -983,6 +981,7 @@ export default class Webform extends NestedDataComponent {
     this.off('refreshData');
 
     if (deleteFromGlobal) {
+      this.emit('formDelete', this.id);
       delete Formio.forms[this.id];
     }
 
@@ -1259,10 +1258,6 @@ export default class Webform extends NestedDataComponent {
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
     this.root.setAlert('danger', errorsList);
 
-    if (this.root && this.root.alert) {
-      this.scrollIntoView(this.root.alert);
-    }
-
     if (triggerEvent) {
       this.emit('error', errors);
     }
@@ -1331,7 +1326,11 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    return this.showErrors(error, true);
+    const errors = this.showErrors(error, true);
+    if (this.root && this.root.alert) {
+      this.scrollIntoView(this.root.alert);
+    }
+    return errors;
   }
 
   /**

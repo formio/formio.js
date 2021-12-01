@@ -17,7 +17,6 @@ export default [
         { label: 'Resource', value: 'resource' },
         { label: 'Custom', value: 'custom' },
         { label: 'Raw JSON', value: 'json' },
-        { label: 'IndexedDB', value: 'indexeddb' },
       ],
     },
   },

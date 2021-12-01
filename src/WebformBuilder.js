@@ -35,6 +35,7 @@ export default class WebformBuilder extends Component {
     }
     // Reset skipInit in case PDFBuilder has set it.
     options.skipInit = false;
+    options.display = options.display || 'form';
 
     super(null, options);
 

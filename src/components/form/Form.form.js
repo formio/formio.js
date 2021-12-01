@@ -20,6 +20,10 @@ export default function(...extend) {
       key: 'data',
       weight: 10,
       components: FormEditData
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

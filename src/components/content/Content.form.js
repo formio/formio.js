@@ -20,6 +20,10 @@ export default function(...extend) {
       key: 'logic',
       components: ContentEditLogic,
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
   // Add content as full width above the settings.
   editForm.components = [{
