@@ -1,6 +1,7 @@
 import Component from './_classes/component/Component';
 import EditFormUtils from './_classes/component/editForm/utils';
 import BaseEditForm from './_classes/component/Component.form';
+import AllComponents from '../components/index';
 import _ from 'lodash';
 export default class Components {
   static _editFormUtils = EditFormUtils
@@ -28,6 +29,10 @@ export default class Components {
       Components._components = {};
     }
     return Components._components;
+  }
+
+  static recalculateComponents() {
+    Components.setComponents(AllComponents);
   }
 
   static setComponents(comps) {
