@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.1-rc.1
+### Changed
+ - Feat/fio 2860 signrequest
+ - Feat/signrequest related changes
+
 ## 4.14.0
 ### Changed
  - Official Release
