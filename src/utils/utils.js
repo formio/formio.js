@@ -1464,7 +1464,7 @@ export function getDataParentComponent(componentInstance) {
    return value
      && value.then
      && typeof value.then === 'function'
-     && value?.constructor?.name === 'Promise';
+     && Object.prototype.toString.call(value) === '[object Promise]';
  }
 
 /**
