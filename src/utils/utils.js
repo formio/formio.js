@@ -1431,7 +1431,7 @@ export function getFocusableElements(element) {
    return value
      && value.then
      && typeof value.then === 'function'
-     && value?.constructor?.name === 'Promise';
+     && Object.prototype.toString.call(value) === '[object Promise]';
  }
 
 // Export lodash to save space with other libraries.
