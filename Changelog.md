@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.1-rc.2]
+### Fixed
+ - FIO-4355: downloading data via CSV issue fix
+
 ## 4.14.1-rc.1
 ### Changed
  - Feat/fio 2860 signrequest
