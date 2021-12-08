@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.1-rc.3]
+## 4.14.1-rc.3
 ### Fixed
  - FIO-4337: Fixes an issue where settings form for the selected addon is not shown
  - FIO-3227: fixed an issue where isPromise returns false for Angular wrapped promises
