@@ -545,13 +545,13 @@ export default class Element {
    * @param data
    * @return {XML|string|*|void}
    */
-  interpolate(string, data) {
+  interpolate(string, data, noeval = false) {
     if (typeof string !== 'function' && this.component.content
       && !FormioUtils.Evaluator.templateSettings.interpolate.test(string)) {
       string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
     }
 
-    return FormioUtils.interpolate(string, this.evalContext(data));
+    return FormioUtils.interpolate(string, this.evalContext(data), noeval);
   }
 
   /**
