@@ -934,7 +934,7 @@ export default class Component extends Element {
    */
   sanitize(dirty, forceSanitize) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
-    if ((this.options.pdf || this.options.sanitize === false) && !forceSanitize) {
+    if ((this.options.pdf) && !forceSanitize) {
       return dirty;
     }
     return FormioUtils.sanitize(dirty, this.options);
