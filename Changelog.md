@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4055: fixed an issue where Calendar Widget is showing incorrect date on PDF submoission
  - FIO-4232: Form controller not working inside wizard forms
  - Added the flags to the setForm method for PDF
+ - FIO-3973: Fixed an issue where invalidRowError is not cleared for the opened EditGrid row after all the errors were fixed
 
 ## 4.14.1-rc.4
 ### Fixed
