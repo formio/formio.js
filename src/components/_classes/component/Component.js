@@ -2739,6 +2739,11 @@ export default class Component extends Element {
       const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
       const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
       const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
+
+      if (calculationChanged && previousChanged && !firstPass) {
+        return false;
+      }
+
       // Check to ensure that the calculated value is different than the previously calculated value.
       if (previousCalculatedValue && previousChanged && !calculationChanged) {
         return false;

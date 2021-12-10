@@ -60,6 +60,7 @@ import formWithSurvey from '../test/forms/formWithSurvey';
 import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
 import formWithDayComp from '../test/forms/formWithDayComp';
 import formWithCalcValue from '../test/forms/formWithCalcValue';
+import formWithAllowCalculateOverride from '../test/forms/formWithAllowCalculateOverride';
 import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
 import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
 import * as FormioUtils from './utils/utils';
@@ -941,6 +942,43 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
+  it('Should modify calculated value only if it was not manually modified when allowCalculateOverride is true', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithAllowCalculateOverride).then(() => {
+      const labelComp = form.getComponent('label');
+      const valueComp = form.getComponent('value');
+
+      const inputEvent = new Event('input');
+      const labelInput = labelComp.refs.input[0];
+      const valueInput = valueComp.refs.input[0];
+      labelInput.value = 'Hello';
+      labelInput.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        assert.equal(labelComp.dataValue, 'Hello');
+        assert.equal(valueComp.dataValue, 'hello');
+
+        valueInput.value = 'hello123';
+        valueInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(valueComp.dataValue, 'hello123');
+
+          labelInput.value = 'HeLLo World';
+          labelInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(labelComp.dataValue, 'HeLLo World');
+            assert.equal(valueComp.dataValue, 'hello123');
+            done();
+          }, 500);
+        }, 500);
+      }, 500);
+    }).catch(done);
+  });
+
   it(`Should show field only in container where radio component has 'yes' value when containers contain radio
   components with the same key`, function(done) {
     const formElement = document.createElement('div');
@@ -1109,7 +1147,7 @@ describe('Webform tests', function() {
           input1.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(input2.value, '6678');
+            assert.equal(input2.value, '66');
             assert.equal(input1.value, 6678);
             //set a number as calculated value
             formWithCalculatedValue.components[1].calculatedValue = 6678;
@@ -1118,7 +1156,7 @@ describe('Webform tests', function() {
             input1.dispatchEvent(inputEvent);
 
             setTimeout(() => {
-              assert.equal(input2.value, '667890');
+              assert.equal(input2.value, '66');
               assert.equal(input1.value, 667890);
               done();
             }, 250);
@@ -2223,7 +2261,7 @@ describe('Webform tests', function() {
     const submissionWithOverridenValues2 = {
       data: {
         dataGrid: [
-          { label: 'yes2', value: 'yes2' },
+          { label: 'yes2', value: 'y' },
           { label: 'no', value: 'n' },
         ],
         checkbox: false,
