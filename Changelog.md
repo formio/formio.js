@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4232: Form controller not working inside wizard forms
  - Added the flags to the setForm method for PDF
  - FIO-3973: Fixed an issue where invalidRowError is not cleared for the opened EditGrid row after all the errors were fixed
+ - FIO-3975: Fixed an issue where all the modals preview are visible when the components are not
 
 ## 4.14.1-rc.4
 ### Fixed
