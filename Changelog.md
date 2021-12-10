@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3715: fixed an issue where validation errors displayed when rendering a form with a submission in draft-state
  - FIO-3814: do not fetch Select options again if there was an error
  - FIO-4037: Values should not modify once the component has been saved.
+ - FIO-3860: Resource Field showing different property name for PDF and webforms
 
 ## 4.14.1-rc.4
 ### Fixed
