@@ -508,7 +508,14 @@ export default class SelectComponent extends Field {
     }
   }
 
+  get loadingError() {
+    return !this.component.refreshOn && !this.component.refreshOnBlur && this.itemsLoaded && this.error;
+  }
+
   get shouldLoad() {
+    if (this.loadingError) {
+      return false;
+    }
     // Live forms should always load.
     if (!this.options.readOnly) {
       return true;
@@ -610,6 +617,7 @@ export default class SelectComponent extends Field {
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
         this.loading = false;
+        this.error = null;
         this.setItems(response, !!search);
       })
       .catch((err) => {
@@ -625,6 +633,7 @@ export default class SelectComponent extends Field {
 
   handleLoadingError(err) {
     this.loading = false;
+    this.error = err;
     this.itemsLoadedResolve();
     this.emit('componentError', {
       component: this.component,
