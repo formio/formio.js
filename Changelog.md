@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3975: Fixed an issue where all the modals preview are visible when the components are not
  - FIO-4311: Wizard Theme support right hand nav
  - FIO-2718 Moved minDate and maxDate to Validation tab in DateTime builder options
+ - FIO-3018: fixed custom JS pollution between stages
 
 ## 4.14.1-rc.4
 ### Fixed
