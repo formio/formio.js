@@ -77,7 +77,7 @@ Formio.registerComponent('stripe', StripeComponent);
 <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
 <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
 <script src="https://cdn.form.io/formiojs/formio.contrib.min.js"></script>
-<div id="formio"></formio>
+<div id="formio"></div>
 ```
 
 ```js
