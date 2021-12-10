@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Added the flags to the setForm method for PDF
  - FIO-3973: Fixed an issue where invalidRowError is not cleared for the opened EditGrid row after all the errors were fixed
  - FIO-3975: Fixed an issue where all the modals preview are visible when the components are not
+ - FIO-4311: Wizard Theme support right hand nav
 
 ## 4.14.1-rc.4
 ### Fixed
