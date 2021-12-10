@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3860: Resource Field showing different property name for PDF and webforms
  - FIO-4055: fixed an issue where Calendar Widget is showing incorrect date on PDF submoission
  - FIO-4232: Form controller not working inside wizard forms
+ - Added the flags to the setForm method for PDF
 
 ## 4.14.1-rc.4
 ### Fixed
