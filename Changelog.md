@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4081 Fixed incorrect file pattern message
  - FIO-3715: fixed an issue where validation errors displayed when rendering a form with a submission in draft-state
  - FIO-3814: do not fetch Select options again if there was an error
+ - FIO-4037: Values should not modify once the component has been saved.
 
 ## 4.14.1-rc.4
 ### Fixed
