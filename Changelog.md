@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FIO-3435: form definition downloading according query parameter
  - FIO-4081 Fixed incorrect file pattern message
+ - FIO-3715: fixed an issue where validation errors displayed when rendering a form with a submission in draft-state
 
 ## 4.14.1-rc.4
 ### Fixed
