@@ -232,6 +232,7 @@ export default class Wizard extends Webform {
     const wizardNav = this.prepareNavigationSettings(ctx);
 
     const wizardHeaderType = `wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`;
+    const wizardHeaderLocation =  _.get(this.form, 'settings.wizardHeaderLocation', 'left');
     const wizardHeader = this.prepareHeaderSettings(ctx, wizardHeaderType);
 
     return this.renderTemplate('wizard', {
@@ -239,6 +240,7 @@ export default class Wizard extends Webform {
       className: super.getClassName(),
       wizardHeader,
       wizardHeaderType,
+      wizardHeaderLocation,
       wizardNav,
       components: this.renderComponents([
         ...this.prefixComps,
