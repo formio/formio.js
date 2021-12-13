@@ -218,7 +218,7 @@ export default class Components {
       // eslint-disable-next-line new-cap
       comp = new Components.components[&apos;nested&apos;](component, options, data);
     }
-    else if (options.server) {
+    else if (options &amp;&amp; options.server) {
       // eslint-disable-next-line new-cap
       comp = new Components.components[&apos;hidden&apos;](component, options, data);
     }

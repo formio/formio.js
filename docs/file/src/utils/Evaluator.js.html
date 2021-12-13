@@ -199,7 +199,7 @@ const Evaluator = {
       console.warn(&apos;Error while processing template&apos;, err, template);
     }
   },
-  interpolate(rawTemplate, data) {
+  interpolate(rawTemplate, data, noeval) {
     if (typeof rawTemplate === &apos;function&apos;) {
       try {
         return rawTemplate(data);
@@ -217,7 +217,7 @@ const Evaluator = {
     if (Evaluator.cache[hash]) {
       template = Evaluator.cache[hash];
     }
-    else if (Evaluator.noeval) {
+    else if (Evaluator.noeval || noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
       return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) =&gt; _.get(data, $2));
     }

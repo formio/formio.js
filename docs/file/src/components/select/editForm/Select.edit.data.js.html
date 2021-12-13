@@ -606,8 +606,8 @@ export default [
     editor: &apos;ace&apos;,
     rows: 10,
     weight: 14,
-    placeholder: &quot;values = data[&apos;mykey&apos;];&quot;,
-    tooltip: &apos;Write custom code to return the value options. The form data object is available.&apos;,
+    placeholder: &quot;values = data[&apos;mykey&apos;] or values = Promise.resolve([&apos;myValue&apos;])&quot;,
+    tooltip: &apos;Write custom code to return the value options or a promise with value options. The form data object is available.&apos;,
     conditional: {
       json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;custom&apos;] },
     },
