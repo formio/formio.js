@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.13.11-rc.4]
+### Fixed
+ - FIO-4324: Fixes an issue where templating code is evaluated when rending TextArea's value
+ - FIO-3227: added possibility to handle asynchronous code in select custom values
+
 ## 4.13.11-rc.3
 ### Changed
  - No changes.
