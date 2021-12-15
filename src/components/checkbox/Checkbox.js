@@ -83,7 +83,10 @@ export default class CheckBoxComponent extends Field {
   attach(element) {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
-    if (this.refs.input) {
+    if (this.input) {
+      if (this.component.inputType === 'radio') {
+        this.input.setAttribute('data-checked', this.checked);
+      }
       this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
@@ -141,7 +144,6 @@ export default class CheckBoxComponent extends Field {
     }
     if (this.component.name) {
       this.input.value = (value === this.component.value) ? this.component.value : 0;
-      this.input.checked = (value === this.component.value && value !== this.dataValue) ? 1 : 0;
       value = value !== this.dataValue ? value : this.emptyValue;
     }
     else if (value === 'on') {
@@ -193,7 +195,14 @@ export default class CheckBoxComponent extends Field {
 
     // Update attributes of the input element
     if (changed && this.input) {
-      if (this.input.checked) {
+      const isRadio = this.component.inputType === 'radio' && 'checked' in this.input.dataset;
+
+      if (isRadio) {
+        const previouslyChecked = this.input.dataset.checked === 'true';
+        this.input.checked = previouslyChecked ? 0 : 1;
+        this.input.dataset.checked = previouslyChecked ? 'false' : 'true';
+      }
+      else if (this.input.checked) {
         this.input.setAttribute('checked', 'true');
       }
       else {
