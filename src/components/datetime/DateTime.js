@@ -204,7 +204,7 @@ export default class DateTimeComponent extends Input {
         this.promiseState(this.ready).then((status1) => {
           if (status1 === 'fulfilled') {
             const input = element.querySelector('input.input');
-            if (input) addFocusBlurEvents(input, this);
+            if (input) this.addFocusBlurEventsOnUserInput(input);
           }
         });
       }
