@@ -189,20 +189,25 @@ export default class DateTimeComponent extends Input {
     });
   }
 
+  
+  promiseState(p) {
+    const t = {};
+    return Promise.race([p, t])
+      .then((v) => ((v === t) ? 'pending' : 'fulfilled'), () => 'rejected');
+  }
+  
   // add focus blur events to the user input box (second input) of datetime component
   attach(element) {
     super.attach(element);
-    let detectCount = 0;
-    const detect = async() => {
-      detectCount += 1;
-      const input = element.querySelector('input.input');
-      if (!input && detectCount < 10) {
-        setTimeout(detect, 200);
+    this.promiseState(this.root.formReady).then((status) => {
+      if (status === 'fulfilled') {
+        this.promiseState(this.ready).then((status1) => {
+          if (status1 === 'fulfilled') {
+            const input = element.querySelector('input.input');
+            if (input) addFocusBlurEvents(input, this);
+          }
+        });
       }
-      else {
-        this.addFocusBlurEventsOnUserInput(input);
-      }
-    };
-    detect();
+    });
   }
 }
