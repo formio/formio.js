@@ -224,9 +224,6 @@ export default class NestedComponent extends Field {
    */
   getComponent(path, fn, originalPath) {
     originalPath = originalPath || getStringFromComponentPath(path);
-    if (this._parentPath) {
-      path = path.replace(this._parentPath, '');
-    }
     path = getArrayFromComponentPath(path);
     const pathStr = originalPath;
     const newPath = _.clone(path);

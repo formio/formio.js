@@ -153,7 +153,8 @@ export default class Alert {
 
   focusOnComponent(keyOrPath) {
     if (keyOrPath) {
-      const component = this.parentComponent.root?.getComponent(keyOrPath);
+      const path = this.parentComponent._parentPath ? keyOrPath.replace(this.parentComponent._parentPath, '') : keyOrPath;
+      const component = this.parentComponent.root?.getComponent(path, null, keyOrPath);
       if (component && _.isFunction(component.focus)) {
         component.focus();
       }
