@@ -87,6 +87,7 @@ export default class RadioComponent extends Field {
     this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });
     this.refs.input.forEach((input, index) => {
       this.addEventListener(input, this.inputInfo.changeEvent, () => {
+        event.stopPropagation();
         this.updateValue(null, {
           modified: true,
         });
@@ -104,7 +105,7 @@ export default class RadioComponent extends Field {
         this.addEventListener(input, 'keyup', (event) => {
           if (event.key === ' ' && dataValue === input.value) {
             event.preventDefault();
-
+            event.stopPropagation();
             this.updateValue(null, {
               modified: true,
             });
