@@ -70,7 +70,7 @@ export default [
     input: true,
     key: 'inputMask',
     label: 'Input Mask',
-    tooltip: 'An input mask helps the user with input by ensuring a predefined format.<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br>See the <a target=\'_blank\' href=\'https://github.com/RobinHerbots/jquery.inputmask\'>jquery.inputmask documentation</a> for more information.</a>',
+    tooltip: 'An input mask helps the user with input by ensuring a predefined format.<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br></a>',
     customConditional(context) {
       return !context.data.allowMultipleMasks;
     },
@@ -81,7 +81,7 @@ export default [
     input: true,
     key: 'displayMask',
     label: 'Display Mask',
-    tooltip: 'A display mask helps to display the input in a readable way, this won\'t affect the  value which will be saved (to affect both view and saved value, delete Display Mask and use Input Mask).<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br>See the <a target=\'_blank\' href=\'https://github.com/RobinHerbots/jquery.inputmask\'>jquery.inputmask documentation</a> for more information.</a>',
+    tooltip: 'A display mask helps to display the input in a readable way, this won\'t affect the  value which will be saved (to affect both view and saved value, delete Display Mask and use Input Mask).<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br></a>',
     customConditional(context) {
       return !context.data.allowMultipleMasks;
     },
