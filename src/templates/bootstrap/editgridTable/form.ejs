@@ -53,3 +53,6 @@
   {{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
 </button>
 {% } %}
+{% if (ctx.options.vpat) { %}
+<span class="sr-only" aria-live="polite" ref="editGridLiveRegion"></span>
+{% } %}

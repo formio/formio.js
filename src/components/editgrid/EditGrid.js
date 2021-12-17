@@ -52,13 +52,16 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   static get defaultHeaderTemplate() {
-    return `<div class="row">
-      {% util.eachComponent(components, function(component) { %}
-        {% if (displayValue(component)) { %}
-          <div class="col-sm-2">{{ t(component.label) }}</div>
-        {% } %}
-      {% }) %}
-    </div>`;
+    return `
+      <div class="row" role="row">
+        {% util.eachComponent(components, function(component) { %}
+          {% if (displayValue(component)) { %}
+            <div class="col-sm-2" role="columnheader">{{ t(component.label) }}</div>
+          {% } %}
+        {% }) %}
+        <div class="col-sm-2 {{ transform('class', 'sr-only') }}" role="columnheader">{{ t('Actions') }}</div>
+      </div>
+    `;
   }
 
   static get defaultTableHeaderTemplate() {
@@ -66,31 +69,31 @@ export default class EditGridComponent extends NestedArrayComponent {
       <tr>
         {% util.eachComponent(components, function(component) { %}
           {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
-            <td class="editgrid-table-column">{{ component.label }}</td>
+            <th scope="col" class="editgrid-table-column">{{ component.label }}</td>
           {% } %}
         {% }) %}
         {% if (!instance.options.readOnly && !instance.disabled) { %}
-          <td class="editgrid-table-column">Actions</td>
+          <th scope="col" class="editgrid-table-column">Actions</td>
         {% } %}
       </tr>
     `;
   }
 
   static get defaultRowTemplate() {
-    return `<div class="row">
+    return `<div class="row" role="row">
       {% util.eachComponent(components, function(component) { %}
         {% if (displayValue(component)) { %}
-          <div class="col-sm-2">
+          <div class="col-sm-2" role="gridcell">
             {{ isVisibleInRow(component) ? getView(component, row[component.key]) : ''}}
           </div>
         {% } %}
       {% }) %}
       {% if (!instance.options.readOnly && !instance.disabled) { %}
-        <div class="col-sm-2">
+        <div class="col-sm-2" role="gridcell">
           <div class="btn-group pull-right">
-            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
+            <button class="btn btn-default btn-light btn-sm editRow" aria-label="{{ t('Edit row') }}"><i class="{{ iconClass('edit') }}"></i></button>
             {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
-              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
+              <button class="btn btn-danger btn-sm removeRow" aria-label="{{ t('Remove row') }}"><i class="{{ iconClass('trash') }}"></i></button>
             {% } %}
           </div>
         </div>
@@ -124,8 +127,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     return `
     <h3 ref="dialogHeader">${this.t('Do you want to clear data?')}</h3>
     <div style="display:flex; justify-content: flex-end;">
-      <button ref="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('Cancel')}">${this.t('Cancel')}</button>
-      <button ref="dialogYesButton" class="btn btn-danger" aria-label="${this.t('Yes, delete it')}">${this.t('Yes, delete it')}</button>
+      <button ref="dialogCancelButton" class="${this.transform('class', 'btn btn-secondary')}" aria-label="${this.t('Cancel')}">${this.t('Cancel')}</button>
+      <button ref="dialogYesButton" class="${this.transform('class', 'btn btn-danger')}" aria-label="${this.t('Yes, delete it')}">${this.t('Yes, delete it')}</button>
     </div>
   `;
   }
@@ -401,6 +404,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const dataValue = this.dataValue;
     const headerTemplate = this.headerTemplate;
     const t = this.t.bind(this);
+    const transform = this.transform.bind(this);
     const templateName = this.displayAsTable ? 'editgridTable' : 'editgrid';
 
     return super.render(children || this.renderTemplate(templateName, {
@@ -414,12 +418,14 @@ export default class EditGridComponent extends NestedArrayComponent {
         displayValue: (component) => this.displayComponentValue(component, true),
         components: this.component.components,
         value: dataValue,
-        t
+        t,
+        transform
       }),
       footer: this.renderString(_.get(this.component, 'templates.footer'), {
         components: this.component.components,
         value: dataValue,
-        t
+        t,
+        transform
       }),
       rows: this.editRows.map(this.renderRow.bind(this)),
       openRows: this.editRows.map((row) => this.isOpen(row)),
@@ -593,7 +599,8 @@ export default class EditGridComponent extends NestedArrayComponent {
             : view;
           },
           state: this.editRows[rowIndex].state,
-          t: this.t.bind(this)
+          t: this.t.bind(this),
+          transform: this.transform.bind(this)
         },
       );
     }
@@ -682,9 +689,15 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.addRowModal(rowIndex);
     }
     else {
-      this.redraw();
+      this.redraw().then(() => {
+        this.afterAddRow(editRow);
+      });
     }
     return editRow;
+  }
+
+  afterAddRow(row) {
+    this.focusOnNewRowElement(row.components);
   }
 
   addRowModal(rowIndex) {
@@ -725,7 +738,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
 
     dialog.refs.dialogContents.appendChild(this.ce('button', {
-      class: 'btn btn-primary',
+      class: this.transform('class', 'btn btn-primary'),
       onClick: () => {
         // After an attempt to save, all the components inside the row should become not pristine
         if (!this.component.rowDrafts) {
@@ -817,7 +830,13 @@ export default class EditGridComponent extends NestedArrayComponent {
       return this.addRowModal(rowIndex);
     }
 
-    return this.redraw();
+    return this.redraw().then(() => {
+      this.afterEditRow(editRow);
+    });
+  }
+
+  afterEditRow(row) {
+    this.focusOnNewRowElement(row.components);
   }
 
   clearErrors(rowIndex) {
@@ -870,7 +889,9 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
 
     this.checkValidity(null, true);
-    this.redraw();
+    this.redraw().then(() => {
+      this.refs[this.addRowRef][0].focus();
+    });
 
     if (this.component.rowDrafts) {
       this.checkValidity(this.data, false);
@@ -931,13 +952,19 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.components.forEach(comp => comp.setPristine(this.pristine));
     }
     this.checkValidity(null, true);
-    this.redraw();
+    this.redraw().then(() => {
+      this.afterSaveRow(rowIndex);
+    });
 
     if (editRow.alerts) {
       editRow.alerts = false;
     }
 
     return true;
+  }
+
+  afterSaveRow() {
+    this.refs[this.addRowRef][0].focus();
   }
 
   beforeFocus(component) {
@@ -991,7 +1018,18 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.triggerChange({ modified, noPristineChangeOnModified: modified && this.component.rowDrafts, isolateRow: true });
     this.checkValidity(null, true);
     this.checkData();
-    this.redraw();
+    this.redraw().then(() => {
+      this.afterRemoveRow(rowIndex);
+    });
+  }
+
+  afterRemoveRow(index) {
+    if (this.component.openWhenEmpty) {
+      this.focusOnNewRowElement(this.editRows[index].components);
+    }
+    else {
+      this.refs[this.addRowRef][0].focus();
+    }
   }
 
   createRowComponents(row, rowIndex) {

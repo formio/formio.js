@@ -1,16 +1,19 @@
-<ul class="editgrid-listgroup list-group
+<div class="editgrid-listgroup list-group
     {{ ctx.component.striped ? 'table-striped' : ''}}
     {{ ctx.component.bordered ? 'table-bordered' : ''}}
     {{ ctx.component.hover ? 'table-hover' : ''}}
-    {{ ctx.component.condensed ? 'table-sm' : ''}}
-    ">
+    {{ ctx.component.condensed ? 'table-sm' : ''}}"
+    role="grid"
+    aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}} 
+    {% if (ctx.component.description) { %}d-{{ctx.instance.id}}-{{ctx.component.key}}{% } %}"
+>
   {% if (ctx.header) { %}
-  <li class="list-group-item list-group-header">
+  <div role="presentation" class="list-group-item list-group-header">
     {{ctx.header}}
-  </li>
+  </div>
   {% } %}
   {% ctx.rows.forEach(function(row, rowIndex) { %}
-  <li class="list-group-item" ref="{{ctx.ref.row}}">
+  <div role="presentation" class="list-group-item" ref="{{ctx.ref.row}}">
     {{row}}
     {% if (ctx.openRows[rowIndex] && !ctx.readOnly) { %}
     <div class="editgrid-actions">
@@ -25,16 +28,20 @@
         {{ctx.errors[rowIndex]}}
       </div>
     </div>
-  </li>
+  </div>
   {% }) %}
   {% if (ctx.footer) { %}
-  <li class="list-group-item list-group-footer">
+  <div class="list-group-item list-group-footer">
     {{ctx.footer}}
-  </li>
+  </div>
   {% } %}
-</ul>
+</div>
 {% if (!ctx.readOnly && ctx.hasAddButton) { %}
 <button class="btn btn-primary" ref="{{ctx.ref.addRow}}">
   <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
 </button>
 {% } %}
+{% if (ctx.options.vpat) { %}
+<span class="sr-only" aria-live="polite" ref="editGridLiveRegion"></span>
+{% } %}
+

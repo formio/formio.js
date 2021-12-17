@@ -305,7 +305,9 @@ export default class DataMapComponent extends DataGridComponent {
   addRow() {
     const index = this.rows.length;
     this.rows[index] = this.createRowComponents(this.dataValue, index);
-    this.redraw();
+    this.redraw().then(() => {
+      super.afterAddRow(this.rows[index]);
+    });
     this.triggerChange();
   }
 
@@ -315,7 +317,9 @@ export default class DataMapComponent extends DataGridComponent {
       delete this.dataValue[keys[index]];
     }
     this.rows.splice(index, 1);
-    this.redraw();
+    this.redraw().then(() => {
+      super.afterRemoveRow();
+    });
     this.triggerChange();
   }
 

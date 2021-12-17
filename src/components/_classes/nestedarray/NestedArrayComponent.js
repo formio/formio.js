@@ -5,6 +5,8 @@ import _ from 'lodash';
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
+import { getFocusableElements } from '../../../utils/utils';
+
 export default class NestedArrayComponent extends NestedDataComponent {
   static schema(...extend) {
     return NestedDataComponent.schema({
@@ -209,5 +211,32 @@ export default class NestedArrayComponent extends NestedDataComponent {
       return this.iteratableRows[rowIndex].components;
     }
     return super.getComponents();
+  }
+
+  focusOnNewRowElement(row, index) {
+    if (index !== undefined) {
+      const focusableElements = getFocusableElements(row[index].element);
+      focusableElements[0].focus();
+      return;
+    }
+    if (Array.isArray(row)) {
+      row.find((component) => {
+        const focusableElements = getFocusableElements(component.element);
+        if (focusableElements && focusableElements[0]) {
+          focusableElements[0].focus();
+          return true;
+        }
+      });
+    }
+    else {
+      Object.keys(row).find((key) => {
+        const focusableElements = getFocusableElements(row[key].element);
+        if (focusableElements && focusableElements[0]) {
+          focusableElements[0].focus();
+          return true;
+        }
+        return false;
+      });
+    }
   }
 }

@@ -461,7 +461,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.triggerChange();
     this.redraw().then(() => {
       this.focusOnNewRowElement(this.rows[index]);
+      this.afterAddRow(this.rows[index]);
     });
+  }
+
+  afterAddRow(row) {
+    this.focusOnNewRowElement(row);
   }
 
   updateComponentsRowIndex(components, rowIndex) {
@@ -489,7 +494,13 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
     this.setValue(this.dataValue, { isReordered: true });
-    this.redraw();
+    this.redraw().then(() => {
+      this.afterRemoveRow();
+    });
+  }
+
+  afterRemoveRow() {
+    this.refs[`${this.datagridKey}-addRow`][0].focus();
   }
 
   removeRowComponents(row) {
