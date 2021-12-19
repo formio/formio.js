@@ -232,6 +232,7 @@ import formWithSurvey from &apos;../test/forms/formWithSurvey&apos;;
 import formWithSelectBoxes from &apos;../test/forms/formWithSelectBoxes&apos;;
 import formWithDayComp from &apos;../test/forms/formWithDayComp&apos;;
 import formWithCalcValue from &apos;../test/forms/formWithCalcValue&apos;;
+import formWithAllowCalculateOverride from &apos;../test/forms/formWithAllowCalculateOverride&apos;;
 import testClearOnHideInsideEditGrid from &apos;../test/forms/clearOnHideInsideEditGrid&apos;;
 import formWithNestedDataGridInitEmpty from &apos;../test/forms/nestedDataGridWithInitEmpty&apos;;
 import * as FormioUtils from &apos;./utils/utils&apos;;
@@ -1113,6 +1114,43 @@ describe(&apos;Webform tests&apos;, function() {
     .catch((err) =&gt; done(err));
   });
 
+  it(&apos;Should modify calculated value only if it was not manually modified when allowCalculateOverride is true&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    form.setForm(formWithAllowCalculateOverride).then(() =&gt; {
+      const labelComp = form.getComponent(&apos;label&apos;);
+      const valueComp = form.getComponent(&apos;value&apos;);
+
+      const inputEvent = new Event(&apos;input&apos;);
+      const labelInput = labelComp.refs.input[0];
+      const valueInput = valueComp.refs.input[0];
+      labelInput.value = &apos;Hello&apos;;
+      labelInput.dispatchEvent(inputEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(labelComp.dataValue, &apos;Hello&apos;);
+        assert.equal(valueComp.dataValue, &apos;hello&apos;);
+
+        valueInput.value = &apos;hello123&apos;;
+        valueInput.dispatchEvent(inputEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(valueComp.dataValue, &apos;hello123&apos;);
+
+          labelInput.value = &apos;HeLLo World&apos;;
+          labelInput.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(labelComp.dataValue, &apos;HeLLo World&apos;);
+            assert.equal(valueComp.dataValue, &apos;hello123&apos;);
+            done();
+          }, 500);
+        }, 500);
+      }, 500);
+    }).catch(done);
+  });
+
   it(`Should show field only in container where radio component has &apos;yes&apos; value when containers contain radio
   components with the same key`, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
@@ -1281,7 +1319,7 @@ describe(&apos;Webform tests&apos;, function() {
           input1.dispatchEvent(inputEvent);
 
           setTimeout(() =&gt; {
-            assert.equal(input2.value, &apos;6678&apos;);
+            assert.equal(input2.value, &apos;66&apos;);
             assert.equal(input1.value, 6678);
             //set a number as calculated value
             formWithCalculatedValue.components[1].calculatedValue = 6678;
@@ -1290,7 +1328,7 @@ describe(&apos;Webform tests&apos;, function() {
             input1.dispatchEvent(inputEvent);
 
             setTimeout(() =&gt; {
-              assert.equal(input2.value, &apos;667890&apos;);
+              assert.equal(input2.value, &apos;66&apos;);
               assert.equal(input1.value, 667890);
               done();
             }, 250);
@@ -2395,7 +2433,7 @@ describe(&apos;Webform tests&apos;, function() {
     const submissionWithOverridenValues2 = {
       data: {
         dataGrid: [
-          { label: &apos;yes2&apos;, value: &apos;yes2&apos; },
+          { label: &apos;yes2&apos;, value: &apos;y&apos; },
           { label: &apos;no&apos;, value: &apos;n&apos; },
         ],
         checkbox: false,
@@ -3329,6 +3367,70 @@ describe(&apos;Webform tests&apos;, function() {
       }, 200);
     })
       .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not refetch options for Select if there was an error&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: &apos;Select&apos;,
+          widget: &apos;html5&apos;,
+          tableView: true,
+          dataSrc: &apos;url&apos;,
+          data: {
+            url: &apos;http://example.com&apos;,
+            headers: [
+              {
+                key: &apos;&apos;,
+                value: &apos;&apos;,
+              },
+            ],
+          },
+          key: &apos;select&apos;,
+          hidden: true,
+          type: &apos;select&apos;,
+          input: true,
+          disableLimit: false,
+        },
+      ],
+    };
+
+    let counter = 0;
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise((_, reject) =&gt; {
+        setTimeout(() =&gt; {
+          counter++;
+          reject(new Error(&apos;Failed to fetch&apos;));
+        }, 50);
+      });
+    };
+
+    form.setForm(formJson).then(() =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+
+      select.visible = true;
+
+      setTimeout(() =&gt; {
+        setTimeout(() =&gt; {
+          select.visible = false;
+
+          setTimeout(() =&gt; {
+            select.visible = true;
+
+            setTimeout(() =&gt; {
+              expect(select.loadingError).to.exist;
+              expect(counter).to.equal(1);
+              Formio.makeRequest = originalMakeRequest;
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
   });
 
   it(&apos;Should show only one custom error when submitting empty required field with multiple validation&apos;, function(done) {
