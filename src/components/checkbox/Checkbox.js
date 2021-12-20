@@ -84,12 +84,15 @@ export default class CheckBoxComponent extends Field {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
     if (this.input) {
-      if (this.component.inputType === 'radio') {
-        this.input.setAttribute('data-checked', this.checked);
-      }
-      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
-        modified: true
-      }));
+      this.addEventListener(this.input, this.inputInfo.changeEvent, () => {
+        if (this.component.name) {
+          this.radioTouched = true;
+          this.toggleRadio();
+        }
+        this.updateValue(null, {
+          modified: true
+        });
+      });
       this.addShortcut(this.input);
     }
     return super.attach(element);
@@ -138,11 +141,33 @@ export default class CheckBoxComponent extends Field {
     return !!this.dataValue;
   }
 
+  toggleRadio() {
+    const previouslyChecked = 'checked' in this.input.dataset && this.input.dataset.checked === 'true';
+
+    this.input.checked = previouslyChecked ? 0 : 1;
+    this.input.dataset.checked = previouslyChecked ? 'false' : 'true';
+
+    const radiosWithSameName = this.options.display === 'pdf'
+      ? document.getElementsByName(this.input.name)
+      : this.root.element.querySelectorAll(`[name="${this.input.name}"]`);
+
+    radiosWithSameName.forEach(el => {
+      if (el !== this.input && el.dataset.checked === 'true') {
+        el.dataset.checked = 'false';
+      }
+    });
+  }
+
   setCheckedState(value) {
     if (!this.input) {
       return;
     }
     if (this.component.name) {
+      if (!this.radioTouched) {
+        const checked = value === this.component.value;
+        this.input.checked = checked ? 1 : 0;
+        this.input.dataset.checked = checked ? 'true' : 'false';
+      }
       this.input.value = (value === this.component.value) ? this.component.value : 0;
       value = value !== this.dataValue ? value : this.emptyValue;
     }
@@ -195,14 +220,7 @@ export default class CheckBoxComponent extends Field {
 
     // Update attributes of the input element
     if (changed && this.input) {
-      const isRadio = this.component.inputType === 'radio' && 'checked' in this.input.dataset;
-
-      if (isRadio) {
-        const previouslyChecked = this.input.dataset.checked === 'true';
-        this.input.checked = previouslyChecked ? 0 : 1;
-        this.input.dataset.checked = previouslyChecked ? 'false' : 'true';
-      }
-      else if (this.input.checked) {
+      if (this.input.checked) {
         this.input.setAttribute('checked', 'true');
       }
       else {
