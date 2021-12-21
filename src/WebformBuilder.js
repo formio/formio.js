@@ -1,6 +1,6 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { GlobalFormio as Formio } from './Formio';
@@ -381,10 +381,10 @@ export default class WebformBuilder extends Component {
   }
 
   attachTooltip(component, title) {
-    return new Tooltip(component, {
-      trigger: 'hover focus',
+    return tippy(component, {
+      trigger: 'mouseenter focus',
       placement: 'top',
-      title
+      content: title,
     });
   }
 
