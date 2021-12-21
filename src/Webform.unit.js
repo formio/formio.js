@@ -3108,6 +3108,9 @@ describe('Webform tests', function() {
     Formio.createForm(element, optionalSanitize, {
       sanitize: false,
     }).then(form => {
+      if (FormioUtils.sanitize.restore) {
+        FormioUtils.sanitize.restore();
+      }
       const sanitize = sinon.spy(FormioUtils, 'sanitize');
       form.redraw();
       setTimeout(() => {
@@ -3121,9 +3124,14 @@ describe('Webform tests', function() {
           form.redraw();
           setTimeout(() => {
             assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
+            FormioUtils.sanitize.restore();
             done();
           }, 250);
-        }, 250).catch(done);
+        }, 250)
+        .catch(err => {
+          FormioUtils.sanitize.restore();
+          done(err);
+        });
       });
     }).catch(done);
 
