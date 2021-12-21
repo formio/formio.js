@@ -3108,30 +3108,25 @@ describe('Webform tests', function() {
     Formio.createForm(element, optionalSanitize, {
       sanitize: false,
     }).then(form => {
-      if (FormioUtils.sanitize.restore) {
-        FormioUtils.sanitize.restore();
-      }
-      const sanitize = sinon.spy(FormioUtils, 'sanitize');
+      // Copy sanitize function
+      const sanitize = FormioUtils.sanitize.bind({});
+      const sanitizeSpy = sinon.spy(sanitize);
       form.redraw();
       setTimeout(() => {
-        assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
+        assert.equal(sanitizeSpy.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
         element.innerHTML = '';
 
         Formio.createForm(element, optionalSanitize, {
           sanitize: true,
         }).then(form => {
-          sanitize.resetHistory();
+          sanitizeSpy.resetHistory();
           form.redraw();
           setTimeout(() => {
-            assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
-            FormioUtils.sanitize.restore();
+            assert.equal(sanitizeSpy.callCount, 1, 'Should sanitize templates when sanitize in turned on');
             done();
           }, 250);
         }, 250)
-        .catch(err => {
-          FormioUtils.sanitize.restore();
-          done(err);
-        });
+        .catch(done);
       });
     }).catch(done);
 
