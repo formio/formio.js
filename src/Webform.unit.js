@@ -47,7 +47,7 @@ import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
-import { fastCloneDeep } from '../lib/utils/utils';
+import { fastCloneDeep, sanitize } from '../lib/utils/utils';
 
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import calculatedValue from '../test/forms/calculatedValue';
@@ -63,7 +63,7 @@ import formWithCalcValue from '../test/forms/formWithCalcValue';
 import formWithAllowCalculateOverride from '../test/forms/formWithAllowCalculateOverride';
 import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
 import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
-import * as FormioUtils from './utils/utils';
+// import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
 
@@ -3108,25 +3108,27 @@ describe('Webform tests', function() {
     Formio.createForm(element, optionalSanitize, {
       sanitize: false,
     }).then(form => {
-      const sanitize = sinon.spy(FormioUtils.sanitize);
+      const sanitizeWithSpy = sinon.spy(sanitize);
+      const originalSanitize = Formio.Utils.sanitize;
+      Formio.Utils.sanitize = sanitizeWithSpy;
       form.redraw();
       setTimeout(() => {
-        assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
+        assert.equal(sanitizeWithSpy.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
         element.innerHTML = '';
 
         Formio.createForm(element, optionalSanitize, {
           sanitize: true,
         }).then(form => {
-          sanitize.resetHistory();
+          sanitizeWithSpy.resetHistory();
           form.redraw();
           setTimeout(() => {
-            assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
-            FormioUtils.sanitize.restore();
+            assert.equal(sanitizeWithSpy.callCount, 1, 'Should sanitize templates when sanitize in turned on');
+            Formio.Utils.sanitize = originalSanitize;
             done();
           }, 250);
         }, 250)
         .catch(err => {
-          FormioUtils.sanitize.restore();
+          Formio.Utils.sanitize = originalSanitize;
           done(err);
         });
       });
