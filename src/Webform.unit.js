@@ -3123,9 +3123,9 @@ describe('Webform tests', function() {
             assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
             done();
           }, 250);
-        }, 250);
-      }).catch(done);
-    });
+        }, 250).catch(done);
+      });
+    }).catch(done);
 
     it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
       const formElement = document.createElement('div');
