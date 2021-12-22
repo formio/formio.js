@@ -1,58 +1,59 @@
-import BuilderUtils from '../../../utils/builder';
-import _ from 'lodash';
+import BuilderUtils from "../../../utils/builder";
+import _ from "lodash";
 
 export default [
   {
-    key: 'multiple',
+    key: "multiple",
     ignore: true,
   },
   {
-    type: 'datagrid',
+    type: "datagrid",
     input: true,
-    label: 'Values',
-    key: 'values',
-    tooltip: 'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
+    label: "Values",
+    key: "values",
+    tooltip:
+      "The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.",
     weight: 10,
     reorder: true,
-    defaultValue: [{ label: '', value: '' }],
+    defaultValue: [{ label: "", value: "" }],
     components: [
       {
-        label: 'Label',
-        key: 'label',
+        label: "Label",
+        key: "label",
         input: true,
-        type: 'textfield',
+        type: "textfield",
       },
       {
-        label: 'Value',
-        key: 'value',
+        label: "Value",
+        key: "value",
         input: true,
-        type: 'textfield',
+        type: "textfield",
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] },
+        calculateValue: { _camelCase: [{ var: "row.label" }] },
         validate: {
-          required: true
-        }
-      },
-      {
-        type: 'selectF',      //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
-        input: true,
-        weight: 180,
-        label: 'Shortcut',
-        key: 'shortcut',
-        tooltip: 'The shortcut key for this option.',
-        dataSrc: 'custom',
-        valueProperty: 'value',
-        customDefaultValue: () => '',
-        template: '{{ item.label }}',
-        data: {
-          custom(context) {
-            return BuilderUtils.getAvailableShortcuts(
-              _.get(context, 'instance.options.editForm', {}),
-              _.get(context, 'instance.options.editComponent', {})
-            );
-          },
+          required: true,
         },
       },
+      // {
+      //   type: 'selectF',      //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
+      //   input: true,
+      //   weight: 180,
+      //   label: 'Shortcut',
+      //   key: 'shortcut',
+      //   tooltip: 'The shortcut key for this option.',
+      //   dataSrc: 'custom',
+      //   valueProperty: 'value',
+      //   customDefaultValue: () => '',
+      //   template: '{{ item.label }}',
+      //   data: {
+      //     custom(context) {
+      //       return BuilderUtils.getAvailableShortcuts(
+      //         _.get(context, 'instance.options.editForm', {}),
+      //         _.get(context, 'instance.options.editComponent', {})
+      //       );
+      //     },
+      //   },
+      // },
     ],
   },
 
