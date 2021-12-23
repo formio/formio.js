@@ -3231,7 +3231,9 @@ describe('Webform tests', function() {
       return new Promise((_, reject) => {
         setTimeout(() => {
           counter++;
-          reject(new Error('Failed to fetch'));
+          const err = new Error('Failed to fetch');
+          err.networkError = true;
+          reject(err);
         }, 50);
       });
     };
@@ -3249,7 +3251,8 @@ describe('Webform tests', function() {
             select.visible = true;
 
             setTimeout(() => {
-              expect(select.loadingError).to.exist;
+              expect(select.networkError).to.be.true;
+              expect(select.loadingError).to.be.true;
               expect(counter).to.equal(1);
               Formio.makeRequest = originalMakeRequest;
               done();
