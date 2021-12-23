@@ -509,7 +509,7 @@ export default class SelectComponent extends Field {
   }
 
   get loadingError() {
-    return !this.component.refreshOn && !this.component.refreshOnBlur && this.itemsLoaded && this.error;
+    return !this.component.refreshOn && !this.component.refreshOnBlur && this.networkError;
   }
 
   get shouldLoad() {
@@ -633,7 +633,9 @@ export default class SelectComponent extends Field {
 
   handleLoadingError(err) {
     this.loading = false;
-    this.error = err;
+    if (err.networkError) {
+      this.networkError = true;
+    }
     this.itemsLoadedResolve();
     this.emit('componentError', {
       component: this.component,
