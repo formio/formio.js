@@ -35,12 +35,12 @@ export default [
     key: 'calculateValuePanel',
     ignore: true
   },
-  {
-    key: 'passwordInfo',
-    weight: 0,
-    type: 'htmlelement',
-    tag: 'div',
-    className: 'alert alert-info',
-    content: 'Password fields are automatically encrypted using 1-way salted bcrypt hashes. These hashes are also protected and not returned in the API.'
-  }
+  // {
+  //   key: 'passwordInfo',
+  //   weight: 0,
+  //   type: 'htmlelement',
+  //   tag: 'div',
+  //   className: 'alert alert-info',
+  //   content: 'Password fields are automatically encrypted using 1-way salted bcrypt hashes. These hashes are also protected and not returned in the API.'
+  // }
 ];
