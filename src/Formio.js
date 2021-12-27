@@ -385,7 +385,7 @@ class Formio {
   loadSubmission(query, opts) {
     return this.load('submission', query, opts)
       .then((submission) => {
-        this.vId = submission.revisionId || submission._fvid;
+        this.vId = submission._frid || submission._fvid;
         this.vUrl = `${this.formUrl}/v/${this.vId}`;
         return submission;
       });

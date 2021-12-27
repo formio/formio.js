@@ -614,14 +614,14 @@ export default class FormComponent extends Component {
     const changed = super.setValue(submission, flags);
     this.valueChanged = true;
     if (this.subForm) {
-      const revisionPath = submission.revisionId ? 'revisionId' : '_vid';
+      const revisionPath = submission._frid ? '_frid' : '_vid';
       const shouldLoadOriginalRevision = this.useOriginalRevision
       && _.isNumber(submission[revisionPath])
       && _.isNumber(this.subForm.form?.[revisionPath])
       && submission._fvid !== this.subForm.form[revisionPath];
 
       if (shouldLoadOriginalRevision) {
-        this.setFormRevision( submission.revisionId || submission._fvid);
+        this.setFormRevision( submission._frid || submission._fvid);
         this.createSubForm().then(() => {
           this.attach(this.element);
         });
