@@ -18,10 +18,10 @@ export default function(...extend) {
       key: 'display',
       components: EditGridEditDisplay,
     },
-    {
-      key: 'data',
-      components: EditGridEditData,
-    },
+    // {
+    //   key: 'data',
+    //   components: EditGridEditData,
+    // },
     {
       key: 'validation',
       components: EditGridEditValidation

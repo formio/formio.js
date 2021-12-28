@@ -23,20 +23,20 @@ export default [
       return context.data.enableRowGroups ? true : context.data.disableAddingRemovingRows;
     },
   },
-  {
-    weight: 406,
-    type: 'textarea',
-    input: true,
-    key: 'conditionalAddButton',
-    label: 'Conditional Add Button',
-    placeholder: 'show = ...',
-    tooltip: 'Specify condition when Add Button should be displayed.',
-    editor: 'ace',
-    as: 'javascript',
-    wysiwyg: {
-      minLines: 3,
-    },
-  },
+  // {
+  //   weight: 406,
+  //   type: 'textarea',
+  //   input: true,
+  //   key: 'conditionalAddButton',
+  //   label: 'Conditional Add Button',
+  //   placeholder: 'show = ...',
+  //   tooltip: 'Specify condition when Add Button should be displayed.',
+  //   editor: 'ace',
+  //   as: 'javascript',
+  //   wysiwyg: {
+  //     minLines: 3,
+  //   },
+  // },
   {
     type: 'checkbox',
     label: 'Allow Reorder',
