@@ -37,18 +37,18 @@ export default [
       return !Evaluator.noeval;
     },
   },
-  {
-    weight: 1010,
-    type: 'textarea',
-    input: true,
-    key: 'conditionalAddButton',
-    label: 'Conditional Add Button',
-    placeholder: 'show = ...',
-    tooltip: 'Specify condition when Add Button should be displayed.',
-    editor: 'ace',
-    as: 'javascript',
-    wysiwyg: {
-      minLines: 3,
-    },
-  },
+  // {
+  //   weight: 1010,
+  //   type: 'textarea',
+  //   input: true,
+  //   key: 'conditionalAddButton',
+  //   label: 'Conditional Add Button',
+  //   placeholder: 'show = ...',
+  //   tooltip: 'Specify condition when Add Button should be displayed.',
+  //   editor: 'ace',
+  //   as: 'javascript',
+  //   wysiwyg: {
+  //     minLines: 3,
+  //   },
+  // },
 ];
