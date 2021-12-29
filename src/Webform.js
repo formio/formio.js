@@ -338,7 +338,10 @@ export default class Webform extends NestedDataComponent {
     this.i18next.initialized = true;
     return new NativePromise((resolve, reject) => {
       try {
-        this.i18next.init(this.options.i18n, (err) => {
+        this.i18next.init({
+          ...this.options.i18n,
+          ...{ compatibilityJSON: 'v3' }
+        }, (err) => {
           // Get language but remove any ;q=1 that might exist on it.
           this.options.language = this.i18next.language.split(';')[0];
           if (err) {

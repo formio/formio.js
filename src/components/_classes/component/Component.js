@@ -934,7 +934,7 @@ export default class Component extends Element {
    */
   sanitize(dirty, forceSanitize) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
-    if ((this.options.pdf) && !forceSanitize) {
+    if ((!this.shouldSanitizeValue && !forceSanitize) || ((this.options.pdf) && !forceSanitize)) {
       return dirty;
     }
     return FormioUtils.sanitize(dirty, this.options);
@@ -1368,7 +1368,7 @@ export default class Component extends Element {
       return '';
     }
     const stringValue = value.toString();
-    return this.sanitize(stringValue, this.shouldSanitizeValue);
+    return this.sanitize(stringValue);
   }
 
   getView(value, options) {
@@ -2259,7 +2259,7 @@ export default class Component extends Element {
 
   get shouldSanitizeValue() {
     // Sanitize value if sanitizing for thw whole content is turned off
-    return (this.options?.sanitize === false ? true : false);
+    return (this.options?.sanitize !== false);
   }
 
   addAce(element, settings, onChange) {
