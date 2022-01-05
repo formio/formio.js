@@ -245,7 +245,7 @@ export default class RadioComponent extends Field {
           value = JSON.stringify(value);
         }
         else {
-          value = value.toString();
+          value = String(value);
         }
         break;
       case 'boolean':
