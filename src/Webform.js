@@ -1415,6 +1415,7 @@ export default class Webform extends NestedDataComponent {
       return true;
     }
     else {
+      this.emit('cancelSubmit');
       return false;
     }
   }
