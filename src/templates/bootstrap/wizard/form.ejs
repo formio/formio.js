@@ -1,23 +1,30 @@
 <div class="{{ctx.className}}">
-  <div style="position: relative;">
-    {% if (ctx.wizardHeaderType === 'wizardHeaderVertical') { %}
-      <div class="row {{ctx.wizardHeaderLocation === 'right' ? 'flex-row-reverse': ''}}">
-        <div class="col-sm-2">
-          {{ ctx.wizardHeader }}
+    <div style="position: relative;">
+        {% if (ctx.wizardHeaderType === 'wizardHeaderVertical') { %}
+        <div class="row">
+            {% if (ctx.wizardHeaderLocation !== 'right') { %}
+            <div class="col-sm-2">
+                {{ ctx.wizardHeader }}
+            </div>
+            {% } %}
+            <div class="wizard-page col-sm-10" ref="{{ctx.wizardKey}}">
+                {{ctx.components}}
+            </div>
+            {% if (ctx.wizardHeaderLocation === 'right') { %}
+            <div class="col-sm-2">
+                {{ ctx.wizardHeader }}
+            </div>
+            {% } %}
         </div>
-        <div class="wizard-page col-sm-10" ref="{{ctx.wizardKey}}">
-          {{ctx.components}}
+        <div class="col-sm-offset-2 col-sm-10 {{ctx.wizardHeaderLocation === 'right' ? 'col-sm-offset-0 col-md-offset-0'}}">
+            {{ ctx.wizardNav }}
         </div>
-      </div>
-      <div class="col-sm-offset-2 col-sm-10">
+        {% } else { %}
+        {{ ctx.wizardHeader }}
+        <div class="wizard-page" ref="{{ctx.wizardKey}}">
+            {{ctx.components}}
+        </div>
         {{ ctx.wizardNav }}
-      </div>
-    {% } else { %} 
-      {{ ctx.wizardHeader }}
-      <div class="wizard-page" ref="{{ctx.wizardKey}}">
-        {{ctx.components}}
-      </div>
-      {{ ctx.wizardNav }}
-    {% } %} 
-  </div>
+        {% } %}
+    </div>
 </div>
