@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased - 4.14.1-rc.6]
 ### Fixed
  - UIP-326: fix calling function to cancel submission made submit button disabled
+ - FIO-4412: fixed an issue where checkbox value does not return after submission when checkbox is shown conditionally and it is inside the nested form
 
 ## 4.14.1-rc.5
 ### Changed
