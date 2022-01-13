@@ -228,7 +228,9 @@ export default class PDF extends Webform {
     const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
-        this.postMessage({ name: 'submission', data: submission });
+        if (changed) {
+          this.postMessage({ name: 'submission', data: submission });
+        }
       });
     }
     return changed;
@@ -245,8 +247,9 @@ export default class PDF extends Webform {
     }
 
     this.iframeReady.then(() => {
-      if (this.iframeElement && this.iframeElement.contentWindow) {
+      if (this.iframeElement && this.iframeElement.contentWindow && !(message.name === 'form' && this.iframeFormSetUp)) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
+        this.iframeFormSetUp = message.name === 'form';
       }
     });
   }
