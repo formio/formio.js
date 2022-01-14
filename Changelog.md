@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.13.12
+### Changed
+ - Official Release
+
 ## 4.13.12-rc.1
 ### Fixed
  - FIO-4412: fixed checkbox value not return after submission when checkbox is shown conditionally
