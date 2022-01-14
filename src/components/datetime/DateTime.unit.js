@@ -8,7 +8,6 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4,
   comp5,
   comp6
 } from './fixtures';
@@ -326,27 +325,6 @@ describe('DateTime Component', () => {
 
       document.innerHTML = '';
       done();
-    }).catch(done);
-  });
-
-  it('Should update value if time mode is on when OnBlur event triggered', (done) => {
-    const form = _.cloneDeep(comp4);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const dateTime = form.getComponent('time');
-      const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
-
-      const blurEvent = new Event('blur');
-      calendar._input.value = '2021-06-01T09:00:00.000Z';
-      calendar._input.dispatchEvent(blurEvent);
-
-      setTimeout(() => {
-        assert.equal(dateTime.dataValue !== '', true);
-
-        document.innerHTML = '';
-        done();
-      }, 300);
     }).catch(done);
   });
 
