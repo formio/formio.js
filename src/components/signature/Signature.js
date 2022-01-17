@@ -160,7 +160,6 @@ export default class SignatureComponent extends Input {
       if (this.dataValue) {
         this.setDataToSigaturePad();
       }
-      this.showCanvas(true);
     }
   }
 
