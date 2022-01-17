@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.1-rc.7]
+### Fixed
+ - FIO-3825: Fixed an issue where conditionally hidden components of the nested wizard form are not attached to the correct element
+
 ## 4.14.1-rc.6
 ### Fixed
  - UIP-326: fix calling function to cancel submission made submit button disabled
