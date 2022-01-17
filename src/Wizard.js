@@ -461,7 +461,7 @@ export default class Wizard extends Webform {
       let hasNested = false;
 
       eachComponent(filteredComponents, (comp) => {
-        if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
+        if (comp?.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
           if (pushAllowed) {
             this.setRootPanelId(comp);
             nestedPages.push(comp);
