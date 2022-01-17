@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.14.1-rc.7]
 ### Fixed
+ - FIO-4351: Migrated to tippy.js
  - FIO-4437: remove redundant SignRequest code
  - FIO-3825: Fixed an issue where conditionally hidden components of the nested wizard form are not attached to the correct element
  - FIO-4390: Signature becomes disabled only when at least one line is drawn
