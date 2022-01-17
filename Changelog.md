@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.14.1-rc.7]
 ### Fixed
+ - FIO-2960:Add debounce to reCaptcha component
  - FIO-4446: Fixes Select with data source URL not fetching options when it has validation error
  - FIO-3502: Fixes values on data tab get overwritten when label changed for Radio, Select Boxes and Select
  - FIO-4351: Migrated to tippy.js
