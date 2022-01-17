@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.14.1-rc.7]
 ### Fixed
+ - FIO-4443: Fixed signature not visible when generating a pdf.
  - FIO-4466: Fixed 'Save as reference' in Select resource
  - FIO-4496: fixed an issue where response from the resource does not display in the dropdown when more than one object is in the item template
  - FIO-4487: Protect the comp variable when iterating in wizards 
