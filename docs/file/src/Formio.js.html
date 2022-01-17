@@ -453,7 +453,13 @@ class Formio {
     if (!this[_id]) {
       return NativePromise.reject(`Missing ${_id}`);
     }
-    return this.makeRequest(type, this[_url] + query, &apos;get&apos;, null, opts);
+
+    let url = this[_url] + query;
+
+    if (type===&apos;form&apos; &amp;&amp; !isNaN(parseInt(this.vId))) {
+      url += `&amp;formRevision=${this.vId}`;
+    }
+    return this.makeRequest(type, url, &apos;get&apos;, null, opts);
   }
 
   makeRequest(...args) {
@@ -498,36 +504,39 @@ class Formio {
 
   loadForm(query, opts) {
     return this.load(&apos;form&apos;, query, opts)
-      .then((currentForm) =&gt; {
-        // Check to see if there isn&apos;t a number in vId.
-        if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
-          return currentForm;
-        }
-        // If a submission already exists but form is marked to load current version of form.
-        if (currentForm.revisions === &apos;current&apos; &amp;&amp; this.submissionId) {
-          return currentForm;
-        }
-        // If they specified a revision form, load the revised form components.
-        if (query &amp;&amp; isObject(query)) {
-          query = Formio.serialize(query.params);
-        }
-        if (query) {
-          query = this.query ? (`${this.query}&amp;${query}`) : (`?${query}`);
-        }
-        else {
-          query = this.query;
-        }
-        return this.makeRequest(&apos;form&apos;, this.vUrl + query, &apos;get&apos;, null, opts)
-          .then((revisionForm) =&gt; {
-            currentForm._vid = revisionForm._vid;
-            currentForm.components = revisionForm.components;
-            currentForm.settings = revisionForm.settings;
-            // Using object.assign so we don&apos;t cross polinate multiple form loads.
-            return Object.assign({}, currentForm);
-          })
-          // If we couldn&apos;t load the revision, just return the original form.
-          .catch(() =&gt; Object.assign({}, currentForm));
-      });
+    .then((currentForm) =&gt; {
+      // Check to see if there isn&apos;t a number in vId.
+      if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
+        return currentForm;
+      }
+      // If a submission already exists but form is marked to load current version of form.
+      if (currentForm.revisions === &apos;current&apos; &amp;&amp; this.submissionId) {
+        return currentForm;
+      }
+      if (currentForm._vid === this.vId) {
+        return currentForm;
+      }
+      // If they specified a revision form, load the revised form components.
+      if (query &amp;&amp; isObject(query)) {
+        query = Formio.serialize(query.params);
+      }
+      if (query) {
+        query = this.query ? (`${this.query}&amp;${query}`) : (`?${query}`);
+      }
+      else {
+        query = this.query;
+      }
+      return this.makeRequest(&apos;form&apos;, this.vUrl + query, &apos;get&apos;, null, opts)
+        .then((revisionForm) =&gt; {
+          currentForm._vid = revisionForm._vid;
+          currentForm.components = revisionForm.components;
+          currentForm.settings = revisionForm.settings;
+          // Using object.assign so we don&apos;t cross polinate multiple form loads.
+          return Object.assign({}, currentForm);
+        })
+        // If we couldn&apos;t load the revision, just return the original form.
+        .catch(() =&gt; Object.assign({}, currentForm));
+    });
   }
 
   saveForm(data, opts) {

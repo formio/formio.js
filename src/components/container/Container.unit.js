@@ -1,11 +1,15 @@
 import assert from 'power-assert';
+import _ from 'lodash';
 import Harness from '../../../test/harness';
 import ContainerComponent from './Container';
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from './fixtures';
+
+import Formio from '../../Formio';
 
 describe('Container Component', () => {
   it('Should build a container component', () => {
@@ -49,5 +53,28 @@ describe('Container Component', () => {
         ]
       });
     });
+  });
+
+  it('Should render form with a submission in a draft-state without validation errors', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      form.submission = {
+        data: {
+          'container': {
+            'textField': 'a',
+          }
+        }
+      };
+
+      setTimeout(() => {
+        const textField = form.getComponent(['textField']);
+        const container = form.getComponent(['container']);
+        assert.equal(textField.errors.length, 0);
+        assert.equal(container.errors.length, 0);
+        done();
+      }, 100);
+    }).catch(done);
   });
 });

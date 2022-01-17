@@ -1,6 +1,6 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { GlobalFormio as Formio } from './Formio';
@@ -250,15 +250,6 @@ export default class WebformBuilder extends Component {
       console.warn(`Could not load project settings: ${err.message || err}`);
     });
 
-    const { paths } = Formio.pageQuery();
-    const formId = paths.includes('form') && paths[paths.indexOf('form') + 1];
-    formio.actionsUrl = `${Formio.getProjectUrl()}/form/${formId}/action`;
-    formio.loadActions().then(actions => {
-      if (actions.some(action => action.name === 'signrequest')) {
-        this.addSignrequestGroup();
-      }
-    });
-
     if (!formio.noProject && !isResourcesDisabled) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
@@ -300,30 +291,6 @@ export default class WebformBuilder extends Component {
 
   allowDrop() {
     return true;
-  }
-
-  addSignrequestGroup() {
-    const key = 'signrequestsignature';
-    const component = Components.components[key];
-    const builderInfo = { ...component.builderInfo, key };
-
-    this.builder.signrequest = {
-      title: 'SignRequest',
-      weight: 50
-    };
-
-    this.groups.signrequest = {
-      title: 'SignRequest',
-      key: 'signrequest',
-      components: { [key]: builderInfo },
-      componentOrder: [key],
-      subgroups: [],
-      weight: 50
-    };
-
-    this.groupOrder.push('signrequest');
-
-    this.triggerRedraw();
   }
 
   addExistingResourceFields(resources) {
@@ -381,10 +348,10 @@ export default class WebformBuilder extends Component {
   }
 
   attachTooltip(component, title) {
-    return new Tooltip(component, {
-      trigger: 'hover focus',
+    return tippy(component, {
+      trigger: 'mouseenter focus',
       placement: 'top',
-      title
+      content: title,
     });
   }
 

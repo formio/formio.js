@@ -178,11 +178,12 @@ export default class SelectComponent extends Field {
       if (this.component.reference) {
         return '';
       }
+
       // checking additional fields in the template
       const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
       if (hasNestedFields) {
         const data = this.component.template.replace(/<\/?[^>]+(>|$)/g, '').split('item.')[1].slice(0, -3);
-        return data;
+        return data.slice(0, data.indexOf(' '));
       }
       return 'data';
     }
@@ -512,7 +513,7 @@ export default class SelectComponent extends Field {
   }
 
   get loadingError() {
-    return !this.component.refreshOn && !this.component.refreshOnBlur && this.itemsLoaded && this.error;
+    return !this.component.refreshOn && !this.component.refreshOnBlur && this.networkError;
   }
 
   get shouldLoad() {
@@ -636,7 +637,9 @@ export default class SelectComponent extends Field {
 
   handleLoadingError(err) {
     this.loading = false;
-    this.error = err;
+    if (err.networkError) {
+      this.networkError = true;
+    }
     this.itemsLoadedResolve();
     this.emit('componentError', {
       component: this.component,

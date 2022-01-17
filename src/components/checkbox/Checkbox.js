@@ -140,9 +140,17 @@ export default class CheckBoxComponent extends Field {
       return;
     }
     if (this.component.name) {
-      this.input.value = (value === this.component.value) ? this.component.value : 0;
-      this.input.checked = (value === this.component.value && value !== this.dataValue) ? 1 : 0;
-      value = value !== this.dataValue ? value : this.emptyValue;
+      const shouldCheckThisRadio = value === this.component.value;
+      const isRadioNotCheckedYet = value !== this.dataValue;
+      this.input.value = shouldCheckThisRadio ? this.component.value : 0;
+      this.input.checked = (shouldCheckThisRadio && isRadioNotCheckedYet) ? 1 : 0;
+
+      if (isRadioNotCheckedYet && !shouldCheckThisRadio) {
+        return;
+      }
+
+      // Used to deselect the checkbox with Radio input type on the second click if it's already selected
+      value = isRadioNotCheckedYet ? value : this.emptyValue;
     }
     else if (value === 'on') {
       this.input.value = 1;
@@ -172,7 +180,7 @@ export default class CheckBoxComponent extends Field {
   setValue(value, flags = {}) {
     if (
       this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
+      (!this.input && value !== undefined && (this.visible || this.conditionallyVisible() || !this.component.clearOnHide))
     ) {
       const changed = this.updateValue(value, flags);
 

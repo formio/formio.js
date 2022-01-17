@@ -3113,7 +3113,6 @@ describe('Webform tests', function() {
       setTimeout(() => {
         assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
         element.innerHTML = '';
-
         Formio.createForm(element, optionalSanitize, {
           sanitize: true,
         }).then(form => {
@@ -3124,57 +3123,57 @@ describe('Webform tests', function() {
             done();
           }, 250);
         }, 250);
-      }).catch(done);
-    });
+      });
+    }).catch(done);
+  });
 
-    it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+  it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
 
-      form.setForm(testClearOnHideInsideEditGrid).then(() => {
-        form.submission = {
-          state: 'submitted',
-          data: {
-            subsidiaryEditGrid: [
-              {
-                subsidiaryEntityContainer: {
-                  entityFullName: 'test',
-                  divisionNum: '',
-                  entityType: 'otherEntity',
-                  ifOtherEntityPleaseExplain: 'test',
-                },
+    form.setForm(testClearOnHideInsideEditGrid).then(() => {
+      form.submission = {
+        state: 'submitted',
+        data: {
+          subsidiaryEditGrid: [
+            {
+              subsidiaryEntityContainer: {
+                entityFullName: 'test',
+                divisionNum: '',
+                entityType: 'otherEntity',
+                ifOtherEntityPleaseExplain: 'test',
               },
-            ],
-          },
-        };
+            },
+          ],
+        },
+      };
 
+      setTimeout(() => {
+        const clearOnHideField = form.getComponent([
+          'subsidiaryEditGrid',
+          0,
+          'subsidiaryEntityContainer',
+          'ifOtherEntityPleaseExplain',
+        ]);
+        const radioTrigger = form.getComponent(['subsidiaryEditGrid', 0, 'subsidiaryEntityContainer', 'entityType']);
+        assert.equal(form.rootPristine, true, 'Should not change this prop  after setting a submission');
+        assert.equal(clearOnHideField.visible, true, 'Should become visible');
+        assert.equal(clearOnHideField.dataValue, 'test', 'Should set a value from  the submission');
+
+        radioTrigger.setValue('subsidiary', { modified: true });
         setTimeout(() => {
-          const clearOnHideField = form.getComponent([
-            'subsidiaryEditGrid',
-            0,
-            'subsidiaryEntityContainer',
-            'ifOtherEntityPleaseExplain',
-          ]);
-          const radioTrigger = form.getComponent(['subsidiaryEditGrid', 0, 'subsidiaryEntityContainer', 'entityType']);
-          assert.equal(form.rootPristine, true, 'Should not change this prop  after setting a submission');
-          assert.equal(clearOnHideField.visible, true, 'Should become visible');
-          assert.equal(clearOnHideField.dataValue, 'test', 'Should set a value from  the submission');
+          assert.equal(clearOnHideField.visible, false, 'Should become invisible');
 
-          radioTrigger.setValue('subsidiary', { modified: true });
+          radioTrigger.setValue('otherEntity', { modified: true });
           setTimeout(() => {
-            assert.equal(clearOnHideField.visible, false, 'Should become invisible');
+            assert.equal(clearOnHideField.visible, true, 'Should become visible');
+            assert.equal(clearOnHideField.dataValue, '', 'Should clear a value due to the clearOnHide');
 
-            radioTrigger.setValue('otherEntity', { modified: true });
-            setTimeout(() => {
-              assert.equal(clearOnHideField.visible, true, 'Should become visible');
-              assert.equal(clearOnHideField.dataValue, '', 'Should clear a value due to the clearOnHide');
-
-              done();
-            }, 250);
+            done();
           }, 250);
         }, 250);
-      }).catch(done);
-    });
+      }, 250);
+    }).catch(done);
   });
 
   it('Should show values in editGrid rows with nested dataGrid when viewing submission with initEmpty option', function(done) {
@@ -3231,7 +3230,9 @@ describe('Webform tests', function() {
       return new Promise((_, reject) => {
         setTimeout(() => {
           counter++;
-          reject(new Error('Failed to fetch'));
+          const err = new Error('Failed to fetch');
+          err.networkError = true;
+          reject(err);
         }, 50);
       });
     };
@@ -3249,7 +3250,8 @@ describe('Webform tests', function() {
             select.visible = true;
 
             setTimeout(() => {
-              expect(select.loadingError).to.exist;
+              expect(select.networkError).to.be.true;
+              expect(select.loadingError).to.be.true;
               expect(counter).to.equal(1);
               Formio.makeRequest = originalMakeRequest;
               done();

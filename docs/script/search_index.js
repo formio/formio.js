@@ -2538,6 +2538,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/components.js~components.recalculatecomponents",
+    "class/src/components/Components.js~Components.html#static-method-recalculateComponents",
+    "src/components/Components.js~Components.recalculateComponents",
+    "method"
+  ],
+  [
     "src/components/components.js~components.setcomponent",
     "class/src/components/Components.js~Components.html#static-method-setComponent",
     "src/components/Components.js~Components.setComponent",
@@ -3630,6 +3636,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datetime/editform/datetime.edit.validation.js",
+    "file/src/components/datetime/editForm/DateTime.edit.validation.js.html",
+    "src/components/datetime/editForm/DateTime.edit.validation.js",
+    "file"
+  ],
+  [
     "src/components/datetime/fixtures/comp1.js",
     "file/src/components/datetime/fixtures/comp1.js.html",
     "src/components/datetime/fixtures/comp1.js",
@@ -3837,6 +3849,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp12.js",
     "file/src/components/editgrid/fixtures/comp12.js.html",
     "src/components/editgrid/fixtures/comp12.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp13.js",
+    "file/src/components/editgrid/fixtures/comp13.js.html",
+    "src/components/editgrid/fixtures/comp13.js",
     "file"
   ],
   [

@@ -1,7 +1,7 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
 import { GlobalFormio as Formio } from '../../../Formio';
@@ -934,7 +934,7 @@ export default class Component extends Element {
    */
   sanitize(dirty, forceSanitize) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
-    if ((this.options.pdf) && !forceSanitize) {
+    if ((!this.shouldSanitizeValue && !forceSanitize) || ((this.options.pdf) && !forceSanitize)) {
       return dirty;
     }
     return FormioUtils.sanitize(dirty, this.options);
@@ -1104,15 +1104,15 @@ export default class Component extends Element {
         const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
                                 .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-        this.tooltips[index] = new Tooltip(tooltip, {
-          trigger: 'hover click focus',
+        this.tooltips[index] = tippy(tooltip, {
+          trigger: 'mouseenter click focus',
           placement: 'right',
-          html: true,
-          title: this.t(tooltipText, { _userInput: true }),
-          template: `
+          allowHTML: true,
+          arrow: true,
+          content: `
             <div class="tooltip" style="opacity: 1;" role="tooltip">
               <div class="tooltip-arrow"></div>
-              <div class="tooltip-inner"></div>
+              <div class="tooltip-inner">${this.t(tooltipText, { _userInput: true })}</div>
             </div>`,
         });
       }
@@ -1213,7 +1213,7 @@ export default class Component extends Element {
     this.removeEventListeners();
     this.detachLogic();
     if (this.tooltip) {
-      this.tooltip.dispose();
+      this.tooltip.destroy();
     }
   }
 
@@ -1368,7 +1368,7 @@ export default class Component extends Element {
       return '';
     }
     const stringValue = value.toString();
-    return this.sanitize(stringValue, this.shouldSanitizeValue);
+    return this.sanitize(stringValue);
   }
 
   getView(value, options) {
@@ -1671,7 +1671,7 @@ export default class Component extends Element {
 
   removeEventListeners() {
     super.removeEventListeners();
-    this.tooltips.forEach(tooltip => tooltip.dispose());
+    this.tooltips.forEach(tooltip => tooltip.destroy());
     this.tooltips = [];
   }
 
@@ -2259,7 +2259,7 @@ export default class Component extends Element {
 
   get shouldSanitizeValue() {
     // Sanitize value if sanitizing for thw whole content is turned off
-    return (this.options?.sanitize === false ? true : false);
+    return (this.options?.sanitize !== false);
   }
 
   addAce(element, settings, onChange) {

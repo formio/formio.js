@@ -80,7 +80,7 @@ export default class SignatureComponent extends Input {
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && (this.options.readOnly || this.disabled)) {
+    if (this.refs.signatureImage && (this.options.readOnly || this.disabled)) {
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
