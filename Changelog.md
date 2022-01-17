@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.14.1-rc.7]
 ### Fixed
+ - FIO-4442: fixed an issue where date is showing the date prior to submitted date on view tab and data tab
  - FIO-4362, FIO-4363: Fixes an issue where values of the Radio type Checkboxes are not visible in the view and edit modes
  - FIO-2960:Add debounce to reCaptcha component
  - FIO-4446: Fixes Select with data source URL not fetching options when it has validation error
