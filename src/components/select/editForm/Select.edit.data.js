@@ -158,7 +158,7 @@ export default [
         input: true,
         type: 'textfield',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] },
+        calculateValue: 'value = _.camelCase(row.label);',
       },
     ],
     conditional: {
