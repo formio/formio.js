@@ -13,7 +13,7 @@ import DataGridComponent from './datagrid/DataGrid';
 // import DataMapComponent from './datamap/DataMap';
 // import DateTimeComponent from './datetime/DateTime';
 // import DayComponent from './day/Day';
-import EditGridComponent from './editgrid/EditGrid';
+// import EditGridComponent from './editgrid/EditGrid';
 import EmailComponent from './email/Email';
 //import FieldsetComponent from './fieldset/Fieldset';
 import FileComponent from './file/File';
@@ -28,7 +28,7 @@ import NestedDataComponent from './_classes/nesteddata/NestedDataComponent';
 import NestedArrayComponent from './_classes/nestedarray/NestedArrayComponent';
 import NumberComponent from './number/Number';
 //import PanelComponent from './panel/Panel';
-import PasswordComponent from './password/Password';
+// import PasswordComponent from './password/Password';
 import PhoneNumberComponent from './phonenumber/PhoneNumber';
 import RadioComponent from './radio/Radio';
 import ReCaptchaComponent from './recaptcha/ReCaptcha';
@@ -63,7 +63,7 @@ export default {
   // datamap: DataMapComponent,
   // datetime: DateTimeComponent,
   // day: DayComponent,
-  editgrid: EditGridComponent,
+  // editgrid: EditGridComponent,
   email: EmailComponent,
   input: Input,
   field: Field,
@@ -78,7 +78,7 @@ export default {
   nestedarray: NestedArrayComponent,
   number: NumberComponent,
  // panel: PanelComponent,
-  password: PasswordComponent,
+  // password: PasswordComponent,
   phoneNumber: PhoneNumberComponent,
   radio: RadioComponent,
   recaptcha: ReCaptchaComponent,
