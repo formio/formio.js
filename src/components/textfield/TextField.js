@@ -66,7 +66,7 @@ export default class TextFieldComponent extends Input {
     super(component, options, data);
 
     const timezone = (this.component.widget?.timezone || this.options.timezone);
-    const displayInTimezone = (this.component.widget?.displayInTimezone || 'UTC');
+    const displayInTimezone = (this.component.widget?.displayInTimezone || 'viewer');
 
     if (this.component.widget?.type === 'calendar') {
       this.component.widget = {

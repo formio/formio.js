@@ -9,7 +9,8 @@ import {
   comp2,
   comp3,
   comp5,
-  comp6
+  comp6,
+  comp7
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -532,6 +533,29 @@ describe('DateTime Component', () => {
           assert.equal(dateTime.dataValue.includes(expectedValue), true);
 
           document.innerHTML = '';
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct value after submission', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2022-12-21');
+
+      setTimeout(() => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(dateTime.dataValue, '2022-12-21');
           done();
         }, 200);
       }, 200);
