@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.14.1-rc.7]
 ### Fixed
+ - FIO-4487: Protect the comp variable when iterating in wizards 
  - FIO-4405: fixed an issue where form doesn't submit if hidden radio component has storage type as string
  - FIO-3715: fixed an issue where validation errors were shown with a submission in draft state if container component inside the form
  - FIO-4442: fixed an issue where date is showing the date prior to submitted date on view tab and data tab
