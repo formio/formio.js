@@ -3402,7 +3402,9 @@ describe(&apos;Webform tests&apos;, function() {
       return new Promise((_, reject) =&gt; {
         setTimeout(() =&gt; {
           counter++;
-          reject(new Error(&apos;Failed to fetch&apos;));
+          const err = new Error(&apos;Failed to fetch&apos;);
+          err.networkError = true;
+          reject(err);
         }, 50);
       });
     };
@@ -3420,7 +3422,8 @@ describe(&apos;Webform tests&apos;, function() {
             select.visible = true;
 
             setTimeout(() =&gt; {
-              expect(select.loadingError).to.exist;
+              expect(select.networkError).to.be.true;
+              expect(select.loadingError).to.be.true;
               expect(counter).to.equal(1);
               Formio.makeRequest = originalMakeRequest;
               done();

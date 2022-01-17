@@ -183,7 +183,8 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7
+  comp7,
+  comp8
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Radio Component&apos;, () =&gt; {
@@ -304,6 +305,26 @@ describe(&apos;Radio Component&apos;, () =&gt; {
         assert.deepEqual(!!getComputedStyle(i, &apos;:before&apos;), true);
       });
     });
+  });
+
+  it(&apos;Should not provide empty error message when hidden radio has storage type as string&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp8);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form)
+      .then(form =&gt; {
+        form.submission = {
+          data: {
+            radio: &apos;no&apos;
+          }
+        };
+        const alerts = document.querySelectorAll(&apos;.alert-danger&apos;);
+        setTimeout(() =&gt; {
+          assert.equal(alerts.length, 0);
+          done();
+        }, 100);
+      })
+      .catch(done);
   });
 });
 </code></pre>

@@ -180,9 +180,9 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4,
   comp5,
-  comp6
+  comp6,
+  comp7
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DateTime Component&apos;, () =&gt; {
@@ -501,27 +501,6 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
     }).catch(done);
   });
 
-  it(&apos;Should update value if time mode is on when OnBlur event triggered&apos;, (done) =&gt; {
-    const form = _.cloneDeep(comp4);
-    const element = document.createElement(&apos;div&apos;);
-
-    Formio.createForm(element, form).then(form =&gt; {
-      const dateTime = form.getComponent(&apos;time&apos;);
-      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
-
-      const blurEvent = new Event(&apos;blur&apos;);
-      calendar._input.value = &apos;2021-06-01T09:00:00.000Z&apos;;
-      calendar._input.dispatchEvent(blurEvent);
-
-      setTimeout(() =&gt; {
-        assert.equal(dateTime.dataValue !== &apos;&apos;, true);
-
-        document.innerHTML = &apos;&apos;;
-        done();
-      }, 300);
-    }).catch(done);
-  });
-
   it(&apos;Should not input the date that is disabled&apos;, (done) =&gt; {
     const form = _.cloneDeep(comp3);
     const element = document.createElement(&apos;div&apos;);
@@ -726,6 +705,29 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
           assert.equal(dateTime.dataValue.includes(expectedValue), true);
 
           document.innerHTML = &apos;&apos;;
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct value after submission&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      dateTime.setValue(&apos;2022-12-21&apos;);
+
+      setTimeout(() =&gt; {
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(dateTime.dataValue, &apos;2022-12-21&apos;);
           done();
         }, 200);
       }, 200);

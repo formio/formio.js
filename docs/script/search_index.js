@@ -3174,6 +3174,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/container/fixtures/comp3.js",
+    "file/src/components/container/fixtures/comp3.js.html",
+    "src/components/container/fixtures/comp3.js",
+    "file"
+  ],
+  [
     "src/components/container/fixtures/index.js",
     "file/src/components/container/fixtures/index.js.html",
     "src/components/container/fixtures/index.js",
@@ -3660,12 +3666,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/datetime/fixtures/comp4.js",
-    "file/src/components/datetime/fixtures/comp4.js.html",
-    "src/components/datetime/fixtures/comp4.js",
-    "file"
-  ],
-  [
     "src/components/datetime/fixtures/comp5.js",
     "file/src/components/datetime/fixtures/comp5.js.html",
     "src/components/datetime/fixtures/comp5.js",
@@ -3675,6 +3675,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/fixtures/comp6.js",
     "file/src/components/datetime/fixtures/comp6.js.html",
     "src/components/datetime/fixtures/comp6.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp7.js",
+    "file/src/components/datetime/fixtures/comp7.js.html",
+    "src/components/datetime/fixtures/comp7.js",
     "file"
   ],
   [
@@ -4776,6 +4782,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp8.js",
+    "file/src/components/radio/fixtures/comp8.js.html",
+    "src/components/radio/fixtures/comp8.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",
@@ -4822,6 +4834,12 @@ window.esdocSearchIndex = [
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-createLabel",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createLabel",
     "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#isloading",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-isLoading",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#isLoading",
+    "member"
   ],
   [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent#normalizevalue",
