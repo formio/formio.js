@@ -542,17 +542,6 @@ export default class WebformBuilder extends Component {
             subgroups: []
           })),
         })),
-        groupsContent: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroupContentItems', {
-          group: this.groups[groupKey],
-          groupKey,
-          groupId: `builder-sidebar-content-${this.id}`,
-          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroupContentItems', {
-            group,
-            groupKey: group.key,
-            groupId: `group-container-content-${groupKey}`,
-            subgroups: []
-          })),
-        })),
       }),
       form: this.webform.render(),
     });
