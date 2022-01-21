@@ -529,7 +529,8 @@ class Formio {
     let apiUrl = `/project/${form.project}`;
     apiUrl += `/form/${form._id}`;
     apiUrl += `/submission/${this.submissionId}`;
-    apiUrl += '/download';
+    const postfix = form.submissionRevisions && form.settings.changeLog? '/download/changelog' : '/download';
+    apiUrl += postfix;
 
     let download = this.base + apiUrl;
     return new NativePromise((resolve, reject) => {
