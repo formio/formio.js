@@ -206,8 +206,8 @@ export default class PDF extends Webform {
     return iframeSrc;
   }
 
-  setForm(form) {
-    return super.setForm(form).then(() => {
+  setForm(form, flags = {}) {
+    return super.setForm(form, flags).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
         form.url = this.formio.formUrl;

@@ -40,6 +40,7 @@ Formio.Operators = Operators;
 Formio.QuickRules = QuickRules;
 Formio.Transformers = Transformers;
 Formio.ValueSources = ValueSources;
+Formio.AllComponents = AllComponents;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;

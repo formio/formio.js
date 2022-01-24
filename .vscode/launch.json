@@ -17,10 +17,6 @@
               "-b",
               "-t",
               "20000",
-              "--reporter",
-              "dot",
-              "--slow",
-              "5000",
               "--colors",
               "${workspaceFolder}/lib/**/*.unit.js",
 

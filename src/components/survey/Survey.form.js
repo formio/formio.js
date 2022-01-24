@@ -17,5 +17,9 @@ export default function(...extend) {
       key: 'validation',
       components: SurveyEditValidation
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

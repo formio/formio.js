@@ -1,7 +1,7 @@
 <div class="{{ctx.className}}">
   <div style="position: relative;">
     {% if (ctx.wizardHeaderType === 'wizardHeaderVertical') { %}
-      <div class="row">
+      <div class="row {{ctx.wizardHeaderLocation === 'right' ? 'flex-row-reverse': ''}}">
         <div class="col-sm-2">
           {{ ctx.wizardHeader }}
         </div>

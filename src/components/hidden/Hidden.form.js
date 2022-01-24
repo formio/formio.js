@@ -20,5 +20,9 @@ export default function(...extend) {
       key: 'conditional',
       ignore: true
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

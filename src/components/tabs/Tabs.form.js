@@ -7,6 +7,10 @@ export default function(...extend) {
     {
       key: 'display',
       components: TabsEditDisplay
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

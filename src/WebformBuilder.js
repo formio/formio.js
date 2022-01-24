@@ -1,6 +1,6 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { GlobalFormio as Formio } from './Formio';
@@ -348,10 +348,10 @@ export default class WebformBuilder extends Component {
   }
 
   attachTooltip(component, title) {
-    return new Tooltip(component, {
-      trigger: 'hover focus',
+    return tippy(component, {
+      trigger: 'mouseenter focus',
       placement: 'top',
-      title
+      content: title,
     });
   }
 
@@ -800,9 +800,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (info) {
-      if (!info.key) {
-        info.key = this.generateKey(info);
-      }
+      info.key = this.generateKey(info);
     }
 
     return info;
@@ -849,7 +847,7 @@ export default class WebformBuilder extends Component {
     const group = element.getAttribute('data-group');
     let info, isNew, path, index;
 
-    if (key) {
+    if (key && group) {
       // This is a new component.
       info = this.getComponentInfo(key, group);
       if (!info && type) {

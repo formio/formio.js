@@ -12,7 +12,7 @@ export const editForms = [
     data: defaultSettings
   },
   customConditional({ row }) {
-    return row.name === name;
+    return row.name.value === name;
   }
 }));
 

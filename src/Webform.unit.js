@@ -60,6 +60,7 @@ import formWithSurvey from '../test/forms/formWithSurvey';
 import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
 import formWithDayComp from '../test/forms/formWithDayComp';
 import formWithCalcValue from '../test/forms/formWithCalcValue';
+import formWithAllowCalculateOverride from '../test/forms/formWithAllowCalculateOverride';
 import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
 import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
 import * as FormioUtils from './utils/utils';
@@ -941,6 +942,43 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
+  it('Should modify calculated value only if it was not manually modified when allowCalculateOverride is true', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithAllowCalculateOverride).then(() => {
+      const labelComp = form.getComponent('label');
+      const valueComp = form.getComponent('value');
+
+      const inputEvent = new Event('input');
+      const labelInput = labelComp.refs.input[0];
+      const valueInput = valueComp.refs.input[0];
+      labelInput.value = 'Hello';
+      labelInput.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        assert.equal(labelComp.dataValue, 'Hello');
+        assert.equal(valueComp.dataValue, 'hello');
+
+        valueInput.value = 'hello123';
+        valueInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(valueComp.dataValue, 'hello123');
+
+          labelInput.value = 'HeLLo World';
+          labelInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(labelComp.dataValue, 'HeLLo World');
+            assert.equal(valueComp.dataValue, 'hello123');
+            done();
+          }, 500);
+        }, 500);
+      }, 500);
+    }).catch(done);
+  });
+
   it(`Should show field only in container where radio component has 'yes' value when containers contain radio
   components with the same key`, function(done) {
     const formElement = document.createElement('div');
@@ -1109,7 +1147,7 @@ describe('Webform tests', function() {
           input1.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(input2.value, '6678');
+            assert.equal(input2.value, '66');
             assert.equal(input1.value, 6678);
             //set a number as calculated value
             formWithCalculatedValue.components[1].calculatedValue = 6678;
@@ -1118,7 +1156,7 @@ describe('Webform tests', function() {
             input1.dispatchEvent(inputEvent);
 
             setTimeout(() => {
-              assert.equal(input2.value, '667890');
+              assert.equal(input2.value, '66');
               assert.equal(input1.value, 667890);
               done();
             }, 250);
@@ -2223,7 +2261,7 @@ describe('Webform tests', function() {
     const submissionWithOverridenValues2 = {
       data: {
         dataGrid: [
-          { label: 'yes2', value: 'yes2' },
+          { label: 'yes2', value: 'y' },
           { label: 'no', value: 'n' },
         ],
         checkbox: false,
@@ -3075,7 +3113,6 @@ describe('Webform tests', function() {
       setTimeout(() => {
         assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
         element.innerHTML = '';
-
         Formio.createForm(element, optionalSanitize, {
           sanitize: true,
         }).then(form => {
@@ -3086,57 +3123,57 @@ describe('Webform tests', function() {
             done();
           }, 250);
         }, 250);
-      }).catch(done);
-    });
+      });
+    }).catch(done);
+  });
 
-    it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+  it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
 
-      form.setForm(testClearOnHideInsideEditGrid).then(() => {
-        form.submission = {
-          state: 'submitted',
-          data: {
-            subsidiaryEditGrid: [
-              {
-                subsidiaryEntityContainer: {
-                  entityFullName: 'test',
-                  divisionNum: '',
-                  entityType: 'otherEntity',
-                  ifOtherEntityPleaseExplain: 'test',
-                },
+    form.setForm(testClearOnHideInsideEditGrid).then(() => {
+      form.submission = {
+        state: 'submitted',
+        data: {
+          subsidiaryEditGrid: [
+            {
+              subsidiaryEntityContainer: {
+                entityFullName: 'test',
+                divisionNum: '',
+                entityType: 'otherEntity',
+                ifOtherEntityPleaseExplain: 'test',
               },
-            ],
-          },
-        };
+            },
+          ],
+        },
+      };
 
+      setTimeout(() => {
+        const clearOnHideField = form.getComponent([
+          'subsidiaryEditGrid',
+          0,
+          'subsidiaryEntityContainer',
+          'ifOtherEntityPleaseExplain',
+        ]);
+        const radioTrigger = form.getComponent(['subsidiaryEditGrid', 0, 'subsidiaryEntityContainer', 'entityType']);
+        assert.equal(form.rootPristine, true, 'Should not change this prop  after setting a submission');
+        assert.equal(clearOnHideField.visible, true, 'Should become visible');
+        assert.equal(clearOnHideField.dataValue, 'test', 'Should set a value from  the submission');
+
+        radioTrigger.setValue('subsidiary', { modified: true });
         setTimeout(() => {
-          const clearOnHideField = form.getComponent([
-            'subsidiaryEditGrid',
-            0,
-            'subsidiaryEntityContainer',
-            'ifOtherEntityPleaseExplain',
-          ]);
-          const radioTrigger = form.getComponent(['subsidiaryEditGrid', 0, 'subsidiaryEntityContainer', 'entityType']);
-          assert.equal(form.rootPristine, true, 'Should not change this prop  after setting a submission');
-          assert.equal(clearOnHideField.visible, true, 'Should become visible');
-          assert.equal(clearOnHideField.dataValue, 'test', 'Should set a value from  the submission');
+          assert.equal(clearOnHideField.visible, false, 'Should become invisible');
 
-          radioTrigger.setValue('subsidiary', { modified: true });
+          radioTrigger.setValue('otherEntity', { modified: true });
           setTimeout(() => {
-            assert.equal(clearOnHideField.visible, false, 'Should become invisible');
+            assert.equal(clearOnHideField.visible, true, 'Should become visible');
+            assert.equal(clearOnHideField.dataValue, '', 'Should clear a value due to the clearOnHide');
 
-            radioTrigger.setValue('otherEntity', { modified: true });
-            setTimeout(() => {
-              assert.equal(clearOnHideField.visible, true, 'Should become visible');
-              assert.equal(clearOnHideField.dataValue, '', 'Should clear a value due to the clearOnHide');
-
-              done();
-            }, 250);
+            done();
           }, 250);
         }, 250);
-      }).catch(done);
-    });
+      }, 250);
+    }).catch(done);
   });
 
   it('Should show values in editGrid rows with nested dataGrid when viewing submission with initEmpty option', function(done) {
@@ -3157,6 +3194,73 @@ describe('Webform tests', function() {
       }, 200);
     })
       .catch((err) => done(err));
+  });
+
+  it('Should not refetch options for Select if there was an error', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Select',
+          widget: 'html5',
+          tableView: true,
+          dataSrc: 'url',
+          data: {
+            url: 'http://example.com',
+            headers: [
+              {
+                key: '',
+                value: '',
+              },
+            ],
+          },
+          key: 'select',
+          hidden: true,
+          type: 'select',
+          input: true,
+          disableLimit: false,
+        },
+      ],
+    };
+
+    let counter = 0;
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise((_, reject) => {
+        setTimeout(() => {
+          counter++;
+          const err = new Error('Failed to fetch');
+          err.networkError = true;
+          reject(err);
+        }, 50);
+      });
+    };
+
+    form.setForm(formJson).then(() => {
+      const select = form.getComponent('select');
+
+      select.visible = true;
+
+      setTimeout(() => {
+        setTimeout(() => {
+          select.visible = false;
+
+          setTimeout(() => {
+            select.visible = true;
+
+            setTimeout(() => {
+              expect(select.networkError).to.be.true;
+              expect(select.loadingError).to.be.true;
+              expect(counter).to.equal(1);
+              Formio.makeRequest = originalMakeRequest;
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
   });
 
   it('Should show only one custom error when submitting empty required field with multiple validation', function(done) {
