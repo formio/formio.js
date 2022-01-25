@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4398: fixed display of element with html input type in DataGrid with one string
  - FIO-4070: html edit grid issue fix
  - FIO-4364: Fixes setting form and submission multiple times for pdf on submission view page
+ - FIO-4468: Fixes select boxes with options label position left are overlapped on pdf download
 
 ## 4.14.1-rc.7
 ### Fixed
