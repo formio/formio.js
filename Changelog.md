@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.15.0-rc.1]
+### Changed
+ - FIO-4359: submission revisions
+
 ## 4.14.1-rc.8
 ### Fixed
  - FIO-3239: fix displaying custom validation on the inital component with default value
