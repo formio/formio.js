@@ -2858,7 +2858,7 @@ export default class Component extends Element {
 
   setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error' && !message.fromServer).length;
-    if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
+    if (messages.length && (!silentCheck || this.error) && (!this.isEmpty(this.defaultValue) || dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else if (!silentCheck) {
