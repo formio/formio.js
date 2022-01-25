@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.14.1-rc.8]
 ### Fixed
  - FIO-3239: fix displaying custom validation on the inital component with default value
+ - FIO-4398: fixed display of element with html input type in DataGrid with one string
 
 ## 4.14.1-rc.7
 ### Fixed
