@@ -3520,8 +3520,13 @@ div[data-oembed-url] {
   margin-bottom: 8px;
 }
 
-.radio label.label-position-left input[type=radio], .checkbox label.label-position-left input[type=checkbox] {
+.radio label.label-position-left input[type=radio] {
   margin-left: 10px;
+}
+
+.checkbox label.label-position-left input[type=checkbox] {
+  margin-left: 4px;
+  position: relative;
 }
 
 .open-modal-button {
