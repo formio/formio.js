@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4070: html edit grid issue fix
  - FIO-4364: Fixes setting form and submission multiple times for pdf on submission view page
  - FIO-4468: Fixes select boxes with options label position left are overlapped on pdf download
+ - FIO-4538: fixed an issue where component menu buttons in the form builder have Inappropriate style
 
 ## 4.14.1-rc.7
 ### Fixed
