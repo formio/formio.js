@@ -370,7 +370,8 @@ export default class CalendarWidget extends InputWidget {
       value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
-    if (value && !this.settings.enableTime && value.includes('T')) {
+
+    if (value && typeof value === 'string' && !this.settings.enableTime && value.includes('T')) {
       this.calendar.setDate(value.split('T')[0], false);
     }
     else if (value) {
