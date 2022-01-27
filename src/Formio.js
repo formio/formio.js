@@ -284,7 +284,7 @@ class Formio {
 
     let url = this[_url] + query;
 
-    if (type==='form' && !isNaN(parseInt(this.vId))) {
+    if (type==='form' && !isNaN(parseInt(this.vId)) && parseInt(this.vId) !== 0) {
       url += `&formRevision=${this.vId}`;
     }
     return this.makeRequest(type, url, 'get', null, opts);
