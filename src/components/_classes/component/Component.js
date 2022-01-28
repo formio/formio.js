@@ -1107,6 +1107,7 @@ export default class Component extends Element {
         this.tooltips[index] = tippy(tooltip, {
           trigger: 'mouseenter click focus',
           placement: 'right',
+          zIndex: 10000,
           allowHTML: true,
           arrow: true,
           content: `
