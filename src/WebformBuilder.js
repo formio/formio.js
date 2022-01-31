@@ -1186,6 +1186,16 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+
+      if (submissionData) {
+        fieldsToRemoveDoubleQuotes.forEach((key) => {
+          if (submissionData[key]) {
+            submissionData[key] = submissionData[key].replace(/"/g, "'");
+          }
+        });
+      }
+
       let comp = null;
       parentComponent.getComponents().forEach((component) => {
         if (component.component.key === original.key) {
