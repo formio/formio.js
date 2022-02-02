@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.2]
 ### Fixed
  - FIO-560: Fixes an issue where CKEditor media is not shown in the view mode
+ - FIO-4579: Fixed extracting valueProperty from template
 
 ## 4.15.0-rc.1
 ### Changed
