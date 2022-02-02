@@ -66,10 +66,9 @@ import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithIni
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
-import { requestAnimationFrame, cancelAnimationFrame } from 'animation-frame-polyfill';
 
-global.requestAnimationFrame = requestAnimationFrame;
-global.cancelAnimationFrame = cancelAnimationFrame;
+global.requestAnimationFrame = (cb) => cb();
+global.cancelAnimationFrame = () => {};
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
