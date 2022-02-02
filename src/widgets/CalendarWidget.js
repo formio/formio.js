@@ -374,7 +374,8 @@ export default class CalendarWidget extends InputWidget {
       this.calendar.setDate(value.split('T')[0], false);
     }
     else if (value) {
-      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {
+      const zonesLoading = this.loadZones();
+      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !zonesLoading) {
         this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
       }
       else {
@@ -389,7 +390,7 @@ export default class CalendarWidget extends InputWidget {
   getValueAsString(value, format) {
     const inputFormat = format || this.dateFormat;
     const valueFormat = this.calendar ? this.valueFormat : this.settings.dateFormat;
-    if (this.settings.saveAs === 'text') {
+    if (this.settings.saveAs === 'text' && this.componentInstance.parent && !this.settings.readOnly) {
       return moment(value, convertFormatToMoment(valueFormat)).format(convertFormatToMoment(valueFormat));
     }
     return formatDate(value, inputFormat, this.timezone, convertFormatToMoment(valueFormat));
@@ -435,8 +436,7 @@ export default class CalendarWidget extends InputWidget {
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
 
     if (dateValue) {
-      const valueFormat = (this.settings.saveAs === 'text') ? (this.calendar ? this.valueFormat : this.settings.dateFormat) : this.dateFormat;
-      this.calendar.setDate(moment(dateValue, convertFormatToMoment(valueFormat)).toDate(), false, this.settings.altFormat);
+      this.calendar.setDate(moment(dateValue, convertFormatToMoment(this.dateFormat)).toDate(), false, this.settings.altFormat);
     }
 
     this.calendar.altInput.addEventListener('input', (event) => {
@@ -530,7 +530,7 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
+        if (!this.settings.enableTime || this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 
