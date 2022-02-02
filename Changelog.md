@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-560: Fixes an issue where CKEditor media is not shown in the view mode
  - FIO-4579: Fixed extracting valueProperty from template
  - FIO-4567: Fixes can't draw on Signature component on form load and size changing inside DataGrid
+ - FIO-4573: exclude using of zero form revision
 
 ## 4.15.0-rc.1
 ### Changed
