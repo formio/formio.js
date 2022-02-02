@@ -22,6 +22,10 @@ export default function() {
     {
       key: 'logic',
       ignore: true
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ]);
 }

@@ -66,6 +66,8 @@ export default class TagsComponent extends Input {
       return;
     }
 
+    const hasPlaceholder = !!this.component.placeholder;
+
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
@@ -73,6 +75,8 @@ export default class TagsComponent extends Input {
       removeItemButton: true,
       duplicateItemsAllowed: false,
       shadowRoot: this.root ? this.root.shadowRoot : null,
+      placeholder: hasPlaceholder,
+      placeholderValue: hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {
@@ -128,7 +132,8 @@ export default class TagsComponent extends Input {
         if (typeof dataValue === 'string') {
           dataValue = dataValue.split(this.delimiter).filter(result => result);
         }
-        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
+        const value = Array.isArray(dataValue) ? dataValue : [dataValue];
+        this.choices.setValue(value.map((val) => this.sanitize(val, this.shouldSanitizeValue)));
       }
     }
     return changed;
@@ -167,6 +172,6 @@ export default class TagsComponent extends Input {
     }
 
     const stringValue = value.toString();
-    return this.sanitize(stringValue);
+    return this.sanitize(stringValue, this.shouldSanitizeValue);
   }
 }

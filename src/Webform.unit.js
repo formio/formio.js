@@ -30,11 +30,10 @@ import {
   initiallyCollapsedPanel,
   multipleTextareaInsideConditionalComponent,
   disabledNestedForm,
-  propertyActions,
   formWithEditGridAndNestedDraftModalRow,
   formWithDateTimeComponents,
   formWithCollapsedPanel,
-  formWithCustomFormatDate
+  formWithCustomFormatDate,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
@@ -46,20 +45,208 @@ import nestedFormInsideDataGrid from '../test/forms/dataGrid-nestedForm';
 import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
-import formWithDataGridWithContainerAndConditionals from '../test/forms/dataGridContainerConditionals';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
+
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
-import htmlRenderMode from '../test/forms/htmlRenderMode';
 import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
 import calculateValueWithManualOverrideLableValueDataGrid
   from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
+import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
+import columnWithConditionalComponents from '../test/forms/columnWithConditionalComponents';
+import formWithSurvey from '../test/forms/formWithSurvey';
+import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
+import formWithDayComp from '../test/forms/formWithDayComp';
+import formWithCalcValue from '../test/forms/formWithCalcValue';
+import formWithAllowCalculateOverride from '../test/forms/formWithAllowCalculateOverride';
+import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
+import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
+import * as FormioUtils from './utils/utils';
+import htmlRenderMode from '../test/forms/htmlRenderMode';
+import optionalSanitize from '../test/forms/optionalSanitize';
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should recalculate value when submission is being set in edit mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithCalcValue).then(() => {
+      const numberComp = form.getComponent('number');
+      const checkbox = form.getComponent('checkbox');
+
+      form.setSubmission({}).then(() => {
+        setTimeout(() => {
+          assert.equal(numberComp.dataValue, 0);
+          assert.equal(checkbox.dataValue, true);
+          form.setSubmission({ data: { number: 7, checkbox: true } }).then(() => {
+            setTimeout(() => {
+              assert.equal(numberComp.dataValue, 7);
+              assert.equal(checkbox.dataValue, false);
+              done();
+            }, 500);
+          });
+        }, 500);
+      });
+    }).catch((err) => done(err));
+  });
+
+  it('Should show survey values in html render mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true });
+
+    form.setForm(formWithSurvey).then(() => {
+      form.setSubmission({ data: { survey: { question1: 'a3', question2: 'a1' } } }).then(() => {
+        const survey = form.getComponent('survey');
+        const values = survey.element.querySelectorAll('td');
+
+        assert.equal(values.length, 2);
+        assert.equal(values[0].innerHTML.trim(), 'a3');
+        assert.equal(values[1].innerHTML.trim(), 'a1');
+        done();
+      });
+   }).catch((err) => done(err));
+  });
+
+  it('Should show select boxes values in html render mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true });
+
+    form.setForm(formWithSelectBoxes).then(() => {
+      form.setSubmission({ data: { selectBoxes: { a: true, b: true, c: false } } }).then(() => {
+        const selectBoxes = form.getComponent('selectBoxes');
+        const values = selectBoxes.element.querySelector('[ref="value"]').textContent.trim();
+
+        assert.equal(values, 'a, b');
+        done();
+      });
+   }).catch((err) => done(err));
+  });
+
+  it('Should show day value in html render mode', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true });
+
+    form.setForm(formWithDayComp).then(() => {
+      form.setSubmission({ data: { day: '05/07/2020' } }).then(() => {
+        const day = form.getComponent('day');
+        const value = day.element.querySelector('[ref="value"]').textContent.trim();
+
+        assert.equal(value, '05/07/2020');
+        done();
+      });
+   }).catch((err) => done(err));
+  });
+
+  it('Should allow to input value and add rows in deeply nested conditional dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(deeplyNestedDataGridAndContainer).then(() => {
+      const parentDataGrid = form.getComponent('dataGrid6');
+
+      assert.equal(parentDataGrid.rows.length, 1);
+      assert.equal(parentDataGrid.rows[0].dataGrid5.visible, false);
+
+      const checkbox = form.getComponent('checkbox');
+      checkbox.setValue(true);
+
+      setTimeout(() => {
+        assert.equal(parentDataGrid.rows.length, 1);
+        assert.equal(parentDataGrid.rows[0].dataGrid5.visible, true);
+
+        const numberInput = parentDataGrid.rows[0].dataGrid5.rows[0].number.refs.input[0];
+        numberInput.value = 555;
+
+        const inputEvent = new Event('input');
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const conditionalDataGrid = form.getComponent('dataGrid6').rows[0].dataGrid5;
+          const numberComp = conditionalDataGrid.rows[0].number;
+
+          assert.equal(numberComp.dataValue, 555);
+          assert.equal(numberComp.refs.input[0].value, 555);
+
+          const addRowBtn = conditionalDataGrid.refs[`${'datagrid-dataGrid5-addRow'}`][0];
+          const clickEvent = new Event('click');
+          addRowBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(conditionalDataGrid.rows.length, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should adjust columns when conditional fields appear/disappear', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(columnWithConditionalComponents).then(() => {
+      const selectBoxes = form.getComponent('selectBoxes');
+      const columns = form.getComponent('columns');
+
+      columns.columns.forEach((column, index) => {
+        assert.equal(column[0].visible, false,  `Column ${index + 1} component should be hidden`);
+        assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+      });
+
+      selectBoxes.setValue({ '1': false, '2': false, '3': true, '4': false, '5': false, '6': true });
+
+      setTimeout(() => {
+        columns.columns.forEach((column, index) => {
+          if ([3,6].includes(index+1)) {
+            assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+            assert.equal(columns.component.columns[index].currentWidth, 2, `Column ${index + 1}  width should be 2`);
+          }
+          else {
+            assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+            assert.equal( columns.component.columns[index].currentWidth, 0, `Column ${index + 1}  width should be 0`);
+          }
+        });
+
+        const visibleTextField1 = columns.columns[2][0].refs.input[0];
+        const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+        visibleTextField1.value = 'test   ';
+        visibleTextField2.value = ' some ';
+
+        const inputEvent = new Event('input');
+        visibleTextField1.dispatchEvent(inputEvent);
+        visibleTextField2.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          const visibleTextField1 = columns.columns[2][0].refs.input[0];
+          const visibleTextField2 = columns.columns[5][0].refs.input[0];
+
+          assert.equal(visibleTextField1.value,'test   ', 'Should not cut whitespaces while inputting into the conditional component inside column');
+          assert.equal(visibleTextField2.value,' some ', 'Should not cut whitespaces while inputting into the conditional component inside column');
+          selectBoxes.setValue({ '1': false, '2': false, '3': false, '4': false, '5': false, '6': true });
+
+          setTimeout(() => {
+            columns.columns.forEach((column, index) => {
+              if ([6].includes(index+1)) {
+                assert.equal(column[0].visible, true, `Column ${index + 1} component should be visible`);
+                assert.equal( columns.component.columns[index].currentWidth, 2,  `Column ${index + 1}  width should be 2`);
+              }
+              else {
+                assert.equal(column[0].visible, false, `Column ${index + 1} component should be hidden`);
+                assert.equal( columns.component.columns[index].currentWidth, 0,  `Column ${index + 1}  width should be 0`);
+              }
+            });
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
 
   it('Should not translate en value if _userInput option is provided and value presents in reserved translation names', done => {
     const formElement = document.createElement('div');
@@ -610,13 +797,13 @@ describe('Webform tests', function() {
   it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
-    const formWithDraftModals = new Webform(formElement);
+    const formWithDraftModals = new Webform(formElement, { sanitize: true });
 
     formWithDraftModals.setForm(formWithEditGridModalDrafts).then(() => {
       const clickEvent = new Event('click');
       const inputEvent = new Event('input');
 
-      const addRowBtn =  formWithDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
+      const addRowBtn = formWithDraftModals.element.querySelector( '[ref="editgrid-editGrid-addRow"]');
       //click to open row in modal view
       addRowBtn.dispatchEvent(clickEvent);
 
@@ -647,7 +834,7 @@ describe('Webform tests', function() {
             //checking if the editGrid row was created
             assert.equal(editGridRows.length, 1);
 
-            const submitBtn = formWithDraftModals.element.querySelector('[name="data[submit]"');
+            const submitBtn = formWithDraftModals.element.querySelector('[name="data[submit]"]');
             //pushing submit button to trigger validation
             submitBtn.dispatchEvent(clickEvent);
 
@@ -755,6 +942,43 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
+  it('Should modify calculated value only if it was not manually modified when allowCalculateOverride is true', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithAllowCalculateOverride).then(() => {
+      const labelComp = form.getComponent('label');
+      const valueComp = form.getComponent('value');
+
+      const inputEvent = new Event('input');
+      const labelInput = labelComp.refs.input[0];
+      const valueInput = valueComp.refs.input[0];
+      labelInput.value = 'Hello';
+      labelInput.dispatchEvent(inputEvent);
+
+      setTimeout(() => {
+        assert.equal(labelComp.dataValue, 'Hello');
+        assert.equal(valueComp.dataValue, 'hello');
+
+        valueInput.value = 'hello123';
+        valueInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(valueComp.dataValue, 'hello123');
+
+          labelInput.value = 'HeLLo World';
+          labelInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(labelComp.dataValue, 'HeLLo World');
+            assert.equal(valueComp.dataValue, 'hello123');
+            done();
+          }, 500);
+        }, 500);
+      }, 500);
+    }).catch(done);
+  });
+
   it(`Should show field only in container where radio component has 'yes' value when containers contain radio
   components with the same key`, function(done) {
     const formElement = document.createElement('div');
@@ -787,7 +1011,7 @@ describe('Webform tests', function() {
       assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
-      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent, 'Text Field is required');
+      assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent.trim(), 'Text Field is required');
       done();
     }, 500);
     })
@@ -807,6 +1031,70 @@ describe('Webform tests', function() {
         assert.equal(formWithLogic.components[1].disabled, true);
         done();
       }, 500);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should only scroll to alerts dialog when submitting an invalid form', function(done) {
+    const formJson =  {
+      components: [
+        {
+          'label': 'Number',
+          'inputFormat': 'plain',
+          'validate': {
+            'required': true,
+            'max': 10
+          },
+          'key': 'number',
+          'type': 'number',
+          'input': true
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const scrollIntoView = sinon.spy(form, 'scrollIntoView');
+
+    form.setForm(formJson).then(() => {
+      Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
+
+      setTimeout(() => {
+        assert.equal(form.errors[0].messages.length, 1);
+        assert(scrollIntoView.calledOnceWith(form.root.alert));
+
+        //changes do not trigger scrolling
+        const inputEvent = new Event('input');
+        const input1 = form.components[0].refs.input[0];
+
+        //invalid input value
+        input1.value =  55;
+        input1.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(form.errors[0].messages.length, 1);
+          assert.equal(scrollIntoView.callCount, 1);
+
+          //valid input value
+          input1.value =  5;
+          input1.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(form.errors.length, 0);
+            assert.equal(scrollIntoView.callCount, 1);
+            done();
+          }, 250);
+        }, 250);
+      }, 250);
     })
     .catch((err) => done(err));
   });
@@ -859,7 +1147,7 @@ describe('Webform tests', function() {
           input1.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(input2.value, '6678');
+            assert.equal(input2.value, '66');
             assert.equal(input1.value, 6678);
             //set a number as calculated value
             formWithCalculatedValue.components[1].calculatedValue = 6678;
@@ -868,7 +1156,7 @@ describe('Webform tests', function() {
             input1.dispatchEvent(inputEvent);
 
             setTimeout(() => {
-              assert.equal(input2.value, '667890');
+              assert.equal(input2.value, '66');
               assert.equal(input1.value, 667890);
               done();
             }, 250);
@@ -998,7 +1286,7 @@ describe('Webform tests', function() {
       })
       .then(() => {
         const ref = formElement.querySelector('[ref="errorRef"]');
-        assert.equal(ref.textContent, 'Field Label es obligatorio');
+        assert.equal(ref.textContent.trim(), 'Field Label es obligatorio');
       });
   });
 
@@ -1622,7 +1910,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should render Nested Modal Wizard Form correclty', (done) => {
+  it('Should render Nested Modal Wizard Form correctly', (done) => {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
     form.setForm(nestedModalWizard).then(() => {
@@ -1973,7 +2261,7 @@ describe('Webform tests', function() {
     const submissionWithOverridenValues2 = {
       data: {
         dataGrid: [
-          { label: 'yes2', value: 'yes2' },
+          { label: 'yes2', value: 'y' },
           { label: 'no', value: 'n' },
         ],
         checkbox: false,
@@ -2168,12 +2456,17 @@ describe('Webform tests', function() {
               dataSourceDisplay: 'some value'
             },
           state: 'submitted'
-        });
-        setTimeout(() => {
-          const dataSourceDisplay = form.getComponent('dataSourceDisplay');
-          assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set and keep the value');
-          done();
-        }, 1000);
+        })
+        .then(() => {
+          const dataSource = form.getComponent('datasource');
+          dataSource.dataValue = { value: 'some value' };
+          form.checkData(null, { dataSourceInitialLoading: true });
+          setTimeout(() => {
+            const dataSourceDisplay = form.getComponent('dataSourceDisplay');
+            assert.equal(dataSourceDisplay.dataValue, 'some value', 'Should set and keep the value');
+            done();
+          }, 1000);
+       });
       }).catch(done);
     });
     it('Should calculate value properly in editing mode', (done) => {
@@ -2282,7 +2575,7 @@ describe('Webform tests', function() {
               Harness.dispatchEvent(
                 'click',
                 form.element,
-                form.element.querySelector(`#${radioRepair1.id}${radioRepair1.row}-accept`),
+                form.element.querySelector(`#${radioRepair1.root.id}-${radioRepair1.id}-${radioRepair1.row}-accept`),
                 i => i.checked = true
               );
 
@@ -2376,7 +2669,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should add and clear input error classes correclty', (done) => {
+  it('Should add and clear input error classes correctly', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
 
@@ -2394,8 +2687,8 @@ describe('Webform tests', function() {
           const dateVisibleInput = dateComponentElement.querySelector('.input');
           const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
 
-          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
-          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should has invalid class as well');
+          assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should have invalid class');
+          assert(flatpickerInput.className.includes('is-invalid'), 'Flatpickr field should have invalid class as well');
 
           dateTimeComponent.setValue('2020-12-09T00:00:00');
 
@@ -2414,7 +2707,7 @@ describe('Webform tests', function() {
               setTimeout(() => {
                 const dateComponentElement = dateTimeComponent.element;
                 assert.equal(!dateComponentElement.className.includes('formio-hidden'), true, 'Should be visible');
-                const dateVisibleInput = dateComponentElement.querySelector('.input:not([type="hidden"]');
+                const dateVisibleInput = dateComponentElement.querySelector('.input:not([type="hidden"])');
                 const flatpickerInput = dateComponentElement.querySelector('.flatpickr-input');
 
                 assert(dateVisibleInput.className.includes('is-invalid'), 'Visible field should has invalid class');
@@ -2528,8 +2821,217 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('HTML render mode', (done) => {
+  it('HTML render mode for Webform', (done) => {
     const element = document.createElement('div');
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const values = [
+            {
+              _id: '5a53f8a044398b0001023eab',
+              modified: '2019-02-01T16:12:06.618Z',
+              data: {
+                firstName: 'Bob',
+                lastName: 'Thompson',
+                status: 'inactive',
+                email: 'bob@example.com',
+                submit: true,
+              },
+              form: '5a53f887c8930000010f8b22',
+              _fvid: 0,
+              _vid: 0,
+              created: '2018-01-08T23:02:56.484Z',
+              externalIds: [],
+              access: [],
+              roles: [],
+              owner: '553dbfc08d22d5cb1a7024f2',
+              state: 'submitted',
+              project: '5692b91fd1028f01000407e3',
+            }, {
+              _id: '5a53f8ad0dc919000194ab6b',
+              modified: '2019-02-01T16:12:01.781Z',
+              data: {
+                firstName: 'Sally',
+                lastName: 'Tanner',
+                status: 'active',
+                email: 'sally@example.com',
+                submit: true,
+              },
+              form: '5a53f887c8930000010f8b22',
+              _fvid: 0,
+              _vid: 0,
+              created: '2018-01-08T23:03:09.730Z',
+              externalIds: [],
+              access: [],
+              roles: [],
+              owner: '553dbfc08d22d5cb1a7024f2',
+              state: 'submitted',
+              project: '5692b91fd1028f01000407e3',
+            }, {
+              _id: '5a53f8b744398b0001023eaf',
+              modified: '2019-02-01T16:11:57.139Z',
+              data: {
+                firstName: 'Jane',
+                lastName: 'Doe',
+                status: 'active',
+                email: 'jane@example.com',
+                submit: true,
+              },
+              form: '5a53f887c8930000010f8b22',
+              _fvid: 0,
+              _vid: 0,
+              created: '2018-01-08T23:03:19.473Z',
+              externalIds: [],
+              access: [],
+              roles: [],
+              owner: '553dbfc08d22d5cb1a7024f2',
+              state: 'submitted',
+              project: '5692b91fd1028f01000407e3',
+            },
+          ];
+          resolve(values);
+        }, 50);
+      });
+    };
+
+    Formio.createForm(element, htmlRenderMode, {
+      readOnly: true,
+      renderMode: 'html',
+    })
+      .then(form => {
+        form.submission = {
+          data: {
+            textfieldonPage3: 'test',
+            signature: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABTIAAACWCAYAAADt5XcLAAAgAElEQVR4Xu3dfWydV30H8NM1dLRdndIOKKJxGHSh0MalgBilpLAJyIsatQgJu4rT8peNiFOEhl0pyR8gxZHq/DGJJAhHCNbEEU5BHVWyJpWYuja0tOPdSctLQVBHWmAwkTi0lEFh+j3h3tqOG9vJvfa59/kcybKT3Ps85/mcE0f+5nfOOe/ZZ3/156QRIECAAAECBAgQIECAAAECBAgQIEAgY4HzBJkZj46uESBAgAABAgQIECBAgAABAgQIECBQCAgyTQQCBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIMECBAgQIAAAQIECBAgQIAAAQIECAgyzQECBAgQIECAAAECBAgQIECAAAECBLIXEGRmP0Q6SIAAAQIECBAgQIAAAQIECBAgQICAINMcIECAAAECBAgQIECAAAECBAgQIEAgewFBZvZDpIO1Fjhx4kQaGTlSXHbhwoXFx6WXthSfNQIECBAgQIAAAQIECBAgQIAAgTwFBJl5jotezUIggslnnjmaTpwY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sVhGHh8aAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIEL7bi68AAAGrSURBVCBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv4AgM/8x0kMCBAgQIECAAAECBAgQIECAAAECpRcQZJZ+CgAgQIAAAQIECBAgQIAAAQIECBAgkL+AIDP/MdJDAgQIECBAgAABAgQIECBAgAABAqUXEGSWfgoAIECAAAECBAgQIECAAAECBAgQIJC/gCAz/zHSQwIECBAgQIAAAQIECBAgQIAAAQKlFxBkln4KACBAgAABAgQIECBAgAABAgQIECCQv8D/A4EQEWXi+YzZAAAAAElFTkSuQmCC',
+            panelDataGrid: [
+              {
+                panelDataGridD: 'd',
+                panelDataGridC: 'c',
+                panelDataGridB: 'b',
+                panelDataGridA: 'a',
+              }, {
+                panelDataGridD: 'h',
+                panelDataGridC: 'g',
+                panelDataGridB: 'f',
+                panelDataGridA: 'e',
+              }, {
+                panelDataGridD: 'l',
+                panelDataGridC: 'k',
+                panelDataGridB: 'j',
+                panelDataGridA: 'i',
+              },
+            ],
+            textfield: 'testing',
+            page2Customer: 'bob@example.com',
+            textfieldonPage2: 'test',
+            numberField: 234,
+            textfieldonpage1: [
+              'a', 'b', 'c',
+            ],
+            panelHtml5Select: 'banana',
+            page3Iagreetothefollowtherules: true,
+            panelText: 'hello',
+          },
+        };
+
+        setTimeout(() => {
+          const customerSelectEl = form.element.querySelector('.formio-component-page2Customer');
+          const customerSelectValueEl = customerSelectEl.querySelector('[ref="value"]');
+          const htmlSelectEl = form.element.querySelector('.formio-component-panelHtml5Select');
+          const htmlSelectValueEl = htmlSelectEl.querySelector('[ref="value"]');
+          const checkboxEl = form.element.querySelector('.formio-component-page3Iagreetothefollowtherules');
+          const checkboxValueEl = checkboxEl.querySelector('[ref="value"]');
+
+          assert.equal(customerSelectValueEl.textContent.trim(), 'Bob Thompson', 'Should render Select value properly');
+          assert.equal(htmlSelectValueEl.textContent.trim(), 'Banana', 'Should render HTML5 Select value properly');
+          assert.equal(checkboxValueEl.textContent.trim(), 'True', 'Should render Checkbox value properly');
+
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 400);
+      })
+      .catch(done);
+  });
+
+  it('HTML render mode for Wizard', (done) => {
+    const element = document.createElement('div');
+    htmlRenderMode.display = 'wizard';
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const values = [
+            {
+              _id: '5a53f8a044398b0001023eab',
+              modified: '2019-02-01T16:12:06.618Z',
+              data: {
+                firstName: 'Bob',
+                lastName: 'Thompson',
+                status: 'inactive',
+                email: 'bob@example.com',
+                submit: true,
+              },
+              form: '5a53f887c8930000010f8b22',
+              _fvid: 0,
+              _vid: 0,
+              created: '2018-01-08T23:02:56.484Z',
+              externalIds: [],
+              access: [],
+              roles: [],
+              owner: '553dbfc08d22d5cb1a7024f2',
+              state: 'submitted',
+              project: '5692b91fd1028f01000407e3',
+            },
+            {
+              _id: '5a53f8ad0dc919000194ab6b',
+              modified: '2019-02-01T16:12:01.781Z',
+              data: {
+                firstName: 'Sally',
+                lastName: 'Tanner',
+                status: 'active',
+                email: 'sally@example.com',
+                submit: true,
+              },
+              form: '5a53f887c8930000010f8b22',
+              _fvid: 0,
+              _vid: 0,
+              created: '2018-01-08T23:03:09.730Z',
+              externalIds: [],
+              access: [],
+              roles: [],
+              owner: '553dbfc08d22d5cb1a7024f2',
+              state: 'submitted',
+              project: '5692b91fd1028f01000407e3',
+            },
+            {
+              _id: '5a53f8b744398b0001023eaf',
+              modified: '2019-02-01T16:11:57.139Z',
+              data: {
+                firstName: 'Jane',
+                lastName: 'Doe',
+                status: 'active',
+                email: 'jane@example.com',
+                submit: true,
+              },
+              form: '5a53f887c8930000010f8b22',
+              _fvid: 0,
+              _vid: 0,
+              created: '2018-01-08T23:03:19.473Z',
+              externalIds: [],
+              access: [],
+              roles: [],
+              owner: '553dbfc08d22d5cb1a7024f2',
+              state: 'submitted',
+              project: '5692b91fd1028f01000407e3',
+            },
+          ];
+          resolve(values);
+        }, 50);
+      });
+    };
 
     Formio.createForm(element, htmlRenderMode, {
       readOnly: true,
@@ -2575,73 +3077,278 @@ describe('Webform tests', function() {
       };
 
       setTimeout(() => {
-        const customerSelectEl = form.element.querySelector('.formio-component-page2Customer');
-        const customerSelectValueEl = customerSelectEl.querySelector('[ref="value"]');
-        const htmlSelectEl = form.element.querySelector('.formio-component-panelHtml5Select');
-        const htmlSelectValueEl = htmlSelectEl.querySelector('[ref="value"]');
-        const checkboxEl = form.element.querySelector('.formio-component-page3Iagreetothefollowtherules');
-        const checkboxValueEl = checkboxEl.querySelector('[ref="value"]');
+        form.setPage(1);
 
-        assert.equal(customerSelectValueEl.textContent.trim(), 'bob@example.com', 'Should render Select value properly');
-        assert.equal(htmlSelectValueEl.textContent.trim(), 'banana', 'Should render HTML5 Select value properly');
-        assert.equal(checkboxValueEl.textContent.trim(), 'True', 'Should render Checkbox value properly');
+        setTimeout(() => {
+          const customerSelectEl = form.element.querySelector('.formio-component-page2Customer');
+          const customerSelectValueEl = customerSelectEl.querySelector('[ref="value"]');
 
-        done();
+          assert.equal(customerSelectValueEl.textContent.trim(), 'Bob Thompson', 'Should render Select value properly');
+
+          form.setPage(2);
+
+          setTimeout(() => {
+            const htmlSelectEl = form.element.querySelector('.formio-component-panelHtml5Select');
+            const htmlSelectValueEl = htmlSelectEl.querySelector('[ref="value"]');
+
+            assert.equal(htmlSelectValueEl.textContent.trim(), 'Banana', 'Should render HTML5 Select value properly');
+
+            Formio.makeRequest = originalMakeRequest;
+
+            done();
+          }, 400);
+        }, 400);
       }, 300);
     }).catch(done);
   });
 
-  describe('Custom Logic', () => {
-    it('Should rerender components using updated properties', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-      form.setForm(propertyActions).then(() => {
-        form.emit('disabled');
-        form.emit('hide');
-        form.emit('require');
-        setTimeout(() => {
-          const textFieldDisabled = form.getComponent(['textField']);
-          const textFieldHidden = form.getComponent(['textField1']);
-          const textFieldRequired = form.getComponent(['textField2']);
-          assert.equal(textFieldDisabled.component.disabled, true, 'Should be disabled');
-          assert.equal(textFieldHidden.component.hidden, true, 'Should be hidden');
-          assert.equal(textFieldRequired.component.validate.required, true, 'Should be required');
-          const disabledInput = textFieldDisabled.element.querySelector('[ref="input"]');
-          assert.equal(disabledInput.disabled, true, 'Should found a disabled input');
-          const hiddenInput = textFieldHidden.element.querySelector('[ref="input"]');
-          assert(!hiddenInput, 'Should not found a hidden input');
-          const requiredFieldLabel = textFieldRequired.element.querySelector('label');
-          assert(requiredFieldLabel.classList.contains('field-required'), 'Should mark a field as required');
-          done();
-        }, 550);
-      }).catch(done);
-    });
+  it('Test optional sanitize', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, optionalSanitize, {
+      sanitize: false,
+    }).then(form => {
+      const sanitize = sinon.spy(FormioUtils, 'sanitize');
+      form.redraw();
+      setTimeout(() => {
+        assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
+        element.innerHTML = '';
+        Formio.createForm(element, optionalSanitize, {
+          sanitize: true,
+        }).then(form => {
+          sanitize.resetHistory();
+          form.redraw();
+          setTimeout(() => {
+            assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
+            done();
+          }, 250);
+        }, 250);
+      });
+    }).catch(done);
   });
 
-  describe('Conditionals', () => {
-    it('Should always checkConditions with correct context', (done) => {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+  it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
 
-      form.setForm(formWithDataGridWithContainerAndConditionals).then(() => {
-        const radioTrigger = form.getComponent(['dataGrid', 0, 'radio1']);
-        const radioConditional = form.getComponent(['dataGrid', 0, 'radio2']);
-        radioTrigger.setValue('yes', { modified: true });
+    form.setForm(testClearOnHideInsideEditGrid).then(() => {
+      form.submission = {
+        state: 'submitted',
+        data: {
+          subsidiaryEditGrid: [
+            {
+              subsidiaryEntityContainer: {
+                entityFullName: 'test',
+                divisionNum: '',
+                entityType: 'otherEntity',
+                ifOtherEntityPleaseExplain: 'test',
+              },
+            },
+          ],
+        },
+      };
 
+      setTimeout(() => {
+        const clearOnHideField = form.getComponent([
+          'subsidiaryEditGrid',
+          0,
+          'subsidiaryEntityContainer',
+          'ifOtherEntityPleaseExplain',
+        ]);
+        const radioTrigger = form.getComponent(['subsidiaryEditGrid', 0, 'subsidiaryEntityContainer', 'entityType']);
+        assert.equal(form.rootPristine, true, 'Should not change this prop  after setting a submission');
+        assert.equal(clearOnHideField.visible, true, 'Should become visible');
+        assert.equal(clearOnHideField.dataValue, 'test', 'Should set a value from  the submission');
+
+        radioTrigger.setValue('subsidiary', { modified: true });
         setTimeout(() => {
-          assert.equal(radioTrigger.dataValue, 'yes', 'Should set value');
-          assert.equal(radioConditional.visible, true, 'Should become visible');
+          assert.equal(clearOnHideField.visible, false, 'Should become invisible');
 
-          radioConditional.setValue('one', { modified: true });
+          radioTrigger.setValue('otherEntity', { modified: true });
           setTimeout(() => {
-            assert.equal(radioConditional.dataValue, 'one', 'Should set value and clearOnHide should not be triggered');
-            assert.equal(radioConditional.visible, true, 'Should stay visible');
+            assert.equal(clearOnHideField.visible, true, 'Should become visible');
+            assert.equal(clearOnHideField.dataValue, '', 'Should clear a value due to the clearOnHide');
 
             done();
           }, 250);
         }, 250);
-      }).catch(done);
-    });
+      }, 250);
+    }).catch(done);
+  });
+
+  it('Should show values in editGrid rows with nested dataGrid when viewing submission with initEmpty option', function(done) {
+    const formElement = document.createElement('div');
+    const formWithNestedDataGridInitEmptyOption = new Webform(formElement);
+
+    formWithNestedDataGridInitEmptyOption.setForm(formWithNestedDataGridInitEmpty.form).then(() => {
+      formWithNestedDataGridInitEmptyOption.setSubmission(formWithNestedDataGridInitEmpty.submission);
+
+      setTimeout(() => {
+        const nestedDataGridFirstRowComponentValue = formWithNestedDataGridInitEmptyOption.element.querySelector(
+          '[ref="editgrid-editGrid-row"]').querySelectorAll('.col-sm-2');
+
+        assert.equal(nestedDataGridFirstRowComponentValue[1].textContent.trim(), 'email');
+        assert.equal(nestedDataGridFirstRowComponentValue[2].textContent.trim(), 'hhh@gmail.com');
+
+        done();
+      }, 200);
+    })
+      .catch((err) => done(err));
+  });
+
+  it('Should not refetch options for Select if there was an error', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Select',
+          widget: 'html5',
+          tableView: true,
+          dataSrc: 'url',
+          data: {
+            url: 'http://example.com',
+            headers: [
+              {
+                key: '',
+                value: '',
+              },
+            ],
+          },
+          key: 'select',
+          hidden: true,
+          type: 'select',
+          input: true,
+          disableLimit: false,
+        },
+      ],
+    };
+
+    let counter = 0;
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise((_, reject) => {
+        setTimeout(() => {
+          counter++;
+          const err = new Error('Failed to fetch');
+          err.networkError = true;
+          reject(err);
+        }, 50);
+      });
+    };
+
+    form.setForm(formJson).then(() => {
+      const select = form.getComponent('select');
+
+      select.visible = true;
+
+      setTimeout(() => {
+        setTimeout(() => {
+          select.visible = false;
+
+          setTimeout(() => {
+            select.visible = true;
+
+            setTimeout(() => {
+              expect(select.networkError).to.be.true;
+              expect(select.loadingError).to.be.true;
+              expect(counter).to.equal(1);
+              Formio.makeRequest = originalMakeRequest;
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should show only one custom error when submitting empty required field with multiple validation', function(done) {
+    const formJson =  {
+      components: [
+        {
+          label: 'This line',
+          tableView: false,
+          storage: 'base64',
+          webcam: false,
+          fileTypes: [{ label: '', value: '' }],
+          multiple: true,
+          validate: { required: true, customMessage: 'will be showed once' },
+          key: 'file',
+          type: 'file',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+    const element = document.createElement('div');
+    const form = new Webform(element);
+
+    form.setForm(formJson).then(() => {
+    Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
+
+    setTimeout(() => {
+      assert.equal(form.errors[0].messages.length, 1);
+      assert.equal(form.errors[0].messages[0].message, 'will be showed once');
+      assert.equal(form.element.querySelector('[ref="errorRef"]').textContent.trim().includes('will be showed once'), true);
+      done();
+    }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should show validation error when submitting number with just "-" sign and required validation', function(done) {
+    const formJson =  {
+      components: [
+        {
+          label: 'Number',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          validate: {
+            required: true
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        }
+      ]
+    };
+    const element = document.createElement('div');
+    const form = new Webform(element);
+
+    form.setForm(formJson).then(() => {
+      Harness.setInputValue(form, 'data[number]', '-_');
+      Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
+
+      setTimeout(() => {
+        assert.equal(form.errors[0].messages.length, 1);
+        assert.equal(form.errors[0].messages[0].message, 'Number is required');
+        assert.equal(form.element.querySelector('[ref="errorRef"]').textContent.trim().includes('Number is required'), true);
+        done();
+      }, 200);
+    })
+    .catch((err) => done(err));
   });
 
   each(FormTests, (formTest) => {

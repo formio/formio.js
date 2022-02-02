@@ -7,7 +7,10 @@ import 'flatpickr';
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp5,
+  comp6,
+  comp7
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -231,7 +234,7 @@ describe('DateTime Component', () => {
         }, 300);
       }, 300);
     }).catch(done);
-  }).timeout(3000);
+  }).timeout(4000);
 
   it('Should disable weekends', (done) => {
     const form = _.cloneDeep(comp3);
@@ -473,6 +476,91 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
+  it('Should not set value if it does not meet minDate validation', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2021-05-01T09:00:00');
+
+      setTimeout(() => {
+        const input = dateTime.element.querySelector('.input');
+        assert.equal(input.value, '');
+
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should set value in readOnly mode even if it does not meet current minDate validation conditions', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, { readOnly: true }).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2021-05-01T09:00:00');
+
+      setTimeout(() => {
+        const input = dateTime.element.querySelector('.input');
+        assert.equal(input.value, '05/01/21');
+
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should save hours and minutes values on first change', (done) => {
+    const form = _.cloneDeep(comp6);
+    const element = document.createElement('div');
+    form.components[0].enableDate = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const blurEvent = new Event('blur');
+      const input = dateTime.element.querySelector('.input');
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() => {
+        const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
+        calendar._input.value = '7:00 PM';
+        const expectedValue = 'T19:00:00';
+        calendar._input.dispatchEvent(blurEvent);
+
+        setTimeout(() => {
+          assert.equal(dateTime.dataValue.includes(expectedValue), true);
+
+          document.innerHTML = '';
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct value after submission', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2022-12-21');
+
+      setTimeout(() => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(dateTime.dataValue, '2022-12-21');
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
   // it('Test Shortcut Buttons', (done) => {
   //   // eslint-disable-next-line no-debugger
   //   debugger;

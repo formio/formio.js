@@ -61,7 +61,14 @@ export default class SurveyComponent extends Field {
         }
       });
     });
-    return this.updateValue(value, flags);
+
+    const changed = this.updateValue(value, flags);
+
+    if (changed && this.isHtmlRenderMode()) {
+      this.redraw();
+    }
+
+    return changed;
   }
 
   get emptyValue() {

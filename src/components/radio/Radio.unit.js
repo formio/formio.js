@@ -10,7 +10,9 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
+  comp8
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -120,5 +122,36 @@ describe('Radio Component', () => {
       assert.deepEqual(requiredSchema, radio.schema);
       done();
     }).catch(done);
+  });
+});
+
+describe('Radio Component', () => {
+  it('should have red asterisk left hand side to the options labels if component is required and label is hidden', () => {
+    return Harness.testCreate(RadioComponent, comp7).then(component => {
+      const options = component.element.querySelectorAll('.form-check-label');
+      options.forEach(i => {
+        assert.deepEqual(!!getComputedStyle(i, ':before'), true);
+      });
+    });
+  });
+
+  it('Should not provide empty error message when hidden radio has storage type as string', (done) => {
+    const form = _.cloneDeep(comp8);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form)
+      .then(form => {
+        form.submission = {
+          data: {
+            radio: 'no'
+          }
+        };
+        const alerts = document.querySelectorAll('.alert-danger');
+        setTimeout(() => {
+          assert.equal(alerts.length, 0);
+          done();
+        }, 100);
+      })
+      .catch(done);
   });
 });

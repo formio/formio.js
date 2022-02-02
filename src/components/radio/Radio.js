@@ -50,7 +50,7 @@ export default class RadioComponent extends Field {
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.class = 'form-check-input';
-    info.attr.name = info.attr.name += `[${this.id}]`;
+    info.attr.name = info.attr.name += `[${this.root?.id}-${this.id}]`;
     return info;
   }
 
@@ -245,7 +245,7 @@ export default class RadioComponent extends Field {
           value = JSON.stringify(value);
         }
         else {
-          value = value.toString();
+          value = String(value);
         }
         break;
       case 'boolean':

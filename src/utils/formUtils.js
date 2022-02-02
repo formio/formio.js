@@ -44,9 +44,16 @@ export function isLayoutComponent(component) {
  * @param {Object} parent
  *   The parent object.
  */
-export function eachComponent(components, fn, includeAll, path, parent) {
+export function eachComponent(components, fn, includeAll, path, parent, inRecursion) {
   if (!components) return;
   path = path || '';
+  if (inRecursion) {
+    if (components.noRecurse) {
+      delete components.noRecurse;
+      return;
+    }
+    components.noRecurse = true;
+  }
   components.forEach((component) => {
     if (!component) {
       return;
@@ -79,7 +86,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
         component.key &&
         !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
         (
-          ['datagrid', 'container', 'editgrid', 'address', 'dynamicWizard'].includes(component.type) ||
+          ['datagrid', 'container', 'editgrid', 'address', 'dynamicWizard', 'datatable'].includes(component.type) ||
           component.tree
         )
       ) {
@@ -97,23 +104,26 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     if (!noRecurse) {
       if (hasColumns) {
         component.columns.forEach((column) =>
-          eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+          eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null), true);
       }
 
       else if (hasRows) {
         component.rows.forEach((row) => {
           if (Array.isArray(row)) {
             row.forEach((column) =>
-              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null), true);
           }
         });
       }
 
       else if (hasComps) {
-        eachComponent(component.components, fn, includeAll, subPath(), parent ? component : null);
+        eachComponent(component.components, fn, includeAll, subPath(), parent ? component : null, true);
       }
     }
   });
+  if (components.noRecurse) {
+    delete components.noRecurse;
+  }
 }
 
 /**

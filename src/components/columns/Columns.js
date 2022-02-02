@@ -80,7 +80,7 @@ export default class ColumnsComponent extends NestedComponent {
         this.columns[index].push(component);
       });
     });
-    if (this.component.autoAdjust) {
+    if (this.component.autoAdjust && this.options.display !== 'pdf') {
       this.justify();
     }
     this.rows = this.groupByRow();
@@ -100,16 +100,16 @@ export default class ColumnsComponent extends NestedComponent {
   justifyColumn(items, index) {
     const toAdjust = _.every(items, item => !item.visible);
     const column = this.component.columns[index];
-    if (toAdjust && items.length) {
-      column.currentWidth = 0;
-    }
-    else {
-      column.currentWidth = column.width;
-    }
+    const width = (toAdjust && items.length) ? 0 : column.width;
+    const shouldRedraw = !_.isEqual(width, column.currentWidth);
+
+    column.currentWidth = width;
+
+    return shouldRedraw;
   }
 
   justify() {
-    _.each(this.columns, this.justifyColumn.bind(this));
+    return this.columns.reduce((redraw, items, index) => this.justifyColumn(items, index) || redraw, false);
   }
 
   attach(element) {
@@ -150,12 +150,18 @@ export default class ColumnsComponent extends NestedComponent {
     return _.concat(result.rows, [result.stack]);
   }
 
-  checkComponentConditions(data, flags, row) {
-    if (this.component.autoAdjust) {
-      this.rebuild();
-      this.justify();
+  checkData(data, flags, row, components) {
+    const isValid = super.checkData(data, flags, row, components);
+
+    if (this.component.autoAdjust && this.options.display !== 'pdf') {
+      const redraw = this.justify();
+
+      if (redraw) {
+        this.redraw();
+      }
     }
-    return super.checkComponentConditions(data, flags, row);
+
+    return isValid;
   }
 
   detach(all) {

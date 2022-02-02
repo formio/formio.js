@@ -887,21 +887,21 @@ export function getCurrencyAffixes({
    lang,
  }) {
   // Get the prefix and suffix from the localized string.
-  let regex = '(.*)?100';
+  let regex = `(.*)?${(100).toLocaleString(lang)}`;
   if (decimalLimit) {
-    regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}`;
+    regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}${(0).toLocaleString(lang)}{${decimalLimit}}`;
   }
   regex += '(.*)?';
   const parts = (100).toLocaleString(lang, {
     style: 'currency',
     currency,
     useGrouping: true,
-    maximumFractionDigits: decimalLimit,
-    minimumFractionDigits: decimalLimit
+    maximumFractionDigits: decimalLimit || 0,
+    minimumFractionDigits: decimalLimit || 0
   }).replace('.', decimalSeparator).match(new RegExp(regex));
   return {
-    prefix: parts[1] || '',
-    suffix: parts[2] || ''
+    prefix: parts?.[1] || '',
+    suffix: parts?.[2] || ''
   };
 }
 
@@ -1125,6 +1125,21 @@ export function getContextComponents(context) {
   return values;
 }
 
+export function getContextButtons(context) {
+  const values = [];
+
+  context.utils.eachComponent(context.instance.options.editForm.components, (component) => {
+    if (component.type === 'button') {
+      values.push({
+        label: `${component.key} (${component.label})`,
+        value: component.key,
+      });
+    }
+  });
+
+  return values;
+}
+
 // Tags that could be in text, that should be ommited or handled in a special way
 const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP', 'INS', 'DEL', 'MARK', 'CODE'];
 
@@ -1138,6 +1153,10 @@ const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP
  *   Translated element template.
  */
 function translateElemValue(elem, translate) {
+  if (!elem.innerText) {
+    return elem.innerHTML;
+  }
+
   const elemValue = elem.innerText.replace(Evaluator.templateSettings.interpolate, '').replace(/\s\s+/g, ' ').trim();
   const translatedValue = translate(elemValue);
 
@@ -1434,6 +1453,46 @@ export function getDataParentComponent(componentInstance) {
   else {
     return getDataParentComponent(parent);
   }
+}
+
+/**
+ * Returns whether the value is a promise
+ * @param value
+ * @return {boolean}
+ */
+ export function isPromise(value) {
+   return value
+     && value.then
+     && typeof value.then === 'function'
+     && Object.prototype.toString.call(value) === '[object Promise]';
+ }
+
+/**
+ * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
+ * changes by itself, e.g. EditGrid)
+ * @param componentInstance
+ * @param firstPass
+ * @returns {boolean|boolean|*}
+ */
+export function isInsideScopingComponent(componentInstance, firstPass = true) {
+  if (!firstPass && componentInstance?.hasScopedChildren) {
+    return true;
+  }
+  const dataParent = getDataParentComponent(componentInstance);
+  if (dataParent?.hasScopedChildren) {
+    return true;
+  }
+  else if (dataParent?.parent) {
+    return isInsideScopingComponent(dataParent.parent, false);
+  }
+  return false;
+}
+
+export function getFocusableElements(element) {
+  const focusableSelector =
+    `button:not([disabled]), input:not([disabled]), select:not([disabled]),
+    textarea:not([disabled]), button:not([disabled]), [href]`;
+  return element.querySelectorAll(focusableSelector);
 }
 
 // Export lodash to save space with other libraries.

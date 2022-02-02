@@ -6,7 +6,8 @@ import _ from 'lodash';
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3,
 } from './fixtures';
 
 describe('Address Component', () => {
@@ -99,6 +100,80 @@ describe('Address Component', () => {
           done();
         }, 300);
       }, 300);
+    }).catch(done);
+  });
+
+  it('Should close modal window without showing dialog if value not changed', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const value = {
+        'address_components': [
+          {
+            'long_name': 'Los Angeles',
+            'short_name': 'Los Angeles',
+            types: ['locality', 'political'],
+          },
+          {
+            'long_name': 'Los Angeles County',
+            'short_name': 'Los Angeles County',
+            types: ['administrative_area_level_2', 'political'],
+          },
+          {
+            'long_name': 'California',
+            'short_name': 'CA',
+            types: ['administrative_area_level_1', 'political'],
+          },
+          {
+            'long_name': 'United States',
+            'short_name': 'US',
+            types: ['country', 'political'],
+          },
+        ],
+        'formatted_address': 'Los Angeles, CA, USA',
+        geometry: {
+          location: { lat: 34.0522342, lng: -118.2436849 },
+          viewport: {
+            south: 33.70365193147634,
+            west: -118.6681759484859,
+            north: 34.33730608759191,
+            east: -118.155289077463,
+          },
+        },
+        'place_id': 'ChIJE9on3F3HwoAR9AhGJW_fL-I',
+        types: ['locality', 'political'],
+        formattedPlace: 'Los Angeles, CA, USA',
+      };
+      const address = form.getComponent('address');
+      const openModalButton = address.componentModal.refs.openModal;
+      const clickEvent = new Event('click');
+      openModalButton.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(address.componentModal.isOpened, true);
+        address.dataValue = value;
+        address.componentModal.closeModal();
+        address.redraw();
+
+        setTimeout(() => {
+          address.componentModal.isOpened = true;
+          openModalButton.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(address.componentModal.isOpened, true);
+            assert.equal(!!address.dataValue, true);
+            const modalOverlayButton = address.componentModal.refs.modalOverlay;
+            modalOverlayButton.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              assert.equal(!!address.componentModal.isValueChanged(), false);
+              assert.equal(!!address.componentModal.dialogElement, false);
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 });

@@ -505,6 +505,8 @@ export default class FileComponent extends Field {
 
   /* eslint-disable max-depth */
   globStringToRegex(str) {
+    str = str.replace(/\s/g, '');
+
     let regexp = '', excludes = [];
     if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
       regexp = str.substring(1, str.length - 1);
@@ -603,6 +605,8 @@ export default class FileComponent extends Field {
       files = Array.prototype.slice.call(files, 0, 1);
     }
     if (this.component.storage && files && files.length) {
+      this.fileDropHidden = true;
+
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
       Array.prototype.forEach.call(files, async(file) => {
@@ -740,7 +744,6 @@ export default class FileComponent extends Field {
             groupResourceId,
             // Upload start callback
             () => {
-              this.fileDropHidden = true;
               this.emit('fileUploadingStart', filePromise);
             },
             // Abort upload callback

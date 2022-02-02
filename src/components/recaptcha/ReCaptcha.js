@@ -1,7 +1,8 @@
 /*globals grecaptcha*/
 import Component from '../_classes/component/Component';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import _get from 'lodash/get';
+import _debounce from 'lodash/debounce';
 import NativePromise from 'native-promise-only';
 
 export default class ReCaptchaComponent extends Component {
@@ -25,6 +26,7 @@ export default class ReCaptchaComponent extends Component {
   }
 
   render() {
+    this.recaptchaResult = null;
     if (this.builderMode) {
       return super.render('reCAPTCHA');
     }
@@ -68,25 +70,34 @@ export default class ReCaptchaComponent extends Component {
       this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) => {
         this.recaptchaApiReady
           .then(() => {
-            grecaptcha.ready(() => {
-              grecaptcha
-                .execute(siteKey, {
-                  action: actionName
-                })
-                .then((token) => {
-                  return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {
-                    this.setValue({
-                      ...verificationResult,
-                      token,
+            if (!this.isLoading) {
+              this.isLoading= true;
+              grecaptcha.ready(_debounce(() => {
+                grecaptcha
+                  .execute(siteKey, {
+                    action: actionName
+                  })
+                  .then((token) => {
+                    return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {
+                      this.recaptchaResult = {
+                        ...verificationResult,
+                        token,
+                      };
+                      this.updateValue(this.recaptchaResult);
+                      return resolve(verificationResult);
                     });
-                    return resolve(verificationResult);
+                  })
+                  .catch(() => {
+                    this.isLoading = false;
                   });
-                });
-            });
+              }, 1000));
+            }
           })
           .catch(() => {
             return reject();
           });
+      }).then(() => {
+        this.isLoading = false;
       });
     }
   }
@@ -116,7 +127,12 @@ export default class ReCaptchaComponent extends Component {
 
     const componentData = row[this.component.key];
     if (!componentData || !componentData.token) {
-      this.setCustomValidity('ReCaptcha: Token is not specified in submission');
+      this.setCustomValidity('ReCAPTCHA: Token is not specified in submission');
+      return NativePromise.resolve(false);
+    }
+
+    if (!componentData.success) {
+      this.setCustomValidity('ReCAPTCHA: Token validation error');
       return NativePromise.resolve(false);
     }
 
@@ -128,13 +144,8 @@ export default class ReCaptchaComponent extends Component {
       });
   }
 
-  setValue(value) {
-    const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    return changed;
-  }
-
-  getValue() {
-    return this.dataValue;
+  normalizeValue(newValue) {
+    // If a recaptcha result has already been established, then do not allow it to be reset.
+    return this.recaptchaResult ? this.recaptchaResult : newValue;
   }
 }

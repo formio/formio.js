@@ -23,6 +23,8 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15,
+  comp16,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -225,9 +227,9 @@ describe('Select Component', () => {
 
   it('Should allow to override threshold option of fuzzy search', () => {
     try {
-      const c1 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.2 });
-      const c2 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.4 });
-      const c3 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.8 });
+      const c1 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.2 });
+      const c2 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.4 });
+      const c3 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.8 });
       const comps = [
         Harness.testCreate(SelectComponent, c1),
         Harness.testCreate(SelectComponent, c2),
@@ -664,6 +666,50 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('Server side search is debounced with the correct timeout', (done) => {
+    const form = _.cloneDeep(comp9);
+    form.components[1].lazyLoad = false;
+    form.components[1].searchDebounce = 0.7;
+    form.components[1].disableLimit = false;
+    form.components[1].searchField = 'name';
+    const element = document.createElement('div');
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        resolve([]);
+      });
+    };
+
+    var searchHasBeenDebounced = false;
+    var originalDebounce = _.debounce;
+    _.debounce = (fn, timeout, opts) => {
+      searchHasBeenDebounced = timeout === 700;
+      return originalDebounce(fn, 0, opts);
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      const focusEvent = new Event('focus');
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        const keyupEvent = new Event('keyup');
+        searchField.value = 'the_name';
+        searchField.dispatchEvent(keyupEvent);
+
+        setTimeout(() => {
+          _.debounce = originalDebounce;
+          Formio.makeRequest = originalMakeRequest;
+
+          assert.equal(searchHasBeenDebounced, true);
+          done();
+        }, 50);
+      }, 200);
+    }).catch(done);
+  });
+
   it('Should provide "Allow only available values" validation', (done) => {
     const form = _.cloneDeep(comp10);
     form.components[0].validate.onlyAvailableItems = true;
@@ -797,7 +843,6 @@ describe('Select Component', () => {
     const requiredSchema = {
       label: 'Select',
       tableView: true,
-      selectThreshold: 0.3,
       key: 'select',
       type: 'select',
       input: true
@@ -810,6 +855,55 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('Should provide correct value', (done) => {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const value = '{"textField":"rgd","submit":true,"number":11}';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.getValue(), value);
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should show async custom values and be able to set submission', (done) => {
+    const formObj = _.cloneDeep(comp16);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formObj).then(form => {
+      const select = form.getComponent('select');
+     select.choices.showDropdown();
+
+      setTimeout(() => {
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 3);
+        const value = 'bb';
+        form.submission = { data: { select: value } };
+
+        setTimeout(() => {
+          assert.deepEqual(select.getValue(), value);
+          assert.deepEqual(select.dataValue, value);
+          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'B');
+
+          done();
+        }, 400);
+      }, 200);
+    }).catch(done);
+  });
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;

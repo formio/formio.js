@@ -505,7 +505,6 @@ export default {
       });
     },
     'Should save component values and close the modal after clicking "save"' (form, done) {
-
       const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
       testComponents.forEach((comp, index) => {
@@ -516,7 +515,7 @@ export default {
         const clickEvent = new Event('click');
         const isModalWindowOpened = () => {
           return !comp.refs.modalWrapper.classList.contains('component-rendering-hidden');
-        }
+        };
 
         const openModalBtn = comp.refs.openModal;
         openModalBtn.dispatchEvent(clickEvent);
@@ -546,7 +545,7 @@ export default {
                     childType === 'datetime' ? true : childExpectedValue,
                     `${compKey} (component ${compType}): should save value in modalEdit mode`
                   );
-                })
+                });
               }
               else {
                 assert.deepEqual(
@@ -566,31 +565,32 @@ export default {
     },
     'Should highlight modal button if component is invalid' (form, done, test) {
       test.timeout(10000);
-      let testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
+      const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
       form.everyComponent((comp)=> {
         comp.component.validate = comp.component.validate || {};
         comp.component.validate.required = true;
       });
-
-      const clickEvent = new Event('click');
-      form.getComponent('submit').refs.button.dispatchEvent(clickEvent)
-
       setTimeout(() => {
-        testComponents.forEach((comp, index) => {
-          const compKey = comp.component.key;
-          const compType = comp.component.type;
+        const clickEvent = new Event('click');
+        form.getComponent('submit').refs.button.dispatchEvent(clickEvent);
+        setTimeout(() => {
+          testComponents
+          .filter(comp => !comp.component.tree && comp.hasInput)
+          .forEach((comp) => {
+            const compKey = comp.component.key;
+            const compType = comp.component.type;
 
-          const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
-          assert.deepEqual(comp.subForm ? !!comp.subForm.errors.length : !!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
-          //BUG in nested forms, remove the check once it is fixed
-          if(compType !== 'form') {
-            assert.deepEqual(isErrorHighlightClass, true, `${compKey} (component ${compType}): should highlight invalid modal button`);
-          }
-        });
-
-        done();
-      });
+            const isErrorHighlightClass = !!(comp.refs.openModalWrapper.classList.contains('formio-error-wrapper') || comp.componentModal.element.classList.contains('formio-error-wrapper'));
+            assert.deepEqual(comp.subForm ? !!comp.subForm.errors.length : !!comp.error, true, `${compKey} (component ${compType}): should contain validation error`);
+            //BUG in nested forms, remove the check once it is fixed
+            if (compType !== 'form') {
+              assert.deepEqual(isErrorHighlightClass, true, `${compKey} (component ${compType}): should highlight invalid modal button`);
+            }
+          });
+          done();
+        }, 200);
+      }, 200);
     },
   },
   calculateValue: {
@@ -862,7 +862,7 @@ export default {
   },
   'validate_nested_components': {
     'Should show validation errors for nested components'(form, done, test) {
-      test.timeout(5000);
+      test.timeout(6000);
       const testComponents = [];
       const treeComponent = form.getComponent('tree');
       form.everyComponent((comp)=> {
@@ -873,49 +873,50 @@ export default {
           testComponents.push(comp);
         }
       });
-
-      const clickEvent = new Event('click');
-      form.getComponent('submit').refs.button.dispatchEvent(clickEvent)
-
       setTimeout(() => {
-        assert.deepEqual(form.errors.length, testComponents.length, `Form should contain references to all components errors`);
-        assert.deepEqual(form.refs.errorRef.length, form.errors.length, `Should contain references to all components errors in form alert with errors`);
-
-        testComponents.forEach(comp => {
-          const compKey = comp.component.key;
-          const compType = comp.component.type;
-
-          const getExpectedErrorMessage = () => `${comp.component.label} is required`;
-
-          assert.deepEqual(!!comp.error, true, `${compKey} (component ${compType}): should have required validation error`);
-          assert.deepEqual(comp.error.message, getExpectedErrorMessage(), `${compKey} (component ${compType}): should have correct rquired validation message`);
-          assert.deepEqual(comp.pristine, false, `${compKey} (component ${compType}): should set pristine to false`);
-          assert.deepEqual(comp.element.classList.contains('formio-error-wrapper'), true, `${compKey} (component ${compType}): should set error class`);
-          assert.deepEqual(comp.refs.messageContainer.querySelector('.error').textContent.trim(), getExpectedErrorMessage(), `${compKey} (component ${compType}): should display error message`);
-          });
-
-        _.each(form.components, (comp) => {
-          const compKey = comp.component.key;
-          const value = _.cloneDeep(values.values[compKey]);
-
-          if (value) {
-            comp.setValue(value);
-          }
-        });
+        const clickEvent = new Event('click');
+        form.getComponent('submit').refs.button.dispatchEvent(clickEvent)
 
         setTimeout(() => {
-          assert.deepEqual(form.errors.length, 0, `Should remove required validation errors after setting values`);
+          assert.deepEqual(form.errors.length, testComponents.length, `Form should contain references to all components errors`);
+          assert.deepEqual(form.refs.errorRef.length, form.errors.length, `Should contain references to all components errors in form alert with errors`);
+
           testComponents.forEach(comp => {
             const compKey = comp.component.key;
             const compType = comp.component.type;
 
-            assert.deepEqual(!!comp.error, false, `${compKey} (component ${compType}): Should remove valudation error`);
-            assert.deepEqual(comp.element.classList.contains('formio-error-wrapper'), false, `${compKey} (component ${compType}): Should remove error class`);
-            assert.deepEqual(!!comp.refs.messageContainer.querySelector('.error'), false, `${compKey} (component ${compType}): should clear errors`);
+            const getExpectedErrorMessage = () => `${comp.component.label} is required`;
+
+            assert.deepEqual(!!comp.error, true, `${compKey} (component ${compType}): should have required validation error`);
+            assert.deepEqual(comp.error.message, getExpectedErrorMessage(), `${compKey} (component ${compType}): should have correct rquired validation message`);
+            assert.deepEqual(comp.pristine, false, `${compKey} (component ${compType}): should set pristine to false`);
+            assert.deepEqual(comp.element.classList.contains('formio-error-wrapper'), true, `${compKey} (component ${compType}): should set error class`);
+            assert.deepEqual(comp.refs.messageContainer.querySelector('.error').textContent.trim(), getExpectedErrorMessage(), `${compKey} (component ${compType}): should display error message`);
+            });
+
+          _.each(form.components, (comp) => {
+            const compKey = comp.component.key;
+            const value = _.cloneDeep(values.values[compKey]);
+
+            if (value) {
+              comp.setValue(value);
+            }
           });
 
-          done();
-        }, 700);
+          setTimeout(() => {
+            assert.deepEqual(form.errors.length, 0, `Should remove required validation errors after setting values`);
+            testComponents.forEach(comp => {
+              const compKey = comp.component.key;
+              const compType = comp.component.type;
+
+              assert.deepEqual(!!comp.error, false, `${compKey} (component ${compType}): Should remove valudation error`);
+              assert.deepEqual(comp.element.classList.contains('formio-error-wrapper'), false, `${compKey} (component ${compType}): Should remove error class`);
+              assert.deepEqual(!!comp.refs.messageContainer.querySelector('.error'), false, `${compKey} (component ${compType}): should clear errors`);
+            });
+
+            done();
+          }, 700);
+        }, 300);
       }, 300);
     },
   },

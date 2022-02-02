@@ -9,7 +9,7 @@ import {
   getStringFromComponentPath,
   getArrayFromComponentPath
 } from '../../utils/utils';
-import Formio from '../../Formio';
+import { GlobalFormio as Formio } from '../../Formio';
 import Form from '../../Form';
 
 export default class FormComponent extends Component {
@@ -70,7 +70,12 @@ export default class FormComponent extends Component {
         this.options.project = this.formSrc;
       }
       if (this.component.form) {
-        this.formSrc += `/form/${this.component.form}`;
+        if (isMongoId(this.component.form)) {
+          this.formSrc += `/form/${this.component.form}`;
+        }
+        else {
+          this.formSrc += `/${this.component.form}`;
+        }
       }
       else if (this.component.path) {
         this.formSrc += `/${this.component.path}`;
@@ -80,13 +85,12 @@ export default class FormComponent extends Component {
     // Build the source based on the root src path.
     if (!this.formSrc && this.options.formio) {
       const rootSrc = this.options.formio.formsUrl;
-      if (this.component.path) {
-        const parts = rootSrc.split('/');
-        parts.pop();
-        this.formSrc = `${parts.join('/')}/${this.component.path}`;
-      }
-      if (this.component.form) {
+      if (this.component.form && isMongoId(this.component.form)) {
         this.formSrc = `${rootSrc}/${this.component.form}`;
+      }
+      else {
+        const formPath = this.component.path || this.component.form;
+        this.formSrc = `${rootSrc.replace(/\/form$/, '')}/${formPath}`;
       }
     }
 
@@ -98,8 +102,9 @@ export default class FormComponent extends Component {
     // Add revision version if set.
     if (this.component.revision || this.component.revision === 0 ||
       this.component.formRevision || this.component.formRevision === 0
+      || this.component.revisionId
     ) {
-      this.setFormRevision(this.component.revision || this.component.formRevision);
+      this.setFormRevision(this.component.revisionId || this.component.revision || this.component.formRevision);
     }
 
     return this.createSubForm();
@@ -132,7 +137,7 @@ export default class FormComponent extends Component {
 
   setFormRevision(rev) {
     // Remove current revisions from src if it is
-    this.formSrc = this.formSrc.replace(/\/v\/\d*/, '');
+    this.formSrc = this.formSrc.replace(/\/v\/[0-9a-z]+/, '');
     const revNumber = Number.parseInt(rev);
 
     if (!isNaN(revNumber)) {
@@ -313,8 +318,8 @@ export default class FormComponent extends Component {
 
   get isRevisionChanged() {
     return _.isNumber(this.subFormRevision)
-      && _.isNumber(this.formObj._vid)
-      && this.formObj._vid !== this.subFormRevision;
+    && _.isNumber(this.formObj._vid)
+    && this.formObj._vid !== this.subFormRevision;
   }
 
   destroy() {
@@ -329,6 +334,7 @@ export default class FormComponent extends Component {
   redraw() {
     if (this.subForm) {
       this.subForm.form = this.formObj;
+      this.setSubFormDisabled(this.subForm);
     }
     return super.redraw();
   }
@@ -342,6 +348,10 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       this.subForm.everyComponent(...args);
     }
+  }
+
+  setSubFormDisabled(subForm) {
+    subForm.disabled = this.disabled; // When the Nested Form is disabled make the subForm disabled
   }
 
   updateSubWizards(subForm) {
@@ -398,6 +408,7 @@ export default class FormComponent extends Component {
         this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
+        this.onChange();
         return this.subForm;
       });
     }).then((subForm) => {
@@ -438,9 +449,17 @@ export default class FormComponent extends Component {
           this.formObj = formObj;
           this.subFormLoading = false;
           return formObj;
+        })
+        .catch((err) => {
+          console.log(err);
+          return null;
         });
     }
     return NativePromise.resolve();
+  }
+
+  get subFormData() {
+    return this.dataValue?.data || {};
   }
 
   checkComponentValidity(data, dirty, row, options) {
@@ -448,7 +467,7 @@ export default class FormComponent extends Component {
     const silentCheck = options.silentCheck || false;
 
     if (this.subForm) {
-      return this.subForm.checkValidity(this.dataValue.data, dirty, null, silentCheck);
+      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck);
     }
 
     return super.checkComponentValidity(data, dirty, row, options);
@@ -463,14 +482,14 @@ export default class FormComponent extends Component {
     }
 
     if (this.subForm) {
-      return this.subForm.checkConditions(this.dataValue.data);
+      return this.subForm.checkConditions(this.subFormData);
     }
     // There are few cases when subForm is not loaded when a change is triggered,
     // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
     else if (this.subFormReady) {
       this.subFormReady.then(() => {
         if (this.subForm) {
-          return this.subForm.checkConditions(this.dataValue.data);
+          return this.subForm.checkConditions(this.subFormData);
         }
       });
     }
@@ -480,7 +499,7 @@ export default class FormComponent extends Component {
 
   calculateValue(data, flags, row) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.dataValue.data, flags);
+      return this.subForm.calculateValue(this.subFormData, flags);
     }
 
     return super.calculateValue(data, flags, row);
@@ -595,13 +614,14 @@ export default class FormComponent extends Component {
     const changed = super.setValue(submission, flags);
     this.valueChanged = true;
     if (this.subForm) {
+      const revisionPath = submission._frid ? '_frid' : '_vid';
       const shouldLoadOriginalRevision = this.useOriginalRevision
-        && _.isNumber(submission._fvid)
-        && _.isNumber(this.subForm.form?._vid)
-        && submission._fvid !== this.subForm.form._vid;
+      && _.isNumber(submission[revisionPath])
+      && _.isNumber(this.subForm.form?.[revisionPath])
+      && submission._fvid !== this.subForm.form[revisionPath];
 
       if (shouldLoadOriginalRevision) {
-        this.setFormRevision(submission._fvid);
+        this.setFormRevision( submission._frid || submission._fvid);
         this.createSubForm().then(() => {
           this.attach(this.element);
         });
@@ -687,17 +707,18 @@ export default class FormComponent extends Component {
 
     if (this._visible !== value) {
       this._visible = value;
-      this.clearOnHide();
       // Form doesn't load if hidden. If it becomes visible, create the form.
       if (!this.subForm && value) {
         this.createSubForm();
         this.subFormReady.then(() => {
           this.updateSubFormVisibility();
+          this.clearOnHide();
         });
         this.redraw();
         return;
       }
       this.updateSubFormVisibility();
+      this.clearOnHide();
       isNestedWizard ? this.rebuild() : this.redraw();
     }
     if (!value && isNestedWizard) {

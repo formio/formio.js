@@ -34,9 +34,10 @@ export default class NumberComponent extends Input {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);
 
-    const separators = getNumberSeparators(this.options.language);
+    const separators = getNumberSeparators(this.options.language || navigator.language);
 
     this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
+      || this.options.properties?.decimalSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
@@ -44,7 +45,7 @@ export default class NumberComponent extends Input {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = this.options.thousandsSeparator || separators.delimiter;
+      this.delimiter = this.options.properties?.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';
@@ -148,7 +149,8 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : this.emptyValue;
+    // Check if just '-' was entered
+    return val && val !== '-_' ? this.parseNumber(val) : this.emptyValue;
   }
 
   setValueAt(index, value, flags = {}) {

@@ -12,44 +12,13 @@ Components.setComponents(AllComponents);
 
 if (process) {
   // Do not handle unhandled rejections.
-  process.on('unhandledRejection', (err, p) => {
-    console.warn('Unhandled rejection!', err);
+  process.on('unhandledRejection', () => {
+    console.warn('Unhandled rejection!');
   });
 }
 
 // Make sure that the Option is available from the window.
 global.Option = global.window.Option;
-
-// Stub out the toLocaleString method so it works in mocha.
-// eslint-disable-next-line no-extend-native
-Number.prototype.toLocaleString = function(local, options) {
-  if (options && options.style === 'currency') {
-    switch (local) {
-      case 'en':
-      case 'en-US':
-        return '$100.00';
-      case 'en-GB':
-        return 'US$100.00';
-      case 'fr':
-        return '100,00 $US';
-      case 'de':
-        return '100,00 $';
-    }
-  }
-  else {
-    switch (local) {
-      case 'en':
-      case 'en-US':
-        return '12,345.679';
-      case 'en-GB':
-        return '12,345.679';
-      case 'fr':
-        return '12 345,679';
-      case 'de':
-        return '12.345,679';
-    }
-  }
-};
 
 let formBuilderElement = null;
 let formBuilder = null;
@@ -299,7 +268,7 @@ const Harness = {
     return component;
   },
   setInputValue(component, name, value) {
-    const inputEvent = new Event('input', {bubbles: true, cancelable: true});
+    const inputEvent = new Event('input', { bubbles: true, cancelable: true });
     const element = component.element.querySelector(`input[name="${name}"]`);
     assert(element, `${name} input not found`);
     element.value = value;
@@ -352,8 +321,10 @@ const Harness = {
   testValid(component, value) {
     return new Promise((resolve, reject) => {
       let resolved = false;
-      component.on('componentChange', (change) => {
-        if (resolved) {return}
+      component.on('componentChange', () => {
+        if (resolved) {
+          return;
+        }
         const valid = component.checkValidity();
         if (valid) {
           assert.equal(component.dataValue, value);
@@ -371,15 +342,19 @@ const Harness = {
   testInvalid(component, value, field, expectedError) {
     return new Promise((resolve, reject) => {
       let resolved = false;
-      component.on('componentChange', (change) => {
-        if (resolved) {return}
-        if(component.checkValidity()) {
+      component.on('componentChange', () => {
+        if (resolved) {
+          return;
+        }
+        if (component.checkValidity()) {
           reject('Component should not be valid');
           resolved = true;
         }
       });
       component.on('componentError', (error) => {
-        if (resolved) {return}
+        if (resolved) {
+          return;
+        }
         assert.equal(error.component.key, field);
         assert.equal(error.message, expectedError);
         resolve();

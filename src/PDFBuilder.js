@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
 import { fastCloneDeep, getElementRect } from './utils/utils';
@@ -21,6 +21,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Force superclass to skip the automatic init; we'll trigger it manually
     options.skipInit = true;
+    options.display = 'pdf';
 
     if (element) {
       super(element, options);
@@ -52,6 +53,7 @@ export default class PDFBuilder extends WebformBuilder {
           datetime: true,
           file: true,
           htmlelement: true,
+          signrequestsignature: true
         }
       },
       basic: false,
@@ -447,12 +449,6 @@ export default class PDFBuilder extends WebformBuilder {
       const info = this.getComponentInfo(key, group);
       _.merge(schema, info);
     }
-
-    schema.key = _.camelCase(
-      schema.label ||
-      schema.placeholder ||
-      schema.type
-    );
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform._form], schema);

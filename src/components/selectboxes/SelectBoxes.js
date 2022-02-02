@@ -135,12 +135,21 @@ export default class SelectBoxesComponent extends RadioComponent {
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
-    _.each(this.refs.input, (input) => {
-      if (_.isUndefined(value[input.value])) {
-        value[input.value] = false;
+
+    if (this.isHtmlRenderMode()) {
+      if (changed) {
+        this.redraw();
       }
-      input.checked = !!value[input.value];
-    });
+    }
+    else {
+      _.each(this.refs.input, (input) => {
+        if (_.isUndefined(value[input.value])) {
+          value[input.value] = false;
+        }
+        input.checked = !!value[input.value];
+      });
+    }
+
     return changed;
   }
 

@@ -34,12 +34,17 @@ export default class NestedComponent extends Field {
     return this._collapsed;
   }
 
-  set collapsed(value) {
-    this._collapsed = value;
-    this.redraw();
+  collapse(value) {
+    const promise = this.redraw();
     if (!value && !this.pristine) {
       this.checkValidity(this.data, true);
     }
+    return promise;
+  }
+
+  set collapsed(value) {
+    this._collapsed = value;
+    this.collapse(value);
   }
 
   set visible(value) {
@@ -315,7 +320,7 @@ export default class NestedComponent extends Field {
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
-    options.root = this.root || this;
+    options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
@@ -416,7 +421,7 @@ export default class NestedComponent extends Field {
   render(children) {
     // If already rendering, don't re-render.
     return super.render(children || this.renderTemplate(this.templateName, {
-      children: this.renderComponents(),
+      children: !this.visible ? '' : this.renderComponents(),
       nestedKey: this.nestedKey,
       collapsed: this.options.pdf ? false : this.collapsed,
     }));
@@ -448,6 +453,12 @@ export default class NestedComponent extends Field {
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
+      });
+      this.addEventListener(this.refs.header, 'keydown', (e) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+          e.preventDefault();
+          this.collapsed = !this.collapsed;
+        }
       });
     }
 
@@ -566,27 +577,12 @@ export default class NestedComponent extends Field {
     return isValid;
   }
 
-  checkModal(isValid, dirty) {
-    if (!this.component.modalEdit || !this.componentModal) {
-      return;
-    }
-    const messages = this.errors;
-    this.clearErrorClasses(this.refs.openModalWrapper);
-    this.error = '';
-    if (!isValid && (dirty || !this.isPristine && !!messages.length)) {
-      this.error = {
-        component: this.component,
-        level: 'hidden',
-        message: this.t('Fix the errors'),
-        messages,
-      };
-      this.setErrorClasses([this.refs.openModal], dirty, !isValid, !!messages.length, this.refs.openModalWrapper);
-    }
-  }
-
   checkConditions(data, flags, row) {
-    this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));
-    return super.checkConditions(data, flags, row);
+    // check conditions of parent component first, because it may influence on visibility of it's children
+    const check = super.checkConditions(data, flags, row);
+    //row data of parent component not always corresponds to row of nested components, use comp.data as row data for children instead
+    this.getComponents().forEach(comp => comp.checkConditions(data, flags, comp.data));
+    return check;
   }
 
   clearOnHide(show) {
@@ -748,6 +744,9 @@ export default class NestedComponent extends Field {
   setValue(value, flags = {}) {
     if (!value) {
       return false;
+    }
+    if (value.submitAsDraft && !value.submit) {
+      flags.noValidate = true;
     }
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;

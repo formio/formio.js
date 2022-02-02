@@ -281,7 +281,13 @@ class Formio {
     if (!this[_id]) {
       return NativePromise.reject(`Missing ${_id}`);
     }
-    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
+
+    let url = this[_url] + query;
+
+    if (type==='form' && !isNaN(parseInt(this.vId))) {
+      url += `&formRevision=${this.vId}`;
+    }
+    return this.makeRequest(type, url, 'get', null, opts);
   }
 
   makeRequest(...args) {
@@ -326,36 +332,41 @@ class Formio {
 
   loadForm(query, opts) {
     return this.load('form', query, opts)
-      .then((currentForm) => {
-        // Check to see if there isn't a number in vId.
-        if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
-          return currentForm;
-        }
-        // If a submission already exists but form is marked to load current version of form.
-        if (currentForm.revisions === 'current' && this.submissionId) {
-          return currentForm;
-        }
-        // If they specified a revision form, load the revised form components.
-        if (query && isObject(query)) {
-          query = Formio.serialize(query.params);
-        }
-        if (query) {
-          query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
-        }
-        else {
-          query = this.query;
-        }
-        return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
-          .then((revisionForm) => {
-            currentForm._vid = revisionForm._vid;
-            currentForm.components = revisionForm.components;
-            currentForm.settings = revisionForm.settings;
-            // Using object.assign so we don't cross polinate multiple form loads.
-            return Object.assign({}, currentForm);
-          })
-          // If we couldn't load the revision, just return the original form.
-          .catch(() => Object.assign({}, currentForm));
-      });
+    .then((currentForm) => {
+      // Check to see if there isn't a number in vId.
+      if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
+        return currentForm;
+      }
+      // If a submission already exists but form is marked to load current version of form.
+      if (currentForm.revisions === 'current' && this.submissionId) {
+        return currentForm;
+      }
+      // eslint-disable-next-line eqeqeq
+      if (currentForm._vid == this.vId || currentForm.revisionId === this.vId) {
+        return currentForm;
+      }
+      // If they specified a revision form, load the revised form components.
+      if (query && isObject(query)) {
+        query = Formio.serialize(query.params);
+      }
+      if (query) {
+        query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
+      }
+      else {
+        query = this.query;
+      }
+      return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
+        .then((revisionForm) => {
+          currentForm._vid = revisionForm._vid;
+          currentForm.components = revisionForm.components;
+          currentForm.settings = revisionForm.settings;
+          currentForm.revisionId = revisionForm.revisionId;
+          // Using object.assign so we don't cross polinate multiple form loads.
+          return Object.assign({}, currentForm);
+        })
+        // If we couldn't load the revision, just return the original form.
+        .catch(() => Object.assign({}, currentForm));
+    });
   }
 
   saveForm(data, opts) {
@@ -373,7 +384,7 @@ class Formio {
   loadSubmission(query, opts) {
     return this.load('submission', query, opts)
       .then((submission) => {
-        this.vId = submission._fvid;
+        this.vId = submission._frid || submission._fvid;
         this.vUrl = `${this.formUrl}/v/${this.vId}`;
         return submission;
       });
@@ -518,7 +529,8 @@ class Formio {
     let apiUrl = `/project/${form.project}`;
     apiUrl += `/form/${form._id}`;
     apiUrl += `/submission/${this.submissionId}`;
-    apiUrl += '/download';
+    const postfix = form.submissionRevisions && form.settings.changeLog? '/download/changelog' : '/download';
+    apiUrl += postfix;
 
     let download = this.base + apiUrl;
     return new NativePromise((resolve, reject) => {
@@ -910,6 +922,10 @@ class Formio {
         else if (response.status === 416) {
           _Formio.events.emit('formio.rangeIsNotSatisfiable', response.body);
         }
+        else if (response.status === 504) {
+          return NativePromise.reject(new Error('Network request failed'));
+        }
+
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get('content-type').includes('application/json')
           ? response.json()
@@ -1433,7 +1449,7 @@ class Formio {
     }
   }
 
-  static requireLibrary(name, property, src, polling) {
+  static requireLibrary(name, property, src, polling, onload) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
       Formio.libraries[name].ready = new NativePromise((resolve, reject) => {
@@ -1491,6 +1507,10 @@ class Formio {
             }
           }
 
+          if (onload) {
+            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+          }
+
           const { head } = document;
           if (head) {
             head.appendChild(element);
@@ -1509,7 +1529,10 @@ class Formio {
         }
       }
     }
-    return Formio.libraries[name].ready;
+
+    const lib = Formio.libraries[name].ready;
+
+    return onload ? onload(lib) : lib;
   }
 
   static libraryReady(name) {
@@ -1549,6 +1572,17 @@ class Formio {
       Rules: Formio.Rules,
     };
   }
+
+  static get GlobalFormio() {
+    if (typeof global !== 'undefined' && global.Formio) {
+      return global.Formio;
+    }
+    else if (typeof window !== 'undefined' && window.Formio) {
+      return window.Formio;
+    }
+
+    return Formio;
+  }
 }
 
 // Define all the static properties.
@@ -1573,5 +1607,7 @@ if (typeof global !== 'undefined') {
 if (typeof window !== 'undefined') {
   Formio.addToGlobal(window);
 }
+
+export const GlobalFormio = Formio.GlobalFormio;
 
 export default Formio;

@@ -1,10 +1,11 @@
 import NativePromise from 'native-promise-only';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
+    options.display = 'pdf';
     super(element, options);
     this.components = [];
   }
@@ -182,6 +183,10 @@ export default class PDF extends Webform {
     let iframeSrc = `${this._form.settings.pdf.src}.html`;
     const params = [`id=${this.id}`];
 
+    if (this.options.showCheckboxBackground || this._form.settings.showCheckboxBackground) {
+      params.push('checkboxbackground=1');
+    }
+
     if (this.options.readOnly) {
       params.push('readonly=1');
     }
@@ -201,8 +206,8 @@ export default class PDF extends Webform {
     return iframeSrc;
   }
 
-  setForm(form) {
-    return super.setForm(form).then(() => {
+  setForm(form, flags = {}) {
+    return super.setForm(form, flags).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
         form.url = this.formio.formUrl;
@@ -223,7 +228,9 @@ export default class PDF extends Webform {
     const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
-        this.postMessage({ name: 'submission', data: submission });
+        if (changed) {
+          this.postMessage({ name: 'submission', data: submission });
+        }
       });
     }
     return changed;
@@ -240,8 +247,9 @@ export default class PDF extends Webform {
     }
 
     this.iframeReady.then(() => {
-      if (this.iframeElement && this.iframeElement.contentWindow) {
+      if (this.iframeElement && this.iframeElement.contentWindow && !(message.name === 'form' && this.iframeFormSetUp)) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
+        this.iframeFormSetUp = message.name === 'form';
       }
     });
   }

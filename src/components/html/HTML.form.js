@@ -20,5 +20,9 @@ export default function(...extend) {
       key: 'logic',
       components: HTMLEditLogic,
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

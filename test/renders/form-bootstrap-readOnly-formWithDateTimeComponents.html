@@ -2,20 +2,21 @@
   <div class="formio-form formio-read-only" ref="webform" novalidate>
     <div id="panel" class="formio-component formio-component-panel formio-component-panel " ref="component">
       <div class="mb-2 card border">
-        <div class="card-header bg-default" ref="header">
+        <div class="card-header bg-default" tabindex="0" role="button" aria-expanded="true" aria-controls="panel-panel" ref="header">
           <span class="mb-0 card-title ">
         <i class="formio-collapse-icon fa fa-minus-square-o text-muted" data-title="Collapse Panel"></i>
       Panel
     </span>
         </div>
-        <div class="card-body" ref="nested-panel">
+        <div class="card-body" ref="nested-panel" id="panel-panel">
           <div id="dateTime1" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime1 " ref="component">
-            <label class="col-form-label " for="dateTime1-dateTime1">
+            <label ref="label" class="col-form-label " for="dateTime1-dateTime1" id="l-dateTime1-dateTime1">
               Date / Time
             </label>
             <div ref="element">
               <div class="input-group">
-                <input ref="input" name="data[dateTime1]" type="text" class="form-control" lang="en" disabled="disabled" value="" id="dateTime1-dateTime1"></input>
+                <input ref="input" name="data[dateTime1]" type="text" class="form-control" lang="en" disabled="disabled" value="" id="dateTime1-dateTime1" aria-labelledby="l-dateTime1-dateTime1 " aria-required="false"></input>
+                <span aria-live="assertive" id="dateTime1-liveRegion" class="sr-only" ref="liveRegion"></span>
                 <div class="input-group-append" ref="suffix">
                   <span class="input-group-text">
         <i ref="icon" class="fa fa-calendar" style=""></i>
@@ -26,12 +27,12 @@
             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
           </div>
           <div id="textField1" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField1 " ref="component">
-            <label class="col-form-label " for="textField1-textField1">
+            <label ref="label" class="col-form-label " for="textField1-textField1" id="l-textField1-textField1">
               Text Field
             </label>
             <div ref="element">
               <div class="input-group">
-                <input ref="input" name="data[textField1]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField1-textField1"></input>
+                <input ref="input" name="data[textField1]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField1-textField1" aria-labelledby="l-textField1-textField1 " aria-required="false"></input>
                 <div class="input-group-append" ref="suffix">
                   <span class="input-group-text">
         <i ref="icon" class="fa fa-calendar" style=""></i>

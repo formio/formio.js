@@ -16,15 +16,25 @@ export default [
         tableView: true,
         key: 'name',
         type: 'select',
+        dataSrc: 'custom',
         data: {
-          values: Object.keys(Addons).map((key) => ({
-            value: key,
-            label: Addons[key].info.label || key
-          })),
+          custom: function({ instance }) {
+            const componentType = instance?.root?.data?.type;
+            const availableAddons = Object.keys(Addons).filter((key) => {
+              if (Addons[key]?.info?.supportedComponents?.includes(componentType)) {
+                return true;
+              }
+              return false;
+            });
+            return availableAddons.map((addonKey) => ({
+              value: addonKey,
+              label: Addons[addonKey].info.label || addonKey,
+            }));
+          },
         },
         input: true
       },
-      ...editForms
+      ...editForms,
     ]
   }
 ];

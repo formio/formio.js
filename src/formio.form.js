@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Formio from './Formio';
 import AllComponents from './components';
 import Builders from './builders/Builders';
 import Components from './components/Components';
@@ -12,7 +13,6 @@ import QuickRules from './validator/quickRules';
 import Transformers from './validator/transformers';
 import ValueSources from './validator/valueSources';
 import Widgets from './widgets';
-import Formio from './Formio';
 import Form from './Form';
 import Utils from './utils';
 import Evaluator from './utils/Evaluator';
@@ -40,6 +40,7 @@ Formio.Operators = Operators;
 Formio.QuickRules = QuickRules;
 Formio.Transformers = Transformers;
 Formio.ValueSources = ValueSources;
+Formio.AllComponents = AllComponents;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;

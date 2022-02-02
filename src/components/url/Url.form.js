@@ -18,5 +18,9 @@ export default function(...extend) {
       key: 'validation',
       components: UrlEditValidation
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

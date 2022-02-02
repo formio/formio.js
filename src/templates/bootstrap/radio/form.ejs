@@ -1,7 +1,16 @@
-<div class="form-radio radio">
+<div
+  class="form-radio radio"
+  ref="radioGroup"
+  role="{{ctx.component.type === 'selectboxes' ? 'group' : 'radiogroup'}}"
+  aria-required="{{ctx.input.component.validate.required}}"
+  aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}"
+  {% if (ctx.component.description) { %}
+    aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
+  {% } %}
+>
   {% ctx.values.forEach(function(item) { %}
-  <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
-    <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
+  <div class="{{ctx.input.attr.type}} {{ ctx.component.optionsLabelPosition && ctx.component.optionsLabelPosition !== 'right' ? 'pl-0' : ''}} form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
+    <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}">
       {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
       <span>{{ctx.t(item.label, { _userInput: true })}}</span>
       {% } %}
@@ -17,7 +26,8 @@
         {% if (item.disabled) { %}
           disabled=true
         {% } %}
-        id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
+        id="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}"
+        role="{{ctx.component.type === 'selectboxes' ? 'checkbox' : 'radio'}}"
       >
       {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
       <span>{{ctx.t(item.label, { _userInput: true })}}</span>
