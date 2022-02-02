@@ -66,6 +66,10 @@ import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithIni
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
+import { requestAnimationFrame, cancelAnimationFrame } from 'animation-frame-polyfill';
+
+global.requestAnimationFrame = requestAnimationFrame;
+global.cancelAnimationFrame = cancelAnimationFrame;
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -3357,6 +3361,10 @@ describe('Webform tests', function() {
     if (useDoneInsteadOfPromise) {
       describe(formTest.title || '', () => {
         each(formTest.tests, (formTestTest, title) => {
+          if (title === 'Email Action Test') {
+            console.log('Email Action Test');
+          }
+
           it(title, function(done) {
             const self = this;
             const formElement = document.createElement('div');
