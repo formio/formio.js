@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4579: Fixed extracting valueProperty from template
  - FIO-4567: Fixes can't draw on Signature component on form load and size changing inside DataGrid
  - FIO-4573: exclude using of zero form revision
- - FIO-4571:Fixea an issue where tooltips do not appear on hover in the component setting modal
+ - FIO-4571: Fixea an issue where tooltips do not appear on hover in the component setting modal
+ - FIO-2645: Made clicking on the error of Container component redirect to it.
 
 ## 4.15.0-rc.1
 ### Changed
