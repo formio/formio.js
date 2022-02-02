@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4571: Fixea an issue where tooltips do not appear on hover in the component setting modal
  - FIO-2645: Made clicking on the error of Container component redirect to it.
  - FIO-4595, FIO-4364: Fixes Select with URL keeping default value on pdf submission
+ - FIO-4362: Fixed issues with checkbox set as radio type. 
 
 ## 4.15.0-rc.1
 ### Changed
