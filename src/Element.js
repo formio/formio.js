@@ -430,6 +430,10 @@ export default class Element {
    * @param {Object} params - The i18n parameters to use for translation.
    */
   t(text, ...args) {
+    // i18n returns an error with word 'select'
+    if (text === 'select') {
+      return text;
+    }
     return this.i18next.t(text, ...args);
   }
 
