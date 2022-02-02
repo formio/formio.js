@@ -4,7 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.1-rc.9]
+## 4.14.1-rc.9
+### Changed
+ - Updated @formio/bootstrap3@2.12.1-rc.1
+ - FIO-4579: Fixed extracting valueProperty from template
+ - FIO-4567: Fixes can't draw on Signature component on form load and size changing inside DataGrid
+ - FIO-4573: exclude using of zero form revision
+ - FIO-4571:Fixea an issue where tooltips do not appear on hover in the component setting modal
+ - FIO-2645 Made clicking on the error of Container component redirect t…
+ - FIO-4595 | 4364: Fixes Select with URL keeping default value on pdf submission
+ - FIO-4362: Fixed issues with checkbox set as radio type.
+ - FIO-4615: Fixing issues with calendar widget with save as text.
+
 ### Fixed
  - FIO-560: Fixes an issue where CKEditor media is not shown in the view mode
 
