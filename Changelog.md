@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2645: Made clicking on the error of Container component redirect to it.
  - FIO-4595, FIO-4364: Fixes Select with URL keeping default value on pdf submission
  - FIO-4362: Fixed issues with checkbox set as radio type. 
+ - FIO-4615: Fixing issues with calendar widget with save as text.
 
 ## 4.15.0-rc.1
 ### Changed
