@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.15.0-rc.2]
+### Fixed
+ - FIO-560: Fixes an issue where CKEditor media is not shown in the view mode
+
 ## 4.15.0-rc.1
 ### Changed
  - FIO-4359: submission revisions
