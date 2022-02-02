@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { getFocusableElements } from '../../utils/utils';
 
 import Component from '../_classes/component/Component';
 import Field from '../_classes/field/Field';
@@ -78,6 +79,13 @@ export default class ContainerComponent extends NestedDataComponent {
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, this.dataValue) && valid;
     }, Component.prototype.checkData.call(this, data, flags, row));
+  }
+
+  focus() {
+    const focusableElements = getFocusableElements(this.element);
+      if (focusableElements && focusableElements[0]) {
+        focusableElements[0].focus();
+      }
   }
 
   checkConditions(data, flags, row) {
