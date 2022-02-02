@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.1-rc.10]
+### Fixed
+ - FIO-4443: Fixed signature component when generating pdf forms..
+
 ## 4.14.1-rc.9
 ### Changed
  - Updated @formio/bootstrap3@2.12.1-rc.1
