@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4632: Fixing date/time to work without time enabled.
  - FIO-4632: Fixing the calendar widget to properly format all ISO time
  - FIO-4558: fixed an issue where html element displays error if contains only word select
+ - FIO-4631: Fixed tippy.js tooltips
 
 ## 4.15.0-rc.2
 ### Changed
