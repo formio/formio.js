@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.1-rc.11
+### Changed
+ - FIO-4558: fixed an issue where html element displays error if contain…
+ - FIO-4632: Fixing date/time to work without time enabled.
+
 ## 4.14.1-rc.10
 ### Fixed
  - FIO-4443: Fixed signature component when generating pdf forms..
