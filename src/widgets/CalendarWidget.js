@@ -357,7 +357,7 @@ export default class CalendarWidget extends InputWidget {
       return 'Invalid Date';
     }
 
-    return this.getDateValue(dates[0], this.valueFormat);
+    return (this.settings.saveAs === 'text') ? this.getDateValue(dates[0], this.valueFormat) : dates[0];
   }
 
   /**
@@ -366,16 +366,17 @@ export default class CalendarWidget extends InputWidget {
    * @param value
    */
   setValue(value) {
+    const saveAsText = (this.settings.saveAs === 'text');
     if (!this.calendar) {
       value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
-    if (value && !this.settings.enableTime && value.includes('T')) {
+    if (saveAsText && value && !this.settings.enableTime && value.includes('T')) {
       this.calendar.setDate(value.split('T')[0], false);
     }
     else if (value) {
       const zonesLoading = this.loadZones();
-      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !zonesLoading) {
+      if (!saveAsText && this.settings.readOnly && !zonesLoading) {
         this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
       }
       else {
