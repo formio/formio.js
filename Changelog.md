@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.3]
 ### Fixed
  - FIO-4632: Fixing date/time to work without time enabled.
+ - FIO-4558: fixed an issue where html element displays error if contains only word select
 
 ## 4.15.0-rc.2
 ### Changed
