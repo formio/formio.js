@@ -1112,13 +1112,8 @@ export default class Component extends Element {
           trigger: 'mouseenter click focus',
           placement: 'right',
           zIndex: 10000,
-          allowHTML: true,
-          arrow: true,
-          content: `
-            <div class="tooltip" style="opacity: 1;" role="tooltip">
-              <div class="tooltip-arrow"></div>
-              <div class="tooltip-inner">${this.t(tooltipText, { _userInput: true })}</div>
-            </div>`,
+          interactive: true,
+          content: this.t(tooltipText, { _userInput: true }),
         });
       }
     });

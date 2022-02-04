@@ -351,15 +351,9 @@ export default class WebformBuilder extends Component {
     return tippy(component, {
       trigger: 'mouseenter focus',
       placement: 'top',
-      arrow: true,
       delay: [200, 0],
-      allowHTML: true,
       zIndex: 10000,
-      content: `
-        <div class="tooltip" style="opacity: 1; position: relative; left: 0; top: 10px;" role="tooltip">
-          <div class="tooltip-arrow"></div>
-          <div class="tooltip-inner" style="white-space: nowrap;">${title}</div>
-        </div>`,
+      content: title
     });
   }
 
