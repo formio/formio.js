@@ -360,6 +360,10 @@ export default class CalendarWidget extends InputWidget {
     return (this.settings.saveAs === 'text') ? this.getDateValue(dates[0], this.valueFormat) : dates[0];
   }
 
+  isValueISO8601(value) {
+    return value && (typeof value === 'string') && value.match(/-[0-9]{2}T[0-9]{2}:/);
+  }
+
   /**
    * Set the selected date value.
    *
@@ -371,8 +375,8 @@ export default class CalendarWidget extends InputWidget {
       value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
-    if (saveAsText && value && !this.settings.enableTime && value.includes('T')) {
-      this.calendar.setDate(value.split('T')[0], false);
+    if (this.isValueISO8601(value)) {
+      this.calendar.setDate(moment(value).toDate(), false);
     }
     else if (value) {
       const zonesLoading = this.loadZones();
