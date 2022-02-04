@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.1-rc.12
+### Changed
+ - FIX Vertical Right Wizard Header.
+ - FIO-4631 Fixed tippy.js tooltips
+ - FIO-4632: Fixing the calendar widget to properly format all ISO time …
+
 ## 4.14.1-rc.11
 ### Changed
  - FIO-4558: fixed an issue where html element displays error if contain…
