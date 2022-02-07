@@ -95,6 +95,21 @@ describe('Webform tests', function() {
     }).catch((err) => done(err));
   });
 
+  it('Should show submission if passed as option', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true, submission: { data: { survey: { question1: 'a3', question2: 'a1' } } } });
+
+    form.setForm(formWithSurvey).then(() => {
+      const survey = form.getComponent('survey');
+      const values = survey.element.querySelectorAll('td');
+
+      assert.equal(values.length, 2);
+      assert.equal(values[0].innerHTML.trim(), 'a3');
+      assert.equal(values[1].innerHTML.trim(), 'a1');
+      done();
+   }).catch((err) => done(err));
+  });
+
   it('Should show survey values in html render mode', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { renderMode: 'html', readOnly: true });
