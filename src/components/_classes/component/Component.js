@@ -3113,10 +3113,10 @@ export default class Component extends Element {
    * @return {boolean|*}
    */
   isValueHidden() {
-    if (!this.root || !this.root.hasOwnProperty('editing')) {
+    if (!this.root || !this.root.hasOwnProperty('editing') || !this.root.editing) {
       return false;
     }
-    if (!this.root || !this.root.editing) {
+    if (!this.root || this.root.editing) {
       return false;
     }
     return (this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
