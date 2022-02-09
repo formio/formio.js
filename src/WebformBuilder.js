@@ -1065,6 +1065,17 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
+  replaceDoubleQuotes(data, fieldsToRemoveDoubleQuotes = []) {
+    if (data) {
+      fieldsToRemoveDoubleQuotes.forEach((key) => {
+        if (data[key]) {
+          data[key] = data[key].replace(/"/g, "'");
+        }
+      });
+      return data;
+    }
+  }
+
   updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
@@ -1079,6 +1090,10 @@ export default class WebformBuilder extends Component {
         ])],
         config: this.options.formConfig || {}
       };
+
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+      this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
+
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
         this.setContent(previewElement, this.preview.render());
@@ -1220,13 +1235,7 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
 
-      if (submissionData) {
-        fieldsToRemoveDoubleQuotes.forEach((key) => {
-          if (submissionData[key]) {
-            submissionData[key] = submissionData[key].replace(/"/g, "'");
-          }
-        });
-      }
+      this.replaceDoubleQuotes(submissionData, fieldsToRemoveDoubleQuotes);
 
       this.hook('beforeSaveComponentSettings', submissionData);
 
