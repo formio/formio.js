@@ -3119,7 +3119,7 @@ export default class Component extends Element {
     if (!this.root || !this.root.editing) {
       return false;
     }
-    return (this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
+    return (!this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
   }
 
   shouldSkipValidation(data, dirty, row) {
