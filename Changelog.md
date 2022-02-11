@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Failing tests.
  - FIO-4632: Fixed the date return to always be a string
+ - FIO-4419: Time fields in Safari
 
 ## 4.15.0-rc.3
 ### Fixed
