@@ -173,21 +173,6 @@ export default class SelectComponent extends Field {
     if (this.component.dataSrc === 'values') {
       return 'value';
     }
-
-    if (this.component.dataSrc === 'resource') {
-      if (this.component.reference) {
-        return '';
-      }
-
-      // checking additional fields in the template
-      const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
-      if (hasNestedFields) {
-        const data = this.component.template.replace(/<\/?[^>]+(>|$)/g, '').split('item.')[1].slice(0, -3);
-        return data.trim();
-      }
-      return 'data';
-    }
-
     return '';
   }
 
