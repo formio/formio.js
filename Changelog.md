@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.1-rc.13
+### Changed
+ - FIO-4419: Time fields in Safari
+ - FIO-4558: fixed an issue where word 'select' with empty rows displays…
+ - FIO-2864: fixed an issue where tooltip not showing text into double q…
+ - FIO-4658: Fix the select dropdown for resources without save-as-refer…
+ - Fixed validation for protected field
+ - FIO-4632: Fixed the date return to always be a string.
+
 ## 4.14.1-rc.12
 ### Changed
  - FIX Vertical Right Wizard Header.
