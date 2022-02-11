@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4632: Fixed the date return to always be a string
  - FIO-4419: Time fields in Safari
  - FIO-4558: fixed an issue where word 'select' with empty rows displays error inside HTML element
+ - FIO-2864: fixed an issue where tooltip not showing text into double quotes
 
 ## 4.15.0-rc.3
 ### Fixed
