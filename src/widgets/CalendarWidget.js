@@ -328,7 +328,10 @@ export default class CalendarWidget extends InputWidget {
    * @param format
    * @return {string}
    */
-  getDateValue(date, format) {
+  getDateValue(date, format, useTimezone) {
+    if (useTimezone) {
+      return momentDate(date, this.valueFormat, this.timezone).format(convertFormatToMoment(format));
+    }
     return moment(date).format(convertFormatToMoment(format));
   }
 
@@ -357,7 +360,7 @@ export default class CalendarWidget extends InputWidget {
       return 'Invalid Date';
     }
 
-    return (this.settings.saveAs === 'text') ? this.getDateValue(dates[0], this.valueFormat) : dates[0];
+    return this.getDateValue(dates[0], this.valueFormat, (this.settings.saveAs === 'date'));
   }
 
   isValueISO8601(value) {
