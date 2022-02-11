@@ -1,5 +1,4 @@
 import SignaturePad from 'signature_pad/dist/signature_pad.js';
-import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
 
@@ -160,6 +159,8 @@ export default class SignatureComponent extends Input {
       if (this.dataValue) {
         this.setDataToSigaturePad();
       }
+
+      this.showCanvas(true);
     }
   }
 
@@ -210,17 +211,8 @@ export default class SignatureComponent extends Input {
           this.refs.padBody.style.maxWidth = '100%';
         }
 
-        if (!this.builderMode && !this.options.preview) {
-          this.observer = new _ResizeObserver(() => {
-            this.checkSize();
-          });
-
-          this.observer.observe(this.refs.padBody);
-        }
-
         this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 10));
 
-        this.showCanvas(false);
         setTimeout(function checkWidth() {
           if (this.refs.padBody && this.refs.padBody.offsetWidth) {
             this.checkSize();

@@ -8,13 +8,13 @@
   <a class="btn btn-sm btn-light signature-pad-refresh" ref="refresh">
     <i class="{{ctx.iconClass('refresh')}}"></i>
   </a>
-  <canvas class="signature-pad-canvas" height="{{ctx.component.height}}" ref="canvas"></canvas>
+  <canvas class="signature-pad-canvas" style="display: none;" height="{{ctx.component.height}}" ref="canvas"></canvas>
   {% if (ctx.required) { %}
   <span class="form-control-feedback field-required-inline text-danger">
     <i class="{{ctx.iconClass('asterisk')}}"></i>
   </span>
   {% } %}
-  <img style="width: 100%;display: none;" ref="signatureImage">
+  <img style="width: 100%;display: inherit;" ref="signatureImage">
 </div>
 {% if (ctx.component.footer) { %}
   <div class="signature-pad-footer">

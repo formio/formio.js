@@ -37,13 +37,22 @@ export default [
     },
   },
   {
-    type: 'textfield',
+    type: 'select',
     input: true,
+    dataSrc: 'url',
+    data: {
+      url: '/form/{{ data.form }}/v'
+    },
+    searchField: 'title__regex',
+    template: '<span>{{ item._vid }}</span>',
+    valueProperty: '_id',
+    authenticate: true,
     label: 'Form Revision',
-    placeholder: 'Current',
-    tooltip: 'You can lock the nested form to a specific revision by entering the revision number here.',
     key: 'revision',
-    weight: 11,
+    weight: 10,
+    lazyLoad: true,
+    tooltip: 'You can lock the nested form to a specific revision by choosing the revision number here.',
+    customConditional: 'show = !!data.form'
   },
   {
     type: 'checkbox',

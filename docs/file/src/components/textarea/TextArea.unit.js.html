@@ -182,6 +182,7 @@ import {
   comp2,
   comp3
 } from &apos;./fixtures&apos;;
+import formWithCKEditor from &apos;../../../test/forms/formWithCKEditor&apos;;
 
 describe(&apos;TextArea Component&apos;, () =&gt; {
   it(&apos;Should build a TextArea component&apos;, () =&gt; {
@@ -560,6 +561,46 @@ describe(&apos;TextArea Component&apos;, () =&gt; {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  describe(&apos;CKEditor&apos;, () =&gt; {
+    it(&apos;Should allow to insert media fiels and show the in the read-only mode&apos;, (done) =&gt; {
+      const element = document.createElement(&apos;div&apos;);
+
+      Formio.createForm(element, formWithCKEditor, { readOnly: true }).then(form =&gt; {
+        form.submission = {
+          data: {
+            textArea: `
+              &lt;figure class=&quot;media&quot;&gt;
+                &lt;div data-oembed-url=&quot;https://www.youtube.com/watch?v=GsLRrmnJXF8&quot;&gt;
+                  &lt;div style=&quot;position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;&quot;&gt;
+                    &lt;iframe src=&quot;https://www.youtube.com/embed/GsLRrmnJXF8&quot; style=&quot;position: absolute; width: 100%; height: 100%; top: 0; left: 0;&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;
+                    &lt;/iframe&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/figure&gt;
+              &lt;figure class=&quot;media&quot;&gt;
+              &lt;div data-oembed-url=&quot;https://www.youtube.com/watch?v=FmA6U5rXl38&amp;amp;t=111s&quot;&gt;
+                &lt;div style=&quot;position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;&quot;&gt;
+                  &lt;iframe src=&quot;https://www.youtube.com/embed/FmA6U5rXl38&quot; style=&quot;position: absolute; width: 100%; height: 100%; top: 0; left: 0;&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;
+                  &lt;/iframe&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/figure&gt;`,
+          },
+          state: &apos;submitted&apos;,
+        };
+
+        setTimeout(() =&gt; {
+          const mediaA = form.element.querySelector(&apos;iframe[src=&quot;https://www.youtube.com/embed/GsLRrmnJXF8&quot;]&apos;);
+          const mediaB = form.element.querySelector(&apos;iframe[src=&quot;https://www.youtube.com/embed/FmA6U5rXl38&quot;]&apos;);
+          assert(mediaA, &apos;Should not remove embedded media&apos;);
+          assert(mediaB, &apos;Should not remove embedded media&apos;);
+
+          done();
+        }, 300);
+      }).catch(done);
+    });
   });
 });
 </code></pre>

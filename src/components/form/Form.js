@@ -102,8 +102,9 @@ export default class FormComponent extends Component {
     // Add revision version if set.
     if (this.component.revision || this.component.revision === 0 ||
       this.component.formRevision || this.component.formRevision === 0
+      || this.component.revisionId
     ) {
-      this.setFormRevision(this.component.revision || this.component.formRevision);
+      this.setFormRevision(this.component.revisionId || this.component.revision || this.component.formRevision);
     }
 
     return this.createSubForm();
@@ -136,7 +137,7 @@ export default class FormComponent extends Component {
 
   setFormRevision(rev) {
     // Remove current revisions from src if it is
-    this.formSrc = this.formSrc.replace(/\/v\/\d*/, '');
+    this.formSrc = this.formSrc.replace(/\/v\/[0-9a-z]+/, '');
     const revNumber = Number.parseInt(rev);
 
     if (!isNaN(revNumber)) {
@@ -317,8 +318,8 @@ export default class FormComponent extends Component {
 
   get isRevisionChanged() {
     return _.isNumber(this.subFormRevision)
-      && _.isNumber(this.formObj._vid)
-      && this.formObj._vid !== this.subFormRevision;
+    && _.isNumber(this.formObj._vid)
+    && this.formObj._vid !== this.subFormRevision;
   }
 
   destroy() {
@@ -613,13 +614,14 @@ export default class FormComponent extends Component {
     const changed = super.setValue(submission, flags);
     this.valueChanged = true;
     if (this.subForm) {
+      const revisionPath = submission._frid ? '_frid' : '_vid';
       const shouldLoadOriginalRevision = this.useOriginalRevision
-        && _.isNumber(submission._fvid)
-        && _.isNumber(this.subForm.form?._vid)
-        && submission._fvid !== this.subForm.form._vid;
+      && _.isNumber(submission[revisionPath])
+      && _.isNumber(this.subForm.form?.[revisionPath])
+      && submission._fvid !== this.subForm.form[revisionPath];
 
       if (shouldLoadOriginalRevision) {
-        this.setFormRevision(submission._fvid);
+        this.setFormRevision( submission._frid || submission._fvid);
         this.createSubForm().then(() => {
           this.attach(this.element);
         });

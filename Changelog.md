@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.3
+### Fixed
+ - FIO-4632: Fixing date/time to work without time enabled.
+ - FIO-4632: Fixing the calendar widget to properly format all ISO time
+ - FIO-4558: fixed an issue where html element displays error if contains only word select
+ - FIO-4631: Fixed tippy.js tooltips
+ - FIO-4311: FIX Vertical Right Wizard Header.
+
+## 4.15.0-rc.2
+### Changed
+ - Updated @formio/bootstrap3@2.12.1-rc.1
+
+### Fixed
+ - FIO-560: Fixes an issue where CKEditor media is not shown in the view mode
+ - FIO-4579: Fixed extracting valueProperty from template
+ - FIO-4567: Fixes can't draw on Signature component on form load and size changing inside DataGrid
+ - FIO-4573: exclude using of zero form revision
+ - FIO-4571: Fixea an issue where tooltips do not appear on hover in the component setting modal
+ - FIO-2645: Made clicking on the error of Container component redirect to it.
+ - FIO-4595, FIO-4364: Fixes Select with URL keeping default value on pdf submission
+ - FIO-4362: Fixed issues with checkbox set as radio type. 
+ - FIO-4615: Fixing issues with calendar widget with save as text.
+
+## 4.15.0-rc.1
+### Changed
+ - FIO-4359: submission revisions
+
+## 4.14.1-rc.8
+### Fixed
+ - FIO-3239: fix displaying custom validation on the inital component with default value
+ - FIO-4398: fixed display of element with html input type in DataGrid with one string
+ - FIO-4070: html edit grid issue fix
+ - FIO-4364: Fixes setting form and submission multiple times for pdf on submission view page
+ - FIO-4468: Fixes select boxes with options label position left are overlapped on pdf download
+ - FIO-4538: fixed an issue where component menu buttons in the form builder have Inappropriate style
+
 ## 4.14.1-rc.7
 ### Fixed
  - FIO-4443: Fixed signature not visible when generating a pdf.

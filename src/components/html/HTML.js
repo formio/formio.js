@@ -33,6 +33,12 @@ export default class HTMLComponent extends Component {
     if (this.builderMode) {
       return this.component.content;
     }
+
+    // i18n returns error exactly with word 'select', spaces will be trimmed
+    if (this.component.content.replace(/(<(\/?[^>]+)>)/g, '') === 'select') {
+      return ` ${this.component.content} `;
+    }
+
     const submission = _.get(this.root, 'submission', {});
     const content = this.component.content ? this.interpolate(this.component.content, {
       metadata: submission.metadata || {},

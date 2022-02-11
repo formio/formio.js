@@ -183,7 +183,7 @@ export default class SelectComponent extends Field {
       const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
       if (hasNestedFields) {
         const data = this.component.template.replace(/<\/?[^>]+(>|$)/g, '').split('item.')[1].slice(0, -3);
-        return data.slice(0, data.indexOf(' '));
+        return data.trim();
       }
       return 'data';
     }
@@ -521,7 +521,7 @@ export default class SelectComponent extends Field {
       return false;
     }
     // Live forms should always load.
-    if (!this.options.readOnly) {
+    if (!this.options.readOnly || (this.options.display === 'pdf' && this.options.readOnly)) {
       return true;
     }
 

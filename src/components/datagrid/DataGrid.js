@@ -502,7 +502,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   setRowComponentsData(rowIndex, rowData) {
     _.each(this.rows[rowIndex], (component) => {
-      component.data = rowData;
+     component.data = rowData;
     });
   }
 
@@ -512,6 +512,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     // Create any missing rows.
     rowValues.forEach((row, index) => {
       if (!rebuild && this.rows[index]) {
+        if (!_.isEqual(this.rows[index], row) && !this.componentModal) {
+          added = true;
+        }
         this.setRowComponentsData(index, row);
       }
       else {

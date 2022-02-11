@@ -351,7 +351,9 @@ export default class WebformBuilder extends Component {
     return tippy(component, {
       trigger: 'mouseenter focus',
       placement: 'top',
-      content: title,
+      delay: [200, 0],
+      zIndex: 10000,
+      content: title
     });
   }
 
