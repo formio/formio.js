@@ -3108,6 +3108,9 @@ export default class Component extends Element {
    * @return {boolean|*}
    */
   isValueHidden() {
+    if (this.component.protected && this.root.editing) {
+      return false;
+    }
     if (!this.root || !this.root.hasOwnProperty('editing')) {
       return false;
     }
