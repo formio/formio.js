@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.4]
 ### Fixed
  - Failing tests.
+ - FIO-4632: Fixed the date return to always be a string
 
 ## 4.15.0-rc.3
 ### Fixed
