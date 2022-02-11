@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Failing tests.
  - FIO-4632: Fixed the date return to always be a string
  - FIO-4419: Time fields in Safari
+ - FIO-4558: fixed an issue where word 'select' with empty rows displays error inside HTML element
 
 ## 4.15.0-rc.3
 ### Fixed
