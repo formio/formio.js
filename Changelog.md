@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4558: fixed an issue where word 'select' with empty rows displays error inside HTML element
  - FIO-2864: fixed an issue where tooltip not showing text into double quotes
  - FIO-4658: Fix the select dropdown for resources without save-as-reference checked from saving incorrect data.
+ - FIO-4565: Fixed validation for protected field
 
 ## 4.15.0-rc.3
 ### Fixed
