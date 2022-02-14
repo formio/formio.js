@@ -470,7 +470,7 @@ export default class ButtonComponent extends Field {
         }
       }
       catch (error) {
-        if (error.name !== 'SecurityError') {
+        if (error.name !== 'SecurityError' && (error.name !== 'Error' || error.message !== 'Permission denied')) {
           this.root.setAlert('danger', error.message || error);
         }
       }
