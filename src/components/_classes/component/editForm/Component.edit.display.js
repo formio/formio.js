@@ -43,7 +43,7 @@ export default [
     tooltip: 'The width of label on line in percentages.',
     clearOnHide: false,
     weight: 30,
-    placeholder: '30',
+    placeholder: 'Enter the width',
     suffix: '%',
     validate: {
       min: 0,
@@ -66,7 +66,7 @@ export default [
     tooltip: 'The width of label margin on line in percentages.',
     clearOnHide: false,
     weight: 30,
-    placeholder: '3',
+    placeholder: 'Enter the margin',
     suffix: '%',
     validate: {
       min: 0,
