@@ -550,11 +550,13 @@ export default class WebformBuilder extends Component {
 
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
+        searchPlaceHolder: this.t('searchPlaceholder'),
         scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
         groupId: `builder-sidebar-${this.id}`,
         groupTabs: this.renderTemplate('builderSidebarTab', {
-          tab:1
+          tab:1,
+          componentTitle: this.t('componentTitle')
         }),
         groups: this.basicGroups.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
           group: this.groups[groupKey],
@@ -786,10 +788,10 @@ export default class WebformBuilder extends Component {
     <div style="display:flex; justify-content: flex-end; height: 100%; margin-top: 25vh; background-color: white; padding-bottom: 20px; margin-left: 12px;">
       <div>
         <div style="padding: 8px 12px 1px 16px; background-color: #FF9B08; letter-spacing: 1.2px; color: white;">
-          <h4> Warning! </h4>
+          <h4> ${this.t('Warning!')} </h4>
         </div>
         <div style="padding: 20px;">
-          You have unsaved changes on this page. Do you want to discard your changes?
+          ${this.t('You have unsaved changes on this page. Do you want to discard your changes?')}
         </div>
         <div style="display:flex; justify-content: flex-end; padding-right: 16px;">
           <button ref="dialogCancelButton" class="btn btn-secondary" style="margin-right: 10px; color: #FF9B08; border-color: #FF9B08; background-color: white;">${this.t('Cancel')}</button>
