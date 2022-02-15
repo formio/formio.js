@@ -206,6 +206,10 @@ export default class PDFBuilder extends WebformBuilder {
     }
   }
 
+  redraw() {
+    return super.redraw().then(() => this.webform.redraw());
+  }
+
   upload(file) {
     const formio = new Formio(this.projectUrl);
     if (this.refs.dragDropText) {
