@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2864: fixed an issue where tooltip not showing text into double quotes
  - FIO-4658: Fix the select dropdown for resources without save-as-reference checked from saving incorrect data.
  - FIO-4565: Fixed validation for protected field
+ - FIO-4671: Resolved issues where pdf builder would show loading constantly
 
 ## 4.15.0-rc.3
 ### Fixed
