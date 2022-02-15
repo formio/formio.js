@@ -1539,7 +1539,7 @@ export default class Component extends Element {
         data: this.rootValue
       }),
       form: this.root ? this.root._form : {},
-      options: this.options,
+      options: FormioUtils.Evaluator.protectedEval ? {} : this.options,
     }, additional));
   }
 
