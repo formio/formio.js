@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.1-rc.14
+### Changed
+ - FIO-4671: Resolved issues where pdf builder would show loading consta…
+
 ## 4.14.1-rc.13
 ### Changed
  - FIO-4419: Time fields in Safari
