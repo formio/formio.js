@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4658: Fix the select dropdown for resources without save-as-reference checked from saving incorrect data.
  - FIO-4565: Fixed validation for protected field
  - FIO-4671: Resolved issues where pdf builder would show loading constantly
+ - FIO-4691: Fixed issues where calculated values would not re-calculate when allow manual override is checked.
+ - FIO-4693: Fixed issue where input validation would not clear when no errors are present.
+ - FIO-4690: Fixed issues where wizard transformPages was causing crashes.
 
 ## 4.15.0-rc.3
 ### Fixed
