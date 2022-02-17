@@ -461,18 +461,19 @@ export default class Wizard extends Webform {
       let hasNested = false;
 
       eachComponent(filteredComponents, (comp) => {
-        if (comp?.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
-          if (pushAllowed) {
-            this.setRootPanelId(comp);
-            nestedPages.push(comp);
+        if (comp && comp.component) {
+          if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
+            if (pushAllowed) {
+              this.setRootPanelId(comp);
+              nestedPages.push(comp);
+            }
+            hasNested = true;
           }
-          hasNested = true;
-        }
-
-        if (comp && comp.isNestedWizard && comp.subForm) {
-          const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
-          if (!hasNested) {
-            hasNested = hasNestedForm;
+          if (comp.isNestedWizard && comp.subForm) {
+            const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
+            if (!hasNested) {
+              hasNested = hasNestedForm;
+            }
           }
         }
       }, true);
