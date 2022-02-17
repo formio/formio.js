@@ -3077,7 +3077,7 @@ export default class Component extends Element {
         this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
     }
-    else if (this.error && this.error.external === !!external) {
+    else if (!this.error || (this.error && this.error.external === !!external)) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
