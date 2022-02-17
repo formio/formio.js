@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.1-rc.15
+### Changed
+ - FIO-4691: Fixed issues where calculated values would not re-calculate…
+ - FIO-4693: Fixed issue where input validation would not clear when no …
+ - FIO-4690: Fixed issues where wizard transformPages was causing crashes.
+
 ## 4.14.1-rc.14
 ### Changed
  - FIO-4671: Resolved issues where pdf builder would show loading consta…
