@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4693: Fixed issue where input validation would not clear when no errors are present.
  - FIO-4690: Fixed issues where wizard transformPages was causing crashes.
  - FIO-4037: Fixed issues with calculated values so that they do not re-calculate once the value has been committed or modified.
+ - FIO-4698: Fixed html tags not working in tooltips.
 
 ## 4.15.0-rc.3
 ### Fixed
