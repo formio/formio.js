@@ -2701,6 +2701,7 @@ export default class Component extends Element {
       }, 'value');
   }
 
+  /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -2731,6 +2732,17 @@ export default class Component extends Element {
 
     // Do not override calculations on server if they have calculateServer set.
     if (allowOverride) {
+      // The value is considered locked if it is not empty and comes from a submission value.
+      const fromSubmission = (flags.fromSubmission && this.component.persistent === true);
+      if (this.isEmpty(dataValue)) {
+        // Reset the calculation lock if ever the data is cleared.
+        this.calculationLocked = false;
+      }
+      else if (this.calculationLocked || fromSubmission) {
+        this.calculationLocked = true;
+        return false;
+      }
+
       const firstPass = (this.calculatedValue === undefined);
       if (firstPass) {
         this.calculatedValue = null;
@@ -2754,11 +2766,11 @@ export default class Component extends Element {
         return false;
       }
 
-    if (flags.fromSubmission && this.component.persistent === true) {
-      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
+      if (fromSubmission) {
+        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+        this.calculatedValue = calculatedValue;
+        return false;
+      }
 
       // If this is the firstPass, and the dataValue is different than to the calculatedValue.
       if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
@@ -2779,6 +2791,7 @@ export default class Component extends Element {
     }
     return false;
   }
+  /* eslint-enable max-statements */
 
   /**
    * Performs calculations in this component plus any child components.
