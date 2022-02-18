@@ -350,6 +350,7 @@ export default class WebformBuilder extends Component {
 
   attachTooltip(component, title) {
     return tippy(component, {
+      allowHTML: true,
       trigger: 'mouseenter focus',
       placement: 'top',
       delay: [200, 0],

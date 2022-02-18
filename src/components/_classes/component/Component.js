@@ -1109,6 +1109,7 @@ export default class Component extends Element {
                                 .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
         this.tooltips[index] = tippy(tooltip, {
+          allowHTML: true,
           trigger: 'mouseenter click focus',
           placement: 'right',
           zIndex: 10000,
