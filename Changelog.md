@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.1-rc.17
+### Changed
+ - FIO-4698: Fixed html tags not working in tooltips.
+
 ## 4.14.1-rc.16
 ### Changed
  - FIO-4037: Fixed issues with calculated values so that they do not re-…
