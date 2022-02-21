@@ -239,6 +239,9 @@ import * as FormioUtils from &apos;./utils/utils&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import optionalSanitize from &apos;../test/forms/optionalSanitize&apos;;
 
+global.requestAnimationFrame = (cb) =&gt; cb();
+global.cancelAnimationFrame = () =&gt; {};
+
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
@@ -3529,6 +3532,10 @@ describe(&apos;Webform tests&apos;, function() {
     if (useDoneInsteadOfPromise) {
       describe(formTest.title || &apos;&apos;, () =&gt; {
         each(formTest.tests, (formTestTest, title) =&gt; {
+          if (title === &apos;Email Action Test&apos;) {
+            console.log(&apos;Email Action Test&apos;);
+          }
+
           it(title, function(done) {
             const self = this;
             const formElement = document.createElement(&apos;div&apos;);

@@ -207,7 +207,7 @@ export default class HTMLComponent extends Component {
     }
 
     // i18n returns error exactly with word &apos;select&apos;, spaces will be trimmed
-    if (this.component.content.replace(/(&lt;(\/?[^&gt;]+)&gt;)/g, &apos;&apos;) === &apos;select&apos;) {
+    if (this.component.content.replace(/(&lt;(\/?[^&gt;]+)&gt;)/g, &apos;&apos;).trim() === &apos;select&apos;) {
       return ` ${this.component.content} `;
     }
 

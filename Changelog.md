@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.4]
+## 4.15.0-rc.4
+### Changed
+ - Updated @formio/bootstrap3@2.12.1
+
 ### Fixed
  - Failing tests.
  - FIO-4632: Fixed the date return to always be a string
