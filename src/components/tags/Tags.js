@@ -168,7 +168,7 @@ export default class TagsComponent extends Input {
     }
 
     if (Array.isArray(value)) {
-      return value.join(', ');
+      return value.join(`${this.delimiter || ','} `);
     }
 
     const stringValue = value.toString();
