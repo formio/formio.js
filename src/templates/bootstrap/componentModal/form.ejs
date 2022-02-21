@@ -3,11 +3,11 @@
   <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
     <div class="formio-dialog-overlay" ref="modalOverlay"></div>
     <div class="formio-dialog-content" aria-labelledby="ml-{{ctx.instance.id}}-{{ctx.component.key}}" {% if (!ctx.self.isIE()) { %} role="dialog" {% } %} ref="modalContents">
-      <label class="sr-only" id="ml-{{ctx.instance.id}}-{{ctx.component.key}}">{{ ctx.t(ctx.component.label) }}{{ctx.self.isIE() ? ', dialog' : ''}}</label>
+      <label class="{{ctx.transform('class', 'sr-only')}}" id="ml-{{ctx.instance.id}}-{{ctx.component.key}}">{{ ctx.t(ctx.component.label) }}{{ctx.self.isIE() ? ', dialog' : ''}}</label>
       {% if (ctx.options.vpat) { %}
-      <button class="formio-dialog-close float-right" title="Close" aria-label="Close button. Click to get back to the form" ref="modalCloseButton"></button>
+      <button class="formio-dialog-close {{ctx.transform('class', 'float-right')}}" title="Close" aria-label="Close button. Click to get back to the form" ref="modalCloseButton"></button>
       {% } else { %}
-      <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
+      <button class="formio-dialog-close {{ctx.transform('class', 'float-right')}} btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
       {% } %}
       <div ref="modalContents">
         {% if (ctx.visible) { %}
@@ -21,6 +21,6 @@
         </div>
       </div>
     </div>
-    <span class="sr-only" ref="modalLiveRegion" aria-live="assertive"></span>
+    <span class="{{ctx.transform('class', 'sr-only')}}" ref="modalLiveRegion" aria-live="assertive"></span>
   </div>
 </div>

@@ -1,0 +1,27 @@
+<div class="mb-2 accordion-item border">
+  {% if (!ctx.component.hideLabel || ctx.builder || ctx.component.collapsible || ctx.component.tooltip) { %}
+  <div class="accordion-button {{ctx.collapsed ? 'collapsed' : ''}} {{ctx.transform('class', 'bg-' + ctx.component.theme)}}"
+    {% if (ctx.component.collapsible) { %}
+    tabindex="0"
+    {% } %}
+    role="button"
+    aria-expanded="{{ctx.component.collapsible ? !ctx.collapsed : true}}"
+    aria-controls="{{ctx.instance.id}}-{{ctx.component.key}}"
+    ref="header"
+  >
+    <span class="mb-0 card-title {% if (ctx.component.theme && ctx.component.theme !== 'default') { %}text-light{% } %}">
+      {% if (!ctx.component.hideLabel || ctx.builder) { %}
+      {{ctx.t(ctx.component.title, { _userInput: true })}}
+      {% } %}
+      {% if (ctx.component.tooltip) { %}
+        <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
+      {% } %}
+    </span>
+  </div>
+  {% } %}
+  {% if (!ctx.collapsed || ctx.builder) { %}
+  <div class="card-body" ref="{{ctx.nestedKey}}" id="{{ctx.instance.id}}-{{ctx.component.key}}">
+    {{ctx.children}}
+  </div>
+  {% } %}
+</div>

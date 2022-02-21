@@ -4,7 +4,7 @@
     {{ ctx.component.hover ? 'table-hover' : ''}}
     {{ ctx.component.condensed ? 'table-sm' : ''}}
   ">
-  <caption class="sr-only">{{ctx.t(ctx.component.label)}}</caption>
+  <caption class="{{ctx.transform('class', 'sr-only')}}">{{ctx.t(ctx.component.label)}}</caption>
   {% if (ctx.component.header && ctx.component.header.length > 0) { %}
   <thead>
     <tr>

@@ -1,7 +1,7 @@
 <label id="l-{{ctx.component.key}}" class="control-label {{ ctx.label.className }}">
-  {{ ctx.t(ctx.component.label, { _userInput: true }) }}<span ref="modalLabelValue" class="sr-only">. {{ ctx.component.type === 'signature' ? ctx.self.getValueAsString(ctx.previewText) : ctx.previewText }}</span>
+  {{ ctx.t(ctx.component.label, { _userInput: true }) }}<span ref="modalLabelValue" class="{{ctx.transform('class', 'sr-only')}}">. {{ ctx.component.type === 'signature' ? ctx.self.getValueAsString(ctx.previewText) : ctx.previewText }}</span>
 </label><br>
-<span class="sr-only" ref="modalPreviewLiveRegion" aria-live="assertive"></span>
+<span class="{{ctx.transform('class', 'sr-only')}}" ref="modalPreviewLiveRegion" aria-live="assertive"></span>
 <button
   lang="en"
   class="btn btn-light btn-md open-modal-button form-control {{ctx.openModalBtnClasses || ''}}"

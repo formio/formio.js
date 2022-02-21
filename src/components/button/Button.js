@@ -101,7 +101,7 @@ export default class ButtonComponent extends Field {
 
   get className() {
     let className = super.className;
-    className += ' form-group';
+    className += ` ${this.transform('class', 'form-group')}`;
     return className;
   }
 

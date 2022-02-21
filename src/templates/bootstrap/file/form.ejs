@@ -1,5 +1,5 @@
 {% if (ctx.options.vpat) { %}
-  <span tabindex="-1" class="sr-only" id="invisible-{{ctx.instance.id}}-{{ctx.component.key}}"></span>
+  <span tabindex="-1" class="{{ctx.transform('class', 'sr-only')}}" id="invisible-{{ctx.instance.id}}-{{ctx.component.key}}"></span>
 {% } %}
 {% if (!ctx.self.imageUpload) { %}
   {% if (ctx.options.vpat) { %}
@@ -29,7 +29,7 @@
               {{file.originalName || file.name}}
             {% } else { %}
               <a href="{{file.url || '#'}}" target="_blank" ref="fileLink">
-                <span class="sr-only">{{ctx.t('Press to open ')}}</span>{{file.originalName || file.name}}
+                <span class="{{ctx.transform('class', 'sr-only')}}">{{ctx.t('Press to open ')}}</span>{{file.originalName || file.name}}
               </a>
             {% } %}
           </div>
@@ -79,7 +79,7 @@
         {{ctx.t('or')}}
         <a href="#" ref="fileBrowse" class="browse">
           {{ctx.t('browse')}}
-          <span class="sr-only">
+          <span class="{{ctx.transform('class', 'sr-only')}}">
             {{ctx.t('Browse to attach file for ' + ctx.component.label + '. ' + 
             (ctx.component.description ? ctx.component.description + '. ' : '') + 
             ((!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Any file types are allowed' : ctx.t('Allowed file types: ') + ctx.component.filePattern))}}
@@ -102,18 +102,18 @@
     <div class="row">
       <div class="fileName col-form-label col-sm-10">{{status.originalName}}
         <i class="{{ctx.iconClass('remove')}}" ref="fileStatusRemove">
-          <span class="sr-only">{{ctx.t('Remove button. Press to remove ' + status.originalName || status.name + '.')}}</span>
-          <span class="sr-only">{{status.message ? status.message.replace(';', '.') : ''}}</span>
+          <span class="{{ctx.transform('class', 'sr-only')}}">{{ctx.t('Remove button. Press to remove ' + status.originalName || status.name + '.')}}</span>
+          <span class="{{ctx.transform('class', 'sr-only')}}">{{status.message ? status.message.replace(';', '.') : ''}}</span>
         </i>
       </div>
-      <div class="fileSize col-form-label col-sm-2 text-right">{{ctx.fileSize(status.size)}}</div>
+      <div class="fileSize col-form-label col-sm-2 text-end">{{ctx.fileSize(status.size)}}</div>
     </div>
     <div class="row">
       <div class="col-sm-12">
         {% if (status.status === 'progress') { %}
           <div class="progress">
             <div class="progress-bar" role="progressbar" aria-valuenow="{{status.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status.progress}}%">
-              <span class="sr-only">{{status.progress}}% {{ctx.t('Complete')}}</span>
+              <span class="{{ctx.transform('class', 'sr-only')}}">{{status.progress}}% {{ctx.t('Complete')}}</span>
             </div>
           </div>
         {% } else if (status.status === 'error') { %}

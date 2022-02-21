@@ -9,7 +9,7 @@
   {% } %}
 >
   {% ctx.values.forEach(function(item) { %}
-  <div class="{{ctx.input.attr.type}} {{ ctx.component.optionsLabelPosition && ctx.component.optionsLabelPosition !== 'right' ? 'pl-0' : ''}} form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
+  <div class="{{ctx.input.attr.type}} {{ ctx.component.optionsLabelPosition && ctx.component.optionsLabelPosition !== 'right' ? ctx.transform('class', 'pl-0') : ''}} form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
     <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}">
       {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
       <span>{{ctx.t(item.label, { _userInput: true })}}</span>

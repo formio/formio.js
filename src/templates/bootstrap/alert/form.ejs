@@ -5,6 +5,6 @@
 >
   {{ctx.message}}
   {% if (ctx.options.vpat) { %}
-    <span class="sr-only" id="hotkey-i-{{ctx.form._id}}">{{ctx.t('errorListHotkey')}}</span>
+    <span class="{{ctx.transform('class', 'sr-only')}}" id="hotkey-i-{{ctx.form._id}}">{{ctx.t('errorListHotkey')}}</span>
   {% } %}
 </div>
