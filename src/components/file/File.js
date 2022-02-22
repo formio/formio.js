@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: '/userguide/#file',
+      documentation: '/userguide/forms/premium-components#file',
       weight: 100,
       schema: FileComponent.schema(),
     };

@@ -15,7 +15,7 @@ export default class UrlComponent extends TextFieldComponent {
       title: 'Url',
       group: 'advanced',
       icon: 'link',
-      documentation: '/userguide/#url',
+      documentation: '/userguide/forms/form-components#url',
       weight: 20,
       schema: UrlComponent.schema()
     };
