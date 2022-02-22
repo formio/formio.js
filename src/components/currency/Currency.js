@@ -18,7 +18,7 @@ export default class CurrencyComponent extends NumberComponent {
       title: 'Currency',
       group: 'advanced',
       icon: 'usd',
-      documentation: '/userguide/#currency',
+      documentation: '/userguide/forms/form-components#currency',
       weight: 70,
       schema: CurrencyComponent.schema()
     };
