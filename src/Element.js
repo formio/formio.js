@@ -52,7 +52,7 @@ export default class Element {
      *
      * @type {*|boolean}
      */
-    this.helplinks = this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
+    this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
   }
 
   /**

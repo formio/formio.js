@@ -87,7 +87,7 @@ export default class AddressComponent extends ContainerComponent {
       title: 'Address',
       group: 'advanced',
       icon: 'home',
-      documentation: '/userguide/#address',
+      documentation: '/userguide/forms/form-components#address',
       weight: 35,
       schema: AddressComponent.schema(),
     };

@@ -31,7 +31,7 @@ export default class FormComponent extends Component {
       title: 'Nested Form',
       icon: 'wpforms',
       group: 'premium',
-      documentation: '/userguide/#form',
+      documentation: '/userguide/forms/premium-components#nested-form',
       weight: 110,
       schema: FormComponent.schema()
     };
