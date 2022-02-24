@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.13.13-rc.1]
+### Fixed
+ - FIO-3599: Improve select dropdown performance during pdf generation.
+
 ## 4.13.12
 ### Changed
  - Official Release
