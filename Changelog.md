@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.13.13-rc.1]
 ### Fixed
  - FIO-3599: Improve select dropdown performance during pdf generation.
+ - Adding selectData to metadata to resolve templates that require more data than is set in the submission.
 
 ## 4.13.12
 ### Changed
