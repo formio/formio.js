@@ -31,7 +31,9 @@ const Evaluator = {
       console.warn('Error while processing template', err, template);
     }
   },
-  interpolate(rawTemplate, data, noeval) {
+  interpolate(rawTemplate, data, _options) {
+    // Ensure reverse compatability.
+    const options = _.isObject(_options) ? _options : { noeval: _options };
     if (typeof rawTemplate === 'function') {
       try {
         return rawTemplate(data);
@@ -49,9 +51,15 @@ const Evaluator = {
     if (Evaluator.cache[hash]) {
       template = Evaluator.cache[hash];
     }
-    else if (Evaluator.noeval || noeval) {
+    else if (Evaluator.noeval || options.noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
-      return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => _.get(data, $2));
+      return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
+        const value = _.get(data, $2);
+        if (_options.data) {
+          _.set(_options.data, $2, value);
+        }
+        return value;
+      });
     }
     else {
       template = Evaluator.template(rawTemplate, hash);
