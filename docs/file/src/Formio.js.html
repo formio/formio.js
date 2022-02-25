@@ -457,7 +457,8 @@ class Formio {
     let url = this[_url] + query;
 
     if (type===&apos;form&apos; &amp;&amp; !isNaN(parseInt(this.vId)) &amp;&amp; parseInt(this.vId) !== 0) {
-      url += `&amp;formRevision=${this.vId}`;
+      url += url.match(/\?/) ? &apos;&amp;&apos; : &apos;?&apos;;
+      url += `formRevision=${this.vId}`;
     }
     return this.makeRequest(type, url, &apos;get&apos;, null, opts);
   }

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.2-rc.2
+### Changed
+ - FIO-3435: Fixed an issue where form revisions would not load properly.
+
 ## 4.14.2-rc.1
 ### Changed
  - Adding selectData to metadata to resolve templates that require more …
