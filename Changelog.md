@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.5]
 ### Fixed
  - Adding selectData to metadata to resolve templates that require more data than is set in the submission.
+ - FIO-3435: Fixed an issue where form revisions would not load properly.
 
 ## 4.15.0-rc.4
 ### Changed
