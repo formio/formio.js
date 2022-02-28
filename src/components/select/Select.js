@@ -213,7 +213,7 @@ export default class SelectComponent extends Field {
       return data.label;
     }
     const options = {
-      noeval: true,
+      noeval: this.itemsFromUrl,
       data: {}
     };
     const template = this.interpolate(this.component.template, { item: data }, options);
