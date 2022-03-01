@@ -68,9 +68,8 @@ export default {
         tooltipIcon.dispatchEvent(clickEvent);
 
         setTimeout(() => {
-          const tooltips = document.querySelectorAll('.tippy-content');
-          const tooltipText = tooltips[index].textContent.trim();
-
+          const tooltip = comp.element.querySelector('.tippy-content');
+          const tooltipText = tooltip.textContent.trim();
           assert.equal(tooltipText, comp.component.tooltip.trim(), `Should show tooltip for ${compKey} (component ${compType})`);
 
           if (isLastComp) {
