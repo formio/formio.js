@@ -2122,7 +2122,7 @@ describe('Webform tests', function() {
         Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');
         const textField = component.iteratableRows[0].components.textField;
         setTimeout(() => {
-          assert.equal(textField.error, '', 'Should stay valid on input');
+          assert(!textField.error, 'Should stay valid on input');
           const blur = new Event('blur', { bubbles: true, cancelable: true });
           const input = textField.refs.input[0];
           input.dispatchEvent(blur);
