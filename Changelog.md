@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.15.0-rc.6]
+### Fixed
+ - FIO-4743: Fixed issue where "||" is not allowed for interpolate with non-url select dropdown templates.
+
 ## 4.15.0-rc.5
 ### Fixed
  - Adding selectData to metadata to resolve templates that require more data than is set in the submission.

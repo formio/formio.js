@@ -54,9 +54,19 @@ const Evaluator = {
     else if (Evaluator.noeval || options.noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
       return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
-        const value = _.get(data, $2);
+        // Allow for conditional values.
+        const parts = $2.split('||').map(item => item.trim());
+        let value = '';
+        let path = '';
+        for (let i = 0; i < parts.length; i++) {
+          path = parts[i];
+          value = _.get(data, path);
+          if (value) {
+            break;
+          }
+        }
         if (_options.data) {
-          _.set(_options.data, $2, value);
+          _.set(_options.data, path, value);
         }
         return value;
       });
