@@ -96,7 +96,7 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    if (this.isInfiniteScrollProvided) {
+    if (this.itemsFromUrl) {
       this.isFromSearch = false;
 
       this.searchServerCount = null;
@@ -192,8 +192,12 @@ export default class SelectComponent extends Field {
     return this.component.dataSrc === 'url';
   }
 
-  get isInfiniteScrollProvided() {
+  get itemsFromUrl() {
     return this.isSelectResource || this.isSelectURL;
+  }
+
+  get isInfiniteScrollProvided() {
+    return this.itemsFromUrl;
   }
 
   get shouldDisabled() {
@@ -213,7 +217,7 @@ export default class SelectComponent extends Field {
       data: {}
     };
     const template = this.interpolate(this.component.template, { item: data }, options);
-    if (value && !_.isObject(value)) {
+    if (value && !_.isObject(value) && options.data.item) {
       // If the value is not an object, then we need to save the template data off for when it is selected.
       this.templateData[value] = options.data.item;
     }
@@ -376,7 +380,7 @@ export default class SelectComponent extends Field {
 
     let areItemsEqual;
 
-    if (this.isInfiniteScrollProvided) {
+    if (this.itemsFromUrl) {
       areItemsEqual = this.isSelectURL ? _.isEqual(items, this.downloadedResources) : false;
 
       const areItemsEnded = this.component.limit > items.length;
@@ -644,7 +648,7 @@ export default class SelectComponent extends Field {
         this.setItems(response, !!search);
       })
       .catch((err) => {
-        if (this.isInfiniteScrollProvided) {
+        if (this.itemsFromUrl) {
           this.setItems([]);
           this.disableInfiniteScroll();
         }
@@ -1112,7 +1116,7 @@ export default class SelectComponent extends Field {
         }
       }
 
-      if (this.isInfiniteScrollProvided) {
+      if (this.itemsFromUrl) {
         this.scrollList = this.choices.choiceList.element;
         this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
       }
