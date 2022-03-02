@@ -18,9 +18,9 @@
     {% if (button === 'submit' && ctx.buttons.submit) { %}
     <li>
       {% if (ctx.disableWizardSubmit){ %}
-      <button disabled class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submitButtonAriaLabel')}}">{{ctx.t('submit')}}</button>
+      <button disabled class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
       {% } else { %}
-      <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submitButtonAriaLabel')}}">{{ctx.t('submit')}}</button>
+      <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
       {% } %}
     </li>
     {% } %}
