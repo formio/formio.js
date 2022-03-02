@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.13.13-rc.2
+### Fixed
+ - Ensure that we properly read the selectData from the select component.
+
 ## 4.13.13-rc.1
 ### Changed
  - Updated @formio/bootstrap3@2.12.1
