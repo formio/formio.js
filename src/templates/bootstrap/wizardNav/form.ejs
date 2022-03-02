@@ -17,7 +17,11 @@
     {% } %}
     {% if (button === 'submit' && ctx.buttons.submit) { %}
     <li>
-      <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
+      {% if (ctx.disableWizardSubmit){ %}
+      <button disabled class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
+      {% } else { %}
+      <button clasgit diffs="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
+      {% } %}
     </li>
     {% } %}
   {% }) %}
