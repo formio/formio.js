@@ -499,7 +499,7 @@ export default class SelectComponent extends Field {
   }
 
   get selectData() {
-    const selectData = _.get(this.root, 'metadata.selectData', {});
+    const selectData = _.get(this.root, 'submission.metadata.selectData', {});
     return selectData[this.path];
   }
 
