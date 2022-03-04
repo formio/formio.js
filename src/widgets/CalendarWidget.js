@@ -101,7 +101,7 @@ export default class CalendarWidget extends InputWidget {
     };
 
     this.closedOn = 0;
-    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
+    this.valueFormat = (this.settings.saveAs === 'date') ? ISO_8601_FORMAT : this.settings.dateFormat || ISO_8601_FORMAT;
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
 
     const isReadOnly = this.settings.readOnly;
