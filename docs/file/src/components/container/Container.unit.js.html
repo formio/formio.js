@@ -171,13 +171,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/container/Container.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+import _ from &apos;lodash&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import ContainerComponent from &apos;./Container&apos;;
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3
 } from &apos;./fixtures&apos;;
+
+import Formio from &apos;../../Formio&apos;;
 
 describe(&apos;Container Component&apos;, () =&gt; {
   it(&apos;Should build a container component&apos;, () =&gt; {
@@ -221,6 +225,29 @@ describe(&apos;Container Component&apos;, () =&gt; {
         ]
       });
     });
+  });
+
+  it(&apos;Should render form with a submission in a draft-state without validation errors&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      form.submission = {
+        data: {
+          &apos;container&apos;: {
+            &apos;textField&apos;: &apos;a&apos;,
+          }
+        }
+      };
+
+      setTimeout(() =&gt; {
+        const textField = form.getComponent([&apos;textField&apos;]);
+        const container = form.getComponent([&apos;container&apos;]);
+        assert.equal(textField.errors.length, 0);
+        assert.equal(container.errors.length, 0);
+        done();
+      }, 100);
+    }).catch(done);
   });
 });
 </code></pre>

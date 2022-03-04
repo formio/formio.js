@@ -131,15 +131,12 @@ export default {
                 "type": "checkbox",
                 "input": true,
                 "key": "attachFiles",
-                "label": "Attach Submission Files",
-                "tooltip": "Check this if you would like to attach submission files to the email."
               },
               {
                 "type": "checkbox",
                 "input": true,
                 "key": "attachPDF",
                 "label": "Attach Submission PDF",
-                "tooltip": "Check this if you would like to attach a PDF of the submission to the email. This will count toward your PDF Submission count for every email sent."
               },
               {
                 "type": "textfield",
@@ -147,7 +144,6 @@ export default {
                 "key": "pdfName",
                 "label": "PDF File Name",
                 "defaultValue": "{{ form.name }}-{{ submission._id }}",
-                "tooltip": "Determines how the submission PDF is named when it is attached.",
                 "customConditional": "show = !!data.settings.attachPDF;"
               }
             ]
@@ -594,26 +590,31 @@ export default {
           }
         }).then(() => {
           form.on('componentChange', function() {
-            // Make sure it still applies all the default values of these components.
-            assert.deepEqual(form.submission.data.settings, {
-              sendEach: false,
-              attachFiles: false,
-              attachPDF: false,
-              transport: 'default',
-              from: 'no-reply@form.io',
-              emails: ['travis@form.io'],
-              cc: [''],
-              bcc: [''],
-              subject: 'New submission for {{ form.title }}.',
-              template: 'https://pro.formview.io/assets/email.html',
-              message: '{{ submission(data, form.components) }}'
-            });
-            done();
+              // Make sure it still applies all the default values of these components.
+              assert.deepEqual(form.submission.data.settings, {
+                sendEach: false,
+                attachFiles: false,
+                attachPDF: false,
+                transport: 'default',
+                from: 'no-reply@form.io',
+                emails: ['travis@form.io'],
+                cc: [''],
+                bcc: [''],
+                subject: 'New submission for {{ form.title }}.',
+                template: 'https://pro.formview.io/assets/email.html',
+                message: '{{ submission(data, form.components) }}'
+              });
           });
+
           const toEmail = form.getComponent('emails');
           toEmail.updateValue(['travis@form.io']);
-        })
+
+          setTimeout(() => {
+            done();
+          }, 500);
+        });
       });
     }
-  }
+  },
+  useDone: true,
 };

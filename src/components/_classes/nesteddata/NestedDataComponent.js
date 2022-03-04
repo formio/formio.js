@@ -65,12 +65,18 @@ export default class NestedDataComponent extends NestedComponent {
         <tbody>
     `);
 
+    const htmlTagRegExp = new RegExp('<(.*?)>');
+
     this.components.forEach((component) => {
       if (component.isInputComponent && component.visible && !component.skipInEmail) {
+        const componentValue = component.getView(component.dataValue, options);
         result += (`
           <tr>
             <th style="padding: 5px 10px;">${component.label}</th>
-            <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
+            <td style="width:100%;padding:5px 10px;">${component.component && component.component.inputFormat === 'html' && htmlTagRegExp.test(componentValue)
+            ?  componentValue
+            :  `<input type="text" value="${componentValue.replace(/"/g, '&quot;')}" readonly/>`
+            }</td>
           </tr>
         `);
       }

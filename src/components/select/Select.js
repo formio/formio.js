@@ -70,6 +70,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
+    this.templateData = {};
     this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
 
     // Trigger an update.
@@ -95,7 +96,7 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    if (this.isInfiniteScrollProvided) {
+    if (this.itemsFromUrl) {
       this.isFromSearch = false;
 
       this.searchServerCount = null;
@@ -173,17 +174,6 @@ export default class SelectComponent extends Field {
     if (this.component.dataSrc === 'values') {
       return 'value';
     }
-
-    if (this.component.dataSrc === 'resource') {
-        // checking additional fields in the template
-        const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
-        if (hasNestedFields) {
-          const data = this.component.template.replace(/<\/?[^>]+(>|$)/g, '').split('item.')[1].slice(0, -3);
-          return data;
-        }
-      return 'data';
-    }
-
     return '';
   }
 
@@ -202,8 +192,12 @@ export default class SelectComponent extends Field {
     return this.component.dataSrc === 'url';
   }
 
-  get isInfiniteScrollProvided() {
+  get itemsFromUrl() {
     return this.isSelectResource || this.isSelectURL;
+  }
+
+  get isInfiniteScrollProvided() {
+    return this.itemsFromUrl;
   }
 
   get shouldDisabled() {
@@ -214,7 +208,31 @@ export default class SelectComponent extends Field {
     return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
   }
 
-  itemTemplate(data) {
+  getSelectTemplate(data, value) {
+    if (!this.component.template) {
+      return data.label;
+    }
+    const options = {
+      noeval: true,
+      data: {}
+    };
+    const template = this.interpolate(this.component.template, { item: data }, options);
+    if (value && !_.isObject(value) && options.data.item) {
+      // If the value is not an object, then we need to save the template data off for when it is selected.
+      this.templateData[value] = options.data.item;
+    }
+    return template;
+  }
+
+  selectValueAndLabel(data) {
+    const value = this.itemValue(data);
+    return {
+      value,
+      label: this.itemTemplate(data, value)
+    };
+  }
+
+  itemTemplate(data, value) {
     if (_.isEmpty(data)) {
       return '';
     }
@@ -230,8 +248,13 @@ export default class SelectComponent extends Field {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
     if (typeof data === 'string') {
-      const value = this.t(data, { _userInput: true });
-      return this.sanitize(value, this.shouldSanitizeValue);
+      const selectData = this.selectData;
+      if (selectData) {
+        data = selectData;
+      }
+      else {
+        return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
+      }
     }
 
     if (data.data) {
@@ -241,12 +264,7 @@ export default class SelectComponent extends Field {
         ? JSON.stringify(data.data)
         : data.data;
     }
-    const template = this.sanitize(
-      this.component.template
-        ? this.interpolate(this.component.template, { item: data })
-        : data.label,
-      this.shouldSanitizeValue,
-    );
+    const template = this.sanitize(this.getSelectTemplate(data, value), this.shouldSanitizeValue);
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       const hasTranslator = this.i18next?.translator;
@@ -362,7 +380,7 @@ export default class SelectComponent extends Field {
 
     let areItemsEqual;
 
-    if (this.isInfiniteScrollProvided) {
+    if (this.itemsFromUrl) {
       areItemsEqual = this.isSelectURL ? _.isEqual(items, this.downloadedResources) : false;
 
       const areItemsEnded = this.component.limit > items.length;
@@ -421,7 +439,8 @@ export default class SelectComponent extends Field {
     _.each(items, (item, index) => {
       // preventing references of the components inside the form to the parent form when building forms
       if (this.root && this.root.options.editForm && this.root.options.editForm._id && this.root.options.editForm._id === item._id) return;
-      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
+      const itemValueAndLabel = this.selectValueAndLabel(item);
+      this.addOption(itemValueAndLabel.value, itemValueAndLabel.label, {}, _.get(item, this.component.idPath, String(index)));
     });
 
     if (this.choices) {
@@ -512,17 +531,32 @@ export default class SelectComponent extends Field {
     }
   }
 
+  get loadingError() {
+    return !this.component.refreshOn && !this.component.refreshOnBlur && this.networkError;
+  }
+
+  get selectData() {
+    const selectData = _.get(this.root, 'submission.metadata.selectData', {});
+    return selectData[this.path];
+  }
+
   get shouldLoad() {
+    if (this.loadingError) {
+      return false;
+    }
     // Live forms should always load.
-    if (!this.options.readOnly  || (this.options.display === 'pdf' && this.options.readOnly )) {
+    if (!this.options.readOnly || (this.options.display === 'pdf' && this.options.readOnly)) {
       return true;
     }
 
     // If there are template keys, then we need to see if we have the data.
     if (this.templateKeys && this.templateKeys.length) {
       // See if we already have the data we need.
+      const dataValue = this.dataValue;
+      const selectData = this.selectData;
       return this.templateKeys.reduce((shouldLoad, key) => {
-        return shouldLoad || !_.has(this.dataValue, key);
+        const hasValue = _.has(dataValue, key) || _.has(selectData, key);
+        return shouldLoad || !hasValue;
       }, false);
     }
 
@@ -614,10 +648,11 @@ export default class SelectComponent extends Field {
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
         this.loading = false;
+        this.error = null;
         this.setItems(response, !!search);
       })
       .catch((err) => {
-        if (this.isInfiniteScrollProvided) {
+        if (this.itemsFromUrl) {
           this.setItems([]);
           this.disableInfiniteScroll();
         }
@@ -629,6 +664,9 @@ export default class SelectComponent extends Field {
 
   handleLoadingError(err) {
     this.loading = false;
+    if (err.networkError) {
+      this.networkError = true;
+    }
     this.itemsLoadedResolve();
     this.emit('componentError', {
       component: this.component,
@@ -1082,7 +1120,7 @@ export default class SelectComponent extends Field {
         }
       }
 
-      if (this.isInfiniteScrollProvided) {
+      if (this.itemsFromUrl) {
         this.scrollList = this.choices.choiceList.element;
         this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
       }
@@ -1290,10 +1328,7 @@ export default class SelectComponent extends Field {
 
       // Add the default option if no item is found.
       if (!found) {
-        notFoundValuesToAdd.push({
-          value: this.itemValue(value),
-          label: this.itemTemplate(value)
-        });
+        notFoundValuesToAdd.push(this.selectValueAndLabel(value));
         return true;
       }
       return found || defaultAdded;
@@ -1373,10 +1408,23 @@ export default class SelectComponent extends Field {
     if (_.isNil(value)) {
       return;
     }
+    const valueIsObject = _.isObject(value);
     //check if value equals to default emptyValue
-    if (_.isObject(value) && Object.keys(value).length === 0) {
+    if (valueIsObject && Object.keys(value).length === 0) {
       return value;
     }
+    // Check to see if we need to save off the template data into our metadata.
+    if (value && !valueIsObject && this.templateData[value] && this.root?.submission) {
+      const submission = this.root.submission;
+      if (!submission.metadata) {
+        submission.metadata = {};
+      }
+      if (!submission.metadata.selectData) {
+        submission.metadata.selectData = {};
+      }
+      submission.metadata.selectData[this.path] = this.templateData[value];
+    }
+
     const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || 'auto';
     const normalize = {

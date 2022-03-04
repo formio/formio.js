@@ -1,5 +1,5 @@
 <nav aria-label="navigation" id="{{ ctx.wizardKey }}-header">
-  <ul class="pagination">
+  <ul class="pagination flex-column">
     {% ctx.panels.forEach(function(panel, index) { %}
     <li class="col-xs-12 page-item{{ctx.currentPage === index ? ' active' : ''}}" style="cursor: pointer;">
       <span class="page-link" ref="{{ctx.wizardKey}}-link" style="margin-left: 0px;">

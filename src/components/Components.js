@@ -23,6 +23,12 @@ export default class Components {
     return Components._baseEditForm;
   }
 
+  static recalculateComponents() {
+    if (window && window.Formio && window.Formio.AllComponents) {
+      Components.setComponents(window.Formio.AllComponents);
+    }
+  }
+
   static get components() {
     if (!Components._components) {
       Components._components = {};

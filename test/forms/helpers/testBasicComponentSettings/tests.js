@@ -68,7 +68,8 @@ export default {
         tooltipIcon.dispatchEvent(clickEvent);
 
         setTimeout(() => {
-          const tooltipText = comp.element.querySelector('.tooltip-inner').textContent.trim();
+          const tooltips = document.querySelectorAll('.tooltip-inner');
+          const tooltipText = tooltips[index].textContent.trim();
 
           assert.equal(tooltipText, comp.component.tooltip.trim(), `Should show tooltip for ${compKey} (component ${compType})`);
 
@@ -1081,7 +1082,7 @@ export default {
         });
 
         done();
-      }, 500);
+      }, 700);
     },
   },
   'set_get_value': {

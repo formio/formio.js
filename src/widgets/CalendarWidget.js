@@ -66,6 +66,7 @@ export default class CalendarWidget extends InputWidget {
     }
     if (!this.settings.enableTime) {
       this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');
+      this.settings.dateFormat = this.settings.format;
     }
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
@@ -327,7 +328,10 @@ export default class CalendarWidget extends InputWidget {
    * @param format
    * @return {string}
    */
-  getDateValue(date, format) {
+  getDateValue(date, format, useTimezone) {
+    if (useTimezone) {
+      return momentDate(date, this.valueFormat, this.timezone).format(convertFormatToMoment(format));
+    }
     return moment(date).format(convertFormatToMoment(format));
   }
 
@@ -356,7 +360,11 @@ export default class CalendarWidget extends InputWidget {
       return 'Invalid Date';
     }
 
-    return this.getDateValue(dates[0], this.valueFormat);
+    return this.getDateValue(dates[0], this.valueFormat, (this.settings.saveAs === 'date'));
+  }
+
+  isValueISO8601(value) {
+    return value && (typeof value === 'string') && value.match(/-[0-9]{2}T[0-9]{2}:/);
   }
 
   /**
@@ -365,12 +373,17 @@ export default class CalendarWidget extends InputWidget {
    * @param value
    */
   setValue(value) {
+    const saveAsText = (this.settings.saveAs === 'text');
     if (!this.calendar) {
       value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
-    if (value) {
-      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {
+    if (this.isValueISO8601(value)) {
+      this.calendar.setDate(moment(value).toDate(), false);
+    }
+    else if (value) {
+      const zonesLoading = this.loadZones();
+      if (!saveAsText && this.settings.readOnly && !zonesLoading) {
         this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
       }
       else {
@@ -385,7 +398,7 @@ export default class CalendarWidget extends InputWidget {
   getValueAsString(value, format) {
     const inputFormat = format || this.dateFormat;
     const valueFormat = this.calendar ? this.valueFormat : this.settings.dateFormat;
-    if (this.settings.saveAs === 'text') {
+    if (this.settings.saveAs === 'text' && this.componentInstance.parent && !this.settings.readOnly) {
       return moment(value, convertFormatToMoment(valueFormat)).format(convertFormatToMoment(valueFormat));
     }
     return formatDate(value, inputFormat, this.timezone, convertFormatToMoment(valueFormat));
@@ -431,8 +444,7 @@ export default class CalendarWidget extends InputWidget {
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
 
     if (dateValue) {
-      const valueFormat = (this.settings.saveAs === 'text') ? (this.calendar ? this.valueFormat : this.settings.dateFormat) : this.dateFormat;
-      this.calendar.setDate(moment(dateValue, convertFormatToMoment(valueFormat)).toDate(), false, this.settings.altFormat);
+      this.calendar.setDate(moment(dateValue, convertFormatToMoment(this.dateFormat)).toDate(), false, this.settings.altFormat);
     }
 
     this.calendar.altInput.addEventListener('input', (event) => {
@@ -487,7 +499,7 @@ export default class CalendarWidget extends InputWidget {
 
       if (!(isIEBrowser && !relatedTarget) && !this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
-        const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+        const dateValue = inputValue && this.settings.enableTime ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
       }
@@ -526,7 +538,7 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
+        if (!this.settings.enableTime || this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 

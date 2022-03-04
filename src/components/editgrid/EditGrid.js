@@ -588,7 +588,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
             // If there is an html tag in view, don't allow it to be injected in template
             const htmlTagRegExp = new RegExp('<(.*?)>');
-            return typeof view === 'string' && view.length && !instance.component?.template && htmlTagRegExp.test(view)
+            return typeof view === 'string' && view.length && !instance.component?.template && htmlTagRegExp.test(view) && instance.component?.inputFormat !== 'html'
             ? `<input type="text" value="${view.replace(/"/g, '&quot;')}" readonly/>`
             : view;
           },
@@ -1159,6 +1159,9 @@ export default class EditGridComponent extends NestedArrayComponent {
             this.addClass(errorContainer,  'help-block' );
             errorContainer.textContent = this.t('invalidRowError');
           }
+          else if (errorContainer) {
+            errorContainer.textContent = '';
+          }
         }
       }
       // If this is a dirty check, and any rows are still editing, we need to throw validation error.
@@ -1213,6 +1216,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
+    flags.noValidate = !changed;
     if (this.parent) {
       this.parent.checkComponentConditions();
     }

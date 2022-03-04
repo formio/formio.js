@@ -10,6 +10,7 @@ import {
   comp2,
   comp3
 } from './fixtures';
+import formWithCKEditor from '../../../test/forms/formWithCKEditor';
 
 describe('TextArea Component', () => {
   it('Should build a TextArea component', () => {
@@ -388,5 +389,45 @@ describe('TextArea Component', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  describe('CKEditor', () => {
+    it('Should allow to insert media fiels and show the in the read-only mode', (done) => {
+      const element = document.createElement('div');
+
+      Formio.createForm(element, formWithCKEditor, { readOnly: true }).then(form => {
+        form.submission = {
+          data: {
+            textArea: `
+              <figure class="media">
+                <div data-oembed-url="https://www.youtube.com/watch?v=GsLRrmnJXF8">
+                  <div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">
+                    <iframe src="https://www.youtube.com/embed/GsLRrmnJXF8" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">
+                    </iframe>
+                  </div>
+                </div>
+              </figure>
+              <figure class="media">
+              <div data-oembed-url="https://www.youtube.com/watch?v=FmA6U5rXl38&amp;t=111s">
+                <div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">
+                  <iframe src="https://www.youtube.com/embed/FmA6U5rXl38" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">
+                  </iframe>
+                </div>
+              </div>
+            </figure>`,
+          },
+          state: 'submitted',
+        };
+
+        setTimeout(() => {
+          const mediaA = form.element.querySelector('iframe[src="https://www.youtube.com/embed/GsLRrmnJXF8"]');
+          const mediaB = form.element.querySelector('iframe[src="https://www.youtube.com/embed/FmA6U5rXl38"]');
+          assert(mediaA, 'Should not remove embedded media');
+          assert(mediaB, 'Should not remove embedded media');
+
+          done();
+        }, 300);
+      }).catch(done);
+    });
   });
 });

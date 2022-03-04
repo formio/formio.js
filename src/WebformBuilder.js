@@ -1,6 +1,6 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { GlobalFormio as Formio } from './Formio';
@@ -97,7 +97,8 @@ export default class WebformBuilder extends Component {
     for (const group in this.groups) {
       const info = this.groups[group];
       for (const key in info.components) {
-        let comp = info.components[key];
+        const compKey = group === 'resource' ? `component-${key}` : key;
+        let comp = info.components[compKey];
         if (
           comp === true &&
           Components.components[key] &&
@@ -107,12 +108,12 @@ export default class WebformBuilder extends Component {
         }
         if (comp && comp.schema) {
           this.schemas[key] = comp.schema;
-          info.components[key] = comp;
-          info.components[key].key = key;
+          info.components[compKey] = comp;
+          info.components[compKey].key = key;
         }
         else {
           // Do not include this component in the components array.
-          delete info.components[key];
+          delete info.components[compKey];
         }
       }
 
@@ -250,15 +251,6 @@ export default class WebformBuilder extends Component {
       console.warn(`Could not load project settings: ${err.message || err}`);
     });
 
-    const { paths } = Formio.pageQuery();
-    const formId = paths.includes('form') && paths[paths.indexOf('form') + 1];
-    formio.actionsUrl = `${Formio.getProjectUrl()}/form/${formId}/action`;
-    formio.loadActions().then(actions => {
-      if (actions.some(action => action.name === 'signrequest')) {
-        this.addSignrequestGroup();
-      }
-    });
-
     if (!formio.noProject && !isResourcesDisabled) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
@@ -302,30 +294,6 @@ export default class WebformBuilder extends Component {
     return true;
   }
 
-  addSignrequestGroup() {
-    const key = 'signrequestsignature';
-    const component = Components.components[key];
-    const builderInfo = { ...component.builderInfo, key };
-
-    this.builder.signrequest = {
-      title: 'SignRequest',
-      weight: 50
-    };
-
-    this.groups.signrequest = {
-      title: 'SignRequest',
-      key: 'signrequest',
-      components: { [key]: builderInfo },
-      componentOrder: [key],
-      subgroups: [],
-      weight: 50
-    };
-
-    this.groupOrder.push('signrequest');
-
-    this.triggerRedraw();
-  }
-
   addExistingResourceFields(resources) {
     _.each(resources, (resource, index) => {
       const resourceKey = `resource-${resource.name}`;
@@ -350,8 +318,8 @@ export default class WebformBuilder extends Component {
           componentName = _.upperFirst(component.key);
         }
 
-        subgroup.componentOrder.push(component.key);
-        subgroup.components[component.key] = _.merge(
+        subgroup.componentOrder.push(`component-${component.key}`);
+        subgroup.components[`component-${component.key}`] = _.merge(
           fastCloneDeep(Components.components[component.type]
             ? Components.components[component.type].builderInfo
             : Components.components['unknown'].builderInfo),
@@ -381,10 +349,13 @@ export default class WebformBuilder extends Component {
   }
 
   attachTooltip(component, title) {
-    return new Tooltip(component, {
-      trigger: 'hover focus',
+    return tippy(component, {
+      allowHTML: true,
+      trigger: 'mouseenter focus',
       placement: 'top',
-      title
+      delay: [200, 0],
+      zIndex: 10000,
+      content: title
     });
   }
 
@@ -730,12 +701,13 @@ export default class WebformBuilder extends Component {
 
   orderComponents(groupInfo, foundComponents) {
     const components = foundComponents || groupInfo.components;
+    const isResource = groupInfo.key.indexOf('resource-') === 0;
     if (components) {
       groupInfo.componentOrder = Object.keys(components)
         .map(key => components[key])
         .filter(component => component && !component.ignore && !component.ignoreForForm)
         .sort((a, b) => a.weight - b.weight)
-        .map(component => component.key);
+        .map(component => isResource ? `component-${component.key}` : component.key);
     }
   }
 
@@ -817,25 +789,23 @@ export default class WebformBuilder extends Component {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
-      if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
-        info = fastCloneDeep(resourceGroup.components[key].schema);
+      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
+        info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
       }
     }
     else if (group === 'searchFields') {//Search components go into this group
       const resourceGroups = this.groups.resource.subgroups;
       for (let ix = 0; ix < resourceGroups.length; ix++) {
         const resourceGroup = resourceGroups[ix];
-        if (resourceGroup.components.hasOwnProperty(key)) {
-          info = fastCloneDeep(resourceGroup.components[key].schema);
+        if (resourceGroup.components.hasOwnProperty(`component-${key}`)) {
+          info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
           break;
         }
       }
     }
 
     if (info) {
-      if (!info.key) {
-        info.key = this.generateKey(info);
-      }
+      info.key = this.generateKey(info);
     }
 
     return info;
@@ -882,7 +852,7 @@ export default class WebformBuilder extends Component {
     const group = element.getAttribute('data-group');
     let info, isNew, path, index;
 
-    if (key) {
+    if (key && group) {
       // This is a new component.
       info = this.getComponentInfo(key, group);
       if (!info && type) {
@@ -909,7 +879,8 @@ export default class WebformBuilder extends Component {
     }
 
     // Show an error if siblings are disabled for a component and such a component already exists.
-    const draggableComponent = this.groups[group]?.components[key] || {};
+    const compKey = (group === 'resource') ? `component-${key}` : key;
+    const draggableComponent = this.groups[group]?.components[compKey] || {};
 
     if (draggableComponent.disableSiblings) {
       let isCompAlreadyExists = false;
@@ -1098,6 +1069,17 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
+  replaceDoubleQuotes(data, fieldsToRemoveDoubleQuotes = []) {
+    if (data) {
+      fieldsToRemoveDoubleQuotes.forEach((key) => {
+        if (data[key]) {
+          data[key] = data[key].replace(/"/g, "'");
+        }
+      });
+      return data;
+    }
+  }
+
   updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
@@ -1112,6 +1094,10 @@ export default class WebformBuilder extends Component {
         ])],
         config: this.options.formConfig || {}
       };
+
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+      this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
+
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
         this.setContent(previewElement, this.preview.render());
@@ -1253,13 +1239,7 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
 
-      if (submissionData) {
-        fieldsToRemoveDoubleQuotes.forEach((key) => {
-          if (submissionData[key]) {
-            submissionData[key] = submissionData[key].replace(/"/g, "'");
-          }
-        });
-      }
+      this.replaceDoubleQuotes(submissionData, fieldsToRemoveDoubleQuotes);
 
       this.hook('beforeSaveComponentSettings', submissionData);
 

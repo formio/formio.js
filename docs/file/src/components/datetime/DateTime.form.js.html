@@ -175,6 +175,7 @@ import DateTimeEditData from &apos;./editForm/DateTime.edit.data&apos;;
 import DateTimeEditDate from &apos;./editForm/DateTime.edit.date&apos;;
 import DateTimeEditDisplay from &apos;./editForm/DateTime.edit.display&apos;;
 import DateTimeEditTime from &apos;./editForm/DateTime.edit.time&apos;;
+import DateTimeEditValidation from &apos;./editForm/DateTime.edit.validation&apos;;
 
 export default function(...extend) {
   return Components.baseEditForm([
@@ -197,6 +198,10 @@ export default function(...extend) {
     {
       key: &apos;data&apos;,
       components: DateTimeEditData
+    },
+    {
+      key: &apos;validation&apos;,
+      components: DateTimeEditValidation
     },
     {
       key: &apos;addons&apos;,

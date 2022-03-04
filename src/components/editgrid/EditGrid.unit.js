@@ -14,6 +14,7 @@ import {
   comp10,
   comp11,
   comp12,
+  comp13,
   comp14,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
@@ -1203,6 +1204,28 @@ describe('EditGrid Component', () => {
           }, 200);
         }, 250);
       }, 300);
+    }).catch(done);
+  });
+
+  it('Should render form with a submission in a draft-state without validation errors', (done) => {
+    const form = _.cloneDeep(comp13);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      form.submission = {
+        data: {
+          'container': {
+            'textField': '',
+          },
+          'editGrid': []
+        }
+      };
+
+      setTimeout(() => {
+        const editGrid = form.getComponent(['editGrid']);
+        assert.equal(editGrid.errors.length, 0);
+        done();
+      }, 100);
     }).catch(done);
   });
 });

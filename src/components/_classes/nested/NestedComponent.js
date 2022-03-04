@@ -745,6 +745,9 @@ export default class NestedComponent extends Field {
     if (!value) {
       return false;
     }
+    if (value.submitAsDraft && !value.submit) {
+      flags.noValidate = true;
+    }
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;
     }, false);

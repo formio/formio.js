@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "4.14.1-rc.4",
+  "version": "4.15.0-rc.5",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "index.js",
   "types": "index.d.ts",
@@ -52,7 +52,7 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap3": "^2.12.0",
+    "@formio/bootstrap3": "^2.12.1",
     "@formio/choices.js": "^9.0.1",
     "@formio/semantic": "^2.6.0",
     "@formio/vanilla-text-mask": "^5.1.1",
@@ -80,11 +80,10 @@
     "moment-timezone": "^0.5.34",
     "native-promise-only": "^0.8.1",
     "quill": "^2.0.0-dev.3",
-    "resize-observer-polyfill": "^1.5.1",
     "signature_pad": "^2.3.2",
     "string-hash": "^1.1.3",
     "text-mask-addons": "^3.8.0",
-    "tooltip.js": "^1.3.3",
+    "tippy.js": "^6.3.7",
     "uuid": "^8.3.2",
     "vanilla-picker": "^2.12.1"
   },
@@ -141,7 +140,7 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-webpack": "^5.0.0",
     "marked": "^3.0.7",
-    "mocha": "^9.1.3",
+    "mocha": "^9.2.0",
     "natives": "^1.1.6",
     "power-assert": "^1.6.1",
     "pre-commit": "^1.2.2",
