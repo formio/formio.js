@@ -486,6 +486,10 @@ export default class SelectComponent extends Field {
   /* eslint-enable max-statements */
 
   get defaultValue() {
+    if (this.options.display === 'pdf' && (this.options.readOnly || this.root.formio?.submissionId)) {
+      this.component.defaultValue = '';
+      return '';
+    }
     let defaultValue = super.defaultValue;
     if (!defaultValue && (this.component.defaultValue === false || this.component.defaultValue === 0)) {
       defaultValue = this.component.defaultValue;
@@ -510,7 +514,7 @@ export default class SelectComponent extends Field {
 
   get shouldLoad() {
     // Live forms should always load.
-    if (!this.options.readOnly) {
+    if (!this.options.readOnly  || (this.options.display === 'pdf' && this.options.readOnly )) {
       return true;
     }
 
