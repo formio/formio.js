@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.3-rc.2
+### Changed
+ - FIO-4632: Fixing the DateTime widget to work with saveAs date and tex…
+
 ## 4.14.3-rc.1
 ### Fixed
  - Ensure that we properly read the selectData from the select component.
