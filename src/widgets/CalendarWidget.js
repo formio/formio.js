@@ -101,7 +101,7 @@ export default class CalendarWidget extends InputWidget {
     };
 
     this.closedOn = 0;
-    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
+    this.valueFormat = (this.settings.saveAs === 'date') ? ISO_8601_FORMAT : this.settings.dateFormat || ISO_8601_FORMAT;
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
 
     const isReadOnly = this.settings.readOnly;
@@ -444,7 +444,12 @@ export default class CalendarWidget extends InputWidget {
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
 
     if (dateValue) {
-      this.calendar.setDate(moment(dateValue, convertFormatToMoment(this.dateFormat)).toDate(), false, this.settings.altFormat);
+      if (this.isValueISO8601(dateValue)) {
+        this.calendar.setDate(moment(dateValue).toDate(), false, this.settings.altFormat);
+      }
+      else {
+        this.calendar.setDate(moment(dateValue, convertFormatToMoment(this.dateFormat)).toDate(), false, this.settings.altFormat);
+      }
     }
 
     this.calendar.altInput.addEventListener('input', (event) => {
