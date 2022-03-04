@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.6]
 ### Fixed
  - FIO-4743: Fixed issue where "||" is not allowed for interpolate with non-url select dropdown templates.
+ - Ensure that we properly read the selectData from the select component.
 
 ## 4.15.0-rc.5
 ### Fixed
