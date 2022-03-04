@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FIO-4743: Fixed issue where "||" is not allowed for interpolate with non-url select dropdown templates.
  - Ensure that we properly read the selectData from the select component.
+ - FIO-4632: Fixing the DateTime widget to work with saveAs date and text correctly.
 
 ## 4.15.0-rc.5
 ### Fixed
