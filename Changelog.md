@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+[Unreleased: 4.15.0-rc.7]
+### Fixed
+ - FIO-4763: Select in Data/Edit Grid: Cannot make a submission. Get 'key editGrid[0].select must not contain '.')
+
 ## 4.15.0-rc.6
 ### Fixed
  - FIO-4743: Fixed issue where "||" is not allowed for interpolate with non-url select dropdown templates.
