@@ -1,5 +1,4 @@
 import Components from '../Components';
-import EditGridEditData from './editForm/EditGrid.edit.data';
 import EditGridEditDisplay from './editForm/EditGrid.edit.display';
 //import EditGridEditTemplates from './editForm/EditGrid.edit.templates';
 import EditGridEditValidation from './editForm/EditGrid.edit.validation';

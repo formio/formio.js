@@ -25,6 +25,8 @@ if (typeof window !== 'undefined') {
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
   constructor() {
+    console.log('constructorr--------------');
+
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
       element = arguments[0];
@@ -286,6 +288,11 @@ export default class WebformBuilder extends Component {
     this.arrayDataComponentPaths = [];
     this.nestedDataComponents = [];
     this.arrayDataComponents = [];
+    const modalEle = document.getElementById('formio-dialog-builder');
+    if (modalEle) {
+      document.body.classList.remove('modal-open');
+      modalEle.remove();
+    }
   }
 
   allowDrop() {
@@ -1531,7 +1538,7 @@ export default class WebformBuilder extends Component {
       helplinks: this.helplinks,
     }));
 
-    this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}), () => this.showDialog());
+    this.dialog = this.createModal(this.componentEdit, { ..._.get(this.options, 'dialogAttr', {}), id:'formio-dialog-builder' }, () => this.showDialog());
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
