@@ -533,8 +533,7 @@ export default class SelectComponent extends Field {
 
   get selectData() {
     const selectData = _.get(this.root, 'submission.metadata.selectData', {});
-    const bsonSerializedPath = _.replace(this.path, '.', '_');
-    return selectData[bsonSerializedPath];
+    return selectData[this.path];
   }
 
   get shouldLoad() {
@@ -1419,8 +1418,7 @@ export default class SelectComponent extends Field {
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
-      const bsonSerializedPath = _.replace(this.path, '.', '_');
-      submission.metadata.selectData[bsonSerializedPath] = this.templateData[value];
+      submission.metadata.selectData[this.path] = this.templateData[value];
     }
 
     const displayEntireObject = this.isEntireObjectDisplay();
