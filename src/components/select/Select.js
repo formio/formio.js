@@ -533,7 +533,7 @@ export default class SelectComponent extends Field {
 
   get selectData() {
     const selectData = _.get(this.root, 'submission.metadata.selectData', {});
-    return selectData[this.path];
+    return _.get(selectData, this.path);
   }
 
   get shouldLoad() {
@@ -1418,7 +1418,7 @@ export default class SelectComponent extends Field {
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
-      submission.metadata.selectData[this.path] = this.templateData[value];
+      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
     const displayEntireObject = this.isEntireObjectDisplay();
