@@ -697,6 +697,10 @@ export default class WebformBuilder extends Component {
     });
 
     this.updateDragAndDrop();
+
+    if (searchValue === '') {
+      this.triggerRedraw();
+    }
   }
 
   orderComponents(groupInfo, foundComponents) {
