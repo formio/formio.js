@@ -333,9 +333,10 @@ export default class ButtonComponent extends Field {
         const flattened = {};
         const components = {};
 
-        eachComponent(form.components, (component, path) => {
-          flattened[path] = component.component;
-          components[component.component.key] = component;
+        eachComponent(form.components, (componentWrapper, path) => {
+          const component = componentWrapper.component || componentWrapper;
+          flattened[path] = component;
+          components[component.key] = component;
         }, true);
 
         this.evaluate(this.component.custom, {
