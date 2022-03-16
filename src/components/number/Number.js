@@ -98,7 +98,7 @@ export default class NumberComponent extends Input {
   }
 
   get emptyValue() {
-    return '';
+    return '\0';
   }
 
   isDecimalAllowed() {
