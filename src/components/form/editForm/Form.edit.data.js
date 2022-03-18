@@ -16,12 +16,7 @@ export default [
     key: 'clearOnHide',
     defaultValue: true,
     tooltip: 'When a field is hidden, clear the value.',
-    input: true,
-    clearOnHide: false,
-    calculateValue: 'value = data.hidden ? false : value',
-    conditional: {
-      json: { '!' : [{ var: 'data.hidden' }] }
-    }
+    input: true
   },
 ];
 /* eslint-enable max-len */

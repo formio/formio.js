@@ -92,12 +92,7 @@ export default [
     key: 'clearOnHide',
     defaultValue: true,
     tooltip: 'When a field is hidden, clear the value.',
-    input: true,
-    clearOnHide: false,
-    calculateValue: 'value = data.hidden ? false : value',
-    conditional: {
-      json: { '!' : [{ var: 'data.hidden' }] }
-    }
+    input: true
   },
   EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 1000,
     '<p><h4>Example:</h4><pre>value = data.firstName + " " + data.lastName;</pre></p>',

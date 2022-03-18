@@ -1898,7 +1898,7 @@ export default class Component extends Element {
             }
           );
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && !this.visible)) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -1943,7 +1943,7 @@ export default class Component extends Element {
           },
           'value');
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && !this.visible)) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
