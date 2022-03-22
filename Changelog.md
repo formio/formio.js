@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.4
+### Changed
+ - Official Release
+
 ## 4.14.4-rc.1
 ### Changed
  - Fixing a browser crash with error message re-assignment.
