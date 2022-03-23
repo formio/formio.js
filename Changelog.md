@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4398: Fixed issues where HTML text area in datagrid changes were causing infinite loop issues.
  - FIO-4763: Fixed issues with Select not setting data properly in metadata.
  - Fixing a browser crash with error message re-assignment.
+ - FIO-4681: limited table wight
 
 ## 4.15.0-rc.6
 ### Fixed
