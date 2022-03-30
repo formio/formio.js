@@ -254,17 +254,30 @@ export default class TabsComponent extends NestedComponent {
   }
 
   render() {
-    return super.render(this.renderTemplate(&apos;tab&apos;, {
-      tabKey: this.tabKey,
-      tabLikey: this.tabLikey,
-      tabLinkKey: this.tabLinkKey,
-      currentTab: this.currentTab,
-      tabComponents: this.tabs.map(tab =&gt; this.renderComponents(tab))
-    }, (this.options.flatten || this.options.pdf ? &apos;flat&apos; : null)));
+    return super.render(this.renderTemplate(
+      &apos;tab&apos;,
+      {
+        tabKey: this.tabKey,
+        tabLikey: this.tabLikey,
+        tabLinkKey: this.tabLinkKey,
+        currentTab: this.currentTab,
+        tabComponents: this.tabs.map(tab =&gt; this.renderComponents(tab)),
+      },
+      (
+        this.options.flatten || this.options.pdf ? &apos;flat&apos; : null
+      ),
+    ));
   }
 
   attach(element) {
-    this.loadRefs(element, { [this.tabLinkKey]: &apos;multiple&apos;, [this.tabKey]: &apos;multiple&apos;, [this.tabLikey]: &apos;multiple&apos; });
+    this.loadRefs(
+      element,
+      {
+        [this.tabLinkKey]: &apos;multiple&apos;,
+        [this.tabKey]: &apos;multiple&apos;,
+        [this.tabLikey]: &apos;multiple&apos;,
+      },
+    );
     [&apos;change&apos;, &apos;error&apos;].forEach(event =&gt; this.on(event, this.handleTabsValidation.bind(this)));
     const superAttach = super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) =&gt; {
@@ -289,12 +302,7 @@ export default class TabsComponent extends NestedComponent {
    * @param index
    */
   setTab(index) {
-    if (
-      !this.tabs ||
-      !this.tabs[index] ||
-      !this.refs[this.tabKey] ||
-      !this.refs[this.tabKey][index]
-    ) {
+    if (!this.tabs || !this.tabs[index] || !this.refs[this.tabKey] || !this.refs[this.tabKey][index]) {
       return;
     }
 
@@ -331,7 +339,7 @@ export default class TabsComponent extends NestedComponent {
     const tabIndex = this.tabs.findIndex((tab) =&gt; {
       return tab.some((comp) =&gt; comp === component);
     });
-    if (tabIndex !== -1 &amp;&amp;  this.currentTab !== tabIndex) {
+    if (tabIndex !== -1 &amp;&amp; this.currentTab !== tabIndex) {
       this.setTab(tabIndex);
     }
   }
@@ -356,6 +364,10 @@ export default class TabsComponent extends NestedComponent {
   }
 
   clearErrorClasses(elements) {
+    if (this.options.server) {
+      return;
+    }
+
     if (this.component.modalEdit) {
       const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;
       super.clearErrorClasses(element);
