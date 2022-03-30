@@ -254,8 +254,8 @@ export default class SelectComponent extends Field {
     }
     if (typeof data === 'string' || typeof data === 'number') {
       const selectData = this.selectData;
-      if (selectData) {
-        data = selectData;
+      if (selectData && selectData[value]) {
+        data = selectData[value];
       }
       else {
         return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
@@ -1423,7 +1423,11 @@ export default class SelectComponent extends Field {
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
-      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
+      const selectedTemplateData = _.pickBy(this.templateData, (value, key) => {
+        const dataValues = _.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+        return _.includes(dataValues, key);
+      });
+      _.set(submission.metadata.selectData, this.path, _.cloneDeep(selectedTemplateData));
     }
 
     const displayEntireObject = this.isEntireObjectDisplay();
