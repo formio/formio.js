@@ -464,7 +464,7 @@ export default class SelectComponent extends Field {
           noUpdateEvent: true
         });
       }
-      else if (this.shouldAddDefaultValue) {
+      else if (this.shouldAddDefaultValue && !this.options.readOnly) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
@@ -564,7 +564,7 @@ export default class SelectComponent extends Field {
     options = options || {};
 
     // See if we should load items or not.
-    if (!this.shouldLoad) {
+    if (!this.shouldLoad || this.options.readOnly) {
       this.isScrollLoading = false;
       this.loading = false;
       this.itemsLoadedResolve();
@@ -1298,7 +1298,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if (!value || _.isEmpty(value)) {
+      if ((!value || _.isEmpty(value)) && !this.options.readOnly) {
         return defaultAdded;
       }
       let found = false;
@@ -1565,7 +1565,7 @@ export default class SelectComponent extends Field {
   }
 
   setChoicesValue(value, hasPreviousValue, flags = {}) {
-    const hasValue = !this.isEmpty(value);
+    const hasValue = !this.isEmpty(value) || flags.fromSubmission;
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
