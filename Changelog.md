@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3345: Fixes an issue where subpathes of the Tagpad's components do not include its key
  - FIO-4395: Fixed typos
  - Update translations for aria-labels
+ - Allow customization of edit grid error messages
 
 ## 4.15.0-rc.7
 ### Fixed
