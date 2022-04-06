@@ -2178,6 +2178,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#redraw",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-redraw",
+    "src/PDFBuilder.js~PDFBuilder#redraw",
+    "method"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#render",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-render",
     "src/PDFBuilder.js~PDFBuilder#render",
@@ -2538,6 +2544,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/components.js~components.recalculatecomponents",
+    "class/src/components/Components.js~Components.html#static-method-recalculateComponents",
+    "src/components/Components.js~Components.recalculateComponents",
+    "method"
+  ],
+  [
     "src/components/components.js~components.setcomponent",
     "class/src/components/Components.js~Components.html#static-method-setComponent",
     "src/components/Components.js~Components.setComponent",
@@ -2553,12 +2565,6 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.form.js",
     "file/src/components/_classes/component/Component.form.js.html",
     "src/components/_classes/component/Component.form.js",
-    "file"
-  ],
-  [
-    "src/components/_classes/component/editform/component.edit.addons.js",
-    "file/src/components/_classes/component/editForm/Component.edit.addons.js.html",
-    "src/components/_classes/component/editForm/Component.edit.addons.js",
     "file"
   ],
   [
@@ -2838,6 +2844,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-dataValue",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
+    "member"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#defaultschema",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-defaultSchema",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#defaultSchema",
@@ -3114,6 +3126,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/container/container.js~containercomponent#focus",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-focus",
+    "src/components/container/Container.js~ContainerComponent#focus",
+    "method"
+  ],
+  [
     "src/components/container/container.js~containercomponent#setvalue",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-setValue",
     "src/components/container/Container.js~ContainerComponent#setValue",
@@ -3171,6 +3189,12 @@ window.esdocSearchIndex = [
     "src/components/container/fixtures/comp2.js",
     "file/src/components/container/fixtures/comp2.js.html",
     "src/components/container/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/container/fixtures/comp3.js",
+    "file/src/components/container/fixtures/comp3.js.html",
+    "src/components/container/fixtures/comp3.js",
     "file"
   ],
   [
@@ -3636,6 +3660,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datetime/editform/datetime.edit.validation.js",
+    "file/src/components/datetime/editForm/DateTime.edit.validation.js.html",
+    "src/components/datetime/editForm/DateTime.edit.validation.js",
+    "file"
+  ],
+  [
     "src/components/datetime/fixtures/comp1.js",
     "file/src/components/datetime/fixtures/comp1.js.html",
     "src/components/datetime/fixtures/comp1.js",
@@ -3654,12 +3684,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/datetime/fixtures/comp4.js",
-    "file/src/components/datetime/fixtures/comp4.js.html",
-    "src/components/datetime/fixtures/comp4.js",
-    "file"
-  ],
-  [
     "src/components/datetime/fixtures/comp5.js",
     "file/src/components/datetime/fixtures/comp5.js.html",
     "src/components/datetime/fixtures/comp5.js",
@@ -3669,6 +3693,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/fixtures/comp6.js",
     "file/src/components/datetime/fixtures/comp6.js.html",
     "src/components/datetime/fixtures/comp6.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp7.js",
+    "file/src/components/datetime/fixtures/comp7.js.html",
+    "src/components/datetime/fixtures/comp7.js",
     "file"
   ],
   [
@@ -3843,6 +3873,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp12.js",
     "file/src/components/editgrid/fixtures/comp12.js.html",
     "src/components/editgrid/fixtures/comp12.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp13.js",
+    "file/src/components/editgrid/fixtures/comp13.js.html",
+    "src/components/editgrid/fixtures/comp13.js",
     "file"
   ],
   [
@@ -4764,6 +4800,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp8.js",
+    "file/src/components/radio/fixtures/comp8.js.html",
+    "src/components/radio/fixtures/comp8.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",
@@ -4810,6 +4852,12 @@ window.esdocSearchIndex = [
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-createLabel",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createLabel",
     "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#isloading",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-isLoading",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#isLoading",
+    "member"
   ],
   [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent#normalizevalue",

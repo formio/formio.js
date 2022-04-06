@@ -12,5 +12,9 @@ export default function(...extend) {
       key: 'data',
       components: ContainerEditData
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

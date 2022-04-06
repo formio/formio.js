@@ -8,10 +8,10 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4,
   comp5,
   comp6,
-  comp7
+  comp7,
+  comp8
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -330,27 +330,6 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should update value if time mode is on when OnBlur event triggered', (done) => {
-    const form = _.cloneDeep(comp4);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const dateTime = form.getComponent('time');
-      const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
-
-      const blurEvent = new Event('blur');
-      calendar._input.value = '2021-06-01T09:00:00.000Z';
-      calendar._input.dispatchEvent(blurEvent);
-
-      setTimeout(() => {
-        assert.equal(dateTime.dataValue !== '', true);
-
-        document.innerHTML = '';
-        done();
-      }, 300);
-    }).catch(done);
-  });
-
   it('Should not input the date that is disabled', (done) => {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
@@ -561,8 +540,31 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not highlight the field when it is valid when multiple values and required validation are enabled', (done) => {
+  it('Should provide correct value after submission', (done) => {
     const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2022-12-21');
+
+      setTimeout(() => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(dateTime.dataValue, '2022-12-21');
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should not highlight the field when it is valid when multiple values and required validation are enabled', (done) => {
+    const form = _.cloneDeep(comp8);
     const element = document.createElement('div');
 
     Formio.createForm(element, form).then(form => {

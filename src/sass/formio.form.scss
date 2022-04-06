@@ -1169,8 +1169,13 @@ div[data-oembed-url] {
   margin-bottom: 8px;
 }
 
-.radio label.label-position-left input[type="radio"], .checkbox label.label-position-left input[type="checkbox"] {
+.radio label.label-position-left input[type="radio"] {
   margin-left: 10px;
+}
+
+.checkbox label.label-position-left input[type=checkbox] {
+  margin-left: 4px;
+  position: relative;
 }
 
 .open-modal-button {
@@ -1417,6 +1422,7 @@ div[data-oembed-url] {
       width: 100%;
       height: 100%;
       border: 1px double #b3b3b3;
+      table-layout: fixed;
 
       th, td {
         min-width: 2em;

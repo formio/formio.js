@@ -206,6 +206,10 @@ export default class PDFBuilder extends WebformBuilder {
     }
   }
 
+  redraw() {
+    return super.redraw().then(() => this.webform.redraw());
+  }
+
   upload(file) {
     const formio = new Formio(this.projectUrl);
     if (this.refs.dragDropText) {
@@ -449,8 +453,6 @@ export default class PDFBuilder extends WebformBuilder {
       const info = this.getComponentInfo(key, group);
       _.merge(schema, info);
     }
-
-    schema.key = this.generateKey(schema);
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform._form], schema);

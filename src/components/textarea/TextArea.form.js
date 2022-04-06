@@ -12,5 +12,9 @@ export default function(...extend) {
       key: 'validation',
       components: TextAreaEditValidation
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

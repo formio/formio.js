@@ -134,6 +134,9 @@ export default class ButtonComponent extends Field {
       this.on('submitButton', () => {
         this.disabled = true;
       }, true);
+      this.on('cancelSubmit', () => {
+        this.disabled = false;
+      }, true);
       this.on('submitDone', (message) => {
         const resultMessage = _.isString(message) ? message : this.t('complete');
         this.loading = false;

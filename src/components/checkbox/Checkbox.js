@@ -141,8 +141,7 @@ export default class CheckBoxComponent extends Field {
     }
     if (this.component.name) {
       this.input.value = (value === this.component.value) ? this.component.value : 0;
-      this.input.checked = (value === this.component.value && value !== this.dataValue) ? 1 : 0;
-      value = value !== this.dataValue ? value : this.emptyValue;
+      this.input.checked = (value === this.component.value) ? 1 : 0;
     }
     else if (value === 'on') {
       this.input.value = 1;
@@ -172,14 +171,13 @@ export default class CheckBoxComponent extends Field {
   setValue(value, flags = {}) {
     if (
       this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
+      (!this.input && value !== undefined && (this.visible || this.conditionallyVisible() || !this.component.clearOnHide))
     ) {
       const changed = this.updateValue(value, flags);
-
       if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
         this.redraw();
-        return changed;
       }
+      return changed;
     }
     return false;
   }
@@ -189,6 +187,13 @@ export default class CheckBoxComponent extends Field {
   }
 
   updateValue(value, flags) {
+    // If this is a radio and is alredy checked, uncheck it.
+    if (this.component.name && flags.modified && (this.dataValue === this.component.value)) {
+      this.input.checked = 0;
+      this.input.value = 0;
+      this.dataValue = '';
+    }
+
     const changed = super.updateValue(value, flags);
 
     // Update attributes of the input element

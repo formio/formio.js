@@ -1,7 +1,7 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
 import { GlobalFormio as Formio } from '../../../Formio';
@@ -932,12 +932,16 @@ export default class Component extends Element {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty, forceSanitize) {
+  sanitize(dirty, forceSanitize, options) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
-    if ((this.options.pdf || this.options.sanitize === false) && !forceSanitize) {
+    if ((!this.shouldSanitizeValue && !forceSanitize) || ((this.options.pdf) && !forceSanitize)) {
       return dirty;
     }
-    return FormioUtils.sanitize(dirty, this.options);
+    return FormioUtils.sanitize(
+      dirty,
+      {
+        sanitizeConfig: _.merge(this.options?.sanitizeConfig || {}, options || {}),
+      });
   }
 
   /**
@@ -1104,16 +1108,13 @@ export default class Component extends Element {
         const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
                                 .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-        this.tooltips[index] = new Tooltip(tooltip, {
-          trigger: 'hover click focus',
+        this.tooltips[index] = tippy(tooltip, {
+          allowHTML: true,
+          trigger: 'mouseenter click focus',
           placement: 'right',
-          html: true,
-          title: this.t(tooltipText, { _userInput: true }),
-          template: `
-            <div class="tooltip" style="opacity: 1;" role="tooltip">
-              <div class="tooltip-arrow"></div>
-              <div class="tooltip-inner"></div>
-            </div>`,
+          zIndex: 10000,
+          interactive: true,
+          content: this.t(tooltipText, { _userInput: true }),
         });
       }
     });
@@ -1213,7 +1214,7 @@ export default class Component extends Element {
     this.removeEventListeners();
     this.detachLogic();
     if (this.tooltip) {
-      this.tooltip.dispose();
+      this.tooltip.destroy();
     }
   }
 
@@ -1368,7 +1369,7 @@ export default class Component extends Element {
       return '';
     }
     const stringValue = value.toString();
-    return this.sanitize(stringValue, this.shouldSanitizeValue);
+    return this.sanitize(stringValue);
   }
 
   getView(value, options) {
@@ -1616,9 +1617,9 @@ export default class Component extends Element {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
-  setContent(element, content, forceSanitize) {
+  setContent(element, content, forceSanitize, sanitizeOptions) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content, forceSanitize);
+      element.innerHTML = this.sanitize(content, forceSanitize, sanitizeOptions);
       return true;
     }
     return false;
@@ -1671,7 +1672,7 @@ export default class Component extends Element {
 
   removeEventListeners() {
     super.removeEventListeners();
-    this.tooltips.forEach(tooltip => tooltip.dispose());
+    this.tooltips.forEach(tooltip => tooltip.destroy());
     this.tooltips = [];
   }
 
@@ -2259,7 +2260,7 @@ export default class Component extends Element {
 
   get shouldSanitizeValue() {
     // Sanitize value if sanitizing for thw whole content is turned off
-    return (this.options?.sanitize === false ? true : false);
+    return (this.options?.sanitize !== false);
   }
 
   addAce(element, settings, onChange) {
@@ -2701,6 +2702,7 @@ export default class Component extends Element {
       }, 'value');
   }
 
+  /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -2731,14 +2733,31 @@ export default class Component extends Element {
 
     // Do not override calculations on server if they have calculateServer set.
     if (allowOverride) {
+      // The value is considered locked if it is not empty and comes from a submission value.
+      const fromSubmission = (flags.fromSubmission && this.component.persistent === true);
+      if (this.isEmpty(dataValue)) {
+        // Reset the calculation lock if ever the data is cleared.
+        this.calculationLocked = false;
+      }
+      else if (this.calculationLocked || fromSubmission) {
+        this.calculationLocked = true;
+        return false;
+      }
+
       const firstPass = (this.calculatedValue === undefined);
       if (firstPass) {
         this.calculatedValue = null;
       }
       const newCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(calculatedValue));
       const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
+      const normalizedDataValue = this.normalizeValue(this.convertNumberOrBoolToString(dataValue));
       const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
-      const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
+      const previousChanged = !_.isEqual(normalizedDataValue, previousCalculatedValue);
+
+      if (calculationChanged && previousChanged && !firstPass) {
+        return false;
+      }
+
       // Check to ensure that the calculated value is different than the previously calculated value.
       if (previousCalculatedValue && previousChanged && !calculationChanged) {
         return false;
@@ -2748,11 +2767,11 @@ export default class Component extends Element {
         return false;
       }
 
-    if (flags.fromSubmission && this.component.persistent === true) {
-      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
+      if (fromSubmission) {
+        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+        this.calculatedValue = calculatedValue;
+        return false;
+      }
 
       // If this is the firstPass, and the dataValue is different than to the calculatedValue.
       if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
@@ -2773,6 +2792,7 @@ export default class Component extends Element {
     }
     return false;
   }
+  /* eslint-enable max-statements */
 
   /**
    * Performs calculations in this component plus any child components.
@@ -2853,7 +2873,7 @@ export default class Component extends Element {
 
   setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error' && !message.fromServer).length;
-    if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
+    if (messages.length && (!silentCheck || this.error) && (!this.isEmpty(this.defaultValue) || dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else if (!silentCheck) {
@@ -3073,7 +3093,7 @@ export default class Component extends Element {
         this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
     }
-    else if (this.error && this.error.external === !!external) {
+    else if (!this.error || (this.error && this.error.external === !!external)) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
@@ -3105,6 +3125,9 @@ export default class Component extends Element {
    * @return {boolean|*}
    */
   isValueHidden() {
+    if (this.component.protected && this.root.editing) {
+      return false;
+    }
     if (!this.root || !this.root.hasOwnProperty('editing')) {
       return false;
     }

@@ -174,6 +174,7 @@
 import Component from &apos;../_classes/component/Component&apos;;
 import { GlobalFormio as Formio } from &apos;../../Formio&apos;;
 import _get from &apos;lodash/get&apos;;
+import _debounce from &apos;lodash/debounce&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 
 export default class ReCaptchaComponent extends Component {
@@ -241,26 +242,34 @@ export default class ReCaptchaComponent extends Component {
       this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) =&gt; {
         this.recaptchaApiReady
           .then(() =&gt; {
-            grecaptcha.ready(() =&gt; {
-              grecaptcha
-                .execute(siteKey, {
-                  action: actionName
-                })
-                .then((token) =&gt; {
-                  return this.sendVerificationRequest(token).then(({ verificationResult, token }) =&gt; {
-                    this.recaptchaResult = {
-                      ...verificationResult,
-                      token,
-                    };
-                    this.updateValue(this.recaptchaResult);
-                    return resolve(verificationResult);
+            if (!this.isLoading) {
+              this.isLoading= true;
+              grecaptcha.ready(_debounce(() =&gt; {
+                grecaptcha
+                  .execute(siteKey, {
+                    action: actionName
+                  })
+                  .then((token) =&gt; {
+                    return this.sendVerificationRequest(token).then(({ verificationResult, token }) =&gt; {
+                      this.recaptchaResult = {
+                        ...verificationResult,
+                        token,
+                      };
+                      this.updateValue(this.recaptchaResult);
+                      return resolve(verificationResult);
+                    });
+                  })
+                  .catch(() =&gt; {
+                    this.isLoading = false;
                   });
-                });
-            });
+              }, 1000));
+            }
           })
           .catch(() =&gt; {
             return reject();
           });
+      }).then(() =&gt; {
+        this.isLoading = false;
       });
     }
   }

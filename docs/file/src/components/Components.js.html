@@ -195,6 +195,12 @@ export default class Components {
     return Components._baseEditForm;
   }
 
+  static recalculateComponents() {
+    if (window &amp;&amp; window.Formio &amp;&amp; window.Formio.AllComponents) {
+      Components.setComponents(window.Formio.AllComponents);
+    }
+  }
+
   static get components() {
     if (!Components._components) {
       Components._components = {};
@@ -239,7 +245,7 @@ export default class Components {
       // eslint-disable-next-line new-cap
       comp = new Components.components[&apos;nested&apos;](component, options, data);
     }
-    else if (options.server) {
+    else if (options &amp;&amp; options.server) {
       // eslint-disable-next-line new-cap
       comp = new Components.components[&apos;hidden&apos;](component, options, data);
     }

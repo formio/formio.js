@@ -43,6 +43,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
+    this.columns = [...this.component.components];
 
     if (this.initRows || !_.isEqual(this.dataValue, this.emptyValue)) {
       this.createRows(true);
@@ -286,7 +287,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   getColumns() {
-    return this.component.components.filter((comp) => {
+    return this.columns.filter((comp) => {
       return (!this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key]);
     });
   }
@@ -501,7 +502,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   setRowComponentsData(rowIndex, rowData) {
     _.each(this.rows[rowIndex], (component) => {
-      component.data = rowData;
+     component.data = rowData;
     });
   }
 
@@ -609,16 +610,27 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     const visibility = {};
 
+    let logicRebuild = false;
+
     const dataValue = this.dataValue;
     this.rows.forEach((row, rowIndex) => {
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
+          const firstRowCheck = visibility[key] === undefined;
           visibility[key] = !!visibility[key] ||
             (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
+
+          if (col.component.logic && firstRowCheck) {
+            const compIndex = _.findIndex(this.columns, ['key', key]);
+            if (!_.isEqual(this.columns[compIndex], col.component)) {
+              logicRebuild = true;
+              this.columns[compIndex] = col.component;
+            }
+          }
         }
       });
     });
-    const rebuild = !_.isEqual(visibility, this.visibleColumns);
+    const rebuild = !_.isEqual(visibility, this.visibleColumns) || logicRebuild;
     _.each(visibility, (col) => {
       show |= col;
     });
@@ -671,7 +683,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.dataValue = value;
 
     if (this.initRows || isSettingSubmission) {
-      this.createRows();
+      if (!this.createRows() && changed) {
+        this.redraw();
+      }
     }
 
     if (this.componentModal && isSettingSubmission) {
