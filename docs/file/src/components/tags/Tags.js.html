@@ -194,7 +194,7 @@ export default class TagsComponent extends Input {
       title: &apos;Tags&apos;,
       icon: &apos;tags&apos;,
       group: &apos;advanced&apos;,
-      documentation: &apos;/userguide/#tags&apos;,
+      documentation: &apos;/userguide/forms/form-components#tags&apos;,
       weight: 30,
       schema: TagsComponent.schema()
     };
@@ -340,7 +340,7 @@ export default class TagsComponent extends Input {
     }
 
     if (Array.isArray(value)) {
-      return value.join(&apos;, &apos;);
+      return value.join(`${this.delimiter || &apos;,&apos;} `);
     }
 
     const stringValue = value.toString();
