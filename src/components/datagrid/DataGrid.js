@@ -339,7 +339,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
         this.dragula.on('cloned', (el, original) => {
           if (el && el.children && original && original.children) {
-            original.children.forEach((child, index) => {
+            _.each(original.children, (child, index) => {
               const styles = getComputedStyle(child, null);
 
               if (styles.cssText !== '') {
