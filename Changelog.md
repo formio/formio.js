@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4704: fixed an issue with form builder where custom group in the sidebar is stuck after deleting all symbols from the search field
  - FIO-4750: fixed custom buttons do not work on 1st click
  - FIO-4444: Autofocuse Label property in the component settings
+ - FIO-4794: Fixes hidden component with clearOnHide and logic with action to set value caused infinite loop
+ - FIO-3345: Fixes an issue where subpathes of the Tagpad's components do not include its key
 
 ## 4.15.0-rc.7
 ### Fixed
