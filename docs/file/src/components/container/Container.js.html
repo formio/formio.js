@@ -171,6 +171,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/container/Container.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import { getFocusableElements } from &apos;../../utils/utils&apos;;
 
 import Component from &apos;../_classes/component/Component&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
@@ -250,6 +251,13 @@ export default class ContainerComponent extends NestedDataComponent {
     return components.reduce((valid, comp) =&gt; {
       return comp.checkData(data, flags, this.dataValue) &amp;&amp; valid;
     }, Component.prototype.checkData.call(this, data, flags, row));
+  }
+
+  focus() {
+    const focusableElements = getFocusableElements(this.element);
+      if (focusableElements &amp;&amp; focusableElements[0]) {
+        focusableElements[0].focus();
+      }
   }
 
   checkConditions(data, flags, row) {

@@ -2178,6 +2178,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#redraw",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-redraw",
+    "src/PDFBuilder.js~PDFBuilder#redraw",
+    "method"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#render",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-render",
     "src/PDFBuilder.js~PDFBuilder#render",
@@ -2838,6 +2844,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-dataValue",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
+    "member"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#defaultschema",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-defaultSchema",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#defaultSchema",
@@ -3112,6 +3124,12 @@ window.esdocSearchIndex = [
     "class/src/components/container/Container.js~ContainerComponent.html#instance-get-emptyValue",
     "src/components/container/Container.js~ContainerComponent#emptyValue",
     "member"
+  ],
+  [
+    "src/components/container/container.js~containercomponent#focus",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-focus",
+    "src/components/container/Container.js~ContainerComponent#focus",
+    "method"
   ],
   [
     "src/components/container/container.js~containercomponent#setvalue",

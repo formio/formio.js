@@ -4,6 +4,75 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.15.0-rc.8]
+### Fixed
+ - FIO-4815: Fixed an issue where submission of the form with Tabs component fails
+ - FIO-4225: fixed an issue where last selected/entered value from multiple values is highlighted as error value, when Date/Time is required
+ - FIO-4218: fixed an issue where error message isn't showing in modal window
+ - FIO-3557: Added logic to encrypted checkbox to disable and show tooltip when SAC is false
+ - FIO-4559: Fixed issue where infinite loop would trigger if value is not changed with 'this.dataValue = value'
+
+## 4.15.0-rc.7
+### Fixed
+ - FIO-4763: Select in Data/Edit Grid: Cannot make a submission. Get 'key editGrid[0].select must not contain '.')
+ - FIO-4398: Fixed issues where HTML text area in datagrid changes were causing infinite loop issues.
+ - FIO-4763: Fixed issues with Select not setting data properly in metadata.
+ - Fixing a browser crash with error message re-assignment.
+ - FIO-4681: limited table wight
+
+## 4.15.0-rc.6
+### Fixed
+ - FIO-4743: Fixed issue where "||" is not allowed for interpolate with non-url select dropdown templates.
+ - Ensure that we properly read the selectData from the select component.
+ - FIO-4632: Fixing the DateTime widget to work with saveAs date and text correctly.
+
+## 4.15.0-rc.5
+### Fixed
+ - Adding selectData to metadata to resolve templates that require more data than is set in the submission.
+ - FIO-3435: Fixed an issue where form revisions would not load properly.
+
+## 4.15.0-rc.4
+### Changed
+ - Updated @formio/bootstrap3@2.12.1
+
+### Fixed
+ - Failing tests.
+ - FIO-4632: Fixed the date return to always be a string
+ - FIO-4419: Time fields in Safari
+ - FIO-4558: fixed an issue where word 'select' with empty rows displays error inside HTML element
+ - FIO-2864: fixed an issue where tooltip not showing text into double quotes
+ - FIO-4658: Fix the select dropdown for resources without save-as-reference checked from saving incorrect data.
+ - FIO-4565: Fixed validation for protected field
+ - FIO-4671: Resolved issues where pdf builder would show loading constantly
+ - FIO-4691: Fixed issues where calculated values would not re-calculate when allow manual override is checked.
+ - FIO-4693: Fixed issue where input validation would not clear when no errors are present.
+ - FIO-4690: Fixed issues where wizard transformPages was causing crashes.
+ - FIO-4037: Fixed issues with calculated values so that they do not re-calculate once the value has been committed or modified.
+ - FIO-4698: Fixed html tags not working in tooltips.
+
+## 4.15.0-rc.3
+### Fixed
+ - FIO-4632: Fixing date/time to work without time enabled.
+ - FIO-4632: Fixing the calendar widget to properly format all ISO time
+ - FIO-4558: fixed an issue where html element displays error if contains only word select
+ - FIO-4631: Fixed tippy.js tooltips
+ - FIO-4311: FIX Vertical Right Wizard Header.
+
+## 4.15.0-rc.2
+### Changed
+ - Updated @formio/bootstrap3@2.12.1-rc.1
+
+### Fixed
+ - FIO-560: Fixes an issue where CKEditor media is not shown in the view mode
+ - FIO-4579: Fixed extracting valueProperty from template
+ - FIO-4567: Fixes can't draw on Signature component on form load and size changing inside DataGrid
+ - FIO-4573: exclude using of zero form revision
+ - FIO-4571: Fixea an issue where tooltips do not appear on hover in the component setting modal
+ - FIO-2645: Made clicking on the error of Container component redirect to it.
+ - FIO-4595, FIO-4364: Fixes Select with URL keeping default value on pdf submission
+ - FIO-4362: Fixed issues with checkbox set as radio type. 
+ - FIO-4615: Fixing issues with calendar widget with save as text.
+
 ## 4.15.0-rc.1
 ### Changed
  - FIO-4359: submission revisions

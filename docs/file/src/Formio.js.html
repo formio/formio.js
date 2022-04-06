@@ -456,8 +456,9 @@ class Formio {
 
     let url = this[_url] + query;
 
-    if (type===&apos;form&apos; &amp;&amp; !isNaN(parseInt(this.vId))) {
-      url += `&amp;formRevision=${this.vId}`;
+    if (type===&apos;form&apos; &amp;&amp; !isNaN(parseInt(this.vId)) &amp;&amp; parseInt(this.vId) !== 0) {
+      url += url.match(/\?/) ? &apos;&amp;&apos; : &apos;?&apos;;
+      url += `formRevision=${this.vId}`;
     }
     return this.makeRequest(type, url, &apos;get&apos;, null, opts);
   }
@@ -1191,7 +1192,7 @@ class Formio {
         _Formio.events.emit(&apos;formio.badToken&apos;, err);
       }
       if (err.message) {
-        err.message = `Could not connect to API server (${err.message})`;
+        err = new Error(`Could not connect to API server (${err.message}): ${url}`);
         err.networkError = true;
       }
 

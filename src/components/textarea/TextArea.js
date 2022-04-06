@@ -331,15 +331,22 @@ export default class TextAreaComponent extends TextFieldComponent {
     return super.setValue(value, flags);
   }
 
+  setContent(element, content, forceSanitize) {
+    super.setContent(element, content, forceSanitize, {
+      addAttr: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'],
+      addTags: ['iframe'],
+    });
+  }
+
   setReadOnlyValue(value, index) {
     index = index || 0;
     if (this.options.readOnly || this.disabled) {
       if (this.refs.input && this.refs.input[index]) {
         if (this.component.inputFormat === 'plain') {
-          this.refs.input[index].innerText = this.interpolate(value, {}, true);
+          this.refs.input[index].innerText = this.interpolate(value, {}, { noeval: true });
         }
         else {
-          this.setContent(this.refs.input[index], this.interpolate(value, {}, true), this.shouldSanitizeValue);
+          this.setContent(this.refs.input[index], this.interpolate(value, {}, { noeval: true }), this.shouldSanitizeValue);
         }
       }
     }
