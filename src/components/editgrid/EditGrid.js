@@ -1169,7 +1169,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
           if (!rowValid && errorContainer && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
             this.addClass(errorContainer,  'help-block' );
-            errorContainer.textContent = this.t('invalidRowError');
+            errorContainer.textContent = this.t(this.errorMessage('invalidRowError'));
           }
           else if (errorContainer) {
             errorContainer.textContent = '';
@@ -1182,14 +1182,14 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (!rowsValid) {
       if (!silentCheck && (!this.component.rowDrafts || this.root?.submitted)) {
-        this.setCustomValidity(this.t('invalidRowsError'), dirty);
+        this.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
         // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
         this.removeClass(this.element, 'has-error');
       }
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
-      this.setCustomValidity(this.t('unsavedRowsError'), dirty);
+      this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
       return false;
     }
 
