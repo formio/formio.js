@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3408: Fix showing security error for IE11
  - FIO-3442: Fixes an issue where EditGrid opens another row while editing after some rows have been deleted
  - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
+ - FIO-4392: fixed Help links
 
 ## 4.15.0-rc.7
 ### Fixed
