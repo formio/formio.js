@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4444: Autofocuse Label property in the component settings
  - FIO-4794: Fixes hidden component with clearOnHide and logic with action to set value caused infinite loop
  - FIO-3345: Fixes an issue where subpathes of the Tagpad's components do not include its key
+ - FIO-4395: Fixed typos
 
 ## 4.15.0-rc.7
 ### Fixed
