@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3557: Added logic to encrypted checkbox to disable and show tooltip when SAC is false
  - FIO-4559: Fixed issue where infinite loop would trigger if value is not changed with 'this.dataValue = value'
  - FIO-3939: Fixed content of the Content component not being translated
+ - FIO-3408: Fix showing security error for IE11
 
 ## 4.15.0-rc.7
 ### Fixed
