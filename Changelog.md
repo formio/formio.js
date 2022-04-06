@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4395: Fixed typos
  - Update translations for aria-labels
  - Allow customization of edit grid error messages
+ - FIO-4352: Added independent scroll for builder sidebar if it is longer than viewport
 
 ## 4.15.0-rc.7
 ### Fixed
