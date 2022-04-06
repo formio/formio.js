@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4225: fixed an issue where last selected/entered value from multiple values is highlighted as error value, when Date/Time is required
  - FIO-4218: fixed an issue where error message isn't showing in modal window
  - FIO-3557: Added logic to encrypted checkbox to disable and show tooltip when SAC is false
+ - FIO-4559: Fixed issue where infinite loop would trigger if value is not changed with 'this.dataValue = value'
 
 ## 4.15.0-rc.7
 ### Fixed
