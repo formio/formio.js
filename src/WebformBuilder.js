@@ -8,6 +8,8 @@ import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFr
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
+import autoScroll from 'dom-autoscroller';
+
 require('./components/builder');
 
 let Templates = Formio.Templates;
@@ -619,7 +621,18 @@ export default class WebformBuilder extends Component {
         this.initDragula();
       }
 
+      const drake = this.dragula;
+
       if (this.refs.form) {
+        autoScroll([window], {
+          margin: 20,
+          maxSpeed: 6,
+          scrollWhenOutside: true,
+          autoScroll: function() {
+              return this.down && drake.dragging;
+          }
+        });
+
         return this.webform.attach(this.refs.form);
       }
     });
