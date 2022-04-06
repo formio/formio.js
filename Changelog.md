@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4628: Fixes file statuses replaced on new upload when multiple values configuration
  - FIO-4232: Fixed form controller inside wizard forms
  - FIO-4672: View tab shows data when PUT request using POSTMAN
+ - FIO-4684: Fixes extra pdf redraw after resources fetch
 
 ## 4.15.0-rc.7
 ### Fixed
