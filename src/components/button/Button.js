@@ -27,7 +27,7 @@ export default class ButtonComponent extends Field {
       title: 'Button',
       group: 'basic',
       icon: 'stop',
-      documentation: '/userguide/#button',
+      documentation: '/userguide/forms/form-components#button',
       weight: 110,
       schema: ButtonComponent.schema()
     };

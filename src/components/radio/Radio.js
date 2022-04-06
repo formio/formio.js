@@ -23,7 +23,7 @@ export default class RadioComponent extends Field {
       group: 'basic',
       icon: 'dot-circle-o',
       weight: 80,
-      documentation: '/userguide/#radio',
+      documentation: '/userguide/forms/form-components#radio',
       schema: RadioComponent.schema()
     };
   }

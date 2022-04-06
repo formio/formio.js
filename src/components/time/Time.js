@@ -38,7 +38,7 @@ export default class TimeComponent extends TextFieldComponent {
       title: 'Time',
       icon: 'clock-o',
       group: 'advanced',
-      documentation: '/userguide/#time',
+      documentation: '/userguide/forms/form-components#time',
       weight: 55,
       schema: TimeComponent.schema(),
     };
