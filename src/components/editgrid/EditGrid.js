@@ -45,7 +45,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       title: 'Edit Grid',
       icon: 'tasks',
       group: 'data',
-      documentation: '/userguide/#editgrid',
+      documentation: '/userguide/forms/data-components#edit-grid',
       weight: 30,
       schema: EditGridComponent.schema(),
     };
@@ -321,6 +321,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         state: EditRowState.Saved,
         backup: null,
         error: null,
+        rowIndex,
       }));
     }
     this.prevHasAddButton = this.hasAddButton();
@@ -651,6 +652,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       state: EditRowState.New,
       backup: null,
       error: null,
+      rowIndex,
     };
 
     this.editRows.push(editRow);
@@ -946,8 +948,18 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     const relativePath = this.getRelativePath(component.path);
     const arrayPath = getArrayFromComponentPath(relativePath);
-    if (_.isNumber(arrayPath[0])) {
-      this.editRow(arrayPath[0]);
+
+    const rowIndex = arrayPath[0];
+    let rowToEditIndex = arrayPath[0];
+
+    this.editRows.forEach((row, indexInArray) => {
+      if (row.rowIndex === rowIndex) {
+        rowToEditIndex = indexInArray;
+      }
+    });
+
+    if (_.isNumber(rowToEditIndex)) {
+      this.editRow(rowToEditIndex);
     }
   }
 

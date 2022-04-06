@@ -4,7 +4,32 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.7]
+## [Unreleased: 4.15.0-rc.8]
+### Fixed
+ - FIO-4815: Fixed an issue where submission of the form with Tabs component fails
+ - FIO-4225: fixed an issue where last selected/entered value from multiple values is highlighted as error value, when Date/Time is required
+ - FIO-4218: fixed an issue where error message isn't showing in modal window
+ - FIO-3557: Added logic to encrypted checkbox to disable and show tooltip when SAC is false
+ - FIO-4559: Fixed issue where infinite loop would trigger if value is not changed with 'this.dataValue = value'
+ - FIO-3939: Fixed content of the Content component not being translated
+ - FIO-3408: Fix showing security error for IE11
+ - FIO-3442: Fixes an issue where EditGrid opens another row while editing after some rows have been deleted
+ - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
+ - FIO-4392: fixed Help links
+ - FIO-3924: Fixes an issue where the DataGrid has an additional column wwhen "Equal columns width" is checked
+ - FIO-4628: Fixes file statuses replaced on new upload when multiple values configuration
+ - FIO-4232: Fixed form controller inside wizard forms
+ - FIO-4672: View tab shows data when PUT request using POSTMAN
+ - FIO-4684: Fixes extra pdf redraw after resources fetch
+ - FIO-3268: fixed submit button for viewer
+ - FIO-4704: fixed an issue with form builder where custom group in the sidebar is stuck after deleting all symbols from the search field
+ - FIO-4750: fixed custom buttons do not work on 1st click
+ - FIO-4444: Autofocuse Label property in the component settings
+ - FIO-4794: Fixes hidden component with clearOnHide and logic with action to set value caused infinite loop
+ - FIO-3345: Fixes an issue where subpathes of the Tagpad's components do not include its key
+ - FIO-4395: Fixed typos
+
+## 4.15.0-rc.7
 ### Fixed
  - FIO-4763: Select in Data/Edit Grid: Cannot make a submission. Get 'key editGrid[0].select must not contain '.')
  - FIO-4398: Fixed issues where HTML text area in datagrid changes were causing infinite loop issues.

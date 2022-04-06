@@ -15,7 +15,7 @@ export default [
     key: 'defaultValue',
     weight: 5,
     placeholder: 'Default Value',
-    tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
+    tooltip: 'The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
     input: true
   },
   {
@@ -55,7 +55,47 @@ export default [
     label: 'Encrypted (Enterprise Only)',
     tooltip: 'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
     key: 'encrypted',
-    input: true
+    input: true,
+    logic: [
+      {
+        "name": "disabled",
+        "trigger": {
+          "type": "javascript",
+          "javascript": "result = !instance.root.options.sac;"
+        },
+        "actions": [
+          {
+            "name": "disabled",
+            "type": "property",
+            "property": {
+              "label": "Disabled",
+              "value": "disabled",
+              "type": "boolean"
+            },
+            "state": true
+          }
+        ]
+      },
+      {
+        "name": "disabledToolTip",
+        "trigger": {
+          "type": "javascript",
+          "javascript": "result = !instance.root.options.sac;"
+        },
+        "actions": [
+          {
+            "name": "addDisabledTooltip",
+            "type": "property",
+            "property": {
+              "label": "Tooltip",
+              "value": "tooltip",
+              "type": "string"
+            },
+            "text": "Encryption is not available with your current plan. Please contact sales@form.io."
+          }
+        ]
+      }
+    ]
   },
   {
     type: 'select',
@@ -92,12 +132,7 @@ export default [
     key: 'clearOnHide',
     defaultValue: true,
     tooltip: 'When a field is hidden, clear the value.',
-    input: true,
-    clearOnHide: false,
-    calculateValue: 'value = data.hidden ? false : value',
-    conditional: {
-      json: { '!' : [{ var: 'data.hidden' }] }
-    }
+    input: true
   },
   EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 1000,
     '<p><h4>Example:</h4><pre>value = data.firstName + " " + data.lastName;</pre></p>',

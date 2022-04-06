@@ -58,7 +58,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: '/userguide/#file',
+      documentation: '/userguide/forms/premium-components#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -354,7 +354,6 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
         this.className = 'fileSelector';
         event.preventDefault();
-        element.statuses = [];
         element.upload(event.dataTransfer.files);
       });
     }
@@ -362,7 +361,6 @@ export default class FileComponent extends Field {
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
-        this.statuses = [];
         this.browseFiles(this.browseOptions)
           .then((files) => {
             this.upload(files);
@@ -602,8 +600,12 @@ export default class FileComponent extends Field {
   upload(files) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
+      if (this.statuses.length) {
+        this.statuses = [];
+      }
       files = Array.prototype.slice.call(files, 0, 1);
     }
+
     if (this.component.storage && files && files.length) {
       this.fileDropHidden = true;
 
@@ -765,7 +767,7 @@ export default class FileComponent extends Field {
             })
             .catch((response) => {
               fileUpload.status = 'error';
-              fileUpload.message = response;
+              fileUpload.message = typeof response === 'string' ? response : response.toString();
               delete fileUpload.progress;
               this.fileDropHidden = false;
               this.redraw();

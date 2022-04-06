@@ -1192,7 +1192,7 @@ class Formio {
         _Formio.events.emit(&apos;formio.badToken&apos;, err);
       }
       if (err.message) {
-        err.message = `Could not connect to API server (${err.message})`;
+        err = new Error(`Could not connect to API server (${err.message}): ${url}`);
         err.networkError = true;
       }
 
