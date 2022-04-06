@@ -3069,6 +3069,8 @@ export default class Component extends Element {
       inputRefsArray.forEach((input) => {
         this.setElementInvalid(this.performInputMapping(input), false);
       });
+      this.setInputWidgetErrorClasses(inputRefsArray, false);
+
       invalidInputRefs = inputRefsArray.filter((ref) => {
         return messages.some?.((msg) => {
           return msg?.context?.input === ref;
