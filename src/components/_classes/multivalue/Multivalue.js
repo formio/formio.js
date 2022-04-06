@@ -167,7 +167,12 @@ export default class Multivalue extends Field {
         }
       }
 
-      this.saveCaretPosition(element, index);
+      try {
+        this.saveCaretPosition(element, index);
+      }
+      catch (err) {
+        console.warn('An error occurred while trying to save caret position', err);
+      }
 
       // If a mask is present, delay the update to allow mask to update first.
       if (element.mask) {

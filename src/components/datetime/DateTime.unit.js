@@ -8,9 +8,10 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
+  comp8
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -329,27 +330,6 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should update value if time mode is on when OnBlur event triggered', (done) => {
-    const form = _.cloneDeep(comp4);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const dateTime = form.getComponent('time');
-      const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
-
-      const blurEvent = new Event('blur');
-      calendar._input.value = '2021-06-01T09:00:00.000Z';
-      calendar._input.dispatchEvent(blurEvent);
-
-      setTimeout(() => {
-        assert.equal(dateTime.dataValue !== '', true);
-
-        document.innerHTML = '';
-        done();
-      }, 300);
-    }).catch(done);
-  });
-
   it('Should not input the date that is disabled', (done) => {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
@@ -557,6 +537,66 @@ describe('DateTime Component', () => {
           done();
         }, 200);
       }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct value after submission', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      dateTime.setValue('2022-12-21');
+
+      setTimeout(() => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(dateTime.dataValue, '2022-12-21');
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should not highlight the field when it is valid when multiple values and required validation are enabled', (done) => {
+    const form = _.cloneDeep(comp8);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const input1 = dateTime.element.querySelectorAll('.input')[0];
+
+      const blurEvent = new Event('blur');
+      input1.value = '2020-04-03';
+      input1.dispatchEvent(blurEvent);
+
+      const addAnotherBtn = dateTime.refs.addButton[0];
+      const clickEvent = new Event('click');
+      addAnotherBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(dateTime.refs.input.length, 2);
+
+        const inputs = dateTime.element.querySelectorAll('.input');
+        assert.equal(inputs[0].classList.contains('is-invalid'), false);
+        assert.equal(inputs[1].classList.contains('is-invalid'), true);
+
+        inputs[1].value = '2020-05-05';
+        inputs[1].dispatchEvent(blurEvent);
+
+        setTimeout(() => {
+          const input2 = dateTime.element.querySelectorAll('.input')[1];
+          assert.equal(input2.classList.contains('is-invalid'), false);
+
+          document.innerHTML = '';
+          done();
+        }, 300);
+      }, 300);
     }).catch(done);
   });
   // it('Test Shortcut Buttons', (done) => {

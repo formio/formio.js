@@ -4,7 +4,160 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.0-rc.37]
+## [Unreleased: 4.15.0-rc.8]
+### Fixed
+ - FIO-4815: Fixed an issue where submission of the form with Tabs component fails
+ - FIO-4225: fixed an issue where last selected/entered value from multiple values is highlighted as error value, when Date/Time is required
+ - FIO-4218: fixed an issue where error message isn't showing in modal window
+
+## 4.15.0-rc.7
+### Fixed
+ - FIO-4763: Select in Data/Edit Grid: Cannot make a submission. Get 'key editGrid[0].select must not contain '.')
+ - FIO-4398: Fixed issues where HTML text area in datagrid changes were causing infinite loop issues.
+ - FIO-4763: Fixed issues with Select not setting data properly in metadata.
+ - Fixing a browser crash with error message re-assignment.
+ - FIO-4681: limited table wight
+
+## 4.15.0-rc.6
+### Fixed
+ - FIO-4743: Fixed issue where "||" is not allowed for interpolate with non-url select dropdown templates.
+ - Ensure that we properly read the selectData from the select component.
+ - FIO-4632: Fixing the DateTime widget to work with saveAs date and text correctly.
+
+## 4.15.0-rc.5
+### Fixed
+ - Adding selectData to metadata to resolve templates that require more data than is set in the submission.
+ - FIO-3435: Fixed an issue where form revisions would not load properly.
+
+## 4.15.0-rc.4
+### Changed
+ - Updated @formio/bootstrap3@2.12.1
+
+### Fixed
+ - Failing tests.
+ - FIO-4632: Fixed the date return to always be a string
+ - FIO-4419: Time fields in Safari
+ - FIO-4558: fixed an issue where word 'select' with empty rows displays error inside HTML element
+ - FIO-2864: fixed an issue where tooltip not showing text into double quotes
+ - FIO-4658: Fix the select dropdown for resources without save-as-reference checked from saving incorrect data.
+ - FIO-4565: Fixed validation for protected field
+ - FIO-4671: Resolved issues where pdf builder would show loading constantly
+ - FIO-4691: Fixed issues where calculated values would not re-calculate when allow manual override is checked.
+ - FIO-4693: Fixed issue where input validation would not clear when no errors are present.
+ - FIO-4690: Fixed issues where wizard transformPages was causing crashes.
+ - FIO-4037: Fixed issues with calculated values so that they do not re-calculate once the value has been committed or modified.
+ - FIO-4698: Fixed html tags not working in tooltips.
+
+## 4.15.0-rc.3
+### Fixed
+ - FIO-4632: Fixing date/time to work without time enabled.
+ - FIO-4632: Fixing the calendar widget to properly format all ISO time
+ - FIO-4558: fixed an issue where html element displays error if contains only word select
+ - FIO-4631: Fixed tippy.js tooltips
+ - FIO-4311: FIX Vertical Right Wizard Header.
+
+## 4.15.0-rc.2
+### Changed
+ - Updated @formio/bootstrap3@2.12.1-rc.1
+
+### Fixed
+ - FIO-560: Fixes an issue where CKEditor media is not shown in the view mode
+ - FIO-4579: Fixed extracting valueProperty from template
+ - FIO-4567: Fixes can't draw on Signature component on form load and size changing inside DataGrid
+ - FIO-4573: exclude using of zero form revision
+ - FIO-4571: Fixea an issue where tooltips do not appear on hover in the component setting modal
+ - FIO-2645: Made clicking on the error of Container component redirect to it.
+ - FIO-4595, FIO-4364: Fixes Select with URL keeping default value on pdf submission
+ - FIO-4362: Fixed issues with checkbox set as radio type. 
+ - FIO-4615: Fixing issues with calendar widget with save as text.
+
+## 4.15.0-rc.1
+### Changed
+ - FIO-4359: submission revisions
+
+## 4.14.1-rc.8
+### Fixed
+ - FIO-3239: fix displaying custom validation on the inital component with default value
+ - FIO-4398: fixed display of element with html input type in DataGrid with one string
+ - FIO-4070: html edit grid issue fix
+ - FIO-4364: Fixes setting form and submission multiple times for pdf on submission view page
+ - FIO-4468: Fixes select boxes with options label position left are overlapped on pdf download
+ - FIO-4538: fixed an issue where component menu buttons in the form builder have Inappropriate style
+
+## 4.14.1-rc.7
+### Fixed
+ - FIO-4443: Fixed signature not visible when generating a pdf.
+ - FIO-4466: Fixed 'Save as reference' in Select resource
+ - FIO-4496: fixed an issue where response from the resource does not display in the dropdown when more than one object is in the item template
+ - FIO-4487: Protect the comp variable when iterating in wizards 
+ - FIO-4405: fixed an issue where form doesn't submit if hidden radio component has storage type as string
+ - FIO-3715: fixed an issue where validation errors were shown with a submission in draft state if container component inside the form
+ - FIO-4442: fixed an issue where date is showing the date prior to submitted date on view tab and data tab
+ - FIO-4362, FIO-4363: Fixes an issue where values of the Radio type Checkboxes are not visible in the view and edit modes
+ - FIO-2960:Add debounce to reCaptcha component
+ - FIO-4446: Fixes Select with data source URL not fetching options when it has validation error
+ - FIO-3502: Fixes values on data tab get overwritten when label changed for Radio, Select Boxes and Select
+ - FIO-4351: Migrated to tippy.js
+ - FIO-4437: remove redundant SignRequest code
+ - FIO-3825: Fixed an issue where conditionally hidden components of the nested wizard form are not attached to the correct element
+ - FIO-4390: Signature becomes disabled only when at least one line is drawn
+ - FIO-3627 Fixed validating errors in nested forms that were not focusing on components
+
+## 4.14.1-rc.6
+### Fixed
+ - UIP-326: fix calling function to cancel submission made submit button disabled
+ - FIO-4412: fixed an issue where checkbox value does not return after submission when checkbox is shown conditionally and it is inside the nested form
+
+## 4.14.1-rc.5
+### Changed
+ - git cherry-pick ff372e4adffd10e71e9e181868c7a6068e577216
+
+### Fixed
+ - FIO-3435: form definition downloading according query parameter
+ - FIO-4081 Fixed incorrect file pattern message
+ - FIO-3715: fixed an issue where validation errors displayed when rendering a form with a submission in draft-state
+ - FIO-3814: do not fetch Select options again if there was an error
+ - FIO-4037: Values should not modify once the component has been saved.
+ - FIO-3860: Resource Field showing different property name for PDF and webforms
+ - FIO-4055: fixed an issue where Calendar Widget is showing incorrect date on PDF submoission
+ - FIO-4232: Form controller not working inside wizard forms
+ - Added the flags to the setForm method for PDF
+ - FIO-3973: Fixed an issue where invalidRowError is not cleared for the opened EditGrid row after all the errors were fixed
+ - FIO-3975: Fixed an issue where all the modals preview are visible when the components are not
+ - FIO-4311: Wizard Theme support right hand nav
+ - FIO-2718 Moved minDate and maxDate to Validation tab in DateTime builder options
+ - FIO-3018: fixed custom JS pollution between stages
+ - FIO-3884 Fixed issue when conditionally required fields weren't indicated as required in labels
+
+## 4.14.1-rc.4
+### Fixed
+ - FIO-4324: Fixes an issue where templating code is evaluated when rending TextArea's value
+
+## 4.14.1-rc.3
+### Fixed
+ - FIO-4337: Fixes an issue where settings form for the selected addon is not shown
+ - FIO-3227: fixed an issue where isPromise returns false for Angular wrapped promises
+
+## 4.14.1-rc.2
+### Fixed
+ - FIO-4355: downloading data via CSV issue fix
+
+## 4.14.1-rc.1
+### Changed
+ - Feat/fio 2860 signrequest
+ - Feat/signrequest related changes
+
+## 4.14.0
+### Changed
+ - Official Release
+
+## 4.14.0-rc.38
+### Fixed
+ - FIO-4313: Force the text field to save the calendar widgets as 'text'
+ - FIO-4603: Emit an event when form is deleted
+ - FIO-4007: removed Addons tab from components which do not have currently any addon
+
+## 4.14.0-rc.37
 ### Fixed
  - FIO-3590: fixed an issue where save-as-draft functionality not working in order to pass saveDraft key using options objet in react Form component
 

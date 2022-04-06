@@ -11,6 +11,10 @@ export default function(...extend) {
     {
       key: 'data',
       components: DataMapEditData
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

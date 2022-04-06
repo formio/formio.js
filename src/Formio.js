@@ -283,9 +283,9 @@ class Formio {
     }
 
     let url = this[_url] + query;
-
-    if (type==='form' && !isNaN(parseInt(this.vId))) {
-      url += `&formRevision=${this.vId}`;
+    if (type==='form' && !isNaN(parseInt(this.vId)) && parseInt(this.vId) !== 0) {
+      url += url.match(/\?/) ? '&' : '?';
+      url += `formRevision=${this.vId}`;
     }
     return this.makeRequest(type, url, 'get', null, opts);
   }
@@ -529,7 +529,8 @@ class Formio {
     let apiUrl = `/project/${form.project}`;
     apiUrl += `/form/${form._id}`;
     apiUrl += `/submission/${this.submissionId}`;
-    apiUrl += '/download';
+    const postfix = form.submissionRevisions && form.settings.changeLog? '/download/changelog' : '/download';
+    apiUrl += postfix;
 
     let download = this.base + apiUrl;
     return new NativePromise((resolve, reject) => {
@@ -1018,7 +1019,7 @@ class Formio {
         _Formio.events.emit('formio.badToken', err);
       }
       if (err.message) {
-        err.message = `Could not connect to API server (${err.message})`;
+        err = new Error(`Could not connect to API server (${err.message}): ${url}`);
         err.networkError = true;
       }
 

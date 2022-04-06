@@ -13,5 +13,9 @@ export default function(...extend) {
       key: 'display',
       components: TimeEditDisplay,
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

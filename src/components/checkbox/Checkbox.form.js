@@ -17,5 +17,9 @@ export default function(...extend) {
       key: 'validation',
       components: CheckboxEditValidation
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

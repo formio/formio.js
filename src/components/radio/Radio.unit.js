@@ -11,7 +11,8 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7
+  comp7,
+  comp8
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -132,5 +133,25 @@ describe('Radio Component', () => {
         assert.deepEqual(!!getComputedStyle(i, ':before'), true);
       });
     });
+  });
+
+  it('Should not provide empty error message when hidden radio has storage type as string', (done) => {
+    const form = _.cloneDeep(comp8);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form)
+      .then(form => {
+        form.submission = {
+          data: {
+            radio: 'no'
+          }
+        };
+        const alerts = document.querySelectorAll('.alert-danger');
+        setTimeout(() => {
+          assert.equal(alerts.length, 0);
+          done();
+        }, 100);
+      })
+      .catch(done);
   });
 });

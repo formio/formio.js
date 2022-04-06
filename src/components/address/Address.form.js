@@ -19,5 +19,9 @@ export default function(...extend) {
       weight: 15,
       components: AddressEditProvider,
     },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }
