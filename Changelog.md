@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4684: Fixes extra pdf redraw after resources fetch
  - FIO-3268: fixed submit button for viewer
  - FIO-4704: fixed an issue with form builder where custom group in the sidebar is stuck after deleting all symbols from the search field
+ - FIO-4750: fixed custom buttons do not work on 1st click
 
 ## 4.15.0-rc.7
 ### Fixed
