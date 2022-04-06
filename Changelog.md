@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Allow customization of edit grid error messages
  - FIO-4352: Added independent scroll for builder sidebar if it is longer than viewport
  - fixed an issue where error appears when reordering datagrid rows
+ - FIO-4364: fixed displaying defaultData instead of empty data
 
 ## 4.15.0-rc.7
 ### Fixed
