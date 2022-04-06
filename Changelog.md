@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4392: fixed Help links
  - FIO-3924: Fixes an issue where the DataGrid has an additional column wwhen "Equal columns width" is checked
  - FIO-4628: Fixes file statuses replaced on new upload when multiple values configuration
+ - FIO-4232: Fixed form controller inside wizard forms
 
 ## 4.15.0-rc.7
 ### Fixed
