@@ -2,25 +2,25 @@
   {% ctx.buttonOrder.forEach(function(button) { %}
     {% if (button === 'cancel' && ctx.buttons.cancel) { %}
     <li>
-      <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel" aria-label="{{ctx.t('cancel')}} button. Click to reset the form">{{ctx.t('cancel')}}</button>
+      <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel" aria-label="{{ctx.t('cancelButtonAriaLabel')}}">{{ctx.t('cancel')}}</button>
     </li>
     {% } %}
     {% if (button === 'previous' && ctx.buttons.previous) { %}
     <li>
-      <button class="btn btn-primary btn-wizard-nav-previous" ref="{{ctx.wizardKey}}-previous" aria-label="{{ctx.t('previous')}} button. Click to go back to the previous tab">{{ctx.t('previous')}}</button>
+      <button class="btn btn-primary btn-wizard-nav-previous" ref="{{ctx.wizardKey}}-previous" aria-label="{{ctx.t('previousButtonAriaLabel')}}">{{ctx.t('previous')}}</button>
     </li>
     {% } %}
     {% if (button === 'next' && ctx.buttons.next) { %}
     <li>
-      <button class="btn btn-primary btn-wizard-nav-next" ref="{{ctx.wizardKey}}-next" aria-label="{{ctx.t('next')}} button. Click to go to the next tab">{{ctx.t('next')}}</button>
+      <button class="btn btn-primary btn-wizard-nav-next" ref="{{ctx.wizardKey}}-next" aria-label="{{ctx.t('nextButtonAriaLabel')}}">{{ctx.t('next')}}</button>
     </li>
     {% } %}
     {% if (button === 'submit' && ctx.buttons.submit) { %}
     <li>
       {% if (ctx.disableWizardSubmit){ %}
-      <button disabled class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
+      <button disabled class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submitButtonAriaLabel')}}">{{ctx.t('submit')}}</button>
       {% } else { %}
-      <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submit')}} button. Click to submit the form">{{ctx.t('submit')}}</button>
+      <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit" aria-label="{{ctx.t('submitButtonAriaLabel')}}">{{ctx.t('submit')}}</button>
       {% } %}
     </li>
     {% } %}
