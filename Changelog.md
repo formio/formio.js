@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.9
+### Fixed
+ - Fixed the signature pad.
+
 ## 4.15.0-rc.8
 ### Changed
  - Updated @formio/bootstrap3@2.12.2-rc.1
