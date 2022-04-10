@@ -1,4 +1,3 @@
-import builderEditForm from './builderEditForm';
 import builderSidebar from './builderSidebar';
 import builderSidebarGroup from './builderSidebarGroup';
 import builderWizard from './builderWizard';
@@ -24,7 +23,6 @@ export default {
     }
     return text;
   },
-  builderEditForm,
   builderSidebar,
   builderSidebarGroup,
   builderWizard,
