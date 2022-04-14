@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.6
+### Changed
+ - Official Release
+ - Updated @formio/bootstrap3@2.12.2
+
 ## 4.14.6-rc.3
 ### Changed
  - FIO_3924: Fixes an issue where the DataGrid has an additional column wwhen "Equal columns width" is checked
