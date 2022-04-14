@@ -48,7 +48,7 @@
       {{ ctx.t(ctx.componentInfo.help) }}
     </div>
    {% } %} -->
-   <div style="position: fixed; top: calc(100% - 120px); background-color: white; z-index: 5; display: flex;justify-content: flex-end;padding: 8pt; left: 50px;" class="col-xs-5 col-sm-4 col-md-3">
+   <div id="formFooterWidth" style="position: fixed; background-color: white; z-index: 5; display: flex;justify-content: flex-end;padding: 8pt; left: 50px;">
     <button class="btn btn-danger" ref="removeButton" style="margin-right: 10px;">{{ctx.t('Remove')}}</button>
     <button class="btn btn-secondary" style="margin-right: 10px; color: #FF9B08; border-color: #FF9B08; background-color: white;" ref="cancelButton">{{ctx.t('Cancel')}}</button>
     <button class="btn btn-success" style="background-color: #FF9B08; color: white; border-color: #FF9B08;" ref="saveButton">{{ctx.t('Save')}}</button>
