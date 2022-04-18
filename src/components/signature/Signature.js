@@ -198,7 +198,7 @@ export default class SignatureComponent extends Input {
         backgroundColor: this.component.backgroundColor
       });
 
-      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
+      this.signaturePad.addEventListener('endStroke', () => this.setValue(this.signaturePad.toDataURL()));
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
       this.onDisabled();
