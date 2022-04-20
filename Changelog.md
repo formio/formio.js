@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.12]
+## 4.15.0-rc.12
 ### Fixed
  - FIO-4953: Fixed an issue where signature component was not populating
 
