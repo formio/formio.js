@@ -4,6 +4,7 @@ import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import fileProcessor from '../../providers/processor/fileProcessor';
+import BMF from 'browser-md5-file';
 
 let Camera;
 let webViewCamera = navigator.camera || Camera;
@@ -610,6 +611,15 @@ export default class FileComponent extends Field {
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
       Array.prototype.forEach.call(files, async(file) => {
+        const bmf = new BMF();
+        const hash = await new Promise((resolve, reject) => {
+          bmf.md5(file, (err, md5)=>{
+            if (err) {
+              return reject(err);
+            }
+            return resolve(md5);
+          });
+        });
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
@@ -617,6 +627,7 @@ export default class FileComponent extends Field {
           size: file.size,
           status: 'info',
           message: this.t('Processing file. Please wait...'),
+          hash
         };
 
         // Check if file with the same name is being uploaded
@@ -754,6 +765,7 @@ export default class FileComponent extends Field {
                 this.statuses.splice(index, 1);
               }
               fileInfo.originalName = file.name;
+              fileInfo.hash = fileUpload.hash;
               if (!this.hasValue()) {
                 this.dataValue = [];
               }
