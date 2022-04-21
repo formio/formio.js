@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - New build.
 
+### Fixed
+ - FIO-4836: hash was added to file
+
 ## 4.14.6
 ### Changed
  - Official Release
