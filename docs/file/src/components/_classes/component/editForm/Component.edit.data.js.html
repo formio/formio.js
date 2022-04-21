@@ -187,7 +187,7 @@ export default [
     key: &apos;defaultValue&apos;,
     weight: 5,
     placeholder: &apos;Default Value&apos;,
-    tooltip: &apos;The will be the value for this field, before user interaction. Having a default value will override the placeholder text.&apos;,
+    tooltip: &apos;The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.&apos;,
     input: true
   },
   {
@@ -264,12 +264,7 @@ export default [
     key: &apos;clearOnHide&apos;,
     defaultValue: true,
     tooltip: &apos;When a field is hidden, clear the value.&apos;,
-    input: true,
-    clearOnHide: false,
-    calculateValue: &apos;value = data.hidden ? false : value&apos;,
-    conditional: {
-      json: { &apos;!&apos; : [{ var: &apos;data.hidden&apos; }] }
-    }
+    input: true
   },
   EditFormUtils.javaScriptValue(&apos;Custom Default Value&apos;, &apos;customDefaultValue&apos;, &apos;customDefaultValue&apos;, 1000,
     &apos;&lt;p&gt;&lt;h4&gt;Example:&lt;/h4&gt;&lt;pre&gt;value = data.firstName + &quot; &quot; + data.lastName;&lt;/pre&gt;&lt;/p&gt;&apos;,

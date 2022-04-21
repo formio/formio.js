@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.7-rc.1
+### Changed
+ - FIO-4559: Fixed issue where infinite loop would trigger if value is n…
+ - FIO-3408: Fix showing security error for IE11
+ - FIO-3442: Fixes an issue where EditGrid opens another row while editing after some rows have been deleted
+ - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
+ - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
+ - fixed Help links
+ - FIO-4628: Fixes file statuses replaced on new upload when multiple values configuration
+ - FIO-4232: Fixed form controller inside wizard forms
+ - View tab shows data when PUT request using POSTMAN
+ - FIO-4684: Fixes extra pdf redraw after resources fetch
+ - FIO-4743: Fixed issue where "||" is not allowed for interpolate with …
+ - FIO-3268 fixed submit button for viewer
+ - FIO-3268 fixed submit button for viewer
+ - FIO-4704: fixed an issue with form builder where custom group in the …
+ - FIO-4750: fixed custom buttons do not work on 1st click
+ - FIO-4444: Autofocuse Label property in the component settings
+ - FIO-4794: Fixes hidden component with clearOnHide and logic with action to set value caused infinite loop
+ - FIO-3345: Fixes an issue where subpathes of the Tagpad's components do not include its key
+ - FIO-4395: Fixed typos
+ - FIO-4352 Added independent scroll for builder sidebar if it is longer…
+ - FIO-4851: fixed when 'Multiple Values' setting is enabled, all the selected val…
+ - fixed displaying defaultData instead of empty data
+ - FIO-4953: Fixed an issue where signature component was not populating…
+
 ## 4.14.6
 ### Changed
  - Official Release

@@ -2178,12 +2178,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/pdfbuilder.js~pdfbuilder#redraw",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-redraw",
-    "src/PDFBuilder.js~PDFBuilder#redraw",
-    "method"
-  ],
-  [
     "src/pdfbuilder.js~pdfbuilder#render",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-render",
     "src/PDFBuilder.js~PDFBuilder#render",
@@ -5721,6 +5715,12 @@ window.esdocSearchIndex = [
     "src/components/tags/fixtures/comp4.js",
     "file/src/components/tags/fixtures/comp4.js.html",
     "src/components/tags/fixtures/comp4.js",
+    "file"
+  ],
+  [
+    "src/components/tags/fixtures/comp5.js",
+    "file/src/components/tags/fixtures/comp5.js.html",
+    "src/components/tags/fixtures/comp5.js",
     "file"
   ],
   [
