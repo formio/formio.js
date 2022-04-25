@@ -1,11 +1,19 @@
 {
   "name": "formiojs",
-  "version": "4.12.7-patch.10.3",
+  "version": "4.12.7-patch.10.2",
   "description": "JavaScript powered Forms with JSON Form Builder",
-  "main": "lib/index.js",
+  "main": "index.js",
   "types": "index.d.ts",
   "files": [
-    "lib"
+    "dist",
+    "lib",
+    "utils.js",
+    "wizard.js",
+    "form.js",
+    "embed.js",
+    "full.js",
+    "types",
+    "index.d.ts"
   ],
   "pre-commit": [
     "lint"
