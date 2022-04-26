@@ -234,71 +234,73 @@ export default class WebformBuilder extends Component {
         editJson: 'single'
       });
 
-      if (component.refs.copyComponent) {
-        new Tooltip(component.refs.copyComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Copy')
-        });
+      if (!component.component.disableBuilderActions) {
+        if (component.refs.copyComponent) {
+          new Tooltip(component.refs.copyComponent, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Copy')
+          });
 
-        component.addEventListener(component.refs.copyComponent, 'click', () =>
-          this.copyComponent(component));
-      }
+          component.addEventListener(component.refs.copyComponent, 'click', () =>
+            this.copyComponent(component));
+        }
 
-      if (component.refs.pasteComponent) {
-        const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Paste below')
-        });
+        if (component.refs.pasteComponent) {
+          const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Paste below')
+          });
 
-        component.addEventListener(component.refs.pasteComponent, 'click', () => {
-          pasteToolTip.hide();
-          this.pasteComponent(component);
-        });
-      }
+          component.addEventListener(component.refs.pasteComponent, 'click', () => {
+            pasteToolTip.hide();
+            this.pasteComponent(component);
+          });
+        }
 
-      if (component.refs.moveComponent) {
-        new Tooltip(component.refs.moveComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Move')
-        });
-      }
+        if (component.refs.moveComponent) {
+          new Tooltip(component.refs.moveComponent, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Move')
+          });
+        }
 
-      const parent = this.getParentElement(element);
+        const parent = this.getParentElement(element);
 
-      if (component.refs.editComponent) {
-        new Tooltip(component.refs.editComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Edit')
-        });
+        if (component.refs.editComponent) {
+          new Tooltip(component.refs.editComponent, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Edit')
+          });
 
-        component.addEventListener(component.refs.editComponent, 'click', () =>
-          this.editComponent(component.schema, parent, false, false, component.component));
-      }
+          component.addEventListener(component.refs.editComponent, 'click', () =>
+            this.editComponent(component.schema, parent, false, false, component.component));
+        }
 
-      if (component.refs.editJson) {
-        new Tooltip(component.refs.editJson, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Edit JSON')
-        });
+        if (component.refs.editJson) {
+          new Tooltip(component.refs.editJson, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Edit JSON')
+          });
 
-        component.addEventListener(component.refs.editJson, 'click', () =>
-          this.editComponent(component.schema, parent, false, true, component.component));
-      }
+          component.addEventListener(component.refs.editJson, 'click', () =>
+            this.editComponent(component.schema, parent, false, true, component.component));
+        }
 
-      if (component.refs.removeComponent) {
-        new Tooltip(component.refs.removeComponent, {
-          trigger: 'hover',
-          placement: 'top',
-          title: this.t('Remove')
-        });
+        if (component.refs.removeComponent) {
+          new Tooltip(component.refs.removeComponent, {
+            trigger: 'hover',
+            placement: 'top',
+            title: this.t('Remove')
+          });
 
-        component.addEventListener(component.refs.removeComponent, 'click', () =>
-          this.removeComponent(component.schema, parent, component.component));
+          component.addEventListener(component.refs.removeComponent, 'click', () =>
+            this.removeComponent(component.schema, parent, component.component));
+        }
       }
 
       return element;
