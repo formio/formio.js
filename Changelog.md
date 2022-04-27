@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FIO-4836: hash was added to file
 
+### Fixed
+ - FIO-4942: fixed email submission: Custom PDF File Name is not respected
+
 ## 4.15.0-rc.12
 ### Fixed
  - FIO-4953: Fixed an issue where signature component was not populating
