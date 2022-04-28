@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.7-rc.5]
+## 4.14.7-rc.5
+### Changed
+ - FIO-4942: fixed email submission: Custom PDF File Name is not respected
+
 ### Changed
  - Now based on 4.14.6.
 
