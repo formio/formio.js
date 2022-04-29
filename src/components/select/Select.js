@@ -225,7 +225,7 @@ export default class SelectComponent extends Field {
   }
 
   selectValueAndLabel(data) {
-    const value = this.itemValue(data);
+    const value = this.getOptionValue(this.itemValue(data));
     return {
       value,
       label: this.itemTemplate(data, value)
@@ -233,7 +233,7 @@ export default class SelectComponent extends Field {
   }
 
   itemTemplate(data, value) {
-    if (_.isEmpty(data)) {
+    if (!_.isNumber(data) && _.isEmpty(data)) {
       return '';
     }
 
@@ -247,7 +247,7 @@ export default class SelectComponent extends Field {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
-    if (typeof data === 'string') {
+    if (typeof data === 'string' || typeof data === 'number') {
       const selectData = this.selectData;
       if (selectData) {
         data = selectData;
@@ -313,7 +313,7 @@ export default class SelectComponent extends Field {
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
       div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
-        selected: _.isEqual(this.dataValue, option.value),
+        selected: _.isEqual(this.getOptionValue(this.dataValue), option.value),
         option,
         attrs,
         id,
