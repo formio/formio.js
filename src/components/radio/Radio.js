@@ -196,7 +196,7 @@ export default class RadioComponent extends Field {
       this.setSelectedClasses();
     }
 
-    if (!flags || !flags.modified || !this.isRadio) {
+    if (!flags || (!flags.modified && value === this.defaultValue) || !this.isRadio) {
       return changed;
     }
 
