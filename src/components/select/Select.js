@@ -225,7 +225,7 @@ export default class SelectComponent extends Field {
   }
 
   selectValueAndLabel(data) {
-    const value = this.itemValue(data);
+    const value = this.getOptionValue(this.itemValue(data));
     return {
       value,
       label: this.itemTemplate(data, value)
@@ -233,7 +233,7 @@ export default class SelectComponent extends Field {
   }
 
   itemTemplate(data, value) {
-    if (_.isEmpty(data)) {
+    if (!_.isNumber(data) && _.isEmpty(data)) {
       return '';
     }
 
@@ -247,10 +247,10 @@ export default class SelectComponent extends Field {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
-    if (typeof data === 'string') {
+    if (typeof data === 'string' || typeof data === 'number') {
       const selectData = this.selectData;
-      if (selectData && selectData[value]) {
-        data = selectData[value];
+      if (selectData) {
+        data = selectData;
       }
       else {
         return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
@@ -313,7 +313,7 @@ export default class SelectComponent extends Field {
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
       div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
-        selected: _.isEqual(this.dataValue, option.value),
+        selected: _.isEqual(this.getOptionValue(this.dataValue), option.value),
         option,
         attrs,
         id,
@@ -1418,11 +1418,7 @@ export default class SelectComponent extends Field {
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
-      const selectedTemplateData = _.pickBy(this.templateData, (value, key) => {
-        const dataValues = _.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        return _.includes(dataValues, key);
-      });
-      _.set(submission.metadata.selectData, this.path, _.cloneDeep(selectedTemplateData));
+      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
     const displayEntireObject = this.isEntireObjectDisplay();
