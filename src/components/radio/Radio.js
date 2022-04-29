@@ -197,12 +197,10 @@ export default class RadioComponent extends Field {
       this.setSelectedClasses();
     }
 
-    if (!flags || !flags.modified || !this.isRadio) {
+    if (!flags || (!flags.modified && value === this.defaultValue) || !this.isRadio) {
       if (changed) {
         this.previousValue = this.dataValue;
       }
-
-      return changed;
     }
 
     // If they clicked on the radio that is currently selected, it needs to reset the value.
