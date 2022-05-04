@@ -192,7 +192,7 @@ export default class TabsComponent extends NestedComponent {
   }
 
   clearErrorClasses(elements) {
-    if (this.options.server) {
+    if (this.options.server || !this.rendered) {
       return;
     }
 
