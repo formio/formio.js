@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.8-rc.1]
+## 4.14.8-rc.1
+### Changed
+ - FIO-4359 submission revisions
+ - FIO-4359 submission revisions
+ - FIO-4359 submission revisions
+ - FIO-4359 submission revisions
+ - FIO-4359 submission revisions
+ - FIO-4997: extended check for execution on the server side for tabs component
+ - FIO-4861: fixed restored revision node
+ - FIO-4976: Fixes select resource data not showing on submission
+
 ### Changed
  - Moved 4.14.7-rc.4 to 4.14.8-rc.1
 
