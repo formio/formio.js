@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Moved 4.14.7-rc.4 to 4.14.8-rc.1
 
+### Fixed
+ - FIO-4953: fixed signature is deleted when saving and validation is not passing.
+
 ## 4.14.7-rc.4
 ### Changed
  - FIO-4942: fixed email submission: Custom PDF File Name is not respected
