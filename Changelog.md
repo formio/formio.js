@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FIO-4942: fixed email submission: Custom PDF File Name is not respected
  - FIO-4997: extended check for execution on the server side for tabs component
+ - FIO-4861: fixed restored revision node
 
 ## 4.15.0-rc.12
 ### Fixed
