@@ -1458,9 +1458,7 @@ export default class Webform extends NestedDataComponent {
           return reject(err);
         }
 
-        if (data && data._vnote) {
-          submission._vnote = data._vnote;
-        }
+        submission._vnote = data && data._vnote ? data._vnote : '';
 
         if (!isDraft && !submission.data) {
           return reject('Invalid Submission');
