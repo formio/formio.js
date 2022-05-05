@@ -150,14 +150,15 @@ export default class RadioComponent extends Field {
   }
 
   getValueAsString(value) {
-    if (!value) {
-      return '';
-    }
     if (!_.isString(value)) {
       value = _.toString(value);
     }
 
     const option = _.find(this.component.values, (v) => v.value === value);
+
+    if (!value) {
+      return _.get(option, 'label', '');
+    }
 
     return _.get(option, 'label', '');
   }
