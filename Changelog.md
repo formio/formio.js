@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4997: extended check for execution on the server side for tabs component
  - FIO-4861: fixed restored revision node
  - FIO-4976: Fixes select resource data not showing on submission 
+ - FIO-5053: fixed an issue where select data with html5 widget type is not showing on view or pdf download after submission
 
 ## 4.15.0-rc.12
 ### Fixed
