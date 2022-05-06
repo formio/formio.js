@@ -541,7 +541,7 @@ export default class SelectComponent extends Field {
       return false;
     }
     // Live forms should always load.
-    if (!this.options.readOnly || (this.options.display === 'pdf' && this.options.readOnly)) {
+    if (!this.options.readOnly || ((this.options.display === 'pdf' || this.component.widget === 'html5') && this.options.readOnly)) {
       return true;
     }
 
@@ -564,7 +564,7 @@ export default class SelectComponent extends Field {
     options = options || {};
 
     // See if we should load items or not.
-    if (!this.shouldLoad || this.options.readOnly) {
+    if ((!this.shouldLoad || this.options.readOnly) && !(this.component.widget === 'html5' && this.root.submission.state === 'submitted')) {
       this.isScrollLoading = false;
       this.loading = false;
       this.itemsLoadedResolve();
