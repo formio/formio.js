@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.8-rc.3
+### Changed
+ - FIO-4559: Fixed issue where infinite loop would trigger if value is n…
+ - FIO-4750: fixed custom buttons do not work on 1st click
+
 ## 4.14.8-rc.2
 ### Changed
  - FIO-5053: fixed an issue where select data with html5 widget type is …
