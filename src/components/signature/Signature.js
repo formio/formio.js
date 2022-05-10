@@ -1,4 +1,4 @@
-import SignaturePad from 'signature_pad/dist/signature_pad.js';
+import SignaturePad from 'signature_pad';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
 
