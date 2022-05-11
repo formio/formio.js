@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.8-rc.5
+### Changed
+ - FIO-4628: Fixes file statuses replaced on new upload when multiple values configuration
+
 ## 4.14.8-rc.4
 ### Fixed
  - Issues with import from signature_pad that was breaking server side imports.
