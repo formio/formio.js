@@ -1536,9 +1536,7 @@ export default class Component extends Element {
       // It is useful to translate strings in different scenarions (eg: custom edit grid templates, custom error messages etc.)
       // and desirable to be publicly available rather than calling the internal {instance.t} function in the template string.
       t: this.t.bind(this),
-      submission: (this.root ? this.root._submission : {
-        data: this.rootValue
-      }),
+      submission: { data: this.rootValue },
       form: this.root ? this.root._form : {},
       options: this.options,
     }, additional));
