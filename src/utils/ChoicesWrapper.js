@@ -1,4 +1,5 @@
 import Choices from 'choices.js';
+import Fuse from 'fuse.js';
 
 /**
  * TODO: REMOVE THIS ONCE THE PULL REQUEST HAS BEEN RESOLVED.
@@ -178,6 +179,36 @@ class ChoicesWrapper extends Choices {
         hasCtrlDownKeyPressed,
       });
     }
+  }
+
+  _searchChoices(value) {
+    const newValue = typeof value === 'string' ? value.trim() : value;
+    const currentValue =
+      typeof this._currentValue === 'string'
+        ? this._currentValue.trim()
+        : this._currentValue;
+
+    if (newValue.length < 1 && newValue === `${currentValue} `) {
+      return 0;
+    }
+
+    // If new value matches the desired length and is not the same as the current value with a space
+    const haystack = this._store.searchableChoices;
+    const needle = newValue;
+    const keys = [...this.config.searchFields];
+    const options = Object.assign(this.config.fuseOptions, { keys });
+    const fuse = new Fuse(haystack, options);
+    const results = fuse.search(needle);
+
+    this._currentValue = newValue;
+    this._highlightPosition = 0;
+    this._isSearching = true;
+    this._store.dispatch({
+      type: 'FILTER_CHOICES',
+      results,
+    });
+
+    return results.length;
   }
 
   onSelectValue({ event, activeItems, hasActiveDropdown }) {
