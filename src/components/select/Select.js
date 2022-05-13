@@ -735,7 +735,9 @@ export default class SelectComponent extends Field {
   }
 
   isEmpty(value = this.dataValue) {
-    return super.isEmpty(value) || value === undefined;
+    if (!_.isEqual(value, {})) {
+      return super.isEmpty(value) || value === undefined;
+    }
   }
 
   refresh(value, { instance }) {
