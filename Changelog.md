@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.7-patch.3
+### Changed
+ - FIO-4953: Fixed an issue where signature component was not populating…
+ - FIO-4953: fixed signature is deleted when saving and validation is no…
+ - FIO-4953: fixed signature is deleted when saving and validation is no…
+
 ## 4.14.7-patch.2
 ### Changed
  - No changes: Rebuild
