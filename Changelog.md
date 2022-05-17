@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4976: Fixes select resource data not showing on submission 
  - FIO-5053: fixed an issue where select data with html5 widget type is not showing on view or pdf download after submission
  - FIO-5003: fixed that the radio with the value "false" is not displayed in different templates.
+ - FIO-4970: reduced limit query parameter value for resource requests
 
 ## 4.15.0-rc.12
 ### Fixed
