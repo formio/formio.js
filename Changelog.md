@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.8-rc.6
+### Changed
+ - FIO-5003: fixed that the radio with the value "false" is not displaye…
+ - FIO-4970: reduced limit query parameter value for resource requests
+ - FIO-5053: fixed an issue where empty value with html5 widget type not…
+ - FIO-5053: fixed an issue where empty value with html5 widget type not…
+
 ## 4.14.8-rc.5
 ### Changed
  - FIO-4628: Fixes file statuses replaced on new upload when multiple values configuration
