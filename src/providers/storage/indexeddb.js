@@ -10,7 +10,7 @@ const indexeddb = () => ({
     }
 
     return new NativePromise((resolve) => {
-      const request = indexedDB.open(options.indexeddb, 3);
+      const request = indexedDB.open(options.indexeddb);
       request.onsuccess = function(event) {
         const db = event.target.result;
         resolve(db);
@@ -67,7 +67,7 @@ const indexeddb = () => ({
   },
   downloadFile(file, options) {
     return new NativePromise((resolve) => {
-      const request = indexedDB.open(options.indexeddb, 3);
+      const request = indexedDB.open(options.indexeddb);
 
       request.onsuccess = function(event) {
         const db = event.target.result;
@@ -107,7 +107,7 @@ const indexeddb = () => ({
   },
   deleteFile(file, options) {
     return new NativePromise((resolve) => {
-      const request = indexedDB.open(options.indexeddb, 3);
+      const request = indexedDB.open(options.indexeddb);
 
       request.onsuccess = function(event) {
         const db = event.target.result;
