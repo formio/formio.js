@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.7-path.4]
+### Fixed
+ - FIO-4953: Upgrade signature-pad to latest version.
+
 ## 4.14.7-patch.3
 ### Changed
  - FIO-4953: Fixed an issue where signature component was not populating…
