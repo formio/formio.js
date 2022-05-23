@@ -284,6 +284,8 @@ export default class FormComponent extends Component {
             this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
             this.setOpenModalElement();
           }
+
+          this.calculateValue();
         });
       });
   }
