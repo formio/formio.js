@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.13]
+## 4.15.0-rc.13
 ### Added
  - FIO-4836: hash was added to file
 
@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5003: fixed that the radio with the value "false" is not displayed in different templates.
  - FIO-4970: reduced limit query parameter value for resource requests
  - FIO-5053: fixed an issue where empty value with html5 widget type not showing on pdf download
+ - FIO-5117: Reverts change where Number component empty value was getting set to empty string instead of null.
 
 ## 4.15.0-rc.12
 ### Fixed
