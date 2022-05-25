@@ -227,7 +227,47 @@ export default [
     label: &apos;Encrypted (Enterprise Only)&apos;,
     tooltip: &apos;Encrypt this field on the server. This is two way encryption which is not suitable for passwords.&apos;,
     key: &apos;encrypted&apos;,
-    input: true
+    input: true,
+    logic: [
+      {
+        name:&apos;disabled&apos;,
+        trigger:{
+          type:&apos;javascript&apos;,
+          javascript:&apos;result = !instance.root.options.sac;&apos;
+        },
+        actions:[
+          {
+            name:&apos;disabled&apos;,
+            type:&apos;property&apos;,
+            property:{
+              label:&apos;Disabled&apos;,
+              value:&apos;disabled&apos;,
+              type:&apos;boolean&apos;
+            },
+            state:true
+          }
+        ]
+      },
+      {
+        name:&apos;disabledToolTip&apos;,
+        trigger:{
+          type:&apos;javascript&apos;,
+          javascript:&apos;result = !instance.root.options.sac;&apos;
+        },
+        actions:[
+          {
+            name:&apos;addDisabledTooltip&apos;,
+            type:&apos;property&apos;,
+            property:{
+              label:&apos;Tooltip&apos;,
+              value:&apos;tooltip&apos;,
+              type:&apos;string&apos;
+            },
+            text:&apos;Encryption is not available with your current plan. Please contact sales@form.io.&apos;
+          }
+        ]
+      }
+    ]
   },
   {
     type: &apos;select&apos;,
