@@ -58,40 +58,40 @@ export default [
     input: true,
     logic: [
       {
-        "name": "disabled",
-        "trigger": {
-          "type": "javascript",
-          "javascript": "result = !instance.root.options.sac;"
+        name:'disabled',
+        trigger:{
+          type:'javascript',
+          javascript:'result = !instance.root.options.sac;'
         },
-        "actions": [
+        actions:[
           {
-            "name": "disabled",
-            "type": "property",
-            "property": {
-              "label": "Disabled",
-              "value": "disabled",
-              "type": "boolean"
+            name:'disabled',
+            type:'property',
+            property:{
+              label:'Disabled',
+              value:'disabled',
+              type:'boolean'
             },
-            "state": true
+            state:true
           }
         ]
       },
       {
-        "name": "disabledToolTip",
-        "trigger": {
-          "type": "javascript",
-          "javascript": "result = !instance.root.options.sac;"
+        name:'disabledToolTip',
+        trigger:{
+          type:'javascript',
+          javascript:'result = !instance.root.options.sac;'
         },
-        "actions": [
+        actions:[
           {
-            "name": "addDisabledTooltip",
-            "type": "property",
-            "property": {
-              "label": "Tooltip",
-              "value": "tooltip",
-              "type": "string"
+            name:'addDisabledTooltip',
+            type:'property',
+            property:{
+              label:'Tooltip',
+              value:'tooltip',
+              type:'string'
             },
-            "text": "Encryption is not available with your current plan. Please contact sales@form.io."
+            text:'Encryption is not available with your current plan. Please contact sales@form.io.'
           }
         ]
       }
