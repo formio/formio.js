@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.8-rc.8
+### Changed
+ - Revert "Number: fix not present in submission if empty"
+
 ## 4.14.8-rc.7
 ### Fixed
  - FIO-3557: Added logic to encrypted checkbox to disable and show tooltip when SAC is false
