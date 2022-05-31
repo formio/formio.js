@@ -547,7 +547,7 @@ export default class SelectComponent extends Field {
       return false;
     }
     // Live forms should always load.
-    if (!this.options.readOnly || ((this.options.display === 'pdf' || this.component.widget === 'html5') && this.options.readOnly)) {
+    if (!this.options.readOnly || (this.options.display === 'pdf' && this.options.readOnly)) {
       return true;
     }
 
@@ -570,7 +570,7 @@ export default class SelectComponent extends Field {
     options = options || {};
 
     // See if we should load items or not.
-    if ((!this.shouldLoad || this.options.readOnly) && !(this.component.widget === 'html5' && this.root.submission.state === 'submitted')) {
+    if (!this.shouldLoad || this.options.readOnly) {
       this.isScrollLoading = false;
       this.loading = false;
       this.itemsLoadedResolve();
@@ -1307,7 +1307,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if ((!value || _.isEmpty(value)) && !this.options.readOnly) {
+      if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1590,8 +1590,15 @@ export default class SelectComponent extends Field {
     else {
       if (hasValue) {
         const values = Array.isArray(value) ? value : [value];
+        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2) {
+          const { value, label } = this.selectValueAndLabel(this.dataValue);
+          this.addOption(value, label);
+        }
         _.each(this.selectOptions, (selectOption) => {
           _.each(values, (val) => {
+            if (selectOption.value === '') {
+              selectOption.value = {};
+            }
             if (_.isEqual(val, selectOption.value) && selectOption.element) {
               selectOption.element.selected = true;
               selectOption.element.setAttribute('selected', 'selected');
