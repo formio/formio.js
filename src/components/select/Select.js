@@ -740,9 +740,6 @@ export default class SelectComponent extends Field {
   }
 
   isEmpty(value = this.dataValue) {
-    if (_.isEqual(value, {})) {
-      return false;
-    }
     return super.isEmpty(value) || value === undefined;
   }
 
@@ -1507,6 +1504,9 @@ export default class SelectComponent extends Field {
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
+    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {}))) {
+      return false;
+    }
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
     const hasPreviousValue = !this.isEmpty(previousValue);
