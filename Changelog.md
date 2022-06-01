@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
  - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
+ - FIO-5053: fixed an issue where data with widget type html5 does not does not display and empty value displays as [Object object]
 
 ## 4.15.0-rc.13
 ### Added
