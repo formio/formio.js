@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.15.0-rc.14]
+### Fixed
+ - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
+
 ## 4.15.0-rc.13
 ### Added
  - FIO-4836: hash was added to file
