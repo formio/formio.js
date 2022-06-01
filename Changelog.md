@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.8-rc.9
+### Changed
+ - FIO-4799: fixed property value is not set by default and causes the v…
+ - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
+ - FIO-5053: fixed an issue where data with widget type html5 does not d…
+
 ## 4.14.8-rc.8
 ### Changed
  - Revert "Number: fix not present in submission if empty"
