@@ -27,7 +27,7 @@ import NestedComponent from './_classes/nested/NestedComponent';
 import NestedDataComponent from './_classes/nesteddata/NestedDataComponent';
 import NestedArrayComponent from './_classes/nestedarray/NestedArrayComponent';
 import NumberComponent from './number/Number';
-//import PanelComponent from './panel/Panel';
+import PanelComponent from './panel/Panel';
 // import PasswordComponent from './password/Password';
 import PhoneNumberComponent from './phonenumber/PhoneNumber';
 import RadioComponent from './radio/Radio';
@@ -77,7 +77,7 @@ export default {
   nesteddata: NestedDataComponent,
   nestedarray: NestedArrayComponent,
   number: NumberComponent,
- // panel: PanelComponent,
+ panel: PanelComponent,
   // password: PasswordComponent,
   phoneNumber: PhoneNumberComponent,
   radio: RadioComponent,
