@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.14]
 ### Fixed
  - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
+ - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
 
 ## 4.15.0-rc.13
 ### Added
