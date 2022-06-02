@@ -1415,7 +1415,7 @@ export default class SelectComponent extends Field {
       return value;
     }
     // Check to see if we need to save off the template data into our metadata.
-    if (value && !valueIsObject && this.templateData[value] && this.root?.submission) {
+    if (value && !valueIsObject && (this.templateData && this.templateData[value]) && this.root?.submission) {
       const submission = this.root.submission;
       if (!submission.metadata) {
         submission.metadata = {};
