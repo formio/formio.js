@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.8-rc.10]
+## 4.14.8-rc.10
+### Changed
+ - FIO-5139: fixed an issue where api validation is not working for sele…
+
 ### Fixed
  - FIO-5142: Fixed resource select data not showing on View Submission page and pdf.
 
