@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
  - FIO-5053: fixed an issue where data with widget type html5 does not does not display and empty value displays as [Object object]
  - FIO-5139: fixed an issue where api validation is not working for select component
+ - FIO-5142: Fixed resource select data not showing on View Submission page and pdf
 
 ## 4.15.0-rc.13
 ### Added
