@@ -24,7 +24,7 @@ export default class ColumnsComponent extends NestedComponent {
       title: 'Columns',
       icon: 'columns',
       group: 'layout',
-      documentation: '/userguide/#columns',
+      documentation: '/userguide/forms/layout-components#columns',
       weight: 10,
       schema: ColumnsComponent.schema()
     };

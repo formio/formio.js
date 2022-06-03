@@ -237,8 +237,8 @@ const Evaluator = {
             break;
           }
         }
-        if (_options.data) {
-          _.set(_options.data, path, value);
+        if (options.data) {
+          _.set(options.data, path, value);
         }
         return value;
       });

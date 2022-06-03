@@ -8,7 +8,8 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5,
 } from './fixtures';
 import Formio from '../../Formio';
 
@@ -102,6 +103,28 @@ describe('Tags Component', function() {
         assert.deepEqual(tags.getValue(), value.join(','));
         assert.deepEqual(form.submission.data.tags, value);
         assert.equal(tags.dataValue, value);
+
+        document.innerHTML = '';
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should show the specified delimiter when get value as string', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const tags = form.getComponent('tags');
+      const value =  ['tag1', 'tag2', 'tag3'];
+
+      tags.setValue(value);
+
+      setTimeout(() => {
+        assert.deepEqual(tags.getValue(), value.join(tags.component.delimeter));
+        assert.deepEqual(form.submission.data.tags, value);
+        assert.equal(tags.dataValue, value);
+        assert.equal(tags.getValueAsString(value), value.join(`${tags.component.delimeter} `));
 
         document.innerHTML = '';
         done();

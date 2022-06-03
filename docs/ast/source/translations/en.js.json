@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 2918,
+  "end": 3207,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 62,
+      "line": 66,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 2918,
+    "end": 3207,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 62,
+        "line": 66,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 2917,
+        "end": 3206,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 61,
+            "line": 65,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 2916,
+          "end": 3205,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 61,
+              "line": 65,
               "column": 1
             }
           },
@@ -3414,6 +3414,226 @@
                   "raw": "'Invalid time'"
                 },
                 "value": "Invalid time"
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 2918,
+              "end": 2981,
+              "loc": {
+                "start": {
+                  "line": 61,
+                  "column": 2
+                },
+                "end": {
+                  "line": 61,
+                  "column": 65
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 2918,
+                "end": 2939,
+                "loc": {
+                  "start": {
+                    "line": 61,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 61,
+                    "column": 23
+                  },
+                  "identifierName": "cancelButtonAriaLabel"
+                },
+                "name": "cancelButtonAriaLabel"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 2941,
+                "end": 2981,
+                "loc": {
+                  "start": {
+                    "line": 61,
+                    "column": 25
+                  },
+                  "end": {
+                    "line": 61,
+                    "column": 65
+                  }
+                },
+                "extra": {
+                  "rawValue": "Cancel button. Click to reset the form",
+                  "raw": "'Cancel button. Click to reset the form'"
+                },
+                "value": "Cancel button. Click to reset the form"
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 2985,
+              "end": 3064,
+              "loc": {
+                "start": {
+                  "line": 62,
+                  "column": 2
+                },
+                "end": {
+                  "line": 62,
+                  "column": 81
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 2985,
+                "end": 3008,
+                "loc": {
+                  "start": {
+                    "line": 62,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 62,
+                    "column": 25
+                  },
+                  "identifierName": "previousButtonAriaLabel"
+                },
+                "name": "previousButtonAriaLabel"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 3009,
+                "end": 3064,
+                "loc": {
+                  "start": {
+                    "line": 62,
+                    "column": 26
+                  },
+                  "end": {
+                    "line": 62,
+                    "column": 81
+                  }
+                },
+                "extra": {
+                  "rawValue": "Previous button. Click to go back to the previous tab",
+                  "raw": "'Previous button. Click to go back to the previous tab'"
+                },
+                "value": "Previous button. Click to go back to the previous tab"
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 3068,
+              "end": 3130,
+              "loc": {
+                "start": {
+                  "line": 63,
+                  "column": 2
+                },
+                "end": {
+                  "line": 63,
+                  "column": 64
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 3068,
+                "end": 3087,
+                "loc": {
+                  "start": {
+                    "line": 63,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 63,
+                    "column": 21
+                  },
+                  "identifierName": "nextButtonAriaLabel"
+                },
+                "name": "nextButtonAriaLabel"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 3088,
+                "end": 3130,
+                "loc": {
+                  "start": {
+                    "line": 63,
+                    "column": 22
+                  },
+                  "end": {
+                    "line": 63,
+                    "column": 64
+                  }
+                },
+                "extra": {
+                  "rawValue": "Next button. Click to go to the next tab",
+                  "raw": "'Next button. Click to go to the next tab'"
+                },
+                "value": "Next button. Click to go to the next tab"
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 3134,
+              "end": 3202,
+              "loc": {
+                "start": {
+                  "line": 64,
+                  "column": 2
+                },
+                "end": {
+                  "line": 64,
+                  "column": 70
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 3134,
+                "end": 3155,
+                "loc": {
+                  "start": {
+                    "line": 64,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 64,
+                    "column": 23
+                  },
+                  "identifierName": "submitButtonAriaLabel"
+                },
+                "name": "submitButtonAriaLabel"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 3156,
+                "end": 3202,
+                "loc": {
+                  "start": {
+                    "line": 64,
+                    "column": 24
+                  },
+                  "end": {
+                    "line": 64,
+                    "column": 70
+                  }
+                },
+                "extra": {
+                  "rawValue": "Submit Form button. Click to submit the form",
+                  "raw": "'Submit Form button. Click to submit the form'"
+                },
+                "value": "Submit Form button. Click to submit the form"
               }
             }
           ],
@@ -9871,6 +10091,452 @@
     },
     {
       "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2914,
+      "end": 2915,
+      "loc": {
+        "start": {
+          "line": 60,
+          "column": 22
+        },
+        "end": {
+          "line": 60,
+          "column": 23
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "cancelButtonAriaLabel",
+      "start": 2918,
+      "end": 2939,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 2
+        },
+        "end": {
+          "line": 61,
+          "column": 23
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2939,
+      "end": 2940,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 23
+        },
+        "end": {
+          "line": 61,
+          "column": 24
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Cancel button. Click to reset the form",
+      "start": 2941,
+      "end": 2981,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 25
+        },
+        "end": {
+          "line": 61,
+          "column": 65
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2981,
+      "end": 2982,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 65
+        },
+        "end": {
+          "line": 61,
+          "column": 66
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "previousButtonAriaLabel",
+      "start": 2985,
+      "end": 3008,
+      "loc": {
+        "start": {
+          "line": 62,
+          "column": 2
+        },
+        "end": {
+          "line": 62,
+          "column": 25
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3008,
+      "end": 3009,
+      "loc": {
+        "start": {
+          "line": 62,
+          "column": 25
+        },
+        "end": {
+          "line": 62,
+          "column": 26
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Previous button. Click to go back to the previous tab",
+      "start": 3009,
+      "end": 3064,
+      "loc": {
+        "start": {
+          "line": 62,
+          "column": 26
+        },
+        "end": {
+          "line": 62,
+          "column": 81
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3064,
+      "end": 3065,
+      "loc": {
+        "start": {
+          "line": 62,
+          "column": 81
+        },
+        "end": {
+          "line": 62,
+          "column": 82
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "nextButtonAriaLabel",
+      "start": 3068,
+      "end": 3087,
+      "loc": {
+        "start": {
+          "line": 63,
+          "column": 2
+        },
+        "end": {
+          "line": 63,
+          "column": 21
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3087,
+      "end": 3088,
+      "loc": {
+        "start": {
+          "line": 63,
+          "column": 21
+        },
+        "end": {
+          "line": 63,
+          "column": 22
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Next button. Click to go to the next tab",
+      "start": 3088,
+      "end": 3130,
+      "loc": {
+        "start": {
+          "line": 63,
+          "column": 22
+        },
+        "end": {
+          "line": 63,
+          "column": 64
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3130,
+      "end": 3131,
+      "loc": {
+        "start": {
+          "line": 63,
+          "column": 64
+        },
+        "end": {
+          "line": 63,
+          "column": 65
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "submitButtonAriaLabel",
+      "start": 3134,
+      "end": 3155,
+      "loc": {
+        "start": {
+          "line": 64,
+          "column": 2
+        },
+        "end": {
+          "line": 64,
+          "column": 23
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3155,
+      "end": 3156,
+      "loc": {
+        "start": {
+          "line": 64,
+          "column": 23
+        },
+        "end": {
+          "line": 64,
+          "column": 24
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Submit Form button. Click to submit the form",
+      "start": 3156,
+      "end": 3202,
+      "loc": {
+        "start": {
+          "line": 64,
+          "column": 24
+        },
+        "end": {
+          "line": 64,
+          "column": 70
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3202,
+      "end": 3203,
+      "loc": {
+        "start": {
+          "line": 64,
+          "column": 70
+        },
+        "end": {
+          "line": 64,
+          "column": 71
+        }
+      }
+    },
+    {
+      "type": {
         "label": "}",
         "beforeExpr": false,
         "startsExpr": false,
@@ -9881,15 +10547,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2915,
-      "end": 2916,
+      "start": 3204,
+      "end": 3205,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 65,
           "column": 0
         },
         "end": {
-          "line": 61,
+          "line": 65,
           "column": 1
         }
       }
@@ -9907,15 +10573,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2916,
-      "end": 2917,
+      "start": 3205,
+      "end": 3206,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 65,
           "column": 1
         },
         "end": {
-          "line": 61,
+          "line": 65,
           "column": 2
         }
       }
@@ -9933,15 +10599,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2918,
-      "end": 2918,
+      "start": 3207,
+      "end": 3207,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 66,
           "column": 0
         },
         "end": {
-          "line": 62,
+          "line": 66,
           "column": 0
         }
       }

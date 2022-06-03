@@ -26,7 +26,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       title: 'Data Grid',
       icon: 'th',
       group: 'data',
-      documentation: '/userguide/#datagrid',
+      documentation: '/userguide/forms/data-components#data-grid',
       weight: 30,
       schema: DataGridComponent.schema()
     };
@@ -339,7 +339,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
         this.dragula.on('cloned', (el, original) => {
           if (el && el.children && original && original.children) {
-            original.children.forEach((child, index) => {
+            _.each(original.children, (child, index) => {
               const styles = getComputedStyle(child, null);
 
               if (styles.cssText !== '') {

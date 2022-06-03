@@ -1,49 +1,73 @@
 {
-  "name": "bootswatch",
-  "description": "Bootswatch is a collection of themes for Bootstrap.",
-  "version": "4.6.0",
-  "author": "Thomas Park",
-  "homepage": "https://bootswatch.com",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/thomaspark/bootswatch.git"
+  "_from": "bootswatch@^4.6.0",
+  "_id": "bootswatch@4.6.1",
+  "_inBundle": false,
+  "_integrity": "sha512-5vRhlIIvgZ2rH3QLHcVVa+Z+jNpn1/zEvGlJYkp4/g1LmsGY42S6IOpYyBu40RGjqqiYIjoeX/uWDdAAIYVG7A==",
+  "_location": "/bootswatch",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "bootswatch@^4.6.0",
+    "name": "bootswatch",
+    "escapedName": "bootswatch",
+    "rawSpec": "^4.6.0",
+    "saveSpec": null,
+    "fetchSpec": "^4.6.0"
+  },
+  "_requiredBy": [
+    "#DEV:/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.6.1.tgz",
+  "_shasum": "e58101a891998487d396c2a97d1bc5278d168ac9",
+  "_spec": "bootswatch@^4.6.0",
+  "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
+  "author": {
+    "name": "Thomas Park"
   },
   "bugs": {
     "url": "https://github.com/thomaspark/bootswatch/issues"
   },
-  "scripts": {
-    "build": "grunt swatch",
-    "htmllint": "grunt htmllint",
-    "stylelint": "stylelint \"**/*.scss\" --rd",
-    "test": "npm run stylelint"
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Bootswatch is a collection of themes for Bootstrap.",
+  "devDependencies": {
+    "@lodder/grunt-postcss": "^3.1.0",
+    "autoprefixer": "^10.4.0",
+    "bootstrap": "^4.6.1",
+    "font-awesome": "^4.7.0",
+    "grunt": "^1.4.1",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-concat": "^2.0.0",
+    "grunt-contrib-connect": "^3.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^4.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-html": "^15.1.0",
+    "grunt-sass": "^3.1.0",
+    "jquery": "^3.5.1",
+    "node-sass": "^6.0.1",
+    "postcss": "^8.3.11",
+    "stylelint": "^13.13.1",
+    "stylelint-config-twbs-bootstrap": "^2.2.4"
   },
   "files": [
     "dist/**/*.{css,scss}"
   ],
-  "dependencies": {},
-  "devDependencies": {
-    "@lodder/grunt-postcss": "^3.0.0",
-    "autoprefixer": "^10.1.0",
-    "bootstrap": "^4.6.0",
-    "font-awesome": "^4.7.0",
-    "grunt": "^1.3.0",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-connect": "^3.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "^3.0.0",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-html": "^14.2.0",
-    "grunt-sass": "^3.1.0",
-    "jquery": "^3.5.1",
-    "node-sass": "^5.0.0",
-    "postcss": "^8.2.0",
-    "stylelint": "^13.8.0",
-    "stylelint-config-twbs-bootstrap": "^2.1.0"
-  }
-
-,"_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.6.0.tgz"
-,"_integrity": "sha512-Yr6YqFBC8jwTzoJoLViYlvO97IhPWGqZEm+6FXHfD/G6gbUok6sZkdXxdh4Zb6iCGEwr9p7zGCn38yKQD/bh2Q=="
-,"_from": "bootswatch@4.6.0"
+  "homepage": "https://bootswatch.com",
+  "license": "MIT",
+  "name": "bootswatch",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomaspark/bootswatch.git"
+  },
+  "scripts": {
+    "build": "grunt swatch",
+    "docs": "grunt docs",
+    "htmllint": "grunt htmllint",
+    "release": "grunt release",
+    "stylelint": "stylelint \"**/*.scss\" --rd",
+    "test": "npm run stylelint"
+  },
+  "version": "4.6.1"
 }

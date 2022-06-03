@@ -63,7 +63,7 @@ export default class SelectComponent extends Field {
       group: 'basic',
       icon: 'th-list',
       weight: 70,
-      documentation: '/userguide/#select',
+      documentation: '/userguide/forms/form-components#select',
       schema: SelectComponent.schema()
     };
   }
@@ -220,7 +220,7 @@ export default class SelectComponent extends Field {
       this.component.template
         ? this.interpolate(this.component.template, { item: data }, options)
         : data.label,
-      this.shouldSanitizeValue,
+      this.shouldSanitizeValue
     );
     if (value && !_.isObject(value) && options.data.item) {
       // If the value is not an object, then we need to save the template data off for when it is selected.
@@ -230,7 +230,7 @@ export default class SelectComponent extends Field {
   }
 
   selectValueAndLabel(data) {
-    const value = this.itemValue(data);
+    const value = this.getOptionValue(this.itemValue(data));
     return {
       value,
       label: this.itemTemplate(data, value)
@@ -238,7 +238,7 @@ export default class SelectComponent extends Field {
   }
 
   itemTemplate(data, value) {
-    if (_.isEmpty(data)) {
+    if (!_.isNumber(data) && _.isEmpty(data)) {
       return '';
     }
 
@@ -252,7 +252,7 @@ export default class SelectComponent extends Field {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
-    if (typeof data === 'string') {
+    if (typeof data === 'string' || typeof data === 'number') {
       const selectData = this.selectData;
       if (selectData) {
         data = selectData;
@@ -318,7 +318,7 @@ export default class SelectComponent extends Field {
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
       div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
-        selected: _.isEqual(this.dataValue, option.value),
+        selected: _.isEqual(this.getOptionValue(this.dataValue), option.value),
         option,
         attrs,
         id,
@@ -469,7 +469,7 @@ export default class SelectComponent extends Field {
           noUpdateEvent: true
         });
       }
-      else if (this.shouldAddDefaultValue) {
+      else if (this.shouldAddDefaultValue && !this.options.readOnly) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
@@ -569,7 +569,7 @@ export default class SelectComponent extends Field {
     options = options || {};
 
     // See if we should load items or not.
-    if (!this.shouldLoad) {
+    if (!this.shouldLoad || this.options.readOnly) {
       this.isScrollLoading = false;
       this.loading = false;
       this.itemsLoadedResolve();
@@ -1504,6 +1504,9 @@ export default class SelectComponent extends Field {
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
+    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {}))) {
+      return false;
+    }
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
     const hasPreviousValue = !this.isEmpty(previousValue);
@@ -1566,7 +1569,7 @@ export default class SelectComponent extends Field {
   }
 
   setChoicesValue(value, hasPreviousValue, flags = {}) {
-    const hasValue = !this.isEmpty(value);
+    const hasValue = !this.isEmpty(value) || flags.fromSubmission;
     hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
@@ -1586,8 +1589,15 @@ export default class SelectComponent extends Field {
     else {
       if (hasValue) {
         const values = Array.isArray(value) ? value : [value];
+        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2) {
+          const { value, label } = this.selectValueAndLabel(this.dataValue);
+          this.addOption(value, label);
+        }
         _.each(this.selectOptions, (selectOption) => {
           _.each(values, (val) => {
+            if (selectOption.value === '') {
+              selectOption.value = {};
+            }
             if (_.isEqual(val, selectOption.value) && selectOption.element) {
               selectOption.element.selected = true;
               selectOption.element.setAttribute('selected', 'selected');
