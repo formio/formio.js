@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.8-rc.10]
+### Fixed
+ - FIO-5142: Fixed resource select data not showing on View Submission page and pdf.
+
 ## 4.14.8-rc.9
 ### Changed
  - FIO-4799: fixed property value is not set by default and causes the v…
