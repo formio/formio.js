@@ -1898,7 +1898,7 @@ export default class Component extends Element {
             }
           );
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && !this.visible)) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -1943,7 +1943,7 @@ export default class Component extends Element {
           },
           'value');
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && !this.visible)) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -2598,9 +2598,11 @@ export default class Component extends Element {
   updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
+    const oldValue = this.dataValue;
+    let changed = ((newValue !== undefined) ? this.hasChanged(newValue, oldValue) : false);
     if (changed) {
       this.dataValue = newValue;
+      changed = this.dataValue !== oldValue;
       this.updateOnChange(flags, changed);
     }
     if (this.componentModal && flags && flags.fromSubmission) {
@@ -2712,7 +2714,7 @@ export default class Component extends Element {
 
     // Handle all cases when calculated values should not fire.
     if (
-      (this.options.readOnly && !this.options.pdf) ||
+      (this.options.readOnly && !this.options.pdf && !this.component.calculateValue) ||
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
@@ -3069,6 +3071,8 @@ export default class Component extends Element {
       inputRefsArray.forEach((input) => {
         this.setElementInvalid(this.performInputMapping(input), false);
       });
+      this.setInputWidgetErrorClasses(inputRefsArray, false);
+
       invalidInputRefs = inputRefsArray.filter((ref) => {
         return messages.some?.((msg) => {
           return msg?.context?.input === ref;

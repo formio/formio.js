@@ -4,11 +4,85 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.7]
+## [Unreleased: 4.15.0-rc.14]
+### Fixed
+ - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
+ - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
+ - FIO-5053: fixed an issue where data with widget type html5 does not does not display and empty value displays as [Object object]
+ - FIO-5139: fixed an issue where api validation is not working for select component
+ - FIO-5142: Fixed resource select data not showing on View Submission page and pdf
+
+## 4.15.0-rc.13
+### Added
+ - FIO-4836: hash was added to file
+
+### Fixed
+ - FIO-4942: fixed email submission: Custom PDF File Name is not respected
+ - FIO-4997: extended check for execution on the server side for tabs component
+ - FIO-4861: fixed restored revision node
+ - FIO-4976: Fixes select resource data not showing on submission 
+ - FIO-5053: fixed an issue where select data with html5 widget type is not showing on view or pdf download after submission
+ - FIO-5003: fixed that the radio with the value "false" is not displayed in different templates.
+ - FIO-4970: reduced limit query parameter value for resource requests
+ - FIO-5053: fixed an issue where empty value with html5 widget type not showing on pdf download
+ - FIO-5117: Reverts change where Number component empty value was getting set to empty string instead of null.
+
+## 4.15.0-rc.12
+### Fixed
+ - FIO-4953: Fixed an issue where signature component was not populating
+
+## 4.15.0-rc.11
+### Changed
+ - Updated @formio/bootstrap3@2.12.2
+
+## 4.15.0-rc.10
+### Fixed
+ - FIO-4851: fixed when 'Multiple Values' setting is enabled, all the selected values display as the last
+
+## 4.15.0-rc.9
+### Fixed
+ - Fixed the signature pad.
+
+## 4.15.0-rc.8
+### Changed
+ - Updated @formio/bootstrap3@2.12.2-rc.1
+
+### Fixed
+ - FIO-4815: Fixed an issue where submission of the form with Tabs component fails
+ - FIO-4225: fixed an issue where last selected/entered value from multiple values is highlighted as error value, when Date/Time is required
+ - FIO-4218: fixed an issue where error message isn't showing in modal window
+ - FIO-3557: Added logic to encrypted checkbox to disable and show tooltip when SAC is false
+ - FIO-4559: Fixed issue where infinite loop would trigger if value is not changed with 'this.dataValue = value'
+ - FIO-3939: Fixed content of the Content component not being translated
+ - FIO-3408: Fix showing security error for IE11
+ - FIO-3442: Fixes an issue where EditGrid opens another row while editing after some rows have been deleted
+ - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
+ - FIO-4392: fixed Help links
+ - FIO-3924: Fixes an issue where the DataGrid has an additional column wwhen "Equal columns width" is checked
+ - FIO-4628: Fixes file statuses replaced on new upload when multiple values configuration
+ - FIO-4232: Fixed form controller inside wizard forms
+ - FIO-4672: View tab shows data when PUT request using POSTMAN
+ - FIO-4684: Fixes extra pdf redraw after resources fetch
+ - FIO-3268: fixed submit button for viewer
+ - FIO-4704: fixed an issue with form builder where custom group in the sidebar is stuck after deleting all symbols from the search field
+ - FIO-4750: fixed custom buttons do not work on 1st click
+ - FIO-4444: Autofocuse Label property in the component settings
+ - FIO-4794: Fixes hidden component with clearOnHide and logic with action to set value caused infinite loop
+ - FIO-3345: Fixes an issue where subpathes of the Tagpad's components do not include its key
+ - FIO-4395: Fixed typos
+ - Update translations for aria-labels
+ - Allow customization of edit grid error messages
+ - FIO-4352: Added independent scroll for builder sidebar if it is longer than viewport
+ - fixed an issue where error appears when reordering datagrid rows
+ - FIO-4364: fixed displaying defaultData instead of empty data
+
+## 4.15.0-rc.7
 ### Fixed
  - FIO-4763: Select in Data/Edit Grid: Cannot make a submission. Get 'key editGrid[0].select must not contain '.')
  - FIO-4398: Fixed issues where HTML text area in datagrid changes were causing infinite loop issues.
  - FIO-4763: Fixed issues with Select not setting data properly in metadata.
+ - Fixing a browser crash with error message re-assignment.
+ - FIO-4681: limited table wight
 
 ## 4.15.0-rc.6
 ### Fixed

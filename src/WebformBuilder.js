@@ -222,7 +222,7 @@ export default class WebformBuilder extends Component {
     const query = {
       params: {
         type: 'resource',
-        limit: 4294967295,
+        limit: 1000000,
         select: '_id,title,name,components'
       }
     };
@@ -697,6 +697,10 @@ export default class WebformBuilder extends Component {
     });
 
     this.updateDragAndDrop();
+
+    if (searchValue === '') {
+      this.triggerRedraw();
+    }
   }
 
   orderComponents(groupInfo, foundComponents) {

@@ -67,7 +67,7 @@
   {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
   <tfoot>
     <tr>
-      <td colspan="{{ctx.numColumns + 1}}">
+      <td colspan="{{ctx.component.layoutFixed ? ctx.numColumns :  ctx.numColumns + 1}}">
         <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
           <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
         </button>

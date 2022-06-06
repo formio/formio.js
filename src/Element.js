@@ -52,7 +52,7 @@ export default class Element {
      *
      * @type {*|boolean}
      */
-    this.helplinks = this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
+    this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
   }
 
   /**
@@ -569,7 +569,7 @@ export default class Element {
    * @return {XML|string|*|void}
    */
   interpolate(string, data, options = {}) {
-    if (typeof string !== 'function' && this.component.content
+    if (typeof string !== 'function' && (this.component.content || this.component.html)
       && !FormioUtils.Evaluator.templateSettings.interpolate.test(string)) {
       string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
     }

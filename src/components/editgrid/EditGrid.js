@@ -45,7 +45,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       title: 'Edit Grid',
       icon: 'tasks',
       group: 'data',
-      documentation: '/userguide/#editgrid',
+      documentation: '/userguide/forms/data-components#edit-grid',
       weight: 30,
       schema: EditGridComponent.schema(),
     };
@@ -321,6 +321,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         state: EditRowState.Saved,
         backup: null,
         error: null,
+        rowIndex,
       }));
     }
     this.prevHasAddButton = this.hasAddButton();
@@ -651,6 +652,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       state: EditRowState.New,
       backup: null,
       error: null,
+      rowIndex,
     };
 
     this.editRows.push(editRow);
@@ -946,8 +948,18 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     const relativePath = this.getRelativePath(component.path);
     const arrayPath = getArrayFromComponentPath(relativePath);
-    if (_.isNumber(arrayPath[0])) {
-      this.editRow(arrayPath[0]);
+
+    const rowIndex = arrayPath[0];
+    let rowToEditIndex = arrayPath[0];
+
+    this.editRows.forEach((row, indexInArray) => {
+      if (row.rowIndex === rowIndex) {
+        rowToEditIndex = indexInArray;
+      }
+    });
+
+    if (_.isNumber(rowToEditIndex)) {
+      this.editRow(rowToEditIndex);
     }
   }
 
@@ -1157,7 +1169,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
           if (!rowValid && errorContainer && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
             this.addClass(errorContainer,  'help-block' );
-            errorContainer.textContent = this.t('invalidRowError');
+            errorContainer.textContent = this.t(this.errorMessage('invalidRowError'));
           }
           else if (errorContainer) {
             errorContainer.textContent = '';
@@ -1170,14 +1182,14 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (!rowsValid) {
       if (!silentCheck && (!this.component.rowDrafts || this.root?.submitted)) {
-        this.setCustomValidity(this.t('invalidRowsError'), dirty);
+        this.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
         // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
         this.removeClass(this.element, 'has-error');
       }
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
-      this.setCustomValidity(this.t('unsavedRowsError'), dirty);
+      this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
       return false;
     }
 
