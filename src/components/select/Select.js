@@ -218,9 +218,9 @@ export default class SelectComponent extends Field {
     };
     const template = this.sanitize(
       this.component.template
-        ? this.interpolate(this.component.template, { item: data }, options)
+        ? this.interpolate(this.component.template, { item: data })
         : data.label,
-      this.shouldSanitizeValue
+      this.shouldSanitizeValue,
     );
     if (value && !_.isObject(value) && options.data.item) {
       // If the value is not an object, then we need to save the template data off for when it is selected.
