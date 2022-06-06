@@ -95,12 +95,15 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
-    // const isBuilderMode = this.builderMode;
-    // const isEmptyInit = this.initEmpty;
-    // Ensure we have one and only one row in builder mode.
-    // if (isBuilderMode || (isEmptyInit && !this.dataValue.length)) {
-    //   return isEmptyInit && !isBuilderMode ? [] : [{}];
-    // }
+    const  previewInBuilder = localStorage.getItem('previewInBuilder');
+    if (previewInBuilder !== 'true') {
+      const isBuilderMode = this.builderMode;
+      const isEmptyInit = this.initEmpty;
+      // Ensure we have one and only one row in builder mode.
+      if (isBuilderMode || (isEmptyInit && !this.dataValue.length)) {
+        return isEmptyInit && !isBuilderMode ? [] : [{}];
+      }
+    }
 
     const value = super.defaultValue;
     let defaultValue;
@@ -373,6 +376,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (this.hasRowGroups()) {
       this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[`${this.datagridKey}-row`]);
       this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {
+        this.toggleGroup(header, index);
         this.addEventListener(header, 'click', () => this.toggleGroup(header, index));
       });
     }
