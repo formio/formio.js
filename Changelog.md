@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.8-rc.11]
+### Fixed
+ - FIO-4799: updated code for Property Value is not set by default and show as ‘undefined'
+
 ## 4.14.8-rc.10
 ### Changed
  - FIO-5139: fixed an issue where api validation is not working for sele…
