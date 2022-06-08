@@ -1038,11 +1038,16 @@ export default class Component extends Element {
 
   loadRefs(element, refs) {
     for (const ref in refs) {
-      if (refs[ref] === 'single') {
-        this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
+      const refType = refs[ref];
+      const isString = typeof refType === 'string';
+
+      const selector = isString && refType.includes('scope') ? `:scope > [ref="${ref}"]` : `[ref="${ref}"]`;
+
+      if (isString && refType.startsWith('single')) {
+        this.refs[ref] = element.querySelector(selector);
       }
       else {
-        this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
+        this.refs[ref] = element.querySelectorAll(selector);
       }
     }
   }
