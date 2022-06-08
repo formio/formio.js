@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5139: fixed an issue where api validation is not working for select component
  - FIO-5142: Fixed resource select data not showing on View Submission page and pdf
  - FIO-4799: updated code for Property Value is not set by default and show as 'undefined'
+ - FIO-3973: Fixes an issue where the invalidRowsError is set to the wrong element when an EditGrid has an opened row
 
 ## 4.15.0-rc.13
 ### Added
