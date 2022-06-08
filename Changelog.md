@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.8-rc.11]
+## 4.14.8-rc.11
+### Changed
+ - FIO-3973: Fixes an issue where the invalidRowsError is set to the wrong element when an EditGrid has an opened row
+
 ### Fixed
  - FIO-4799: updated code for Property Value is not set by default and show as ‘undefined'
 
