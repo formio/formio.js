@@ -4950,6 +4950,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp8.js",
+    "file/src/components/radio/fixtures/comp8.js.html",
+    "src/components/radio/fixtures/comp8.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",

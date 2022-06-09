@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.13.13-rc.4]
+## 4.13.13-rc.4
 ### Fixed
  - FIO-4405: fixed an issue where form doesn't submit if hidden radio component has storage type as string
 
