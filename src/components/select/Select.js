@@ -569,7 +569,7 @@ export default class SelectComponent extends Field {
     options = options || {};
 
     // See if we should load items or not.
-    if (!this.shouldLoad || this.options.readOnly) {
+    if (!this.shouldLoad || (!this.itemsFromUrl && this.options.readOnly)) {
       this.isScrollLoading = false;
       this.loading = false;
       this.itemsLoadedResolve();
