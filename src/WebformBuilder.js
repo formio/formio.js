@@ -1423,7 +1423,15 @@ export default class WebformBuilder extends Component {
           componentCopy.keyModified = true;
         }
 
-        if (event.changed.component && (['label', 'title'].includes(event.changed.component.key))) {
+        let isComponentLabelChanged = false;
+        if (event.changed.instance) {
+          isComponentLabelChanged = ['label', 'title'].includes(event.changed.instance.path);
+        }
+        else if (event.changed.component) {
+          isComponentLabelChanged = ['label', 'title'].includes(event.changed.component.key);
+        }
+
+        if (isComponentLabelChanged) {
           // Ensure this component has a key.
           if (isNew) {
             if (!event.data.keyModified) {
