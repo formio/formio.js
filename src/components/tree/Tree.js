@@ -473,6 +473,50 @@ export default class TreeComponent extends NestedDataComponent {
       ? this.treeRoot.getComponents()
       : super.getComponents();
   }
+
+  getValueAsString(value, options) {
+    const getChildAsString = (value) => {
+      let result = (`
+        <table border="1" style="width:100%">
+          <tbody>
+      `);
+      result += `
+            <tr>
+      `;
+      result += Object.keys(value.data).map((k) => (`
+              <th style="padding: 5px 10px;">${k}</th>
+              <td style="width:100%;padding:5px 10px;">
+                ${value.data[k]}
+                <br>
+      `));
+
+      if (value.children?.length !== 0) {
+        value.children?.forEach((v) => {
+          result += getChildAsString(v);
+        });
+      }
+
+      result += `
+              </td>
+            </tr>
+      `;
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    };
+
+    if (options?.email) {
+      let result = '';
+      result += getChildAsString(value);
+      return result;
+    }
+
+    return super.getValueAsString(value, options);
+  }
 }
 
 TreeComponent.prototype.hasChanged = Component.prototype.hasChanged;
