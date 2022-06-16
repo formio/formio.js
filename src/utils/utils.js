@@ -58,7 +58,12 @@ export function evaluate(func, args, ret, tokenize) {
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
-
+  if (func.toString().includes('form')) {
+    args.form = _.cloneDeep(args.form);
+  }
+  else {
+    delete args.form;
+  }
   const componentKey = component.key;
 
   if (typeof func === 'string') {
