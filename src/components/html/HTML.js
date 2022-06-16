@@ -56,6 +56,7 @@ export default class HTMLComponent extends Component {
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
     if (!this.builderMode && this.component.refreshOnChange && this.element &&
+      !_.isUndefined(changed) && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed)) &&
       this.conditionallyVisible(this.data, this.row)) {
       this.setContent(this.element, this.renderContent());
     }
