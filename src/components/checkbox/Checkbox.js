@@ -1,4 +1,5 @@
 import Field from '../_classes/field/Field';
+import _ from 'lodash';
 
 export default class CheckBoxComponent extends Field {
   static schema(...extend) {
@@ -182,8 +183,18 @@ export default class CheckBoxComponent extends Field {
     return false;
   }
 
-  getValueAsString(value) {
-    return value ? 'Yes' : 'No';
+  getValueAsString(value, options) {
+    if (!_.isString(value)) {
+      value = _.toString(value);
+    }
+
+    const option = _.find(this.component.values, (v) => v.value === value);
+
+    if (!value && options?.email) {
+      return _.get(option, 'label', 'No');
+    }
+
+    return this.component.value === value ? 'Yes' : 'No';
   }
 
   updateValue(value, flags) {
