@@ -1,4 +1,4 @@
-<{{ctx.tag}} class="{{ ctx.component.className }}" ref="html"
+<{{ctx.tag}} class="{{ ctx.component.className || 'formio-component-htmlelement' }}" ref="html"
   {% ctx.attrs.forEach(function(attr) { %}
     {{attr.attr}}="{{attr.value}}"
   {% }) %}
