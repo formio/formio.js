@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4799: updated code for Property Value is not set by default and show as 'undefined'
  - FIO-3973: Fixes an issue where the invalidRowsError is set to the wrong element when an EditGrid has an opened row
  - FIO-5142: fixed an issue where resource select data not showing on view submission and pdf download
+ - FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required
 
 ## 4.15.0-rc.13
 ### Added
