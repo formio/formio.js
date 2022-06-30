@@ -158,7 +158,7 @@ export default class AddressComponent extends ContainerComponent {
         mode: AddressComponentMode.Autocomplete,
         address: {},
       }
-      : '';
+      : {};
   }
 
   get mode() {
