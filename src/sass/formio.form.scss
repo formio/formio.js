@@ -1,3 +1,4 @@
+@import './formio.embed.scss';
 $dialog-z-index: 10000;
 $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
@@ -15,6 +16,14 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   color: #721c24;
   background-color: #f8d7da;
   border-color: #f5c6cb;
+
+  .formio-errors .error {
+    color: #C20000;
+  }
+
+  .field-required:after {
+    color:#C20000;
+  }
 }
 
 .formio-warning-wrapper {
@@ -30,7 +39,9 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 .builder-component.has-error .invalid-feedback,
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
-.formio-component.has-message .invalid-feedback {
+.formio-component.has-message .invalid-feedback,
+.formio-component-modal-wrapper.has-message .invalid-feedback,
+.formio-component-modal-wrapper.has-error  .invalid-feedback  {
   display: block;
   color: inherit;
   margin-top: 4px;
@@ -92,9 +103,14 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   background-color: #fff;
 }
 
-.field-required:after {
+.field-required:after, .tab-error::after {
   content:" *";
-  color:red;
+  color:#EB0000;
+}
+
+.field-required:after {
+  position: relative;
+  z-index: 10;
 }
 
 .glyphicon-spin {
@@ -151,12 +167,71 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   line-height: 1;
 }
 
+
+.card-vertical {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+}
+
+.card-vertical .card-body,
+.tab-content,
+.tab {
+  flex-grow: 2;
+}
+
+.nav-tabs-vertical {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ddd;
+  padding-left: 5px;
+  margin-right: 10px;
+  border-bottom: 0;
+}
+
+.card-vertical > .card-body,
+.card-vertical > .tab-content,
+.card-vertical > .tab {
+  flex-basis: 85%;
+}
+
+.card-vertical ul>li>.nav-link-vertical  {
+  border-right-color: transparent;
+  border-radius: 4px 0 0 4px;
+  margin-right: 0;
+
+  &.active {
+    border-bottom-color: #ddd;
+    border-right-color: transparent;
+
+    &:hover {
+      border-right-color: transparent;
+    }
+  }
+}
+
+.nav-tabs-vertical>li {
+  margin: 0 -1px 0 0;
+}
+
 .formio-component-submit .submit-fail[disabled] {
   opacity: 1;
 }
 
 .form-control.flatpickr-input {
   background-color: #fff;
+}
+
+.input-group .flatpickr-wrapper {
+  flex-grow: 1;
+}
+
+.flatpickr-calendar {
+  .flatpickr-current-month .flatpickr-monthDropdown-months:focus,
+  .flatpickr-current-month input.cur-year:focus,
+  .flatpickr-days:focus {
+    outline: auto;
+  }
 }
 
 td > .form-group {
@@ -192,6 +267,14 @@ td > .form-group {
   width: 100%;
 }
 
+.formio-component-multiple .is-invalid {
+  border-color: #F04124;
+}
+
+.formio-component-multiple :not(.is-invalid) {
+  border-color: #ccc;
+}
+
 .choices__list--dropdown .choices__item--selectable{
   padding-right: 0px;
 }
@@ -203,42 +286,6 @@ td > .form-group {
 .signature-pad-footer {
   text-align: center;
   color: #C3C3C3;
-}
-
-.formio-loader {
-  position: relative;
-  min-height: 60px;
-}
-
-.loader-wrapper {
-  z-index: 1000;
-  position:absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
-  background-color:rgba(0, 0, 0, 0.1);
-}
-
-.loader {
-  position:absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -30px;
-  margin-top: -30px;
-  z-index: 10000;
-  display: inline-block;
-  border: 6px solid #f3f3f3; /* Light grey */
-  border-top: 6px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 .choices__list--dropdown {
@@ -290,10 +337,35 @@ td > .form-group {
 }
 /* end fix for choices.js deletable items in rtl */
 
+@-moz-document url-prefix() {
+  .choices__button {
+    float: right;
+  }
+}
+
 .formio-component-file .fileSelector {
+  position: relative;
   padding: 15px;
   border: 2px dashed #ddd;
   text-align: center;
+
+  .loader-wrapper {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+
+    .loader {
+      height: 45px;
+      width: 45px;
+      margin-top: -23px;
+      margin-left: -23px;
+    }
+  }
+
+  a {
+    text-decoration: underline;
+  }
 }
 
 .formio-component-file .fileSelector.fileDragOver {
@@ -426,6 +498,12 @@ td > .form-group {
   overflow: auto;
 }
 
+.formio-component-modal-wrapper-select {
+  .formio-dialog-content {
+    overflow: initial;
+  }
+}
+
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
   -webkit-backface-visibility: hidden;
   -webkit-animation: formio-dialog-fadeout 0.5s;
@@ -510,6 +588,10 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default {
   padding-bottom: 160px;
   padding-top: 160px;
+
+  .component-edit-container {
+    padding: 0.5em;
+  }
 }
 
 .formio-dialog.formio-dialog-theme-default.formio-dialog-closing .formio-dialog-content {
@@ -537,8 +619,8 @@ body.formio-dialog-open {
   background: transparent;
   cursor: pointer;
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 1px;
+  top: 1px;
   z-index: 100;
 }
 
@@ -554,7 +636,7 @@ body.formio-dialog-open {
   display: block;
   padding: 3px;
   background: transparent;
-  color: #bbb;
+  color: #8a8a8a;
   content: '×';
   font-size: 26px;
   font-weight: 400;
@@ -599,6 +681,11 @@ body.formio-dialog-open {
 .formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="url"]:focus {
   box-shadow: inset 0 0 0 2px #8dbdf1;
   outline: none;
+}
+
+.formio-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .formio-dialog.formio-dialog-theme-default .formio-dialog-buttons {
@@ -652,6 +739,10 @@ body.formio-dialog-open {
   margin: 0;
 }
 
+.formio-dialog-content [ref="dialogHeader"] {
+  padding-right: 15px;
+}
+
 .formio-placeholder {
   position:absolute;
   color: #999;
@@ -696,11 +787,14 @@ body.formio-dialog-open {
   margin: 0;
 }
 
+.formio-removed {
+  display: none;
+}
+
 .control-label--hidden {
   position: absolute;
   top: 6px;
   right: 5px;
-  font-size: 1.5em;
 }
 
 .formio-component-datetime .control-label--hidden.field-required {
@@ -717,6 +811,23 @@ body.formio-dialog-open {
 .formio-component-select .control-label--hidden.field-required {
   right: 40px;
   z-index: 2;
+}
+
+.formio-component-radio .control-label--hidden.field-required:after,
+.formio-component-selectboxes .control-label--hidden.field-required:after {
+  display: none;
+}
+
+.formio-component-radio.formio-component-label-hidden.required .form-check-label:before,
+.formio-component-selectboxes.formio-component-label-hidden.required .form-check-label:before {
+  position: relative;
+  content: "* ";
+  color:#EB0000;
+}
+
+.formio-component-radio.formio-component-label-hidden.required .label-position-right.form-check-label:before,
+.formio-component-selectboxes.formio-component-label-hidden.required .label-position-right.form-check-label:before {
+  right: 20px;
 }
 
 /* Fix for Hidden checkbox in component editform. */
@@ -744,7 +855,6 @@ body.formio-dialog-open {
 }
 
 .formio-choices.form-group {
-  min-width: 200px;
   margin-bottom: 0;
 }
 
@@ -767,6 +877,31 @@ body.formio-dialog-open {
 
 .formio-component .table {
   margin-bottom: 0;
+}
+
+.editgrid-table-container {
+  margin-bottom: 10px;
+  max-width: calc(100vw - 140px);
+
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.editgrid-table-column {
+  border: none;
+}
+
+.editgrid-table-head {
+  border: 1px solid #ddd;
+}
+
+.editgrid-table-body {
+  border: 1px solid #ddd;
+  border-top: 0;
 }
 
 .formio-hide-label-panel-tooltip {
@@ -950,8 +1085,11 @@ body.formio-dialog-open {
 .formio-select-autocomplete-input {
   /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
   opacity: 0;
-  position: absolute;
+  position: relative;
   z-index: -1;
+  display: block;
+  height: 0;
+  border: none;
 }
 
 .has-error > .help-block {
@@ -989,8 +1127,19 @@ body.formio-dialog-open {
     text-align: right;
   }
 }
-.formio-component-textarea .alert .ck-editor__editable{
-  color: inherit;
+
+.table-responsive[ref=component] {
+  overflow-x: visible;
+}
+
+.formio-component-textarea {
+  .alert .ck-editor__editable {
+    color: inherit;
+  }
+
+  .ck.ck-editor__editable .image .ck-progress-bar {
+    height: 4px;
+  }
 }
 
 div[data-oembed-url] {
@@ -1022,14 +1171,20 @@ div[data-oembed-url] {
   margin-bottom: 8px;
 }
 
-.radio label.label-position-left input[type="radio"], .checkbox label.label-position-left input[type="checkbox"] {
+.radio label.label-position-left input[type="radio"] {
   margin-left: 10px;
+}
+
+.checkbox label.label-position-left input[type=checkbox] {
+  margin-left: 4px;
+  position: relative;
 }
 
 .open-modal-button {
   width: 100%;
   text-align: left;
   white-space: normal;
+  height: auto;
 }
 
 .formio-component-modal-wrapper-signature .open-modal-button {
@@ -1216,25 +1371,67 @@ div[data-oembed-url] {
 
 .formio-component-modal-wrapper {
   margin-bottom: 10px;
-
+  .open-modal-button {
+    height: auto;
+  }
   .component-rendering-hidden {
     visibility: hidden;
   }
 }
 
 //show textarea submission in read-only mode and PDF view with initial line and space formatting
-div[read-only="true"] {
-  .formio-component-textarea {
-    div[ref="input"] {
-      white-space: pre-wrap;
-    }
+.formio-component-textarea {
+  div.formio-editor-read-only-content[ref="input"] {
+    white-space: pre-wrap;
   }
 }
-
 
 .formio-editor-read-only-content {
   img {
     max-width: 100%;
+  }
+
+  li[data-list="bullet"] {
+    list-style-type: none;
+
+    .ql-ui{
+      padding-right: 0.5rem;
+
+      &::before {
+        content: "\2022";
+      }
+    }
+  }
+
+  li[data-list="ordered"] {
+    list-style-type: none;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    counter-increment: list-0;
+
+    .ql-ui {
+      padding-right: 0.5rem;
+
+      &::before {
+        content: counter(list-0, decimal) '. ';
+      }
+    }
+  }
+
+  figure.table {
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      height: 100%;
+      border: 1px double #b3b3b3;
+      table-layout: fixed;
+
+      th, td {
+        min-width: 2em;
+        padding: .4em;
+        border: 1px solid #bfbfbf;
+      }
+    }
   }
 }
 
@@ -1248,4 +1445,264 @@ div[read-only="true"] {
 
 .formio-form > div > nav > ul.pagination {
   flex-flow: wrap row;
+
+  .page-link {
+    cursor: pointer;
+    color: #1C74D9;
+  }
+
+  .page-item.active .page-link {
+    color: #fff;
+    background-color: #1C74D9;
+    border-color: #1C74D9;
+  }
+}
+
+.classic-pagination {
+  border-bottom: solid 1px #e0e0e0;
+  padding: 0 15px 10px 15px;
+  line-height: 1em;
+
+  &-page {
+    padding: 0;
+    position: relative;
+  }
+
+  &-title {
+    color: #595959;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  &-dot {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: block;
+    background: #fbe8aa;
+    top: 40px;
+    left: 50%;
+    margin-top: -15px;
+    margin-left: -15px;
+    border-radius: 50%;
+
+    &::after {
+      content: ' ';
+      width: 14px;
+      height: 14px;
+      background: #fbbd19;
+      border-radius: 50px;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+    }
+  }
+
+  .progress, &-progress {
+    position: relative;
+    border-radius: 0px;
+    height: 8px;
+    box-shadow: none;
+    margin: 20px 0;
+    border: none;
+    padding: 0;
+    background-color: #f6f6f6;
+
+    &-bar {
+      width: 0px;
+      height: 10px;
+      box-shadow: none;
+      background: #fbe8aa;
+    }
+  }
+}
+
+.classic-pagination-page {
+  &.complete {
+    .progress-bar, .classic-pagination-progress-bar {
+      width: 100%;
+    }
+  }
+  &.active {
+    .progress-bar, .classic-pagination-progress-bar {
+      width: 50%;
+    }
+  }
+  &.disabled {
+    .classic-pagination-dot {
+      background-color: #f5f5f5;
+      &::after{
+        opacity: 0;
+      }
+    }
+  }
+}
+
+.classic-pagination-page  {
+  &:first-child {
+    .progress, .classic-pagination-progress {
+      left: 50%;
+      width: 50%;
+    }
+
+    &.active {
+      .progress-bar, .classic-pagination-progress-bar {
+        width: 0%;
+      }
+    }
+  }
+
+  &:last-child {
+    .progress, .classic-pagination-progress {
+      width: 50%;
+    }
+
+    &.active {
+      .progress-bar, .classic-pagination-progress-bar {
+        width: 100%;
+      }
+    }
+  }
+}
+//styles for google maps dropdown
+.pac-container {
+  z-index: 11000;
+}
+
+[ref='buttonMessageContainer'].has-error {
+  cursor: pointer;
+}
+
+[ref="passwordStrengthIndicator"] {
+  display: inline;
+}
+
+.formio-security-indicator {
+  display: flex;
+  height: 5px;
+
+  [class^="security-"] {
+    width: 100%;
+    height: 100%;
+  }
+
+  .security-low {
+    background-color: #c51e00;
+  }
+
+  .security-medium {
+    background-color: #ebb400;
+  }
+
+  .security-high {
+    background-color: #bddf00;
+  }
+
+  .security-very-high {
+    background-color: #009118;
+  }
+}
+
+.formio-component-textarea {
+  .formio-editor-read-only-content {
+    .text-big {
+      font-size: 1.4em;
+    }
+
+    .text-huge {
+      font-size: 1.8em;
+    }
+
+    .text-small {
+      font-size: 0.85em;
+    }
+
+    .text-tiny {
+      font-size: 0.7em;
+    }
+  }
+}
+
+.formio-component [ref="valueMaskInput"] {
+  display: none;
+}
+
+.formio-wizard-nav-container {
+  display: flex;
+
+  li {
+    margin-right: 0.5rem;
+  }
+
+  @media not all and (min-width: 30em) {
+    flex-direction: column;
+
+    li {
+      margin-right: 0;
+    }
+
+    li .btn {
+      width: 100%;
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+//styles for accessible tooltip
+.formio-tooltip__trigger {
+  cursor: pointer;
+}
+
+.formio-tooltip__body {
+  background-color: #1b1b1b;
+  border-radius: 0.25rem;
+  bottom: 0;
+  color: #f0f0f0;
+  display: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+  position: absolute;
+  left: 0;
+  transform: translateX(-50%);
+  width: auto;
+  white-space: pre;
+  z-index: 1000;
+
+  &.formio-tooltip--is-set {
+    display: block;
+  }
+
+  &--whitespace {
+    white-space: normal;
+    width: 250px;
+  }
+
+  &--right {
+    top: auto;
+    transform: translateX(0);
+  }
+
+  &--left {
+    top: auto;
+    left: 0;
+    right: auto;
+    transform: translateX(0);
+  }
+
+  &--bottom {
+    bottom: auto;
+    top: 0;
+  }
+}
+
+.formio-tooltip__wrapper {
+  position: relative;
+  & > span {
+    font-weight: normal;
+  }
+}
+
+span[role="link"] {
+  text-decoration: underline;
+  cursor: pointer;
 }

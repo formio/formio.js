@@ -1,4 +1,5 @@
-import SignaturePad from 'signature_pad/dist/signature_pad.js';
+import SignaturePad from 'signature_pad';
+import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
 
@@ -14,7 +15,8 @@ export default class SignatureComponent extends Input {
       penColor: 'black',
       backgroundColor: 'rgb(245,245,235)',
       minWidth: '0.5',
-      maxWidth: '2.5'
+      maxWidth: '2.5',
+      keepOverlayRatio: true,
     }, ...extend);
   }
 
@@ -24,7 +26,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: '/userguide/#signature',
+      documentation: '/userguide/forms/form-components#signature',
       schema: SignatureComponent.schema()
     };
   }
@@ -39,6 +41,17 @@ export default class SignatureComponent extends Input {
     }
     if (!this.component.height) {
       this.component.height = '200px';
+    }
+
+    if (
+      this.component.keepOverlayRatio
+      && this.options.pdf
+      && this.component.overlay?.width
+      && this.component.overlay?.height
+    ) {
+      this.ratio = this.component.overlay?.width / this.component.overlay?.height;
+      this.component.width = '100%';
+      this.component.height = 'auto';
     }
   }
 
@@ -67,7 +80,7 @@ export default class SignatureComponent extends Input {
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && this.options.readOnly) {
+    if (this.refs.signatureImage && (this.options.readOnly || this.disabled)) {
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
@@ -129,11 +142,15 @@ export default class SignatureComponent extends Input {
   }
 
   checkSize(force, scale) {
-    if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
+    if (this.refs.padBody && (force || this.refs.padBody && this.refs.padBody.offsetWidth !== this.currentWidth)) {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.offsetWidth;
-      this.refs.canvas.width = this.currentWidth * this.scale;
-      this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
+      const width = this.currentWidth * this.scale;
+      this.refs.canvas.width = width;
+      const height = this.ratio ? width / this.ratio : this.refs.padBody.offsetHeight * this.scale;
+      this.refs.canvas.height = height;
+      this.refs.canvas.style.maxWidth = `${this.currentWidth * this.scale}px`;
+      this.refs.canvas.style.maxHeight = `${this.refs.padBody.offsetHeight * this.scale}px`;
       const ctx = this.refs.canvas.getContext('2d');
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
@@ -144,6 +161,8 @@ export default class SignatureComponent extends Input {
       if (this.dataValue) {
         this.signaturePad.fromDataURL(this.dataValue);
       }
+
+      this.showCanvas(true);
     }
   }
 
@@ -183,7 +202,7 @@ export default class SignatureComponent extends Input {
         backgroundColor: this.component.backgroundColor
       });
 
-      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
+      this.signaturePad.addEventListener('endStroke', () => this.setValue(this.signaturePad.toDataURL()));
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
       this.onDisabled();
@@ -194,15 +213,24 @@ export default class SignatureComponent extends Input {
           this.refs.padBody.style.maxWidth = '100%';
         }
 
-        this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
+        if (!this.builderMode && !this.options.preview) {
+          this.observer = new _ResizeObserver(() => {
+            this.checkSize();
+          });
+
+          this.observer.observe(this.refs.padBody);
+         }
+
+        this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 10));
+
         setTimeout(function checkWidth() {
           if (this.refs.padBody && this.refs.padBody.offsetWidth) {
             this.checkSize();
           }
           else {
-            setTimeout(checkWidth.bind(this), 200);
+            setTimeout(checkWidth.bind(this), 20);
           }
-        }.bind(this), 200);
+        }.bind(this), 20);
       }
     }
     this.addEventListener(this.refs.refresh, 'click', (event) => {
@@ -217,6 +245,11 @@ export default class SignatureComponent extends Input {
   /* eslint-enable max-statements */
 
   detach() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+
     if (this.signaturePad) {
       this.signaturePad.off();
     }

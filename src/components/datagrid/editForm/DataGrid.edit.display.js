@@ -27,7 +27,7 @@ export default [
     placeholder: 'show = ...',
     tooltip: 'Specify condition when Add Button should be displayed.',
     editor: 'ace',
-    as: 'js',
+    as: 'javascript',
     wysiwyg: {
       minLines: 3,
     },
@@ -70,14 +70,6 @@ export default [
     customConditional(context) {
       return !context.data.disableAddingRemovingRows;
     }
-  },
-  {
-    type: 'checkbox',
-    label: 'Default Open Rows',
-    key: 'defaultOpen',
-    tooltip: 'Check this if you would like for the rows of the edit grid to be defaulted to opened if values exist.',
-    weight: 420,
-    input: true
   },
   {
     type: 'checkbox',

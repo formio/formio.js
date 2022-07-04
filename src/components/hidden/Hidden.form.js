@@ -1,10 +1,9 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import HiddenEditDisplay from './editForm/Hidden.edit.display';
 import HiddenEditData from './editForm/Hidden.edit.data';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: HiddenEditDisplay
@@ -19,6 +18,10 @@ export default function(...extend) {
     },
     {
       key: 'conditional',
+      ignore: true
+    },
+    {
+      key: 'addons',
       ignore: true
     },
   ], ...extend);

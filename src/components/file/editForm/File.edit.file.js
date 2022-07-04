@@ -1,4 +1,4 @@
-import Formio from '../../../Formio';
+import { GlobalFormio as Formio } from '../../../Formio';
 import _ from 'lodash';
 
 export default [
@@ -112,14 +112,37 @@ export default [
     label: 'Directory',
     placeholder: '(optional) Enter a directory for the files',
     tooltip: 'This will place all the files uploaded in this field in the directory',
-    weight: 20
+    weight: 20,
+    conditional: {
+      json: {
+        '!==': [{
+          var: 'data.storage'
+        }, 'googledrive']
+      }
+    }
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'dir',
+    label: 'Folder ID',
+    placeholder: '(optional) Enter an ID of the folder for the files',
+    tooltip: 'This will place all the files uploaded in this field in the folder',
+    weight: 20,
+    conditional: {
+      json: {
+        '===': [{
+          var: 'data.storage'
+        }, 'googledrive']
+      }
+    }
   },
   {
     type: 'textfield',
     input: true,
     key: 'fileNameTemplate',
     label: 'File Name Template',
-    placeholder: '(optional) {{{name}}-{{guid}}}}}',
+    placeholder: '(optional) { {name} }-{ {guid} }"',
     tooltip: 'Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `moment` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.',
     weight: 25
   },
@@ -209,7 +232,7 @@ export default [
     input: true,
     key: 'filePattern',
     label: 'File Pattern',
-    placeholder: '.pdf,.jpg',
+    placeholder: '.jpg,video/*,application/pdf',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file patterns.',
     weight: 50
   },

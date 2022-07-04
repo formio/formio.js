@@ -32,7 +32,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
@@ -131,14 +130,15 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
@@ -174,13 +174,17 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/select/Select.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Choices from &apos;../../utils/ChoicesWrapper&apos;;
-import _ from &apos;lodash&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { getRandomComponentId, boolValue } from &apos;../../utils/utils&apos;;
+
+let Choices;
+if (typeof window !== &apos;undefined&apos;) {
+  Choices = require(&apos;../../utils/ChoicesWrapper&apos;).default;
+}
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -207,6 +211,7 @@ export default class SelectComponent extends Field {
       minSearch: 0,
       readOnlyValue: false,
       authenticate: false,
+      ignoreCache: false,
       template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
       selectFields: &apos;&apos;,
       searchThreshold: 0.3,
@@ -317,10 +322,6 @@ export default class SelectComponent extends Field {
     return {};
   }
 
-  get overlayOptions() {
-    return this.parent &amp;&amp; this.parent.component &amp;&amp; this.parent.component.type === &apos;table&apos;;
-  }
-
   get valueProperty() {
     if (this.component.valueProperty) {
       return this.component.valueProperty;
@@ -373,10 +374,10 @@ export default class SelectComponent extends Field {
     // Perform a fast interpretation if we should not use the template.
     if (data &amp;&amp; !this.component.template) {
       const itemLabel = data.label || data;
-      return (typeof itemLabel === &apos;string&apos;) ? this.t(itemLabel) : itemLabel;
+      return (typeof itemLabel === &apos;string&apos;) ? this.t(itemLabel, { _userInput: true }) : itemLabel;
     }
     if (typeof data === &apos;string&apos;) {
-      return this.t(data);
+      return this.t(data, { _userInput: true });
     }
 
     if (data.data) {
@@ -389,8 +390,8 @@ export default class SelectComponent extends Field {
     const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
     if (template) {
       const label = template.replace(/&lt;\/?[^&gt;]+(&gt;|$)/g, &apos;&apos;);
-      if (!label || !this.t(label)) return;
-      return template.replace(label, this.t(label));
+      if (!label || !this.t(label, { _userInput: true })) return;
+      return template.replace(label, this.t(label, { _userInput: true }));
     }
     else {
       return JSON.stringify(data);
@@ -565,25 +566,6 @@ export default class SelectComponent extends Field {
 
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
-
-      if (this.overlayOptions) {
-        const { element: optionsDropdown } = this.choices.dropdown;
-
-        optionsDropdown.style.position = &apos;fixed&apos;;
-
-        const recalculatePosition = () =&gt; {
-          const { top, height, width } = this.element.getBoundingClientRect();
-
-          optionsDropdown.style.top = `${top + height}px`;
-          optionsDropdown.style.width = `${width}px`;
-        };
-
-        recalculatePosition();
-
-        [&apos;scroll&apos;, &apos;resize&apos;].forEach(
-          eventType =&gt; this.addEventListener(window, eventType, recalculatePosition)
-        );
-      }
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -678,6 +660,9 @@ export default class SelectComponent extends Field {
     if (this.component.filter) {
       url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + this.interpolate(this.component.filter);
     }
+
+    // Set ignoreCache if it is
+    options.ignoreCache = this.component.ignoreCache;
 
     // Make the request.
     options.header = headers;
@@ -873,6 +858,10 @@ export default class SelectComponent extends Field {
         break;
       }
       case &apos;indexeddb&apos;: {
+        if (typeof window === &apos;undefined&apos;) {
+          return;
+        }
+
         if (!window.indexedDB) {
           window.alert(&quot;Your browser doesn&apos;t support current version of indexedDB&quot;);
         }
@@ -972,25 +961,11 @@ export default class SelectComponent extends Field {
 
   render() {
     const info = this.inputInfo;
-    const styles = this.overlayOptions
-      ? {
-        position: &apos;fixed&apos;,
-        display: &apos;block&apos;,
-        width: &apos;400px&apos;,
-        height: &apos;100%&apos;,
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        &apos;z-index&apos;: 2
-      }
-      : null;
     info.attr = info.attr || {};
     info.multiple = this.component.multiple;
     return super.render(this.wrapElement(this.renderTemplate(&apos;select&apos;, {
       input: info,
       selectOptions: &apos;&apos;,
-      styles,
       index: null,
     })));
   }
@@ -1007,7 +982,7 @@ export default class SelectComponent extends Field {
 
   choicesOptions() {
     const useSearch = this.component.hasOwnProperty(&apos;searchEnabled&apos;) ? this.component.searchEnabled : true;
-    const placeholderValue = this.t(this.component.placeholder);
+    const placeholderValue = this.t(this.component.placeholder, { _userInput: true });
     let customOptions = this.component.customOptions || {};
     if (typeof customOptions == &apos;string&apos;) {
       try {
@@ -1079,7 +1054,11 @@ export default class SelectComponent extends Field {
 
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate(null, true);
-      this.setItems(this.selectOptions || []);
+
+      if (this.visible) {
+        this.setItems(this.selectOptions || []);
+      }
+
       this.focusableElement = input;
       this.addEventListener(input, &apos;focus&apos;, () =&gt; this.update());
       this.addEventListener(input, &apos;keydown&apos;, (event) =&gt; {
@@ -1101,26 +1080,29 @@ export default class SelectComponent extends Field {
     }
 
     const choicesOptions = this.choicesOptions();
-    this.choices = new Choices(input, choicesOptions);
 
-    if (this.selectOptions &amp;&amp; this.selectOptions.length) {
-      this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
-    }
+    if (Choices) {
+      this.choices = new Choices(input, choicesOptions);
 
-    if (this.component.multiple) {
-      this.focusableElement = this.choices.input.element;
-    }
-    else {
-      this.focusableElement = this.choices.containerInner.element;
-      this.choices.containerOuter.element.setAttribute(&apos;tabIndex&apos;, &apos;-1&apos;);
-      if (choicesOptions.searchEnabled) {
-        this.addEventListener(this.choices.containerOuter.element, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
+      if (this.selectOptions &amp;&amp; this.selectOptions.length) {
+        this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
       }
-    }
 
-    if (this.isInfiniteScrollProvided) {
-      this.scrollList = this.choices.choiceList.element;
-      this.addEventListener(this.scrollList, &apos;scroll&apos;, () =&gt; this.onScroll());
+      if (this.component.multiple) {
+        this.focusableElement = this.choices.input.element;
+      }
+      else {
+        this.focusableElement = this.choices.containerInner.element;
+        this.choices.containerOuter.element.setAttribute(&apos;tabIndex&apos;, &apos;-1&apos;);
+        if (choicesOptions.searchEnabled) {
+          this.addEventListener(this.choices.containerOuter.element, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
+        }
+      }
+
+      if (this.isInfiniteScrollProvided) {
+        this.scrollList = this.choices.choiceList.element;
+        this.addEventListener(this.scrollList, &apos;scroll&apos;, () =&gt; this.onScroll());
+      }
     }
 
     this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);
@@ -1151,14 +1133,17 @@ export default class SelectComponent extends Field {
       this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
       this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
-        this.choices.input.element.value = &apos;&apos;;
+        if (this.choices &amp;&amp; this.choices.input &amp;&amp; this.choices.input.element) {
+          this.choices.input.element.value = &apos;&apos;;
+        }
+
         this.updateItems(null, true);
       });
     }
 
     this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
 
-    if (choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
+    if (this.choices &amp;&amp; choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
 
       this.addEventListener(input, &apos;removeItem&apos;, () =&gt; {
@@ -1330,11 +1315,9 @@ export default class SelectComponent extends Field {
       if (this.choices) {
         this.choices.setChoices(notFoundValuesToAdd, &apos;value&apos;, &apos;label&apos;);
       }
-      else {
-        notFoundValuesToAdd.map(notFoundValue =&gt; {
-          this.addOption(notFoundValue.value, notFoundValue.label);
-        });
-      }
+      notFoundValuesToAdd.map(notFoundValue =&gt; {
+        this.addOption(notFoundValue.value, notFoundValue.label);
+      });
     }
     return added;
   }
@@ -1363,7 +1346,7 @@ export default class SelectComponent extends Field {
       if (
         !this.component.multiple &amp;&amp;
         this.component.placeholder &amp;&amp;
-        (value === this.t(this.component.placeholder))
+        (value === this.t(this.component.placeholder, { _userInput: true }))
       ) {
         value = this.emptyValue;
       }

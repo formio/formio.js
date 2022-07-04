@@ -12,5 +12,5 @@
   {{ ctx.labelMarkup }}
 {% } %}
 {% if (ctx.component.description) { %}
-  <div class="form-text text-muted">{{ctx.t(ctx.component.description)}}</div>
+  <div id="d-{{ctx.instance.id}}-{{ctx.component.key}}" class="form-text text-muted">{{ctx.t(ctx.component.description, { _userInput: true })}}</div>
 {% } %}

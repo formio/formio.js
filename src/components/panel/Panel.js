@@ -24,7 +24,7 @@ export default class PanelComponent extends NestedComponent {
       title: 'Panel',
       icon: 'list-alt',
       group: 'layout',
-      documentation: '/userguide/#panels',
+      documentation: '/userguide/forms/layout-components#panel',
       weight: 30,
       schema: PanelComponent.schema()
     };
@@ -32,20 +32,6 @@ export default class PanelComponent extends NestedComponent {
 
   get defaultSchema() {
     return PanelComponent.schema();
-  }
-
-  checkValidity(data, dirty, row, silentCheck) {
-    if (!this.checkCondition(row, data)) {
-      this.setCustomValidity('');
-      return true;
-    }
-
-    return this.getComponents().reduce(
-      (check, comp) => {
-        return comp.checkValidity(data, dirty, row, silentCheck) && check;
-      },
-      super.checkValidity(data, dirty, row, silentCheck)
-    );
   }
 
   get templateName() {

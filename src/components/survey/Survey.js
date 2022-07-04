@@ -19,7 +19,7 @@ export default class SurveyComponent extends Field {
       group: 'advanced',
       icon: 'list',
       weight: 110,
-      documentation: '/userguide/#survey',
+      documentation: '/userguide/forms/form-components#survey',
       schema: SurveyComponent.schema()
     };
   }
@@ -61,7 +61,14 @@ export default class SurveyComponent extends Field {
         }
       });
     });
-    return this.updateValue(value, flags);
+
+    const changed = this.updateValue(value, flags);
+
+    if (changed && this.isHtmlRenderMode()) {
+      this.redraw();
+    }
+
+    return changed;
   }
 
   get emptyValue() {

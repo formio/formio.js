@@ -16,7 +16,7 @@ export default class ComponentModal {
     this.isOpened = isOpened;
     this.component = component;
     this.element = element;
-    this.currentValue = fastCloneDeep(currentValue);
+    this.currentValue = fastCloneDeep(currentValue ?? this.component.getValue());
     this.dataLoaded = false;
     this.init();
   }
@@ -53,13 +53,15 @@ export default class ComponentModal {
   }
 
   setOpenModalElement(template) {
-    this.openModalTemplate = template;
-    this.component.setContent(this.refs.openModalWrapper, template);
-    this.loadRefs();
-    this.setEventListeners();
-    if (this.isOpened) {
-      this.refs.modalWrapper.classList.add('formio-dialog-disabled-animation');
-      this.openModal();
+    if (this.component?.visible) {
+      this.openModalTemplate = template;
+      this.component.setContent(this.refs.openModalWrapper, template);
+      this.loadRefs();
+      this.setEventListeners();
+      if (this.isOpened) {
+        this.refs.modalWrapper.classList.add('formio-dialog-disabled-animation');
+        this.openModal();
+      }
     }
   }
 
@@ -104,12 +106,12 @@ export default class ComponentModal {
       currentValue = this.currentValue.data;
     }
 
-    return !_.isEqual(componentValue, currentValue);
+    return !_.isEqual(fastCloneDeep(componentValue), currentValue);
   }
 
   setOpenEventListener() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.loadRefs(this.refs.openModalWrapper, {
+    this.component.loadRefs(this.refs.openModalWrapper ?? this.element, {
       'openModal': 'single',
     });
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
@@ -167,7 +169,7 @@ export default class ComponentModal {
       <h3 ref="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
       <div style="display:flex; justify-content: flex-end;">
         <button ref="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
-        <button ref="dialogYesButton" class="btn btn-primary">${this.component.t('Yes, delete it')}</button>
+        <button ref="dialogYesButton" class="btn btn-danger">${this.component.t('Yes, delete it')}</button>
       </div>
     `;
 
@@ -198,7 +200,7 @@ export default class ComponentModal {
 
   saveModalValueHandler(event) {
     event.preventDefault();
-    this.currentValue = fastCloneDeep(this.component.dataValue);
+    this.currentValue = fastCloneDeep(this.component.dataValue ?? this.component.getValue());
     this.closeModal();
   }
 }

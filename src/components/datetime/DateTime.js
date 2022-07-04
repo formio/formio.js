@@ -47,7 +47,7 @@ export default class DateTimeComponent extends Input {
       title: 'Date / Time',
       group: 'advanced',
       icon: 'calendar',
-      documentation: '/userguide/#datetime',
+      documentation: '/userguide/forms/form-components#date-time',
       weight: 40,
       schema: DateTimeComponent.schema()
     };
@@ -173,15 +173,6 @@ export default class DateTimeComponent extends Input {
       });
     }
     return super.checkValidity(data, dirty, rowData);
-  }
-
-  focus() {
-    if (this.refs.input && this.refs.input[0]) {
-      const sibling = this.refs.input[0].nextSibling;
-      if (sibling) {
-        sibling.focus();
-      }
-    }
   }
 
   getValueAsString(value) {

@@ -1,11 +1,10 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import SelectEditData from './editForm/Select.edit.data';
 import SelectEditDisplay from './editForm/Select.edit.display';
 import SelectEditValidation from './editForm/Select.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: SelectEditDisplay
@@ -17,6 +16,10 @@ export default function(...extend) {
     {
       key: 'validation',
       components: SelectEditValidation
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

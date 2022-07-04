@@ -3,12 +3,16 @@
     <div id="tabs" class="formio-component formio-component-tabs formio-component-tabs " ref="component">
       <div class="card">
         <div class="card-header">
-          <ul class="nav nav-tabs card-header-tabs">
-            <li class="nav-item active" role="presentation" ref="tabLi-tabs">
-              <a class="nav-link active" href="#tab1" ref="tabLink-tabs">Tab 1</a>
+          <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item active" role="tab" ref="tabLi-tabs">
+              <a class="nav-link active" href="#tab1" ref="tabLink-tabs">
+                Tab 1
+              </a>
             </li>
-            <li class="nav-item" role="presentation" ref="tabLi-tabs">
-              <a class="nav-link" href="#tab2" ref="tabLink-tabs">Tab 2</a>
+            <li class="nav-item" role="tab" ref="tabLi-tabs">
+              <a class="nav-link" href="#tab2" ref="tabLink-tabs">
+                Tab 2
+              </a>
             </li>
           </ul>
         </div>
@@ -16,7 +20,7 @@
           <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
             <div class="form-check checkbox">
               <label class=" form-check-label">
-                <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0">
+                <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
                 <span>hide</span>
                 </input>
               </label>
@@ -26,7 +30,7 @@
         </div>
         <div role="tabpanel" class="card-body tab-pane" style="display: none" ref="tab-tabs">
           <div id="dataGrid" class="form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid " ref="component">
-            <label class="col-form-label " for="dataGrid-dataGrid">
+            <label ref="label" class="col-form-label " for="dataGrid-dataGrid" id="l-dataGrid-dataGrid">
               grid
             </label>
             <table class="table datagrid-table table-bordered
@@ -40,15 +44,16 @@
                     Value
                   </th>
                   <th>
+                    <span class="sr-only">Add/Remove</span>
                   </th>
                 </tr>
               </thead>
-              <tbody ref="datagrid-dataGrid-tbody">
+              <tbody ref="datagrid-dataGrid-tbody" data-key="datagrid-dataGrid">
                 <tr ref="datagrid-dataGrid-row">
                   <td ref="datagrid-dataGrid">
                     <div id="label" class="form-group has-feedback formio-component formio-component-textfield formio-component-label  formio-component-label-hidden" ref="component">
                       <div ref="element">
-                        <input ref="input" name="data[dataGrid][0][label]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="label-label"></input>
+                        <input ref="input" name="data[dataGrid][0][label]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="label-label" aria-labelledby="l-label-label " aria-required="false"></input>
                       </div>
                       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                     </div>
@@ -56,13 +61,13 @@
                   <td ref="datagrid-dataGrid">
                     <div id="value" class="form-group has-feedback formio-component formio-component-textfield formio-component-value  formio-component-label-hidden" ref="component">
                       <div ref="element">
-                        <input ref="input" name="data[dataGrid][0][value]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="value-value"></input>
+                        <input ref="input" name="data[dataGrid][0][value]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="value-value" aria-labelledby="l-value-value " aria-required="false"></input>
                       </div>
                       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                     </div>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0">
+                    <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0" aria-label="remove">
                       <i class="fa fa-times-circle-o"></i>
                     </button>
                   </td>

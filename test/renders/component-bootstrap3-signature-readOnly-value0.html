@@ -1,0 +1,19 @@
+<div id="signature" class="form-group has-feedback formio-component formio-component-signature formio-component-signature  signature-pad" ref="component">
+  <label class="control-label " for="signature-signature">
+    Signature
+  </label>
+  <div ref="element">
+    <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" disabled="disabled" value="No" id="signature-signature"></input>
+    <div class="signature-pad-body" style="width: 100%;height: 150px;padding:0;margin:0;" tabindex="0" ref="padBody">
+      <a class="btn btn-sm btn-default signature-pad-refresh" ref="refresh">
+        <i class="fa fa-refresh"></i>
+      </a>
+      <canvas class="signature-pad-canvas" style="display: none;" height="150px" ref="canvas"></canvas>
+      <img style="width: 100%;display: inherit;" ref="signatureImage">
+    </div>
+    <div class="signature-pad-footer">
+      Sign above
+    </div>
+  </div>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

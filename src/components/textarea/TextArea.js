@@ -2,7 +2,7 @@
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import { uniqueName, getIEBrowserVersion } from '../../utils/utils';
+import { uniqueName, getBrowserInfo } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -27,7 +27,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       title: 'Text Area',
       group: 'basic',
       icon: 'font',
-      documentation: '/userguide/#textarea',
+      documentation: '/userguide/forms/form-components#text-area',
       weight: 20,
       schema: TextAreaComponent.schema()
     };
@@ -64,9 +64,12 @@ export default class TextAreaComponent extends TextFieldComponent {
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.content = value;
-    if (this.options.readOnly || this.disabled) {
+    if ((this.options.readOnly || this.disabled) && !this.isHtmlRenderMode()) {
+      const elementStyle = this.info.attr.style || '';
+      const children = `<div ref="input" class="formio-editor-read-only-content" ${elementStyle ? `style='${elementStyle}'` : ''}></div>`;
+
       return this.renderTemplate('well', {
-        children: '<div ref="input" class="formio-editor-read-only-content"></div>',
+        children,
         nestedKey: this.key,
         value
       });
@@ -134,7 +137,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           if (!settings) {
             settings = {};
           }
-          settings.mode = `ace/mode/${this.component.as}`;
+          settings.mode = this.component.as ? `ace/mode/${this.component.as}` : 'ace/mode/javascript';
           this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
             this.editors[index] = ace;
             let dataValue = this.dataValue;
@@ -187,8 +190,8 @@ export default class TextAreaComponent extends TextFieldComponent {
               dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
               const value = this.setConvertedValue(dataValue, index);
               const isReadOnly = this.options.readOnly || this.disabled;
-
-              if (getIEBrowserVersion()) {
+              // Use ckeditor 4 in IE browser
+              if (getBrowserInfo().ie) {
                 editor.on('instanceReady', () => {
                   editor.setReadOnly(isReadOnly);
                   editor.setData(value);
@@ -286,8 +289,8 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.editorsReady[index]) {
       const setEditorsValue = (flags) => (editor) => {
-        this.autoModified = true;
         if (!flags.skipWysiwyg) {
+          this.autoModified = true;
           switch (this.component.editor) {
             case 'ace':
               editor.setValue(this.setConvertedValue(value, index));
@@ -328,11 +331,23 @@ export default class TextAreaComponent extends TextFieldComponent {
     return super.setValue(value, flags);
   }
 
+  setContent(element, content, forceSanitize) {
+    super.setContent(element, content, forceSanitize, {
+      addAttr: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'],
+      addTags: ['iframe'],
+    });
+  }
+
   setReadOnlyValue(value, index) {
     index = index || 0;
     if (this.options.readOnly || this.disabled) {
       if (this.refs.input && this.refs.input[index]) {
-        this.setContent(this.refs.input[index], this.interpolate(value));
+        if (this.component.inputFormat === 'plain') {
+          this.refs.input[index].innerText = this.interpolate(value, {}, { noeval: true });
+        }
+        else {
+          this.setContent(this.refs.input[index], this.interpolate(value, {}, { noeval: true }), this.shouldSanitizeValue);
+        }
       }
     }
   }

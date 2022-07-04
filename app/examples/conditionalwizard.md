@@ -29,8 +29,8 @@ This wizard will render conditionally based on the data input from the first pag
   <script type="text/javascript">
   Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/conditionalwizard').then(function(wizard) {
     document.getElementById('showfull').addEventListener('click', function(event) {
-      wizard.wizard.full = event.target.checked;
-      wizard.setForm(wizard.wizard);
+      var updatedWizardSchema = Object.assign({}, wizard.wizard, { full: event.target.checked });
+      wizard.setForm(updatedWizardSchema);
     });
   });
   </script>

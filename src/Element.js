@@ -1,10 +1,10 @@
 import EventEmitter from './EventEmitter';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
-import maskInput from 'vanilla-text-mask';
+import maskInput from '@formio/vanilla-text-mask';
 
 /**
  * The root component for all elements within the Form.io renderer.
@@ -44,19 +44,15 @@ export default class Element {
      *
      * @type {EventEmitter}
      */
-    this.events = (options && options.events) ? options.events : new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
+    this.events = (options && options.events) ? options.events : new EventEmitter();
 
     this.defaultMask = null;
-
     /**
      * Conditional to show or hide helplinks in editForm
      *
      * @type {*|boolean}
      */
-    this.helplinks = this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
+    this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
   }
 
   /**
@@ -84,6 +80,7 @@ export default class Element {
 
     // Store the component id in the handler so that we can determine which events are for this component.
     cb.id = this.id;
+    cb.key = this.key;
     cb.internal = internal;
 
     // Register for this event.
@@ -129,23 +126,30 @@ export default class Element {
   }
 
   /**
-   * Removes all listeners for a certain event.
+   * Removes a listener for a certain event. Not passing the 2nd arg will remove all listeners for that event.
    *
-   * @param event
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function|undefined} cb - The callback handler to handle this event.
    */
-  off(event) {
+  off(event, cb) {
     if (!this.events) {
       return;
     }
+
     const type = `${this.options.namespace}.${event}`;
 
-    // Iterate through all the internal events.
-    _.each(this.events.listeners(type), (listener) => {
-      // Ensure this event is for this component.
-      if (listener && (listener.id === this.id)) {
-        // Turn off this event handler.
-        this.events.off(type, listener);
+    this.events.listeners(type).forEach((listener) => {
+      // Ensure the listener is for this element
+      if (!listener || listener.id !== this.id) {
+        return;
       }
+
+      // If there is a given callback, only deal with the match
+      if (cb && cb !== listener) {
+        return;
+      }
+
+      this.events.off(type, listener);
     });
   }
 
@@ -159,6 +163,28 @@ export default class Element {
     if (this.events) {
       this.events.emit(`${this.options.namespace}.${event}`, ...data);
     }
+  }
+
+  /**
+   * Check if the component has an event handler set up for the event.
+   *
+   * @param {string} event - The event name.
+   * @returns {boolean}
+   */
+  hasEventHandler(event) {
+    if (!this.events) {
+      return false;
+    }
+
+    const type = `${this.options.namespace}.${event}`;
+
+    return this.events.listeners(type).some((listener) => {
+      if (!listener) {
+        return false;
+      }
+
+      return listener.id === this.id || listener.key === this.key;
+    });
   }
 
   /**
@@ -198,6 +224,10 @@ export default class Element {
    */
   removeEventListener(obj, type, func = null) {
     const indexes = [];
+    if (!obj) {
+      return;
+    }
+
     this.eventHandlers.forEach((handler, index) => {
       if (
         (handler.id === this.id)
@@ -347,7 +377,11 @@ export default class Element {
    * @returns {string} - The placeholder that will exist within the input as they type.
    */
   maskPlaceholder(mask) {
-    return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
+    return mask.map((char) => (char instanceof RegExp) ? this.placeholderChar : char).join('');
+  }
+
+  get placeholderChar() {
+    return this.component?.inputMaskPlaceholderChar || '_';
   }
 
   /**
@@ -355,20 +389,24 @@ export default class Element {
    *
    * @param {HTMLElement} input - The html input to apply the mask to.
    * @param {String} inputMask - The input mask to add to this input.
-   * @param {Boolean} placeholder - Set the mask placeholder on the input.
+   * @param {Boolean} usePlaceholder - Set the mask placeholder on the input.
    */
-  setInputMask(input, inputMask, placeholder) {
+  setInputMask(input, inputMask, usePlaceholder) {
     if (input && inputMask) {
-      const mask = FormioUtils.getInputMask(inputMask);
+      const mask = FormioUtils.getInputMask(inputMask, this.placeholderChar);
       this.defaultMask = mask;
+
       try {
         //destroy previous mask
         if (input.mask) {
           input.mask.destroy();
         }
+
         input.mask = maskInput({
           inputElement: input,
-          mask
+          mask,
+          placeholderChar: this.placeholderChar,
+          shadowRoot: this.root ? this.root.shadowRoot : null
         });
       }
       catch (e) {
@@ -379,7 +417,7 @@ export default class Element {
       if (mask.numeric) {
         input.setAttribute('pattern', '\\d*');
       }
-      if (placeholder) {
+      if (usePlaceholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
       }
     }
@@ -515,7 +553,11 @@ export default class Element {
       token: Formio.getToken({
         decode: true
       }),
-      config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
+      config: this.root && this.root.form && this.root.form.config
+        ? this.root.form.config
+        : this.options?.formConfig
+          ? this.options.formConfig
+          : {},
     }, additional, _.get(this.root, 'options.evalContext', {}));
   }
 
@@ -526,8 +568,13 @@ export default class Element {
    * @param data
    * @return {XML|string|*|void}
    */
-  interpolate(string, data) {
-    return FormioUtils.interpolate(string, this.evalContext(data));
+  interpolate(string, data, options = {}) {
+    if (typeof string !== 'function' && (this.component.content || this.component.html)
+      && !FormioUtils.Evaluator.templateSettings.interpolate.test(string)) {
+      string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
+    }
+
+    return FormioUtils.interpolate(string, this.evalContext(data), options);
   }
 
   /**

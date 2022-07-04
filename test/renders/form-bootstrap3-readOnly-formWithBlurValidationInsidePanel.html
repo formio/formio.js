@@ -1,0 +1,35 @@
+<div id="" class="formio-component formio-component-form  formio-component-label-hidden" ref="component">
+  <div class="formio-form formio-read-only" ref="webform" novalidate>
+    <div id="panel" class="formio-component formio-component-panel formio-component-panel " ref="component">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="button" aria-expanded="true" aria-controls="panel-panel" ref="header">
+          <h4 class="mb-0 panel-title">
+            Panel
+          </h4>
+        </div>
+        <div class="panel-body" ref="nested-panel" id="panel-panel">
+          <div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField " ref="component">
+            <label class="control-label " for="textField-textField">
+              Text Field
+            </label>
+            <div ref="element">
+              <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField-textField"></input>
+            </div>
+            <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+          </div>
+        </div>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+    </div>
+    <div id="submit" class="form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+      <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en" disabled="disabled">
+        Submit
+      </button>
+      <div ref="buttonMessageContainer">
+        <span class="help-block" ref="buttonMessage"></span>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+    </div>
+  </div>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

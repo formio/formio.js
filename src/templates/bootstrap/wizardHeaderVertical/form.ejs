@@ -1,0 +1,14 @@
+<nav aria-label="navigation" id="{{ ctx.wizardKey }}-header">
+  <ul class="pagination flex-column">
+    {% ctx.panels.forEach(function(panel, index) { %}
+    <li class="col-xs-12 page-item{{ctx.currentPage === index ? ' active' : ''}}" style="cursor: pointer;">
+      <span class="page-link" ref="{{ctx.wizardKey}}-link" style="margin-left: 0px;">
+        {{ctx.t(panel.title, { _userInput: true })}}
+        {% if (panel.tooltip && ctx.currentPage === index) { %}
+        <i ref="{{ctx.wizardKey}}-tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{panel.tooltip}}"></i>
+        {% } %}
+      </span>
+    </li>
+    {% }) %}
+  </ul>
+</nav>

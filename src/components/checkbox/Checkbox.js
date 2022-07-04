@@ -19,7 +19,7 @@ export default class CheckBoxComponent extends Field {
       title: 'Checkbox',
       group: 'basic',
       icon: 'check-square',
-      documentation: '/userguide/#checkbox',
+      documentation: '/userguide/forms/form-components#check-box',
       weight: 50,
       schema: CheckBoxComponent.schema()
     };
@@ -31,8 +31,9 @@ export default class CheckBoxComponent extends Field {
 
   get defaultValue() {
     const { name } = this.component;
+    const defaultValue = super.defaultValue;
 
-    return name ? (this.component[name] || this.emptyValue) : (this.component.defaultValue || false).toString() === 'true';
+    return name ? (this.component[name] || this.emptyValue) : (defaultValue || this.component.defaultValue || false).toString() === 'true';
   }
 
   get labelClass() {
@@ -60,7 +61,7 @@ export default class CheckBoxComponent extends Field {
       info.attr.name = `data[${this.component.name}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
-    info.label = this.t(this.component.label);
+    info.label = this.t(this.component.label, { _userInput: true });
     info.labelClass = this.labelClass;
     return info;
   }
@@ -75,7 +76,7 @@ export default class CheckBoxComponent extends Field {
     return super.render(this.renderTemplate('checkbox', {
       input: this.inputInfo,
       checked: this.checked,
-      tooltip: this.interpolate(this.t(this.component.tooltip) || '').replace(/(?:\r\n|\r|\n)/g, '<br />')
+      tooltip: this.interpolate(this.t(this.component.tooltip) || '', { _userInput: true }).replace(/(?:\r\n|\r|\n)/g, '<br />')
     }));
   }
 
@@ -170,14 +171,41 @@ export default class CheckBoxComponent extends Field {
   setValue(value, flags = {}) {
     if (
       this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
+      (!this.input && value !== undefined && (this.visible || this.conditionallyVisible() || !this.component.clearOnHide))
     ) {
-      return this.updateValue(value, flags);
+      const changed = this.updateValue(value, flags);
+      if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
+        this.redraw();
+      }
+      return changed;
     }
     return false;
   }
 
   getValueAsString(value) {
     return value ? 'Yes' : 'No';
+  }
+
+  updateValue(value, flags) {
+    // If this is a radio and is alredy checked, uncheck it.
+    if (this.component.name && flags.modified && (this.dataValue === this.component.value)) {
+      this.input.checked = 0;
+      this.input.value = 0;
+      this.dataValue = '';
+    }
+
+    const changed = super.updateValue(value, flags);
+
+    // Update attributes of the input element
+    if (changed && this.input) {
+      if (this.input.checked) {
+        this.input.setAttribute('checked', 'true');
+      }
+      else {
+        this.input.removeAttribute('checked');
+      }
+    }
+
+    return changed;
   }
 }

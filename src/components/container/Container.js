@@ -1,6 +1,8 @@
 import _ from 'lodash';
+import { getFocusableElements } from '../../utils/utils';
 
 import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 
 export default class ContainerComponent extends NestedDataComponent {
@@ -22,7 +24,7 @@ export default class ContainerComponent extends NestedDataComponent {
       title: 'Container',
       icon: 'folder-open',
       group: 'data',
-      documentation: '/userguide/#container',
+      documentation: '/userguide/forms/data-components#container',
       weight: 10,
       schema: ContainerComponent.schema()
     };
@@ -77,5 +79,19 @@ export default class ContainerComponent extends NestedDataComponent {
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, this.dataValue) && valid;
     }, Component.prototype.checkData.call(this, data, flags, row));
+  }
+
+  focus() {
+    const focusableElements = getFocusableElements(this.element);
+      if (focusableElements && focusableElements[0]) {
+        focusableElements[0].focus();
+      }
+  }
+
+  checkConditions(data, flags, row) {
+    // check conditions of parent component first, because it may influence on visibility of it's children
+    const check = Field.prototype.checkConditions.call(this, data, flags, row);
+    this.getComponents().forEach(comp => comp.checkConditions(data, flags, this.dataValue));
+    return check;
   }
 }

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Formio from '../../../Formio';
+import { GlobalFormio as Formio } from '../../../Formio';
 
 export default [
   {
@@ -77,8 +77,14 @@ export default [
             '===': [
               { var: 'data.editor' },
               'quill'
-            ]
+            ],
           },
+          {
+            '===': [
+              { var: 'data.editor' },
+              'ckeditor'
+            ],
+          }
         ]
       }
     }

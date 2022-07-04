@@ -1,5 +1,5 @@
 import { createNumberMask } from 'text-mask-addons';
-import { maskInput } from 'vanilla-text-mask';
+import { maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';
 import NumberComponent from '../number/Number';
@@ -18,7 +18,7 @@ export default class CurrencyComponent extends NumberComponent {
       title: 'Currency',
       group: 'advanced',
       icon: 'usd',
-      documentation: '/userguide/#currency',
+      documentation: '/userguide/forms/form-components#currency',
       weight: 70,
       schema: CurrencyComponent.schema()
     };
@@ -76,6 +76,17 @@ export default class CurrencyComponent extends NumberComponent {
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask || '',
+      pipe: (conformedValue) => {
+        if (conformedValue === '$0._') {
+          // Delay to allow mask to update first.
+          setTimeout(() => {
+            const caretPosition = input.value.length - 1;
+            input.setSelectionRange(caretPosition, caretPosition);
+          });
+        }
+        return conformedValue;
+      },
+      shadowRoot: this.root ? this.root.shadowRoot : null
     });
   }
 

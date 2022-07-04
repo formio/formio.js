@@ -1,10 +1,11 @@
 import NativePromise from 'native-promise-only';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
+    options.display = 'pdf';
     super(element, options);
     this.components = [];
   }
@@ -76,6 +77,14 @@ export default class PDF extends Webform {
     }
     this.postMessage({ name: 'redraw' });
     return super.rebuild();
+  }
+
+  // Do not attach nested components for pdf.
+  attachComponents(element, components, container) {
+    components = components || this.components;
+    container = container || this.component.components;
+    element = this.hook('attachComponents', element, components, container, this);
+    return Promise.resolve();
   }
 
   attach(element) {
@@ -202,6 +211,10 @@ export default class PDF extends Webform {
     let iframeSrc = `${this._form.settings.pdf.src}.html`;
     const params = [`id=${this.id}`];
 
+    if (this.options.showCheckboxBackground || this._form.settings.showCheckboxBackground) {
+      params.push('checkboxbackground=1');
+    }
+
     if (this.options.readOnly) {
       params.push('readonly=1');
     }
@@ -214,10 +227,6 @@ export default class PDF extends Webform {
       params.push('builder=1');
     }
 
-    if (this.options.hideLoader) {
-      params.push(`hide-loader=${this.options.hideLoader}`);
-    }
-
     if (params.length) {
       iframeSrc += `?${params.join('&')}`;
     }
@@ -225,8 +234,8 @@ export default class PDF extends Webform {
    return iframeSrc;
   }
 
-  setForm(form) {
-    return super.setForm(form).then(() => {
+  setForm(form, flags = {}) {
+    return super.setForm(form, flags).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
         form.url = this.formio.formUrl;
@@ -247,37 +256,12 @@ export default class PDF extends Webform {
     const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
-        this.postMessage({ name: 'submission', data: submission });
+        if (changed) {
+          this.postMessage({ name: 'submission', data: submission });
+        }
       });
     }
     return changed;
-  }
-
-  setSubmission(submission) {
-    return super.setSubmission(submission).then(() => {
-      if (this.formio) {
-        this.formio.getDownloadUrl().then((url) => {
-          // Add a download button if it has a download url.
-          if (!url) {
-            return;
-          }
-          if (!this.downloadButton) {
-            if (this.options.primaryProject) {
-              url += `&project=${this.options.primaryProject}`;
-            }
-            this.downloadButton = this.ce('a', {
-              href: url,
-              target: '_blank',
-              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-            }, this.ce('img', {
-              src: require('./pdf.image'),
-              style: 'width:3em;'
-            }));
-            this.element.insertBefore(this.downloadButton, this.iframe);
-          }
-        });
-      }
-    });
   }
 
   postMessage(message) {
@@ -291,8 +275,9 @@ export default class PDF extends Webform {
     }
 
     this.iframeReady.then(() => {
-      if (this.iframeElement && this.iframeElement.contentWindow) {
+      if (this.iframeElement && this.iframeElement.contentWindow && !(message.name === 'form' && this.iframeFormSetUp)) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
+        this.iframeFormSetUp = message.name === 'form';
       }
     });
   }
@@ -309,11 +294,13 @@ export default class PDF extends Webform {
 
   showErrors(error, triggerEvent) {
     const helpBlock = document.getElementById('submit-error');
+    const submitError = this.t('submitError');
+    const isSubmitErrorShown = this.refs.buttonMessage?.textContent.trim() === submitError;
 
-    if (!helpBlock && this.errors.length) {
+    if (!helpBlock && this.errors.length && !isSubmitErrorShown) {
       const p = this.ce('p', { class: 'help-block' });
 
-      this.setContent(p, this.t('submitError'));
+      this.setContent(p, submitError);
       p.addEventListener('click', () => {
         window.scrollTo(0, 0);
       });
@@ -349,22 +336,24 @@ export default class PDF extends Webform {
 /**
  * Listen for window messages.
  */
-window.addEventListener('message', (event) => {
-  let eventData = null;
-  try {
-    eventData = JSON.parse(event.data);
-  }
-  catch (err) {
-    eventData = null;
-  }
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', (event) => {
+    let eventData = null;
+    try {
+      eventData = JSON.parse(event.data);
+    }
+    catch (err) {
+      eventData = null;
+    }
 
-  // If this form exists, then emit the event within this form.
-  if (
-    eventData &&
-    eventData.name &&
-    eventData.formId &&
-    Formio.forms.hasOwnProperty(eventData.formId)
-  ) {
-    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
-  }
-});
+    // If this form exists, then emit the event within this form.
+    if (
+      eventData &&
+      eventData.name &&
+      eventData.formId &&
+      Formio.forms.hasOwnProperty(eventData.formId)
+    ) {
+      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+    }
+  });
+}

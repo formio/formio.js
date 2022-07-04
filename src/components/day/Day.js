@@ -34,7 +34,7 @@ export default class DayComponent extends Field {
       title: 'Day',
       group: 'advanced',
       icon: 'calendar',
-      documentation: '/userguide/#day',
+      documentation: '/userguide/forms/form-components#day',
       weight: 50,
       schema: DayComponent.schema()
     };
@@ -221,6 +221,10 @@ export default class DayComponent extends Field {
   }
 
   render() {
+    if (this.isHtmlRenderMode()) {
+      return super.render(this.renderTemplate('input'));
+    }
+
     return super.render(this.renderTemplate('day', {
       dayFirst: this.dayFirst,
       showDay: this.showDay,
@@ -540,7 +544,7 @@ export default class DayComponent extends Field {
    * @returns {*}
    */
   getValueAt(index) {
-    const date = this.date;
+    const date = this.date || this.emptyValue;
     if (date) {
       this.refs.input[index].value = date;
       return this.refs.input[index].value;
@@ -563,13 +567,13 @@ export default class DayComponent extends Field {
 
   focus() {
     if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
-      this.refs.day.focus();
+      this.refs.day?.focus();
     }
     else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {
-      this.refs.month.focus();
+      this.refs.month?.focus();
     }
     else if (!this.showDay && !this.showDay && this.showYear) {
-      this.refs.year.focus();
+      this.refs.year?.focus();
     }
   }
 
@@ -580,5 +584,9 @@ export default class DayComponent extends Field {
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
     return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');
+  }
+
+  getValidationFormat() {
+    return this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
   }
 }

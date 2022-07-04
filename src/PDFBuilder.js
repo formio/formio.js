@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import Formio from './Formio';
+import { GlobalFormio as Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
 import { fastCloneDeep, getElementRect } from './utils/utils';
@@ -21,6 +21,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     // Force superclass to skip the automatic init; we'll trigger it manually
     options.skipInit = true;
+    options.display = 'pdf';
 
     if (element) {
       super(element, options);
@@ -52,6 +53,7 @@ export default class PDFBuilder extends WebformBuilder {
           datetime: true,
           file: true,
           htmlelement: true,
+          signrequestsignature: true
         }
       },
       basic: false,
@@ -103,26 +105,6 @@ export default class PDFBuilder extends WebformBuilder {
     return result;
   }
 
-  attachLoader(element) {
-    this.loadRefs(element, {
-      'sidebar-loader': 'single'
-    });
-    const sidebarLoader = this.refs['sidebar-loader'];
-    if (sidebarLoader && sidebarLoader.parentNode) {
-      sidebarLoader.parentNode.appendChild(sidebarLoader);
-    }
-  }
-
-  removeLoader(element) {
-    this.loadRefs(element, {
-      'sidebar-loader': 'single'
-    });
-    const sidebarLoader = this.refs['sidebar-loader'];
-    if (sidebarLoader && sidebarLoader.parentNode) {
-      sidebarLoader.parentNode.removeChild(sidebarLoader);
-    }
-  }
-
   attach(element) {
     // PDF Upload
     if (!this.hasPDF) {
@@ -135,7 +117,6 @@ export default class PDFBuilder extends WebformBuilder {
         'uploadProgressWrapper': 'single',
         'dragDropText': 'single'
       });
-      this.removeLoader(element);
       this.addEventListener(this.refs['pdf-upload-button'], 'click', (event) => {
         event.preventDefault();
       });
@@ -179,6 +160,10 @@ export default class PDFBuilder extends WebformBuilder {
           }
         });
         this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {
+          if (!this.refs.hiddenFileInputElement.value) {
+            return;
+          }
+
           this.upload(this.refs.hiddenFileInputElement.files[0]);
           this.refs.hiddenFileInputElement.value = '';
         });
@@ -191,45 +176,54 @@ export default class PDFBuilder extends WebformBuilder {
     return super.attach(element).then(() => {
       this.loadRefs(this.element, {
         iframeDropzone: 'single',
-        'sidebar-container': 'multiple'
+        'sidebar-container': 'multiple',
+        'sidebar': 'single',
       });
 
-      this.afterAttach(element);
+      this.afterAttach();
       return this.element;
     });
   }
 
-  afterAttach(element) {
-    this.attachLoader(element);
+  afterAttach() {
     this.on('saveComponent', (component) => {
       this.webform.postMessage({ name: 'updateElement', data: component });
     });
     this.on('removeComponent', (component) => {
       this.webform.postMessage({ name: 'removeElement', data: component });
     });
-    if (this.refs['sidebar-loader']) {
-      this.webform.on('iframe-ready', () => {
-        this.removeLoader(element);
-      }, true);
-    }
     this.initIframeEvents();
     this.updateDropzoneDimensions();
-    this.initDropzoneEvents();
-    this.prepSidebarComponentsForDrag();
+
+    const sidebar = this.refs.sidebar;
+    if (sidebar) {
+      this.addClass(sidebar, 'disabled');
+      this.webform.on('iframe-ready', () => {
+        this.pdfLoaded = true;
+        this.updateDragAndDrop();
+        this.removeClass(sidebar, 'disabled');
+      }, true);
+    }
   }
 
   upload(file) {
     const formio = new Formio(this.projectUrl);
-    this.refs.dragDropText.style.display = 'none';
-    this.refs.uploadProgressWrapper.style.display = 'inherit';
+    if (this.refs.dragDropText) {
+      this.refs.dragDropText.style.display = 'none';
+    }
+    if (this.refs.uploadProgressWrapper) {
+      this.refs.uploadProgressWrapper.style.display = 'inherit';
+    }
     formio.uploadFile('url', file, file, '', (event) => {
-      const progress = Math.floor((event.loaded / event.total) * 100);
-      this.refs.uploadProgress.style.width = `${progress}%`;
-      if (progress > 98) {
-        this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
-      }
-      else {
-        this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+      if (this.refs.uploadProgress) {
+        const progress = Math.floor((event.loaded / event.total) * 100);
+        this.refs.uploadProgress.style.width = `${progress}%`;
+        if (progress > 98) {
+          this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
+        }
+        else {
+          this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+        }
       }
     }, `${this.projectUrl}/upload`, {}, 'file')
       .then((result) => {
@@ -237,8 +231,12 @@ export default class PDFBuilder extends WebformBuilder {
           id: result.data.file,
           src: `${result.data.filesServer}${result.data.path}`
         });
-        this.refs.dragDropText.style.display = 'inherit';
-        this.refs.uploadProgressWrapper.style.display = 'none';
+        if (this.refs.dragDropText) {
+          this.refs.dragDropText.style.display = 'inherit';
+        }
+        if (this.refs.uploadProgressWrapper) {
+          this.refs.uploadProgressWrapper.style.display = 'none';
+        }
         this.emit('pdfUploaded', result.data);
         this.redraw();
       })
@@ -374,6 +372,9 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   updateDragAndDrop() {
+    if (!this.pdfLoaded) {
+      return;
+    }
     this.initDropzoneEvents();
     this.prepSidebarComponentsForDrag();
   }
@@ -441,14 +442,14 @@ export default class PDFBuilder extends WebformBuilder {
 
     const element = e.target;
     const type = element.getAttribute('data-type');
-
+    const key = element.getAttribute('data-key');
+    const group = element.getAttribute('data-group');
     const schema = fastCloneDeep(this.schemas[type]);
 
-    schema.key = _.camelCase(
-      schema.label ||
-      schema.placeholder ||
-      schema.type
-    );
+    if (key && group) {
+      const info = this.getComponentInfo(key, group);
+      _.merge(schema, info);
+    }
 
     // Set a unique key for this component.
     BuilderUtils.uniquify([this.webform._form], schema);

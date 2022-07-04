@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const babel = require('gulp-babel');
 const filter = require('gulp-filter');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const concat = require('gulp-concat');
 const replace = require('gulp-replace');
 const rename = require('gulp-rename');
@@ -87,16 +87,23 @@ const compileStyles = (styles, file) => {
     .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest('dist'));
 };
+gulp.task('styles-embed', function embedStyles() {
+  return compileStyles([
+    './src/sass/formio.embed.scss'
+  ], 'formio.embed');
+});
 gulp.task('styles-form', function formStyles() {
   return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/@formio/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/tippy.js/dist/tippy.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './src/sass/formio.form.scss'
   ], 'formio.form');
 });
 gulp.task('styles-builder', function builderStyles() {
   return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/@formio/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/tippy.js/dist/tippy.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',
     './src/sass/formio.form.scss',
@@ -105,7 +112,8 @@ gulp.task('styles-builder', function builderStyles() {
 });
 gulp.task('styles-full', gulp.series('builder-fonts', function fullStyles() {
   return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/@formio/choices.js/public/assets/styles/choices.min.css',
+    './node_modules/tippy.js/dist/tippy.css',
     './node_modules/dialog-polyfill/dialog-polyfill.css',
     './node_modules/dragula/dist/dragula.css',
     './node_modules/font-awesome/css/font-awesome.css',
@@ -194,6 +202,7 @@ gulp.task('build', gulp.series(
     'bootswatch'
   ),
   gulp.parallel(
+    'styles-embed',
     'styles-form',
     'styles-builder',
     'styles-full',

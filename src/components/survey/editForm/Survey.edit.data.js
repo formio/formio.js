@@ -26,7 +26,13 @@ export default [
         type: 'textfield',
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
-      }
+      },
+      {
+        label: 'Tooltip',
+        key: 'tooltip',
+        input: true,
+        type: 'textfield',
+      },
     ]
   },
   {
@@ -52,7 +58,13 @@ export default [
         type: 'textfield',
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
-      }
+      },
+      {
+        label: 'Tooltip',
+        key: 'tooltip',
+        input: true,
+        type: 'textfield',
+      },
     ]
   }
 ];

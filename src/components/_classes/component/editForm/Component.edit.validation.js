@@ -72,6 +72,7 @@ export default [
         rows: 5,
         editor: 'ace',
         hideLabel: true,
+        as: 'javascript',
         input: true
       },
       {
@@ -132,6 +133,71 @@ export default [
         editor: 'ace',
         as: 'json',
         input: true
+      }
+    ]
+  },
+  {
+    type: 'panel',
+    title: 'Custom Errors',
+    collapsible: true,
+    collapsed: true,
+    key: 'errors',
+    weight: 400,
+    components: [
+      {
+        type: 'textarea',
+        key: 'errors',
+        hideLabel: true,
+        rows: 5,
+        editor: 'ace',
+        as: 'json',
+        input: true
+      },
+      {
+        type: 'htmlelement',
+        tag: 'div',
+        content: `
+          <p>This allows you to set different custom error messages for different errors
+          (in contrast to “Custom Error Message”, which only allows you to set one
+          error message for all errors). E.g.</p>
+
+<pre>{
+  "required": "{<span/>{ field }} is required. Try again.",
+  "maxLength": "{<span/>{ field }} is too long. Try again."
+}</pre>
+
+          <p>You can set the following keys (among others):</p>
+          <ul>
+            <li>r<span/>equired</li>
+            <li>m<span/>in</li>
+            <li>m<span/>ax</li>
+            <li>m<span/>inLength</li>
+            <li>m<span/>axLength</li>
+            <li>m<span/>inWords</li>
+            <li>m<span/>axWords</li>
+            <li>i<span/>nvalid_email</li>
+            <li>i<span/>nvalid_date</li>
+            <li>i<span/>nvalid_day</li>
+            <li>i<span/>nvalid_regex</li>
+            <li>m<span/>ask</li>
+            <li>p<span/>attern</li>
+            <li>c<span/>ustom</li>
+          </ul>
+
+          <p>Depending on the error message some of the following template variables can be used in the script:</p>
+          <ul>
+           <li><code>{<span/>{ f<span/>ield }}</code> is replaced with the label of the field.</li>
+           <li><code>{<span/>{ m<span/>in }}</code></li>
+           <li><code>{<span/>{ m<span/>ax }}</code></li>
+           <li><code>{<span/>{ l<span/>ength }}</code></li>
+           <li><code>{<span/>{ p<span/>attern }}</code></li>
+           <li><code>{<span/>{ m<span/>inDate }}</code></li>
+           <li><code>{<span/>{ m<span/>axDate }}</code></li>
+           <li><code>{<span/>{ m<span/>inYear }}</code></li>
+           <li><code>{<span/>{ m<span/>axYear }}</code></li>
+           <li><code>{<span/>{ r<span/>egex }}</code></li>
+          </ul>
+        `
       }
     ]
   }

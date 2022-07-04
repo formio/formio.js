@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": "formio",
   "parserOptions": {
     "ecmaVersion": 2015,
@@ -11,6 +11,7 @@
     "node": true,
     "mocha": true
   },
+  "ignorePatterns": ["!.*rc.js"],
   "rules": {
     "max-len": [
       "off",
@@ -26,9 +27,8 @@
     "no-prototype-builtins": "off",
     "prefer-const": "error",
     "prefer-template": "error",
-    "object-curly-spacing": [
-      "error",
-      "always"
-    ]
+    "object-curly-spacing": ["error", "always"],
+    "quotes": ["off"],
+    "brace-style": ["off"]
   }
 }

@@ -1,10 +1,8 @@
 import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import NativePromise from 'native-promise-only';
-
 import i18Defaults from '../lib/i18n';
 import FormBuilder from '../lib/FormBuilder';
 import AllComponents from '../lib/components';
@@ -14,44 +12,13 @@ Components.setComponents(AllComponents);
 
 if (process) {
   // Do not handle unhandled rejections.
-  process.on('unhandledRejection', (err, p) => {
-    console.warn('Unhandled rejection!', err);
+  process.on('unhandledRejection', () => {
+    console.warn('Unhandled rejection!');
   });
 }
 
 // Make sure that the Option is available from the window.
 global.Option = global.window.Option;
-
-// Stub out the toLocaleString method so it works in mocha.
-// eslint-disable-next-line no-extend-native
-Number.prototype.toLocaleString = function(local, options) {
-  if (options && options.style === 'currency') {
-    switch (local) {
-      case 'en':
-      case 'en-US':
-        return '$100.00';
-      case 'en-GB':
-        return 'US$100.00';
-      case 'fr':
-        return '100,00 $US';
-      case 'de':
-        return '100,00 $';
-    }
-  }
-  else {
-    switch (local) {
-      case 'en':
-      case 'en-US':
-        return '12,345.679';
-      case 'en-GB':
-        return '12,345.679';
-      case 'fr':
-        return '12 345,679';
-      case 'de':
-        return '12.345,679';
-    }
-  }
-};
 
 let formBuilderElement = null;
 let formBuilder = null;
@@ -168,10 +135,7 @@ const Harness = {
   testCreate(Component, componentSettings, options = {}) {
     const compSettings = _.cloneDeep(componentSettings);
     const component = new Component(compSettings, _.merge({
-      events: new EventEmitter({
-        wildcard: false,
-        maxListeners: 0
-      })
+      events: new EventEmitter(),
     }, options));
     component.pristine = false;
     return new Promise((resolve, reject) => {
@@ -241,8 +205,8 @@ const Harness = {
     return element ? element.dispatchEvent(clickEvent) : null;
   },
   dispatchEvent(eventType, element, query, beforeDispatch) {
-    const event = new Event(eventType);
-    const el = element.querySelector(query);
+    const event = new Event(eventType, { bubbles: true, cancelable: true });
+    const el = query instanceof HTMLElement ? query : element.querySelector(query);
     assert(el, 'Element is not found');
     beforeDispatch && beforeDispatch(el);
     el.dispatchEvent(event);
@@ -277,6 +241,20 @@ const Harness = {
     assert(element, `${query} not found`);
     assert(element.className.split(' ').includes(className));
   },
+  testModalWrapperErrorClasses(component, shouldBeInvalid = true, query = '[ref="openModalWrapper"]') {
+    const modalWrapper = component.element.querySelector(query);
+    assert(modalWrapper, `${query} not found`);
+    assert.equal(
+      modalWrapper.className.split(' ').includes('formio-error-wrapper'),
+      shouldBeInvalid,
+      `Should ${shouldBeInvalid ? '' : 'not'} have error class`
+    );
+    assert.equal(
+      modalWrapper.className.split(' ').includes('has-message'),
+      shouldBeInvalid,
+      `Should ${shouldBeInvalid ? '' : 'not'} have class indicating that the component has a message`
+    );
+  },
   testElementAttribute(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {
       assert.equal(expected, element.getAttribute(attribute));
@@ -290,7 +268,7 @@ const Harness = {
     return component;
   },
   setInputValue(component, name, value) {
-    const inputEvent = new Event('input', {bubbles: true, cancelable: true});
+    const inputEvent = new Event('input', { bubbles: true, cancelable: true });
     const element = component.element.querySelector(`input[name="${name}"]`);
     assert(element, `${name} input not found`);
     element.value = value;
@@ -300,6 +278,17 @@ const Harness = {
     const element = component.element.querySelector(`[name="${name}"]`);
     assert(element, `${name} input not found`);
     assert.equal(value, element[valueProperty]);
+  },
+  setTagsValue(values, component) {
+    const blurEvent = new Event('blur');
+    const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+    const element = component.choices.input.element;
+
+    values.forEach(value => {
+      element.value = value;
+      element.dispatchEvent(inputEvent);
+      element.dispatchEvent(blurEvent);
+    });
   },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
@@ -332,8 +321,10 @@ const Harness = {
   testValid(component, value) {
     return new Promise((resolve, reject) => {
       let resolved = false;
-      component.on('componentChange', (change) => {
-        if (resolved) {return}
+      component.on('componentChange', () => {
+        if (resolved) {
+          return;
+        }
         const valid = component.checkValidity();
         if (valid) {
           assert.equal(component.dataValue, value);
@@ -351,15 +342,19 @@ const Harness = {
   testInvalid(component, value, field, expectedError) {
     return new Promise((resolve, reject) => {
       let resolved = false;
-      component.on('componentChange', (change) => {
-        if (resolved) {return}
-        if(component.checkValidity()) {
+      component.on('componentChange', () => {
+        if (resolved) {
+          return;
+        }
+        if (component.checkValidity()) {
           reject('Component should not be valid');
           resolved = true;
         }
       });
       component.on('componentError', (error) => {
-        if (resolved) {return}
+        if (resolved) {
+          return;
+        }
         assert.equal(error.component.key, field);
         assert.equal(error.message, expectedError);
         resolve();

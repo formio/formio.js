@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import assert from 'power-assert';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
+import Formio from '../../Formio';
 
 import {
   comp1,
@@ -12,6 +14,9 @@ import {
   comp5,
   withDefValue,
   withRowGroupsAndDefValue,
+  modalWithRequiredFields,
+  withConditionalFieldsAndValidations,
+  withLogic
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -39,7 +44,7 @@ describe('DataGrid Component', () => {
     }).catch(done);
   });
 
-  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed, 
+  it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed,
     and clear values when pushing 'yes, delete it' in alert container`, (done) => {
     Harness.testCreate(DataGridComponent, comp4).then((component) => {
       const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
@@ -143,7 +148,8 @@ describe('DataGrid Component', () => {
         },
         {
           make: '',
-          model: ''
+          model: '',
+          year: ''
         }
       ]);
     });
@@ -175,8 +181,8 @@ describe('DataGrid Component', () => {
             { name: 'Alex', age: 1 },
             { name: 'Bob',  age: 2 },
             { name: 'Conny', age: 3 },
-            { name: '' },
-            { name: '' }
+            { name: '', age: '' },
+            { name: '', age: '' }
           ]);
           done();
         }, done)
@@ -185,6 +191,24 @@ describe('DataGrid Component', () => {
     catch (err) {
       done(err);
     }
+  });
+
+  it('Should not cause setValue loops when logic within hidden component is set', function(done) {
+    Formio.createForm(document.createElement('div'), withLogic)
+      .then((form) => {
+        const datagrid = form.getComponent('dataGrid');
+        const spyFunc = sinon.spy(datagrid, 'checkComponentConditions');
+        const textField = form.getComponent('escalationId');
+        const select = form.getComponent('teamName');
+
+        textField.component.hidden = true;
+        select.setValue('preRiskAnalysis', { modified: true });
+
+        setTimeout(() => {
+          expect(spyFunc.callCount).to.be.lessThan(4);
+          done();
+        }, 1500);
+      });
   });
 
   describe('get minLength', () => {
@@ -260,6 +284,83 @@ describe('DataGrid Component', () => {
       expect(getGroupSizes.call(self)).to.deep.equal([1, 3, 10]);
     });
   });
+
+  it('Test "components" property and their context', (done) => {
+    const testComponentsData = (components, expectedData) => {
+      components.forEach((comp) => assert.deepEqual(
+        comp.data,
+        expectedData,
+        'Data of components inside DataGrid should be equal to row\'s data'
+      ));
+    };
+
+    Formio.createForm(document.createElement('div'), withConditionalFieldsAndValidations)
+      .then((form) => {
+        const rootText = form.getComponent(['text']);
+        rootText.setValue('Match', { modified: true });
+
+        setTimeout(() => {
+          const emptyRowData = {
+            rootTest: '',
+            rowTest: ''
+          };
+          const dataGrid = form.getComponent(['dataGrid']);
+
+          assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+          testComponentsData(dataGrid.components, emptyRowData);
+
+          const showTextFieldInsideDataGridRadio = form.getComponent(['radio']);
+          showTextFieldInsideDataGridRadio.setValue('show', { modified: true });
+
+          setTimeout(() => {
+            const rowData1 = { ...emptyRowData, radio1: '' };
+            const dataGridRowRadio = form.getComponent(['dataGrid', 0, 'radio1']);
+
+            assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+            testComponentsData(dataGrid.components, rowData1);
+            assert.equal(dataGridRowRadio.visible, true, 'Radio inside DataGrid should become visible');
+
+            dataGridRowRadio.setValue('dgShow', { modified: true });
+
+            setTimeout(() => {
+              const rowData2 =  {
+                ...emptyRowData,
+                radio1: 'dgShow',
+                rowShowShowTextfieldWhenDataGridRadioHasShowValue: ''
+              };
+              const dataGridRowConditionalField = form.getComponent(['dataGrid', 0, 'rowShowShowTextfieldWhenDataGridRadioHasShowValue']);
+
+              assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+              testComponentsData(dataGrid.components, rowData2);
+              assert.equal(dataGridRowConditionalField.visible, true, 'Conditional field inside DataGrid should become visible');
+
+              const rootTest = form.getComponent(['dataGrid', 0, 'rootTest']);
+              const rowTest = form.getComponent(['dataGrid', 0, 'rowTest']);
+
+              rootTest.setValue('Match', { modified: true });
+              rowTest.setValue('Match', { modified: true });
+
+              setTimeout(() => {
+                const rowData3 = {
+                  ...rowData2,
+                  rowTest: 'Match',
+                  rootTest: 'Match'
+                };
+
+                assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+                testComponentsData(dataGrid.components, rowData3);
+
+                form.checkAsyncValidity(null, true).then((valid) => {
+                  assert(valid, 'Form should be valid');
+                  done();
+                }).catch(done);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
 });
 
 describe('DataGrid Panels', () => {
@@ -292,10 +393,53 @@ describe('DataGrid Panels', () => {
   });
 });
 
-describe('Datagrid disabling', () => {
+describe('DataGrid disabling', () => {
   it('Child components should be disabled', () => {
     return Harness.testCreate(DataGridComponent, comp3).then((component) => {
       assert.equal(component.components.reduce((acc, child) => acc && child.parentDisabled, true), true);
     });
+  });
+});
+
+describe('DataGrid modal', () => {
+  it('Should be highlighted in red when invalid', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, {
+      display: 'form',
+      components: [modalWithRequiredFields]
+    })
+    .then((form) => {
+      const data = {
+        dataGrid: [
+          {
+            textField: '',
+            textArea: ''
+          }
+        ]
+      };
+
+      form.checkValidity(data, true, data);
+
+      setTimeout(() => {
+        Harness.testModalWrapperErrorClasses(form);
+
+        const validData = {
+          dataGrid: [
+            {
+              textField: 'Some text',
+              textArea: 'Mre text'
+            }
+          ]
+        };
+
+        form.setSubmission({ data: validData });
+
+        setTimeout(() => {
+          Harness.testModalWrapperErrorClasses(form, false);
+          done();
+        }, 200);
+      }, 200);
+    })
+    .catch(done);
   });
 });

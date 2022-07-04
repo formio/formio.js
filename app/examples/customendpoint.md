@@ -11,7 +11,7 @@ Sometimes you may want to submit the data to your own APIs or navigate to anothe
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
 <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
-<div id="formio"></formio>
+<div id="formio"></div>
 ```
 
 ```js
@@ -25,7 +25,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
     form.on('submit', function(submission) {
       console.log(submission);
       alert('Submission sent to custom endpoint. See developer console.');
-      return fetch('https://hookb.in/ZrRRbJBe', {
+      return Formio.fetch('https://hookb.in/ZrRRbJBe', {
           body: JSON.stringify(submission),
           headers: {
             'content-type': 'application/json'
@@ -54,7 +54,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
     form.on('submit', function(submission) {
       console.log(submission);
       alert('Submission sent to custom endpoint. See developer console.');
-      return fetch('https://hookb.in/ZrRRbJBe', {
+      return Formio.fetch('https://hookb.in/ZrRRbJBe', {
           body: JSON.stringify(submission),
           headers: {
             'content-type': 'application/json'
@@ -66,6 +66,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
           form.emit('submitDone', submission)
           response.json()
         })
+        .catch(function() {})
     });
   });
 </script>

@@ -1,12 +1,12 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import DateTimeEditData from './editForm/DateTime.edit.data';
 import DateTimeEditDate from './editForm/DateTime.edit.date';
 import DateTimeEditDisplay from './editForm/DateTime.edit.display';
 import DateTimeEditTime from './editForm/DateTime.edit.time';
+import DateTimeEditValidation from './editForm/DateTime.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: DateTimeEditDisplay
@@ -26,6 +26,14 @@ export default function(...extend) {
     {
       key: 'data',
       components: DateTimeEditData
-    }
+    },
+    {
+      key: 'validation',
+      components: DateTimeEditValidation
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ], ...extend);
 }

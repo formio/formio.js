@@ -1,3 +1,7 @@
+import _isEqual from 'lodash/isEqual';
+import _omit from 'lodash/omit';
+import _difference from 'lodash/difference';
+import _keys from 'lodash/keys';
 export default [
   {
     key: 'labelPosition',
@@ -134,10 +138,52 @@ export default [
           cancel: true,
           next: true
         },
+      },
+      {
+        weight: 55,
+        label: 'Navigate Wizard on Enter',
+        type: 'checkbox',
+        key: 'navigateOnEnter',
+        input: true,
+        inputType: 'checkbox',
+        defaultValue: false,
+        tooltip: 'Use the Enter key to go forward through pages.'
+      },
+      {
+        weight: 56,
+        label: 'Save on Enter',
+        type: 'checkbox',
+        key: 'saveOnEnter',
+        input: true,
+        inputType: 'checkbox',
+        defaultValue: false,
+        tooltip: 'Use the Enter key to submit form on last page.'
+      },
+      {
+        weight: 60,
+        label: 'Scroll up on page opening',
+        type: 'checkbox',
+        key: 'scrollToTop',
+        input: true,
+        inputType: 'checkbox',
+        defaultValue: false,
+        tooltip: 'Scroll to the top of the wizard page when user navigates to it'
       }
     ],
     customConditional(context) {
-      return context.instance.options.editForm.display === 'wizard';
+      let isWizardPanel = false;
+      if (context.instance.options.editForm.display === 'wizard') {
+        const { components } = context.instance.options.editForm;
+        const component = context.instance.options.editComponent;
+        if (components && component) {
+          isWizardPanel = components.some((comp) => {
+            const diff = _difference(_keys(comp), _keys(component)) || [];
+            diff.push('components');
+            return _isEqual(_omit(comp, diff), _omit(component, diff));
+          });
+        }
+      }
+      return isWizardPanel;
     }
   },
   {

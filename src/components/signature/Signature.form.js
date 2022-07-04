@@ -1,11 +1,10 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import SignatureEditData from './editForm/Signature.edit.data';
 import SignatureEditDisplay from './editForm/Signature.edit.display';
 import SignatureEditValidation from './editForm/Signature.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: SignatureEditDisplay
@@ -17,6 +16,10 @@ export default function(...extend) {
     {
       key: 'validation',
       components: SignatureEditValidation
+    },
+    {
+      key: 'addons',
+      ignore: true
     },
   ], ...extend);
 }

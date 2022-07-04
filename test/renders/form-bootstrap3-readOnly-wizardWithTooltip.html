@@ -1,0 +1,35 @@
+<div class="formio-form formio-read-only">
+  <div style="position: relative;">
+    <nav aria-label="navigation" id="wizard-page1-header" ref="wizard-page1-header">
+      <ul class="pagination">
+        <li class="page-item active" style="">
+          <span class="page-link" ref="wizard-page1-link">
+        Page 1 title
+        <i ref="wizard-page1-tooltip" class="fa fa-question-circle text-muted" data-tooltip="tooltip for page 1"></i>
+      </span>
+        </li>
+        <li class="page-item" style="">
+          <span class="page-link" ref="wizard-page1-link">
+        Page 2 title
+      </span>
+        </li>
+      </ul>
+    </nav>
+    <div class="wizard-page" ref="wizard-page1">
+      <div id="number" class="form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
+        <label class="control-label " for="number-number">
+          Number
+        </label>
+        <div ref="element">
+          <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number"></input>
+        </div>
+        <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+      </div>
+    </div>
+    <ul class="list-inline" id="wizard-page1-nav">
+      <li class="list-inline-item">
+        <button class="btn btn-primary btn-wizard-nav-next" ref="wizard-page1-next">Next</button>
+      </li>
+    </ul>
+  </div>
+</div>

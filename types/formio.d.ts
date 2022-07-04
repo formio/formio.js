@@ -29,9 +29,10 @@ export class Formio {
   static plugins: any;
   static cache: any;
   static providers: any;
-  static events: any; // EventEmitter2
+  static events: any; // EventEmitter3
   static namespace: string;
   static formOnly?: boolean;
+  static rulesEntities: any;
   delete(type: any, opts?: any): any;
   index(type: any, query?: any, opts?: any): any;
   save(type: any, data: any, opts?: any): any;

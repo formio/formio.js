@@ -10,7 +10,8 @@ export default [
     tooltip: 'The label for this field that will appear next to it.',
     validate: {
       required: true
-    }
+    },
+    autofocus: true,
   },
   {
     type: 'select',
@@ -99,6 +100,7 @@ export default [
     as: 'html',
     wysiwyg: {
       minLines: 3,
+      isUseWorkerDisabled: true,
     },
   },
   {
@@ -113,6 +115,7 @@ export default [
     as: 'html',
     wysiwyg: {
       minLines: 3,
+      isUseWorkerDisabled: true,
     },
   },
   {
@@ -165,7 +168,7 @@ export default [
     key: 'dataGridLabel',
     input: true,
     customConditional(context) {
-      return context.instance.options.editComponent.inDataGrid;
+      return context.instance.options?.flags?.inDataGrid;
     }
   },
   {

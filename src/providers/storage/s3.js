@@ -1,12 +1,12 @@
 import NativePromise from 'native-promise-only';
 import XHR from './xhr';
 const s3 = (formio) => ({
-  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
+  uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
     return XHR.upload(formio, 's3', (xhr, response) => {
       response.data.fileName = fileName;
       response.data.key = XHR.path([response.data.key, dir, fileName]);
       if (response.signed) {
-        xhr.open('PUT', response.signed);
+        xhr.openAndSetHeaders('PUT', response.signed);
         xhr.setRequestHeader('Content-Type', file.type);
         return file;
       }
@@ -16,10 +16,10 @@ const s3 = (formio) => ({
           fd.append(key, response.data[key]);
         }
         fd.append('file', file);
-        xhr.open('POST', response.url);
+        xhr.openAndSetHeaders('POST', response.url);
         return fd;
       }
-    }, file, fileName, dir, progressCallback, groupPermissions, groupId).then((response) => {
+    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then((response) => {
       return {
         storage: 's3',
         name: fileName,

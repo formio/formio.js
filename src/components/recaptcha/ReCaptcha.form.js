@@ -1,8 +1,8 @@
-import baseEditForm from '../_classes/component/Component.form';
+import Components from '../Components';
 import ReCaptchaEditDisplay from './editForm/ReCaptcha.edit.display';
 
 export default function() {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: ReCaptchaEditDisplay
@@ -22,6 +22,10 @@ export default function() {
     {
       key: 'logic',
       ignore: true
-    }
+    },
+    {
+      key: 'addons',
+      ignore: true
+    },
   ]);
 }

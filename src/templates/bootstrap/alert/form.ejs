@@ -1,0 +1,10 @@
+<div
+  {% for (var attr in ctx.attrs) { %}
+    {{attr}}="{{ctx.attrs[attr]}}"
+  {% } %}
+>
+  {{ctx.message}}
+  {% if (ctx.options.vpat) { %}
+    <span class="sr-only" id="hotkey-i-{{ctx.form._id}}">{{ctx.t('errorListHotkey')}}</span>
+  {% } %}
+</div>

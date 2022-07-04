@@ -14,7 +14,7 @@
         Phone Number
       </label>
       <div ref="element">
-        <input ref="input" name="data[phoneNumber]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="phoneNumber-phoneNumber"></input>
+        <input ref="input" name="data[phoneNumber]" type="text" class="form-control" lang="en" inputmode="decimal" spellcheck="true" value="" id="phoneNumber-phoneNumber"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -23,7 +23,7 @@
         Address
       </label>
       <div class="address-autocomplete-container">
-        <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off">
+        <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off" aria-label="autocomplete">
         <i class="address-autocomplete-remove-value-icon fa fa-times" tabindex="0" ref="removeValueIcon"></i>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
@@ -49,47 +49,47 @@
       <div class="row">
         <div class="form-group col col-xs-4">
           <label for="day-month" class="">Month</label>
-          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en">
-              <option value="">
+          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-required="false">
+              <option value=''>
               </option>
-              <option value="1">
+              <option value='1'>
                 January
               </option>
-              <option value="2">
+              <option value='2'>
                 February
               </option>
-              <option value="3">
+              <option value='3'>
                 March
               </option>
-              <option value="4">
+              <option value='4'>
                 April
               </option>
-              <option value="5">
+              <option value='5'>
                 May
               </option>
-              <option value="6">
+              <option value='6'>
                 June
               </option>
-              <option value="7">
+              <option value='7'>
                 July
               </option>
-              <option value="8">
+              <option value='8'>
                 August
               </option>
-              <option value="9">
+              <option value='9'>
                 September
               </option>
-              <option value="10">
+              <option value='10'>
                 October
               </option>
-              <option value="11">
+              <option value='11'>
                 November
               </option>
-              <option value="12">
+              <option value='12'>
                 December
               </option>
             </select>
-            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+            <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
           </div>
         </div>
         <div class="form-group col col-xs-3">
@@ -130,8 +130,8 @@
       <label class="control-label " for="resource-resource">
         Resource
       </label>
-      <select ref="selectContainer" name="data[resource]" type="text" class="form-control" lang="en" id="resource-resource"></select>
-      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+      <select ref="selectContainer" name="data[resource]" type="text" class="form-control" lang="en" id="resource-resource" aria-required="false"></select>
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="resourceAdd" class="form-group has-feedback formio-component formio-component-resource formio-component-resourceAdd formio-component-multiple " ref="component">
@@ -142,8 +142,8 @@
         <tbody>
           <tr>
             <td>
-              <select ref="selectContainer" multiple name="data[resourceAdd]" type="text" class="form-control" lang="en" id="resourceAdd-resourceAdd"></select>
-              <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+              <select ref="selectContainer" multiple name="data[resourceAdd]" type="text" class="form-control" lang="en" id="resourceAdd-resourceAdd" aria-required="false"></select>
+              <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
             </td>
           </tr>
           <tr>
@@ -166,11 +166,11 @@
           <a class="btn btn-sm btn-default signature-pad-refresh" ref="refresh">
             <i class="fa fa-refresh"></i>
           </a>
-          <canvas class="signature-pad-canvas" height="150px" ref="canvas"></canvas>
+          <canvas class="signature-pad-canvas" style="display: none;" height="150px" ref="canvas"></canvas>
           <span class="form-control-feedback field-required-inline text-danger">
     <i class="fa fa-asterisk"></i>
   </span>
-          <img style="width: 100%;display: none;" ref="signatureImage">
+          <img style="width: 100%;display: inherit;" ref="signatureImage">
         </div>
         <div class="signature-pad-footer">
           Sign above
@@ -195,13 +195,19 @@
         <thead>
           <tr>
             <th></th>
-            <th style="text-align: center;">1</th>
-            <th style="text-align: center;">2</th>
+            <th style="text-align: center;">
+              1
+            </th>
+            <th style="text-align: center;">
+              2
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>A</td>
+            <td>
+              A
+            </td>
             <td style="text-align: center;">
               <input type="radio" name="data[survey][a]" value="1" id="survey-a-1" ref="input">
             </td>
@@ -210,7 +216,9 @@
             </td>
           </tr>
           <tr>
-            <td>B</td>
+            <td>
+              B
+            </td>
             <td style="text-align: center;">
               <input type="radio" name="data[survey][b]" value="1" id="survey-b-1" ref="input">
             </td>

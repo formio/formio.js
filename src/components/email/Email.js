@@ -18,7 +18,7 @@ export default class EmailComponent extends TextFieldComponent {
       title: 'Email',
       group: 'advanced',
       icon: 'at',
-      documentation: '/userguide/#email',
+      documentation: '/userguide/forms/form-components#email',
       weight: 10,
       schema: EmailComponent.schema()
     };
@@ -37,5 +37,18 @@ export default class EmailComponent extends TextFieldComponent {
     const info = super.inputInfo;
     info.attr.type = this.component.mask ? 'password' : 'email';
     return info;
+  }
+
+  normalizeValue(value, flags = {}) {
+    value = super.normalizeValue(value, flags);
+    if (this.options.server && !!value) {
+      if (Array.isArray(value)) {
+        value = value.map(val => val.toLowerCase());
+      }
+      else {
+        value = value.toLowerCase();
+      }
+    }
+    return value;
   }
 }

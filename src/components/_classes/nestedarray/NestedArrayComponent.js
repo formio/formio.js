@@ -69,6 +69,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       silentCheck = true;
       opts.noRefresh = true;
     }
+
     const valid = _.reduce(
       components,
       (valid, component) => component[method](data, opts, row, silentCheck) && valid,
@@ -201,7 +202,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   getComponents(rowIndex) {
-    if (rowIndex) {
+    if (rowIndex !== undefined) {
       if (!this.iteratableRows[rowIndex]) {
         return [];
       }

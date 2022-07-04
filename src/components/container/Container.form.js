@@ -1,10 +1,9 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import ContainerEditDisplay from './editForm/Container.edit.display';
 import ContainerEditData from './editForm/Container.edit.data';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: ContainerEditDisplay
@@ -12,6 +11,10 @@ export default function(...extend) {
     {
       key: 'data',
       components: ContainerEditData
+    },
+    {
+      key: 'addons',
+      ignore: true
     },
   ], ...extend);
 }

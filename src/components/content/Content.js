@@ -1,5 +1,6 @@
 import Component from '../_classes/component/Component';
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 
 export default class ContentComponent extends Component {
   static schema(...extend) {
@@ -18,7 +19,7 @@ export default class ContentComponent extends Component {
       group: 'layout',
       icon: 'html5',
       preview: false,
-      documentation: '/userguide/#content-component',
+      documentation: '/userguide/forms/layout-components#content',
       weight: 5,
       schema: ContentComponent.schema()
     };
@@ -49,8 +50,17 @@ export default class ContentComponent extends Component {
     }));
   }
 
+  get dataReady() {
+    return this.root?.submissionReady || NativePromise.resolve();
+  }
+
   attach(element) {
     this.loadRefs(element, { html: 'single' });
+    this.dataReady.then(() => {
+      if (this.refs.html) {
+        this.setContent(this.refs.html, this.content);
+      }
+    });
     if (this.component.refreshOnChange) {
       this.on('change', () => {
         if (this.refs.html) {

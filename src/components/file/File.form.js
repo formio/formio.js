@@ -1,12 +1,11 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import FileEditData from './editForm/File.edit.data';
 import FileEditDisplay from './editForm/File.edit.display';
 import FileEditFile from './editForm/File.edit.file';
 import FileEditValidation from './editForm/File.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'display',
       components: FileEditDisplay
@@ -24,6 +23,10 @@ export default function(...extend) {
     {
       key: 'validation',
       components: FileEditValidation
+    },
+    {
+      key: 'addons',
+      ignore: true
     },
   ], ...extend);
 }

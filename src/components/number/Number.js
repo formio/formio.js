@@ -1,4 +1,4 @@
-import { maskInput, conformToMask } from 'vanilla-text-mask';
+import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import Input from '../_classes/input/Input';
@@ -24,7 +24,7 @@ export default class NumberComponent extends Input {
       title: 'Number',
       icon: 'hashtag',
       group: 'basic',
-      documentation: '/userguide/#number',
+      documentation: '/userguide/forms/form-components#number',
       weight: 30,
       schema: NumberComponent.schema()
     };
@@ -34,9 +34,10 @@ export default class NumberComponent extends Input {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);
 
-    const separators = getNumberSeparators(this.options.language);
+    const separators = getNumberSeparators(this.options.language || navigator.language);
 
     this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
+      || this.options.properties?.decimalSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
@@ -44,7 +45,7 @@ export default class NumberComponent extends Input {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = this.options.thousandsSeparator || separators.delimiter;
+      this.delimiter = this.options.properties?.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';
@@ -89,6 +90,10 @@ export default class NumberComponent extends Input {
     if (!defaultValue && this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
     }
+
+    if (!this.component.multiple && _.isArray(defaultValue)) {
+      defaultValue = !defaultValue[0] &&  defaultValue[0] !== 0 ? null :  defaultValue[0];
+    }
     return defaultValue;
   }
 
@@ -116,7 +121,8 @@ export default class NumberComponent extends Input {
     input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
       inputElement: input,
-      mask: this.numberMask
+      mask: this.numberMask,
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
   }
 
@@ -139,7 +145,7 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : null;
+    return val && val !== '-_' ? this.parseNumber(val) : null;
   }
 
   setValueAt(index, value, flags = {}) {

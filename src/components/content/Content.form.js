@@ -1,10 +1,9 @@
-import baseEditForm from '../_classes/component/Component.form';
-
+import Components from '../Components';
 import ContentEditDisplay from './editForm/Content.edit.display';
 import ContentEditLogic from './editForm/Content.edit.logic';
 
 export default function(...extend) {
-  const editForm = baseEditForm([
+  const editForm = Components.baseEditForm([
     {
       key: 'display',
       components: ContentEditDisplay,
@@ -20,6 +19,10 @@ export default function(...extend) {
     {
       key: 'logic',
       components: ContentEditLogic,
+    },
+    {
+      key: 'addons',
+      ignore: true
     },
   ], ...extend);
   // Add content as full width above the settings.
