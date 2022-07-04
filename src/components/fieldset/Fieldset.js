@@ -1,4 +1,5 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
+import { getRandomComponentId } from '../../utils/utils';
 
 export default class FieldsetComponent extends NestedComponent {
   static schema(...extend) {
@@ -39,5 +40,12 @@ export default class FieldsetComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.noField = true;
+  }
+
+  createComponent(component, options, data, before) {
+    const comp = super.createComponent(component, options, data, before);
+    if (document.querySelectorAll(`[id^=${comp.id}]`).length) {
+      comp.id = getRandomComponentId();
+    }
   }
 }
