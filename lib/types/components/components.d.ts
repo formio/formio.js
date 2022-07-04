@@ -14,6 +14,8 @@ export namespace Components {
   function setComponent(name: string, comp: Object): void;
   function addComponent(name: string, comp: Object): void;
   function create(component: any, options: Object, data?: any, flag?: any): Object;
+  let baseEditForm: any;
+  let EditFormUtils: any;
   namespace components {
     class base extends Component {}
     class componentmodal extends ComponentModal {}

@@ -13,10 +13,10 @@
 
 <header>
   <a href="./">Home</a>
-
+  
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-
+  
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -28,7 +28,7 @@
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
-
+    
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
@@ -171,39 +171,41 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/recaptcha/ReCaptcha.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/*globals grecaptcha*/
-import Component from &apos;../_classes/component/Component&apos;;
-import { GlobalFormio as Formio } from &apos;../../Formio&apos;;
-import _get from &apos;lodash/get&apos;;
-import _debounce from &apos;lodash/debounce&apos;;
-import NativePromise from &apos;native-promise-only&apos;;
+import Component from &quot;../_classes/component/Component&quot;;
+import { GlobalFormio as Formio } from &quot;../../Formio&quot;;
+import _get from &quot;lodash/get&quot;;
+import _debounce from &quot;lodash/debounce&quot;;
+import NativePromise from &quot;native-promise-only&quot;;
 
 export default class ReCaptchaComponent extends Component {
   static schema(...extend) {
-    return Component.schema({
-      type: &apos;recaptcha&apos;,
-      key: &apos;recaptcha&apos;,
-      label: &apos;reCAPTCHA&apos;
-    }, ...extend);
+    return Component.schema(
+      {
+        type: &quot;recaptcha&quot;,
+        key: &quot;recaptcha&quot;,
+        label: &quot;reCAPTCHA&quot;,
+      },
+      ...extend
+    );
   }
 
   static get builderInfo() {
     return {
-      title: &apos;reCAPTCHA&apos;,
-      group: &apos;premium&apos;,
-      icon: &apos;refresh&apos;,
-      documentation: &apos;/userguide/forms/premium-components#recaptcha&apos;,
+      title: &quot;reCAPTCHA&quot;,
+      group: &quot;premium&quot;,
+      icon: &quot;refresh&quot;,
+      documentation: &quot;/userguide/forms/premium-components#recaptcha&quot;,
       weight: 40,
-      schema: ReCaptchaComponent.schema()
+      schema: ReCaptchaComponent.schema(),
     };
   }
 
   render() {
     this.recaptchaResult = null;
     if (this.builderMode) {
-      return super.render(&apos;reCAPTCHA&apos;);
-    }
-    else {
-      return super.render(&apos;&apos;, true);
+      return super.render(&quot;reCAPTCHA&quot;);
+    } else {
+      return super.render(&quot;&quot;, true);
     }
   }
 
@@ -211,15 +213,18 @@ export default class ReCaptchaComponent extends Component {
     if (this.builderMode) {
       // We need to see it in builder mode.
       this.append(this.text(this.name));
-    }
-    else {
-      const siteKey = _get(this.root.form, &apos;settings.recaptcha.siteKey&apos;);
+    } else {
+      const siteKey = _get(this.root.form, &quot;settings.recaptcha.siteKey&quot;);
       if (siteKey) {
         const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
-        this.recaptchaApiReady = Formio.requireLibrary(&apos;googleRecaptcha&apos;, &apos;grecaptcha&apos;, recaptchaApiScriptUrl, true);
-      }
-      else {
-        console.warn(&apos;There is no Site Key specified in settings in form JSON&apos;);
+        this.recaptchaApiReady = Formio.requireLibrary(
+          &quot;googleRecaptcha&quot;,
+          &quot;grecaptcha&quot;,
+          recaptchaApiScriptUrl,
+          true
+        );
+      } else {
+        console.warn(&quot;There is no Site Key specified in settings in form JSON&quot;);
       }
     }
   }
@@ -229,40 +234,52 @@ export default class ReCaptchaComponent extends Component {
   }
 
   verify(actionName) {
-    const siteKey = _get(this.root.form, &apos;settings.recaptcha.siteKey&apos;);
+    const siteKey = _get(this.root.form, &quot;settings.recaptcha.siteKey&quot;);
     if (!siteKey) {
-      console.warn(&apos;There is no Site Key specified in settings in form JSON&apos;);
+      console.warn(&quot;There is no Site Key specified in settings in form JSON&quot;);
       return;
     }
     if (!this.recaptchaApiReady) {
-      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, &apos;settings.recaptcha.siteKey&apos;)}`;
-      this.recaptchaApiReady = Formio.requireLibrary(&apos;googleRecaptcha&apos;, &apos;grecaptcha&apos;, recaptchaApiScriptUrl, true);
+      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(
+        this.root.form,
+        &quot;settings.recaptcha.siteKey&quot;
+      )}`;
+      this.recaptchaApiReady = Formio.requireLibrary(
+        &quot;googleRecaptcha&quot;,
+        &quot;grecaptcha&quot;,
+        recaptchaApiScriptUrl,
+        true
+      );
     }
     if (this.recaptchaApiReady) {
       this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) =&gt; {
         this.recaptchaApiReady
           .then(() =&gt; {
             if (!this.isLoading) {
-              this.isLoading= true;
-              grecaptcha.ready(_debounce(() =&gt; {
-                grecaptcha
-                  .execute(siteKey, {
-                    action: actionName
-                  })
-                  .then((token) =&gt; {
-                    return this.sendVerificationRequest(token).then(({ verificationResult, token }) =&gt; {
-                      this.recaptchaResult = {
-                        ...verificationResult,
-                        token,
-                      };
-                      this.updateValue(this.recaptchaResult);
-                      return resolve(verificationResult);
+              this.isLoading = true;
+              grecaptcha.ready(
+                _debounce(() =&gt; {
+                  grecaptcha
+                    .execute(siteKey, {
+                      action: actionName,
+                    })
+                    .then((token) =&gt; {
+                      return this.sendVerificationRequest(token).then(
+                        ({ verificationResult, token }) =&gt; {
+                          this.recaptchaResult = {
+                            ...verificationResult,
+                            token,
+                          };
+                          this.updateValue(this.recaptchaResult);
+                          return resolve(verificationResult);
+                        }
+                      );
+                    })
+                    .catch(() =&gt; {
+                      this.isLoading = false;
                     });
-                  })
-                  .catch(() =&gt; {
-                    this.isLoading = false;
-                  });
-              }, 1000));
+                }, 1000)
+              );
             }
           })
           .catch(() =&gt; {
@@ -276,15 +293,15 @@ export default class ReCaptchaComponent extends Component {
 
   beforeSubmit() {
     if (this.recaptchaVerifiedPromise) {
-      return this.recaptchaVerifiedPromise
-        .then(() =&gt; super.beforeSubmit());
+      return this.recaptchaVerifiedPromise.then(() =&gt; super.beforeSubmit());
     }
     return super.beforeSubmit();
   }
 
   sendVerificationRequest(token) {
-    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)
-      .then((verificationResult) =&gt; ({ verificationResult, token }));
+    return Formio.makeStaticRequest(
+      `${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`
+    ).then((verificationResult) =&gt; ({ verificationResult, token }));
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {
@@ -299,16 +316,18 @@ export default class ReCaptchaComponent extends Component {
 
     const componentData = row[this.component.key];
     if (!componentData || !componentData.token) {
-      this.setCustomValidity(&apos;ReCAPTCHA: Token is not specified in submission&apos;);
+      this.setCustomValidity(&quot;ReCAPTCHA: Token is not specified in submission&quot;);
       return NativePromise.resolve(false);
     }
 
     if (!componentData.success) {
-      this.setCustomValidity(&apos;ReCAPTCHA: Token validation error&apos;);
+      this.setCustomValidity(&quot;ReCAPTCHA: Token validation error&quot;);
       return NativePromise.resolve(false);
     }
 
-    return this.hook(&apos;validateReCaptcha&apos;, componentData.token, () =&gt; NativePromise.resolve(true))
+    return this.hook(&quot;validateReCaptcha&quot;, componentData.token, () =&gt;
+      NativePromise.resolve(true)
+    )
       .then((success) =&gt; success)
       .catch((err) =&gt; {
         this.setCustomValidity(err.message || err);
