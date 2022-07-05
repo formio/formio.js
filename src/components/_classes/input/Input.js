@@ -26,6 +26,10 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
+    if (this.options.attachMode === 'builder' || this.options.building) {
+      attr.autocomplete = 'off';
+    }
+
     if (this.component.inputMode) {
       attr.inputmode = this.component.inputMode;
     }
