@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required
  - fix button loader icon removal at an unexpected event
  - FIO-4949: done disable auto fill in browser
+ - FIO-4886: Fixes value calculation not working for nested forms
 
 ## 4.15.0-rc.13
 ### Added
