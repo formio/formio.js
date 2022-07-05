@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - fix button loader icon removal at an unexpected event
  - FIO-4949: done disable auto fill in browser
  - FIO-4886: Fixes value calculation not working for nested forms
+ - FIO-4876 added condition for displaying the current form revision
 
 ## 4.15.0-rc.13
 ### Added
