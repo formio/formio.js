@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4816: email-submission-data-display-issues
  - FIO-4752: Added autoscroll when dragging components inside of formbuilder
  - FIO-4664: Fixed conditional logic based on Address component
+ - FIO-4629: fixed signature displaying in pdf form
 
 ## 4.15.0-rc.13
 ### Added
