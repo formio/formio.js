@@ -31,7 +31,7 @@ export default class FormComponent extends Component {
       title: 'Nested Form',
       icon: 'wpforms',
       group: 'premium',
-      documentation: '/userguide/#form',
+      documentation: '/userguide/forms/premium-components#nested-form',
       weight: 110,
       schema: FormComponent.schema()
     };
@@ -284,6 +284,8 @@ export default class FormComponent extends Component {
             this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
             this.setOpenModalElement();
           }
+
+          this.calculateValue();
         });
       });
   }
@@ -616,7 +618,7 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       const revisionPath = submission._frid ? '_frid' : '_vid';
       const shouldLoadOriginalRevision = this.useOriginalRevision
-      && _.isNumber(submission[revisionPath])
+      && (_.isNumber(submission[revisionPath]) || _.isNumber(submission._fvid))
       && _.isNumber(this.subForm.form?.[revisionPath])
       && submission._fvid !== this.subForm.form[revisionPath];
 

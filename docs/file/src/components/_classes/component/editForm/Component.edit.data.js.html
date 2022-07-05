@@ -187,7 +187,7 @@ export default [
     key: &apos;defaultValue&apos;,
     weight: 5,
     placeholder: &apos;Default Value&apos;,
-    tooltip: &apos;The will be the value for this field, before user interaction. Having a default value will override the placeholder text.&apos;,
+    tooltip: &apos;The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.&apos;,
     input: true
   },
   {
@@ -227,7 +227,47 @@ export default [
     label: &apos;Encrypted (Enterprise Only)&apos;,
     tooltip: &apos;Encrypt this field on the server. This is two way encryption which is not suitable for passwords.&apos;,
     key: &apos;encrypted&apos;,
-    input: true
+    input: true,
+    logic: [
+      {
+        name: &apos;disabled&apos;,
+        trigger: {
+          type: &apos;javascript&apos;,
+          javascript: &apos;result = !instance.root.options.sac;&apos;
+        },
+        actions: [
+          {
+            name: &apos;disabled&apos;,
+            type: &apos;property&apos;,
+            property: {
+              label: &apos;Disabled&apos;,
+              value: &apos;disabled&apos;,
+              type: &apos;boolean&apos;
+            },
+            state: true
+          }
+        ]
+      },
+      {
+        name: &apos;disabledToolTip&apos;,
+        trigger: {
+          type: &apos;javascript&apos;,
+          javascript: &apos;result = !instance.root.options.sac;&apos;
+        },
+        actions: [
+          {
+            name: &apos;addDisabledTooltip&apos;,
+            type: &apos;property&apos;,
+            property: {
+              label: &apos;Tooltip&apos;,
+              value: &apos;tooltip&apos;,
+              type: &apos;string&apos;
+            },
+            text: &apos;Encryption is not available with your current plan. Please contact sales@form.io.&apos;
+          }
+        ]
+      }
+    ]
   },
   {
     type: &apos;select&apos;,
@@ -264,12 +304,7 @@ export default [
     key: &apos;clearOnHide&apos;,
     defaultValue: true,
     tooltip: &apos;When a field is hidden, clear the value.&apos;,
-    input: true,
-    clearOnHide: false,
-    calculateValue: &apos;value = data.hidden ? false : value&apos;,
-    conditional: {
-      json: { &apos;!&apos; : [{ var: &apos;data.hidden&apos; }] }
-    }
+    input: true
   },
   EditFormUtils.javaScriptValue(&apos;Custom Default Value&apos;, &apos;customDefaultValue&apos;, &apos;customDefaultValue&apos;, 1000,
     &apos;&lt;p&gt;&lt;h4&gt;Example:&lt;/h4&gt;&lt;pre&gt;value = data.firstName + &quot; &quot; + data.lastName;&lt;/pre&gt;&lt;/p&gt;&apos;,

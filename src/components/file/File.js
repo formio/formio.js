@@ -4,6 +4,7 @@ import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import fileProcessor from '../../providers/processor/fileProcessor';
+import BMF from 'browser-md5-file';
 
 let Camera;
 let webViewCamera = navigator.camera || Camera;
@@ -58,7 +59,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: '/userguide/#file',
+      documentation: '/userguide/forms/premium-components#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -354,7 +355,6 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
         this.className = 'fileSelector';
         event.preventDefault();
-        element.statuses = [];
         element.upload(event.dataTransfer.files);
       });
     }
@@ -362,7 +362,6 @@ export default class FileComponent extends Field {
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
-        this.statuses = [];
         this.browseFiles(this.browseOptions)
           .then((files) => {
             this.upload(files);
@@ -602,14 +601,27 @@ export default class FileComponent extends Field {
   upload(files) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
+      if (this.statuses.length) {
+        this.statuses = [];
+      }
       files = Array.prototype.slice.call(files, 0, 1);
     }
+
     if (this.component.storage && files && files.length) {
       this.fileDropHidden = true;
 
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
       Array.prototype.forEach.call(files, async(file) => {
+        const bmf = new BMF();
+        const hash = await new Promise((resolve, reject) => {
+          bmf.md5(file, (err, md5)=>{
+            if (err) {
+              return reject(err);
+            }
+            return resolve(md5);
+          });
+        });
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
@@ -617,6 +629,7 @@ export default class FileComponent extends Field {
           size: file.size,
           status: 'info',
           message: this.t('Processing file. Please wait...'),
+          hash
         };
 
         // Check if file with the same name is being uploaded
@@ -754,6 +767,7 @@ export default class FileComponent extends Field {
                 this.statuses.splice(index, 1);
               }
               fileInfo.originalName = file.name;
+              fileInfo.hash = fileUpload.hash;
               if (!this.hasValue()) {
                 this.dataValue = [];
               }
@@ -765,7 +779,7 @@ export default class FileComponent extends Field {
             })
             .catch((response) => {
               fileUpload.status = 'error';
-              fileUpload.message = response;
+              fileUpload.message = typeof response === 'string' ? response : response.toString();
               delete fileUpload.progress;
               this.fileDropHidden = false;
               this.redraw();

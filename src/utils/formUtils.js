@@ -86,7 +86,7 @@ export function eachComponent(components, fn, includeAll, path, parent, inRecurs
         component.key &&
         !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
         (
-          ['datagrid', 'container', 'editgrid', 'address', 'dynamicWizard', 'datatable'].includes(component.type) ||
+          ['datagrid', 'container', 'editgrid', 'address', 'dynamicWizard', 'datatable', 'tagpad'].includes(component.type) ||
           component.tree
         )
       ) {

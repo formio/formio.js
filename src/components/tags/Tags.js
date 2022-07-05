@@ -22,7 +22,7 @@ export default class TagsComponent extends Input {
       title: 'Tags',
       icon: 'tags',
       group: 'advanced',
-      documentation: '/userguide/#tags',
+      documentation: '/userguide/forms/form-components#tags',
       weight: 30,
       schema: TagsComponent.schema()
     };
@@ -168,7 +168,7 @@ export default class TagsComponent extends Input {
     }
 
     if (Array.isArray(value)) {
-      return value.join(', ');
+      return value.join(`${this.delimiter || ','} `);
     }
 
     const stringValue = value.toString();

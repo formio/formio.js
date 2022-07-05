@@ -27,7 +27,7 @@ export default class ButtonComponent extends Field {
       title: 'Button',
       group: 'basic',
       icon: 'stop',
-      documentation: '/userguide/#button',
+      documentation: '/userguide/forms/form-components#button',
       weight: 110,
       schema: ButtonComponent.schema()
     };
@@ -214,7 +214,6 @@ export default class ButtonComponent extends Field {
         isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
         flags.rootValidity = isValid;
       }
-      this.loading = false;
       this.isDisabledOnInvalid = this.component.disableOnInvalid && (isSilent || !isValid);
       this.disabled = this.shouldDisabled;
       this.setDisabled(this.refs.button, this.disabled);
@@ -333,9 +332,10 @@ export default class ButtonComponent extends Field {
         const flattened = {};
         const components = {};
 
-        eachComponent(form.components, (component, path) => {
-          flattened[path] = component.component;
-          components[component.component.key] = component;
+        eachComponent(form.components, (componentWrapper, path) => {
+          const component = componentWrapper.component || componentWrapper;
+          flattened[path] = component;
+          components[component.key] = component;
         }, true);
 
         this.evaluate(this.component.custom, {
@@ -470,7 +470,7 @@ export default class ButtonComponent extends Field {
         }
       }
       catch (error) {
-        if (error.name !== 'SecurityError') {
+        if (error.name !== 'SecurityError' && (error.name !== 'Error' || error.message !== 'Permission denied')) {
           this.root.setAlert('danger', error.message || error);
         }
       }

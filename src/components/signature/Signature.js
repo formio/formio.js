@@ -1,4 +1,5 @@
-import SignaturePad from 'signature_pad/dist/signature_pad.js';
+import SignaturePad from 'signature_pad';
+import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
 
@@ -25,7 +26,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: '/userguide/#signature',
+      documentation: '/userguide/forms/form-components#signature',
       schema: SignatureComponent.schema()
     };
   }
@@ -200,7 +201,7 @@ export default class SignatureComponent extends Input {
         backgroundColor: this.component.backgroundColor
       });
 
-      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
+      this.signaturePad.addEventListener('endStroke', () => this.setValue(this.signaturePad.toDataURL()));
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
       this.onDisabled();
@@ -210,6 +211,14 @@ export default class SignatureComponent extends Input {
         if (!this.refs.padBody.style.maxWidth) {
           this.refs.padBody.style.maxWidth = '100%';
         }
+
+        if (!this.builderMode && !this.options.preview) {
+          this.observer = new _ResizeObserver(() => {
+            this.checkSize();
+          });
+
+          this.observer.observe(this.refs.padBody);
+         }
 
         this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 10));
 

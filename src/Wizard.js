@@ -184,6 +184,7 @@ export default class Wizard extends Webform {
 
   get renderContext() {
     return {
+      disableWizardSubmit: this.form.disableWizardSubmit,
       wizardKey: this.wizardKey,
       isBreadcrumbClickable: this.isBreadcrumbClickable(),
       isSubForm: !!this.parent && !this.root?.component?.type === 'wizard',

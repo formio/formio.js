@@ -19,7 +19,7 @@ export default class CheckBoxComponent extends Field {
       title: 'Checkbox',
       group: 'basic',
       icon: 'check-square',
-      documentation: '/userguide/#checkbox',
+      documentation: '/userguide/forms/form-components#check-box',
       weight: 50,
       schema: CheckBoxComponent.schema()
     };

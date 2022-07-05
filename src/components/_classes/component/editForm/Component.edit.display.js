@@ -10,7 +10,8 @@ export default [
     tooltip: 'The label for this field that will appear next to it.',
     validate: {
       required: true
-    }
+    },
+    autofocus: true,
   },
   {
     type: 'select',
