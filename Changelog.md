@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5142: fixed an issue where resource select data not showing on view submission and pdf download
  - FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required
  - fix button loader icon removal at an unexpected event
+ - FIO-4949: done disable auto fill in browser
 
 ## 4.15.0-rc.13
 ### Added
