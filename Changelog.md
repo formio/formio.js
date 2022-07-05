@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4886: Fixes value calculation not working for nested forms
  - FIO-4876 added condition for displaying the current form revision
  - FIO-4816: email-submission-data-display-issues
+ - FIO-4752: Added autoscroll when dragging components inside of formbuilder
 
 ## 4.15.0-rc.13
 ### Added
