@@ -595,7 +595,7 @@ export default class SelectComponent extends ListComponent {
 
     // Add filter capability
     if (this.component.filter) {
-      url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter);
+      url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter.replace(/&/g, '26amp').replace(/(26amp){2}/g, '&&')).replace(/&/g, '%26').replace(/26amp/g, '&');
     }
 
     // Set ignoreCache if it is
