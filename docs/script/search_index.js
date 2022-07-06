@@ -2028,6 +2028,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.js~formio.usesessiontoken",
+    "class/src/Formio.js~Formio.html#static-method-useSessionToken",
+    "src/Formio.js~Formio.useSessionToken",
+    "method"
+  ],
+  [
     "src/formio.unit.js",
     "file/src/Formio.unit.js.html",
     "src/Formio.unit.js",

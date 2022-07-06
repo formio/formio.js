@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.9-rc.1
+### Changed
+ - FIO-4603: fixed an issue where after closing the error message upload…
+ - FIO-5057 added undefined check for TemplateData
+ - FIO-4814: Ability to configure formio to store x-jwt-token in sessionStorage
+ - FIO-5149: fixed processing of custom component using complex data
+ - FIO-4820: Fixes an issue where API key of the component resets after changing some value labels on the Data tab
+ - FIO-5178 fixed emitting events from HTML component with Refresh On Ch…
+
 ## 4.14.8
 ### Changed
  - Official Release
