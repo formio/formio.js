@@ -27,6 +27,10 @@ export default class Form extends Element {
     if (Formio.options && Formio.options.form) {
       options = Object.assign(options, Formio.options.form);
     }
+
+    if (options.useSessionToken) {
+      Formio.useSessionToken(options);
+    }
     super(options);
     this.ready = new NativePromise((resolve, reject) => {
       this.readyResolve = resolve;
