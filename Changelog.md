@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4629: fixed signature displaying in pdf form
  - FIO-3258: fixed when user has to click twice on edit page to change Radio select
  - FIO-5178: fixed emitting events from HTML component with Refresh On Change
+ - FIO-5057: added undefined check for TemplateData
 
 ## 4.15.0-rc.13
 ### Added
