@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5178: fixed emitting events from HTML component with Refresh On Change
  - FIO-5057: added undefined check for TemplateData
  - FIO-4820: Fixes an issue where API key of the component resets after changing some value labels on the Data tab
+ - FIO-4814: Ability to configure formio to store x-jwt-token in sessionStorage
 
 ## 4.15.0-rc.13
 ### Added
