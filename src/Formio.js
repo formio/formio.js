@@ -1545,7 +1545,10 @@ class Formio {
           }
 
           if (onload) {
-            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+            element.addEventListener('load', () => {
+              Formio.libraries[name].loaded = true;
+              onload(Formio.libraries[name].ready);
+            });
           }
 
           const { head } = document;
@@ -1567,9 +1570,9 @@ class Formio {
       }
     }
 
-    const lib = Formio.libraries[name].ready;
+    const lib = Formio.libraries[name];
 
-    return onload ? onload(lib) : lib;
+    return onload && lib.loaded ? onload(lib.ready) : lib.ready;
   }
 
   static libraryReady(name) {
