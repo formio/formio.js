@@ -203,7 +203,7 @@ export default class NumberComponent extends Input {
     }
     value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
-      return value.map(this.getMaskedValue).join(', ');
+      return value.map((v) => this.getMaskedValue(v)).join(', ');
     }
     return this.getMaskedValue(value);
   }
