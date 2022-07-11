@@ -4,11 +4,10 @@ import { fastCloneDeep } from '../../../utils/utils';
 export default class ComponentModal {
   static render(component, data, topLevel) {
     const children = component.renderTemplate('component', data, topLevel);
-    const isOpened = this;
+
     return component.renderTemplate('componentModal', {
       ...data,
       children,
-      isOpened
     });
   }
 

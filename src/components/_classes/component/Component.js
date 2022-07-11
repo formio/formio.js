@@ -494,6 +494,13 @@ export default class Component extends Element {
     return NativePromise.resolve(this);
   }
 
+  get isPDFReadOnlyMode() {
+    return this.parent &&
+      this.parent.form &&
+      (this.parent.form.display === 'pdf') &&
+      this.options.readOnly;
+  }
+
   get labelInfo() {
     const label = {};
     label.hidden = this.labelIsHidden();
@@ -502,10 +509,7 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    const isPDFReadOnlyMode = this.parent &&
-      this.parent.form &&
-      (this.parent.form.display === 'pdf') &&
-      this.options.readOnly;
+    const isPDFReadOnlyMode = this.isPDFReadOnlyMode;
 
     if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
       label.className += ' field-required';
@@ -906,7 +910,7 @@ export default class Component extends Element {
       pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
       return this.renderTemplate(...args);
     };
-    data.label = this.labelInfo;
+    data.label = data.labelInfo || this.labelInfo;
     data.tooltip = this.getFormattedTooltip(this.component.tooltip);
 
     // Allow more specific template names
@@ -1063,9 +1067,16 @@ export default class Component extends Element {
       message: this.error.message,
     } : '';
 
+    let modalLabel;
+
+    if (this.hasInput && this.component.validate?.required && !this.isPDFReadOnlyMode) {
+      modalLabel = { className: 'field-required' };
+    }
+
     return this.renderTemplate('modalPreview', {
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
-      messages: message && this.renderTemplate('message', message)
+      messages: message && this.renderTemplate('message', message),
+      labelInfo: modalLabel,
     });
   }
 
