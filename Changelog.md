@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.13.13-rc.6
+### Changed
+ - FIO-4743: Fixed issue where "||" is not allowed for interpolate with …
+ - FIO-4743: Fixed issue where "||" is not allowed for interpolate with …
+ - FIO-4763: Fixed issues with Select not setting data properly in metadata.
+
 ## 4.13.13-rc.5
 ### Changed
  - FIO-4405: fixed an issue where walidation error displays with empty v…
