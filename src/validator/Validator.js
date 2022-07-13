@@ -154,6 +154,7 @@ class ValidationChecker {
             }
             // Only search for non-deleted items
             query.deleted = { $eq: null };
+            query.state = 'submitted';
             // Try to find an existing value within the form
             this.config.db.findOne(query, (err, result) => {
               if (err) {
