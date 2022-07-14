@@ -458,9 +458,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.rows[index] = this.createRowComponents(row, index);
     this.checkConditions();
     this.triggerChange();
-    this.redraw().then(() => {
-      this.focusOnNewRowElement(this.rows[index]);
-    });
+     this.redraw().then(() => {
+     // this.focusOnNewRowElement(this.rows[index]);
+     });
   }
 
   updateComponentsRowIndex(components, rowIndex) {
