@@ -1,12 +1,13 @@
 <div class="card{{ ctx.component.verticalLayout ? ' card-vertical' : ''}}">
-  <div class="card-header">
-    <ul class="nav nav-tabs card-header-tabs{{ ctx.component.verticalLayout ? ' nav-tabs-vertical' : ''}}" role="tablist">
+  <div class="card-header" style="background-color: rgb(224,240,250);">
+    <ul class="nav nav-tabs card-header-tabs{{ ctx.component.verticalLayout ? ' nav-tabs-vertical' : ''}}" role="tablist" style="padding-bottom: 0.375rem;margin-top:-0.375rem; font-size:14px; font-weight: 600;">
       {% ctx.component.components.forEach(function(tab, index) { %}
       <li class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" role="tab" ref="{{ctx.tabLikey}}">
         <a
                 class="nav-link{{ ctx.currentTab === index ? ' active' : ''}}{{ ctx.component.verticalLayout ? ' nav-link-vertical' : ''}}"
                 href="#{{tab.key}}"
-                ref="{{ctx.tabLinkKey}}"
+                ref="{{ctx.tabLinkKey}}" 
+                style="font-size:14px"               
         >
           {{ctx.t(tab.label, { _userInput: true })}}
         </a>
@@ -18,7 +19,7 @@
   <div
     role="tabpanel"
     class="card-body tab-pane{{ ctx.currentTab === index ? ' active' : ''}}"
-    style="display: {{ctx.currentTab === index ? 'block' : 'none'}}; background-color: #e0f2f1;"
+    style="display: {{ctx.currentTab === index ? 'block' : 'none'}}; background-color: white;"
     ref="{{ctx.tabKey}}"
   >
     {{ctx.tabComponents[index]}}
