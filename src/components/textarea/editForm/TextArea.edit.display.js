@@ -32,23 +32,23 @@ export default [
     defaultValue: true,
     label: 'Allow Spellcheck'
   },
-  {
-    type: 'selectF',
-    input: true,
-    key: 'editor',
-    label: 'Editor',
-    tooltip: 'Select the type of WYSIWYG editor to use for this text area.',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'None', value: '' },
-        { label: 'ACE', value: 'ace' },
-        { label: 'CKEditor', value: 'ckeditor' },
-        { label: 'Quill', value: 'quill' },
-      ]
-    },
-    weight: 415
-  },
+  // {
+  //   type: 'selectF',
+  //   input: true,
+  //   key: 'editor',
+  //   label: 'Editor',
+  //   tooltip: 'Select the type of WYSIWYG editor to use for this text area.',
+  //   dataSrc: 'values',
+  //   data: {
+  //     values: [
+  //       { label: 'None', value: '' },
+  //       { label: 'ACE', value: 'ace' },
+  //       { label: 'CKEditor', value: 'ckeditor' },
+  //       { label: 'Quill', value: 'quill' },
+  //     ]
+  //   },
+  //   weight: 415
+  // },
   {
     type: 'checkbox',
     input: true,
