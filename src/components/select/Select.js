@@ -1121,7 +1121,9 @@ export default class SelectComponent extends Field {
         }
       }
 
-      if (this.itemsFromUrl) {
+      this.addFocusBlurEvents(this.focusableElement);
+
+      if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
         this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
       }
