@@ -4,7 +4,9 @@
     {{ ctx.component.hover ? 'table-hover' : ''}}
     {{ ctx.component.condensed ? 'table-sm' : ''}}
   ">
+  {% if (!ctx.component.hideLabel) { %}
   {{ ctx.t(ctx.component.label, { _userInput: true }) }}
+  {% } %}
   {% if (ctx.component.header && ctx.component.header.length > 0) { %}
   <thead>
     <tr>
