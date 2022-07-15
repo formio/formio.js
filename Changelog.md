@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.9-rc.2
+### Changed
+ - FIO-5152: fixed an issue where value of html element displays differe…
+ - FIO-5152: fixed an issue where value of html element displays differe…
+
 ## 4.14.9-rc.1
 ### Changed
  - FIO-4603: fixed an issue where after closing the error message upload…
