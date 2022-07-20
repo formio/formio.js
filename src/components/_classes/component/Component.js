@@ -1116,7 +1116,7 @@ export default class Component extends Element {
         this.tooltips[index] = tippy(tooltip, {
           allowHTML: true,
           trigger: 'mouseenter click focus',
-          placement: 'right',
+          placement: 'right-start',
           zIndex: 10000,
           interactive: true,
           content: this.t(tooltipText, { _userInput: true }),
