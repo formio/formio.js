@@ -1322,7 +1322,7 @@ class Formio {
   static currentUser(formio, options) {
     let authUrl = Formio.authUrl;
     if (!authUrl) {
-      authUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
+      authUrl = formio ? formio.projectUrl : (Formio.baseUrl || Formio.projectUrl);
     }
     authUrl += '/current';
     const user = Formio.getUser(options);
