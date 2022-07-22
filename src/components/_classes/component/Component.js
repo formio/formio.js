@@ -690,12 +690,15 @@ export default class Component extends Element {
   }
 
   rightDirection(direction) {
+    if (this.options.condensedMode) {
+      return false;
+    }
     return direction === 'right';
   }
 
-  getLabelInfo() {
+  getLabelInfo(isCondensed = false) {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
-    const isLeftPosition = this.labelPositions[0] === 'left';
+    const isLeftPosition = this.labelPositions[0] === 'left' || isCondensed;
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
 
     let contentMargin = '';
