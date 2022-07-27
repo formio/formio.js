@@ -20,6 +20,12 @@
   ],
   "scripts": {
     "build": "esdoc && gulp build",
+    "create-app-yml": "node -e 'var fs=require(`fs`);fs.writeFileSync(`./_config.app.yml`, `baseurl: https://formiojs.test-form.io/` + require(`./package.json`).version);'",
+    "rm-app-yml": "rm ./_config.app.yml",
+    "build-app": "npm run create-app-yml && jekyll build --config _config.yml,_config.app.yml && npm run rm-app-yml",
+    "deploy-s3": "$(node -e 'console.log(`aws s3 cp _site s3://formiojs.test-form.io/` + require(`./package.json`).version + `/ --recursive`)')",
+    "invalidate": "aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths '/*'",
+    "release": "npm run build-app && npm run deploy-s3",
     "transpile": "babel ./src/ --out-dir ./lib/",
     "templates": "gulp templates",
     "watch": "babel -w ./src/ --out-dir ./lib/",
