@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.14.9-rc.3]
 ### Fixed
  - FIO-4225: fixed an issue where last selected/entered value from multiple values is highlighted as error value, when Date/Time is required
+ - FIO-3939 Fixed content of the Content component not being translated
 
 ## 4.14.9-rc.2
 ### Changed
