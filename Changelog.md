@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5152: fixed an issue where value of html element displays differently on pdf download and form builder pages
  - FIO-4814: Fixes form creation failed due to useSessionToken property read on undefined options object
  - FIO-4764: Fixed issue with loading zones, added test for showing date in timezone
+ - FIO-2677: Pass options object to getSubmission as they may include request options
 
 ## 4.15.0-rc.13
 ### Added
