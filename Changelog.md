@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4814: Ability to configure formio to store x-jwt-token in sessionStorage
  - FIO-4603: fixed an issue where after closing the error message upload box is missing until refreshing the page
  - FIO-5152: fixed an issue where value of html element displays differently on pdf download and form builder pages
+ - FIO-4814: Fixes form creation failed due to useSessionToken property read on undefined options object
 
 ## 4.15.0-rc.13
 ### Added
