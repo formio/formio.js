@@ -43,9 +43,7 @@ export default class FieldsetComponent extends NestedComponent {
   }
 
   createComponent(component, options, data, before) {
-    const comp = super.createComponent(component, options, data, before);
-    if (document.querySelectorAll(`[id^=${comp.id}]`).length) {
-      comp.id = getRandomComponentId();
-    }
+    component.id =  getRandomComponentId();
+    return super.createComponent(component, options, data, before);
   }
 }
