@@ -1322,7 +1322,7 @@ class Formio {
   static currentUser(formio, options) {
     let authUrl = Formio.authUrl;
     if (!authUrl) {
-      authUrl = formio ? formio.projectUrl : (Formio.baseUrl || Formio.projectUrl);
+      authUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
     }
     authUrl += '/current';
     const user = Formio.getUser(options);
@@ -1342,6 +1342,8 @@ class Formio {
         options
       });
     }
+
+    authUrl = `${Formio.baseUrl}/current`;
     this.currentUserResolved = false;
     return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)
       .then((response) => {
