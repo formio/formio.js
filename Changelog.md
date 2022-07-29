@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.9-rc.4
+### Changed
+ - FIO-4218: fixed an issue where error message isn't showing in modal window
+ - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
+ - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
+ - fixed Help links
+ - FIO-4704: fixed an issue with form builder where custom group in the …
+ - FIO-4395: Fixed typos
+ - FIO-4851: fixed when 'Multiple Values' setting is enabled, all the selected val…
+ - FIO-4764: Fixed issue with loading zones, added test for showing date in timezone
+ - FIO-4629: fixed signature displaying in pdf form
+ - FIO-4949: done disable auto fill in browser
+ - FIO-4886: Fixes value calculation not working for nested forms
+
 ## 4.14.9-rc.3
 ### Changed
  - FIO-4218: fixed an issue where error message isn't showing in modal window

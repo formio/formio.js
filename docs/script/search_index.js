@@ -3714,6 +3714,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datetime/fixtures/comp9.js",
+    "file/src/components/datetime/fixtures/comp9.js.html",
+    "src/components/datetime/fixtures/comp9.js",
+    "file"
+  ],
+  [
     "src/components/datetime/fixtures/index.js",
     "file/src/components/datetime/fixtures/index.js.html",
     "src/components/datetime/fixtures/index.js",
@@ -5733,6 +5739,12 @@ window.esdocSearchIndex = [
     "src/components/tags/fixtures/comp4.js",
     "file/src/components/tags/fixtures/comp4.js.html",
     "src/components/tags/fixtures/comp4.js",
+    "file"
+  ],
+  [
+    "src/components/tags/fixtures/comp5.js",
+    "file/src/components/tags/fixtures/comp5.js.html",
+    "src/components/tags/fixtures/comp5.js",
     "file"
   ],
   [
