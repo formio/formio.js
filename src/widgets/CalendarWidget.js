@@ -480,6 +480,12 @@ export default class CalendarWidget extends InputWidget {
       }
     });
 
+    this.calendar.altInput.addEventListener('change', (event) => {
+      if (event.target.value) {
+        this.calendar.setDate(moment(event.target.value).toDate(), true, this.settings.altFormat);
+      }
+    });
+
     if (!this.settings.readOnly) {
       // Enforce the input mask of the format.
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
