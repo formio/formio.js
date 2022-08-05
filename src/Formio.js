@@ -263,7 +263,7 @@ class Formio {
 
     if (user) {
       localStorage.removeItem(userName);
-      sessionStorage.setItem(userName, JSON.stringify(user));
+      sessionStorage.setItem(userName, user);
     }
 
     localStorage.setItem('useSessionToken', true);
@@ -1355,17 +1355,19 @@ class Formio {
     options = options || {};
     options.formio = formio;
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
+    const logout = () => {
+      Formio.setToken(null, options);
+      Formio.setUser(null, options);
+      Formio.clearCache();
+      localStorage.removeItem('useSessionToken');
+    };
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
       .then(function(result) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         return result;
       })
       .catch(function(err) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         throw err;
       });
   }
