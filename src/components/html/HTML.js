@@ -20,7 +20,7 @@ export default class HTMLComponent extends Component {
       group: 'layout',
       icon: 'code',
       weight: 0,
-      documentation: '/userguide/#html-element-component',
+      documentation: '/userguide/forms/layout-components#html-element',
       schema: HTMLComponent.schema()
     };
   }
