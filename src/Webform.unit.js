@@ -64,6 +64,7 @@ import formWithCalcValue from '../test/forms/formWithCalcValue';
 import formWithAllowCalculateOverride from '../test/forms/formWithAllowCalculateOverride';
 import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
 import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
+import formWithEventLogicInHiddenComponent from '../test/forms/formWithEventLogicInHiddenComponent';
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
@@ -119,6 +120,38 @@ describe('Webform tests', function() {
           done();
         }, 200);
       }, 200);
+    }).catch((err) => done(err));
+  });
+
+  it('Should set value for hidden nested component through the logic triggered by event', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithEventLogicInHiddenComponent).then(() => {
+      const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress')[0];
+      const address =  form.getComponent('addressInformation').getComponent('streetAddress')[0];
+
+      assert.equal(address.visible, true);
+      assert.equal(regesteredAddress.visible, false);
+
+      const value = 'Dallas';
+      address.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(address.dataValue, value);
+        assert.equal(regesteredAddress.dataValue, value);
+
+        const role =  form.getComponent('role');
+        role.setValue(['client']);
+
+        setTimeout(() => {
+          assert.equal(address.visible, false);
+          assert.equal(regesteredAddress.visible, true);
+          assert.equal(regesteredAddress.dataValue, value);
+          assert.equal(address.dataValue, value);
+          done();
+        }, 500);
+      }, 500);
     }).catch((err) => done(err));
   });
 
