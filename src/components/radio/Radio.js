@@ -184,9 +184,6 @@ export default class RadioComponent extends ListComponent {
   }
 
   getValueAsString(value) {
-    if (!value) {
-      return '';
-    }
     if (!_.isString(value)) {
       value = _.toString(value);
     }
@@ -195,6 +192,10 @@ export default class RadioComponent extends ListComponent {
     }
 
     const option = _.find(this.component.values, (v) => v.value === value);
+
+    if (!value) {
+      return _.get(option, 'label', '');
+    }
 
     return _.get(option, 'label', '');
   }
@@ -266,7 +267,7 @@ export default class RadioComponent extends ListComponent {
       this.setSelectedClasses();
     }
 
-    if (!flags || !flags.modified || !this.isRadio) {
+    if (!flags || (!flags.modified && value === this.defaultValue) || !this.isRadio) {
       return changed;
     }
 

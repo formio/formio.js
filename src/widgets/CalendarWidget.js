@@ -71,6 +71,7 @@ export default class CalendarWidget extends InputWidget {
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
+    this.zoneLoading = false;
   }
 
   /**
@@ -80,8 +81,17 @@ export default class CalendarWidget extends InputWidget {
    */
   loadZones() {
     const timezone = this.timezone;
+
+    if (this.zoneLoading) {
+      return true;
+    }
+
     if (!zonesLoaded() && shouldLoadZones(timezone)) {
-      loadZones(timezone).then(() => this.emit('redraw'));
+      this.zoneLoading = true;
+      loadZones(timezone).then(() => {
+        this.zoneLoading = false;
+        this.emit('redraw');
+      });
 
       // Return zones are loading.
       return true;
@@ -378,11 +388,12 @@ export default class CalendarWidget extends InputWidget {
       value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
+
+    const zonesLoading = this.loadZones();
     if (this.isValueISO8601(value)) {
       this.calendar.setDate(moment(value).toDate(), false);
     }
     else if (value) {
-      const zonesLoading = this.loadZones();
       if (!saveAsText && this.settings.readOnly && !zonesLoading) {
         this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
       }
@@ -543,7 +554,7 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (!this.settings.enableTime || this.loadZones()) {
+        if (this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 

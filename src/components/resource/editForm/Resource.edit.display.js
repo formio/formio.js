@@ -12,7 +12,7 @@ export default [
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form?type=resource&limit=4294967295&select=_id,title',
+      url: '/form?type=resource&limit=1000000&select=_id,title',
     },
     authenticate: true,
     template: '<span>{{ item.title }}</span>',
