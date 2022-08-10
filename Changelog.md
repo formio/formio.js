@@ -4,12 +4,50 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.13]
+## [Unreleased: 4.15.0-rc.14]
+### Fixed
+ - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
+ - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
+ - FIO-5053: fixed an issue where data with widget type html5 does not does not display and empty value displays as [Object object]
+ - FIO-5139: fixed an issue where api validation is not working for select component
+ - FIO-5142: Fixed resource select data not showing on View Submission page and pdf
+ - FIO-4799: updated code for Property Value is not set by default and show as 'undefined'
+ - FIO-3973: Fixes an issue where the invalidRowsError is set to the wrong element when an EditGrid has an opened row
+ - FIO-5142: fixed an issue where resource select data not showing on view submission and pdf download
+ - FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required
+ - fix button loader icon removal at an unexpected event
+ - FIO-4949: done disable auto fill in browser
+ - FIO-4886: Fixes value calculation not working for nested forms
+ - FIO-4876 added condition for displaying the current form revision
+ - FIO-4816: email-submission-data-display-issues
+ - FIO-4752: Added autoscroll when dragging components inside of formbuilder
+ - FIO-4664: Fixed conditional logic based on Address component
+ - FIO-4629: fixed signature displaying in pdf form
+ - FIO-3258: fixed when user has to click twice on edit page to change Radio select
+ - FIO-5178: fixed emitting events from HTML component with Refresh On Change
+ - FIO-5057: added undefined check for TemplateData
+ - FIO-4820: Fixes an issue where API key of the component resets after changing some value labels on the Data tab
+ - FIO-4814: Ability to configure formio to store x-jwt-token in sessionStorage
+ - FIO-4603: fixed an issue where after closing the error message upload box is missing until refreshing the page
+ - FIO-5152: fixed an issue where value of html element displays differently on pdf download and form builder pages
+ - FIO-4814: Fixes form creation failed due to useSessionToken property read on undefined options object
+ - FIO-4764: Fixed issue with loading zones, added test for showing date in timezone
+ - FIO-2677: Pass options object to getSubmission as they may include request options
+
+## 4.15.0-rc.13
 ### Added
  - FIO-4836: hash was added to file
 
 ### Fixed
  - FIO-4942: fixed email submission: Custom PDF File Name is not respected
+ - FIO-4997: extended check for execution on the server side for tabs component
+ - FIO-4861: fixed restored revision node
+ - FIO-4976: Fixes select resource data not showing on submission 
+ - FIO-5053: fixed an issue where select data with html5 widget type is not showing on view or pdf download after submission
+ - FIO-5003: fixed that the radio with the value "false" is not displayed in different templates.
+ - FIO-4970: reduced limit query parameter value for resource requests
+ - FIO-5053: fixed an issue where empty value with html5 widget type not showing on pdf download
+ - FIO-5117: Reverts change where Number component empty value was getting set to empty string instead of null.
 
 ## 4.15.0-rc.12
 ### Fixed

@@ -198,7 +198,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   selectValueAndLabel(data) {
-    const value = this.itemValue(data);
+    const value = this.getOptionValue(this.itemValue(data));
     return {
       value,
       label: this.itemTemplate(data, value)
@@ -206,7 +206,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   itemTemplate(data, value) {
-    if (_.isEmpty(data)) {
+    if (!_.isNumber(data) && _.isEmpty(data)) {
       return '';
     }
 
@@ -220,10 +220,10 @@ export default class SelectComponent extends ListComponent {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
-    if (typeof data === 'string') {
+    if (typeof data === 'string' || typeof data === 'number') {
       const selectData = this.selectData;
-      if (selectData && selectData[value]) {
-        data = selectData[value];
+      if (selectData) {
+        data = selectData;
       }
       else {
         return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
@@ -277,7 +277,7 @@ export default class SelectComponent extends ListComponent {
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
       div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
-        selected: _.isEqual(this.dataValue, option.value),
+        selected: _.isEqual(this.getOptionValue(this.dataValue), option.value),
         option,
         attrs,
         id,
@@ -528,7 +528,7 @@ export default class SelectComponent extends ListComponent {
     options = options || {};
 
     // See if we should load items or not.
-    if (!this.shouldLoad || this.options.readOnly) {
+    if (!this.shouldLoad || (!this.itemsFromUrl && this.options.readOnly)) {
       this.isScrollLoading = false;
       this.loading = false;
       this.itemsLoadedResolve();
@@ -1129,7 +1129,7 @@ export default class SelectComponent extends ListComponent {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if ((!value || _.isEmpty(value)) && !this.options.readOnly) {
+      if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1241,7 +1241,7 @@ export default class SelectComponent extends ListComponent {
       return value;
     }
     // Check to see if we need to save off the template data into our metadata.
-    if (value && !valueIsObject && this.templateData[value] && this.root?.submission) {
+    if (value && !valueIsObject && (this.templateData && this.templateData[value]) && this.root?.submission) {
       const submission = this.root.submission;
       if (!submission.metadata) {
         submission.metadata = {};
@@ -1249,11 +1249,7 @@ export default class SelectComponent extends ListComponent {
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
-      const selectedTemplateData = _.pickBy(this.templateData, (value, key) => {
-        const dataValues = _.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        return _.includes(dataValues, key);
-      });
-      _.set(submission.metadata.selectData, this.path, _.cloneDeep(selectedTemplateData));
+      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
     const displayEntireObject = this.isEntireObjectDisplay();
@@ -1334,6 +1330,9 @@ export default class SelectComponent extends ListComponent {
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
+    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {}))) {
+      return false;
+    }
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
     const hasPreviousValue = !this.isEmpty(previousValue);
@@ -1416,8 +1415,15 @@ export default class SelectComponent extends ListComponent {
     else {
       if (hasValue) {
         const values = Array.isArray(value) ? value : [value];
+        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2) {
+          const { value, label } = this.selectValueAndLabel(this.dataValue);
+          this.addOption(value, label);
+        }
         _.each(this.selectOptions, (selectOption) => {
           _.each(values, (val) => {
+            if (selectOption.value === '') {
+              selectOption.value = {};
+            }
             if (_.isEqual(val, selectOption.value) && selectOption.element) {
               selectOption.element.selected = true;
               selectOption.element.setAttribute('selected', 'selected');

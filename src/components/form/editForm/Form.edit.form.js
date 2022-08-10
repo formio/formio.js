@@ -4,7 +4,7 @@ export default [
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form?limit=4294967295&select=_id,title,display'
+      url: '/form?limit=1000000&select=_id,title,display'
     },
     searchField: 'title__regex',
     template: '<span>{{ item.title }}</span>',

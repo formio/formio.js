@@ -27,7 +27,13 @@ export default class Form extends Element {
     if (Formio.options && Formio.options.form) {
       options = Object.assign(options, Formio.options.form);
     }
+
     super(options);
+
+    if (this.options.useSessionToken) {
+      Formio.useSessionToken(this.options);
+    }
+
     this.ready = new NativePromise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
@@ -116,7 +122,7 @@ export default class Form extends Element {
     if (typeof formParam === 'string') {
       const formio = new Formio(formParam);
       let error;
-      result = this.getSubmission(formio)
+      result = this.getSubmission(formio, this.options)
         .catch((err) => {
           error = err;
         })
@@ -158,9 +164,9 @@ export default class Form extends Element {
     });
   }
 
-  getSubmission(formio) {
+  getSubmission(formio, opts) {
     if (formio.submissionId) {
-      return formio.loadSubmission();
+      return formio.loadSubmission(null, opts);
     }
     return NativePromise.resolve();
   }

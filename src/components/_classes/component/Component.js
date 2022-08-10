@@ -1038,11 +1038,16 @@ export default class Component extends Element {
 
   loadRefs(element, refs) {
     for (const ref in refs) {
-      if (refs[ref] === 'single') {
-        this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
+      const refType = refs[ref];
+      const isString = typeof refType === 'string';
+
+      const selector = isString && refType.includes('scope') ? `:scope > [ref="${ref}"]` : `[ref="${ref}"]`;
+
+      if (isString && refType.startsWith('single')) {
+        this.refs[ref] = element.querySelector(selector);
       }
       else {
-        this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
+        this.refs[ref] = element.querySelectorAll(selector);
       }
     }
   }
@@ -3141,6 +3146,8 @@ export default class Component extends Element {
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Do not check custom validation for empty data if it is not required
+      () => this.component.validate.custom && !this.dataValue && !this.component.validate.required,
       // Force valid if component is read-only
       () => this.options.readOnly,
       // Do not check validations if component is not an input component.
