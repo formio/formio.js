@@ -20,6 +20,7 @@ import HiddenComponent from './hidden/Hidden';
 import Input from './_classes/input/Input';
 import Multivalue from './_classes/multivalue/Multivalue';
 import Field from './_classes/field/Field';
+import ListComponent from './_classes/list/ListComponent';
 import HTMLComponent from './html/HTML';
 import NestedComponent from './_classes/nested/NestedComponent';
 import NestedDataComponent from './_classes/nesteddata/NestedDataComponent';
@@ -66,6 +67,7 @@ export default {
   input: Input,
   field: Field,
   multivalue: Multivalue,
+  list: ListComponent,
   fieldset: FieldsetComponent,
   file: FileComponent,
   form: FormComponent,
