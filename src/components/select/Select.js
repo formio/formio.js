@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { GlobalFormio as Formio } from '../../Formio';
 import Field from '../_classes/field/Field';
+import Input from '../_classes/input/Input';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
 import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
@@ -1100,6 +1101,11 @@ export default class SelectComponent extends Field {
 
     if (Choices) {
       this.choices = new Choices(input, choicesOptions);
+      // Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
+      // this.addEventListener(this.choices.input.element, 'blur', () => {
+      //   // Emit event to the native Formio input, so the listener attached in the Input.js will be invoked
+      //   input.dispatchEvent(new Event('blur'));
+      // });
 
       if (this.selectOptions && this.selectOptions.length) {
         this.choices.setChoices(this.selectOptions, 'value', 'label', true);
@@ -1115,6 +1121,8 @@ export default class SelectComponent extends Field {
           this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
         }
       }
+
+      Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
 
       if (this.itemsFromUrl) {
         this.scrollList = this.choices.choiceList.element;
