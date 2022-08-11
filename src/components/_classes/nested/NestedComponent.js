@@ -728,7 +728,7 @@ export default class NestedComponent extends Field {
     if (component.type === 'button') {
       return false;
     }
-    if (value && component.hasValue(value)) {
+    if (value && component.hasValue(value) && component.component.type !== 'tabs') {
       return component.setValue(_.get(value, component.key), flags);
     }
     else if (component.type === 'components') {
