@@ -1106,11 +1106,6 @@ export default class SelectComponent extends Field {
 
     if (Choices) {
       this.choices = new Choices(input, choicesOptions);
-      // Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
-      // this.addEventListener(this.choices.input.element, 'blur', () => {
-      //   // Emit event to the native Formio input, so the listener attached in the Input.js will be invoked
-      //   input.dispatchEvent(new Event('blur'));
-      // });
 
       if (this.selectOptions && this.selectOptions.length) {
         this.choices.setChoices(this.selectOptions, 'value', 'label', true);
