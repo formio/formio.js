@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4814: Fixes form creation failed due to useSessionToken property read on undefined options object
  - FIO-4764: Fixed issue with loading zones, added test for showing date in timezone
  - FIO-2677: Pass options object to getSubmission as they may include request options
+ - FIO-4705: fixed an issue with bad request error in console when render pdf form
+ - FIO-5361: Fixes can not get user info when sesion token configured and session token config not dropped on log out
+ - FIO-4392: fixed Help links
+ - FIO-5370: Fixes quick inline embed section broken because of wrong embed form url
 
 ## 4.15.0-rc.13
 ### Added
