@@ -177,9 +177,9 @@ export default class Field extends Component {
     if (this.noField) {
       return super.render(element);
     }
-    else if (this.isAdvancedLabel) {
+    else if (this.isAdvancedLabel || this.options.condensedMode) {
       return super.render(this.renderTemplate(&apos;field&apos;, {
-        ...this.getLabelInfo(),
+        ...this.getLabelInfo(this.options.condensedMode),
         labelMarkup: this.renderTemplate(&apos;label&apos;),
         element: element
       }, &apos;align&apos;));
