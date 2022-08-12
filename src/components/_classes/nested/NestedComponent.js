@@ -728,11 +728,14 @@ export default class NestedComponent extends Field {
     if (component.type === 'button') {
       return false;
     }
-    if (value && component.hasValue(value)) {
-      return component.setValue(_.get(value, component.key), flags);
-    }
-    else if (component.type === 'components') {
+    if (component.type === 'components') {
+      if (component.tree && component.hasValue(value)) {
+        return component.setValue(_.get(value, component.key), flags);
+      }
       return component.setValue(value, flags);
+    }
+    else if (value && component.hasValue(value)) {
+      return component.setValue(_.get(value, component.key), flags);
     }
     else if ((!this.rootPristine || component.visible) && component.shouldAddDefaultValue) {
       flags.noValidate = !flags.dirty;
