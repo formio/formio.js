@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.9-rc.5
+### Changed
+ - FIO-4705: fixed an issue with bad request error in console when rende…
+ - FIO-4705: fixed an issue with bad request error in console when rende…
+ - FIO-5361: Fixes can not get user info when sesion token configured and session token config not dropped on log out
+ - FIO-4392 fixed Help links
+ - FIO-5149: fixed the structure of the custom component with tree parameter
+ - FIO-5370: Fixes quick inline embed section broken because of wrong embed form url
+
 ## 4.14.9-rc.4
 ### Changed
  - FIO-4218: fixed an issue where error message isn't showing in modal window

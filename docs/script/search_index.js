@@ -3114,12 +3114,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/container/container.js~containercomponent#datavalue",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-member-dataValue",
-    "src/components/container/Container.js~ContainerComponent#dataValue",
-    "member"
-  ],
-  [
     "src/components/container/container.js~containercomponent#defaultschema",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-get-defaultSchema",
     "src/components/container/Container.js~ContainerComponent#defaultSchema",
@@ -3135,12 +3129,6 @@ window.esdocSearchIndex = [
     "src/components/container/container.js~containercomponent#focus",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-focus",
     "src/components/container/Container.js~ContainerComponent#focus",
-    "method"
-  ],
-  [
-    "src/components/container/container.js~containercomponent#setvalue",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-setValue",
-    "src/components/container/Container.js~ContainerComponent#setValue",
     "method"
   ],
   [

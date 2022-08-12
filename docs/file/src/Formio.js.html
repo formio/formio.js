@@ -358,11 +358,18 @@ class Formio {
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
         if (hostparts.length &gt; 3 &amp;&amp; path.split(&apos;/&apos;).length &gt; 1) {
+          const isFile = path.match(/.json/);
           const pathParts = path.split(&apos;/&apos;);
-          pathParts.shift(); // Throw away the first /.
-          this.projectId = pathParts.shift();
-          path = `/${pathParts.join(&apos;/&apos;)}`;
-          this.projectUrl = `${hostName}/${this.projectId}`;
+
+          if (isFile) {
+            this.projectUrl = hostName;
+          }
+          else {
+            pathParts.shift(); // Throw away the first /.
+            this.projectId = pathParts.shift();
+            path = `/${pathParts.join(&apos;/&apos;)}`;
+            this.projectUrl = `${hostName}/${this.projectId}`;
+          }
         }
       }
       else {
@@ -435,7 +442,7 @@ class Formio {
 
     if (user) {
       localStorage.removeItem(userName);
-      sessionStorage.setItem(userName, JSON.stringify(user));
+      sessionStorage.setItem(userName, user);
     }
 
     localStorage.setItem(&apos;useSessionToken&apos;, true);
@@ -1514,6 +1521,8 @@ class Formio {
         options
       });
     }
+
+    authUrl = `${Formio.baseUrl}/current`;
     this.currentUserResolved = false;
     return Formio.makeRequest(formio, &apos;currentUser&apos;, authUrl, &apos;GET&apos;, null, options)
       .then((response) =&gt; {
@@ -1527,17 +1536,19 @@ class Formio {
     options = options || {};
     options.formio = formio;
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
+    const logout = () =&gt; {
+      Formio.setToken(null, options);
+      Formio.setUser(null, options);
+      Formio.clearCache();
+      localStorage.removeItem(&apos;useSessionToken&apos;);
+    };
     return Formio.makeRequest(formio, &apos;logout&apos;, `${projectUrl}/logout`)
       .then(function(result) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         return result;
       })
       .catch(function(err) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         throw err;
       });
   }
