@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5361: Fixes can not get user info when sesion token configured and session token config not dropped on log out
  - FIO-4392: fixed Help links
  - FIO-5370: Fixes quick inline embed section broken because of wrong embed form url
+ - FIO-5082: Label adjustments for PDF condensed mode
 
 ## 4.15.0-rc.13
 ### Added
