@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4392: fixed Help links
  - FIO-5370: Fixes quick inline embed section broken because of wrong embed form url
  - FIO-5082: Label adjustments for PDF condensed mode
+ - FIO-4943: Fixed an issue where Content component displays wrongly in the build mode when no content is entered
+ - FIO-4153: fixed when calendar widget local settings not saving
 
 ## 4.15.0-rc.13
 ### Added
