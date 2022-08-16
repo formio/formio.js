@@ -35,6 +35,7 @@ export default class SignatureComponent extends Input {
     super.init();
     this.currentWidth = 0;
     this.scale = 1;
+    this.ratio = 1;
 
     if (!this.component.width) {
       this.component.width = '100%';
@@ -45,7 +46,7 @@ export default class SignatureComponent extends Input {
 
     if (
       this.component.keepOverlayRatio
-      && this.options.pdf
+      && this.options?.display === 'pdf'
       && this.component.overlay?.width
       && this.component.overlay?.height
     ) {
