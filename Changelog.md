@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5082: Label adjustments for PDF condensed mode
  - FIO-4943: Fixed an issue where Content component displays wrongly in the build mode when no content is entered
  - FIO-4153: fixed when calendar widget local settings not saving
+ - FIO-3448: Fixes an issue where Keep Overlay Aspect Ratio Signature option does not work in PDF forms
 
 ## 4.15.0-rc.13
 ### Added
