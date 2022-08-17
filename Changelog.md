@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.9-rc.8
+### Changed
+ - FIO-3448: Fixes an issue where Keep Overlay Aspect Ratio Signature option does not work in PDF forms
+
 ## 4.14.9-rc.7
 ### Changed
  - FIO-4943: Fixed an issue where Content component displays wrongly in the build mode when no content is entered
