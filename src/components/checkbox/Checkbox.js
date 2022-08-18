@@ -183,7 +183,7 @@ export default class CheckBoxComponent extends Field {
   }
 
   getValueAsString(value) {
-    return value ? 'Yes' : 'No';
+    return this.t(value ? 'Yes' : 'No');
   }
 
   updateValue(value, flags) {
