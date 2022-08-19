@@ -68,7 +68,6 @@ export default class CalendarWidget extends InputWidget {
     }
     if (!this.settings.enableTime) {
       this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');
-      this.settings.dateFormat = this.settings.format;
     }
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
