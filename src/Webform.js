@@ -1356,6 +1356,7 @@ export default class Webform extends NestedDataComponent {
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed && changed.component) {
+      this.clearServerErrors();
       this.customErrors = this.customErrors.filter(err => err.component && err.component !== changed.component.key);
     }
 
