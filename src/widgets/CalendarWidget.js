@@ -20,7 +20,9 @@ import _ from 'lodash';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
-const CDN_URL = 'https://cdn.form.io/';
+const CDN_URL = (Formio?.version || '').includes('rc')
+  ? 'https://cdn.test-form.io/'
+  : 'https://cdn.form.io/';
 const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
 const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
