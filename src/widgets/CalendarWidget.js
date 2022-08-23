@@ -168,6 +168,12 @@ export default class CalendarWidget extends InputWidget {
       { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
     ], true);
 
+    const flatpickr = _.get(window, 'flatpickr');
+
+    if (flatpickr && this._input) {
+      return this.initFlatpickr(flatpickr);
+    }
+
     if (this.component.shortcutButtons) {
       this.component.shortcutButtons = this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick);
     }
