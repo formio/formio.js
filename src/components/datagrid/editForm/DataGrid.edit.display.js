@@ -10,9 +10,9 @@ export default [
   },
   {
     type: 'checkbox',
-    label: 'Disable Adding / Removing Rows',
-    key: 'disableAddingRemovingRows',
-    tooltip: 'Check if you want to hide Add Another button and Remove Row button',
+    label: 'Disable Adding Rows',
+    key: 'disableAddingRows',
+    tooltip: 'Check if you want to hide Add Another button',
     weight: 405,
     input: true,
     clearOnHide: false,
@@ -20,7 +20,24 @@ export default [
       return !context.data.enableRowGroups;
     },
     calculateValue(context) {
-      return context.data.enableRowGroups ? true : context.data.disableAddingRemovingRows;
+
+      return context.data.enableRowGroups ? true : context.data.disableAddingRows;
+    },
+  },
+  {
+    type: 'checkbox',
+    label: 'Disable Removing Rows',
+    key: 'disableRemovingRows',
+    tooltip: 'Check if you want to hide Remove Row button',
+    weight: 405,
+    input: true,
+    clearOnHide: false,
+    customConditional(context) {
+      return !context.data.enableRowGroups;
+    },
+    calculateValue(context) {
+
+      return context.data.enableRowGroups ? true :  context.data.disableRemovingRows;
     },
   },
   // {
@@ -60,7 +77,8 @@ export default [
     weight: 410,
     input: true,
     customConditional(context) {
-      return !context.data.disableAddingRemovingRows;
+      return !context.data.disableAddingRows
+
     }
   },
   {
@@ -80,7 +98,7 @@ export default [
     },
     weight: 411,
     customConditional(context) {
-      return !context.data.disableAddingRemovingRows;
+      return !context.data.disableAddingRows;
     }
   },
   // {
@@ -100,6 +118,9 @@ export default [
   {
     label: 'Groups',
     disableAddingRemovingRows: false,
+    disableAddingRows: false,
+    disableRemovingRows: false,
+
     defaultOpen: false,
     addAnother: '',
     addAnotherPosition: 'bottom',
