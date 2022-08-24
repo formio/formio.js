@@ -45,6 +45,13 @@ export default [
     input: true,
   },
   {
+    type: 'checkbox',
+    label: 'Clone Row',
+    key: 'cloneRow',
+    weight: 407,
+    input: true,
+  },
+  {
     type: 'textfield',
     label: 'Add Another Text',
     key: 'addAnother',

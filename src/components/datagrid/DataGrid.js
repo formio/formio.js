@@ -315,6 +315,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       [`${this.datagridKey}-row`]: 'multiple',
       [`${this.datagridKey}-tbody`]: 'single',
       [`${this.datagridKey}-addRow`]: 'multiple',
+      [`${this.datagridKey}-cloneRow`]: 'multiple',
       [`${this.datagridKey}-removeRow`]: 'multiple',
       [`${this.datagridKey}-group-header`]: 'multiple',
       [this.datagridKey]: 'multiple',
@@ -367,6 +368,10 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
+    });
+
+    this.refs[`${this.datagridKey}-cloneRow`].forEach((addButton, index) => {
+      this.addEventListener(addButton, 'click', this.cloneRow.bind(this, index));
     });
 
     this.refs[`${this.datagridKey}-removeRow`].forEach((removeButton, index) => {
@@ -435,6 +440,34 @@ export default class DataGridComponent extends NestedArrayComponent {
     });
   }
 
+  cloneRow(cloneIndex) {
+    const index = this.rows.length;
+    // if (this.dataValue.length === index) {
+    //   this.dataValue.push({});
+    // }
+    let row;
+    let cloneRow;
+    const dataValue = this.dataValue;
+    const defaultValue = this.defaultValue;
+
+    if (this.initEmpty && defaultValue[index]) {
+      row = defaultValue[index];
+      dataValue[index] = row;
+    }
+    else {
+      cloneRow = dataValue[cloneIndex];
+      dataValue[index] = _.cloneDeep(cloneRow);
+      row =dataValue[index];
+    }
+
+    this.rows[index] = this.createRowComponents(row, index);
+    this.checkConditions();
+    this.triggerChange();
+    this.redraw().then(() => {
+    // this.focusOnNewRowElement(this.rows[index]);
+    });
+  }
+
   addRow() {
     const index = this.rows.length;
 
@@ -482,13 +515,19 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   removeRow(index) {
-    this.splice(index, { isReordered: true });
-    const [row] = this.rows.splice(index, 1);
-    this.removeRowComponents(row);
-    this.updateRowsComponents(index);
-    this.setValue(this.dataValue, { isReordered: true });
-    this.redraw();
-  }
+    var proceed = confirm('Are you sure you want to delete this row?');
+    if (proceed) {
+      this.splice(index, { isReordered: true });
+      const [row] = this.rows.splice(index, 1);
+      this.removeRowComponents(row);
+      this.updateRowsComponents(index);
+      this.setValue(this.dataValue, { isReordered: true });
+      this.redraw();
+    }
+    else {
+      return;
+    }
+}
 
   removeRowComponents(row) {
     _.each(row, (component) => this.removeComponent(component));
