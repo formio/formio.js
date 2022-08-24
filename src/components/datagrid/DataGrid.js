@@ -95,7 +95,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get defaultValue() {
-    const  previewInBuilder = localStorage.getItem('previewInBuilder');
+    const previewInBuilder = localStorage.getItem('previewInBuilder');
     if (previewInBuilder !== 'true') {
       const isBuilderMode = this.builderMode;
       const isEmptyInit = this.initEmpty;
@@ -219,7 +219,8 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasRemoveButtons() {
-    return !this.builderMode && !this.component.disableAddingRemovingRows &&
+
+    return !this.builderMode && !this.component.disableAddingRemovingRows && !this.component.disableRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
