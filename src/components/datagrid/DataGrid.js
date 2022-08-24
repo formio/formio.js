@@ -280,7 +280,19 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   getRows() {
-    return this.rows.map(row => {
+    const rows = this.rows;
+    const  previewInBuilder = localStorage.getItem('previewInBuilder');
+     if (previewInBuilder !== 'true' && this.builderMode) {
+      const rowsComp=[rows[0]];
+      return rowsComp.map(row => {
+        const components = {};
+        _.each(row, (col, key) => {
+          components[key] = col.render();
+        });
+        return components;
+      });
+      }
+    return rows.map(row => {
       const components = {};
       _.each(row, (col, key) => {
         components[key] = col.render();
@@ -517,7 +529,7 @@ export default class DataGridComponent extends NestedArrayComponent {
         if (this.rows[index]) {
           this.removeRowComponents(this.rows[index]);
         }
-        this.rows[index] = this.createRowComponents(row, index);
+            this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
     });
