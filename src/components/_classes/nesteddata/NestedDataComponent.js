@@ -25,6 +25,9 @@ export default class NestedDataComponent extends NestedComponent {
   }
 
   componentContext() {
+    if (this.component.type === 'resourcefields') {
+      return this._data;
+    }
     return this.dataValue;
   }
 
