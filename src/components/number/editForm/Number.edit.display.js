@@ -12,6 +12,11 @@ export default [
     ignore: true
   },
   {
+    key: 'displayMask',
+    ignore: true
+  },
+
+  {
     key: 'showWordCount',
     ignore: true,
   },
