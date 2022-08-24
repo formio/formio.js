@@ -8,7 +8,10 @@ import NestedDataComponent from '../nesteddata/NestedDataComponent';
 export default class NestedArrayComponent extends NestedDataComponent {
   static schema(...extend) {
     return NestedDataComponent.schema({
-      disableAddingRemovingRows: false
+      disableAddingRemovingRows: false,
+      disableAddingRows: false,
+      disableRemovingRows: false,
+
     }, ...extend);
   }
 
@@ -85,7 +88,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
     const maxLength = _.get(this.component, 'validate.maxLength');
     const conditionalAddButton = _.get(this.component, 'conditionalAddButton');
 
-    return !this.component.disableAddingRemovingRows &&
+    return !this.component.disableAddingRemovingRows  &&  !this.component.disableAddingRows &&
       !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
