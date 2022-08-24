@@ -219,7 +219,6 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasRemoveButtons() {
-
     return !this.builderMode && !this.component.disableAddingRemovingRows && !this.component.disableRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
