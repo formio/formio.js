@@ -215,7 +215,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasExtraColumn() {
-    return (this.hasRemoveButtons() || this.canAddColumn);
+    return (this.hasRemoveButtons() || this.component.cloneRow ||  this.canAddColumn);
   }
 
   hasRemoveButtons() {
@@ -528,7 +528,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   removeRow(index) {
-    var proceed = confirm('Are you sure you want to delete this row?');
+    var proceed = confirm(this.t('Are you sure you want to delete this row?'));
     if (proceed) {
       this.splice(index, { isReordered: true });
       const [row] = this.rows.splice(index, 1);

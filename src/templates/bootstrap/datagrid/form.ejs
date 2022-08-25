@@ -51,12 +51,17 @@
           {{row[col.key]}}
         </td>
       {% }) %}
-      {% if (ctx.hasExtraColumn) { %}
-        {% if (ctx.hasRemoveButtons) { %}
-        <td>
-          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow" tabindex="{{ctx.tabIndex}}" aria-label="{{ctx.t('remove')}}">
+      {% if (ctx.hasExtraColumn) { %}      
+        <td >
+        <div style="display: flex;
+        flex-direction: row;
+        ">
+        {{ ctx.component.cloneRow }}
+         {% if (ctx.hasRemoveButtons) { %}
+          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow" tabindex="{{ctx.tabIndex}}" aria-label="{{ctx.t('remove')}}" style="margin-bottom: 0.031rem;">
             <i class="{{ctx.iconClass('remove-circle')}}"></i>
           </button>
+          {% } %}
           {% if (ctx.component.cloneRow) { %}
           <button type="button" id="clone-formio" style="background-color: #6c757d;
           color:white;
@@ -65,12 +70,14 @@
           padding: 0.375rem 0.75rem;
           border-radius: 0.25rem;
           width: 2.483rem;
-          vertical-align: middle;" ref="{{ctx.datagridKey}}-cloneRow">
+          vertical-align: middle;
+          height:2.375rem;
+          margin-left: 0.188rem;" ref="{{ctx.datagridKey}}-cloneRow">
             <i class="fa fa-solid fa-clone"></i>
           </button>
           {% } %}
-        </td>
-        {% } %}
+        </div>        
+        </td>       
         {% if (ctx.canAddColumn) { %}
         <td ref="{{ctx.key}}-container">
           {{ctx.placeholder}}
