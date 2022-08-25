@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3448: Fixes an issue where Keep Overlay Aspect Ratio Signature option does not work in PDF forms
  - FIO-5234: avoid lazy load flatpickr if it is already available in the window
  - FIO-5399: Make formio use flatpickr script from test cdn for non-production builds
+ - FIO-5436: Fix incorrect signature size setting
 
 ## 4.15.0-rc.13
 ### Added
