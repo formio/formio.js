@@ -215,11 +215,10 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasExtraColumn() {
-    return (this.hasRemoveButtons() || this.component.cloneRow ||  this.canAddColumn);
+    return (this.hasRemoveButtons() || this.hasCloneRowButton ||  this.canAddColumn);
   }
 
   hasRemoveButtons() {
-
     return !this.builderMode && !this.component.disableAddingRemovingRows && !this.component.disableRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
@@ -238,6 +237,12 @@ export default class DataGridComponent extends NestedArrayComponent {
   get canAddColumn() {
     return this.builderMode;
   }
+  get hasCloneRowButton() {
+    return !this.builderMode && this.component.cloneRow &&
+    !this.options.readOnly &&
+    !this.disabled &&
+    (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+  }
 
   render() {
     const columns = this.getColumns();
@@ -246,7 +251,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (this.component.reorder) {
       columnExtra++;
     }
-    if (hasRemoveButtons) {
+    if (hasRemoveButtons || this.hasCloneRowButton) {
       columnExtra++;
     }
     if (this.canAddColumn) {
@@ -271,6 +276,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       allowReorder: this.allowReorder,
       builder: this.builderMode,
       canAddColumn: this.canAddColumn,
+      hasCloneRowButton: this.hasCloneRowButton,
       tabIndex: this.tabIndex,
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
