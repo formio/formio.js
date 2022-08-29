@@ -744,7 +744,7 @@ describe('Select Component', () => {
 
     Formio.createForm(element, formObj).then(form => {
       const select = form.getComponent('select');
-      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, formObj.components[0].placeholder);
+      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, '');
       select.choices.showDropdown();
 
       setTimeout(() => {

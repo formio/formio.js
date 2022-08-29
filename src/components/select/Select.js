@@ -1240,7 +1240,7 @@ export default class SelectComponent extends Field {
     const items = this.choices._store.activeItems;
     if (!items.length) {
       this.choices._addItem({
-        value: placeholderValue,
+        value: '',
         label: placeholderValue,
         choiceId: 0,
         groupId: -1,
