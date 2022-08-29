@@ -49,7 +49,6 @@ export default [
       return !context.data.enableRowGroups;
     },
     calculateValue(context) {
-
     return context.data.enableRowGroups ? true :  context.data.disableRemovingRows;
     },
   },
@@ -90,8 +89,7 @@ export default [
     weight: 410,
     input: true,
     customConditional(context) {
-      return !context.data.disableAddingRows
-
+      return !context.data.disableAddingRows;
     }
   },
   {
