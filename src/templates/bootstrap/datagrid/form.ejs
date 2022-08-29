@@ -4,21 +4,21 @@
     {{ ctx.component.condensed ? 'table-sm' : ''}}
     " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
   {% if (ctx.hasHeader) { %}
-  <thead>
+  <thead aria-label="{{ctx.component.totalWidth}}" >
     <tr>
       {% if (ctx.component.reorder) { %}<th></th>{% } %}
       {% ctx.columns.forEach(function(col, index) { %}
-      <th>
+      <th aria-label="{{ctx.component && ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index].includes('px') ? ctx.component.widthOffsets[ctx.component.key + index] : ((ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index] / 100) * window.screen.width) +'px'}}">
         <!-- auto adjustmemt of width in data grid -->
-        <div  class="{{col.validate && col.validate.required ? 'field-required' : ''}}" id="{{ctx.component.key}}{{index}}" style="overflow: auto; resize: horizontal; width: {{ctx.component && ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index].includes('px') ? ctx.component.widthOffsets[ctx.component.key + index] : ((ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index] / 100) * window.screen.width) +'px'}};">
+        <div  class="{{col.validate && col.validate.required ? 'field-required' : ''}}" id="{{ctx.component.key}}{{index}}" style="overflow: auto;">
       
           {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
           {% if (col.tooltip) { %} <i ref="tooltip" tabindex="0" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{col.tooltip}}"></i>{% } %}
         </div>
-        </th>
+      </th>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
-      <th>
+      <th aria-label="157px" style="width: 157px;">
         <span class="sr-only">{{ ctx.t('Add/Remove') }}</span>
         {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
         <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
@@ -52,8 +52,8 @@
         </td>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
-        {% if (ctx.hasRemoveButtons) { %}
-        <td>
+         {% if (ctx.hasRemoveButtons) { %}
+         <td>
           <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow" tabindex="{{ctx.tabIndex}}" aria-label="{{ctx.t('remove')}}">
             <i class="{{ctx.iconClass('remove-circle')}}"></i>
           </button>
@@ -75,7 +75,7 @@
         <button type="button" class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
           <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
         </button>
-      </td>
+      </td>    
     </tr>
   </tfoot>
   {% } %}
