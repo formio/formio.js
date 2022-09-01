@@ -10,7 +10,7 @@
       {% ctx.columns.forEach(function(col, index) { %}
       <th aria-label="{{ctx.component && ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index].includes('px') ? ctx.component.widthOffsets[ctx.component.key + index] : ((ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index] / 100) * window.screen.width) +'px'}}">
         <!-- auto adjustmemt of width in data grid -->
-        <div  class="{{col.validate && col.validate.required ? 'field-required' : ''}}" id="{{ctx.component.key}}{{index}}" style="overflow: auto;">
+        <div  class="{{col.validate && col.validate.required ? 'field-required' : ''}}"  style="overflow: auto;"  id="{{ctx.component.key}}{{index}}">
       
           {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
           {% if (col.tooltip) { %} <i ref="tooltip" tabindex="0" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{col.tooltip}}"></i>{% } %}
@@ -18,13 +18,13 @@
       </th>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
-      <th aria-label="157px" style="width: 157px;">
-        <span class="sr-only">{{ ctx.t('Add/Remove') }}</span>
-        {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
-        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
-          <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
-        </button>
-        {% } %}
+      <th  aria-label="150px" style="width: 150px !important;" id="remove-column">
+          <span class="sr-only">{{ ctx.t('Add/Remove') }}</span>
+          {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
+          <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
+            <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
+          </button>
+          {% } %}      
       </th>
       {% } %}
     </tr>
