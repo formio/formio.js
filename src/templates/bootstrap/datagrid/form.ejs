@@ -8,7 +8,7 @@
     <tr>
       {% if (ctx.component.reorder) { %}<th></th>{% } %}
       {% ctx.columns.forEach(function(col, index) { %}
-      <th aria-label="{{ctx.component && ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index].includes('px') ? ctx.component.widthOffsets[ctx.component.key + index] : ((ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index] / 100) * window.screen.width) +'px'}}">
+      <th aria-label="{{ctx.component && ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index].includes('px') ? ctx.component.widthOffsets[ctx.component.key + index] : ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index]}}">
         <!-- auto adjustmemt of width in data grid -->
         <div  class="{{col.validate && col.validate.required ? 'field-required' : ''}}"  style="overflow: auto;"  id="{{ctx.component.key}}{{index}}">
       
