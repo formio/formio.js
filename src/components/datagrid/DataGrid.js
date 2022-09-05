@@ -215,7 +215,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasExtraColumn() {
-    return (this.hasRemoveButtons() || this.canAddColumn);
+    return (this.hasRemoveButtons() || this.hasCloneRowButton ||  this.canAddColumn);
   }
 
   hasRemoveButtons() {
@@ -237,6 +237,12 @@ export default class DataGridComponent extends NestedArrayComponent {
   get canAddColumn() {
     return this.builderMode;
   }
+  get hasCloneRowButton() {
+    return !this.builderMode && this.component.cloneRow &&
+    !this.options.readOnly &&
+    !this.disabled &&
+    (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+  }
 
   render() {
     const columns = this.getColumns();
@@ -245,7 +251,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (this.component.reorder) {
       columnExtra++;
     }
-    if (hasRemoveButtons) {
+    if (hasRemoveButtons || this.hasCloneRowButton) {
       columnExtra++;
     }
     if (this.canAddColumn) {
@@ -270,6 +276,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       allowReorder: this.allowReorder,
       builder: this.builderMode,
       canAddColumn: this.canAddColumn,
+      hasCloneRowButton: this.hasCloneRowButton,
       tabIndex: this.tabIndex,
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
@@ -327,6 +334,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       [`${this.datagridKey}-row`]: 'multiple',
       [`${this.datagridKey}-tbody`]: 'single',
       [`${this.datagridKey}-addRow`]: 'multiple',
+      [`${this.datagridKey}-cloneRow`]: 'multiple',
       [`${this.datagridKey}-removeRow`]: 'multiple',
       [`${this.datagridKey}-group-header`]: 'multiple',
       [this.datagridKey]: 'multiple',
@@ -379,6 +387,10 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
+    });
+
+    this.refs[`${this.datagridKey}-cloneRow`].forEach((addButton, index) => {
+      this.addEventListener(addButton, 'click', this.cloneRow.bind(this, index));
     });
 
     this.refs[`${this.datagridKey}-removeRow`].forEach((removeButton, index) => {
@@ -447,6 +459,34 @@ export default class DataGridComponent extends NestedArrayComponent {
     });
   }
 
+  cloneRow(cloneIndex) {
+    const index = this.rows.length;
+    // if (this.dataValue.length === index) {
+    //   this.dataValue.push({});
+    // }
+    let row;
+    let cloneRow;
+    const dataValue = this.dataValue;
+    const defaultValue = this.defaultValue;
+
+    if (this.initEmpty && defaultValue[index]) {
+      row = defaultValue[index];
+      dataValue[index] = row;
+    }
+    else {
+      cloneRow = dataValue[cloneIndex];
+      dataValue[index] = _.cloneDeep(cloneRow);
+      row =dataValue[index];
+    }
+
+    this.rows[index] = this.createRowComponents(row, index);
+    this.checkConditions();
+    this.triggerChange();
+    this.redraw().then(() => {
+    // this.focusOnNewRowElement(this.rows[index]);
+    });
+  }
+
   addRow() {
     const index = this.rows.length;
 
@@ -494,13 +534,19 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   removeRow(index) {
-    this.splice(index, { isReordered: true });
-    const [row] = this.rows.splice(index, 1);
-    this.removeRowComponents(row);
-    this.updateRowsComponents(index);
-    this.setValue(this.dataValue, { isReordered: true });
-    this.redraw();
-  }
+    var proceed = confirm(this.t('Are you sure you want to delete this row?'));
+    if (proceed) {
+      this.splice(index, { isReordered: true });
+      const [row] = this.rows.splice(index, 1);
+      this.removeRowComponents(row);
+      this.updateRowsComponents(index);
+      this.setValue(this.dataValue, { isReordered: true });
+      this.redraw();
+    }
+    else {
+      return;
+    }
+}
 
   removeRowComponents(row) {
     _.each(row, (component) => this.removeComponent(component));

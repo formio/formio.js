@@ -25,6 +25,20 @@ export default [
   },
   {
     type: 'checkbox',
+    label: 'Allow Clone Row',
+    key: 'cloneRow',
+    weight: 407,
+    input: true,
+    clearOnHide: false,
+    customConditional(context) {
+      return context.data.disableAddingRows ? false : true;
+    },
+    calculateValue(context) {
+      return context.data.disableAddingRows ? false : context.data.cloneRow;
+    },
+  },
+  {
+    type: 'checkbox',
     label: 'Disable Removing Rows',
     key: 'disableRemovingRows',
     tooltip: 'Check if you want to hide Remove Row button',
@@ -35,7 +49,7 @@ export default [
       return !context.data.enableRowGroups;
     },
     calculateValue(context) {
-      return context.data.enableRowGroups ? true :  context.data.disableRemovingRows;
+    return context.data.enableRowGroups ? true :  context.data.disableRemovingRows;
     },
   },
   // {
