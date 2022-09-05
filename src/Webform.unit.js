@@ -66,6 +66,7 @@ import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithIni
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
+import formWithCheckboxRadioaType from '../test/forms/formWithCheckboxRadioType';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -73,6 +74,39 @@ global.cancelAnimationFrame = () => {};
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should return correct strign value for checkbox radio type', function(done) {
+    Formio.createForm(formWithCheckboxRadioaType).then((form) => {
+      form.setValue({ data: { radio: 'value1', checkbox: true } });
+      setTimeout(() => {
+        const stringValues = {
+          checkbox1: 'Yes',
+          checkbox2: 'No',
+          checkbox: 'Yes'
+        };
+
+        form.eachComponent((comp) => {
+          assert.equal(comp.getValueAsString(comp.dataValue), stringValues[`${comp.component.key}`], `Error for string value of ${comp.component.key}`);
+        });
+
+        form.setValue({ data: { radio: 'value2', checkbox: false } });
+
+        setTimeout(() => {
+          const stringValues2 = {
+            checkbox1: 'No',
+            checkbox2: 'Yes',
+            checkbox: 'No'
+          };
+
+          form.eachComponent((comp) => {
+            assert.equal(comp.getValueAsString(comp.dataValue), stringValues2[`${comp.component.key}`], `Error for string value of ${comp.component.key}`);
+          });
+
+          done();
+        }, 200);
+      }, 200);
+    }).catch((err) => done(err));
+  });
 
   it('Should recalculate value when submission is being set in edit mode', function(done) {
     const formElement = document.createElement('div');
