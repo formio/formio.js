@@ -550,6 +550,9 @@ export default class EditGridComponent extends NestedArrayComponent {
         }) => {
           const elements = row.getElementsByClassName(className);
           Array.prototype.forEach.call(elements, (element) => {
+            if (this.options.readOnly && _.intersection(element.classList, ['editRow', 'removeRow']).length) {
+              element.style.display = 'none';
+            }
             this.addEventListener(element, event, action);
           });
         });
