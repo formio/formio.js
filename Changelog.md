@@ -44,7 +44,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5234: avoid lazy load flatpickr if it is already available in the window
  - FIO-5399: Make formio use flatpickr script from test cdn for non-production builds
  - FIO-5436: Fix incorrect signature size setting
-
+ - FIO-5266: Fixes flatpickr initialization happend prior to localization script loaded and calendar translations not applied
+ - FIO-5301: Added localization to the builder components search field
+ - FIO-5418: Fixes checkbox values in edit grid not translated
+ - FIO-5417: Fixes multiple calendar widgets could be opened at same time
+ - FIO-2971: fixed an issue table tooltip text of clone row components option is not fully visible
+ - FIO-4764: Fix date format that prevent saving in ISO standard
+ - FIO-5415 Fixed component settings not fitting in in some cases
+ - FIO-3308: fixed an issue where all checkboxes (radio type) are displayed as selected in email submissions when user selects just one
+ 
 ## 4.15.0-rc.13
 ### Added
  - FIO-4836: hash was added to file
