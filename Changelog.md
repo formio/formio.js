@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.9-rc.10]
+### Fixed
+ - FIO-3308: fixed an issue where all checkboxes (radio type) are displayed as selected in email submissions when user selects just one
+
 ## 4.14.9-rc.9
 ### Changed
  - FIO-5234: avoid lazy load flatpickr if it is already available in the…
