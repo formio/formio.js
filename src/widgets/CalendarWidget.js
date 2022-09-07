@@ -68,7 +68,6 @@ export default class CalendarWidget extends InputWidget {
     }
     if (!this.settings.enableTime) {
       this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');
-      this.settings.dateFormat = this.settings.format;
     }
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
@@ -266,17 +265,17 @@ export default class CalendarWidget extends InputWidget {
   }
 
   addSuffix(suffix) {
-    this.addEventListener(suffix, 'click', (event) => {
-      event.stopPropagation();
-
-      if (this.calendar) {
-        if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-          this.calendar.open();
+    this.addEventListener(suffix, 'click', () => {
+      setTimeout(() => {
+        if (this.calendar) {
+          if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+            this.calendar.open();
+          }
+          else if (this.calendar.isOpen) {
+            this.calendar.close();
+          }
         }
-        else if (this.calendar.isOpen) {
-          this.calendar.close();
-        }
-      }
+      }, 0);
     });
 
     return suffix;
