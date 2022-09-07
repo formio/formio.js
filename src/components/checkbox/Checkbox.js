@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -183,7 +184,10 @@ export default class CheckBoxComponent extends Field {
   }
 
   getValueAsString(value) {
-    return this.t(value ? 'Yes' : 'No');
+    const { name: componentName, value: componentValue } = this.component;
+    const hasValue = componentName ? _.isEqual(value, componentValue) : value;
+
+    return this.t(hasValue ? 'Yes' : 'No');
   }
 
   updateValue(value, flags) {
