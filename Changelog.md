@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.9-rc.10]
+## 4.14.9-rc.10
+### Changed
+ - FIO-5266: Fixes flatpickr initialization happend prior to localization script loaded and calendar translations not applied
+ - FIO-5301: Added localization to the builder components search field
+ - FIO-5399: Make formio use flatpickr script from test cdn for non-production builds
+ - FIO-5417: Fixes multiple calendar widgets could be opened at same time
+ - FIO-5436: Fix incorrect signature size setting
+ - FIO-2971: fixed an issue table tooltip text of clone row components o…
+ - FIO-4764: Fix date format that prevent saving in ISO standard
+ - FIO-5415 Fixed component settings not fitting in in some cases
+
 ### Fixed
  - FIO-3308: fixed an issue where all checkboxes (radio type) are displayed as selected in email submissions when user selects just one
  - FIO-5418: Fixes checkbox values in edit grid not translated
