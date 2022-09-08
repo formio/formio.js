@@ -18,7 +18,13 @@
       </th>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
-      <th  aria-label="150px" style="width: 150px !important;" id="remove-column">
+      <th  aria-label="108px" style="width: 108px !important" id="remove-column">
+        {% if (ctx.hasRemoveButtons) { %}
+        <div id="remove-button"></div>
+        {% } %} 
+        {% if (ctx.component.cloneRow && ctx.hasCloneRowButton) { %}
+        <div id="clone-row"></div>
+        {% } %}
         <span class="sr-only">{{ ctx.t('Add/Remove') }}</span>
         {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}       
         <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
