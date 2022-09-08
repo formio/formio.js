@@ -946,6 +946,8 @@ body.formio-dialog-open {
 }
 
 .formio-component-datagrid {
+  overflow-x: auto;
+
   .datagrid-table {
     &>tbody>tr>td:last-child {
       position: relative;
