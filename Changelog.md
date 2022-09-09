@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4764: Fix date format that prevent saving in ISO standard
  - FIO-5415 Fixed component settings not fitting in in some cases
  - FIO-3308: fixed an issue where all checkboxes (radio type) are displayed as selected in email submissions when user selects just one
+ - FIO-5044: Removed Dropbox for Next Portal
+ - FIO-5069: API driven dataTable
  
 ## 4.15.0-rc.13
 ### Added
