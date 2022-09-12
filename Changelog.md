@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.9-rc.13]
+### Fixed
+ - FIO-5234: avoid lazy load flatpickr if it is already available in the window
+
 ## 4.14.9-rc.12
 ### Changed
  - FIO-5455: Fixes context variables not available in datetime custom disabled dates config
