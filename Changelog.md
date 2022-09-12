@@ -54,6 +54,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3308: fixed an issue where all checkboxes (radio type) are displayed as selected in email submissions when user selects just one
  - FIO-5044: Removed Dropbox for Next Portal
  - FIO-5069: API driven dataTable
+ - FIO-5455: Fixes context variables not available in datetime custom disabled dates config
+ - FIO-5544: added sticky property to the form components when building forms
  
 ## 4.15.0-rc.13
 ### Added
