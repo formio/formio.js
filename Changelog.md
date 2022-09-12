@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.9-rc.12]
+### Fixed
+ - FIO-5544: added sticky property to the form components when building forms
+
 ## 4.14.9-rc.11
 ### Changed
  - FIO-4684: Fixes extra pdf redraw after resources fetch
