@@ -4151,7 +4151,9 @@ span[role=link] {
 
 .builder-sidebar_scroll {
   position: sticky;
-  top: 15px;
+  top: 30px;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 .builder-sidebar_search {

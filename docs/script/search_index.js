@@ -8688,6 +8688,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/widgets/inputwidget.js~inputwidget#evalcontext",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-evalContext",
+    "src/widgets/InputWidget.js~InputWidget#evalContext",
+    "method"
+  ],
+  [
     "src/widgets/inputwidget.js~inputwidget#getvalue",
     "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-getValue",
     "src/widgets/InputWidget.js~InputWidget#getValue",
