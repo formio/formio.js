@@ -165,20 +165,9 @@ export default class CalendarWidget extends InputWidget {
       }
     };
 
-    const flatpickr = _.get(window, 'flatpickr');
-
-    if (!flatpickr) {
-      Formio.requireLibrary('flatpickr-css', 'flatpickr', [
-        { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
-      ], true);
-    }
-
-    if (flatpickr) {
-      if (this._input) {
-        this.initFlatpickr(flatpickr);
-      }
-      return;
-    }
+    Formio.requireLibrary('flatpickr-css', 'flatpickr', [
+      { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
+    ], true);
 
     const flatpickr = _.get(window, 'flatpickr');
 
