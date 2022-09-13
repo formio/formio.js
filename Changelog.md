@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.9-rc.14
+### Changed
+ - Upgrade vanilla text mask and text-mask addons.
+
 ## 4.14.9-rc.13
 ### Fixed
  - FIO-5234: avoid lazy load flatpickr if it is already available in the window
