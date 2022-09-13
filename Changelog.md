@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5069: API driven dataTable
  - FIO-5455: Fixes context variables not available in datetime custom disabled dates config
  - FIO-5544: added sticky property to the form components when building forms
+ - Upgrade vanilla text mask and text-mask addons. 
  
 ## 4.15.0-rc.13
 ### Added
