@@ -1810,6 +1810,7 @@ export default class SelectComponent extends Field {
 
   detach() {
     super.detach();
+    this.off('blur');
     if (this.choices) {
       if (this.choices.containerOuter?.element?.parentNode) {
         this.choices.destroy();
