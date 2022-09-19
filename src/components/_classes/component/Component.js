@@ -2241,7 +2241,7 @@ export default class Component extends Element {
               this.addEventListener(qlSource, 'click', (event) => {
                 event.preventDefault();
                 if (txtArea.style.display === 'inherit') {
-                  this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+                  this.quill.setContents(this.quill.clipboard.convert({ html: txtArea.value }));
                 }
                 txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
               });
