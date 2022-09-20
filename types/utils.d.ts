@@ -22,6 +22,7 @@ export namespace Utils {
     condition: { eq: any; show: any; when: any } & any,
     row: any,
     data: any,
+    instance: any
   ): boolean;
   function checkCustomConditional(
     component: any /* unused */,

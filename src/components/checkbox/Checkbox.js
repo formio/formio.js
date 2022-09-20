@@ -26,6 +26,10 @@ export default class CheckBoxComponent extends Field {
     };
   }
 
+  static get conditionOperators() {
+    return ['isEqual'];
+  }
+
   get defaultSchema() {
     return CheckBoxComponent.schema();
   }

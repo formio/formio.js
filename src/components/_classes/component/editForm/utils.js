@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import Evaluator from '../../../../utils/Evaluator';
+import { getContextComponents } from '../../../../utils/utils';
+
 const EditFormUtils = {
   sortAndFilterComponents(components) {
     return _.filter(_.sortBy(components, 'weight'), (item) => !item.ignore);
@@ -132,6 +134,172 @@ const EditFormUtils = {
       weight: weight,
       components
     };
+  },
+  simpleConditionalComponents(inLogic) {
+    return [
+      {
+        label: 'Show or Hide this field',
+        widget: 'choicesjs',
+        tableView: true,
+        dataType: 'boolean',
+        data: {
+          values: [
+            {
+              label: 'Show This Field',
+              value: true,
+            },
+            {
+              label: 'Hide This Field',
+              value: false,
+            },
+          ],
+        },
+        key: `${inLogic ? '' : 'conditional.'}show`,
+        type: 'select',
+        input: true,
+        ...(inLogic ? { type: 'hidden', defaultValue: true } : {})
+      },
+      {
+        label: 'When',
+        widget: 'choicesjs',
+        tableView: true,
+        data: {
+          values: [
+            {
+              label: 'When all conditions are met',
+              value: 'all',
+            },
+            {
+              label: 'When any condition is met',
+              value: 'any',
+            },
+          ],
+        },
+        key: `${inLogic ? '' : 'conditional.'}conjunction`,
+        type: 'select',
+        input: true,
+      },
+      {
+        tooltip: 'Form Component to trigger Validation',
+        label: 'For the form component',
+        widget: 'choicesjs',
+        tableView: true,
+        dataSrc: 'custom',
+        valueProperty: 'value',
+        data: {
+          custom(context) {
+            return getContextComponents(context, true, ['form', 'datasource']);
+          },
+        },
+        key: `${inLogic ? '' : 'conditional.'}component`,
+        type: 'select',
+        input: true,
+      },
+      {
+        label: 'Define conditions:',
+        addAnotherPosition: 'bottom',
+        key: `${inLogic ? '' : 'conditional.'}conditions`,
+        type: 'datagrid',
+        initEmpty: true,
+        addAnother: 'Add Condition',
+        logic: [
+          {
+            name: 'check if condition component is defined',
+            trigger: {
+              type: 'javascript',
+              javascript: `result = ${inLogic ? 'row.component' : 'data.conditional.component'};`,
+            },
+            actions: [
+              {
+                name: 'change value component',
+                type: 'mergeComponentSchema',
+                schemaDefinition: `schema = utils.addConditionValueComponent(instance, component, ${inLogic ? 'row.component' : 'data.conditional.component'}, utils)`,
+              },
+            ],
+          },
+          {
+            name: 'clear value if condition component is changed',
+            trigger: {
+              type: 'event',
+              event: 'componentChange',
+            },
+            actions: [
+              {
+                name: 'clear value',
+                type: 'customAction',
+                customAction: `
+                  var changeResult = result[0];
+                  if (instance.dataValue.length && !changeResult.flags.fromSubmission && changeResult.component?.key === '${inLogic ? '' : 'conditional.'}component' && !_.isNil(changeResult.value)) {
+                    instance.dataValue = [];
+                    instance.rebuild();
+                  }
+                `,
+              },
+            ],
+          },
+        ],
+        input: true,
+        components: [
+          {
+            label: 'If the value:',
+            widget: 'choicesjs',
+            tableView: true,
+            dataSrc: 'custom',
+            valueProperty: 'value',
+            data: {
+              custom: `
+                var conditionComponent= utils.getComponent(instance.options.editForm.components, ${inLogic ? 'instance.parent?.data?.component' : 'data.conditional.component'});
+                var componentType = conditionComponent ? conditionComponent.type : 'base';
+
+                values = utils.getConditionOperatorOptions(Formio.Components.components[componentType].conditionOperators);
+              `
+            },
+            key: 'operator',
+            type: 'select',
+            input: true,
+          },
+          {
+            label: 'Value',
+            inputFormat: 'plain',
+            key: 'value',
+            type: 'textfield',
+            input: true,
+          },
+        ],
+      },
+      // {
+      //   type: 'select',
+      //   input: true,
+      //   label: 'This component should Display:',
+      //   key: 'conditional.show',
+      //   dataSrc: 'values',
+      //   data: {
+      //     values: [
+      //       { label: 'True', value: 'true' },
+      //       { label: 'False', value: 'false' }
+      //     ]
+      //   }
+      // },
+      // {
+      //   type: 'select',
+      //   input: true,
+      //   label: 'When the form component:',
+      //   key: 'conditional.when',
+      //   dataSrc: 'custom',
+      //   valueProperty: 'value',
+      //   data: {
+      //     custom(context) {
+      //       return getContextComponents(context);
+      //     }
+      //   }
+      // },
+      // {
+      //   type: 'textfield',
+      //   input: true,
+      //   label: 'Has the value:',
+      //   key: 'conditional.eq'
+      // }
+    ];
   }
 };
 
