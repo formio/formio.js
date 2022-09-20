@@ -515,10 +515,18 @@ export default class DataGridComponent extends NestedArrayComponent {
         this.setRowComponentsData(index, row);
       }
       else {
+        let rowComponents = null;
         if (this.rows[index]) {
-          this.removeRowComponents(this.rows[index]);
+          const prevRowComponents = this.rows[index];
+          rowComponents = _.map(this.component.components, comp => {
+            const prevComponent = prevRowComponents[comp.key];
+              return !_.isEqual(comp.type, prevComponent.component.type)
+                ? prevComponent.component
+                : comp;
+          });
+          this.removeRowComponents(prevRowComponents);
         }
-        this.rows[index] = this.createRowComponents(row, index);
+        this.rows[index] = this.createRowComponents(row, index, rowComponents);
         added = true;
       }
     });
@@ -536,10 +544,11 @@ export default class DataGridComponent extends NestedArrayComponent {
     return added;
   }
 
-  createRowComponents(row, rowIndex) {
+  createRowComponents(row, rowIndex, rowComponents) {
     const components = {};
     this.tabIndex = 0;
-    this.component.components.map((col, colIndex) => {
+    rowComponents = rowComponents || this.component.components;
+    rowComponents.map((col, colIndex) => {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
@@ -566,6 +575,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       components[col.key] = component;
     });
+
     return components;
   }
 
@@ -617,8 +627,19 @@ export default class DataGridComponent extends NestedArrayComponent {
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
           const firstRowCheck = visibility[key] === undefined;
-          visibility[key] = !!visibility[key] ||
-            (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
+          const columnVisible = !!visibility[key];
+
+          visibility[key] = columnVisible || (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
+
+          if (columnVisible && col.logic.length) {
+            col.fieldLogic(data, dataValue[rowIndex]);
+          }
+
+          //rebuild if mergeComponentSchema action changed row component type
+          if (col.type !== col.component.type) {
+          //  if ( !_.isEqual(col.component, col.originalComponent)) {
+            logicRebuild = true;
+          }
 
           if (col.component.logic && firstRowCheck) {
             const compIndex = _.findIndex(this.columns, ['key', key]);
