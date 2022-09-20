@@ -30,6 +30,10 @@ export default class NumberComponent extends Input {
     };
   }
 
+  static get conditionOperators() {
+    return [...super.conditionOperators, 'lessThan', 'greaterThan'];
+  }
+
   constructor(...args) {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);

@@ -227,6 +227,10 @@ export default class Component extends Element {
   static tableView(value, options) {}
   /* eslint-enable no-unused-vars */
 
+  static get conditionOperators() {
+    return ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'];
+  }
+
   /**
    * Initialize a new Component.
    *
@@ -288,6 +292,8 @@ export default class Component extends Element {
 
     // Add the id to the component.
     this.component.id = this.id;
+
+    this.transformSimpleConditions();
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
@@ -522,9 +528,26 @@ export default class Component extends Element {
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.conditionallyVisible(null, null);
+
     if (this.component.addons?.length) {
       this.component.addons.forEach((addon) => this.createAddon(addon));
     }
+  }
+
+  transformSimpleConditions() {
+    const { conditional, logic = [] } = this.component;
+
+    if (conditional.when) {
+      _.set(this.component, 'conditional', FormioUtils.transformSimpleCondition(conditional));
+    }
+
+    _.each(logic, logicItem => {
+      const { trigger = {} } = logicItem;
+
+      if (trigger.type === 'simple' && trigger.simple && trigger.simple.when) {
+        _.set(logicItem, 'trigger.simple', FormioUtils.transformSimpleCondition(trigger.simple));
+      }
+    });
   }
 
   createAddon(addonConfiguration) {

@@ -14,7 +14,7 @@ const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
-
+import ConditionOperators from './conditionOperators';
 export * from './formUtils';
 
 // Configure JsonLogic
@@ -208,32 +208,77 @@ export function checkCalculated(component, submission, rowData) {
  * @param data
  * @returns {boolean}
  */
-export function checkSimpleConditional(component, condition, row, data) {
+export function checkSimpleConditional(component, condition, row, data, instance) {
+  const { conditions = [], conjunction = 'all', component: conditionComponentPath, show = true } = condition;
   let value = null;
+
   if (row) {
-    value = getValue({ data: row }, condition.when);
+    value = getValue({ data: row }, conditionComponentPath);
   }
   if (data && _.isNil(value)) {
-    value = getValue({ data }, condition.when);
+    value = getValue({ data }, conditionComponentPath);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
   }
 
-  const eq = String(condition.eq);
-  const show = String(condition.show);
+  const conditionsResult = _.map(conditions, (cond) => {
+    const { value: comparedValue, operator } = cond;
+    const СonditionOperator = ConditionOperators[operator];
+    return СonditionOperator
+      ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+      : false;
+  });
 
-  // Special check for selectboxes component.
-  if (_.isObject(value) && _.has(value, condition.eq)) {
-    return String(value[condition.eq]) === show;
-  }
-  // FOR-179 - Check for multiple values.
-  if (Array.isArray(value) && value.map(String).includes(eq)) {
-    return show === 'true';
-  }
+  let result = false;
+  switch (conjunction) {
+    case 'any':
+      result = _.some(conditionsResult, res => !!res);
+      break;
+    default:
+      result = _.every(conditionsResult, res => !!res);
+}
 
-  return (String(value) === eq) === (show === 'true');
+return show ? result : !result;
+
+  // let value = null;
+  // if (row) {
+  //   value = getValue({ data: row }, condition.when);
+  // }
+  // if (data && _.isNil(value)) {
+  //   value = getValue({ data }, condition.when);
+  // }
+  // // FOR-400 - Fix issue where falsey values were being evaluated as show=true
+  // if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
+  //   value = '';
+  // }
+
+  // const eq = String(condition.eq);
+  // const show = String(condition.show);
+
+  // // Special check for selectboxes component.
+  // if (_.isObject(value) && _.has(value, condition.eq)) {
+  //   return String(value[condition.eq]) === show;
+  // }
+  // // FOR-179 - Check for multiple values.
+  // if (Array.isArray(value) && value.map(String).includes(eq)) {
+  //   return show === 'true';
+  // }
+
+  // return (String(value) === eq) === (show === 'true');
+}
+
+export function transformSimpleCondition({ show = true, when ='', eq = '' }) {
+  return {
+    show,
+    conjunction: 'all',
+    component: when,
+    conditions: [{
+      operator: 'isEqual',
+      value: eq
+    }]
+  };
 }
 
 /**
@@ -308,9 +353,13 @@ export function checkCondition(component, row, data, form, instance) {
   if (customConditional) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-  else if (conditional && conditional.when) {
+  // else if (conditional && conditional.when) {
+  //   row = getRow(component, row, instance);
+  //   return checkSimpleConditional(component, conditional, row, data);
+  // }
+  else if (conditional && conditional.conditions && conditional.conditions.length && conditional.component) {
     row = getRow(component, row, instance);
-    return checkSimpleConditional(component, conditional, row, data);
+    return checkSimpleConditional(component, conditional, row, data, instance);
   }
   else if (conditional && conditional.json) {
     return checkJsonConditional(component, conditional.json, row, data, form, true);
@@ -338,7 +387,7 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   switch (trigger.type) {
     case 'simple':
       row = getRow(component, row, instance, trigger.simple);
-      return checkSimpleConditional(component, trigger.simple, row, data);
+      return checkSimpleConditional(component, trigger.simple, row, data, instance);
     case 'javascript':
       return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
     case 'json':
@@ -1110,11 +1159,65 @@ export function observeOverload(callback, options = {}) {
   };
 }
 
-export function getContextComponents(context) {
+export function getConditionOperatorOptions(operators = []) {
+  return _.chain(operators)
+    .map(operatorName => {
+      const operator = ConditionOperators[operatorName];
+
+      return operator
+        ? {
+            label: operator.displayedName,
+            value: operator.operatorKey
+          }
+        : null;
+    })
+    .filter(option => !!option)
+    .value();
+}
+
+export function addConditionValueComponent(instance, component, conditionComponentPath, utils) {
+  const defaultValueComponent = { type: 'textfield' };
+  const conditionComponent= {
+    ...(utils.getComponent(instance.options.editForm.components, conditionComponentPath) || defaultValueComponent )
+  };
+
+  const changeValueComponent = !_.includes(['email', 'url', 'textarea', 'phoneNumber', 'hidden', 'tags'], conditionComponent.type);
+  const newValueComponent = changeValueComponent ? { ...conditionComponent } : defaultValueComponent;
+
+  _.each(['logic', 'action', 'defaultValue', 'conditional', 'hideLabel', 'logic', 'multiple', 'calculateValue', 'validate', 'hidden', 'customConditional'], prop => _.unset(newValueComponent, prop));
+
+   return {
+    components: [
+      component.components[0],
+      {
+        ...newValueComponent,
+        key: 'value',
+        label: 'Value',
+        customConditional(ctx) {
+          const singleOperators = _.chain(ConditionOperators)
+            .map(operator => {
+              return !operator.requireValue
+              ? operator.operatorKey
+              : null;
+            })
+            .filter(operatorKey => !!operatorKey)
+            .value();
+
+          return ctx.row.operator && !_.includes(singleOperators, ctx.row.operator);
+        }
+      }
+
+    ]
+
+  };
+}
+
+export function getContextComponents(context, excludeNested, excludedTypes = []) {
   const values = [];
 
   context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
-    if (component.key !== context.data.key) {
+    const addToContextComponents = excludeNested ? !component.tree : true;
+    if (component.key !== context.data.key && addToContextComponents && !_.includes(excludedTypes, component.type)) {
       values.push({
         label: `${component.label || component.key} (${path})`,
         value: path,
