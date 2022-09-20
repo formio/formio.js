@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.15.0-rc.14]
+### Added
+ - FIO-5272: added URL dataSrc for Radio , Select boxes
+
 ### Fixed
  - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
  - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
