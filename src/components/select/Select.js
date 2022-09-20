@@ -546,7 +546,7 @@ export default class SelectComponent extends Field {
       return false;
     }
     // Live forms should always load.
-    if (!this.options.readOnly || (this.options.display === 'pdf' && this.options.readOnly)) {
+    if (!this.options.readOnly) {
       return true;
     }
 
