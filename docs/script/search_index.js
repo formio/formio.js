@@ -300,6 +300,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "formiojs/src/components/_classes/list/listcomponent.form.js~listcomponent",
+    "function/index.html#static-function-ListComponent",
+    "<span>ListComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/list/ListComponent.form.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/contrib/location/location.form.js~location",
     "function/index.html#static-function-Location",
     "<span>Location</span> <span class=\"search-result-import-path\">formiojs/src/contrib/location/Location.form.js</span>",
@@ -2028,6 +2034,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.js~formio.usesessiontoken",
+    "class/src/Formio.js~Formio.html#static-method-useSessionToken",
+    "src/Formio.js~Formio.useSessionToken",
+    "method"
+  ],
+  [
     "src/formio.unit.js",
     "file/src/Formio.unit.js.html",
     "src/Formio.unit.js",
@@ -2652,6 +2664,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/list/listcomponent.form.js",
+    "file/src/components/_classes/list/ListComponent.form.js.html",
+    "src/components/_classes/list/ListComponent.form.js",
+    "file"
+  ],
+  [
+    "src/components/_classes/list/editform/listcomponent.edit.data.js",
+    "file/src/components/_classes/list/editForm/ListComponent.edit.data.js.html",
+    "src/components/_classes/list/editForm/ListComponent.edit.data.js",
+    "file"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.form.js",
     "file/src/components/_classes/nested/NestedComponent.form.js.html",
     "src/components/_classes/nested/NestedComponent.form.js",
@@ -3102,12 +3126,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/container/container.js~containercomponent#datavalue",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-member-dataValue",
-    "src/components/container/Container.js~ContainerComponent#dataValue",
-    "member"
-  ],
-  [
     "src/components/container/container.js~containercomponent#defaultschema",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-get-defaultSchema",
     "src/components/container/Container.js~ContainerComponent#defaultSchema",
@@ -3123,12 +3141,6 @@ window.esdocSearchIndex = [
     "src/components/container/container.js~containercomponent#focus",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-focus",
     "src/components/container/Container.js~ContainerComponent#focus",
-    "method"
-  ],
-  [
-    "src/components/container/container.js~containercomponent#setvalue",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-setValue",
-    "src/components/container/Container.js~ContainerComponent#setValue",
     "method"
   ],
   [
@@ -3699,6 +3711,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/fixtures/comp8.js",
     "file/src/components/datetime/fixtures/comp8.js.html",
     "src/components/datetime/fixtures/comp8.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp9.js",
+    "file/src/components/datetime/fixtures/comp9.js.html",
+    "src/components/datetime/fixtures/comp9.js",
     "file"
   ],
   [
@@ -8686,6 +8704,12 @@ window.esdocSearchIndex = [
     "class/src/widgets/InputWidget.js~InputWidget.html#instance-set-disabled",
     "src/widgets/InputWidget.js~InputWidget#disabled",
     "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#evalcontext",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-evalContext",
+    "src/widgets/InputWidget.js~InputWidget#evalContext",
+    "method"
   ],
   [
     "src/widgets/inputwidget.js~inputwidget#getvalue",

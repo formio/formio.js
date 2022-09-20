@@ -44,6 +44,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-list">components/_classes/list</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ListComponent">ListComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
@@ -247,6 +248,10 @@ class Formio {
     this.path = path;
     this.options = options;
 
+    if (options.useSessionToken) {
+      Formio.useSessionToken(options);
+    }
+
     if (options.hasOwnProperty(&apos;base&apos;)) {
       this.base = options.base;
     }
@@ -354,11 +359,18 @@ class Formio {
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
         if (hostparts.length &gt; 3 &amp;&amp; path.split(&apos;/&apos;).length &gt; 1) {
+          const isFile = path.match(/.json/);
           const pathParts = path.split(&apos;/&apos;);
-          pathParts.shift(); // Throw away the first /.
-          this.projectId = pathParts.shift();
-          path = `/${pathParts.join(&apos;/&apos;)}`;
-          this.projectUrl = `${hostName}/${this.projectId}`;
+
+          if (isFile) {
+            this.projectUrl = hostName;
+          }
+          else {
+            pathParts.shift(); // Throw away the first /.
+            this.projectId = pathParts.shift();
+            path = `/${pathParts.join(&apos;/&apos;)}`;
+            this.projectUrl = `${hostName}/${this.projectId}`;
+          }
         }
       }
       else {
@@ -415,6 +427,26 @@ class Formio {
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], &apos;delete&apos;, null, opts);
+  }
+
+  static useSessionToken(options) {
+    const tokenName = `${options.namespace || Formio.namespace || &apos;formio&apos;}Token`;
+    const token = localStorage.getItem(tokenName);
+
+    if (token) {
+      localStorage.removeItem(tokenName);
+      sessionStorage.setItem(tokenName, token);
+    }
+
+    const userName = `${options.namespace || Formio.namespace || &apos;formio&apos;}User`;
+    const user = localStorage.getItem(userName);
+
+    if (user) {
+      localStorage.removeItem(userName);
+      sessionStorage.setItem(userName, user);
+    }
+
+    localStorage.setItem(&apos;useSessionToken&apos;, true);
   }
 
   index(type, query, opts) {
@@ -1233,6 +1265,8 @@ class Formio {
       Formio.tokens = {};
     }
 
+    const storage = localStorage.getItem(&apos;useSessionToken&apos;) ? sessionStorage : localStorage;
+
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1240,7 +1274,7 @@ class Formio {
       }
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        localStorage.removeItem(tokenName);
+        storage.removeItem(tokenName);
       }
       catch (err) {
         cookies.erase(tokenName, { path: &apos;/&apos; });
@@ -1253,7 +1287,7 @@ class Formio {
       Formio.tokens[tokenName] = token;
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        localStorage.setItem(tokenName, token);
+        storage.setItem(tokenName, token);
       }
       catch (err) {
         cookies.set(tokenName, token, { path: &apos;/&apos; });
@@ -1277,7 +1311,10 @@ class Formio {
       return Formio.tokens[decodedTokenName];
     }
     try {
-      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || &apos;&apos;;
+      const token = localStorage.getItem(&apos;useSessionToken&apos;)
+        ? sessionStorage.getItem(tokenName)
+        : localStorage.getItem(tokenName);
+      Formio.tokens[tokenName] = token || &apos;&apos;;
       if (options.decode) {
         Formio.tokens[decodedTokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
         return Formio.tokens[decodedTokenName];
@@ -1291,7 +1328,9 @@ class Formio {
   }
 
   static setUser(user, opts = {}) {
-    var userName = `${opts.namespace || Formio.namespace || &apos;formio&apos;}User`;
+    const userName = `${opts.namespace || Formio.namespace || &apos;formio&apos;}User`;
+    const storage = localStorage.getItem(&apos;useSessionToken&apos;) ? sessionStorage : localStorage;
+
     if (!user) {
       if (!opts.fromToken) {
         opts.fromUser = true;
@@ -1303,7 +1342,7 @@ class Formio {
 
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(userName);
+        return storage.removeItem(userName);
       }
       catch (err) {
         return cookies.erase(userName, { path: &apos;/&apos; });
@@ -1311,7 +1350,7 @@ class Formio {
     }
     // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(userName, JSON.stringify(user));
+      storage.setItem(userName, JSON.stringify(user));
     }
     catch (err) {
       cookies.set(userName, JSON.stringify(user), { path: &apos;/&apos; });
@@ -1325,7 +1364,12 @@ class Formio {
     options = options || {};
     var userName = `${options.namespace || Formio.namespace || &apos;formio&apos;}User`;
     try {
-      return JSON.parse(localStorage.getItem(userName) || null);
+      return JSON.parse(
+        (localStorage.getItem(&apos;useSessionToken&apos;)
+          ? sessionStorage
+          : localStorage
+        ).getItem(userName) || null
+      );
     }
     catch (e) {
       return JSON.parse(cookies.get(userName));
@@ -1478,6 +1522,8 @@ class Formio {
         options
       });
     }
+
+    authUrl = `${Formio.baseUrl}/current`;
     this.currentUserResolved = false;
     return Formio.makeRequest(formio, &apos;currentUser&apos;, authUrl, &apos;GET&apos;, null, options)
       .then((response) =&gt; {
@@ -1491,17 +1537,19 @@ class Formio {
     options = options || {};
     options.formio = formio;
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
+    const logout = () =&gt; {
+      Formio.setToken(null, options);
+      Formio.setUser(null, options);
+      Formio.clearCache();
+      localStorage.removeItem(&apos;useSessionToken&apos;);
+    };
     return Formio.makeRequest(formio, &apos;logout&apos;, `${projectUrl}/logout`)
       .then(function(result) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         return result;
       })
       .catch(function(err) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         throw err;
       });
   }
@@ -1681,7 +1729,10 @@ class Formio {
           }
 
           if (onload) {
-            element.addEventListener(&apos;load&apos;, () =&gt; onload(Formio.libraries[name].ready));
+            element.addEventListener(&apos;load&apos;, () =&gt; {
+              Formio.libraries[name].loaded = true;
+              onload(Formio.libraries[name].ready);
+            });
           }
 
           const { head } = document;
@@ -1703,9 +1754,9 @@ class Formio {
       }
     }
 
-    const lib = Formio.libraries[name].ready;
+    const lib = Formio.libraries[name];
 
-    return onload ? onload(lib) : lib;
+    return onload &amp;&amp; lib.loaded ? onload(lib.ready) : lib.ready;
   }
 
   static libraryReady(name) {

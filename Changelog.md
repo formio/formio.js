@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.14]
+## 4.15.0-rc.14
 ### Added
  - FIO-5272: added URL dataSrc for Radio , Select boxes
 
