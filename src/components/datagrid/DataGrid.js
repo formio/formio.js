@@ -506,25 +506,42 @@ export default class DataGridComponent extends NestedArrayComponent {
     });
   }
 
-  createRows(init, rebuild) {
+  rowComponentTypeChanged(rowCompInstance) {
+    const originalCompType = rowCompInstance.type;
+    const { type, typeChangeEnabled } = rowCompInstance.component;
+
+    return typeChangeEnabled && !_.isEqual(originalCompType, type);
+  }
+
+  createRows(init, rebuild, partialRebuild) {
     let added = false;
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) => {
-      if (!rebuild && this.rows[index]) {
+      let rebuildRow = false;
+      const currentComponents = this.rows[index];
+
+      if (partialRebuild && !rebuild && currentComponents) {
+        rebuildRow = _.some(currentComponents, rowComp => this.rowComponentTypeChanged(rowComp));
+      }
+
+      if (!rebuild && currentComponents && !rebuildRow) {
         this.setRowComponentsData(index, row);
       }
       else {
         let rowComponents = null;
-        if (this.rows[index]) {
-          const prevRowComponents = this.rows[index];
+
+        if (currentComponents) {
           rowComponents = _.map(this.component.components, comp => {
-            const prevComponent = prevRowComponents[comp.key];
-              return !_.isEqual(comp.type, prevComponent.component.type)
-                ? prevComponent.component
-                : comp;
+            const currentComponent = currentComponents[comp.key];
+            const { type: currentType, typeChangeEnabled } = currentComponent.component;
+
+            return typeChangeEnabled && !_.isEqual(comp.type, currentType)
+              ? currentComponent.component
+              : comp;
           });
-          this.removeRowComponents(prevRowComponents);
+
+          this.removeRowComponents(currentComponents);
         }
         this.rows[index] = this.createRowComponents(row, index, rowComponents);
         added = true;
@@ -621,8 +638,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     const visibility = {};
 
     let logicRebuild = false;
+    let partialRebuild = false;
 
     const dataValue = this.dataValue;
+
     this.rows.forEach((row, rowIndex) => {
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
@@ -631,17 +650,16 @@ export default class DataGridComponent extends NestedArrayComponent {
 
           visibility[key] = columnVisible || (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
 
-          if (columnVisible && col.logic.length) {
+          if (columnVisible && col.component.typeChangeEnabled && col.logic.length) {
             col.fieldLogic(data, dataValue[rowIndex]);
           }
 
           //rebuild if mergeComponentSchema action changed row component type
-          if (col.type !== col.component.type) {
-          //  if ( !_.isEqual(col.component, col.originalComponent)) {
-            logicRebuild = true;
+          if (this.rowComponentTypeChanged(col)) {
+            partialRebuild = true;
           }
 
-          if (col.component.logic && firstRowCheck) {
+          if (col.logic.length && firstRowCheck && !col.component.typeChangeEnabled) {
             const compIndex = _.findIndex(this.columns, ['key', key]);
             if (!_.isEqual(this.columns[compIndex], col.component)) {
               logicRebuild = true;
@@ -651,13 +669,15 @@ export default class DataGridComponent extends NestedArrayComponent {
         }
       });
     });
+
     const rebuild = !_.isEqual(visibility, this.visibleColumns) || logicRebuild;
+
     _.each(visibility, (col) => {
       show |= col;
     });
 
     this.visibleColumns = visibility;
-    return { rebuild, show };
+    return { rebuild, show, partialRebuild };
   }
 
   checkComponentConditions(data, flags, row) {
@@ -667,10 +687,10 @@ export default class DataGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    const { rebuild, show } = this.checkColumns(data, flags);
+    const { rebuild, show, partialRebuild } = this.checkColumns(data, flags);
     // Check if a rebuild is needed or the visibility changes.
-    if (rebuild || !isVisible) {
-      this.createRows(false, rebuild);
+    if (rebuild || !isVisible || partialRebuild) {
+      this.createRows(false, rebuild, partialRebuild);
     }
 
     // Return if this table should show.
