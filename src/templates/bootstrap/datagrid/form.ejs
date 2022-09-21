@@ -4,13 +4,13 @@
     {{ ctx.component.condensed ? 'table-sm' : ''}}
     " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
   {% if (ctx.hasHeader) { %}
-  <thead>
+  <thead aria-label="{{ctx.component.totalWidth}}" >
     <tr>
       {% if (ctx.component.reorder) { %}<th></th>{% } %}
       {% ctx.columns.forEach(function(col, index) { %}
-      <th>
+      <th aria-label="{{ctx.component && ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index].includes('px') ? ctx.component.widthOffsets[ctx.component.key + index] : ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index]}}">
         <!-- auto adjustmemt of width in data grid -->
-        <div  class="{{col.validate && col.validate.required ? 'field-required' : ''}}" id="{{ctx.component.key}}{{index}}" style="overflow: auto; resize: horizontal; width: {{ctx.component && ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index].includes('px') ? ctx.component.widthOffsets[ctx.component.key + index] : ((ctx.component.widthOffsets && ctx.component.widthOffsets[ctx.component.key + index] && ctx.component.widthOffsets[ctx.component.key + index] / 100) * window.screen.width) +'px'}};">
+        <div  class="{{col.validate && col.validate.required ? 'field-required' : ''}}"  style="overflow: auto;"  id="{{ctx.component.key}}{{index}}">
       
           {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
           {% if (col.tooltip) { %} <i ref="tooltip" tabindex="0" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{col.tooltip}}"></i>{% } %}
@@ -18,7 +18,13 @@
       </th>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
-      <th>
+      <th  aria-label="108px" style="width: 108px !important" id="remove-column">
+        {% if (ctx.hasRemoveButtons) { %}
+        <div id="remove-button"></div>
+        {% } %} 
+        {% if (ctx.component.cloneRow && ctx.hasCloneRowButton) { %}
+        <div id="clone-row"></div>
+        {% } %}
         <span class="sr-only">{{ ctx.t('Add/Remove') }}</span>
         {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}       
         <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
