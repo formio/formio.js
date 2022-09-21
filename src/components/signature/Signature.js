@@ -31,8 +31,11 @@ export default class SignatureComponent extends Input {
     };
   }
 
-  static get conditionOperators() {
-    return ['isEmpty', 'isNotEmpty'];
+  static get simpleConditionSettings() {
+    return {
+      ...super.simpleConditionSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
   }
 
   init() {

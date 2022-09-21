@@ -53,8 +53,17 @@ export default class DateTimeComponent extends Input {
     };
   }
 
-  static get conditionOperators() {
-    return [...super.conditionOperators, 'dateLessThan', 'dateGreaterThan'];
+  static get simpleConditionSettings() {
+    return {
+      operators: [...super.simpleConditionSettings.operators, 'dateLessThan', 'dateGreaterThan'],
+      valueComponent: 'datetime',
+      transformValueComponent(classComp, valueComp) {
+        return {
+          ...classComp,
+          ...valueComp,
+        };
+      }
+    };
   }
 
   constructor(component, options, data) {

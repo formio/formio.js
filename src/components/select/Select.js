@@ -61,6 +61,16 @@ export default class SelectComponent extends ListComponent {
     };
   }
 
+  static get simpleConditionSettings() {
+    return {
+      ...super.simpleConditionSettings,
+      valueComponent: 'select',
+      transformValueComponent(classComp, valueComp) {
+        return { ... classComp, ...valueComp };
+      }
+    };
+  }
+
   init() {
     super.init();
     this.templateData = {};
