@@ -227,8 +227,14 @@ export default class Component extends Element {
   static tableView(value, options) {}
   /* eslint-enable no-unused-vars */
 
-  static get conditionOperators() {
-    return ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'];
+  static get simpleConditionSettings() {
+    return {
+      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
+      valueComponent: 'textfield',
+      transformValueComponent(classComp, valueComp) {
+        return valueComp;
+      }
+    };
   }
 
   /**

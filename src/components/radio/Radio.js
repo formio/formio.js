@@ -28,6 +28,24 @@ export default class RadioComponent extends Field {
     };
   }
 
+  static get simpleConditionSettings() {
+    return {
+      ...super.simpleConditionSettings,
+      valueComponent: 'select',
+      transformValueComponent(classComp, valueComp) {
+        return {
+          dataSrc: 'custom',
+          valueProperty: 'value',
+          data: {
+            custom() {
+              return classComp.values;
+            }
+          },
+          ...valueComp };
+      }
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.previousValue = this.dataValue || null;

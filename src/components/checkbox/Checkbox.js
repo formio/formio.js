@@ -26,8 +26,15 @@ export default class CheckBoxComponent extends Field {
     };
   }
 
-  static get conditionOperators() {
-    return ['isEqual'];
+  static get simpleConditionSettings() {
+    return {
+      ...super.simpleConditionSettings,
+      operators: ['isEqual'],
+      valueComponent: 'checkbox',
+      transformValueComponent(classComp, valueComp) {
+        return { ... classComp, ...valueComp };
+      }
+    };
   }
 
   get defaultSchema() {

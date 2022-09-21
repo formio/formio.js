@@ -16,10 +16,6 @@ export default class TimeComponent extends TextFieldComponent {
     }, ...extend);
   }
 
-  static get conditionOperators() {
-    return ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'];
-  }
-
   constructor(component, options, data) {
     super(component, options, data);
     const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();

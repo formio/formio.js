@@ -33,10 +33,6 @@ export default class ButtonComponent extends Field {
     };
   }
 
-  static get conditionOperators() {
-    return ['isEqual'];
-  }
-
   constructor(component, options, data) {
     super(component, options, data);
     this.filesUploading = [];

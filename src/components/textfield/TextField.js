@@ -36,8 +36,11 @@ export default class TextFieldComponent extends Input {
     };
   }
 
-  static get conditionOperators() {
-    return [...super.conditionOperators, 'includes', 'notIncludes', 'endsWith', 'startsWith'];
+  static get simpleConditionSettings() {
+    return {
+      ...super.simpleConditionSettings,
+      operators: [...super.simpleConditionSettings.operators, 'includes', 'notIncludes', 'endsWith', 'startsWith'],
+    };
   }
 
   get defaultSchema() {

@@ -30,8 +30,15 @@ export default class NumberComponent extends Input {
     };
   }
 
-  static get conditionOperators() {
-    return [...super.conditionOperators, 'lessThan', 'greaterThan'];
+  static get simpleConditionSettings() {
+    return {
+      ...super.simpleConditionSettings,
+      operators: [...super.simpleConditionSettings.operators, 'lessThan', 'greaterThan'],
+      valueComponent: 'number',
+      transformValueComponent(classComp, valueComp) {
+        return { ... classComp, ...valueComp };
+      }
+    };
   }
 
   constructor(...args) {

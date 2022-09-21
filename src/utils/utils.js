@@ -35,7 +35,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment };
+export { jsonLogic, moment, ConditionOperators };
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -1175,40 +1175,25 @@ export function getConditionOperatorOptions(operators = []) {
     .value();
 }
 
-export function addConditionValueComponent(instance, component, conditionComponentPath, utils) {
-  const defaultValueComponent = { type: 'textfield' };
-  const conditionComponent= {
-    ...(utils.getComponent(instance.options.editForm.components, conditionComponentPath) || defaultValueComponent )
-  };
+export function changeConditionValueComponent(instance, component, conditionComponentPath, utils, Formio) {
+  const conditionComponent= utils.getComponent(instance.options.editForm.components, conditionComponentPath) || {};
 
-  const changeValueComponent = !_.includes(['email', 'url', 'textarea', 'phoneNumber', 'hidden', 'tags'], conditionComponent.type);
-  const newValueComponent = changeValueComponent ? { ...conditionComponent } : defaultValueComponent;
+  const componentSimpleConditionSettings = Formio.Components?.components[conditionComponent.type || 'base']?.simpleConditionSettings || {};
 
-  _.each(['logic', 'action', 'defaultValue', 'conditional', 'hideLabel', 'logic', 'multiple', 'calculateValue', 'validate', 'hidden', 'customConditional'], prop => _.unset(newValueComponent, prop));
+  const { valueComponent: valueComponentType = '', transformValueComponent = (v1, v2) => v2 } = componentSimpleConditionSettings;
+  const valueComponent = transformValueComponent(conditionComponent, { type: valueComponentType || 'textfield' }) || { type: valueComponentType || 'textfield' };
 
-   return {
-    components: [
-      component.components[0],
-      {
-        ...newValueComponent,
-        key: 'value',
-        label: 'Value',
-        customConditional(ctx) {
-          const singleOperators = _.chain(ConditionOperators)
-            .map(operator => {
-              return !operator.requireValue
-              ? operator.operatorKey
-              : null;
-            })
-            .filter(operatorKey => !!operatorKey)
-            .value();
+  _.each(['logic', 'prefix', 'suffix', 'action', 'defaultValue', 'conditional', 'hideLabel', 'multiple', 'calculateValue', 'validate', 'hidden', 'customConditional'], prop => _.unset(valueComponent, prop));
 
-          return ctx.row.operator && !_.includes(singleOperators, ctx.row.operator);
-        }
-      }
+  const { key, label, customConditional, logic } = component;
 
-    ]
-
+  return {
+    ...valueComponent,
+    key,
+    label,
+    customConditional,
+    logic,
+    typeChangeEnabled: true,
   };
 }
 

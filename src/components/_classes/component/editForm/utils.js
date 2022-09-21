@@ -26,7 +26,11 @@ const EditFormUtils = {
 
         if (objValue.components) {
           srcValue.components = EditFormUtils.sortAndFilterComponents(
-            _.unionWith(objValue.components, srcValue.components, EditFormUtils.unifyComponents)
+            _.unionWith(
+              objValue.components,
+              srcValue.components,
+              EditFormUtils.unifyComponents
+            )
           );
         }
         return true;
@@ -43,25 +47,35 @@ const EditFormUtils = {
       type: 'htmlelement',
       tag: 'div',
       /* eslint-disable prefer-template */
-      content: '<p>The following variables are available in all scripts.</p>' +
-      '<table class="table table-bordered table-condensed table-striped">' +
-      additional +
-      '<tr><th>form</th><td>The complete form JSON object</td></tr>' +
-      '<tr><th>submission</th><td>The complete submission object.</td></tr>' +
-      '<tr><th>data</th><td>The complete submission data object.</td></tr>' +
-      '<tr><th>row</th><td>Contextual "row" data, used within DataGrid, EditGrid, and Container components</td></tr>' +
-      '<tr><th>component</th><td>The current component JSON</td></tr>' +
-      '<tr><th>instance</th><td>The current component instance.</td></tr>' +
-      '<tr><th>value</th><td>The current value of the component.</td></tr>' +
-      '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' +
-      '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.</td></tr>' +
-      '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a> object.</td></tr>' +
-      '<tr><th>util</th><td>An alias for "utils".</td></tr>' +
-      '</table><br/>'
+      content:
+        '<p>The following variables are available in all scripts.</p>' +
+        '<table class="table table-bordered table-condensed table-striped">' +
+        additional +
+        '<tr><th>form</th><td>The complete form JSON object</td></tr>' +
+        '<tr><th>submission</th><td>The complete submission object.</td></tr>' +
+        '<tr><th>data</th><td>The complete submission data object.</td></tr>' +
+        '<tr><th>row</th><td>Contextual "row" data, used within DataGrid, EditGrid, and Container components</td></tr>' +
+        '<tr><th>component</th><td>The current component JSON</td></tr>' +
+        '<tr><th>instance</th><td>The current component instance.</td></tr>' +
+        '<tr><th>value</th><td>The current value of the component.</td></tr>' +
+        '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' +
+        '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.</td></tr>' +
+        '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a> object.</td></tr>' +
+        '<tr><th>util</th><td>An alias for "utils".</td></tr>' +
+        '</table><br/>',
       /* eslint-enable prefer-template */
     };
   },
-  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON, additionalParams = '', excludeJSONLogic) {
+  javaScriptValue(
+    title,
+    property,
+    propertyJSON,
+    weight,
+    exampleHTML,
+    exampleJSON,
+    additionalParams = '',
+    excludeJSONLogic
+  ) {
     const components = [
       this.logicVariablesTable(additionalParams),
       {
@@ -82,14 +96,14 @@ const EditFormUtils = {
             editor: 'ace',
             hideLabel: true,
             as: 'javascript',
-            input: true
+            input: true,
           },
           {
             type: 'htmlelement',
             tag: 'div',
-            content: `<p>Enter custom javascript code.</p>${exampleHTML}`
-          }
-        ]
+            content: `<p>Enter custom javascript code.</p>${exampleHTML}`,
+          },
+        ],
       },
       {
         type: 'panel',
@@ -102,9 +116,10 @@ const EditFormUtils = {
             type: 'htmlelement',
             tag: 'div',
             /* eslint-disable prefer-template */
-            content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
+            content:
+              '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
               '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
-               exampleJSON
+              exampleJSON,
             /* eslint-enable prefer-template */
           },
           {
@@ -114,10 +129,10 @@ const EditFormUtils = {
             editor: 'ace',
             hideLabel: true,
             as: 'json',
-            input: true
-          }
-        ]
-      }
+            input: true,
+          },
+        ],
+      },
     ];
 
     if (excludeJSONLogic) {
@@ -132,7 +147,7 @@ const EditFormUtils = {
       collapsed: true,
       key: `${property}Panel`,
       weight: weight,
-      components
+      components,
     };
   },
   simpleConditionalComponents(inLogic) {
@@ -157,7 +172,7 @@ const EditFormUtils = {
         key: `${inLogic ? '' : 'conditional.'}show`,
         type: 'select',
         input: true,
-        ...(inLogic ? { type: 'hidden', defaultValue: true } : {})
+        ...(inLogic ? { type: 'hidden', defaultValue: true } : {}),
       },
       {
         label: 'When',
@@ -180,79 +195,52 @@ const EditFormUtils = {
         input: true,
       },
       {
-        tooltip: 'Form Component to trigger Validation',
-        label: 'For the form component',
-        widget: 'choicesjs',
-        tableView: true,
-        dataSrc: 'custom',
-        valueProperty: 'value',
-        data: {
-          custom(context) {
-            return getContextComponents(context, true, ['form', 'datasource']);
-          },
-        },
-        key: `${inLogic ? '' : 'conditional.'}component`,
-        type: 'select',
-        input: true,
-      },
-      {
-        label: 'Define conditions:',
+        label: 'Conditions',
         addAnotherPosition: 'bottom',
         key: `${inLogic ? '' : 'conditional.'}conditions`,
         type: 'datagrid',
         initEmpty: true,
+        //customClass: 'formio-builder-conditional',
+        //customClass: 'table-responsive',
         addAnother: 'Add Condition',
-        logic: [
-          {
-            name: 'check if condition component is defined',
-            trigger: {
-              type: 'javascript',
-              javascript: `result = ${inLogic ? 'row.component' : 'data.conditional.component'};`,
-            },
-            actions: [
-              {
-                name: 'change value component',
-                type: 'mergeComponentSchema',
-                schemaDefinition: `schema = utils.addConditionValueComponent(instance, component, ${inLogic ? 'row.component' : 'data.conditional.component'}, utils)`,
-              },
-            ],
-          },
-          {
-            name: 'clear value if condition component is changed',
-            trigger: {
-              type: 'event',
-              event: 'componentChange',
-            },
-            actions: [
-              {
-                name: 'clear value',
-                type: 'customAction',
-                customAction: `
-                  var changeResult = result[0];
-                  if (instance.dataValue.length && !changeResult.flags.fromSubmission && changeResult.component?.key === '${inLogic ? '' : 'conditional.'}component' && !_.isNil(changeResult.value)) {
-                    instance.dataValue = [];
-                    instance.rebuild();
-                  }
-                `,
-              },
-            ],
-          },
-        ],
         input: true,
         components: [
           {
-            label: 'If the value:',
+            label: 'Component',
             widget: 'choicesjs',
             tableView: true,
             dataSrc: 'custom',
             valueProperty: 'value',
+            lazyLoad: false,
+            data: {
+              custom(context) {
+                return getContextComponents(context, true, [
+                  'form',
+                  'datasource',
+                  'button',
+                ]);
+              },
+            },
+            key: 'component',
+            type: 'select',
+            input: true,
+          },
+          {
+            label: 'If the value',
+            widget: 'choicesjs',
+            tableView: true,
+            dataSrc: 'custom',
+            lazyLoad: false,
+            refreshOn: `${inLogic ? '' : 'conditional.'}conditions.component`,
+            clearOnRefresh: true,
+            valueProperty: 'value',
             data: {
               custom: `
-                var conditionComponent= utils.getComponent(instance.options.editForm.components, ${inLogic ? 'instance.parent?.data?.component' : 'data.conditional.component'});
+                var conditionComponent= utils.getComponent(instance.options.editForm.components, row.component);
                 var componentType = conditionComponent ? conditionComponent.type : 'base';
 
-                values = utils.getConditionOperatorOptions(Formio.Components.components[componentType].conditionOperators);
-              `
+                values = utils.getConditionOperatorOptions(Formio.Components.components[componentType].simpleConditionSettings.operators);
+              `,
             },
             key: 'operator',
             type: 'select',
@@ -264,43 +252,53 @@ const EditFormUtils = {
             key: 'value',
             type: 'textfield',
             input: true,
+            typeChangeEnabled: true,
+            logic: [
+              {
+                name: 'check if row component is defined',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result = true || row.component;',
+                },
+                actions: [
+                  {
+                    name: 'change value component',
+                    type: 'mergeComponentSchema',
+                    schemaDefinition:
+                      'schema = utils.changeConditionValueComponent(instance, component, row.component, utils, Formio)',
+                  },
+                ],
+              },
+              {
+                name: 'clear value on empty operator',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result = !row.operator && row[component.key];',
+                },
+                actions: [
+                  {
+                    name: 'clear value',
+                    type: 'customAction',
+                    customAction: 'instance.resetValue()',
+                  },
+                ],
+              },
+            ],
+            customConditional: `
+              const singleOperators = _.chain(utils.ConditionOperators)
+                .map(operator => {
+                  return !operator.requireValue
+                  ? operator.operatorKey
+                  : null;
+                })
+                .filter(operatorKey => !!operatorKey)
+                .value();
+              show = !_.includes(singleOperators, row.operator);`,
           },
         ],
       },
-      // {
-      //   type: 'select',
-      //   input: true,
-      //   label: 'This component should Display:',
-      //   key: 'conditional.show',
-      //   dataSrc: 'values',
-      //   data: {
-      //     values: [
-      //       { label: 'True', value: 'true' },
-      //       { label: 'False', value: 'false' }
-      //     ]
-      //   }
-      // },
-      // {
-      //   type: 'select',
-      //   input: true,
-      //   label: 'When the form component:',
-      //   key: 'conditional.when',
-      //   dataSrc: 'custom',
-      //   valueProperty: 'value',
-      //   data: {
-      //     custom(context) {
-      //       return getContextComponents(context);
-      //     }
-      //   }
-      // },
-      // {
-      //   type: 'textfield',
-      //   input: true,
-      //   label: 'Has the value:',
-      //   key: 'conditional.eq'
-      // }
     ];
-  }
+  },
 };
 
 export default EditFormUtils;
