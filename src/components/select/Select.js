@@ -1317,7 +1317,7 @@ export default class SelectComponent extends Field {
             return false;
           }
           const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
-          found |= _.isEqual(itemValue, value);
+          found |= _.isEqual(itemValue, (this.isEntireObjectDisplay() && typeof itemValue === 'object') ? JSON.parse(value) : value);
           return found ? false : true;
         });
       }
