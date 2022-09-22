@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.15]
 ### Fixed
  - Revert change to always execute apis on pdf output.
+ - FIO-5431: Fixed Quill editor losing data after switching to source view and back.
 
 ## 4.15.0-rc.14
 ### Added
