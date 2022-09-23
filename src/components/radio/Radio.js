@@ -36,6 +36,7 @@ export default class RadioComponent extends Field {
         return {
           dataSrc: 'custom',
           valueProperty: 'value',
+          dataType: classComp.dataType || '',
           data: {
             custom() {
               return classComp.values;

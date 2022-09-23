@@ -43,7 +43,7 @@ export default class DayComponent extends Field {
   static get simpleConditionSettings() {
     return {
       ...super.simpleConditionSettings,
-      operators: [...super.simpleConditionSettings.operators, 'dateLessThan', 'dateGreaterThan'],
+      operators: [...super.simpleConditionSettings.operators, 'dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
     };
   }
   /**

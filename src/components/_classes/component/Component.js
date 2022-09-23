@@ -186,8 +186,8 @@ export default class Component extends Element {
        */
       conditional: {
         show: null,
-        when: null,
-        eq: ''
+        conjunction: null,
+        conditions: []
       },
       overlay: {
         style: '',

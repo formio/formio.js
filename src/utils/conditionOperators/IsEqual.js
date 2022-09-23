@@ -15,10 +15,15 @@ export default class IsEqual extends ConditionOperator {
             try {
                 comparedValue = JSON.parse(comparedValue);
             }
-            catch (e) {
-                console.warn(e);
-            }
+            // eslint-disable-next-line no-empty
+            catch (e) {}
         }
+
+        //special check for select boxes
+        if (_.isObject(value) && comparedValue && _.isString(comparedValue)) {
+            return value[comparedValue];
+        }
+
         return  _.isEqual(value, comparedValue);
     }
 }

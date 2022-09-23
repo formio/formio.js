@@ -1,6 +1,5 @@
 import ConditionOperator from './ConditionOperator';
 import moment from 'moment';
-
 export default class DateGeaterThan extends ConditionOperator {
     static get operatorKey() {
         return 'dateGreaterThan';
@@ -10,14 +9,33 @@ export default class DateGeaterThan extends ConditionOperator {
         return 'Greater Than';
     }
 
-    execute({ value, comparedValue, instance }) {
-        if (instance.isPartialDay && instance.isPartialDay(value)) {
+    getFormattedDates({ value, comparedValue, conditionTriggerComponent }) {
+        const hasValidationFormat = conditionTriggerComponent ? conditionTriggerComponent.getValidationFormat : null;
+        const date = hasValidationFormat ? moment(value, conditionTriggerComponent.getValidationFormat()) : moment(value);
+        const comparedDate = hasValidationFormat ? moment(comparedValue, conditionTriggerComponent.getValidationFormat()) : moment(comparedValue);
+
+        return { date, comparedDate };
+    }
+
+    execute(options, functionName = 'isAfter') {
+        const { value, instance, conditionComponentPath } = options;
+
+        if (!value) {
             return false;
         }
-        const hasValidationFormat = instance.getValidationFormat;
-        const date = hasValidationFormat ? moment(value, instance.getValidationFormat()) : moment(value);
-        const comparedDate = hasValidationFormat ? moment(comparedValue, instance.getValidationFormat()) : moment(comparedValue);
 
-        return date.isAfter(comparedDate);
+        let conditionTriggerComponent = null;
+
+        if (instance && instance.root) {
+            conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
+        }
+
+        if ( conditionTriggerComponent && conditionTriggerComponent.isPartialDay && conditionTriggerComponent.isPartialDay(value)) {
+            return false;
+        }
+
+        const { date, comparedDate } = this.getFormattedDates({ ...options, conditionTriggerComponent });
+
+        return date[functionName](comparedDate);
     }
 }
