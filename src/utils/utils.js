@@ -270,8 +270,10 @@ return show ? result : !result;
   // return (String(value) === eq) === (show === 'true');
 }
 
-export function transformSimpleCondition({ show = true, when ='', eq = '' }) {
-  return {
+export function transformSimpleCondition(conditional) {
+  const { show = true, when ='', eq = '' } = conditional;
+
+  const newSimpleCondition =  {
     show,
     conjunction: 'all',
     conditions: [{
@@ -280,6 +282,25 @@ export function transformSimpleCondition({ show = true, when ='', eq = '' }) {
       value: eq
     }]
   };
+
+  _.each(['when', 'eq'], prop => _.unset(conditional, prop));
+  _.each(newSimpleCondition, (value, key) => _.set(conditional, key, value));
+}
+
+export function transformSimpleConditions(component = {}) {
+  const { conditional, logic = [] } = component;
+
+  if (conditional.when) {
+    transformSimpleCondition(conditional);
+  }
+
+  _.each(logic, logicItem => {
+    const { trigger = {} } = logicItem;
+
+    if (trigger.type === 'simple' && trigger.simple && trigger.simple.when) {
+      transformSimpleCondition(trigger.simple);
+    }
+  });
 }
 
 /**
@@ -328,7 +349,7 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  if (dataParent && condition.when?.startsWith(parentPath)) {
+  if (dataParent && _.some(condition.conditions, cond => cond.component.startsWith(parentPath))) {
     const newRow = {};
     _.set(newRow, parentPath, row);
     row = newRow;
@@ -350,14 +371,19 @@ function getRow(component, row, instance, conditional) {
  * @returns {boolean}
  */
 export function checkCondition(component, row, data, form, instance) {
-  const { customConditional, conditional } = component;
+  const { customConditional } = component;
+  let { conditional } = component;
+
+  //make compatible with old simple condition on server side
+  if (conditional && conditional.when) {
+    conditional = { ...conditional };
+    transformSimpleCondition(conditional);
+  }
+
   if (customConditional) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-  // else if (conditional && conditional.when) {
-  //   row = getRow(component, row, instance);
-  //   return checkSimpleConditional(component, conditional, row, data);
-  // }
+
   else if (conditional && _.some(conditional.conditions || [], condition => condition.component && condition.operator)) {
     row = getRow(component, row, instance);
     return checkSimpleConditional(component, conditional, row, data, instance);
@@ -386,9 +412,16 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   }
 
   switch (trigger.type) {
-    case 'simple':
-      row = getRow(component, row, instance, trigger.simple);
-      return checkSimpleConditional(component, trigger.simple, row, data, instance);
+    case 'simple': {
+      let simpleCondition = trigger.simple;
+
+      if (trigger?.simple?.when) {
+        simpleCondition = { ...simpleCondition };
+        transformSimpleCondition(simpleCondition);
+      }
+      row = getRow(component, row, instance, simpleCondition);
+      return checkSimpleConditional(component, simpleCondition, row, data, instance);
+    }
     case 'javascript':
       return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
     case 'json':
