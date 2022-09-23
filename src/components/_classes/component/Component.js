@@ -541,19 +541,7 @@ export default class Component extends Element {
   }
 
   transformSimpleConditions() {
-    const { conditional, logic = [] } = this.component;
-
-    if (conditional.when) {
-      _.set(this.component, 'conditional', FormioUtils.transformSimpleCondition(conditional));
-    }
-
-    _.each(logic, logicItem => {
-      const { trigger = {} } = logicItem;
-
-      if (trigger.type === 'simple' && trigger.simple && trigger.simple.when) {
-        _.set(logicItem, 'trigger.simple', FormioUtils.transformSimpleCondition(trigger.simple));
-      }
-    });
+    FormioUtils.transformSimpleConditions(this.component);
   }
 
   createAddon(addonConfiguration) {
