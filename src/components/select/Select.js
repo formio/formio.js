@@ -865,6 +865,9 @@ export default class SelectComponent extends Field {
           }
         }
         const options = this.component.authenticate ? {} : { noToken: true };
+        if (!searchInput && this.dataValue) {
+          searchInput = this.dataValue;
+        }
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
@@ -1165,8 +1168,6 @@ export default class SelectComponent extends Field {
         if (this.choices && this.choices.input && this.choices.input.element) {
           this.choices.input.element.value = '';
         }
-
-        this.updateItems(null, true);
       });
     }
 
