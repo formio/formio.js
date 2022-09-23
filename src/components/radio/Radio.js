@@ -38,6 +38,7 @@ export default class RadioComponent extends ListComponent {
         return {
           dataSrc: 'custom',
           valueProperty: 'value',
+          dataType: classComp.dataType || '',
           data: {
             custom() {
               return classComp.values;

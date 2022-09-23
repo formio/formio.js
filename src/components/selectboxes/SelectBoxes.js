@@ -24,12 +24,13 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   static get simpleConditionSettings() {
     return {
-      operators: ['isEmpty', 'isNotEmpty', 'includes', 'notIncludes'],
+      ...super.simpleConditionSettings,
       valueComponent: 'select',
       transformValueComponent(classComp, valueComp) {
         return {
           dataSrc: 'custom',
           valueProperty: 'value',
+          valueType: 'string',
           data: {
             custom() {
               return classComp.values;

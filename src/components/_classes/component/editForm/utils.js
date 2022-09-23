@@ -226,7 +226,7 @@ const EditFormUtils = {
             input: true,
           },
           {
-            label: 'If the value',
+            label: 'Operator',
             widget: 'choicesjs',
             tableView: true,
             dataSrc: 'custom',

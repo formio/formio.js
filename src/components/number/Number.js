@@ -33,7 +33,7 @@ export default class NumberComponent extends Input {
   static get simpleConditionSettings() {
     return {
       ...super.simpleConditionSettings,
-      operators: [...super.simpleConditionSettings.operators, 'lessThan', 'greaterThan'],
+      operators: [...super.simpleConditionSettings.operators, 'lessThan', 'greaterThan', 'lessThanOrEqual','greaterThanOrEqual'],
       valueComponent: 'number',
       transformValueComponent(classComp, valueComp) {
         return { ... classComp, ...valueComp };

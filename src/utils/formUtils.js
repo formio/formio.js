@@ -411,7 +411,7 @@ export function hasCondition(component) {
   return Boolean(
     (component.customConditional) ||
     (component.conditional && (
-      (component.conditional.conditions && component.conditional.conditions.length)||
+      (_.some(component.conditional.conditions || [], (condition => condition.component && condition.operator)))||
       component.conditional.json ||
       component.conditional.condition
     ))

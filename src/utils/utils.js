@@ -209,22 +209,23 @@ export function checkCalculated(component, submission, rowData) {
  * @returns {boolean}
  */
 export function checkSimpleConditional(component, condition, row, data, instance) {
-  const { conditions = [], conjunction = 'all', component: conditionComponentPath, show = true } = condition;
-  let value = null;
-
-  if (row) {
-    value = getValue({ data: row }, conditionComponentPath);
-  }
-  if (data && _.isNil(value)) {
-    value = getValue({ data }, conditionComponentPath);
-  }
-  // FOR-400 - Fix issue where falsey values were being evaluated as show=true
-  if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
-    value = '';
-  }
+  const { conditions = [], conjunction = 'all',  show = true } = condition;
 
   const conditionsResult = _.map(conditions, (cond) => {
-    const { value: comparedValue, operator } = cond;
+    const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+    let value = null;
+
+    if (row) {
+      value = getValue({ data: row }, conditionComponentPath);
+    }
+    if (data && _.isNil(value)) {
+      value = getValue({ data }, conditionComponentPath);
+    }
+    // FOR-400 - Fix issue where falsey values were being evaluated as show=true
+    if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
+      value = '';
+    }
+
     const СonditionOperator = ConditionOperators[operator];
     return СonditionOperator
       ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
@@ -273,8 +274,8 @@ export function transformSimpleCondition({ show = true, when ='', eq = '' }) {
   return {
     show,
     conjunction: 'all',
-    component: when,
     conditions: [{
+      component: when,
       operator: 'isEqual',
       value: eq
     }]
@@ -357,7 +358,7 @@ export function checkCondition(component, row, data, form, instance) {
   //   row = getRow(component, row, instance);
   //   return checkSimpleConditional(component, conditional, row, data);
   // }
-  else if (conditional && conditional.conditions && conditional.conditions.length && conditional.component) {
+  else if (conditional && _.some(conditional.conditions || [], condition => condition.component && condition.operator)) {
     row = getRow(component, row, instance);
     return checkSimpleConditional(component, conditional, row, data, instance);
   }

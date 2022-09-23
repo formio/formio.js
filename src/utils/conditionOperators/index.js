@@ -10,6 +10,11 @@ import Includes from './Includes';
 import StartsWith from './StartsWith';
 import NotIncludes from './NotIncludes';
 import EndsWith from './EndsWith';
+import DateGreaterThanOrEqual from './DateGreaterThanOrEqual';
+import DateLessThanOrEqual from './DateLessThanOrEqual';
+import LessThanOrEqual from './LessThanOrEqual';
+import GreaterThanOrEqual from './GreaterThanOrEqual';
+import IsDateEqual from './IsDateEqual';
 
 export default {
   [`${IsEqual.operatorKey}`]: IsEqual,
@@ -23,5 +28,10 @@ export default {
   [`${Includes.operatorKey}`]: Includes,
   [`${StartsWith.operatorKey}`]: StartsWith,
   [`${EndsWith.operatorKey}`]: EndsWith,
-  [`${NotIncludes.operatorKey}`]: NotIncludes
+  [`${NotIncludes.operatorKey}`]: NotIncludes,
+  [`${DateGreaterThanOrEqual.operatorKey}`]: DateGreaterThanOrEqual,
+  [`${DateLessThanOrEqual.operatorKey}`]: DateLessThanOrEqual,
+  [`${LessThanOrEqual.operatorKey}`]: LessThanOrEqual,
+  [`${GreaterThanOrEqual.operatorKey}`]: GreaterThanOrEqual,
+  [`${IsDateEqual.operatorKey}`]: IsDateEqual
 };
