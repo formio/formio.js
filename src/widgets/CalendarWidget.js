@@ -208,11 +208,9 @@ export default class CalendarWidget extends InputWidget {
               if (locale && locale.length >= 2 && locale !== 'en') {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
-                  `flatpickr-${locale}`,
+                  `${locale}`,
                   `${CDN_FLATPICKR_LOCALE_URL}/${locale}.min.js`,
-                  false,
-                  () => this.initFlatpickr(Flatpickr)
-                );
+                  true).then(() => this.initFlatpickr(Flatpickr));
               }
               else {
                 this.initFlatpickr(Flatpickr);
