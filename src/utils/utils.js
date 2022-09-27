@@ -213,6 +213,9 @@ export function checkSimpleConditional(component, condition, row, data, instance
 
   const conditionsResult = _.map(conditions, (cond) => {
     const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+    if (!conditionComponentPath) {
+      return true;
+    }
     let value = null;
 
     if (row) {
@@ -229,10 +232,11 @@ export function checkSimpleConditional(component, condition, row, data, instance
     const СonditionOperator = ConditionOperators[operator];
     return СonditionOperator
       ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
-      : false;
+      : true;
   });
 
   let result = false;
+
   switch (conjunction) {
     case 'any':
       result = _.some(conditionsResult, res => !!res);
