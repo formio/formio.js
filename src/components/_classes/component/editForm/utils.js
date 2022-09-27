@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Evaluator from '../../../../utils/Evaluator';
-import { getContextComponents } from '../../../../utils/utils';
+import { getContextComponents, getConditionValueComponentRequiredProperties } from '../../../../utils/utils';
 
 const EditFormUtils = {
   sortAndFilterComponents(components) {
@@ -83,7 +83,9 @@ const EditFormUtils = {
         title: 'JavaScript',
         collapsible: true,
         collapsed: false,
-        style: { 'margin-bottom': '10px' },
+        style: {
+          'margin-bottom': '10px',
+        },
         key: `${property}-js`,
         customConditional() {
           return !Evaluator.noeval || Evaluator.protectedEval;
@@ -172,7 +174,12 @@ const EditFormUtils = {
         key: `${inLogic ? '' : 'conditional.'}show`,
         type: 'select',
         input: true,
-        ...(inLogic ? { type: 'hidden', defaultValue: true } : {}),
+        ...(inLogic
+          ? {
+              type: 'hidden',
+              defaultValue: true,
+            }
+          : {}),
       },
       {
         label: 'When',
@@ -198,11 +205,14 @@ const EditFormUtils = {
         label: 'Conditions',
         addAnotherPosition: 'bottom',
         key: `${inLogic ? '' : 'conditional.'}conditions`,
-        type: 'datagrid',
+        type: 'editgrid',
         initEmpty: true,
-        //customClass: 'formio-builder-conditional',
-        //customClass: 'table-responsive',
         addAnother: 'Add Condition',
+        templates: {
+          header:
+            "<div class=\"row\">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (displayValue(component)) { %}\n          <div class=\"col-sm-{{_.includes(['component'], component.key) ? '4' : '3'}}\">{{ t(component.label) }}</div>\n        {% } %}\n      {% }) %}\n    </div>",
+          row: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (displayValue(component)) { %}\n          <div class="formio-builder-condition-text col-sm-{{_.includes([\'component\'], component.key) ? \'4\' : \'3\'}}">\n            {{ isVisibleInRow(component) ? getView(component, row[component.key]) : \'\'}}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.options.readOnly && !instance.disabled) { %}\n        <div class="col-sm-2">\n          <div class="btn-group pull-right">\n            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass(\'edit\') }}"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass(\'trash\') }}"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>',
+        },
         input: true,
         components: [
           {
@@ -211,6 +221,9 @@ const EditFormUtils = {
             tableView: true,
             dataSrc: 'custom',
             valueProperty: 'value',
+            placeholder: 'Select Form Component',
+            tooltip:
+              'Select the form component which value determines the visibility of this component.',
             lazyLoad: false,
             data: {
               custom(context) {
@@ -231,69 +244,28 @@ const EditFormUtils = {
             tableView: true,
             dataSrc: 'custom',
             lazyLoad: false,
-            refreshOn: `${inLogic ? '' : 'conditional.'}conditions.component`,
+            placeholder: 'Select Comparison Operator',
+            tooltip:
+              'Select the way the actual value of the form component, which determines the visibility of this component, should be related to the compared value or to itself.',
+            refreshOn: `${ inLogic ? 'logic.trigger.simple.' : 'conditional.' }conditions.component`,
             clearOnRefresh: true,
             valueProperty: 'value',
             data: {
               custom: `
-                var conditionComponent= utils.getComponent(instance.options.editForm.components, row.component);
-                var componentType = conditionComponent ? conditionComponent.type : 'base';
-
-                values = utils.getConditionOperatorOptions(Formio.Components.components[componentType].simpleConditionSettings.operators);
-              `,
+                    var conditionComponent= utils.getComponent(instance.options.editForm.components, row.component);
+                    var componentType = conditionComponent ? conditionComponent.type : 'base';
+    
+                    values = utils.getConditionOperatorOptions(Formio.Components.components[componentType].simpleConditionSettings.operators);
+                  `,
             },
             key: 'operator',
             type: 'select',
             input: true,
           },
           {
-            label: 'Value',
-            inputFormat: 'plain',
-            key: 'value',
             type: 'textfield',
-            input: true,
-            typeChangeEnabled: true,
-            logic: [
-              {
-                name: 'check if row component is defined',
-                trigger: {
-                  type: 'javascript',
-                  javascript: 'result = true || row.component;',
-                },
-                actions: [
-                  {
-                    name: 'change value component',
-                    type: 'mergeComponentSchema',
-                    schemaDefinition:
-                      'schema = utils.changeConditionValueComponent(instance, component, row.component, utils, Formio)',
-                  },
-                ],
-              },
-              {
-                name: 'clear value on empty operator',
-                trigger: {
-                  type: 'javascript',
-                  javascript: 'result = !row.operator && row[component.key];',
-                },
-                actions: [
-                  {
-                    name: 'clear value',
-                    type: 'customAction',
-                    customAction: 'instance.resetValue()',
-                  },
-                ],
-              },
-            ],
-            customConditional: `
-              const singleOperators = _.chain(utils.ConditionOperators)
-                .map(operator => {
-                  return !operator.requireValue
-                  ? operator.operatorKey
-                  : null;
-                })
-                .filter(operatorKey => !!operatorKey)
-                .value();
-              show = !_.includes(singleOperators, row.operator);`,
+            inputFormat: 'plain',
+            ...getConditionValueComponentRequiredProperties()
           },
         ],
       },

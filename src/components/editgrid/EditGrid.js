@@ -327,6 +327,34 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.prevHasAddButton = this.hasAddButton();
 
     this.checkData();
+    this.setVariableTypeComponents();
+
+    if (this.variableTypeComponentsIndexes.length) {
+      _.each(this.editRows || [], (editRow, rowIndex) => this.checkRowVariableTypeComponents(editRow, rowIndex));
+    }
+  }
+
+  checkRowVariableTypeComponents(editRow, rowIndex) {
+    const rowComponents = editRow.components;
+
+    if (_.some(this.variableTypeComponentsIndexes, (compIndex) => {
+      const variableTypeComp = rowComponents[compIndex];
+
+      return variableTypeComp.type !== variableTypeComp.component.type;
+    })) {
+      editRow.components = this.createRowComponents(editRow.data, rowIndex, true);
+    }
+  }
+
+  setVariableTypeComponents() {
+    //set components which type is changing within a row (e.g.,by mergeComponentSchema action)
+    this.variableTypeComponentsIndexes = [];
+
+    _.each(this.component.components, (comp, index) => {
+      if (comp.typeChangeEnabled) {
+        this.variableTypeComponentsIndexes.push(index);
+      }
+    });
   }
 
   isOpen(editRow) {
@@ -1010,8 +1038,20 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.redraw();
   }
 
-  createRowComponents(row, rowIndex) {
+  createRowComponents(row, rowIndex, recreatePartially) {
+    const currentRowComponents = _.get(this.editRows, `[${rowIndex}].components`, null);
     return this.component.components.map((col, colIndex) => {
+      if (recreatePartially && currentRowComponents && this.variableTypeComponentsIndexes.length) {
+        const currentComp = currentRowComponents[colIndex];
+        const shouldRecreate = _.includes(this.variableTypeComponentsIndexes, colIndex) && currentComp?.type !== currentComp?.component?.type;
+
+        if (!shouldRecreate) {
+          return currentComp;
+        }
+
+        col = currentComp.component;
+      }
+
       const column = _.clone(col);
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
@@ -1047,11 +1087,21 @@ export default class EditGridComponent extends NestedArrayComponent {
             silentCheck
           }, editRow.data, editRow.components, silentCheck);
         }
+
+        if (this.variableTypeComponentsIndexes.length) {
+          this.checkRowVariableTypeComponents(editRow, rowIndex);
+          this.redraw();
+        }
       };
 
-      const comp = this.createComponent(_.assign({}, column, {
-        row: options.row,
-      }), options, row);
+      const comp = this.createComponent(
+        _.assign({}, column, { row: options.row }),
+        options,
+        row,
+        null,
+        recreatePartially && currentRowComponents ? currentRowComponents[colIndex] : null
+      );
+
       comp.rowIndex = rowIndex;
       comp.inEditGrid = true;
       return comp;

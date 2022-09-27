@@ -30,9 +30,17 @@ export default class CheckBoxComponent extends Field {
     return {
       ...super.simpleConditionSettings,
       operators: ['isEqual'],
-      valueComponent: 'checkbox',
+      valueComponent: 'select',
       transformValueComponent(classComp, valueComp) {
-        return { ... classComp, ...valueComp };
+        return {
+          valueType: 'boolean',
+          data: {
+            values: [
+                { label: 'Checked', value: 'true' },
+                { label: 'Not Checked', value: 'false' },
+              ]
+          },
+          ...valueComp };
       }
     };
   }
