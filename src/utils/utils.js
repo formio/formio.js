@@ -1209,7 +1209,61 @@ export function getConditionOperatorOptions(operators = []) {
     .value();
 }
 
-export function changeConditionValueComponent(instance, component, conditionComponentPath, utils, Formio) {
+export function getConditionValueComponentRequiredProperties() {
+  return {
+    label: 'Value',
+    key: 'value',
+    placeholder: 'Enter Compared Value',
+    tooltip:
+      'The value used as a reference to compare with the actual value of the form component which determines the visibility of this component.',
+    input: true,
+    typeChangeEnabled: true,
+    logic: [
+      {
+        name: 'check if row component is defined',
+        trigger: {
+          type: 'javascript',
+          javascript: 'result = true || row.component;',
+        },
+        actions: [
+          {
+            name: 'change value component',
+            type: 'mergeComponentSchema',
+            schemaDefinition:
+              'schema = utils.modifyConditionValueComponent({instance, component, conditionComponentPath: row.component, utils, Formio})',
+          },
+        ],
+      },
+      {
+        name: 'clear value on empty operator',
+        trigger: {
+          type: 'javascript',
+          javascript: 'result = !row.operator && row[component.key];',
+        },
+        actions: [
+          {
+            name: 'clear value',
+            type: 'customAction',
+            customAction: 'instance.resetValue()',
+          },
+        ],
+      },
+    ],
+    customConditional: `
+      const singleOperators = _.chain(utils.ConditionOperators)
+        .map(operator => {
+          return !operator.requireValue
+          ? operator.operatorKey
+          : null;
+        })
+        .filter(operatorKey => !!operatorKey)
+        .value();
+      show = !_.includes(singleOperators, row.operator);
+    `,
+  };
+}
+
+export function modifyConditionValueComponent({ instance, conditionComponentPath, utils, Formio }) {
   const conditionComponent= utils.getComponent(instance.options.editForm.components, conditionComponentPath) || {};
 
   const componentSimpleConditionSettings = Formio.Components?.components[conditionComponent.type || 'base']?.simpleConditionSettings || {};
@@ -1219,15 +1273,9 @@ export function changeConditionValueComponent(instance, component, conditionComp
 
   _.each(['logic', 'prefix', 'suffix', 'action', 'defaultValue', 'conditional', 'hideLabel', 'multiple', 'calculateValue', 'validate', 'hidden', 'customConditional'], prop => _.unset(valueComponent, prop));
 
-  const { key, label, customConditional, logic } = component;
-
   return {
     ...valueComponent,
-    key,
-    label,
-    customConditional,
-    logic,
-    typeChangeEnabled: true,
+    ...getConditionValueComponentRequiredProperties()
   };
 }
 

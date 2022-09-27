@@ -15,6 +15,7 @@ import DateLessThanOrEqual from './DateLessThanOrEqual';
 import LessThanOrEqual from './LessThanOrEqual';
 import GreaterThanOrEqual from './GreaterThanOrEqual';
 import IsDateEqual from './IsDateEqual';
+import IsNotDateEqual from './IsNotDateEqual';
 
 export default {
   [`${IsEqual.operatorKey}`]: IsEqual,
@@ -33,5 +34,6 @@ export default {
   [`${DateLessThanOrEqual.operatorKey}`]: DateLessThanOrEqual,
   [`${LessThanOrEqual.operatorKey}`]: LessThanOrEqual,
   [`${GreaterThanOrEqual.operatorKey}`]: GreaterThanOrEqual,
-  [`${IsDateEqual.operatorKey}`]: IsDateEqual
+  [`${IsDateEqual.operatorKey}`]: IsDateEqual,
+  [`${IsNotDateEqual.operatorKey}`]: IsNotDateEqual
 };
