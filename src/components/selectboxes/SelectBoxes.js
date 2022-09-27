@@ -25,9 +25,9 @@ export default class SelectBoxesComponent extends RadioComponent {
   static get simpleConditionSettings() {
     return {
       ...super.simpleConditionSettings,
-      valueComponent: 'select',
-      transformValueComponent(classComp, valueComp) {
+      valueComponent(classComp) {
         return {
+          type: 'select',
           dataSrc: 'custom',
           valueProperty: 'value',
           valueType: 'string',
@@ -36,7 +36,7 @@ export default class SelectBoxesComponent extends RadioComponent {
               return classComp.values;
             }
           },
-          ...valueComp };
+        };
       }
     };
   }

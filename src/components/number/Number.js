@@ -34,9 +34,8 @@ export default class NumberComponent extends Input {
     return {
       ...super.simpleConditionSettings,
       operators: [...super.simpleConditionSettings.operators, 'lessThan', 'greaterThan', 'lessThanOrEqual','greaterThanOrEqual'],
-      valueComponent: 'number',
-      transformValueComponent(classComp, valueComp) {
-        return { ... classComp, ...valueComp };
+      valueComponent(classComp) {
+        return { ... classComp, type: 'number' };
       }
     };
   }
