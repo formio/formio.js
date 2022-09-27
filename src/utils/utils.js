@@ -1272,8 +1272,8 @@ export function modifyConditionValueComponent({ instance, conditionComponentPath
 
   const componentSimpleConditionSettings = Formio.Components?.components[conditionComponent.type || 'base']?.simpleConditionSettings || {};
 
-  const { valueComponent: valueComponentType = '', transformValueComponent = (v1, v2) => v2 } = componentSimpleConditionSettings;
-  const valueComponent = transformValueComponent(conditionComponent, { type: valueComponentType || 'textfield' }) || { type: valueComponentType || 'textfield' };
+  const { valueComponent: getValueComponent = () => {} } = componentSimpleConditionSettings;
+  const valueComponent = getValueComponent(conditionComponent) || { type: 'textfield' };
 
   _.each(['logic', 'prefix', 'suffix', 'action', 'defaultValue', 'conditional', 'hideLabel', 'multiple', 'calculateValue', 'validate', 'hidden', 'customConditional'], prop => _.unset(valueComponent, prop));
 

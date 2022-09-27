@@ -230,9 +230,8 @@ export default class Component extends Element {
   static get simpleConditionSettings() {
     return {
       operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
-      valueComponent: 'textfield',
-      transformValueComponent(classComp, valueComp) {
-        return valueComp;
+      valueComponent() {
+        return { type: 'textfield' };
       }
     };
   }

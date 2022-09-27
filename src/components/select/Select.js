@@ -71,9 +71,8 @@ export default class SelectComponent extends Field {
   static get simpleConditionSettings() {
     return {
       ...super.simpleConditionSettings,
-      valueComponent: 'select',
-      transformValueComponent(classComp, valueComp) {
-        return { ... classComp, ...valueComp };
+      valueComponent(classComp) {
+        return { ... classComp, type: 'select' };
       }
     };
   }

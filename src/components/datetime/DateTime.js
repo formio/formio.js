@@ -56,11 +56,10 @@ export default class DateTimeComponent extends Input {
   static get simpleConditionSettings() {
     return {
       operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
-      valueComponent: 'datetime',
-      transformValueComponent(classComp, valueComp) {
+      valueComponent(classComp) {
         return {
           ...classComp,
-          ...valueComp,
+          type: 'datetime',
         };
       }
     };
