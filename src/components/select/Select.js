@@ -991,8 +991,9 @@ export default class SelectComponent extends ListComponent {
         if (this.choices && this.choices.input && this.choices.input.element) {
           this.choices.input.element.value = '';
         }
-
-        this.updateItems(null, true);
+        if (!this.itemsFromUrl ) {
+          this.updateItems(null, true);
+        }
       });
     }
 

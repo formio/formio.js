@@ -167,6 +167,9 @@ export default class ListComponent extends Field {
         }
 
         const options = this.component.authenticate ? {} : { noToken: true };
+        if (!searchInput && this.dataValue) {
+          searchInput = this.dataValue;
+        }
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
