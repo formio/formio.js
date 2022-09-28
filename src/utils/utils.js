@@ -294,7 +294,7 @@ export function transformSimpleCondition(conditional) {
 export function transformSimpleConditions(component = {}) {
   const { conditional, logic = [] } = component;
 
-  if (conditional.when) {
+  if (conditional && conditional.when) {
     transformSimpleCondition(conditional);
   }
 
