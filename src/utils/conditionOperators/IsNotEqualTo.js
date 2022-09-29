@@ -1,7 +1,7 @@
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
 
-export default class IsNotEqual extends ConditionOperator {
+export default class IsNotEqualTo extends ConditionOperator {
     static get operatorKey() {
         return 'isNotEqual';
     }

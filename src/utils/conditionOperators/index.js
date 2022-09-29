@@ -1,9 +1,9 @@
-import IsNotEqual from './IsNotEqual';
+import IsNotEqualTo from './IsNotEqualTo';
 import IsEmptyValue from './IsEmptyValue';
 import IsNotEmptyValue from './IsNotEmptyValue';
 import LessThan from './LessThan';
 import GreaterThan from './GreaterThan';
-//import IsEqual from './isEqual';
+import IsEqualTo from './IsEqualTo';
 import DateGreaterThan from './DateGreaterThan';
 import DateLessThan from './DateLessThan';
 import Includes from './Includes';
@@ -18,8 +18,8 @@ import IsDateEqual from './IsDateEqual';
 import IsNotDateEqual from './IsNotDateEqual';
 
 const ConditionOperators = {
-  [`${IsNotEqual.operatorKey}`]: IsNotEqual,
-  //[`${IsEqual.operatorKey}`]: IsEqual,
+  [`${IsNotEqualTo.operatorKey}`]: IsNotEqualTo,
+  [`${IsEqualTo.operatorKey}`]: IsEqualTo,
   [`${IsEmptyValue.operatorKey}`]: IsEmptyValue,
   [`${IsNotEmptyValue.operatorKey}`]: IsNotEmptyValue,
   [`${LessThan.operatorKey}`]: LessThan,
