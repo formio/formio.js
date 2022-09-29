@@ -17,9 +17,9 @@ import GreaterThanOrEqual from './GreaterThanOrEqual';
 import IsDateEqual from './IsDateEqual';
 import IsNotDateEqual from './IsNotDateEqual';
 
-export default {
-  [`${IsEqual.operatorKey}`]: IsEqual,
+const ConditionOperators = {
   [`${IsNotEqual.operatorKey}`]: IsNotEqual,
+  [`${IsEqual.operatorKey}`]: IsEqual,
   [`${IsEmptyValue.operatorKey}`]: IsEmptyValue,
   [`${IsNotEmptyValue.operatorKey}`]: IsNotEmptyValue,
   [`${LessThan.operatorKey}`]: LessThan,
@@ -37,3 +37,5 @@ export default {
   [`${IsDateEqual.operatorKey}`]: IsDateEqual,
   [`${IsNotDateEqual.operatorKey}`]: IsNotDateEqual
 };
+
+export default ConditionOperators;
