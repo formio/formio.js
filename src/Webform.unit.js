@@ -77,6 +77,7 @@ describe('Webform tests', function() {
 
   it('Should return correct strign value for checkbox radio type', function(done) {
     Formio.createForm(formWithCheckboxRadioaType).then((form) => {
+      console.log('test');
       form.setValue({ data: { radio: 'value1', checkbox: true } });
       setTimeout(() => {
         const stringValues = {
