@@ -298,7 +298,7 @@ export default class Component extends Element {
     // Add the id to the component.
     this.component.id = this.id;
 
-    this.transformSimpleConditions();
+    this.afterComponentAssign();
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
@@ -539,8 +539,8 @@ export default class Component extends Element {
     }
   }
 
-  transformSimpleConditions() {
-    FormioUtils.transformSimpleConditions(this.component);
+  afterComponentAssign() {
+    //implement in extended classes
   }
 
   createAddon(addonConfiguration) {

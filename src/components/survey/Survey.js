@@ -28,12 +28,6 @@ export default class SurveyComponent extends Field {
     return SurveyComponent.schema();
   }
 
-  static get simpleConditionSettings() {
-    return {
-      ...super.simpleConditionSettings,
-      operators: ['isEmpty', 'isNotEmpty'],
-    };
-  }
   render() {
     return super.render(this.renderTemplate('survey'));
   }

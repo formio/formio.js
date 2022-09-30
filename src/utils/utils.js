@@ -274,39 +274,6 @@ return show ? result : !result;
   // return (String(value) === eq) === (show === 'true');
 }
 
-export function transformSimpleCondition(conditional) {
-  const { show = true, when ='', eq = '' } = conditional;
-
-  const newSimpleCondition =  {
-    show,
-    conjunction: 'all',
-    conditions: [{
-      component: when,
-      operator: 'isEqual',
-      value: eq
-    }]
-  };
-
-  _.each(['when', 'eq'], prop => _.unset(conditional, prop));
-  _.each(newSimpleCondition, (value, key) => _.set(conditional, key, value));
-}
-
-export function transformSimpleConditions(component = {}) {
-  const { conditional, logic = [] } = component;
-
-  if (conditional && conditional.when) {
-    transformSimpleCondition(conditional);
-  }
-
-  _.each(logic, logicItem => {
-    const { trigger = {} } = logicItem;
-
-    if (trigger.type === 'simple' && trigger.simple && trigger.simple.when) {
-      transformSimpleCondition(trigger.simple);
-    }
-  });
-}
-
 /**
  * Check custom javascript conditional.
  *
@@ -375,14 +342,7 @@ function getRow(component, row, instance, conditional) {
  * @returns {boolean}
  */
 export function checkCondition(component, row, data, form, instance) {
-  const { customConditional } = component;
-  let { conditional } = component;
-
-  //make compatible with old simple condition on server side
-  if (conditional && conditional.when) {
-    conditional = { ...conditional };
-    transformSimpleCondition(conditional);
-  }
+  const { customConditional, conditional } = component;
 
   if (customConditional) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
@@ -417,14 +377,8 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
 
   switch (trigger.type) {
     case 'simple': {
-      let simpleCondition = trigger.simple;
-
-      if (trigger?.simple?.when) {
-        simpleCondition = { ...simpleCondition };
-        transformSimpleCondition(simpleCondition);
-      }
-      row = getRow(component, row, instance, simpleCondition);
-      return checkSimpleConditional(component, simpleCondition, row, data, instance);
+      row = getRow(component, row, instance, trigger.simple);
+      return checkSimpleConditional(component, trigger.simple, row, data, instance);
     }
     case 'javascript':
       return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
@@ -1194,92 +1148,6 @@ export function observeOverload(callback, options = {}) {
       reset();
       return callback();
     }
-  };
-}
-
-export function getConditionOperatorOptions(operators = []) {
-  return _.chain(operators)
-    .map(operatorName => {
-      const operator = ConditionOperators[operatorName];
-
-      return operator
-        ? {
-            label: operator.displayedName,
-            value: operator.operatorKey
-          }
-        : null;
-    })
-    .filter(option => !!option)
-    .value();
-}
-
-export function getConditionValueComponentRequiredProperties() {
-  return {
-    label: 'Value',
-    key: 'value',
-    placeholder: 'Enter Compared Value',
-    tooltip:
-      'The value used as a reference to compare with the actual value of the form component which determines the visibility of this component.',
-    input: true,
-    typeChangeEnabled: true,
-    logic: [
-      {
-        name: 'check if row component is defined',
-        trigger: {
-          type: 'javascript',
-          javascript: 'result = true || row.component;',
-        },
-        actions: [
-          {
-            name: 'change value component',
-            type: 'mergeComponentSchema',
-            schemaDefinition:
-              'schema = utils.modifyConditionValueComponent({instance, component, conditionComponentPath: row.component, utils, Formio})',
-          },
-        ],
-      },
-      {
-        name: 'clear value on empty operator',
-        trigger: {
-          type: 'javascript',
-          javascript: 'result = !row.operator && row[component.key];',
-        },
-        actions: [
-          {
-            name: 'clear value',
-            type: 'customAction',
-            customAction: 'instance.resetValue()',
-          },
-        ],
-      },
-    ],
-    customConditional: `
-      const singleOperators = _.chain(utils.ConditionOperators)
-        .map(operator => {
-          return !operator.requireValue
-          ? operator.operatorKey
-          : null;
-        })
-        .filter(operatorKey => !!operatorKey)
-        .value();
-      show = !_.includes(singleOperators, row.operator);
-    `,
-  };
-}
-
-export function modifyConditionValueComponent({ instance, conditionComponentPath, utils, Formio }) {
-  const conditionComponent= utils.getComponent(instance.options.editForm.components, conditionComponentPath) || {};
-
-  const componentSimpleConditionSettings = Formio.Components?.components[conditionComponent.type || 'base']?.simpleConditionSettings || {};
-
-  const { valueComponent: getValueComponent = () => {} } = componentSimpleConditionSettings;
-  const valueComponent = getValueComponent(conditionComponent) || { type: 'textfield' };
-
-  _.each(['logic', 'prefix', 'suffix', 'action', 'defaultValue', 'conditional', 'hideLabel', 'multiple', 'calculateValue', 'validate', 'hidden', 'customConditional'], prop => _.unset(valueComponent, prop));
-
-  return {
-    ...valueComponent,
-    ...getConditionValueComponentRequiredProperties()
   };
 }
 

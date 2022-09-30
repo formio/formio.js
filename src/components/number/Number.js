@@ -30,16 +30,6 @@ export default class NumberComponent extends Input {
     };
   }
 
-  static get simpleConditionSettings() {
-    return {
-      ...super.simpleConditionSettings,
-      operators: [...super.simpleConditionSettings.operators, 'lessThan', 'greaterThan', 'lessThanOrEqual','greaterThanOrEqual'],
-      valueComponent(classComp) {
-        return { ... classComp, type: 'number' };
-      }
-    };
-  }
-
   constructor(...args) {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);

@@ -39,13 +39,6 @@ export default class DayComponent extends Field {
       schema: DayComponent.schema()
     };
   }
-
-  static get simpleConditionSettings() {
-    return {
-      ...super.simpleConditionSettings,
-      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
-    };
-  }
   /**
    * The empty value for day component.
    *

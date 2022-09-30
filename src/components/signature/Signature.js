@@ -31,13 +31,6 @@ export default class SignatureComponent extends Input {
     };
   }
 
-  static get simpleConditionSettings() {
-    return {
-      ...super.simpleConditionSettings,
-      operators: ['isEmpty', 'isNotEmpty'],
-    };
-  }
-
   init() {
     super.init();
     this.currentWidth = 0;

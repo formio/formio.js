@@ -28,13 +28,6 @@ export default class TagsComponent extends Input {
     };
   }
 
-  static get simpleConditionSettings() {
-    return {
-      ...super.simpleConditionSettings,
-      operators: [...super.simpleConditionSettings.operators, 'includes', 'notIncludes'],
-    };
-  }
-
   init() {
     super.init();
   }

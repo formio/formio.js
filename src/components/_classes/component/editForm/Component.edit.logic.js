@@ -1,4 +1,5 @@
 import EditFormUtils from './utils';
+import { getContextComponents } from '../../../../utils/utils';
 
 /* eslint-disable quotes, max-len */
 export default [
@@ -78,7 +79,39 @@ export default [
                 customConditional({ row }) {
                   return row.type === 'simple';
                 },
-                components: EditFormUtils.simpleConditionalComponents(true),
+                components: [
+                  {
+                    input: true,
+                    key: 'show',
+                    label: 'Show',
+                    type: 'hidden',
+                    tableView: false,
+                    calculateValue() {
+                      return true;
+                    },
+                  },
+                  {
+                    type: 'select',
+                    input: true,
+                    label: 'When the form component:',
+                    key: 'when',
+                    dataSrc: 'custom',
+                    valueProperty: 'value',
+                    tableView: false,
+                    data: {
+                      custom(context) {
+                        return getContextComponents(context);
+                      },
+                    },
+                  },
+                  {
+                    type: 'textfield',
+                    input: true,
+                    label: 'Has the value:',
+                    key: 'eq',
+                    tableView: false,
+                  },
+                ],
               },
               {
                 weight: 10,
