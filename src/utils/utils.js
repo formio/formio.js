@@ -206,74 +206,77 @@ export function checkCalculated(component, submission, rowData) {
  * @param condition
  * @param row
  * @param data
+ * @param data
  * @returns {boolean}
  */
 export function checkSimpleConditional(component, condition, row, data, instance) {
-  const { conditions = [], conjunction = 'all',  show = true } = condition;
+  if (condition.when) {
+    const value = getComponentActualValue(condition.when, data, row);
 
-  const conditionsResult = _.map(conditions, (cond) => {
-    const { value: comparedValue, operator, component: conditionComponentPath } = cond;
-    if (!conditionComponentPath) {
+    const eq = String(condition.eq);
+    const show = String(condition.show);
+
+    // Special check for selectboxes component.
+    if (_.isObject(value) && _.has(value, condition.eq)) {
+      return String(value[condition.eq]) === show;
+    }
+    // FOR-179 - Check for multiple values.
+    if (Array.isArray(value) && value.map(String).includes(eq)) {
+      return show === 'true';
+    }
+
+    return (String(value) === eq) === (show === 'true');
+  }
+  else {
+    const { conditions = [], conjunction = 'all',  show = true } = condition;
+
+    if (!conditions.length) {
       return true;
     }
-    let value = null;
 
-    if (row) {
-      value = getValue({ data: row }, conditionComponentPath);
+    const conditionsResult = _.map(conditions, (cond) => {
+      const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+      if (!conditionComponentPath) {
+        return true;
+      }
+      const value = getComponentActualValue(conditionComponentPath, data, row);
+
+      const СonditionOperator = ConditionOperators[operator];
+      return СonditionOperator
+        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+        : true;
+    });
+
+    let result = false;
+
+    switch (conjunction) {
+      case 'any':
+        result = _.some(conditionsResult, res => !!res);
+        break;
+      default:
+        result = _.every(conditionsResult, res => !!res);
     }
-    if (data && _.isNil(value)) {
-      value = getValue({ data }, conditionComponentPath);
-    }
-    // FOR-400 - Fix issue where falsey values were being evaluated as show=true
-    if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
-      value = '';
-    }
 
-    const СonditionOperator = ConditionOperators[operator];
-    return СonditionOperator
-      ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
-      : true;
-  });
-
-  let result = false;
-
-  switch (conjunction) {
-    case 'any':
-      result = _.some(conditionsResult, res => !!res);
-      break;
-    default:
-      result = _.every(conditionsResult, res => !!res);
+    return show ? result : !result;
+  }
 }
 
-return show ? result : !result;
+export function getComponentActualValue(compPath, data, row) {
+  let value = null;
 
-  // let value = null;
-  // if (row) {
-  //   value = getValue({ data: row }, condition.when);
-  // }
-  // if (data && _.isNil(value)) {
-  //   value = getValue({ data }, condition.when);
-  // }
-  // // FOR-400 - Fix issue where falsey values were being evaluated as show=true
-  // if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
-  //   value = '';
-  // }
+  if (row) {
+    value = getValue({ data: row }, compPath);
+  }
+  if (data && _.isNil(value)) {
+    value = getValue({ data }, compPath);
+  }
+  // FOR-400 - Fix issue where falsey values were being evaluated as show=true
+  if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
+    value = '';
+  }
 
-  // const eq = String(condition.eq);
-  // const show = String(condition.show);
-
-  // // Special check for selectboxes component.
-  // if (_.isObject(value) && _.has(value, condition.eq)) {
-  //   return String(value[condition.eq]) === show;
-  // }
-  // // FOR-179 - Check for multiple values.
-  // if (Array.isArray(value) && value.map(String).includes(eq)) {
-  //   return show === 'true';
-  // }
-
-  // return (String(value) === eq) === (show === 'true');
+  return value;
 }
-
 /**
  * Check custom javascript conditional.
  *
@@ -320,7 +323,11 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  if (dataParent && _.some(condition.conditions, cond => cond.component.startsWith(parentPath))) {
+  const isTriggerCondtionComponentPath = condition.when || !condition.conditions
+    ? condition.when?.startsWith(parentPath)
+    : _.some(condition.conditions, cond => cond.component.startsWith(parentPath));
+
+  if (dataParent && isTriggerCondtionComponentPath) {
     const newRow = {};
     _.set(newRow, parentPath, row);
     row = newRow;
@@ -347,8 +354,7 @@ export function checkCondition(component, row, data, form, instance) {
   if (customConditional) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-
-  else if (conditional && _.some(conditional.conditions || [], condition => condition.component && condition.operator)) {
+  else if (conditional && (conditional.when || _.some(conditional.conditions || [], condition => condition.component && condition.operator))) {
     row = getRow(component, row, instance);
     return checkSimpleConditional(component, conditional, row, data, instance);
   }

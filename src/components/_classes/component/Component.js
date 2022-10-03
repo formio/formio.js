@@ -185,9 +185,8 @@ export default class Component extends Element {
        * The simple conditional settings for a component.
        */
       conditional: {
-        show: null,
-        conjunction: null,
-        conditions: []
+        when: null,
+        eq: ''
       },
       overlay: {
         style: '',
@@ -226,15 +225,6 @@ export default class Component extends Element {
   /* eslint-disable no-unused-vars */
   static tableView(value, options) {}
   /* eslint-enable no-unused-vars */
-
-  static get simpleConditionSettings() {
-    return {
-      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
-      valueComponent() {
-        return { type: 'textfield' };
-      }
-    };
-  }
 
   /**
    * Initialize a new Component.

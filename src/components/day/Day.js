@@ -39,6 +39,7 @@ export default class DayComponent extends Field {
       schema: DayComponent.schema()
     };
   }
+
   /**
    * The empty value for day component.
    *

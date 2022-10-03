@@ -3,6 +3,7 @@ import * as moment from 'moment';
 export type AnyForJSON = { [key: string]: any } | any;
 
 export namespace Utils {
+  const ConditionOperators: any;
   const Evaluator: any;
   const _: any;
   function evaluate(
@@ -108,7 +109,7 @@ export namespace Utils {
   const firstNonNil: any;
   function withSwitch(a: any, b: any): [Function, Function];
   function observeOverload(callback: Function, options?: { limit?: number; delay?: number }): any;
-  function getContextComponents(context: any): any;
+  function getContextComponents(context: any, excludeNested?: any, excludedTypes?: any): any;
   function sanitize(string: string, options: any): any;
 
   // Form Utils
