@@ -136,7 +136,7 @@ export default class NumberComponent extends Input {
       info.attr.type = 'password';
     }
     else {
-      info.attr.type = 'text';
+      info.attr.type = 'tel';
     }
     info.attr.pattern='\\d*',
     info.attr.inputmode = this.isDecimalAllowed() ? 'decimal' : 'numeric';
