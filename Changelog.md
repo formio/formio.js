@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.9
+### Changed
+ - Official Release
+
 ## 4.14.9-rc.17
 ### Changed
  - FIO-5431 Fixed Quill editor losing data after switching to source vie…
