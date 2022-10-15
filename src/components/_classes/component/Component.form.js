@@ -15,6 +15,7 @@ export default function(...extend) {
     {
       type: 'tabs',
       key: 'tabs',
+      builderEdit:true,
       components: [
         {
           label: 'Display',
