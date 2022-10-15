@@ -67,7 +67,8 @@ export default class TabsComponent extends NestedComponent {
   }
 
   init() {
-    this.components = [];
+    if (this.builderMode || this.parent?.type !== 'form' || this.component.builderEdit) {
+      this.components = [];
     this.tabs = [];
     _.each(this.component.components, (tab, index) => {
       this.tabs[index] = [];
@@ -79,6 +80,24 @@ export default class TabsComponent extends NestedComponent {
         this.tabs[index].push(component);
       });
     });
+    }
+else {
+      this.components = this.components || [];
+      const tempComponents=  _.cloneDeep(this.component.components);
+      this.tabs =   this.tabs || [];
+      _.each(tempComponents, (tab, index) => {
+        // Initialize empty tabs.
+        tab.components = index===this.currentTab || !_.isEmpty(this.tabs[index])? tab.components : [] ;
+        if (_.isEmpty(this.tabs[index])) {
+          this.tabs[index] = [];
+          _.each(tab.components, (comp) => {
+            const component = this.createComponent(comp);
+            component.tab = index;
+            this.tabs[index].push(component);
+          });
+        }
+      });
+    }
   }
 
   render() {
@@ -93,7 +112,7 @@ export default class TabsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
-    ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));
+    // ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));
     const superAttach = super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
@@ -103,7 +122,7 @@ export default class TabsComponent extends NestedComponent {
       });
     });
     this.refs[this.tabKey].forEach((tab, index) => {
-      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);
+      this.attachComponents(tab, this.tabs[index], this.component.components[index]?.components || []);
     });
     return superAttach;
   }
@@ -149,6 +168,10 @@ export default class TabsComponent extends NestedComponent {
     }
     if (this.refs[this.tabLinkKey][index]) {
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
+    }
+    if (!this.builderMode || this.parent?.type === 'form' || !this.component.builderEdit) {
+      this.init();
+      this.redraw();
     }
     this.triggerChange();
   }
