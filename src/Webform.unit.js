@@ -139,7 +139,6 @@ describe('Webform tests', function() {
 
     form.setForm(tooltipActivateCheckbox).then(() => {
     const checkboxValue = form.element.querySelector('[name="data[checkbox]"]').value;
-    console.log(checkboxValue);
     Harness.clickElement(form, form.element.querySelector('[ref="tooltip"]'));
 
     setTimeout(() => {
