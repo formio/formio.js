@@ -34,6 +34,7 @@ import {
   formWithDateTimeComponents,
   formWithCollapsedPanel,
   formWithCustomFormatDate,
+  tooltipActivateCheckbox,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
@@ -130,6 +131,23 @@ describe('Webform tests', function() {
         }, 500);
       });
     }).catch((err) => done(err));
+  });
+
+  it('Should not activate checkbox when clicking tooltip icon', function(done) {
+    const element = document.createElement('div');
+    const form = new Webform(element);
+
+    form.setForm(tooltipActivateCheckbox).then(() => {
+    const checkboxValue = form.element.querySelector('[name="data[checkbox]"]').value;
+    console.log(checkboxValue);
+    Harness.clickElement(form, form.element.querySelector('[ref="tooltip"]'));
+
+    setTimeout(() => {
+      assert.equal(form.element.querySelector('[name="data[checkbox]"]').value, checkboxValue);
+      done();
+    }, 200);
+    })
+    .catch((err) => done(err));
   });
 
   it('Should show survey values in html render mode', function(done) {
