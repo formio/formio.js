@@ -359,7 +359,7 @@ export default class CheckBoxComponent extends Field {
     const { name: componentName, value: componentValue } = this.component;
     const hasValue = componentName ? _.isEqual(value, componentValue) : value;
 
-    return hasValue ? &apos;Yes&apos; : &apos;No&apos;;
+    return this.t(hasValue ? &apos;Yes&apos; : &apos;No&apos;);
   }
 
   updateValue(value, flags) {
