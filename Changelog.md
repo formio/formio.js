@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.10-rc.1]
+### Changed
+ - FIO-5418: Fixes checkbox values in edit grid not translated
+
 ## 4.14.9
 ### Changed
  - Official Release
