@@ -12,7 +12,8 @@ import {
   comp6,
   comp7,
   comp8,
-  comp9
+  comp9,
+  comp10
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -83,6 +84,30 @@ describe('DateTime Component', () => {
       setTimeout(() => {
         assert.equal(dateTime.getValue(), '');
         assert.equal(dateTime.dataValue, '');
+
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should show correct value in MMM format with manual input', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const blurEvent = new Event('blur');
+
+      const value = 'Jan 21';
+      const expectedValueIncludes = '01-21';
+      const input = dateTime.element.querySelector('.input');
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() => {
+        assert.equal(dateTime.getValue().includes(expectedValueIncludes), true);
+        assert.equal(dateTime.dataValue.includes(expectedValueIncludes), true);
 
         document.innerHTML = '';
         done();
