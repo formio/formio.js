@@ -312,7 +312,7 @@ export default class NestedComponent extends Field {
    * @param component
    * @param data
    */
-  createComponent(component, options, data, before) {
+   createComponent(component, options, data, before, replacedComp) {
     if (!component) {
       return;
     }
@@ -341,6 +341,15 @@ export default class NestedComponent extends Field {
       const index = _.findIndex(this.components, { id: before.id });
       if (index !== -1) {
         this.components.splice(index, 0, comp);
+      }
+      else {
+        this.components.push(comp);
+      }
+    }
+    else if (replacedComp) {
+      const index = _.findIndex(this.components, { id: replacedComp.id });
+      if (index !== -1) {
+        this.components[index] = comp;
       }
       else {
         this.components.push(comp);

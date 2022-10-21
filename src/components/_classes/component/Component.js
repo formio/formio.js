@@ -289,6 +289,8 @@ export default class Component extends Element {
     // Add the id to the component.
     this.component.id = this.id;
 
+    this.afterComponentAssign();
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -525,6 +527,10 @@ export default class Component extends Element {
     if (this.component.addons?.length) {
       this.component.addons.forEach((addon) => this.createAddon(addon));
     }
+  }
+
+  afterComponentAssign() {
+    //implement in extended classes
   }
 
   createAddon(addonConfiguration) {
