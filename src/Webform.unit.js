@@ -66,6 +66,7 @@ import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithIni
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
+import uniqueValidationForm from '../test/forms/uniqueValidationForm';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -3352,6 +3353,32 @@ describe('Webform tests', function() {
       }, 200);
     })
     .catch((err) => done(err));
+  });
+
+  it('Should show unique validation errors and hide them after changing value', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(uniqueValidationForm.form).then(() => {
+      form.setSubmission(uniqueValidationForm.submission1row).then(() => {
+        const textField = form.getComponent('textField');
+
+        form.setSubmission(uniqueValidationForm.submission1row).then(() => {
+          assert.equal(!!textField.element.querySelector('[ref="messageContainer"]'), true);
+
+          const textFieldInput = textField.refs.input[0];
+          textFieldInput.value = '11';
+
+          const inputEvent = new Event('input');
+          textFieldInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(!!textField.element.getElementsByClassName('is-invalid').length, false);
+            done();
+          }, 200);
+        });
+      });
+    }).catch((err) => done(err));
   });
 
   each(FormTests, (formTest) => {
