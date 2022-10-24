@@ -34,6 +34,7 @@ import {
   formWithDateTimeComponents,
   formWithCollapsedPanel,
   formWithCustomFormatDate,
+  errorListFocus,
 } from '../test/formtest';
 import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
@@ -3400,6 +3401,22 @@ describe('Webform tests', function() {
         });
       });
     }
+  });
+});
+
+describe('Webform with dataTable tests', function() {
+  it('Should have form as root component', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(errorListFocus).then(() => {
+      const dataTable = form.getComponent('dataTable');
+      const textField = dataTable.getComponent('textField');
+
+      assert.equal(dataTable.root.type, 'form');
+      assert.equal(textField.root.type, 'form');
+      done();
+    }).catch((err) => done(err));
   });
 });
 

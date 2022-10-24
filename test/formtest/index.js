@@ -38,6 +38,7 @@ const formWithCustomFormatDate = require('./formWithCustomFormatDate.json');
 const wizardWithHiddenPanel = require('./wizardWithHiddenPanel.json');
 const wizardWithSimpleConditionalPage = require('./wizardWithSimpleConditionalPage.json');
 const wizardWithTooltip = require('./wizardWithTooltip.json');
+const errorListFocus = require('./errorListFocus.json');
 
 module.exports = {
   advanced,
@@ -80,4 +81,5 @@ module.exports = {
   wizardWithHiddenPanel,
   wizardWithSimpleConditionalPage,
   wizardWithTooltip,
+  errorListFocus,
 };
